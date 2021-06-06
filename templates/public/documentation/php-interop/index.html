@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  
+    <title>PHP Interop | The Phel Language</title>
+    <meta property="og:title" content="PHP Interop | The Phel Language" />
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The offical website of the Phel language. Phel is a functional programming language that compiles to PHP.">
+
+  <link rel="stylesheet" href="https:&#x2F;&#x2F;phel-lang.org&#x2F;site.css"/>
+  <link rel="alternate icon" type="image/png" href="/favicon-32.png">
+
+  <meta property="og:description" content="The offical website of the Phel language. Phel is a functional programming language that compiles to PHP." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://phel-lang.org/" />
+  <meta property="og:image" content="https://phel-lang.org/favicon-512.png" />
+  <meta property="og:image:width" content="512" />
+  <meta property="og:image:height" content="512" />
+</head>
+
+<body>
+  
+<div class="documentation">
+    <aside class="documentation__sidebar">
+        <div class="logo">
+            <a href="/">
+    <svg class="phel-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200.3 167.7"><path d="M6 66l95 96h36V93l-36-74H42L6 56v106h36l24-35"/><path d="M137 93l58-3-12-58-32-26h-34l-16 13-23 9-12 22 46 52z"/><path d="M195 90l-12 57h-13l-2-56M170 147l-13-11h12"/></svg>
+</a>
+        </div>
+
+        <input type="checkbox" id="menu_checkbox">
+        <label for="menu_checkbox">
+            <svg viewBox="0 0 32 32">
+                <path d="M3,3 29,3 M3,16 29,16 M3,29 29,29"></path>
+            </svg>
+            Menu
+        </label>
+        <nav>
+            <ol>
+                <li class="">
+                    <a href="/">About Phel</a>
+                </li>
+                
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;getting-started&#x2F;">Getting started</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;basic-types&#x2F;">Basic Types</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;numbers-and-arithmetic&#x2F;">Numbers and Arithmetic</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;truth-and-boolean-operations&#x2F;">Truth and Boolean operations</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;control-flow&#x2F;">Control flow</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;global-and-local-bindings&#x2F;">Global and local bindings</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;functions-and-recursion&#x2F;">Functions and Recursion</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;data-structures&#x2F;">Data structures</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;destructuring&#x2F;">Destructuring</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;macros&#x2F;">Macros</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;namespaces&#x2F;">Namespaces</a>
+                    </li>
+                
+                    <li class="active">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;php-interop&#x2F;">PHP Interop</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;http-request-and-response&#x2F;">Request and Response</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;html-rendering&#x2F;">HTML Rendering</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;testing&#x2F;">Testing</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;configuration&#x2F;">Configuration</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;repl&#x2F;">REPL</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;api&#x2F;">API</a>
+                    </li>
+                
+                    <li class="">
+                        <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;documentation&#x2F;in-the-wild&#x2F;">In the wild</a>
+                    </li>
+                
+            </ol>
+
+            <ul>
+                <li><a href="https://github.com/phel-lang/phel-lang">Source on Github</a></li>
+            </ul>
+        </nav>
+    </aside>
+    <div class="documentation__content">
+        
+    <h1>PHP Interop</h1>
+    <h2 id="calling-php-functions">Calling PHP functions<a class="zola-anchor" href="#calling-php-functions" aria-label="Anchor link for: calling-php-functions">#</a>
+</h2>
+<p>PHP comes with huge set of functions that can be called from Phel by just adding a <code>php/</code> prefix to the function name.</p>
+<pre style="background-color:#ffffff;">
+<code><span style="color:#4d4d4c;">(php/strlen &quot;test&quot;) # Calls PHP&#39;s strlen function and evaluates to 4
+(php/date &quot;l&quot;) # Evaluates to something like &quot;Monday&quot;
+</span></code></pre><h2 id="php-class-instantiation">PHP class instantiation<a class="zola-anchor" href="#php-class-instantiation" aria-label="Anchor link for: php-class-instantiation">#</a>
+</h2>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/new</span><span style="color:#4d4d4c;"> expr args*)
+</span></code></pre>
+<p>Evaluates <code>expr</code> and creates a new PHP class using the arguments. The instance of the class is returned.</p>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">ns</span><span style="color:#4d4d4c;"> my\module
+  (</span><span style="color:#3e999f;">:use</span><span style="color:#4d4d4c;"> \DateTime))
+
+(</span><span style="color:#8959a8;">php/new</span><span style="color:#4d4d4c;"> DateTime) </span><span style="color:#999999;"># Returns a new instance of the DateTime class
+</span><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/new</span><span style="color:#4d4d4c;"> DateTime </span><span style="color:#718c00;">&quot;now&quot;</span><span style="color:#4d4d4c;">) </span><span style="color:#999999;"># Returns a new instance of the DateTime class
+
+</span><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/new </span><span style="color:#718c00;">&quot;</span><span style="color:#f5871f;">\\</span><span style="color:#718c00;">DateTimeImmutable&quot;</span><span style="color:#4d4d4c;">) </span><span style="color:#999999;"># instantiate a new PHP class from string
+</span></code></pre><h2 id="php-method-and-property-call">PHP method and property call<a class="zola-anchor" href="#php-method-and-property-call" aria-label="Anchor link for: php-method-and-property-call">#</a>
+</h2>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/-&gt;</span><span style="color:#4d4d4c;"> object (methodname expr*))
+(</span><span style="color:#8959a8;">php/-&gt;</span><span style="color:#4d4d4c;"> object property)
+</span></code></pre>
+<p>Calls a method or property on a PHP object. Both <code>methodname</code> and <code>property</code> must be symbols and cannot be an evaluated value.</p>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">ns</span><span style="color:#4d4d4c;"> my\module
+  (</span><span style="color:#3e999f;">:use</span><span style="color:#4d4d4c;"> \DateInterval))
+
+(</span><span style="color:#8959a8;">def</span><span style="color:#4d4d4c;"> di (</span><span style="color:#8959a8;">php/new</span><span style="color:#4d4d4c;"> \DateInterval </span><span style="color:#718c00;">&quot;PT30S&quot;</span><span style="color:#4d4d4c;">))
+
+(</span><span style="color:#8959a8;">php/-&gt;</span><span style="color:#4d4d4c;"> di (format </span><span style="color:#718c00;">&quot;%s seconds&quot;</span><span style="color:#4d4d4c;">)) </span><span style="color:#999999;"># Evaluates to &quot;30 seconds&quot;
+</span><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/-&gt;</span><span style="color:#4d4d4c;"> di s) </span><span style="color:#999999;"># Evaluates to 30
+</span></code></pre><h2 id="php-static-method-and-property-call">PHP static method and property call<a class="zola-anchor" href="#php-static-method-and-property-call" aria-label="Anchor link for: php-static-method-and-property-call">#</a>
+</h2>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/::</span><span style="color:#4d4d4c;"> class (methodname expr*))
+(</span><span style="color:#8959a8;">php/::</span><span style="color:#4d4d4c;"> class property)
+</span></code></pre>
+<p>Same as above, but for static calls on PHP classes.</p>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">ns</span><span style="color:#4d4d4c;"> my\module
+  (</span><span style="color:#3e999f;">:use</span><span style="color:#4d4d4c;"> \DateTimeImmutable))
+
+(</span><span style="color:#8959a8;">php/::</span><span style="color:#4d4d4c;"> DateTimeImmutable ATOM) </span><span style="color:#999999;"># Evaluates to &quot;Y-m-d\TH:i:sP&quot;
+
+# Evaluates to a new instance of DateTimeImmutable
+</span><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/::</span><span style="color:#4d4d4c;"> DateTimeImmutable (createFromFormat </span><span style="color:#718c00;">&quot;Y-m-d&quot; &quot;2020-03-22&quot;</span><span style="color:#4d4d4c;">))
+
+</span></code></pre><h2 id="php-set-object-properties">PHP set object properties<a class="zola-anchor" href="#php-set-object-properties" aria-label="Anchor link for: php-set-object-properties">#</a>
+</h2>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/oset </span><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/-&gt;</span><span style="color:#4d4d4c;"> object property) value)
+(</span><span style="color:#8959a8;">php/oset </span><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/::</span><span style="color:#4d4d4c;"> class property) value)
+</span></code></pre>
+<p>Use <code>php/oset</code> to set a value to a class/object property.</p>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">def</span><span style="color:#4d4d4c;"> x (</span><span style="color:#8959a8;">php/new</span><span style="color:#4d4d4c;"> \stdclass))
+(</span><span style="color:#8959a8;">php/oset </span><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/-&gt;</span><span style="color:#4d4d4c;"> x name) </span><span style="color:#718c00;">&quot;foo&quot;</span><span style="color:#4d4d4c;">)
+</span></code></pre><h2 id="get-php-array-value">Get PHP-Array value<a class="zola-anchor" href="#get-php-array-value" aria-label="Anchor link for: get-php-array-value">#</a>
+</h2>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/aget</span><span style="color:#4d4d4c;"> arr index)
+</span></code></pre>
+<p>Equivalent to PHP's <code>arr[index] ?? null</code>.</p>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/aget </span><span style="color:#4d4d4c;">[</span><span style="color:#718c00;">&quot;a&quot; &quot;b&quot; &quot;c&quot;</span><span style="color:#4d4d4c;">] </span><span style="color:#f5871f;">0</span><span style="color:#4d4d4c;">) </span><span style="color:#999999;"># Evaluates to &quot;a&quot;
+</span><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/aget </span><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/array </span><span style="color:#718c00;">&quot;a&quot; &quot;b&quot; &quot;c&quot;</span><span style="color:#4d4d4c;">) </span><span style="color:#f5871f;">1</span><span style="color:#4d4d4c;">) </span><span style="color:#999999;"># Evaluates to &quot;b&quot;
+</span><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/aget </span><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/array </span><span style="color:#718c00;">&quot;a&quot; &quot;b&quot; &quot;c&quot;</span><span style="color:#4d4d4c;">) </span><span style="color:#f5871f;">5</span><span style="color:#4d4d4c;">) </span><span style="color:#999999;"># Evaluates to nil
+</span></code></pre><h2 id="set-php-array-value">Set PHP-Array value<a class="zola-anchor" href="#set-php-array-value" aria-label="Anchor link for: set-php-array-value">#</a>
+</h2>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/aset</span><span style="color:#4d4d4c;"> arr index value)
+</span></code></pre>
+<p>Equivalent to PHP's <code>arr[index] = value</code>.</p>
+<h2 id="append-php-array-value">Append PHP-Array value<a class="zola-anchor" href="#append-php-array-value" aria-label="Anchor link for: append-php-array-value">#</a>
+</h2>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/apush</span><span style="color:#4d4d4c;"> arr value)
+</span></code></pre>
+<p>Equivalent to PHP's <code>arr[] = value</code>.</p>
+<h2 id="unset-php-array-value">Unset PHP-Array value<a class="zola-anchor" href="#unset-php-array-value" aria-label="Anchor link for: unset-php-array-value">#</a>
+</h2>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">php/aunset</span><span style="color:#4d4d4c;"> arr index)
+</span></code></pre>
+<p>Equivalent to PHP's <code>unset(arr[index])</code>.</p>
+<h2 id="dir-and-file"><code>__DIR__</code> and <code>__FILE__</code><a class="zola-anchor" href="#dir-and-file" aria-label="Anchor link for: dir-and-file">#</a>
+</h2>
+<p>In Phel you can also use PHP Magic Methods <code>__DIR__</code> and <code>__FILE__</code>. These resolve to the dirname or filename of the Phel file.</p>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(println __DIR__) </span><span style="color:#999999;"># Prints the directory name of the file
+</span><span style="color:#4d4d4c;">(println __FILE__) </span><span style="color:#999999;"># Prints the filename of the file
+</span></code></pre><h2 id="calling-phel-functions-from-php">Calling Phel functions from PHP<a class="zola-anchor" href="#calling-phel-functions-from-php" aria-label="Anchor link for: calling-phel-functions-from-php">#</a>
+</h2>
+<p>Phel also provides a way to let you call Phel function from PHP. This is useful for existing PHP application that wants to integrate Phel. Therefore, you have to load the Phel Runtime at the beginning of your script. This can be done directly after the <code>autoload.php</code> file was loaded.</p>
+<pre style="background-color:#ffffff;">
+<code class="language-php" data-lang="php"><span style="color:#4d4d4c;">require_once &#39;vendors/autoload.php&#39;;
+require_once &#39;vendors/PhelRuntime.php&#39;;
+</span></code></pre>
+<p>Phel provide two ways to call Phel functions, manually or by using the <code>export</code> command.</p>
+<h3 id="manually">Manually<a class="zola-anchor" href="#manually" aria-label="Anchor link for: manually">#</a>
+</h3>
+<p>The <code>PhelCallerTrait</code> can be used to call any Phel function from an existing PHP class.
+Simply inject the trait in the class and call the <code>callPhel</code> function.</p>
+<pre style="background-color:#ffffff;">
+<code class="language-php" data-lang="php"><span style="color:#4d4d4c;">use Phel\Interop\PhelCallerTrait;
+
+class MyExistingClass {
+  use PhelCallerTrait;
+
+  public function myExistingMethod(...$arguments) {
+    return $this-&gt;callPhel(&#39;my\phel\namespace&#39;, &#39;phel-function-name&#39;, ...$arguments);
+  }
+}
+</span></code></pre><h3 id="using-the-export-command">Using the <code>export</code> command<a class="zola-anchor" href="#using-the-export-command" aria-label="Anchor link for: using-the-export-command">#</a>
+</h3>
+<p>Alternatively, the <code>phel export</code> command can be used. This command will generate a wrapper class for all Phel functions that are marked as <em>export</em>.</p>
+<p>Before using the <code>export</code> command the required configuration options need to be added to <code>composer.json</code>:</p>
+<pre style="background-color:#ffffff;">
+<code class="language-json" data-lang="json"><span style="color:#4d4d4c;">{
+  &quot;export&quot;: {
+    &quot;directories&quot;: [
+        &quot;src/phel&quot;
+    ],
+    &quot;namespace-prefix&quot;: &quot;PhelGenerated&quot;,
+    &quot;target-directory&quot;: &quot;src/PhelGenerated&quot;
+  }
+}
+</span></code></pre>
+<p>A detailed description of the options can be found in the <a href="/documentation/configuration/#export">Configuration</a> chapter.</p>
+<p>To mark a function as exported the following meta data needs to be added to the function:</p>
+<pre style="background-color:#ffffff;">
+<code class="language-phel" data-lang="phel"><span style="color:#4d4d4c;">(</span><span style="color:#8959a8;">defn</span><span style="color:#4d4d4c;"> my-function
+  {</span><span style="color:#3e999f;">:export </span><span style="color:#f5871f;">true</span><span style="color:#4d4d4c;">}
+  [a b]
+  (+ a b))
+</span></code></pre>
+<p>Now the <code>phel export</code> command will generate a PHP wrapper class in the target directory (in this case <code>src/PhelGenerated</code>). This class can then be used in the PHP application to call Phel functions.</p>
+
+
+
+        <footer>
+    &copy; <time datetime="2020">2020</time> Jens Haase
+    <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;legal&#x2F;disclosure&#x2F;">Legal Disclosure</a> | <a href="https:&#x2F;&#x2F;phel-lang.org&#x2F;legal&#x2F;data-protection&#x2F;">Data protection</a>
+</footer>
+    </div>
+</div>
+
+</body>
+
+</html>
