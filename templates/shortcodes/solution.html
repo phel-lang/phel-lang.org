@@ -1,0 +1,7 @@
+<div class="solution">
+    <input type='checkbox' style='display: none' id="cb{{nth}}">
+    <label for="cb{{nth}}">Show solution</label>
+    <div>
+        {{ body | markdown | safe }}
+    </div>
+</div>

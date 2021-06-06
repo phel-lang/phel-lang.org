@@ -53,3 +53,12 @@ ul.api-index {
     font-style: italic;
     padding-left: 0.2em;
 }
+
+.solution {
+    input + label + div { display: none; }
+    input:checked + label + div { display: block; }
+
+    label {
+        font-style: italic;
+    }
+}
