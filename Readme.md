@@ -7,7 +7,6 @@ This is the code for the website of Phel: https://phel-lang.org.
 The documentation is build with [Zola](https://www.getzola.org/).
 
 ```bash
-cd doc
 zola serve # build & serve
 zola build # build & publish
 ```
