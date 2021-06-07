@@ -13,8 +13,7 @@ This page contains a list of libraries and projects that use Phel. If you want t
 ## Projects
 
 * [mariobasic-n7](https://github.com/mabasic/mariobasic-n7) Website of Mario Bašić.
-* [bb-web](https://github.com/kloimhardt/bb-web#phelphp-backend) Small no-install ClojureScript web-app with Phel backend
-* [qlkit-todo-demo](https://github.com/kloimhardt/qlkit-todo-demo) Reactive Todo web-app using GraphQl style client-server communication
+* [lisp-webscript-examples](https://github.com/kloimhardt/lisp-webscript-examples) Minimal reactive web-apps combining Phel + ClojureScript via GraphQL.
 
 
 
