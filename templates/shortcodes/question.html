@@ -1,0 +1,5 @@
+<div class="question" id="number-{{ nth }}">
+    {% set questionNumber = '<b>Question ' ~ nth ~ ': </b>' %}
+
+    {{ questionNumber  ~ body | markdown | safe }}
+</div>
