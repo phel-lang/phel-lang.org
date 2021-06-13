@@ -34,11 +34,11 @@ The first item is in the vector is a mandatory tag name. It can be either a keyw
 (html [:div {:id "foo"}]) # Evaluates to "<div id=\"foo\"></div>"
 ```
 
-## Clases and Styles
+## Classes and Styles
 
 A common need in building html templates is to adjust element's class list and its inline styles. Therefore, Phel provides special enhancements for `class` and `style` attributes.
 
-Instead of concatenation a inline style string, a map can be used. The next two examples evaluate to the same result.
+Instead of concatenation an inline style string, a map can be used. The next two examples evaluate to the same result.
 
 ```phel
 (html [:div {:style "background:green;color:red;"} "bar"])
@@ -47,7 +47,7 @@ Instead of concatenation a inline style string, a map can be used. The next two 
 # "<div style=\"background:green;color:red;\">bar</div>"
 ```
 
-Class lists can be build by vectors or maps. If a map is provided the keys of the map are the class names and the values are evaluated to true or false. Only keys with true values are added to the final class list.
+Class lists can be build by vectors or maps. If a map is provided the keys of the map are the class names, and the values are evaluated to true or false. Only keys with true values are added to the final class list.
 
 ```phel
 (html [:div {:class [:a]}]) # <div class=\"a\"></div>
@@ -78,7 +78,7 @@ Similar to conditional rendering the `for` expression can be used to render list
 
 ## Raw Html
 
-By default all values are automatically escaped to provide better defense against cross-site scripting (XSS). In order to output real HTML the `raw-string` function can be used.
+By default, all values are automatically escaped to provide better defense against cross-site scripting (XSS). In order to output real HTML the `raw-string` function can be used.
 
 ```phel
 (html [:span (raw-string "<a></a>")])
