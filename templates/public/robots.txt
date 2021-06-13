@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://phel-lang.org/sitemap.xml
