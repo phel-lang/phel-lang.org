@@ -823,7 +823,7 @@ Returns true if `x` is a keyword, false otherwise.
 ```phel
 (kvs xs)
 ```
-Returns an array of key value pairs like @[k1 v1 k2 v2 k3 v3 ...].
+Returns an array of key value pairs like [k1 v1 k2 v2 k3 v3 ...].
 
 ## `list`
 
@@ -838,13 +838,6 @@ Creates a new list. If no argument is provided, an empty list is created.
 (list? x)
 ```
 Returns true if `x` is a list, false otherwise.
-
-## `load`
-
-```phel
-(load path)
-```
-Loads a file into the current namespace. It can be used to split large namespaces into multiple files.
 
 ## `map`
 
@@ -1435,7 +1428,7 @@ Prints the summary of the test suite
 ## `test/run-tests`
 
 ```phel
-(run-tests & namespaces)
+(run-tests options & namespaces)
 ```
 Runs all test functions in the given namespaces
 
