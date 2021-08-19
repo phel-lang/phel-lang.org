@@ -1,0 +1,98 @@
+.site-header {
+
+    background-color: $color-base-primary;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: $header-height;
+
+    .site-header__container {
+        display: flex;
+        align-items: center;
+        padding: .2em 2em;
+
+        .site-header__mobile-menu {
+            @include desktop {
+                display: none;
+            }
+
+            input[type="checkbox"] {
+                display: none;
+                visibility: hidden;
+            }
+
+            label {
+                cursor: pointer;
+                display: block;
+                padding: .5em;
+                margin-right: 1em;
+                text-align: center;
+
+                svg {
+                    max-height: 1em;
+                    stroke: white;
+                    stroke-width: 5px;
+                    vertical-align: middle;
+                }
+            }
+
+            nav {
+                display: none;
+            }
+
+            input[type="checkbox"]:checked ~ nav {
+                display: block;
+                position: fixed;
+                margin-top: 0;
+                top: $header-height;
+                bottom: 0;
+                left: 0;
+                border-right: 1px solid $color-gray-lighter;
+                width: 15em;
+                padding: 2em;
+                background-color: white;
+                overflow-y: auto;
+            }
+        }
+
+        .site-header__logo {
+            .phel-logo {
+                max-height: 2.5em;
+                stroke: white;
+                stroke-width: 5px;
+            }
+        }
+
+        .site-header__navigation {
+            display: none;
+
+            @include desktop {
+                display: block;
+                flex-grow: 2;
+
+                ul {
+                    list-style: none;
+                    margin: 0;
+                    padding: 0;
+                    display: flex;
+                    justify-content: flex-end;
+
+                    li {
+                        a {
+                            padding: .5em 1em;
+                            display: inline-block;
+                            color: white;
+                        }
+
+                        &.active {
+                            a {
+                                text-decoration: underline;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,32 @@
+.two-column-layout {
+    margin: 0 auto;
+    max-width: 800px;
+
+    .two-column-layout__sidebar {
+        display: none;
+    }
+
+    .two-column-layout__content {
+        padding: 2em 2em;
+    }
+
+    @include desktop {
+        display: flex;
+        margin: unset;
+        max-width: unset;
+
+        .two-column-layout__sidebar {
+            width: 15em;
+            padding: 2em;
+            border-right: 1px solid $color-base-lines;
+            display: block;
+        }
+
+        .two-column-layout__content {
+            box-sizing: border-box;
+            flex: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    }
+}
