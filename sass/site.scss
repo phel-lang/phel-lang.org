@@ -55,8 +55,8 @@ ul.api-index {
 }
 
 .solution {
-    input + label + div { display: none; }
-    input:checked + label + div { display: block; }
+    input + label + pre { display: none; }
+    input:checked + label + pre { display: block; }
 
     label {
         font-style: italic;
