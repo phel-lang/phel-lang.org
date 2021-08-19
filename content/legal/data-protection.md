@@ -1,5 +1,6 @@
 +++
 title = "Data protection"
+template = "blog-entry.html"
 +++
 
 ## How is responsible for this website

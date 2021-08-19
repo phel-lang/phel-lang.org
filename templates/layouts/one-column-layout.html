@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block body %}
+{% include "header.html" %}
+<div class="one-column-layout">
+    {% block content %} {% endblock %}
+
+    {% include "footer.html" %}
+</div>
+{% endblock body %}

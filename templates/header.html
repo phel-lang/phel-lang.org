@@ -1,0 +1,22 @@
+<header class="site-header">
+    <div class="site-header__container">
+        <div class="site-header__mobile-menu">
+            <input type="checkbox" id="menu_checkbox">
+            <label for="menu_checkbox">
+                <svg viewBox="0 0 32 32">
+                    <path d="M3,3 29,3 M3,16 29,16 M3,29 29,29"></path>
+                </svg>
+            </label>
+            <nav>
+                {% include "navigation/top-navigation.html" %}
+                {% include "navigation/site-navigation.html" %}
+            </nav>
+        </div>
+        <div class="site-header__logo">
+            {% include "logo.html" %}
+        </div>
+        <div class="site-header__navigation">
+            {% include "navigation/top-navigation.html" %}
+        </div>
+    </div>
+</header>
