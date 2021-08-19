@@ -36,6 +36,8 @@ Define a vector with the elements `2`, `"nice"` and `true`
 {% solution() %}
 ```phel
 [2 "nice" true]
+# or
+(vector 2 "nice" true)
 ```
 {% end %}
 
@@ -45,29 +47,33 @@ Define a vector that contains the keywords `:key` and `:word`
 {% solution() %}
 ```phel
 [:key :word]
+# or
+(vector :key :word)
 ```
 {% end %}
 
 {% question() %}
-Define a map with the key `1` associated with the value `"hello"`
+Define a map with the key `:name` associated with the value `"Frederick"`
 {% end %}
 {% solution() %}
 ```phel
-{1 "hello"}
+{:name "Frederick"}
+# or
+(hash-map :name "Frederick")
 ```
 {% end %}
 
 {% question() %}
-Use `def` to define a variable `my-map` that refers to the map `{1 2}`.
+Use `def` to define a variable `my-map` that refers to the map `{:1 2}`.
 Use the `put` function to add a new key and value to `my-map`.
-What does the `put` call return?
-What is the value of `my-map` after the call?
+- What does the `put` call return?
+- What is the value of `my-map` after the call?
 {% end %}
 {% solution() %}
 ```phel
-(def my-map {1 2})
-(put my-map 3 4)
-(def my-new-map (put my-map 5 6))
+(def my-map {:1 2})
+(put my-map :3 4)
+(def my-new-map (put my-map :5 6))
 ```
 {% end %}
 
@@ -76,8 +82,8 @@ Use `push` to add a value to a vector
 {% end %}
 {% solution() %}
 ```phel
-(def vector8 [1 2])
-(def new-vector8 (push vector8 3))
+(def my-vector [1 2])
+(def new-vector (push my-vector 3))
 ```
 {% end %}
 
@@ -86,8 +92,8 @@ Use the function `get` to get the second element from a vector
 {% end %}
 {% solution() %}
 ```phel
-(def vector9 [1 2])
-(get vector9 1)
+(def my-vector [1 2])
+(get my-vector 1)
 ```
 {% end %}
 

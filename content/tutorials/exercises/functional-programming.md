@@ -12,6 +12,8 @@ Use the `map` function. Hint: the function `inc`.
 (map (fn [x] (inc x)) [4 7 9 10])
 # or using the shorter form to define an anonymous function:
 (map |(inc $) [4 7 9 10])
+# or simply
+(map inc [4 7 9 10])
 ```
 {% end %}
 
@@ -21,7 +23,7 @@ Use the functions `filter` and `even?`
 {% end %}
 {% solution() %}
 ```phel
-(filter even? (map |(inc $) [4 7 9 10]))
+(filter even? (map inc [4 7 9 10]))
 ```
 {% end %}
 
