@@ -4,6 +4,10 @@ title="The Phel Language"
 
 Phel is a functional programming language that compiles to PHP. It is a dialect of Lisp inspired by [Clojure](https://clojure.org/) and [Janet](https://janet-lang.org/).
 
+<p align="center">
+    <img src="/images/logo_phel.svg" width="350" alt="Phel logo"/>
+</p>
+
 ## Community
 
 Feel free to ask questions and join discussions on the [Phel Gitter channel](https://gitter.im/phel-lang/community).
