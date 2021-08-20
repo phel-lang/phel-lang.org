@@ -12,7 +12,7 @@ jobs:
     name: Deploy website to server
     steps:
       - name: Build and deploy
-        uses: jenshaase/deploy-zola-via-lftp-action
+        uses: jenshaase/deploy-zola-via-lftp-action@v1
         with:
           ftp_host: ${{ secrets.ftp_host }}
           ftp_username: ${{ secrets.ftp_username }}
