@@ -10,9 +10,11 @@ Use the `map` function. Hint: the function `inc`.
 {% solution() %}
 ```phel
 (map (fn [x] (inc x)) [4 7 9 10])
+
 # or using the shorter form to define an anonymous function:
 (map |(inc $) [4 7 9 10])
-# or simply
+
+# or simply:
 (map inc [4 7 9 10])
 ```
 {% end %}
@@ -60,7 +62,7 @@ Use the function `update-in` to change 3 into 4 in the value below:
 {% end %}
 
 {% question() %}
-Challenge! use the `reduce` function to combine a vector of maps like this:
+Create a function that combine a vector of maps like this:
 ```
 (combine [{:a 1 :b 2} {:c 3} {:d 4 :e 5}])
 ==> {:a 1 :b 2 :c 3 :d 4 :e 5}
@@ -68,6 +70,7 @@ Challenge! use the `reduce` function to combine a vector of maps like this:
 {% end %}
 {% solution() %}
 ```phel
-todo
+(defn combine [maps]
+  (apply merge maps))
 ```
 {% end %}
