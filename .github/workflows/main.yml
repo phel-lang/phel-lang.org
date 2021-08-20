@@ -17,4 +17,4 @@ jobs:
           ftp_host: ${{ secrets.ftp_host }}
           ftp_username: ${{ secrets.ftp_username }}
           ftp_password: ${{ secrets.ftp_password }}
-          ftp_remote_target_dir: ${{ secrets.ftp_remote_target_dir }}
+          remote_target_dir: ${{ secrets.ftp_remote_target_dir }}
