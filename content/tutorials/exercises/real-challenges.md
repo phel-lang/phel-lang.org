@@ -1,10 +1,22 @@
 +++
-title = "Phel in a nutshell"
+title = "Real challenges"
 weight = 4
 +++
 
-Let's create a practical example that gives you the popular words from a book.
+{% question(title="Challenge") %}
+Print the last 5 most used words from a book.
 
+Some tips:
+1) Save the book content in a variable
+2) Split the book by their words
+3) Make pairs by word appearance/frequency
+4) Sort and print
+
+> Hint: you can use the content of a book from this URL:
+> ```phel
+> (def book-url "https://gist.githubusercontent.com/Chemaclass/da9a0ba72adee6644193c730d4f307b2/raw/1164593f76ae7157d816bcc8d700937dfb73420e/moby-dick.txt")
+{% end %}
+{% solution() %}
 ```phel
 # Load the full book content from the web into the `full-book` constant
 (def book-url "https://gist.githubusercontent.com/Chemaclass/da9a0ba72adee6644193c730d4f307b2/raw/1164593f76ae7157d816bcc8d700937dfb73420e/moby-dick.txt")
@@ -41,3 +53,4 @@ Let's create a practical example that gives you the popular words from a book.
 # Output:
 # [whale 81] [whales 26] [sea 21] [some 19] [up 17]
 ```
+{% end %}
