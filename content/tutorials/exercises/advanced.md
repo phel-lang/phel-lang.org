@@ -56,3 +56,91 @@ Some tips:
 # [whale 81] [whales 26] [sea 21] [some 19] [up 17]
 ```
 {% end %}
+
+
+{% question() %}
+Create the "Rock, paper, scissors!" game.
+
+Requirements:
+- The program computes a random letter (the computer-guess).
+- The cli-app ask you for a letter "r", "p" or "s" (the player-guess).
+- The logic for the game is world known [[wikipedia](https://en.wikipedia.org/wiki/Rock_paper_scissors)].
+Each of the three beats one of the other two, and loses to the other.
+- Print the result of logic with the winner in the console.
+
+Hints:
+```phel
+(def rock "r")
+(def paper "p")
+(def scissors "s")
+(def possible-guesses [rock paper scissors])
+
+(defn read-player-guess ...
+
+(defn calculate-winner ...
+
+(defn play-hand ...
+```
+{% end %}
+{% solution() %}
+```phel
+# First, declare some constants according to the program domain
+(def rock "r")
+(def paper "p")
+(def scissors "s")
+(def possible-guesses [rock paper scissors])
+
+(def computer-wins 1)
+(def player-wins 2)
+(def tie 3)
+
+(defn sanitize-guess-input
+  "Returns the first non-empty char from the input as lowercase"
+  [input]
+  (get (php/trim (php/strtolower input)) 0))
+
+(defn read-player-guess []
+  (println "Play your hand: (r)ock, (p)aper, (s)cissors")
+  (print "# ")
+  (let [guess (sanitize-guess-input (php/readline))]
+    (if (php/in_array guess (to-php-array possible-guesses)) guess)))
+
+(defn calculate-winner
+  "Return the winner based on the computer and player guesses"
+  [{:computer computer-guess :player player-guess}]
+  (let [guesses [computer-guess player-guess]]
+    (cond
+      (= computer-guess player-guess) tie
+      (= guesses [paper rock])        computer-wins
+      (= guesses [scissors paper])    computer-wins
+      (= guesses [rock scissors])     computer-wins
+      (= guesses [rock paper])        player-wins
+      (= guesses [paper scissors])    player-wins
+      (= guesses [scissors rock])     player-wins)))
+
+(defn winner-result-text [winner]
+  (cond
+    (= winner tie)           "Game tied!"
+    (= winner computer-wins) "Computer wins!"
+    (= winner player-wins)   "Player wins!"))
+
+(defn play-hand
+  "The logic game to play one time"
+  []
+  (let [computer-guess (rand-nth possible-guesses)
+        player-guess   (read-player-guess)
+        winner         (calculate-winner {:computer computer-guess
+                                          :player player-guess})]
+    (println "The computer guessed:" computer-guess)
+    (println "You guessed:" player-guess)
+    (if (nil? player-guess)
+      (println "> Your entry was invalid")
+      (println ">" (winner-result-text winner)))))
+
+# Infinite loop till Ctrl+C to kill the program :)
+(loop []
+  (play-hand)
+  (println)
+  (recur))
+```
+{% end %}
