@@ -71,6 +71,16 @@ Next, require Phel as a dependency.
 composer require phel-lang/phel-lang
 ```
 
+First, create a phel config file, called `phel-config.php` in the root of the project:
+
+```
+return [
+  'src-dirs' => ['src']
+];
+```
+
+> Read the documentation for [Configuration](/documentation/configuration) to see all available configuration options for Phel.
+
 Then, create a new directory `src` with a file `boot.phel` inside this directory.
 
 ```bash
@@ -86,53 +96,8 @@ The file `boot.phel` contains the actual code of the project. It defines the nam
 (println "Hello, World!")
 ```
 
-For Phel to automatically resolve the project namespace and path, this code needs to be added to `composer.json` file.
-
-```json
-"extra": {
-    "phel": {
-        "loader": {
-            "hello-world\\": "src/"
-        }
-    }
-}
-```
-
-> Read the documentation for [Configuration](/documentation/configuration) to see all available configuration options for Phel.
-
-The final `composer.json` file should look like this:
-
-```json
-{
-    "name": "phel-lang/hello-world",
-    "type": "project",
-    "authors": [
-        {
-            "name": "Your Name",
-            "email": "your.name@domain.com"
-        }
-    ],
-    "require": {
-        "phel-lang/phel-lang": "^0.1"
-    },
-    "extra": {
-        "phel": {
-            "loader": {
-                "hello-world\\": "src/"
-            }
-        }
-    }
-}
-```
-
 
 ## Running the code
-
-Before execute the code, make sure composer has created a autoload file. This can be done by executing following command
-
-```
-composer dump-autoload
-```
 
 There are two ways to run the code: from the command line and with a PHP Server.
 
@@ -164,9 +129,11 @@ The file `index.php` will be executed by the PHP Server. It initializes the Phel
 // src/index.php
 <?php
 
-$rt = require __DIR__ .'/../vendor/PhelRuntime.php';
+use Phel\Run\RunFacade;
 
-$rt->loadNs('hello-world\boot');
+require __DIR__ .'/../vendor/autoload.php';
+
+(new RunFacade())->runNamespace('hello-world\\boot');
 ```
 
 The PHP Server can now be started.
