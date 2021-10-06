@@ -133,10 +133,24 @@ In Phel you can also use PHP Magic Methods `__DIR__` and `__FILE__`. These resol
 ## Calling Phel functions from PHP
 
 Phel also provides a way to let you call Phel function from PHP. This is useful for existing PHP application that wants to integrate Phel. 
-Therefore, you have to load the Phel Runtime at the beginning of your script. This can be done directly after the `autoload.php` file was loaded.
+Therefore, you have to load the Phel namespace that you want to call at the beginning of your script. This can be done directly after the `autoload.php` file was loaded.
+
+For example, see [using-exported-phel-function.php](https://github.com/phel-lang/phel-scaffolding/blob/master/example/using-exported-phel-function.php)
 
 ```php
-require_once 'vendor/autoload.php';
+use Phel\Phel;
+use PhelGenerated\PhelScaffolding\Modules\AdderModule;
+
+$projectRootDir = dirname(__DIR__) . '/';
+
+require $projectRootDir . 'vendor/autoload.php';
+
+Phel::run($projectRootDir, 'phel-scaffolding\modules\adder-module');
+
+$adder = new AdderModule();
+$result = $adder->adder(1, 2, 3);
+
+echo 'Result = ' . $result . PHP_EOL;
 ```
 
 Phel provide two ways to call Phel functions, manually or by using the `export` command.
