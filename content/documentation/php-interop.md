@@ -136,7 +136,7 @@ Phel also provides a way to let you call Phel function from PHP. This is useful 
 Therefore, you have to load the Phel Runtime at the beginning of your script. This can be done directly after the `autoload.php` file was loaded.
 
 ```php
-require_once 'vendors/autoload.php';
+require_once 'vendor/autoload.php';
 ```
 
 Phel provide two ways to call Phel functions, manually or by using the `export` command.
