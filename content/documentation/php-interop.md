@@ -132,11 +132,25 @@ In Phel you can also use PHP Magic Methods `__DIR__` and `__FILE__`. These resol
 
 ## Calling Phel functions from PHP
 
-Phel also provides a way to let you call Phel function from PHP. This is useful for existing PHP application that wants to integrate Phel. Therefore, you have to load the Phel Runtime at the beginning of your script. This can be done directly after the `autoload.php` file was loaded.
+Phel also provides a way to let you call Phel function from PHP. This is useful for existing PHP application that wants to integrate Phel. 
+Therefore, you have to load the Phel namespace that you want to call at the beginning of your script. This can be done directly after the `autoload.php` file was loaded.
+
+For example, see [using-exported-phel-function.php](https://github.com/phel-lang/phel-scaffolding/blob/master/example/using-exported-phel-function.php)
 
 ```php
-require_once 'vendors/autoload.php';
-require_once 'vendors/PhelRuntime.php';
+use Phel\Phel;
+use PhelGenerated\PhelScaffolding\Modules\AdderModule;
+
+$projectRootDir = dirname(__DIR__) . '/';
+
+require $projectRootDir . 'vendor/autoload.php';
+
+Phel::run($projectRootDir, 'phel-scaffolding\modules\adder-module');
+
+$adder = new AdderModule();
+$result = $adder->adder(1, 2, 3);
+
+echo 'Result = ' . $result . PHP_EOL;
 ```
 
 Phel provide two ways to call Phel functions, manually or by using the `export` command.
@@ -162,18 +176,17 @@ class MyExistingClass {
 
 Alternatively, the `phel export` command can be used. This command will generate a wrapper class for all Phel functions that are marked as *export*.
 
-Before using the `export` command the required configuration options need to be added to `composer.json`:
+Before using the `export` command the required configuration options need to be added to `phel-config.php`:
 
-```json
-{
-  "export": {
-    "directories": [
-        "src/phel"
-    ],
-    "namespace-prefix": "PhelGenerated",
-    "target-directory": "src/PhelGenerated"
-  }
-}
+```php
+return [
+    // ...
+    'export' => [
+        'directories' => ['src'],
+        'namespace-prefix' => 'PhelGenerated',
+        'target-directory' => 'src/PhelGenerated'
+    ]
+]
 ```
 
 A detailed description of the options can be found in the [Configuration](/documentation/configuration/#export) chapter.
