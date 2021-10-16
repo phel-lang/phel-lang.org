@@ -129,11 +129,11 @@ The file `index.php` will be executed by the PHP Server. It initializes the Phel
 // src/index.php
 <?php
 
-use Phel\Run;
+use Phel\Phel;
 
-$projectRoot = __DIR__ . '/../';
+$projectRootDir = __DIR__ . '/../';
 
-require $projectRoot . 'vendor/autoload.php';
+require $projectRootDir . 'vendor/autoload.php';
 
 Phel::run($projectRootDir, 'hello-world\\boot');
 ```
