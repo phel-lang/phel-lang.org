@@ -1,6 +1,6 @@
 +++
 title = "PHP Interop"
-weight = 13
+weight = 14
 +++
 
 ## Calling PHP functions
@@ -132,7 +132,7 @@ In Phel you can also use PHP Magic Methods `__DIR__` and `__FILE__`. These resol
 
 ## Calling Phel functions from PHP
 
-Phel also provides a way to let you call Phel function from PHP. This is useful for existing PHP application that wants to integrate Phel. 
+Phel also provides a way to let you call Phel function from PHP. This is useful for existing PHP application that wants to integrate Phel.
 Therefore, you have to load the Phel namespace that you want to call at the beginning of your script. This can be done directly after the `autoload.php` file was loaded.
 
 For example, see [using-exported-phel-function.php](https://github.com/phel-lang/phel-scaffolding/blob/master/example/using-exported-phel-function.php)

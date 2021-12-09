@@ -1,6 +1,6 @@
 +++
 title = "Request and Response"
-weight = 14
+weight = 15
 +++
 
 ## HTTP Request
