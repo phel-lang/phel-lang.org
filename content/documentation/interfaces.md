@@ -13,9 +13,9 @@ An interface in Phel defines an abstract set of functions. It is directly mapped
   (bar [this a b] "bar doc string"))
 ```
 
-Each method in the interface has at least one parameter that is bound to the current object (`$this`) later in the implementation. An optional documenation string can be provide a last argument of each method. Additionally the macro defines functions for each method of the interface.
+Each method in the interface has at least one parameter that is bound to the current object (`$this`) later in the implementation. An optional documentation string can be provided as last argument of each method. Additionally, the macro defines functions for each method of the interface.
 
-Compared to PHP interfaces it is not possible to extend a new interface from other already existing interfaces.
+Compared to PHP interfaces, it is not possible to extend a new interface from another existing interfaces.
 
 ## Implementing interfaces
 
@@ -25,7 +25,7 @@ The only way to directly implement interfaces in Phel is to use Structs. To reca
 (defstruct my-struct [a b c]) # Defines the struct my-struct
 ```
 
-The `defstruct` macro allows additional parameters after the list of fields to implement one or more interfaces. First you have to define the name of the interface and afterwards you need to implement all methods of the interface. This can be repeated for all interfaces that the struct should be implement. Since Phel interfaces are just PHP interface you can also implement every other PHP interface.
+The `defstruct` macro allows additional parameters after the list of fields in order to implement one or more interfaces. First you have to define the name of the interface and afterwards you need to implement all methods of the interface. This can be repeated for all interfaces that the struct should implement. Since Phel interfaces are just PHP interface you can also implement any other PHP interface.
 
 ```phel
 (definterface MyFirstInterface
