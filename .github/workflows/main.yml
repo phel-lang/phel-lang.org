@@ -11,6 +11,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Setup PHP with tools
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.0'
+          tools: composer
+
+      - name: Install dependencies
+        run: composer install
+
+      - name: Generate API Documentation
+        run: php build/api-page.php > content/documentation/api.md
+
       - name: Build and deploy
         uses: jenshaase/deploy-zola-via-lftp-action@main
         with:
