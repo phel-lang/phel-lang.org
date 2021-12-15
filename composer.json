@@ -4,6 +4,6 @@
     "homepage": "https://phel-lang.org/",
     "license": "MIT",
     "require": {
-      "phel-lang/phel-lang": "^0.3"
+      "phel-lang/phel-lang": "^0.4"
     }
 }

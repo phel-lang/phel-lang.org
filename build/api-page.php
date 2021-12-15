@@ -2,17 +2,29 @@
 
 declare(strict_types=1);
 
+use Gacela\Framework\Gacela;
+use Phel\Build\BuildFacade;
+use Phel\Command\CommandFacade;
+use Phel\Compiler\CompilerFacade;
 use Phel\Lang\Keyword;
 use Phel\Lang\Table;
+use Phel\Run\RunFacade;
 use Phel\Runtime\RuntimeSingleton;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\NullOutput;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$rt = RuntimeSingleton::initialize();
-$rt->addPath('phel\\', [__DIR__ . '/../vendor/phel-lang/phel-lang/src/phel']);
-$rt->loadNs('phel\core');
-$rt->loadNs('phel\http');
-$rt->loadNs('phel\test');
+Gacela::bootstrap(__DIR__, [
+    'config' => [
+        'type' => 'php',
+        'path' => 'phel-config.php',
+        'path_local' => 'phel-config-local.php',
+    ],
+]);
+$rf = new RunFacade();
+$rf->getRunCommand()->run(new ArrayInput(['path' => __DIR__ . '/src/doc.phel']), new ConsoleOutput());
 
 echo "+++\n";
 echo "title = \"API\"\n";

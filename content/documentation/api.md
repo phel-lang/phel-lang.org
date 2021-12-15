@@ -88,6 +88,13 @@ Checks if each argument is strictly less than the following argument. Returns a 
 ```
 Checks if each argument is less than or equal to the following argument. Returns a boolean.
 
+## `<=>`
+
+```phel
+(<=> a b)
+```
+Alias for the spaceship PHP operator in ascending order. Returns an int.
+
 ## `=`
 
 ```phel
@@ -108,6 +115,13 @@ Checks if each argument is strictly greater than the following argument. Returns
 (>= a & more)
 ```
 Checks if each argument is greater than or equal to the following argument. Returns a boolean.
+
+## `>=<`
+
+```phel
+(>=< a b)
+```
+Alias for the spaceship PHP operator in descending order. Returns an int.
 
 ## `NAN`
 
