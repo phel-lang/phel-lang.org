@@ -1,6 +1,6 @@
 +++
 title = "HTML Rendering"
-weight = 15
+weight = 16
 +++
 
 Phel offers a template syntax based on Phel's data structures. It uses vectors to represent elements and maps for element's attributes. All values are automatically escaped to provide better defense against cross-site scripting (XSS).

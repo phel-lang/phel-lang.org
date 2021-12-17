@@ -1,6 +1,6 @@
 +++
 title = "REPL"
-weight = 18
+weight = 19
 +++
 
 Phel comes with an interactive prompt. The prompt accepts Phel expressions and directly returns the result. This interactive prompt is called REPL (stands for Read-eval-print loop). A REPL is very helpful to test out small tasks or to play around with the language itself.

@@ -90,3 +90,28 @@ Importing PHP classes is considered a "better" coding style, but it is optional.
 ```phel
 (php/new \Some\Php\ClassName)
 ```
+
+## Namespaced keywords
+
+If code or data is shared to the outside world simple keywords can lead to collisions. This problem can be solved by using namespaced keywords.
+
+There are multiple options to define namespaced keywords. The most simple one is to define a fully qualified keyword with the full namespace followed by a `/` and the keyword name.
+
+```phel
+:my\namespace/foo # a absolute namespaced keyword
+```
+
+The `::` shortcut can be used to assign the current namespace to the keyword
+
+```phel
+(ns bar)
+::foo # Evaluates to :bar/foo
+```
+
+Aliases defined in the `ns` expression can also be used
+
+```phel
+(ns foobar
+  (:require abc\xyz :as bar))
+  ::bar/foo # evaluates to :abc\xyz/bar
+```
