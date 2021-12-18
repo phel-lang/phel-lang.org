@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5cfbe0830675bc54cbc2c556a5e18f79",
+    "content-hash": "4c756196e025ce979c9c843a113aaca1",
     "packages": [
         {
             "name": "gacela-project/gacela",
@@ -73,16 +73,16 @@
         },
         {
             "name": "phel-lang/phel-lang",
-            "version": "v0.4.0",
+            "version": "v0.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "7b33a69161585fc02600f0ae1ba548ef73b07961"
+                "reference": "87735986ed001cbd48d3391e3d0f71fc35ed4c86"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/7b33a69161585fc02600f0ae1ba548ef73b07961",
-                "reference": "7b33a69161585fc02600f0ae1ba548ef73b07961",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/87735986ed001cbd48d3391e3d0f71fc35ed4c86",
+                "reference": "87735986ed001cbd48d3391e3d0f71fc35ed4c86",
                 "shasum": ""
             },
             "require": {
@@ -90,15 +90,15 @@
                 "gacela-project/gacela": "^0.10",
                 "php": ">=7.4",
                 "phpunit/php-timer": "^5.0",
-                "symfony/console": "^5.3"
+                "symfony/console": "^5.4"
             },
             "require-dev": {
                 "ext-readline": "*",
-                "friendsofphp/php-cs-fixer": "^3.1",
-                "phpbench/phpbench": "^1.1",
+                "friendsofphp/php-cs-fixer": "^3.3",
+                "phpbench/phpbench": "^1.2",
                 "phpmetrics/phpmetrics": "^2.7",
                 "phpunit/phpunit": "^9.5",
-                "symfony/var-dumper": "^5.3",
+                "symfony/var-dumper": "^5.4",
                 "vimeo/psalm": "^4.10"
             },
             "bin": [
@@ -130,9 +130,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phel-lang/phel-lang/issues",
-                "source": "https://github.com/phel-lang/phel-lang/tree/v0.4.0"
+                "source": "https://github.com/phel-lang/phel-lang/tree/v0.5.0"
             },
-            "time": "2021-10-05T18:31:31+00:00"
+            "time": "2021-12-17T19:38:12+00:00"
         },
         {
             "name": "phpunit/php-timer",
