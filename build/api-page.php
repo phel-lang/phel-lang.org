@@ -8,6 +8,7 @@ use Phel\Command\CommandFacade;
 use Phel\Compiler\CompilerFacade;
 use Phel\Lang\Keyword;
 use Phel\Lang\Table;
+use Phel\Lang\TypeFactory;
 use Phel\Run\RunFacade;
 use Phel\Runtime\RuntimeSingleton;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -39,14 +40,14 @@ foreach ($GLOBALS['__phel'] as $ns => $functions) {
     foreach ($functions as $fnName => $fn) {
         $fullFnName = $moduleName . $fnName;
 
-        $normalizedData[$fullFnName] = $GLOBALS['__phel_meta'][$ns][$fnName] ?? new Table();
+        $normalizedData[$fullFnName] = $GLOBALS['__phel_meta'][$ns][$fnName] ?? TypeFactory::getInstance()->emptyPersistentMap();
     }
 }
 
 ksort($normalizedData);
 foreach ($normalizedData as $fnName => $meta) {
-    $doc = $meta[new Keyword('doc')] ?? '';
-    $isPrivate = $meta[new Keyword('private')] ?? false;
+    $doc = $meta[Keyword::create('doc')] ?? '';
+    $isPrivate = $meta[Keyword::create('private')] ?? false;
 
     if (!$isPrivate) {
         echo "## `$fnName`\n\n";
