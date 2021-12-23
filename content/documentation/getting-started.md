@@ -73,7 +73,9 @@ composer require phel-lang/phel-lang
 
 First, create a phel config file, called `phel-config.php` in the root of the project:
 
-```
+```php
+<?php
+
 return [
   'src-dirs' => ['src']
 ];
