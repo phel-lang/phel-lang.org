@@ -26,6 +26,10 @@ numbers. If `xs` is empty, return 1.
 ```
 Return `a` to the power of `x`.
 
+## `*compile-mode*`
+
+
+
 ## `*ns*`
 
 Returns the namespace in the current scope.
@@ -177,6 +181,14 @@ Binds `name` to `expr`, evaluates the first form in the lexical context
 (associative? x)
 ```
 Returns true if `x` is associative data structure, false otherwise.
+
+## `binding`
+
+```phel
+(binding bindings & body)
+```
+Temporary redefines definitions while executing the body.
+  The value will be reset after the body was executed.
 
 ## `bit-and`
 
@@ -356,6 +368,13 @@ Declare a global symbol before it is defined.
 ```
 Define a private value that will not be exported.
 
+## `definterface`
+
+```phel
+(definterface name & fns)
+```
+Defines a interface
+
 ## `defmacro`
 
 ```phel
@@ -387,9 +406,16 @@ Define a private function that will not be exported.
 ## `defstruct`
 
 ```phel
-(defstruct name keys)
+(defstruct name keys & implementations)
 ```
 Define a new struct.
+
+## `deref`
+
+```phel
+(deref variable)
+```
+Return the value inside the variable
 
 ## `difference`
 
@@ -1259,6 +1285,13 @@ Returns the second element of an indexed sequence or nil.
 ```
 Creates a new Set. If no argument is provided, an empty Set is created.
 
+## `set!`
+
+```phel
+(set! variable value)
+```
+Sets a new value to the given variable
+
 ## `set-meta!`
 
 ```phel
@@ -1361,6 +1394,13 @@ Returns true if `x` is a struct, false otherwise.
 ```
 Returns the sum of all elements is `xs`.
 
+## `swap!`
+
+```phel
+(swap! variable f & args)
+```
+Swaps the value of the variable to (apply f current-value args). Returns the values that is swapped in.
+
 ## `symbol?`
 
 ```phel
@@ -1403,6 +1443,13 @@ Takes the first `n` elements of `xs`.
 (take-last n xs)
 ```
 Takes the last `n` elements of `xs`.
+
+## `take-nth`
+
+```phel
+(take-nth n xs)
+```
+Returns every nth item in `xs`
 
 ## `take-while`
 
@@ -1508,6 +1555,7 @@ Returns the type of `x`. Following types can be returned:
 * `:table`
 * `:keyword`
 * `:symbol`
+* `:var`
 * `:int`
 * `:float`
 * `:string`
@@ -1553,6 +1601,20 @@ Updates a value into a nested data structure.
 (values xs)
 ```
 Gets the values of an associative data structure.
+
+## `var`
+
+```phel
+(var value)
+```
+Creates a new variable with the give value
+
+## `var?`
+
+```phel
+(var? x)
+```
+Checks if the given value is a variable
 
 ## `vector`
 
