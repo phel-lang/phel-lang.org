@@ -195,17 +195,6 @@ The symmetric difference of two sets or more is the set of elements which are in
 (symmetric-difference (set 1 2) (set 0 1 2 3)) # Evaluates to (set 0 3)
 ```
 
-## Data structures are functions
-
-In Phel all data structures can also be used as functions.
-
-```phel
-((list 1 2 3) 0) # Same as (get (list 1 2 3) 0)
-([1 2 3] 0) # Same as (get [1 2 3] 0)
-({:a 1 :b 2} :a) # Same as (get {:a 1 :b 2} :a)
-((set 1 2 3) 1)
-```
-
 ## Transients
 
 Nearly all persistent data structures have a transient version (except for Persistent List). The transient version of each persistent data structure is a mutable version of them. It store the value in the same way as the persistent version but instead of returning a new persistent version with every modification it modifies the current version. Transient versions are a little bit faster and can be used as builders for new persistent collections. Since transients use the same underlying storage it is very fast to convert a persistent data structure to a transient and back.
@@ -220,4 +209,15 @@ For example, if we want to convert a PHP Array to a persistent map. This functio
     (foreach [k v arr]
       (put res k v))  # Fill the transient map (mutable)
     (persistent res))) # Convert the transient map to a persistent map.
+```
+
+## Data structures are functions
+
+In Phel all data structures can also be used as functions.
+
+```phel
+((list 1 2 3) 0) # Same as (get (list 1 2 3) 0)
+([1 2 3] 0) # Same as (get [1 2 3] 0)
+({:a 1 :b 2} :a) # Same as (get {:a 1 :b 2} :a)
+((set 1 2 3) 1)
 ```

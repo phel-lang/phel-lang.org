@@ -3,7 +3,11 @@ title = "Numbers and Arithmetic"
 weight = 3
 +++
 
-Phel support integer and floating-point numbers. Both use the underlying PHP implementation. Integers can be specified in decimal (base 10), hexadecimal (base 16), octal (base 8) and binary (base 2) notation. Binary, octal and hexadecimal formats may contain underscores (`_`) between digits for better readability.
+## Numbers
+
+Phel support integer and floating-point numbers. Both use the underlying PHP implementation. Integers can be specified
+in decimal (base 10), hexadecimal (base 16), octal (base 8) and binary (base 2) notation. Binary, octal and hexadecimal
+formats may contain underscores (`_`) between digits for better readability.
 
 ```phel
 1337 # integer
@@ -28,6 +32,8 @@ Phel support integer and floating-point numbers. Both use the underlying PHP imp
 -02471 # negativ octal number
 024_71 # octal number with underscores
 ```
+
+### Arithmetic operators
 
 All arithmetic operators are entered in prefix notation.
 

@@ -3,7 +3,9 @@ title = "Macros"
 weight = 11
 +++
 
-Phel supports macros. Macros are functions that take code as input and return transformed code as output. A macro is like a function that is executed at compile time. They are useful to extend the syntax of the language itself.
+## Macros
+
+Macros are functions that take code as input and return transformed code as output. A macro is like a function that is executed at compile time. They are useful to extend the syntax of the language itself.
 
 Phel's core library itself uses macro to define the language. For example `defn` is as macro.
 
@@ -34,7 +36,7 @@ Quote make macros possible, since its helps to distinguish between code and data
 '(print 1 2 3) # Evaluates to the list (print 1 2 3). Nothing is printed.
 ```
 
-# Define a macro
+## Define a macro
 
 ```phel
 (defmacro docstring? attributes? [params*] expr*)
