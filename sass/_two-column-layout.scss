@@ -20,13 +20,14 @@
             padding: 2em;
             border-right: 1px solid $color-base-lines;
             display: block;
+            position: fixed;
         }
 
         .two-column-layout__content {
             box-sizing: border-box;
             flex: 1;
             max-width: 800px;
-            margin: 0 auto;
+            margin-left: 350px;
         }
     }
 }
