@@ -1,3 +1,8 @@
+.layout-container {
+    margin: 0 auto;
+    max-width: 1200px;
+}
+
 .two-column-layout {
     margin: 0 auto;
     max-width: 800px;
@@ -11,7 +16,6 @@
     }
 
     @include desktop {
-        display: flex;
         margin: unset;
         max-width: unset;
 
@@ -21,6 +25,7 @@
             border-right: 1px solid $color-base-lines;
             display: block;
             position: fixed;
+            margin-top: 2em;
         }
 
         .two-column-layout__content {
@@ -28,6 +33,7 @@
             flex: 1;
             max-width: 800px;
             margin-left: 350px;
+            margin-top: 0;
         }
     }
 }
