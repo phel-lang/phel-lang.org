@@ -6,23 +6,27 @@
   }
 }
 
-.flex-container {
-  display: flex;
-}
-
 .page-content {
   margin: unset;
   max-width: unset;
+  overflow-x: scroll;
 }
 
-@include desktop {
-  .page-toc-desktop{display: block}
-  .page-toc-desktop-xl{display: none}
+.page-toc-desktop {
+  display: block
+}
+
+.page-toc-desktop-xl {
+  display: none
 }
 
 @include desktop-xl {
-  .page-toc-desktop{display: none}
-  .page-toc-desktop-xl{display: block}
+  .page-toc-desktop {
+    display: none
+  }
+  .page-toc-desktop-xl {
+    display: block
+  }
 
   .layout-container {
     max-width: 1400px;
@@ -38,11 +42,13 @@
 
   .page-toc {
     border-left: 1px solid $color-base-lines;
-    margin-top: -55px;
+    margin-top: -110px;
+    padding-top: 1em;
     position: fixed;
     margin-left: 20px;
     max-width: 15em;
     overflow-y: scroll;
     list-style-type: none;
+    height: 65%;
   }
 }
