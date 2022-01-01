@@ -6,6 +6,16 @@
 {% endblock meta_content %}
 {% block content %}
     <h1>{{page.title}}</h1>
-    {% include "page/table-of-content.html" %}
-    {{page.content | safe}}
+    <div class="page-toc-desktop">
+        {% include "page/table-of-content.html" %}
+    </div>
+
+    <div class="flex-container">
+        <div class="page-content">
+            {{page.content | safe}}
+        </div>
+        <div class="page-toc-desktop-xl">
+            {% include "page/table-of-content.html" %}
+        </div>
+    </div>
 {% endblock content %}

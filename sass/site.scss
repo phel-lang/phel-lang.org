@@ -8,6 +8,7 @@
 @import 'two-column-layout';
 @import 'site-navigation';
 @import 'header';
+@import 'page-toc';
 
 body {
     padding-top: $header-height;
@@ -52,8 +53,4 @@ ul.api-index {
             text-decoration: underline;
         }
     }
-}
-
-.page-toc-h1-children {
-    margin-top: 0;
 }

@@ -1,0 +1,48 @@
+.page-toc {
+  list-style-type: none;
+
+  .page-toc-h1-children {
+    margin-top: 0;
+  }
+}
+
+.flex-container {
+  display: flex;
+}
+
+.page-content {
+  margin: unset;
+  max-width: unset;
+}
+
+@include desktop {
+  .page-toc-desktop{display: block}
+  .page-toc-desktop-xl{display: none}
+}
+
+@include desktop-xl {
+  .page-toc-desktop{display: none}
+  .page-toc-desktop-xl{display: block}
+
+  .layout-container {
+    max-width: 1400px;
+  }
+
+  .two-column-layout__content {
+    max-width: 200px;
+  }
+
+  .page-content {
+    max-width: 700px;
+  }
+
+  .page-toc {
+    border-left: 1px solid $color-base-lines;
+    margin-top: -55px;
+    position: fixed;
+    margin-left: 20px;
+    max-width: 15em;
+    overflow-y: scroll;
+    list-style-type: none;
+  }
+}
