@@ -26,6 +26,8 @@
             display: block;
             position: fixed;
             margin-top: 2em;
+            overflow-y: scroll;
+            height: 75%;
         }
 
         .two-column-layout__content {
