@@ -98,3 +98,11 @@
         }
     }
 }
+
+[id]::before {
+    content: '';
+    display: block;
+    height:      $header-height+15;
+    margin-top: -$header-height+15;
+    visibility: hidden;
+}
