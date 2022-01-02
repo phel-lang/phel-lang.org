@@ -102,7 +102,7 @@
 [id]::before {
     content: '';
     display: block;
-    height:      $header-height+15;
-    margin-top: -$header-height+15;
+    height:      $header-height;
+    margin-top: -$header-height;
     visibility: hidden;
 }
