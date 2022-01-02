@@ -12,7 +12,7 @@
     }
 
     .two-column-layout__content {
-        padding: 2em 2em;
+        padding: 0 2em 0 2em;
     }
 
     @include desktop {
@@ -20,14 +20,16 @@
         max-width: unset;
 
         .two-column-layout__sidebar {
-            width: 15em;
-            padding: 0 2em 2em;
             border-right: 1px solid $color-base-lines;
             display: block;
+            height: 100vh;
+            padding: 2em 2em 0 2em;
             position: fixed;
-            margin-top: 2em;
-            overflow-y: scroll;
-            height: 75%;
+            width: 15em;
+            .site-navigation{
+                overflow-y: scroll;
+                height: calc(75%);
+            }
         }
 
         .two-column-layout__content {

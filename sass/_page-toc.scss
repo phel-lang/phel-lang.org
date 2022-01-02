@@ -1,6 +1,4 @@
 .page-toc {
-  list-style-type: none;
-
   .page-toc-h1-children {
     margin-top: 0;
   }
@@ -13,19 +11,20 @@
 }
 
 .page-toc-desktop {
-  display: block
+  display: block;
+  margin-bottom: unset;
 }
 
 .page-toc-desktop-xl {
-  display: none
+  display: none;
 }
 
 @include desktop-xl {
   .page-toc-desktop {
-    display: none
+    display: none;
   }
   .page-toc-desktop-xl {
-    display: block
+    display: block;
   }
 
   .layout-container {
@@ -41,14 +40,11 @@
   }
 
   .page-toc {
-    border-left: 1px solid $color-base-lines;
-    margin-top: -110px;
+    margin-top: -20px;
     padding-top: 1em;
     position: fixed;
     margin-left: 20px;
     max-width: 15em;
     overflow-y: scroll;
-    list-style-type: none;
-    height: 65%;
   }
 }
