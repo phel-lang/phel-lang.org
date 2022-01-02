@@ -24,14 +24,14 @@
             border-right: 1px solid $color-base-lines;
             display: block;
             height: 100%;
-            padding: 25px 2em;
+            padding: 25px;
             position: fixed;
-            width: 15em;
+            width: 16em;
             margin-top: -43px;
 
             .site-navigation{
-                overflow-y: scroll;
-                height: calc(80%);
+                overflow-y: auto;
+                max-height: calc(100vh - 7rem);
             }
         }
 
