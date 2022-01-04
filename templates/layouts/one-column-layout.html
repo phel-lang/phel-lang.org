@@ -2,9 +2,14 @@
 
 {% block body %}
 {% include "header.html" %}
-<div class="one-column-layout">
-    {% block content %} {% endblock %}
 
-    {% include "footer.html" %}
+<div class="layout-container">
+    <div class="one-column-layout">
+        <main class="one-column-layout__content">
+            {% block content %} {% endblock %}
+        </main>
+
+        {% include "footer.html" %}
+    </div>
 </div>
 {% endblock body %}
