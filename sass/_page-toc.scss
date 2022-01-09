@@ -1,0 +1,11 @@
+.page-content {
+  margin: unset;
+  max-width: unset;
+  overflow-x: scroll;
+}
+
+.page-toc-list {
+  .page-toc-h1-children {
+    margin-top: 0;
+  }
+}

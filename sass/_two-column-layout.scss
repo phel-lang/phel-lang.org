@@ -1,3 +1,9 @@
+.layout-container {
+    max-width: 1200px;
+    margin: -20px auto 20px auto;
+    padding-top: 9px;
+}
+
 .two-column-layout {
     margin: 0 auto;
     max-width: 800px;
@@ -7,26 +13,34 @@
     }
 
     .two-column-layout__content {
-        padding: 2em 2em;
+        padding: 0 2em 0 2em;
     }
 
     @include desktop {
-        display: flex;
         margin: unset;
         max-width: unset;
 
         .two-column-layout__sidebar {
-            width: 15em;
-            padding: 2em;
             border-right: 1px solid $color-base-lines;
             display: block;
+            height: 100%;
+            padding: 25px;
+            position: fixed;
+            width: 16em;
+            margin-top: -43px;
+
+            .site-navigation{
+                overflow-y: auto;
+                max-height: calc(100vh - 7rem);
+            }
         }
 
         .two-column-layout__content {
             box-sizing: border-box;
             flex: 1;
             max-width: 800px;
-            margin: 0 auto;
+            margin-left: 350px;
+            margin-top: 0;
         }
     }
 }
