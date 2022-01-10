@@ -5,7 +5,7 @@ weight = 1
 
 ## Requirements
 
-Phel requires PHP 7.4 or higher and [Composer](https://getcomposer.org/).
+Phel requires PHP 8.0 or higher and [Composer](https://getcomposer.org/).
 
 ## Quick start
 
