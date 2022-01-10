@@ -11,12 +11,13 @@ Every Phel file is required to have a namespace. A valid namespace name starts w
 (ns name imports*)
 ```
 
-Defines the namespace for the current file and adds imports to the environment. Imports can either be _uses_ or _requires_. The keyword `:use` is used to import PHP classes and the keyword `require` is used to import Phel modules.
+Defines the namespace for the current file and adds imports to the environment. Imports can either be _uses_ or _requires_. The keyword `:use` is used to import PHP classes, the keyword `:require` is used to import Phel modules and the keyword `:require-file` is used to load php files.
 
 ```phel
 (ns my\custom\module
-  (:use Some\Php\Class)
-  (:require my\phel\module))
+  (:require-file "vendor/autoload.php")
+  (:require my\phel\module)
+  (:use Some\Php\Class))
 ```
 
 The call also sets the `*ns*` variable to the given namespace.
@@ -90,6 +91,17 @@ Importing PHP classes is considered a "better" coding style, but it is optional.
 ```phel
 (php/new \Some\Php\ClassName)
 ```
+
+## Require PHP files
+
+In some cases it is necessary to load external PHP file via PHP's `require_once` statement. This can be archived by using the `:require-file` keyword. For example, to load composer's autoload file the following code can be used:
+
+```
+(ns hello-world\boot
+  (:require-file "vendor/autoload.php"))
+```
+
+As alternative you can also call `(php/require_once "vendor/autload.php")` anywhere in your code. However, especially for the autload file this statement is executed to late, because Phel's core library needs to load PHP files via the autoloader. Therefore, it is recommended to use the `:require-file` method.
 
 ## Namespaced keywords
 
