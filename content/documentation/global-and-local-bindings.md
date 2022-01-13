@@ -48,13 +48,13 @@ All assignments defined in _bindings_ are immutable and cannot be changed.
 
 Variables provide a way to manage mutable state. Each variable contains a single value. To create a variable use the `var` function.
 
-```
+```phel
 (def foo (var 10)) # Define a variable with value 10
 ```
 
 The `deref` function can be used to extract the value from the variable. The `set!` function is use to set a new value to the variable.
 
-```
+```phel
 (def foo (var 10))
 
 (deref foo) # Evaluates to 10
@@ -64,7 +64,7 @@ The `deref` function can be used to extract the value from the variable. The `se
 
 To update a variable with a function the `swap!` function can be used.
 
-```
+```phel
 (def foo (var 10))
 (swap! foo + 2) # Evaluates to 12
 (deref foo) # Evaluates to 12
