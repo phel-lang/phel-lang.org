@@ -38,6 +38,8 @@ foreach ($GLOBALS['__phel'] as $ns => $functions) {
     }
 }
 
+$searchIndex = [];
+
 ksort($normalizedData);
 foreach ($normalizedData as $fnName => $meta) {
     $doc = $meta[Keyword::create('doc')] ?? '';
@@ -47,5 +49,12 @@ foreach ($normalizedData as $fnName => $meta) {
         echo "## `$fnName`\n\n";
         echo $doc;
         echo "\n\n";
+
+        $searchIndex[] = [
+            'fnName' => $fnName,
+            'doc' => $doc,
+        ];
     }
 }
+
+file_put_contents(__DIR__ . '/../static/api_search.js', "window.searchIndexApi = " . json_encode($searchIndex));
