@@ -14,9 +14,13 @@ function debounce(func, wait) {
 }
 
 function formatSearchResultItem(item) {
+    const phelCode = item.doc.doc.split("\n")[1] ?? '';
+    const doc = item.doc.doc.split("\n")[3] ?? '';
+
     return '<div class="search-results__item">'
-        + `<a href="/documentation/api/#${item.ref}">${item.ref}</a>`
-        + `<div>${item.doc.doc}</div>`
+        + `<a href="/documentation/api/#${item.ref}">${item.doc.fnName} `
+        + `<small class="phel-code">${phelCode}</small></a>`
+        + `<div class="doc">${doc}</div>`
         + '</div>';
 }
 
@@ -24,7 +28,7 @@ function initSearch() {
     const $searchInput = document.getElementById("search");
     const $searchResults = document.querySelector(".search-results");
     const $searchResultsItems = document.querySelector(".search-results__items");
-    const MAX_ITEMS = 6;
+    const MAX_ITEMS = 10;
 
     let currentTerm = "";
 
