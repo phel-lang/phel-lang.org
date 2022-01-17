@@ -6,7 +6,7 @@ namespace PhelDocBuild\FileGenerator\Domain;
 
 final class ApiSearchGenerator
 {
-    private const SPECIAL_ENDING_CHARS = ['=', '*', '?', '+', '>', '<'];
+    private const SPECIAL_ENDING_CHARS = ['=', '*', '?', '+', '>', '<', '!'];
 
     /**
      * @return array<string,array{fnName:string,fnSignature:string,desc:string,anchor:string}>
