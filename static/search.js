@@ -18,7 +18,7 @@ function formatSearchResultItem(item) {
     const doc = item.doc.doc.split("\n")[3] ?? '';
 
     return '<div class="search-results__item">'
-        + `<a href="/documentation/api/#${item.ref}">${item.doc.fnName} `
+        + `<a href="/documentation/api/#${item.doc.anchor}">${item.doc.fnName} `
         + `<small class="phel-code">${phelCode}</small></a>`
         + `<div class="doc">${doc}</div>`
         + '</div>';
@@ -34,6 +34,7 @@ function initSearch() {
 
     const index = elasticlunr(function () {
         this.addField('fnName');
+        this.addField('anchor');
         this.addField('doc');
         this.setRef('fnName');
         elasticlunr.stopWordFilter.stopWords = {};

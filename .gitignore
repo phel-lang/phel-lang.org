@@ -1,4 +1,7 @@
 .vscode
 .phel-repl-history
+
+/content/documentation/api.md
 /public
+/static/api_search.js
 /vendor
