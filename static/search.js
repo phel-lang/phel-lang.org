@@ -32,9 +32,9 @@ function initSearch() {
     const index = elasticlunr(function () {
         this.addField('fnName');
         this.addField('anchor');
-        this.addField('phelCode');
+        this.addField('fnSignature');
         this.addField('desc');
-        this.setRef('anchor');
+        this.setRef('fnName');
         elasticlunr.stopWordFilter.stopWords = {};
     });
     window.searchIndexApi.forEach(item => index.addDoc(item));
@@ -54,8 +54,7 @@ function initSearch() {
             bool: "AND",
             fields: {
                 fnName: {boost: 3},
-                desc: {boost: 2},
-                phelCode: {boost: 1},
+                desc: {boost: 1},
             },
             expand: true
         };
