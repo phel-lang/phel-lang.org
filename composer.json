@@ -7,6 +7,12 @@
         "phel-lang/phel-lang": "^0.5"
     },
     "require-dev": {
+        "phpunit/phpunit": "^9.5",
         "symfony/var-dumper": "^5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "PhelDocBuild\\": "build/src/"
+        }
     }
 }
