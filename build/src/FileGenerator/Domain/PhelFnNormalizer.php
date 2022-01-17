@@ -39,7 +39,7 @@ final class PhelFnNormalizer
             $pattern = '#(```phel\n(?<fnSignature>.*)\n```\n)?(?<desc>.*)#s';
             preg_match($pattern, $doc, $matches);
 
-            $result[$groupKey][] = [
+            $result[strtolower($groupKey)][] = [
                 'fnName' => $fnName,
                 'doc' => $meta[Keyword::create('doc')] ?? '',
                 'fnSignature' => $matches['fnSignature'] ?? '',
