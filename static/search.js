@@ -14,13 +14,10 @@ function debounce(func, wait) {
 }
 
 function formatSearchResultItem(item) {
-    const phelCode = item.doc.doc.split("\n")[1] ?? '';
-    const doc = item.doc.doc.split("\n")[3] ?? '';
-
     return '<div class="search-results__item">'
         + `<a href="/documentation/api/#${item.doc.anchor}">${item.doc.fnName} `
-        + `<small class="phel-code">${phelCode}</small></a>`
-        + `<div class="doc">${doc}</div>`
+        + `<small class="phel-code">${item.doc.phelCode}</small></a>`
+        + `<div class="doc">${item.doc.desc}</div>`
         + '</div>';
 }
 
@@ -35,8 +32,9 @@ function initSearch() {
     const index = elasticlunr(function () {
         this.addField('fnName');
         this.addField('anchor');
-        this.addField('doc');
-        this.setRef('fnName');
+        this.addField('phelCode');
+        this.addField('desc');
+        this.setRef('anchor');
         elasticlunr.stopWordFilter.stopWords = {};
     });
     window.searchIndexApi.forEach(item => index.addDoc(item));
@@ -55,8 +53,9 @@ function initSearch() {
         const options = {
             bool: "AND",
             fields: {
-                fnName: {boost: 2},
-                doc: {boost: 1},
+                fnName: {boost: 3},
+                desc: {boost: 2},
+                phelCode: {boost: 1},
             },
             expand: true
         };
