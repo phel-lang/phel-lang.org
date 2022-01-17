@@ -16,7 +16,7 @@ final class PhelFnNormalizer
     }
 
     /**
-     * @return array<string,array{fnName:string,doc:string}>
+     * @return array<string,array{fnName:string,doc:string,fnSignature:string,desc:string}>
      */
     public function getNormalizedGroupedPhelFns(): array
     {
