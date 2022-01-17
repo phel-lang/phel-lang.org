@@ -51,7 +51,7 @@ foreach ($normalizedData as $fnName => $meta) {
         echo "\n\n";
 
         $searchIndex[] = [
-            'fnName' => $fnName,
+            'fnName' => str_replace('/', '-', $fnName),
             'doc' => $doc,
         ];
     }
