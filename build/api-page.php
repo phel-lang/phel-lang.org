@@ -54,13 +54,13 @@ function groupNormalizedData(array $normalizedData): array
         );
 
         $doc = $meta[Keyword::create('doc')] ?? '';
-        $pattern = '#(```phel\n(?<phelCode>.*)\n```\n)?(?<desc>.*)#';
+        $pattern = '#(```phel\n(?<fnSignature>.*)\n```\n)?(?<desc>.*)#';
         preg_match($pattern, $doc, $matches);
 
         $result[$groupKey][] = [
             'fnName' => $fnName,
             'doc' => $meta[Keyword::create('doc')] ?? '',
-            'phelCode' => $matches['phelCode'] ?? '',
+            'fnSignature' => $matches['fnSignature'] ?? '',
             'desc' => $matches['desc'] ?? '',
         ];
     }
@@ -114,7 +114,7 @@ function generateSearchIndex(array $groupNormalizedData): array
     foreach ($groupNormalizedData as $groupKey => $values) {
         $groupFnNameAppearances[$groupKey] = 0;
 
-        foreach ($values as ['fnName' => $fnName, 'phelCode' => $phelCode, 'desc' => $desc]) {
+        foreach ($values as ['fnName' => $fnName, 'fnSignature' => $fnSignature, 'desc' => $desc]) {
             $specialEndingChars = ['/', '=', '*', '?', '+', '>', '<', '-'];
 
             if ($groupFnNameAppearances[$groupKey] === 0) {
@@ -127,7 +127,7 @@ function generateSearchIndex(array $groupNormalizedData): array
 
             $searchIndex[] = [
                 'fnName' => $fnName,
-                'phelCode' => $phelCode,
+                'fnSignature' => $fnSignature,
                 'desc' => $desc,
                 'anchor' => $anchor,
             ];

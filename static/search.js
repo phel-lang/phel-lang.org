@@ -16,8 +16,8 @@ function debounce(func, wait) {
 function formatSearchResultItem(item) {
     return '<div class="search-results__item">'
         + `<a href="/documentation/api/#${item.doc.anchor}">${item.doc.fnName} `
-        + `<small class="phel-code">${item.doc.phelCode}</small></a>`
-        + `<div class="doc">${item.doc.desc}</div>`
+        + `<small class="fn-signature">${item.doc.fnSignature}</small></a>`
+        + `<div class="desc">${item.doc.desc}</div>`
         + '</div>';
 }
 
