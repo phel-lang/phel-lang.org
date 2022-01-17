@@ -1,5 +1,6 @@
 .vscode
 .phel-repl-history
+.phpunit.result.cache
 
 /content/documentation/api.md
 /public

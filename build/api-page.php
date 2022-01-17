@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use PhelDocBuild\DocFileGenerator;
 use Gacela\Framework\Gacela;
+use PhelDocBuild\FileGenerator\Facade;
 
 Gacela::bootstrap(__DIR__, [
     'config' => [
@@ -15,6 +15,6 @@ Gacela::bootstrap(__DIR__, [
     ],
 ]);
 
-$docFileGenerator = new DocFileGenerator();
-$docFileGenerator->renderMdPage();
-$docFileGenerator->generateApiSearch();
+$fileGeneratorFacade = new Facade();
+$fileGeneratorFacade->generateMdPage();
+$fileGeneratorFacade->generateApiSearch();
