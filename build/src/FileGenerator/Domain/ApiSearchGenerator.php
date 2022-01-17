@@ -34,7 +34,7 @@ final class ApiSearchGenerator
                     $groupFnNameAppearances[$groupKey]++;
                 } else {
                     $sanitizedFnName = str_replace(['/', ...self::SPECIAL_ENDING_CHARS], ['-', ''], $fnName);
-                    $anchor = $sanitizedFnName . '-' . $groupFnNameAppearances[$groupKey]++;
+                    $anchor = rtrim($sanitizedFnName, '-') . '-' . $groupFnNameAppearances[$groupKey]++;
                 }
 
                 $result[] = [

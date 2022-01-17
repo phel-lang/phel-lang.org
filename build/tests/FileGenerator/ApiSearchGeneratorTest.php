@@ -18,7 +18,7 @@ final class ApiSearchGeneratorTest extends TestCase
 
     public function test_generate_search_index_one_item(): void
     {
-        $groupNormalizedData = [
+        $actual = $this->generator->generateSearchIndex([
             'table' => [
                 [
                     'fnName' => 'table?',
@@ -26,9 +26,7 @@ final class ApiSearchGeneratorTest extends TestCase
                     'desc' => 'doc for table?',
                 ],
             ],
-        ];
-
-        $actual = $this->generator->generateSearchIndex($groupNormalizedData);
+        ]);
 
         $expected = [
             [
@@ -44,7 +42,7 @@ final class ApiSearchGeneratorTest extends TestCase
 
     public function test_multiple_items_in_different_groups(): void
     {
-        $groupNormalizedData = [
+        $actual = $this->generator->generateSearchIndex([
             'table' => [
                 [
                     'fnName' => 'table',
@@ -59,9 +57,7 @@ final class ApiSearchGeneratorTest extends TestCase
                     'desc' => 'doc for not',
                 ],
             ],
-        ];
-
-        $actual = $this->generator->generateSearchIndex($groupNormalizedData);
+        ]);
 
         $expected = [
             [
@@ -83,7 +79,7 @@ final class ApiSearchGeneratorTest extends TestCase
 
     public function test_multiple_items_in_the_same_group(): void
     {
-        $groupNormalizedData = [
+        $actual = $this->generator->generateSearchIndex([
             'table' => [
                 [
                     'fnName' => 'table',
@@ -96,9 +92,7 @@ final class ApiSearchGeneratorTest extends TestCase
                     'desc' => 'doc for table?',
                 ],
             ],
-        ];
-
-        $actual = $this->generator->generateSearchIndex($groupNormalizedData);
+        ]);
 
         $expected = [
             [
@@ -118,9 +112,9 @@ final class ApiSearchGeneratorTest extends TestCase
         self::assertEquals($expected, $actual);
     }
 
-    public function test_multiple_items_in_the_same_group_with_special_chars_in_fn_signature(): void
+    public function test_fn_name_with_slash_in_the_middle(): void
     {
-        $groupNormalizedData = [
+        $actual = $this->generator->generateSearchIndex([
             'http-response' => [
                 [
                     'fnName' => 'http/response',
@@ -133,9 +127,7 @@ final class ApiSearchGeneratorTest extends TestCase
                     'desc' => '',
                 ],
             ],
-        ];
-
-        $actual = $this->generator->generateSearchIndex($groupNormalizedData);
+        ]);
 
         $expected = [
             [
@@ -149,6 +141,76 @@ final class ApiSearchGeneratorTest extends TestCase
                 'fnSignature' => '',
                 'desc' => '',
                 'anchor' => 'http-response-1',
+            ],
+        ];
+
+        self::assertEquals($expected, $actual);
+    }
+
+    public function test_fn_name_ending_with_minus(): void
+    {
+        $actual = $this->generator->generateSearchIndex([
+            'defn' => [
+                [
+                    'fnName' => 'defn',
+                    'fnSignature' => '',
+                    'desc' => '',
+                ],
+                [
+                    'fnName' => 'defn-',
+                    'fnSignature' => '',
+                    'desc' => '',
+                ],
+            ],
+        ]);
+
+        $expected = [
+            [
+                'fnName' => 'defn',
+                'fnSignature' => '',
+                'desc' => '',
+                'anchor' => 'defn',
+            ],
+            [
+                'fnName' => 'defn-',
+                'fnSignature' => '',
+                'desc' => '',
+                'anchor' => 'defn-1',
+            ],
+        ];
+
+        self::assertEquals($expected, $actual);
+    }
+
+    public function test_fn_name_with_upper_case(): void
+    {
+        $actual = $this->generator->generateSearchIndex([
+            'nan' => [
+                [
+                    'fnName' => 'NAN',
+                    'fnSignature' => '',
+                    'desc' => '',
+                ],
+                [
+                    'fnName' => 'nan?',
+                    'fnSignature' => '',
+                    'desc' => '',
+                ],
+            ],
+        ]);
+
+        $expected = [
+            [
+                'fnName' => 'NAN',
+                'fnSignature' => '',
+                'desc' => '',
+                'anchor' => 'nan',
+            ],
+            [
+                'fnName' => 'nan?',
+                'fnSignature' => '',
+                'desc' => '',
+                'anchor' => 'nan-1',
             ],
         ];
 
