@@ -14,11 +14,11 @@ function debounce(func, wait) {
 }
 
 function formatSearchResultItem(item) {
-    return '<div class="search-results__item">'
-        + `<a href="/documentation/api/#${item.doc.anchor}">${item.doc.fnName} `
-        + `<small class="fn-signature">${item.doc.fnSignature}</small></a>`
+    return `<a href="/documentation/api/#${item.doc.anchor}">`
+        + `<div class="search-results__item">${item.doc.fnName} `
+        + `<small class="fn-signature">${item.doc.fnSignature}</small>`
         + `<div class="desc">${item.doc.desc}</div>`
-        + '</div>';
+        + '</div></a>';
 }
 
 function initSearch() {

@@ -26,17 +26,21 @@
   }
 
   li {
-    margin-top: 1rem;
+    margin-top: 0.6rem;
     border-bottom: 1px solid #ccc;
     font-size: 0.9rem;
 
     &:first-of-type {
       margin-top: 0;
     }
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
   &__item {
-    margin-bottom: 1rem;
+    margin-bottom: 0.6rem;
 
     a {
       font-size: 1.2rem;
@@ -53,6 +57,7 @@
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      color: black;
     }
   }
 }
