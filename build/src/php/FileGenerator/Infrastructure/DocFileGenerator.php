@@ -8,20 +8,25 @@ use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
 use PhelDocBuild\FileGenerator\Domain\MdPageRenderer;
 use PhelDocBuild\FileGenerator\Domain\PhelFnNormalizer;
 
+use function json_encode;
+
 final class DocFileGenerator
 {
     private MdPageRenderer $mdPageRenderer;
     private PhelFnNormalizer $phelFnNormalizer;
     private ApiSearchGenerator $apiSearchGenerator;
+    private string $srcDir;
 
     public function __construct(
         MdPageRenderer $mdPageRenderer,
         PhelFnNormalizer $phelFnNormalizer,
-        ApiSearchGenerator $apiSearchGenerator
+        ApiSearchGenerator $apiSearchGenerator,
+        string $srcDir
     ) {
         $this->mdPageRenderer = $mdPageRenderer;
         $this->phelFnNormalizer = $phelFnNormalizer;
         $this->apiSearchGenerator = $apiSearchGenerator;
+        $this->srcDir = $srcDir;
     }
 
     public function renderMdPage(): void
@@ -38,8 +43,8 @@ final class DocFileGenerator
         $searchIndex = $this->apiSearchGenerator->generateSearchIndex($groupedPhelFns);
 
         file_put_contents(
-            __DIR__ . '/../../../../static/api_search.js',
-            "window.searchIndexApi = " . \json_encode($searchIndex)
+            $this->srcDir . '/../../static/api_search.js',
+            "window.searchIndexApi = " . json_encode($searchIndex)
         );
     }
 

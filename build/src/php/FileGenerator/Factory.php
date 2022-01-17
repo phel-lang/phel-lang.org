@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator;
 
+use Gacela\Framework\AbstractConfig;
 use Gacela\Framework\AbstractFactory;
 use Phel\Run\RunFacadeInterface;
 use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
@@ -14,6 +15,9 @@ use PhelDocBuild\FileGenerator\Domain\PhelFnNormalizer;
 use PhelDocBuild\FileGenerator\Infrastructure\DocFileGenerator;
 use PhelDocBuild\FileGenerator\Infrastructure\PhelFnLoader;
 
+/**
+ * @method Config getConfig()
+ */
 final class Factory extends AbstractFactory
 {
     public function createDocFileGenerator(): DocFileGenerator
@@ -21,7 +25,8 @@ final class Factory extends AbstractFactory
         return new DocFileGenerator(
             $this->createMdPageRenderer(),
             $this->createPhelFnNormalizer(),
-            $this->createApiSearchGenerator()
+            $this->createApiSearchGenerator(),
+            $this->getConfig()->getSrcDir()
         );
     }
 
@@ -53,7 +58,10 @@ final class Factory extends AbstractFactory
 
     private function createPhelFnLoader(): PhelFnLoaderInterface
     {
-        return new PhelFnLoader($this->getRunFacade());
+        return new PhelFnLoader(
+            $this->getRunFacade(),
+            $this->getConfig()->getSrcDir()
+        );
     }
 
     private function getRunFacade(): RunFacadeInterface

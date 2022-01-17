@@ -4,6 +4,7 @@
     "homepage": "https://phel-lang.org/",
     "license": "MIT",
     "require": {
+        "ext-json": "*",
         "phel-lang/phel-lang": "^0.5",
         "gacela-project/gacela": "^0.10.0"
     },
@@ -14,12 +15,12 @@
     },
     "autoload": {
         "psr-4": {
-            "PhelDocBuild\\": "build/src/"
+            "PhelDocBuild\\": "build/src/php/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PhelDocBuildTests\\": "build/tests/"
+            "PhelDocBuildTests\\": "build/tests/php"
         }
     },
     "scripts": {
