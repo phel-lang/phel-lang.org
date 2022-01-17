@@ -6,12 +6,13 @@ namespace PhelDocBuild\FileGenerator\Domain;
 
 final class ApiSearchGenerator
 {
+    private const SPECIAL_ENDING_CHARS = ['=', '*', '?', '+', '>', '<'];
+
     /**
      * @return array<string,array{fnName:string,fnSignature:string,desc:string,anchor:string}>
      */
     public function generateSearchIndex(array $groupNormalizedData): array
     {
-        $searchIndex = [];
         /**
          * Zola ignores the especial chars, and uses instead a number. This variable keep track
          * of the appearances and uses an autoincrement number to follow the proper link.
@@ -23,21 +24,20 @@ final class ApiSearchGenerator
          */
         $groupFnNameAppearances = [];
 
+        $result = [];
         foreach ($groupNormalizedData as $groupKey => $values) {
             $groupFnNameAppearances[$groupKey] = 0;
 
             foreach ($values as ['fnName' => $fnName, 'fnSignature' => $fnSignature, 'desc' => $desc]) {
-                $specialEndingChars = ['/', '=', '*', '?', '+', '>', '<', '-'];
-
                 if ($groupFnNameAppearances[$groupKey] === 0) {
                     $anchor = $groupKey;
                     $groupFnNameAppearances[$groupKey]++;
                 } else {
-                    $fnName2 = str_replace($specialEndingChars, '', $fnName);
-                    $anchor = $fnName2 . '-' . $groupFnNameAppearances[$groupKey]++;
+                    $sanitizedFnName = str_replace(['/', ...self::SPECIAL_ENDING_CHARS], ['-', ''], $fnName);
+                    $anchor = $sanitizedFnName . '-' . $groupFnNameAppearances[$groupKey]++;
                 }
 
-                $searchIndex[] = [
+                $result[] = [
                     'fnName' => $fnName,
                     'fnSignature' => $fnSignature,
                     'desc' => $desc,
@@ -46,6 +46,6 @@ final class ApiSearchGenerator
             }
         }
 
-        return $searchIndex;
+        return $result;
     }
 }
