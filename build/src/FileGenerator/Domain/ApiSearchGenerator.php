@@ -26,8 +26,8 @@ final class ApiSearchGenerator
         foreach ($groupNormalizedData as $groupKey => $values) {
             $groupFnNameAppearances[$groupKey] = 0;
 
-            foreach ($values as ['fnName' => $fnName, 'doc' => $doc]) {
-                $specialEndingChars = ['/', '=', '*', '?'];
+            foreach ($values as ['fnName' => $fnName, 'fnSignature' => $fnSignature, 'desc' => $desc]) {
+                $specialEndingChars = ['/', '=', '*', '?', '+', '>', '<', '-'];
 
                 if ($groupFnNameAppearances[$groupKey] === 0) {
                     $anchor = $groupKey;
@@ -39,7 +39,8 @@ final class ApiSearchGenerator
 
                 $searchIndex[] = [
                     'fnName' => $fnName,
-                    'doc' => $doc,
+                    'fnSignature' => $fnSignature,
+                    'desc' => $desc,
                     'anchor' => $anchor,
                 ];
             }

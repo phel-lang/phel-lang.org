@@ -16,11 +16,13 @@ final class ApiSearchGeneratorTest extends TestCase
             'table' => [
                 [
                     'fnName' => 'table',
-                    'doc' => 'doc for table',
+                    'fnSignature' => '(table & xs)',
+                    'desc' => 'doc for table',
                 ],
                 [
                     'fnName' => 'table?',
-                    'doc' => 'doc for table?',
+                    'fnSignature' => '(table? x)',
+                    'desc' => 'doc for table?',
                 ],
             ],
         ];
@@ -30,12 +32,14 @@ final class ApiSearchGeneratorTest extends TestCase
         $expected = [
             [
                 'fnName' => 'table',
-                'doc' => 'doc for table',
+                'fnSignature' => '(table & xs)',
+                'desc' => 'doc for table',
                 'anchor' => 'table',
             ],
             [
                 'fnName' => 'table?',
-                'doc' => 'doc for table?',
+                'fnSignature' => '(table? x)',
+                'desc' => 'doc for table?',
                 'anchor' => 'table-1',
             ],
         ];

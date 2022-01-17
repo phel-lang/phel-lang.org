@@ -14,13 +14,10 @@ function debounce(func, wait) {
 }
 
 function formatSearchResultItem(item) {
-    const phelCode = item.doc.doc.split("\n")[1] ?? '';
-    const doc = item.doc.doc.split("\n")[3] ?? '';
-
     return '<div class="search-results__item">'
         + `<a href="/documentation/api/#${item.doc.anchor}">${item.doc.fnName} `
-        + `<small class="phel-code">${phelCode}</small></a>`
-        + `<div class="doc">${doc}</div>`
+        + `<small class="fn-signature">${item.doc.fnSignature}</small></a>`
+        + `<div class="desc">${item.doc.desc}</div>`
         + '</div>';
 }
 
@@ -35,7 +32,8 @@ function initSearch() {
     const index = elasticlunr(function () {
         this.addField('fnName');
         this.addField('anchor');
-        this.addField('doc');
+        this.addField('fnSignature');
+        this.addField('desc');
         this.setRef('fnName');
         elasticlunr.stopWordFilter.stopWords = {};
     });
@@ -55,8 +53,8 @@ function initSearch() {
         const options = {
             bool: "AND",
             fields: {
-                fnName: {boost: 2},
-                doc: {boost: 1},
+                fnName: {boost: 3},
+                desc: {boost: 1},
             },
             expand: true
         };

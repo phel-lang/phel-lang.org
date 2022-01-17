@@ -36,12 +36,12 @@ final class Factory extends AbstractFactory
 
             public function write(string $line): void
             {
-                echo "$line";
+                echo $line;
             }
 
             public function writeln(string $line): void
             {
-                echo "$line\n";
+                echo $line . PHP_EOL;
             }
         };
     }

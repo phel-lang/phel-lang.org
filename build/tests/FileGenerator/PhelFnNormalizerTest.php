@@ -27,10 +27,14 @@ final class PhelFnNormalizerTest extends TestCase
                 [
                     'fnName' => 'test/table',
                     'doc' => '',
+                    'fnSignature' => '',
+                    'desc' => '',
                 ],
                 [
                     'fnName' => 'test/table?',
                     'doc' => '',
+                    'fnSignature' => '',
+                    'desc' => '',
                 ],
             ],
         ];
