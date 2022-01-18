@@ -68,6 +68,7 @@ function initSearch() {
         for (let i = 0; i < Math.min(results.length, MAX_ITEMS); i++) {
             const item = document.createElement("li");
             item.innerHTML = formatSearchResultItem(results[i]);
+            item.addEventListener('click', () => $searchInput.value = "")
             $searchResultsItems.appendChild(item);
         }
     }, 150));
@@ -75,7 +76,6 @@ function initSearch() {
     window.addEventListener('click', function (e) {
         if ($searchResults.style.display === "block") {
             $searchResults.style.display = "none";
-            $searchInput.value = "";
         }
     });
 }
