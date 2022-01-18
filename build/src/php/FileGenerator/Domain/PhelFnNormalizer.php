@@ -54,9 +54,11 @@ final class PhelFnNormalizer
         return $result;
     }
 
+    /**
+     * Transform a typical md link from `[printf](https://...)` to `<i>printf</i>`.
+     */
     private function formatDescription(string $desc): string
     {
-        // Transform typical md link from "[printf](https://...)" to "<i>printf</i>"
         return preg_replace(
             '#\[([^\]]+)\]\(([^\)]+)\)#',
             '<i>\1</i>',

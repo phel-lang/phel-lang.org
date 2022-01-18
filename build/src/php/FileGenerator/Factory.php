@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator;
 
-use Gacela\Framework\AbstractConfig;
 use Gacela\Framework\AbstractFactory;
 use Phel\Run\RunFacadeInterface;
 use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
@@ -64,13 +63,13 @@ final class Factory extends AbstractFactory
         );
     }
 
+    private function createApiSearchGenerator(): ApiSearchGenerator
+    {
+        return new ApiSearchGenerator();
+    }
+
     private function getRunFacade(): RunFacadeInterface
     {
         return $this->getProvidedDependency(DependencyProvider::FACADE_PHEL_RUN);
-    }
-
-    public function createApiSearchGenerator(): ApiSearchGenerator
-    {
-        return new ApiSearchGenerator();
     }
 }

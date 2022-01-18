@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Infrastructure;
 
+use Phel\Lang\AbstractFn;
 use Phel\Lang\Collections\Map\PersistentMapInterface;
 use Phel\Lang\TypeFactory;
 use Phel\Run\RunFacade;
@@ -13,9 +14,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 final class PhelFnLoader implements PhelFnLoaderInterface
 {
-    /**
-     * Prevent executing the RunCommand multiple times
-     */
+    /** Prevent executing the RunCommand multiple times */
     private static bool $wasRunCommandExecuted = false;
 
     private RunFacade $runFacade;
@@ -33,30 +32,49 @@ final class PhelFnLoader implements PhelFnLoaderInterface
      */
     public function getNormalizedPhelFunctions(): array
     {
-        if (!self::$wasRunCommandExecuted) {
-            $this->runFacade
-                ->getRunCommand()
-                ->run(
-                    new ArrayInput(['path' => $this->srcDir . '/phel/doc.phel']),
-                    new ConsoleOutput()
-                );
-            self::$wasRunCommandExecuted = true;
-        }
+        $this->loadAllPhelFunctions();
 
         /** @var array<string,PersistentMapInterface> $normalizedData */
         $normalizedData = [];
-        foreach ($GLOBALS['__phel'] as $ns => $functions) {
+        foreach ($this->getAllPhelFunctions() as $ns => $functions) {
             $normalizedNs = str_replace('phel\\', '', $ns);
             $moduleName = $normalizedNs === 'core' ? '' : $normalizedNs . '/';
             foreach ($functions as $fnName => $fn) {
                 $fullFnName = $moduleName . $fnName;
 
-                $normalizedData[$fullFnName] = $GLOBALS['__phel_meta'][$ns][$fnName]
-                    ?? TypeFactory::getInstance()->emptyPersistentMap();
+                $normalizedData[$fullFnName] = $this->getPhelMeta($ns, $fnName);
             }
         }
         ksort($normalizedData);
 
         return $normalizedData;
+    }
+
+    private function loadAllPhelFunctions(): void
+    {
+        if (self::$wasRunCommandExecuted) {
+            return;
+        }
+
+        $this->runFacade->getRunCommand()->run(
+            new ArrayInput(['path' => $this->srcDir . '/phel/doc.phel']),
+            new ConsoleOutput()
+        );
+
+        self::$wasRunCommandExecuted = true;
+    }
+
+    /**
+     * @return array<string,array<string,AbstractFn>>
+     */
+    private function getAllPhelFunctions(): array
+    {
+        return $GLOBALS['__phel'];
+    }
+
+    private function getPhelMeta(string $ns, string $fnName): PersistentMapInterface
+    {
+        return $GLOBALS['__phel_meta'][$ns][$fnName]
+            ?? TypeFactory::getInstance()->emptyPersistentMap();
     }
 }
