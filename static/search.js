@@ -73,8 +73,9 @@ function initSearch() {
     }, 150));
 
     window.addEventListener('click', function (e) {
-        if ($searchResults.style.display === "block" && !$searchResults.contains(e.target)) {
+        if ($searchResults.style.display === "block") {
             $searchResults.style.display = "none";
+            $searchInput.value = "";
         }
     });
 }

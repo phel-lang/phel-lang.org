@@ -6,6 +6,7 @@
     left: 0;
     right: 0;
     height: $header-height;
+    z-index: 1;
 
     .site-header__container {
         display: flex;
@@ -58,7 +59,6 @@
         }
 
         .site-header__logo {
-            padding-right: 1em;
             .phel-logo {
                 max-height: 2.5em;
                 width: 3em;
