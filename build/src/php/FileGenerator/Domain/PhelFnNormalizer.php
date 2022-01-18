@@ -43,7 +43,7 @@ final class PhelFnNormalizer
                 'fnName' => $fnName,
                 'doc' => $meta[Keyword::create('doc')] ?? '',
                 'fnSignature' => $matches['fnSignature'] ?? '',
-                'desc' => $matches['desc'] ?? '',
+                'desc' => $this->formatDescription($matches['desc'] ?? ''),
             ];
         }
 
@@ -52,5 +52,15 @@ final class PhelFnNormalizer
         }
 
         return $result;
+    }
+
+    private function formatDescription(string $desc): string
+    {
+        // Transform typical md link from "[printf](https://...)" to "<i>printf</i>"
+        return preg_replace(
+            '#\[([^\]]+)\]\(([^\)]+)\)#',
+            '<i>\1</i>',
+            $desc
+        );
     }
 }

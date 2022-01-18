@@ -20,6 +20,7 @@
   box-shadow: 0 0 0 1px rgb(0, 0, 0 / 50%);
   overflow: auto;
   width: -webkit-fill-available;
+  width: -moz-available;
   max-height: calc(100vh - 4rem);
 
   @include desktop {
