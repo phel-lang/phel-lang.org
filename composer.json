@@ -24,6 +24,7 @@
         }
     },
     "scripts": {
+        "build": "php build/api-page.php > content/documentation/api.md",
         "test": "./vendor/bin/phpunit"
     }
 }

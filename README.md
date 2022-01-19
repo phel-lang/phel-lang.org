@@ -15,5 +15,5 @@ zola build # build & publish
 
 ```bash
 composer install # install phel as composer dependency
-php build/api-page.php > content/documentation/api.md
+composer build   # build the API documentation page & the API search index
 ```

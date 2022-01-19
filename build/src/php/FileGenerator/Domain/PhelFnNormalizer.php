@@ -55,7 +55,7 @@ final class PhelFnNormalizer
     }
 
     /**
-     * Transform a typical md link from `[printf](https://...)` to `<i>printf</i>`.
+     * The $desc is in Markdown format, the regex transforms links `[printf](https://...)` into `<i>printf</i>`.
      */
     private function formatDescription(string $desc): string
     {
