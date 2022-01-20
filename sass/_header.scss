@@ -59,11 +59,28 @@
         }
 
         .site-header__logo {
-            .phel-logo {
-                max-height: 2.5em;
-                width: 3em;
-                stroke: white;
-                stroke-width: 5px;
+            a {
+                display: inline-block;
+
+                .phel-logo {
+                    max-height: 2.5em;
+                    width: 3em;
+                    stroke: white;
+                    stroke-width: 5px;
+                }
+            }
+        }
+
+        .site-header__search {
+            display: none;
+
+            @include desktop {
+                display: block;
+
+                input {
+                    padding: 0.2rem;
+                    font-size: initial;
+                }
             }
         }
 
@@ -74,12 +91,17 @@
                 display: block;
                 flex-grow: 2;
 
+                .top-navigation__item--github {
+                    display: none;
+                }
+
                 ul {
                     list-style: none;
                     margin: 0;
                     padding: 0;
+                    margin-left: 2em;
                     display: flex;
-                    justify-content: flex-end;
+                    justify-content: flex-start;
 
                     li {
                         a {
@@ -93,6 +115,23 @@
                                 text-decoration: underline;
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        .site-header__github {
+            display: none;
+
+            @include desktop {
+                display: block;
+                a {
+                    display: inline-block;
+                    color: white;
+                    margin-left: 1em;
+
+                    svg {
+                        vertical-align: middle;
                     }
                 }
             }

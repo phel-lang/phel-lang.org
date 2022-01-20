@@ -1,26 +1,12 @@
-.search-container {
-  display: inline-block;
-  position: relative;
-  width: 100%;
-  margin: 0 1em;
-
-  input {
-    width: 100%;
-    padding: 0.2rem;
-    font-size: initial;
-  }
-}
-
 .search-results {
   display: none;
   position: absolute;
   background: white;
   color: black;
   padding: 0.6rem;
-  box-shadow: 0 0 0 1px rgb(0, 0, 0 / 50%);
+  box-shadow: 0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);
+  margin-right: 5px;
   overflow: auto;
-  width: -webkit-fill-available;
-  width: -moz-available;
   max-height: calc(100vh - 4rem);
 
   @include desktop {
