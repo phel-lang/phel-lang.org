@@ -8,14 +8,22 @@ function initSearch() {
     const $searchInput = document.getElementById("search");
     const $searchResults = document.querySelector(".search-results");
 
+    elasticlunr.trimmer = function (token) {
+        if (token === null || token === undefined) {
+            throw new Error('token should not be undefined');
+        }
+
+        return token;
+    };
     const index = elasticlunr(function () {
         this.addField('fnName');
-        this.addField('anchor');
-        this.addField('fnSignature');
         this.addField('desc');
-        this.setRef('fnName');
+        this.setRef('anchor');
         elasticlunr.stopWordFilter.stopWords = {};
+        elasticlunr.Pipeline.registerFunction(elasticlunr.trimmer, 'trimmer');
+        elasticlunr.tokenizer.seperator = /[\s~~]+/;
     });
+    // Load symbols into elasticlunr object
     window.searchIndexApi.forEach(item => index.addDoc(item));
 
     $searchInput.addEventListener("keyup", debounce(showResults(index), 150));
