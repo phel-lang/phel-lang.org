@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'src-dirs' => ['/src'],
+    'src-dirs' => ['/src/phel'],
     'test-dirs' => [],
     'vendor-dir' => '/../vendor'
 ];

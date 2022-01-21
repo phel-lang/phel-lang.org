@@ -1,0 +1,55 @@
+.search-results {
+  display: none;
+  position: absolute;
+  background: white;
+  color: black;
+  padding: 0.6rem;
+  box-shadow: 0 5px 5px -3px rgba(0,0,0,.2),0 8px 10px 1px rgba(0,0,0,.14),0 3px 14px 2px rgba(0,0,0,.12);
+  margin-right: 5px;
+  overflow: auto;
+  max-height: calc(100vh - 4rem);
+
+  @include desktop {
+    max-height: 500px;
+  }
+
+  &__items {
+    list-style: none;
+  }
+
+  li {
+    margin-top: 0.6rem;
+    border-bottom: 1px solid #ccc;
+    font-size: 0.9rem;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__item {
+    margin-bottom: 0.6rem;
+
+    a {
+      font-size: 1.2rem;
+      display: inline-block;
+    }
+
+    .fn-signature {
+      font-family: monospace;
+      font-size: 0.6em;
+    }
+
+    .desc {
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      color: black;
+    }
+  }
+}

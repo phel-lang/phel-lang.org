@@ -24,6 +24,10 @@
 
 <body>
   {% block body %} {% endblock %}
+
+  <script type="text/javascript" src="{{ get_url(path='elasticlunr.min.js') }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path='api_search.js') }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path='search.js') }}" defer></script>
 </body>
 
 </html>
