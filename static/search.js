@@ -27,16 +27,17 @@ function initSearch() {
     window.searchIndexApi.forEach(item => index.addDoc(item));
 
     $searchInput.addEventListener("keyup", debounce(showResults(index), 150));
-    $searchInput.addEventListener('search', () => $searchResults.style.display = "");
-    $searchInput.addEventListener('focusin', function () {
-        if ($searchInput.value !== '') {
+    // Hide results when user press on the 'x' placed inside the search field
+    $searchInput.addEventListener("search", () => $searchResults.style.display = "");
+    $searchInput.addEventListener("focusin", function () {
+        if ($searchInput.value !== "") {
             showResults(index)();
         }
     });
 
-    window.addEventListener('click', function (e) {
+    window.addEventListener("click", function (e) {
         if ($searchResults.style.display === "block") {
-            if (!(e.target === $searchInput || e.target === $searchResults)) {
+            if (e.target !== $searchInput) {
                 $searchResults.style.display = "";
             }
         }
