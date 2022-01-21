@@ -1,3 +1,40 @@
+if (document.readyState === "complete" || (document.readyState !== "loading" && !document.documentElement.doScroll)) {
+    initSearch();
+} else {
+    document.addEventListener("DOMContentLoaded", initSearch);
+}
+
+function initSearch() {
+    const $searchInput = document.getElementById("search");
+    const $searchResults = document.querySelector(".search-results");
+
+    const index = elasticlunr(function () {
+        this.addField('fnName');
+        this.addField('anchor');
+        this.addField('fnSignature');
+        this.addField('desc');
+        this.setRef('fnName');
+        elasticlunr.stopWordFilter.stopWords = {};
+    });
+    window.searchIndexApi.forEach(item => index.addDoc(item));
+
+    $searchInput.addEventListener("keyup", debounce(showResults(index), 150));
+    $searchInput.addEventListener('search', () => $searchResults.style.display = "");
+    $searchInput.addEventListener('focusin', function () {
+        if ($searchInput.value !== '') {
+            showResults(index)();
+        }
+    });
+
+    window.addEventListener('click', function (e) {
+        if ($searchResults.style.display === "block") {
+            if (!(e.target === $searchInput || e.target === $searchResults)) {
+                $searchResults.style.display = "";
+            }
+        }
+    });
+}
+
 function debounce(func, wait) {
     let timeout;
 
@@ -13,40 +50,18 @@ function debounce(func, wait) {
     };
 }
 
-function formatSearchResultItem(item) {
-    return `<a href="/documentation/api/#${item.doc.anchor}">`
-        + `<div class="search-results__item">${item.doc.fnName} `
-        + `<small class="fn-signature">${item.doc.fnSignature}</small>`
-        + `<div class="desc">${item.doc.desc}</div>`
-        + '</div></a>';
-}
+function showResults(index) {
+    return function () {
+        const $searchInput = document.getElementById("search");
+        const $searchResults = document.querySelector(".search-results");
+        const $searchResultsItems = document.querySelector(".search-results__items");
+        const MAX_ITEMS = 10;
 
-function initSearch() {
-    const $searchInput = document.getElementById("search");
-    const $searchResults = document.querySelector(".search-results");
-    const $searchResultsItems = document.querySelector(".search-results__items");
-    const MAX_ITEMS = 10;
-
-    let currentTerm = "";
-
-    const index = elasticlunr(function () {
-        this.addField('fnName');
-        this.addField('anchor');
-        this.addField('fnSignature');
-        this.addField('desc');
-        this.setRef('fnName');
-        elasticlunr.stopWordFilter.stopWords = {};
-    });
-    window.searchIndexApi.forEach(item => index.addDoc(item));
-
-    $searchInput.addEventListener("keyup", debounce(function () {
         const term = $searchInput.value.trim();
-        if (term === currentTerm || !index) {
-            return;
-        }
-        $searchResults.style.display = term === "" ? "none" : "block";
+        $searchResults.style.display = term === "" ? "" : "block";
         $searchResultsItems.innerHTML = "";
         if (term === "") {
+            $searchResults.style.display = "";
             return;
         }
 
@@ -60,30 +75,38 @@ function initSearch() {
         };
         const results = index.search(term, options);
         if (results.length === 0) {
-            $searchResults.style.display = "none";
+            let emptyResult = {
+                fnName: "Symbol not found",
+                fnSignature: "",
+                desc: "Cannot provide any Phel symbol. Try something else",
+                anchor: "#",
+            };
+
+            createMenuItem(emptyResult);
             return;
         }
 
-        currentTerm = term;
-        for (let i = 0; i < Math.min(results.length, MAX_ITEMS); i++) {
-            const item = document.createElement("li");
-            item.innerHTML = formatSearchResultItem(results[i]);
-            item.addEventListener('click', () => $searchInput.value = "")
-            $searchResultsItems.appendChild(item);
+        const numberOfResults = Math.min(results.length, MAX_ITEMS);
+        for (let i = 0; i < numberOfResults; i++) {
+            createMenuItem(results[i].doc);
         }
-    }, 150));
-
-    window.addEventListener('click', function (e) {
-        if ($searchResults.style.display === "block") {
-            $searchResults.style.display = "none";
-        }
-    });
+    }
 }
 
-if (document.readyState === "complete" ||
-    (document.readyState !== "loading" && !document.documentElement.doScroll)
-) {
-    initSearch();
-} else {
-    document.addEventListener("DOMContentLoaded", initSearch);
+function createMenuItem(result) {
+    const $searchInput = document.getElementById("search");
+    const $searchResultsItems = document.querySelector(".search-results__items");
+
+    const item = document.createElement("li");
+    item.innerHTML = formatSearchResultItem(result);
+    item.addEventListener('click', () => $searchInput.value = "")
+    $searchResultsItems.appendChild(item);
+}
+
+function formatSearchResultItem(item) {
+    return `<a href="/documentation/api/#${item.anchor}">`
+        + `<div class="search-results__item">${item.fnName} `
+        + `<small class="fn-signature">${item.fnSignature}</small>`
+        + `<span class="desc">${item.desc}</span>`
+        + `</div></a>`;
 }
