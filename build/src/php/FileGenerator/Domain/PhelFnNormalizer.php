@@ -41,7 +41,7 @@ final class PhelFnNormalizer
 
             $result[strtolower(rtrim($groupKey, '-'))][] = [
                 'fnName' => $fnName,
-                'doc' => $meta[Keyword::create('doc')] ?? '',
+                'doc' => $doc,
                 'fnSignature' => $matches['fnSignature'] ?? '',
                 'desc' => $this->formatDescription($matches['desc'] ?? ''),
             ];
