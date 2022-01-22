@@ -11,41 +11,20 @@ use PHPUnit\Framework\TestCase;
 
 final class PhelFnNormalizerTest extends TestCase
 {
-    public function test_generate_search_index(): void
+    public function test_group_key_one_function(): void
     {
         $phelFnLoader = $this->createMock(PhelFnLoaderInterface::class);
         $phelFnLoader->method('getNormalizedPhelFunctions')->willReturn([
-            'test/table' => $this->createMock(PersistentMapInterface::class),
-            'test/table?' => $this->createMock(PersistentMapInterface::class),
-            'test/table-' => $this->createMock(PersistentMapInterface::class),
-            'TEST/TABLE' => $this->createMock(PersistentMapInterface::class),
+            'fn-name' => $this->createMock(PersistentMapInterface::class),
         ]);
 
         $normalizer = new PhelFnNormalizer($phelFnLoader);
         $actual = $normalizer->getNormalizedGroupedPhelFns();
 
         $expected = [
-            'test-table' => [
+            'fn-name' => [
                 [
-                    'fnName' => 'test/table',
-                    'doc' => '',
-                    'fnSignature' => '',
-                    'desc' => '',
-                ],
-                [
-                    'fnName' => 'test/table?',
-                    'doc' => '',
-                    'fnSignature' => '',
-                    'desc' => '',
-                ],
-                [
-                    'fnName' => 'test/table-',
-                    'doc' => '',
-                    'fnSignature' => '',
-                    'desc' => '',
-                ],
-                [
-                    'fnName' => 'TEST/TABLE',
+                    'fnName' => 'fn-name',
                     'doc' => '',
                     'fnSignature' => '',
                     'desc' => '',
@@ -53,12 +32,140 @@ final class PhelFnNormalizerTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
+    }
+
+    public function test_group_key_functions_in_different_groups(): void
+    {
+        $phelFnLoader = $this->createMock(PhelFnLoaderInterface::class);
+        $phelFnLoader->method('getNormalizedPhelFunctions')->willReturn([
+            'fn-name-1' => $this->createMock(PersistentMapInterface::class),
+            'fn-name-2' => $this->createMock(PersistentMapInterface::class),
+        ]);
+
+        $normalizer = new PhelFnNormalizer($phelFnLoader);
+        $actual = $normalizer->getNormalizedGroupedPhelFns();
+
+        $expected = [
+            'fn-name-1' => [
+                [
+                    'fnName' => 'fn-name-1',
+                    'doc' => '',
+                    'fnSignature' => '',
+                    'desc' => '',
+                ],
+            ],
+            'fn-name-2' => [
+                [
+                    'fnName' => 'fn-name-2',
+                    'doc' => '',
+                    'fnSignature' => '',
+                    'desc' => '',
+                ],
+            ],
+        ];
+
+        self::assertSame($expected, $actual);
+    }
+
+    public function test_group_key_functions_in_same_group_with_question_mark(): void
+    {
+        $phelFnLoader = $this->createMock(PhelFnLoaderInterface::class);
+        $phelFnLoader->method('getNormalizedPhelFunctions')->willReturn([
+            'fn-name' => $this->createMock(PersistentMapInterface::class),
+            'fn-name?' => $this->createMock(PersistentMapInterface::class),
+        ]);
+
+        $normalizer = new PhelFnNormalizer($phelFnLoader);
+        $actual = $normalizer->getNormalizedGroupedPhelFns();
+
+        $expected = [
+            'fn-name' => [
+                [
+                    'fnName' => 'fn-name',
+                    'doc' => '',
+                    'fnSignature' => '',
+                    'desc' => '',
+                ],
+                [
+                    'fnName' => 'fn-name?',
+                    'doc' => '',
+                    'fnSignature' => '',
+                    'desc' => '',
+                ],
+            ],
+        ];
+
+        self::assertSame($expected, $actual);
+    }
+
+
+    public function test_group_key_functions_in_same_group_with_minus(): void
+    {
+        $phelFnLoader = $this->createMock(PhelFnLoaderInterface::class);
+        $phelFnLoader->method('getNormalizedPhelFunctions')->willReturn([
+            'fn-name?' => $this->createMock(PersistentMapInterface::class),
+            'fn-name-' => $this->createMock(PersistentMapInterface::class),
+        ]);
+
+        $normalizer = new PhelFnNormalizer($phelFnLoader);
+        $actual = $normalizer->getNormalizedGroupedPhelFns();
+
+        $expected = [
+            'fn-name' => [
+                [
+                    'fnName' => 'fn-name?',
+                    'doc' => '',
+                    'fnSignature' => '',
+                    'desc' => '',
+                ],
+                [
+                    'fnName' => 'fn-name-',
+                    'doc' => '',
+                    'fnSignature' => '',
+                    'desc' => '',
+                ],
+            ],
+        ];
+
+        self::assertSame($expected, $actual);
+    }
+
+    public function test_group_key_functions_in_same_group_with_upper_case(): void
+    {
+        $phelFnLoader = $this->createMock(PhelFnLoaderInterface::class);
+        $phelFnLoader->method('getNormalizedPhelFunctions')->willReturn([
+            'fn-name-' => $this->createMock(PersistentMapInterface::class),
+            'FN-NAME' => $this->createMock(PersistentMapInterface::class),
+        ]);
+
+        $normalizer = new PhelFnNormalizer($phelFnLoader);
+        $actual = $normalizer->getNormalizedGroupedPhelFns();
+
+        $expected = [
+            'fn-name' => [
+                [
+                    'fnName' => 'fn-name-',
+                    'doc' => '',
+                    'fnSignature' => '',
+                    'desc' => '',
+                ],
+                [
+                    'fnName' => 'FN-NAME',
+                    'doc' => '',
+                    'fnSignature' => '',
+                    'desc' => '',
+                ],
+            ],
+        ];
+
+        self::assertSame($expected, $actual);
     }
 
     public function test_skip_private_symbol(): void
     {
         $privateSymbol = $this->createMock(PersistentMapInterface::class);
+        // Mocking the `$meta[Keyword::create('private')]`
         $privateSymbol->method('offsetExists')->willReturn(true);
         $privateSymbol->method('offsetGet')->willReturn(true);
 
@@ -68,20 +175,17 @@ final class PhelFnNormalizerTest extends TestCase
         ]);
 
         $normalizer = new PhelFnNormalizer($phelFnLoader);
-        $actual = $normalizer->getNormalizedGroupedPhelFns();
 
-        $expected = [];
-
-        self::assertEquals($expected, $actual);
+        self::assertEmpty($normalizer->getNormalizedGroupedPhelFns());
     }
 
     public function test_symbol_without_doc(): void
     {
         $symbol = $this->createStub(PersistentMapInterface::class);
         $symbol->method('offsetExists')->willReturn(true);
-        $symbol->method('offsetGet')->will(
-            $this->onConsecutiveCalls(false, null)
-        );
+        // false -> relates to `isPrivate`
+        // null  -> relates to `doc`
+        $symbol->method('offsetGet')->willReturnOnConsecutiveCalls(false, null);
 
         $phelFnLoader = $this->createMock(PhelFnLoaderInterface::class);
         $phelFnLoader->method('getNormalizedPhelFunctions')->willReturn([
@@ -102,15 +206,18 @@ final class PhelFnNormalizerTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function test_symbol_with_doc_and_desc(): void
     {
         $symbol = $this->createStub(PersistentMapInterface::class);
         $symbol->method('offsetExists')->willReturn(true);
-        $symbol->method('offsetGet')->will(
-            $this->onConsecutiveCalls(false, 'Constant for Not a Number (NAN) values.')
+        // false -> relates to `isPrivate`
+        // '...' -> relates to `doc`
+        $symbol->method('offsetGet')->willReturnOnConsecutiveCalls(
+            false,
+            'Constant for Not a Number (NAN) values.'
         );
 
         $phelFnLoader = $this->createMock(PhelFnLoaderInterface::class);
@@ -132,15 +239,18 @@ final class PhelFnNormalizerTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function test_symbol_with_doc_and_desc_and_signature(): void
     {
         $symbol = $this->createStub(PersistentMapInterface::class);
         $symbol->method('offsetExists')->willReturn(true);
-        $symbol->method('offsetGet')->will(
-            $this->onConsecutiveCalls(false, "```phel\n(array & xs)\n```\nCreates a new Array.")
+        // false -> relates to `isPrivate`
+        // '...' -> relates to `doc`
+        $symbol->method('offsetGet')->willReturnOnConsecutiveCalls(
+            false,
+            "```phel\n(array & xs)\n```\nCreates a new Array."
         );
 
         $phelFnLoader = $this->createMock(PhelFnLoaderInterface::class);
@@ -162,15 +272,18 @@ final class PhelFnNormalizerTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 
     public function test_symbol_with_desc_with_link(): void
     {
         $symbol = $this->createStub(PersistentMapInterface::class);
         $symbol->method('offsetExists')->willReturn(true);
-        $symbol->method('offsetGet')->will(
-            $this->onConsecutiveCalls(false, "Returns a formatted string. See PHP's [sprintf](http://...) for more information.")
+        // false -> relates to `isPrivate`
+        // '...' -> relates to `doc`
+        $symbol->method('offsetGet')->willReturnOnConsecutiveCalls(
+            false,
+            "Returns a formatted string. See PHP's [sprintf](http://...) for more information."
         );
 
         $phelFnLoader = $this->createMock(PhelFnLoaderInterface::class);
@@ -192,6 +305,6 @@ final class PhelFnNormalizerTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $actual);
+        self::assertSame($expected, $actual);
     }
 }
