@@ -1,4 +1,5 @@
 # Simply require all namespaces that should be documented
 (ns doc
   (:require phel\http)
+  (:require phel\html)
   (:require phel\test))

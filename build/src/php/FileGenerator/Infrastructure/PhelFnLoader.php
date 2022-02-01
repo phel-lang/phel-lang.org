@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Infrastructure;
 
-use Phel\Lang\AbstractFn;
 use Phel\Lang\Collections\Map\PersistentMapInterface;
+use Phel\Lang\Registry;
 use Phel\Lang\TypeFactory;
 use Phel\Run\RunFacade;
 use PhelDocBuild\FileGenerator\Domain\PhelFnLoaderInterface;
@@ -36,10 +36,11 @@ final class PhelFnLoader implements PhelFnLoaderInterface
 
         /** @var array<string,PersistentMapInterface> $normalizedData */
         $normalizedData = [];
-        foreach ($this->getAllPhelFunctions() as $ns => $functions) {
+        foreach ($this->getNamespaces() as $ns) {
             $normalizedNs = str_replace('phel\\', '', $ns);
             $moduleName = $normalizedNs === 'core' ? '' : $normalizedNs . '/';
-            foreach ($functions as $fnName => $fn) {
+
+            foreach ($this->getDefinitionsInNamespace($ns) as $fnName => $fn) {
                 $fullFnName = $moduleName . $fnName;
 
                 $normalizedData[$fullFnName] = $this->getPhelMeta($ns, $fnName);
@@ -65,16 +66,24 @@ final class PhelFnLoader implements PhelFnLoaderInterface
     }
 
     /**
-     * @return array<string,array<string,AbstractFn>>
+     * @return list<string>
      */
-    private function getAllPhelFunctions(): array
+    private function getNamespaces(): array
     {
-        return $GLOBALS['__phel'];
+        return Registry::getInstance()->getNamespaces();
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getDefinitionsInNamespace(string $ns): array
+    {
+        return Registry::getInstance()->getDefinitionInNamespace($ns);
     }
 
     private function getPhelMeta(string $ns, string $fnName): PersistentMapInterface
     {
-        return $GLOBALS['__phel_meta'][$ns][$fnName]
+        return Registry::getInstance()->getDefinitionMetaData($ns, $fnName)
             ?? TypeFactory::getInstance()->emptyPersistentMap();
     }
 }
