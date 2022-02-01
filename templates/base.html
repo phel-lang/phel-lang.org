@@ -20,10 +20,18 @@
   <meta property="og:image" content="https://phel-lang.org/favicon-512.png" />
   <meta property="og:image:width" content="512" />
   <meta property="og:image:height" content="512" />
+
+  {% block rss %}
+  <link rel="alternate" type="application/atom+xml" title="Blog" href="{{ get_url(path="atom.xml", trailing_slash=false) }}">
+  {% endblock %}
 </head>
 
 <body>
   {% block body %} {% endblock %}
+
+  <script type="text/javascript" src="{{ get_url(path='elasticlunr.min.js') }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path='api_search.js') }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path='search.js') }}" defer></script>
 </body>
 
 </html>

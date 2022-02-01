@@ -8,7 +8,9 @@
 @import 'two-column-layout';
 @import 'site-navigation';
 @import 'header';
+@import 'search';
 @import 'page-toc';
+@import 'post-list';
 
 body {
     padding-top: $header-height;

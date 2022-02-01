@@ -4,6 +4,27 @@
     "homepage": "https://phel-lang.org/",
     "license": "MIT",
     "require": {
-      "phel-lang/phel-lang": "^0.5"
+        "ext-json": "*",
+        "phel-lang/phel-lang": "^0.5",
+        "gacela-project/gacela": "^0.10.0"
+    },
+    "require-dev": {
+        "roave/security-advisories": "dev-latest",
+        "phpunit/phpunit": "^9.5",
+        "symfony/var-dumper": "^5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "PhelDocBuild\\": "build/src/php/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PhelDocBuildTests\\": "build/tests/php"
+        }
+    },
+    "scripts": {
+        "build": "php build/api-page.php > content/documentation/api.md",
+        "test": "./vendor/bin/phpunit"
     }
 }

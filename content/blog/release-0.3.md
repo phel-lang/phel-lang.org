@@ -1,0 +1,14 @@
++++
+title = "Release: v0.3.0"
+date = "2021-05-12"
++++
+
+The third release of Phel make big improvent in the data structure. Phel now uses persistent data structures. The old data structures are marked as deprecated and will be removed in future versions.
+
+Other changes:
+- Rename fmt command to format
+- Added new function take-last
+- Added new function re-seq
+- Added new function contains? (#267)
+- Bug fixes
+

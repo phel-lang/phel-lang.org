@@ -1,0 +1,15 @@
+time {
+    unicode-bidi: embed;
+    font-family: monospace;
+    white-space: pre;
+    font-size: 0.8rem;
+}
+
+.pagination {
+    display: flex;
+    justify-content: flex-end;
+
+    a.previous {
+        margin-right: auto;
+    }
+}

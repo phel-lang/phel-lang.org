@@ -43,7 +43,7 @@ There is a shorter form to define an anonymous function. This omits the paramete
 ## Global functions
 
 ```phel
-(defn docstring? attributes? [params*] expr*)
+(defn name docstring? attributes? [params*] expr*)
 ```
 
 Global functions can be defined using `defn`.
