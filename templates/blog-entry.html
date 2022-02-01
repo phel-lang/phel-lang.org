@@ -6,5 +6,6 @@
 {% endblock meta_content %}
 {% block content %}
     <h1>{{page.title}}</h1>
+    <time datetime="{{page.date}}">{{ page.date }}</time>
     {{page.content | safe}}
 {% endblock content %}

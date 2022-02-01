@@ -1,0 +1,25 @@
+{% extends "layouts/one-column-layout.html" %}
+
+{% block meta_content %}
+    <title>{{ section.title }}</title>
+    <meta property="og:title" content="{{ section.title }}" />
+{% endblock meta_content %}
+{% block content %}
+
+<ul class="post-list">
+    {% for page in paginator.pages %}
+    <li>
+        <time datetime="{{page.date}}">{{ page.date }}</time>
+        <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
+    </li>
+    {% endfor %}
+</ul>
+<div class="pagination">
+    {% if paginator.previous %}
+        <a class="previous" href="{{ paginator.previous }}">‹ Newer posts</a>
+    {% endif %}
+    {% if paginator.next %}
+        <a class="next" href="{{ paginator.next }}">Older posts ›</a>
+    {% endif %}
+</div>
+{% endblock content %}
