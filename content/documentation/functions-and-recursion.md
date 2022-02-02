@@ -11,7 +11,7 @@ weight = 7
 
 Defines a function. A function consists of a list of parameters and a list of expression. The value of the last expression is returned as the result of the function. All other expression are only evaluated for side effects. If no expression is given, the function returns `nil`.
 
-Function also introduce a new lexical scope that is not accessible outside of the function.
+Function also introduce a new lexical scope that is not accessible outside the function.
 
 ```phel
 (fn []) # Function with no arguments that returns nil
@@ -20,7 +20,7 @@ Function also introduce a new lexical scope that is not accessible outside of th
 (fn [a b] (+ a b)) # A function that returns the sum of a and b
 ```
 
-Function can also be defined as variadic function with an infite amount of arguments using the `&` separator.
+Function can also be defined as variadic function with an infinite amount of arguments using the `&` separator.
 
 ```phel
 (fn [& args] (count args)) # A variadic function that counts the arguments

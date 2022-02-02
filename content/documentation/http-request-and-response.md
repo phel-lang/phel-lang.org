@@ -5,7 +5,7 @@ weight = 15
 
 ## HTTP Request
 
-Phel provides an easy method to access the current HTTP request. While in PHP the request is distribute in different globals variables (`$_GET`, `$_POST`, `$_SERVER`, `$_COOKIES` and `$_FILES`) Phel normalizes them into a single struct. All functions and structs are defined in the `phel\http` module.
+Phel provides an easy method to access the current HTTP request. While in PHP the request is distributed in different globals variables (`$_GET`, `$_POST`, `$_SERVER`, `$_COOKIES` and `$_FILES`) Phel normalizes them into a single struct. All functions and structs are defined in the `phel\http` module.
 
 The request struct is defined like this:
 

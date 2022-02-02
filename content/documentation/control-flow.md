@@ -108,7 +108,7 @@ The `foreach` special form can be used to iterate over all kind of PHP datastruc
 
 ## For
 
-A more powerful loop functionality is provided by the `for` loop. The `for` loop is a elegant way to define and create arrays based on existing collections. It combines the functionality of `foreach`, `let` and `if` in one call.
+A more powerful loop functionality is provided by the `for` loop. The `for` loop is an elegant way to define and create arrays based on existing collections. It combines the functionality of `foreach`, `let` and `if` in one call.
 
 ```phel
 (for head body+)

@@ -4,7 +4,7 @@ template = "blog-entry.html"
 date = "2020-06-05"
 +++
 
-PHP was one of my first languages I learned. Even so, this dates back over 10 years, I still use PHP every day at work. However, in the meantime I also learned a lot of other languages like Java, Clojure, Scala, Python, Javascript and Scheme. By learning all the languages and their concepts, the concept of functional programming always was my favorite and so I tried to make my PHP programming style more functional. In the following article you can read some approaches I tried.
+PHP was one of my first languages I learned. Even so, this dates back over 10 years, I still use PHP every day at work. However, in the meantime I also learned a lot of other languages like Java, Clojure, Scala, Python, Javascript and Scheme. By learning all the languages and their concepts, the concept of functional programming always was my favorite, and so I tried to make my PHP programming style more functional. In the following article you can read some approaches I tried.
 
 ## Functions as arguments
 
@@ -18,7 +18,7 @@ function inc($number) {
 }
 ```
 
-However, one of the most common things you do in functional programming is to pass a function as argument to another function. If you try that, PHP will response to you with an error message.
+However, one of the most common things you do in functional programming is to pass a function as argument to another function. If you try that, PHP will respond to you with an error message.
 
 ```php
 <?php
@@ -129,7 +129,7 @@ class MyProgram {
 }
 ```
 
-A big disadvantage of this approach is, that we have to resolve all conflicting function names ourself. Not only for public methods but also for private methods. This becomes next to impossible if the program grows.
+A big disadvantage of this approach is, that we have to resolve all conflicting function names ourselves. Not only for public methods but also for private methods. This becomes next to impossible if the program grows.
 
 A combination of the class module approach and the trait module approach would be a good solution to get started with functional programming in PHP. However, the trick with the magic method `_get` cannot be used for the class module approach, since PHP has no magic method for static properties.
 
@@ -139,4 +139,4 @@ One last alternative is to use a language that is functional and compiles to PHP
 
 ## Introducing Phel
 
-Since I didn't found a good solution for this problem, I used my coronavirus spare time to solve it by myself. This is what turns out to be Phel. Phel is a functional programming language that compiles to PHP. It is a dialect of Lisp inspired by [Clojure](https://clojure.org/) and [Janet](https://janet-lang.org/). While the status of Phel is currently alpha, it is fairly complete. If you want to try it, go ahead and read the [Getting started guide](/documentation/getting-started/). I'm looking for your feedback.
+Since I didn't find a good solution for this problem, I used my coronavirus spare time to solve it by myself. This is what turns out to be Phel. Phel is a functional programming language that compiles to PHP. It is a dialect of Lisp inspired by [Clojure](https://clojure.org/) and [Janet](https://janet-lang.org/). While the status of Phel is currently alpha, it is fairly complete. If you want to try it, go ahead and read the [Getting started guide](/documentation/getting-started/). I'm looking for your feedback.

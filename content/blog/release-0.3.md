@@ -3,7 +3,7 @@ title = "Release: v0.3.0"
 date = "2021-05-12"
 +++
 
-The third release of Phel make big improvent in the data structure. Phel now uses persistent data structures. The old data structures are marked as deprecated and will be removed in future versions.
+The third release of Phel make big improvement in the data structure. Phel now uses persistent data structures. The old data structures are marked as deprecated and will be removed in future versions.
 
 Other changes:
 - Rename fmt command to format

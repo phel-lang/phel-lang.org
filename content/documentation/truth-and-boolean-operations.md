@@ -3,7 +3,7 @@ title = "Truth and Boolean operations"
 weight = 4
 +++
 
-Phel has a different concept of truthniss. In Phel only `false` and `nil` represent falsity. Everything else evaluates to true. The function `truthy?` can be used to check if a value is truthy. To check for the values `true` and `false` the functions `true?` and `false?` can be used.
+Phel has a different concept of truthiness. In Phel only `false` and `nil` represent falsity. Everything else evaluates to true. The function `truthy?` can be used to check if a value is truthy. To check for the values `true` and `false` the functions `true?` and `false?` can be used.
 
 ```phel
 (truthy? false) # Evaluates to false
@@ -38,7 +38,7 @@ The function `id` returns `true` if two values are identical. Identical is stric
 (id {} {}) # Evaluates to false
 ```
 
-To check if to two values are equal the equal function (`=`) can be used. Two values are equal if they have the same type and value. Lists, Vectors, Maps and Sets are equal if they have same values but they must not point to the same reference.
+To check if to two values are equal the equal function (`=`) can be used. Two values are equal if they have the same type and value. Lists, Vectors, Maps and Sets are equal if they have same values, but they must not point to the same reference.
 
 ```phel
 (= true true) # Evaluates to true

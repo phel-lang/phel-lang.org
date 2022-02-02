@@ -7,7 +7,7 @@ Phel comes with an integrated unit testing framework.
 
 ## Assertions
 
-The core of the libray is the `is` macro, which can be used to defined assertions.
+The core of the library is the `is` macro, which can be used to defined assertions.
 
 ```phel
 (is (= 4 (+ 2 2)) "my test description")
@@ -75,7 +75,7 @@ Test can be defined by using the `deftest` macro. This macro is like a function 
 
 Tests can be run using the `./vendor/bin/phel test` command. Therefore, the `test` configuration entry must be set (see [Configuration](/documentation/configuration/)).
 
-I can use want to run the test manually on your own, the `run-tests` function can be used.  As arguments it takes a list of namespaces that should be tested.
+I can use want to run the test manually on your own, the `run-tests` function can be used. As arguments, it takes a list of namespaces that should be tested.
 
 ```phel
 (run-tests 'my\ns\a 'my\ns\b)

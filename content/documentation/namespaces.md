@@ -101,7 +101,7 @@ In some cases it is necessary to load external PHP file via PHP's `require_once`
   (:require-file "vendor/autoload.php"))
 ```
 
-As alternative you can also call `(php/require_once "vendor/autload.php")` anywhere in your code. However, especially for the autload file this statement is executed to late, because Phel's core library needs to load PHP files via the autoloader. Therefore, it is recommended to use the `:require-file` method.
+As alternative, you can also call `(php/require_once "vendor/autload.php")` anywhere in your code. However, especially for the autoload file this statement is executed to late, because Phel's core library needs to load PHP files via the autoloader. Therefore, it is recommended to use the `:require-file` method.
 
 ## Namespaced keywords
 
