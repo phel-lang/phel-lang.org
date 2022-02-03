@@ -9,7 +9,7 @@ Phel requires PHP 8.0 or higher and [Composer](https://getcomposer.org/).
 
 ## Quick start
 
-To get started right away the [Scaffolding project on Github](https://github.com/phel-lang/phel-scaffolding) can be used.
+To get started right away the [Scaffolding project on GitHub](https://github.com/phel-lang/phel-scaffolding) can be used.
 
 ```bash
 git clone https://github.com/phel-lang/phel-scaffolding.git

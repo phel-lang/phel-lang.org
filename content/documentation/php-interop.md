@@ -191,7 +191,7 @@ return [
 
 A detailed description of the options can be found in the [Configuration](/documentation/configuration/#export) chapter.
 
-To mark a function as exported the following meta data needs to be added to the function:
+To mark a function as exported the following metadata needs to be added to the function:
 
 ```phel
 (defn my-function

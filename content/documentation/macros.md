@@ -25,7 +25,7 @@ The quote operator is a special form, it returns its argument without evaluating
 (quote my-sym) # Evaluates to my-sym
 'my-sym # Shorthand for (same as above)
 ```
-Quote make macros possible, since its helps to distinguish between code and data. Literals like numbers and string evaluate to themself.
+Quote make macros possible, since its helps to distinguish between code and data. Literals like numbers and string evaluate to themselves.
 
 ```phel
 (quote 1) # Evaluates to 1

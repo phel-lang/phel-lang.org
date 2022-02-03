@@ -9,7 +9,7 @@ Phel has four main data structures. All data structures are persistent data stru
 
 A persistent list is simple a linked list. Access or modifications on the first element is efficient, random access is not. In Phel, a list has a special meaning. They are interpreted as function calls, macro calls or special forms by the compiler.
 
-To create a list surrond the white space separeted values with parentheses or use the `list` function.
+To create a list surround the white space separated values with parentheses or use the `list` function.
 
 ```phel
 (do 1 2 3) # list with 4 entries
@@ -54,7 +54,7 @@ To create a vector wrap the white space seperated values with brackets or use th
 (vector 1 2 3) # Creates a new vector with three values
 ```
 
-To get a value by it's index use the `get` function. Similar to list you can use the `first` and `second` function to access the first or second values of the vector.
+To get a value by its index use the `get` function. Similar to list you can use the `first` and `second` function to access the first or second values of the vector.
 
 ```phel
 (get [1 2 3] 0) # Evaluates to 1
@@ -68,7 +68,7 @@ New values can be appended by using the `push` function.
 (push [1 2 3] 4) # Evaluates to [1 2 3 4]
 ```
 
-To change an exsting value use the `put` function
+To change an existing value use the `put` function
 
 ```phel
 (put [1 2 3] 0 4) # Evaluates to [4 2 3]
@@ -93,7 +93,7 @@ To create a map wrap the key and values in curly brackets or use the `hash-map` 
 (hash-map :key1 value1 :key2 value2) # Create a new map using the hash-map function
 ```
 
-Use the `get` function to access a value by it's key
+Use the `get` function to access a value by its key
 
 ```phel
 (get {:a 1 :b 2} :a) # Evaluates to 1
@@ -133,7 +133,7 @@ A Struct is a special kind of Map. It only supports a predefined number of keys 
   (put x :a 12) # Evaluates to (my-struct 12 2 3)
 ```
 
-Internally, Phel Structs are PHP classes where each key correspondence to a object property. Therefore, Structs can be faster than Maps.
+Internally, Phel Structs are PHP classes where each key correspondence to an object property. Therefore, Structs can be faster than Maps.
 
 ## Sets
 
@@ -197,7 +197,7 @@ The symmetric difference of two sets or more is the set of elements which are in
 
 ## Transients
 
-Nearly all persistent data structures have a transient version (except for Persistent List). The transient version of each persistent data structure is a mutable version of them. It store the value in the same way as the persistent version but instead of returning a new persistent version with every modification it modifies the current version. Transient versions are a little bit faster and can be used as builders for new persistent collections. Since transients use the same underlying storage it is very fast to convert a persistent data structure to a transient and back.
+Nearly all persistent data structures have a transient version (except for Persistent List). The transient version of each persistent data structure is a mutable version of them. It stores the value in the same way as the persistent version but instead of returning a new persistent version with every modification it modifies the current version. Transient versions are a bit faster and can be used as builders for new persistent collections. Since transients use the same underlying storage it is very fast to convert a persistent data structure to a transient and back.
 
 For example, if we want to convert a PHP Array to a persistent map. This function can be used:
 

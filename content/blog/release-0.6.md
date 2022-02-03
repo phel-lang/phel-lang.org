@@ -47,4 +47,4 @@ Finally, a new function was added to the core library. The `coerce-in` function 
 (coerce-in -0.5 0 1) # evaluates to 0
 ```
 
-All other changes can be found the in the [Changlog](https://github.com/phel-lang/phel-lang/blob/master/Changelog.md)
+All other changes can be found the in the [Changelog](https://github.com/phel-lang/phel-lang/blob/master/Changelog.md)

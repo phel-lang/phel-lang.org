@@ -64,7 +64,7 @@ phel:3>
 
 ### use
 
-The `use` function can be used to add a alias for a PHP class. The arguments are the same as the `:use` statement in the `ns` function.
+The `use` function can be used to add an alias for a PHP class. The arguments are the same as the `:use` statement in the `ns` function.
 ```bash
 phel:1> (use \Phel\Lang\Symbol :as PhelSymbol)
 \Phel\Lang\Symbol

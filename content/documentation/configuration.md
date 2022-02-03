@@ -40,7 +40,7 @@ A list of directories in which the test files are located.
 
 ### `vendor-dir`
 
-The name of the compsoer vendor directory. Default is `vendor`.
+The name of the composer vendor directory. Default is `vendor`.
 
 ### `export`
 
