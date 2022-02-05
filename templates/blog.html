@@ -5,12 +5,13 @@
     <meta property="og:title" content="{{ section.title }}" />
 {% endblock meta_content %}
 {% block content %}
-
+<h1>Blog</h1>
+<p>Find the newest information about Phel in our Blog. Subscribe the <a href="{{ get_url(path="atom.xml", trailing_slash=false) }}">Atom/RSS feed</a> if you never want to miss a new entry.</p>
 <ul class="post-list">
     {% for page in paginator.pages %}
     <li>
-        <time datetime="{{page.date}}">{{ page.date }}</time>
         <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
+        / Published <time datetime="{{page.date}}">{{ page.date | date(format="%b, %e %Y") }}</time>
     </li>
     {% endfor %}
 </ul>
