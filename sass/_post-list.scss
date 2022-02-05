@@ -1,8 +1,20 @@
-time {
-    unicode-bidi: embed;
-    font-family: monospace;
-    white-space: pre;
-    font-size: 0.8rem;
+.post-list {
+    padding-left : 0;
+    font-size: 1.1rem;
+    color: #999;
+
+    li {
+        list-style: none;
+        margin: 0;
+        padding: 0.5em 0;
+        border-bottom: 1px solid #dcdcdc;
+    }
+}
+
+.blog-entry {
+  .meta {
+    color: #999;
+  }
 }
 
 .pagination {
