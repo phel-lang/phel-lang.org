@@ -51,6 +51,16 @@ The following example gives a short impression on how Phel looks like:
 (print-name my-name)
 ```
 
+## Try Phel
+
+The quickest way to try out Phel is to run our REPL Docker container.
+
+```
+docker run -it --rm phellang/repl
+```
+
+![Try Phel animation](/try-phel.gif "Try Phel Animation")
+
 ## Getting started
 
 Phel requires PHP 8.0 or higher and Composer. Read the [Getting Started Guide](/documentation/getting-started) to create your first Phel program.
