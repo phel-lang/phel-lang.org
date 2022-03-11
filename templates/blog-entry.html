@@ -11,5 +11,21 @@
       <div class="meta">Published <time datetime="{{page.date}}">{{ page.date | date(format="%b, %e %Y") }}</time></div>
     {% endif %}
     {{page.content | safe}}
+
+    <div class="related-container">
+      {% if page.earlier %}
+      <div class="link">
+        <span>Previous</span>
+        <a href="{{ page.earlier.permalink }}">{{ page.earlier.title }}</a>
+      </div>
+      {% endif %}
+
+      {% if page.later %}
+      <div class="link">
+        <span>Next</span>
+        <a href="{{ page.later.permalink }}">{{ page.later.title }}</a>
+      </div>
+      {% endif %}
+    </div>
   </div>
 {% endblock content %}
