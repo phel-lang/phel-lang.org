@@ -14,16 +14,16 @@
 
     <div class="related-container">
       {% if page.earlier %}
-      <div class="link">
-        <span>Previous</span>
+      <div class="link link-previous">
+        <span>&larr;</span>
         <a href="{{ page.earlier.permalink }}">{{ page.earlier.title }}</a>
       </div>
       {% endif %}
 
       {% if page.later %}
-      <div class="link">
-        <span>Next</span>
+      <div class="link link-next">
         <a href="{{ page.later.permalink }}">{{ page.later.title }}</a>
+        <span>&rarr;</span>
       </div>
       {% endif %}
     </div>

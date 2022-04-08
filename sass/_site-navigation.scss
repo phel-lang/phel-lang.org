@@ -5,19 +5,18 @@
 }
 
 .related-container {
-  margin-top: 3rem;
-  margin-bottom: 4rem;
-  display: flex;
+  border: 1px solid $color-gray-base;
+  margin: 4rem 0 4rem 0;
+  float-displace: unset;
   text-align: center;
 
   .link {
-    flex-shrink: 0;
-    padding: 1rem;
-    box-sizing: border-box;
-    width: 50%;
-
-    span {
-      display: block;
-    }
+    padding: .4rem;
+  }
+  .link-previous {
+    float: left;
+  }
+  .link-next {
+    float: right;
   }
 }
