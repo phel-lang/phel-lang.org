@@ -1,6 +1,6 @@
 +++
 title = "Release: v0.7.0"
-date = "2022-04-28"
+date = "2022-05-05"
 +++
 
 This release comes with a lot a small improvements to the core library.
