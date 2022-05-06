@@ -20,6 +20,7 @@ The request struct is defined like this:
   server-params     # Map with all server parameters ($_SERVER)
   uploaded-files    # Map of 'uploaded-file' structs (see below)
   version           # The HTTP Version
+  attributes        # consumer specific data to enrich the request
 ])
 
 (defstruct uri [
@@ -71,11 +72,11 @@ To make it easier to create responses. Phel has two helpers methods to create a 
   (:require phel\http))
 
 # Create response from map
-(http/create-response-from-map {:status 200 :body "Test"})
+(http/response-from-map {:status 200 :body "Test"})
 # Evaluates to (response 200 {} "Test" "1.1" "OK")
 
 # Create response from string
-(http/create-response-from-string "Hello World")
+(http/response-from-string "Hello World")
 # Evaluates to (response 200 {} "Hello World" "1.1" "OK")
 ```
 
@@ -85,7 +86,7 @@ To send the response to the client the `emit-response` function can be used.
 (ns my-namepace
   (:require phel\http))
 
-(let [rsp (http/create-response-from-map
+(let [rsp (http/response-from-map
             {:status 404 :body "Page not found"})]
   (http/emit-response rsp))
 ```
