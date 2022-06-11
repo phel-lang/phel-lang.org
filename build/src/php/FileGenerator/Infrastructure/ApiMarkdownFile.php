@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Infrastructure;
 
-use PhelDocBuild\FileGenerator\Domain\MdPageRenderer;
 use PhelDocBuild\FileGenerator\Domain\OutputInterface;
 use PhelDocBuild\FileGenerator\Domain\PhelFnNormalizer;
 

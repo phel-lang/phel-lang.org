@@ -19,12 +19,12 @@ final class PhelFnLoader implements PhelFnLoaderInterface
 
     private RunFacade $runFacade;
 
-    private string $srcDir;
+    private string $appRootDir;
 
-    public function __construct(RunFacade $runFacade, string $srcDir)
+    public function __construct(RunFacade $runFacade, string $appRootDir)
     {
         $this->runFacade = $runFacade;
-        $this->srcDir = $srcDir;
+        $this->appRootDir = $appRootDir;
     }
 
     /**
@@ -58,7 +58,7 @@ final class PhelFnLoader implements PhelFnLoaderInterface
         }
 
         $this->runFacade->getRunCommand()->run(
-            new ArrayInput(['path' => $this->srcDir . '/phel/doc.phel']),
+            new ArrayInput(['path' => $this->appRootDir . '/../phel/doc.phel']),
             new ConsoleOutput()
         );
 

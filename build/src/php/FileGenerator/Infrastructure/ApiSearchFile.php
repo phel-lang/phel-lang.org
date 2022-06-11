@@ -13,16 +13,16 @@ final class ApiSearchFile
 {
     private PhelFnNormalizer $phelFnNormalizer;
     private ApiSearchGenerator $apiSearchGenerator;
-    private string $srcDir;
+    private string $appRootDir;
 
     public function __construct(
         PhelFnNormalizer $phelFnNormalizer,
         ApiSearchGenerator $apiSearchGenerator,
-        string $srcDir
+        string $appRootDir
     ) {
         $this->phelFnNormalizer = $phelFnNormalizer;
         $this->apiSearchGenerator = $apiSearchGenerator;
-        $this->srcDir = $srcDir;
+        $this->appRootDir = $appRootDir;
     }
 
     public function generate(): void
@@ -32,7 +32,7 @@ final class ApiSearchFile
         $searchIndex = $this->apiSearchGenerator->generateSearchIndex($groupedPhelFns);
 
         file_put_contents(
-            $this->srcDir . '/../../static/api_search.js',
+            $this->appRootDir . '/../static/api_search.js',
             "window.searchIndexApi = " . json_encode($searchIndex)
         );
     }

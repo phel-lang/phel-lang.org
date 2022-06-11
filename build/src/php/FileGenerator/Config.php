@@ -8,8 +8,4 @@ use Gacela\Framework\AbstractConfig;
 
 final class Config extends AbstractConfig
 {
-    public function getSrcDir(): string
-    {
-        return __DIR__ . '/../..';
-    }
 }
