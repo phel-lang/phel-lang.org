@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhelDocBuildTests\FileGenerator;
+namespace PhelDocBuildTests\FileGenerator\Domain;
 
 use Phel\Lang\Collections\Map\PersistentMapInterface;
 use PhelDocBuild\FileGenerator\Domain\PhelFnLoaderInterface;
