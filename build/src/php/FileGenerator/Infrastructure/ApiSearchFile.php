@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace PhelDocBuild\FileGenerator\Infrastructure;
 
 use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
-use PhelDocBuild\FileGenerator\Domain\MdPageRenderer;
 use PhelDocBuild\FileGenerator\Domain\PhelFnNormalizer;
 use function json_encode;
 
 final class ApiSearchFile
 {
     private PhelFnNormalizer $phelFnNormalizer;
+
     private ApiSearchGenerator $apiSearchGenerator;
+
     private string $appRootDir;
 
     public function __construct(

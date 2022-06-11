@@ -99,7 +99,6 @@ final class PhelFnNormalizerTest extends TestCase
         self::assertSame($expected, $actual);
     }
 
-
     public function test_group_key_functions_in_same_group_with_minus(): void
     {
         $phelFnLoader = $this->createMock(PhelFnLoaderInterface::class);

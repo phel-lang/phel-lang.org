@@ -15,7 +15,7 @@ final class Facade extends AbstractFacade
     {
         $this->getFactory()
             ->createApiMarkdownFile()
-            ->render();
+            ->generate();
     }
 
     public function generateApiSearch(): void
