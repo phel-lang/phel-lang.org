@@ -28,7 +28,7 @@ final class Factory extends AbstractFactory
         );
     }
 
-    public function createDocFileGenerator(): ApiSearchFile
+    public function createApiSearchFile(): ApiSearchFile
     {
         return new ApiSearchFile(
             $this->createPhelFnNormalizer(),

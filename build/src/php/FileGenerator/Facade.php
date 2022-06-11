@@ -21,7 +21,7 @@ final class Facade extends AbstractFacade
     public function generateApiSearch(): void
     {
         $this->getFactory()
-            ->createDocFileGenerator()
+            ->createApiSearchFile()
             ->generate();
     }
 }

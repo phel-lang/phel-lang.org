@@ -24,7 +24,10 @@
         }
     },
     "scripts": {
-        "build": "php build/api-page.php > content/documentation/api.md",
+        "build": [
+            "php build/api-page.php > content/documentation/api.md",
+            "php build/api-search.php"
+        ],
         "test": "./vendor/bin/phpunit"
     }
 }
