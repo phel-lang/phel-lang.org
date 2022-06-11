@@ -14,14 +14,14 @@ final class Facade extends AbstractFacade
     public function generateMdPage(): void
     {
         $this->getFactory()
-            ->createDocFileGenerator()
-            ->renderMdPage();
+            ->createApiMarkdownFile()
+            ->render();
     }
 
     public function generateApiSearch(): void
     {
         $this->getFactory()
             ->createDocFileGenerator()
-            ->generateApiSearch();
+            ->generate();
     }
 }

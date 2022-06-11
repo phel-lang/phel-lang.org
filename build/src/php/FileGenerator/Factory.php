@@ -11,7 +11,8 @@ use PhelDocBuild\FileGenerator\Domain\MdPageRenderer;
 use PhelDocBuild\FileGenerator\Domain\OutputInterface;
 use PhelDocBuild\FileGenerator\Domain\PhelFnLoaderInterface;
 use PhelDocBuild\FileGenerator\Domain\PhelFnNormalizer;
-use PhelDocBuild\FileGenerator\Infrastructure\DocFileGenerator;
+use PhelDocBuild\FileGenerator\Infrastructure\ApiMarkdownFile;
+use PhelDocBuild\FileGenerator\Infrastructure\ApiSearchFile;
 use PhelDocBuild\FileGenerator\Infrastructure\PhelFnLoader;
 
 /**
@@ -19,19 +20,21 @@ use PhelDocBuild\FileGenerator\Infrastructure\PhelFnLoader;
  */
 final class Factory extends AbstractFactory
 {
-    public function createDocFileGenerator(): DocFileGenerator
+    public function createApiMarkdownFile(): ApiMarkdownFile
     {
-        return new DocFileGenerator(
-            $this->createMdPageRenderer(),
+        return new ApiMarkdownFile(
+            $this->createOutput(),
+            $this->createPhelFnNormalizer(),
+        );
+    }
+
+    public function createDocFileGenerator(): ApiSearchFile
+    {
+        return new ApiSearchFile(
             $this->createPhelFnNormalizer(),
             $this->createApiSearchGenerator(),
             $this->getConfig()->getSrcDir()
         );
-    }
-
-    private function createMdPageRenderer(): MdPageRenderer
-    {
-        return new MdPageRenderer($this->createOutput());
     }
 
     private function createOutput(): OutputInterface

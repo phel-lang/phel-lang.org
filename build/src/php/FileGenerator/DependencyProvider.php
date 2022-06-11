@@ -17,6 +17,6 @@ final class DependencyProvider extends AbstractDependencyProvider
 
     public function provideModuleDependencies(Container $container): void
     {
-        $container->set(self::FACADE_PHEL_RUN, fn() => new RunFacade());
+        $container->set(self::FACADE_PHEL_RUN, fn () => new RunFacade());
     }
 }
