@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhelDocBuildTests\FileGenerator;
+namespace PhelDocBuildTests\FileGenerator\Domain;
 
 use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
 use PHPUnit\Framework\TestCase;

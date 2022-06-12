@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhelDocBuildTests\FileGenerator;
+namespace PhelDocBuildTests\FileGenerator\Domain;
 
 use Phel\Lang\Collections\Map\PersistentMapInterface;
 use PhelDocBuild\FileGenerator\Domain\PhelFnLoaderInterface;
@@ -98,7 +98,6 @@ final class PhelFnNormalizerTest extends TestCase
 
         self::assertSame($expected, $actual);
     }
-
 
     public function test_group_key_functions_in_same_group_with_minus(): void
     {

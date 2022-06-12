@@ -6,51 +6,42 @@ namespace PhelDocBuild\FileGenerator;
 
 use Gacela\Framework\AbstractFactory;
 use Phel\Run\RunFacadeInterface;
+use PhelDocBuild\FileGenerator\Domain\ApiMarkdownGenerator;
 use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
-use PhelDocBuild\FileGenerator\Domain\MdPageRenderer;
-use PhelDocBuild\FileGenerator\Domain\OutputInterface;
 use PhelDocBuild\FileGenerator\Domain\PhelFnLoaderInterface;
 use PhelDocBuild\FileGenerator\Domain\PhelFnNormalizer;
-use PhelDocBuild\FileGenerator\Infrastructure\DocFileGenerator;
+use PhelDocBuild\FileGenerator\Domain\PhelFnNormalizerInterface;
+use PhelDocBuild\FileGenerator\Infrastructure\ApiMarkdownFile;
+use PhelDocBuild\FileGenerator\Infrastructure\ApiSearchFile;
 use PhelDocBuild\FileGenerator\Infrastructure\PhelFnLoader;
 
-/**
- * @method Config getConfig()
- */
 final class Factory extends AbstractFactory
 {
-    public function createDocFileGenerator(): DocFileGenerator
+    public function createApiMarkdownFile(): ApiMarkdownFile
     {
-        return new DocFileGenerator(
-            $this->createMdPageRenderer(),
-            $this->createPhelFnNormalizer(),
-            $this->createApiSearchGenerator(),
-            $this->getConfig()->getSrcDir()
+        return new ApiMarkdownFile(
+            $this->createApiMarkdownGenerator(),
+            $this->getConfig()->getAppRootDir(),
         );
     }
 
-    private function createMdPageRenderer(): MdPageRenderer
+    private function createApiMarkdownGenerator(): ApiMarkdownGenerator
     {
-        return new MdPageRenderer($this->createOutput());
+        return new ApiMarkdownGenerator(
+            $this->createPhelFnNormalizer()
+        );
     }
 
-    private function createOutput(): OutputInterface
+    public function createApiSearchFile(): ApiSearchFile
     {
-        return new class() implements OutputInterface {
-
-            public function write(string $line): void
-            {
-                echo $line;
-            }
-
-            public function writeln(string $line): void
-            {
-                echo $line . PHP_EOL;
-            }
-        };
+        return new ApiSearchFile(
+            $this->createPhelFnNormalizer(),
+            $this->createApiSearchGenerator(),
+            $this->getConfig()->getAppRootDir()
+        );
     }
 
-    private function createPhelFnNormalizer(): PhelFnNormalizer
+    private function createPhelFnNormalizer(): PhelFnNormalizerInterface
     {
         return new PhelFnNormalizer($this->createPhelFnLoader());
     }
@@ -59,7 +50,7 @@ final class Factory extends AbstractFactory
     {
         return new PhelFnLoader(
             $this->getRunFacade(),
-            $this->getConfig()->getSrcDir()
+            $this->getConfig()->getAppRootDir()
         );
     }
 

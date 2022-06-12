@@ -11,17 +11,17 @@ use Gacela\Framework\AbstractFacade;
  */
 final class Facade extends AbstractFacade
 {
-    public function generateMdPage(): void
+    public function generateApiMarkdownFile(): void
     {
         $this->getFactory()
-            ->createDocFileGenerator()
-            ->renderMdPage();
+            ->createApiMarkdownFile()
+            ->generate();
     }
 
-    public function generateApiSearch(): void
+    public function generateApiSearchFile(): void
     {
         $this->getFactory()
-            ->createDocFileGenerator()
-            ->generateApiSearch();
+            ->createApiSearchFile()
+            ->generate();
     }
 }

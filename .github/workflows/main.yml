@@ -21,7 +21,7 @@ jobs:
         run: composer install
 
       - name: Generate API Documentation
-        run: php build/api-page.php > content/documentation/api.md
+        run: composer build
 
       - name: Build and deploy
         uses: jenshaase/deploy-zola-via-lftp-action@main

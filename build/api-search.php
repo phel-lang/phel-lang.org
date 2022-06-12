@@ -17,4 +17,4 @@ $setupGacela = (new SetupGacela())
 Gacela::bootstrap(__DIR__, $setupGacela);
 
 $fileGeneratorFacade = new Facade();
-$fileGeneratorFacade->generateApiMarkdownFile();
+$fileGeneratorFacade->generateApiSearchFile();

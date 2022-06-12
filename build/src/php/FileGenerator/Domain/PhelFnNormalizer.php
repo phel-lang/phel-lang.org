@@ -6,7 +6,7 @@ namespace PhelDocBuild\FileGenerator\Domain;
 
 use Phel\Lang\Keyword;
 
-final class PhelFnNormalizer
+final class PhelFnNormalizer implements PhelFnNormalizerInterface
 {
     private PhelFnLoaderInterface $phelFnLoader;
 
@@ -48,7 +48,7 @@ final class PhelFnNormalizer
         }
 
         foreach ($result as $values) {
-            usort($values, static fn(array $a, array $b) => $a['fnName'] <=> $b['fnName']);
+            usort($values, static fn (array $a, array $b) => $a['fnName'] <=> $b['fnName']);
         }
 
         return $result;
