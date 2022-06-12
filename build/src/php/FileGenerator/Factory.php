@@ -6,9 +6,11 @@ namespace PhelDocBuild\FileGenerator;
 
 use Gacela\Framework\AbstractFactory;
 use Phel\Run\RunFacadeInterface;
+use PhelDocBuild\FileGenerator\Domain\ApiMarkdownGenerator;
 use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
 use PhelDocBuild\FileGenerator\Domain\PhelFnLoaderInterface;
 use PhelDocBuild\FileGenerator\Domain\PhelFnNormalizer;
+use PhelDocBuild\FileGenerator\Domain\PhelFnNormalizerInterface;
 use PhelDocBuild\FileGenerator\Infrastructure\ApiMarkdownFile;
 use PhelDocBuild\FileGenerator\Infrastructure\ApiSearchFile;
 use PhelDocBuild\FileGenerator\Infrastructure\PhelFnLoader;
@@ -18,8 +20,15 @@ final class Factory extends AbstractFactory
     public function createApiMarkdownFile(): ApiMarkdownFile
     {
         return new ApiMarkdownFile(
+            $this->createApiMarkdownGenerator(),
             $this->getConfig()->getAppRootDir(),
-            $this->createPhelFnNormalizer(),
+        );
+    }
+
+    private function createApiMarkdownGenerator(): ApiMarkdownGenerator
+    {
+        return new ApiMarkdownGenerator(
+            $this->createPhelFnNormalizer()
         );
     }
 
@@ -32,7 +41,7 @@ final class Factory extends AbstractFactory
         );
     }
 
-    private function createPhelFnNormalizer(): PhelFnNormalizer
+    private function createPhelFnNormalizer(): PhelFnNormalizerInterface
     {
         return new PhelFnNormalizer($this->createPhelFnLoader());
     }

@@ -6,7 +6,7 @@ namespace PhelDocBuild\FileGenerator\Domain;
 
 use Phel\Lang\Keyword;
 
-final class PhelFnNormalizer
+final class PhelFnNormalizer implements PhelFnNormalizerInterface
 {
     private PhelFnLoaderInterface $phelFnLoader;
 
