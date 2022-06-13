@@ -6,17 +6,19 @@ namespace PhelDocBuild\FileGenerator;
 
 use Gacela\Framework\AbstractDependencyProvider;
 use Gacela\Framework\Container\Container;
-use Phel\Run\RunFacade;
+use PhelNormalizedInternal\PhelNormalizedInternalFacadeInterface;
 
 /**
  * @method Factory getFactory()
  */
 final class DependencyProvider extends AbstractDependencyProvider
 {
-    public const FACADE_PHEL_RUN = 'FACADE_PHEL_RUN';
+    public const FACADE_PHEL_NORMALIZED_INTERNAL = 'FACADE_PHEL_NORMALIZED_INTERNAL';
 
     public function provideModuleDependencies(Container $container): void
     {
-        $container->set(self::FACADE_PHEL_RUN, fn () => new RunFacade());
+        $container->set(self::FACADE_PHEL_NORMALIZED_INTERNAL, function (Container $container) {
+            return $container->getLocator()->get(PhelNormalizedInternalFacadeInterface::class);
+        });
     }
 }

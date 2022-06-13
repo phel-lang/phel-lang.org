@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhelDocBuildTests\FileGenerator\Domain;
 
 use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
+use PhelNormalizedInternal\Transfer\NormalizedPhelFunction;
 use PHPUnit\Framework\TestCase;
 
 final class ApiSearchGeneratorTest extends TestCase
@@ -20,11 +21,11 @@ final class ApiSearchGeneratorTest extends TestCase
     {
         $actual = $this->generator->generateSearchIndex([
             'table' => [
-                [
+                NormalizedPhelFunction::fromArray([
                     'fnName' => 'table?',
                     'fnSignature' => '(table? x)',
                     'desc' => 'doc for table?',
-                ],
+                ]),
             ],
         ]);
 
@@ -44,18 +45,18 @@ final class ApiSearchGeneratorTest extends TestCase
     {
         $actual = $this->generator->generateSearchIndex([
             'table' => [
-                [
+                NormalizedPhelFunction::fromArray([
                     'fnName' => 'table',
                     'fnSignature' => '(table & xs)',
                     'desc' => 'doc for table',
-                ],
+                ]),
             ],
             'not' => [
-                [
+                NormalizedPhelFunction::fromArray([
                     'fnName' => 'not',
                     'fnSignature' => '(not x)',
                     'desc' => 'doc for not',
-                ],
+                ]),
             ],
         ]);
 
@@ -81,16 +82,16 @@ final class ApiSearchGeneratorTest extends TestCase
     {
         $actual = $this->generator->generateSearchIndex([
             'table' => [
-                [
+                NormalizedPhelFunction::fromArray([
                     'fnName' => 'table',
                     'fnSignature' => '(table & xs)',
                     'desc' => 'doc for table',
-                ],
-                [
+                ]),
+                    NormalizedPhelFunction::fromArray([
                     'fnName' => 'table?',
                     'fnSignature' => '(table? x)',
                     'desc' => 'doc for table?',
-                ],
+                ]),
             ],
         ]);
 
@@ -116,16 +117,16 @@ final class ApiSearchGeneratorTest extends TestCase
     {
         $actual = $this->generator->generateSearchIndex([
             'http-response' => [
-                [
+                NormalizedPhelFunction::fromArray([
                     'fnName' => 'http/response',
                     'fnSignature' => '',
                     'desc' => '',
-                ],
-                [
+                ]),
+                NormalizedPhelFunction::fromArray([
                     'fnName' => 'http/response?',
                     'fnSignature' => '',
                     'desc' => '',
-                ],
+                ]),
             ],
         ]);
 
@@ -151,16 +152,16 @@ final class ApiSearchGeneratorTest extends TestCase
     {
         $actual = $this->generator->generateSearchIndex([
             'defn' => [
-                [
+                NormalizedPhelFunction::fromArray([
                     'fnName' => 'defn',
                     'fnSignature' => '',
                     'desc' => '',
-                ],
-                [
+                ]),
+                    NormalizedPhelFunction::fromArray([
                     'fnName' => 'defn-',
                     'fnSignature' => '',
                     'desc' => '',
-                ],
+                ]),
             ],
         ]);
 
@@ -186,16 +187,16 @@ final class ApiSearchGeneratorTest extends TestCase
     {
         $actual = $this->generator->generateSearchIndex([
             'nan' => [
-                [
+                NormalizedPhelFunction::fromArray([
                     'fnName' => 'NAN',
                     'fnSignature' => '',
                     'desc' => '',
-                ],
-                [
+                ]),
+                NormalizedPhelFunction::fromArray([
                     'fnName' => 'nan?',
                     'fnSignature' => '',
                     'desc' => '',
-                ],
+                ]),
             ],
         ]);
 

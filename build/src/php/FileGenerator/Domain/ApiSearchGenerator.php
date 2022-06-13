@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Domain;
 
+use PhelNormalizedInternal\Transfer\NormalizedPhelFunction;
+
 final class ApiSearchGenerator
 {
     private const SPECIAL_ENDING_CHARS = ['=', '*', '?', '+', '>', '<', '!'];
 
     /**
+     * @param array<string,list<NormalizedPhelFunction>> $groupNormalizedData
+     *
      * @return array<string,array{fnName:string,fnSignature:string,desc:string,anchor:string}>
      */
     public function generateSearchIndex(array $groupNormalizedData): array
@@ -28,7 +32,9 @@ final class ApiSearchGenerator
         foreach ($groupNormalizedData as $groupKey => $values) {
             $groupFnNameAppearances[$groupKey] = 0;
 
-            foreach ($values as ['fnName' => $fnName, 'fnSignature' => $fnSignature, 'desc' => $desc]) {
+            foreach ($values as $value) {
+                $fnName = $value->fnName();
+
                 if ($groupFnNameAppearances[$groupKey] === 0) {
                     $anchor = $groupKey;
                     $groupFnNameAppearances[$groupKey]++;
@@ -38,9 +44,9 @@ final class ApiSearchGenerator
                 }
 
                 $result[] = [
-                    'fnName' => $fnName,
-                    'fnSignature' => $fnSignature,
-                    'desc' => $desc,
+                    'fnName' => $value->fnName(),
+                    'fnSignature' => $value->fnSignature(),
+                    'desc' => $value->description(),
                     'anchor' => $anchor,
                 ];
             }

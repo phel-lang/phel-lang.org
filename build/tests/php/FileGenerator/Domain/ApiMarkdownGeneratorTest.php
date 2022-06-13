@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace PhelDocBuildTests\FileGenerator\Domain;
 
 use PhelDocBuild\FileGenerator\Domain\ApiMarkdownGenerator;
-use PhelDocBuild\FileGenerator\Domain\PhelFnNormalizerInterface;
+use PhelNormalizedInternal\PhelNormalizedInternalFacadeInterface;
+use PhelNormalizedInternal\Transfer\NormalizedPhelFunction;
 use PHPUnit\Framework\TestCase;
 
 final class ApiMarkdownGeneratorTest extends TestCase
@@ -13,7 +14,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
     public function test_generate_page_without_phel_functions(): void
     {
         $generator = new ApiMarkdownGenerator(
-            $this->createStub(PhelFnNormalizerInterface::class)
+            $this->createStub(PhelNormalizedInternalFacadeInterface::class)
         );
 
         $expected = [
@@ -30,14 +31,14 @@ final class ApiMarkdownGeneratorTest extends TestCase
 
     public function test_generate_page_with_one_phel_function(): void
     {
-        $phelFnNormalizer = $this->createStub(PhelFnNormalizerInterface::class);
-        $phelFnNormalizer->method('getNormalizedGroupedPhelFns')
+        $phelFnNormalizer = $this->createStub(PhelNormalizedInternalFacadeInterface::class);
+        $phelFnNormalizer->method('getNormalizedGroupedFunctions')
             ->willReturn([
                 'group-1' => [
-                    [
+                    NormalizedPhelFunction::fromArray([
                         'fnName' => 'function-1',
                         'doc' => 'The doc from function 1',
-                    ],
+                    ]),
                 ],
             ]);
 
@@ -59,18 +60,18 @@ final class ApiMarkdownGeneratorTest extends TestCase
 
     public function test_generate_page_with_multiple_phel_functions_in_same_group(): void
     {
-        $phelFnNormalizer = $this->createStub(PhelFnNormalizerInterface::class);
-        $phelFnNormalizer->method('getNormalizedGroupedPhelFns')
+        $phelFnNormalizer = $this->createStub(PhelNormalizedInternalFacadeInterface::class);
+        $phelFnNormalizer->method('getNormalizedGroupedFunctions')
             ->willReturn([
                 'group-1' => [
-                    [
+                    NormalizedPhelFunction::fromArray([
                         'fnName' => 'function-1',
                         'doc' => 'The doc from function 1',
-                    ],
-                    [
+                    ]),
+                    NormalizedPhelFunction::fromArray([
                         'fnName' => 'function-2',
                         'doc' => 'The doc from function 2',
-                    ],
+                    ]),
                 ],
             ]);
 
@@ -94,20 +95,20 @@ final class ApiMarkdownGeneratorTest extends TestCase
 
     public function test_generate_page_with_multiple_phel_functions_in_different_groups(): void
     {
-        $phelFnNormalizer = $this->createStub(PhelFnNormalizerInterface::class);
-        $phelFnNormalizer->method('getNormalizedGroupedPhelFns')
+        $phelFnNormalizer = $this->createStub(PhelNormalizedInternalFacadeInterface::class);
+        $phelFnNormalizer->method('getNormalizedGroupedFunctions')
             ->willReturn([
                 'group-1' => [
-                    [
+                    NormalizedPhelFunction::fromArray([
                         'fnName' => 'function-1',
                         'doc' => 'The doc from function 1',
-                    ],
+                    ]),
                 ],
                 'group-2' => [
-                    [
+                    NormalizedPhelFunction::fromArray([
                         'fnName' => 'function-2',
                         'doc' => 'The doc from function 2',
-                    ],
+                    ]),
                 ],
             ]);
 
