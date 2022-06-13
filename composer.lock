@@ -144,12 +144,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-normalized-internal.git",
-                "reference": "a8dc818836b36e002a17063334933c0516a3d70d"
+                "reference": "bcf97dde9389f4a03015416ef260588eb005f7d6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-normalized-internal/zipball/a8dc818836b36e002a17063334933c0516a3d70d",
-                "reference": "a8dc818836b36e002a17063334933c0516a3d70d",
+                "url": "https://api.github.com/repos/phel-lang/phel-normalized-internal/zipball/bcf97dde9389f4a03015416ef260588eb005f7d6",
+                "reference": "bcf97dde9389f4a03015416ef260588eb005f7d6",
                 "shasum": ""
             },
             "require": {
@@ -168,7 +168,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "PhelNormalizedInternal\\": "src/php/"
+                    "PhelNormalizedInternal\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -186,7 +186,7 @@
                 "issues": "https://github.com/phel-lang/phel-normalized-internal/issues",
                 "source": "https://github.com/phel-lang/phel-normalized-internal/tree/main"
             },
-            "time": "2022-06-12T20:56:21+00:00"
+            "time": "2022-06-13T17:26:28+00:00"
         },
         {
             "name": "phpunit/php-timer",
