@@ -5,15 +5,11 @@ declare(strict_types=1);
 namespace PhelDocBuild\FileGenerator;
 
 use Gacela\Framework\AbstractFactory;
-use Phel\Run\RunFacadeInterface;
 use PhelDocBuild\FileGenerator\Domain\ApiMarkdownGenerator;
 use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
-use PhelDocBuild\FileGenerator\Domain\PhelFnLoaderInterface;
-use PhelDocBuild\FileGenerator\Domain\PhelFnNormalizer;
-use PhelDocBuild\FileGenerator\Domain\PhelFnNormalizerInterface;
 use PhelDocBuild\FileGenerator\Infrastructure\ApiMarkdownFile;
 use PhelDocBuild\FileGenerator\Infrastructure\ApiSearchFile;
-use PhelDocBuild\FileGenerator\Infrastructure\PhelFnLoader;
+use PhelNormalizedInternal\PhelNormalizedInternalFacadeInterface;
 
 final class Factory extends AbstractFactory
 {
@@ -28,39 +24,26 @@ final class Factory extends AbstractFactory
     private function createApiMarkdownGenerator(): ApiMarkdownGenerator
     {
         return new ApiMarkdownGenerator(
-            $this->createPhelFnNormalizer()
+            $this->getPhelFnNormalizerFacade()
         );
     }
 
     public function createApiSearchFile(): ApiSearchFile
     {
         return new ApiSearchFile(
-            $this->createPhelFnNormalizer(),
+            $this->getPhelFnNormalizerFacade(),
             $this->createApiSearchGenerator(),
             $this->getConfig()->getAppRootDir()
         );
     }
 
-    private function createPhelFnNormalizer(): PhelFnNormalizerInterface
+    private function getPhelFnNormalizerFacade(): PhelNormalizedInternalFacadeInterface
     {
-        return new PhelFnNormalizer($this->createPhelFnLoader());
-    }
-
-    private function createPhelFnLoader(): PhelFnLoaderInterface
-    {
-        return new PhelFnLoader(
-            $this->getRunFacade(),
-            $this->getConfig()->getAppRootDir()
-        );
+        return $this->getProvidedDependency(DependencyProvider::FACADE_PHEL_NORMALIZED_INTERNAL);
     }
 
     private function createApiSearchGenerator(): ApiSearchGenerator
     {
         return new ApiSearchGenerator();
-    }
-
-    private function getRunFacade(): RunFacadeInterface
-    {
-        return $this->getProvidedDependency(DependencyProvider::FACADE_PHEL_RUN);
     }
 }

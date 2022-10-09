@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Domain;
 
+use PhelNormalizedInternal\PhelNormalizedInternalFacadeInterface;
+
 final class ApiMarkdownGenerator
 {
-    private PhelFnNormalizerInterface $phelFnNormalizer;
+    private PhelNormalizedInternalFacadeInterface $phelInternalFacade;
 
-    public function __construct(PhelFnNormalizerInterface $phelFnNormalizer)
+    public function __construct(PhelNormalizedInternalFacadeInterface $phelInternalFacade)
     {
-        $this->phelFnNormalizer = $phelFnNormalizer;
+        $this->phelInternalFacade = $phelInternalFacade;
     }
 
     /**
@@ -20,12 +22,13 @@ final class ApiMarkdownGenerator
     {
         $result = $this->zolaHeaders();
 
-        $groupedPhelFns = $this->phelFnNormalizer->getNormalizedGroupedPhelFns();
+        $groupedPhelFns = $this->phelInternalFacade->getNormalizedGroupedFunctions();
 
         foreach ($groupedPhelFns as $values) {
-            foreach ($values as ['fnName' => $fnName, 'doc' => $doc]) {
-                $result[] = "## `$fnName`";
-                $result[] = $doc;
+            foreach ($values as $value) {
+
+                $result[] = "## `{$value->fnName()}`";
+                $result[] = $value->doc();
             }
         }
 
