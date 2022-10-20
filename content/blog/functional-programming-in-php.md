@@ -55,7 +55,7 @@ The disadvantage of such an approach is, that refactoring is more challenging an
 
 ## Class modules
 
-Another common concept in functional programming it the possibility to group a set of function to a module. A module can have a few public accessible functions and some private functions that are not accessible to the outside world. In PHP this can be accomplished by creating a class using only static members.
+Another common concept in functional programming is the possibility to group a set of function to a module. A module can have a few public accessible functions and some private functions that are not accessible to the outside world. In PHP this can be accomplished by creating a class using only static members.
 
 ```php
 <?php
