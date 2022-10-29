@@ -158,6 +158,7 @@ To try Phel you can run a REPL by executing the `./vendor/bin/phel repl` command
 
 ## Editor support
 
-Phel comes with basic editor support for VSCode. Please check out the [plugin's README file](https://github.com/phel-lang/phel-vs-code-extension) for more information.
-
-There's also an [Emacs mode with interactive capabilities](https://codeberg.org/mmontone/interactive-lang-tools/src/branch/master/backends/phel) in the making.
+Phel comes with basic support for <a href="https://github.com/phel-lang/phel-vs-code-extension" target="_blank">
+VSCode</a>, <a href="https://github.com/phel-lang/phel-phpstorm-syntax" target="_blank">PhpStorm</a>
+and a <a href="https://codeberg.org/mmontone/interactive-lang-tools/src/branch/master/backends/phel" target="_blank">
+Emacs mode with interactive capabilities</a> in the making.
