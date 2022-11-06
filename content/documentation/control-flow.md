@@ -101,7 +101,7 @@ The `foreach` special form can be used to iterate over all kind of PHP datastruc
 (foreach [v [1 2 3]]
   (print v)) # prints 1, 2 and 3
 
-(foreach [k v #{"a" 1 "b" 2}]
+(foreach [k v {"a" 1 "b" 2}]
   (print k)
   (print v)) # prints "a", 1, "b" and 2
 ```
