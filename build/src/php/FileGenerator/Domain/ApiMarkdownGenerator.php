@@ -45,6 +45,7 @@ final class ApiMarkdownGenerator
         $result[] = 'title = "API"';
         $result[] = 'weight = 110';
         $result[] = 'template = "page-api.html"';
+        $result[] = 'aliases = [ "/api" ]';
         $result[] = '+++';
         $result[] = '';
 
