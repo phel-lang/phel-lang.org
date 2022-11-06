@@ -97,7 +97,7 @@ Internally `recur` is implemented as a PHP while loop and therefore prevents the
 ```
 The `foreach` special form can be used to iterate over all kind of PHP datastructures. The return value of `foreach` is always `nil`. The `loop` special form should be preferred of the `foreach` special form whenever possible.
 
-```
+```phel
 (foreach [v [1 2 3]]
   (print v)) # prints 1, 2 and 3
 

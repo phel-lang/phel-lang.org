@@ -7,7 +7,7 @@ weight = 14
 
 PHP comes with huge set of functions that can be called from Phel by just adding a `php/` prefix to the function name.
 
-```
+```phel
 (php/strlen "test") # Calls PHP's strlen function and evaluates to 4
 (php/date "l") # Evaluates to something like "Monday"
 ```

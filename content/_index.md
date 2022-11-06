@@ -55,7 +55,7 @@ The following example gives a short impression on how Phel looks like:
 
 The quickest way to try out Phel is to run our REPL Docker container.
 
-```
+```bash
 docker run -it --rm phellang/repl
 ```
 
