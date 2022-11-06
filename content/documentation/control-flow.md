@@ -132,7 +132,7 @@ have the form `:modifier argument`. The following modifiers are supported:
 * `:when` only evaluates the loop body if the condition is true.
 
 ```phel
-(for [x :range [0 3]] x) # Evaluates to [1 2 3]
+(for [x :range [0 3]] x) # Evaluates to [0 1 2]
 (for [x :range [3 0 -1]] x) # Evaluates to [3 2 1]
 
 (for [x :in [1 2 3]] (inc x)) # Evaluates to [2 3 4]
