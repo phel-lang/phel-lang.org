@@ -3,24 +3,27 @@ title = "Release: v0.8.0"
 date = "2023-01-15"
 +++
 
-This release adds a new phel\json library.
+This release adds new JSON functions to Phel.
 
-## phel\json
+## JSON
 
-You can use the `phel\json` library to encode or decode a json directly from phel.
+You can use the `phel\json` namespace to encode or decode a JSON directly from Phel.
 
 ### Encode
 
-You can encode a phel structure to json using the json/encode function.
+You can encode a Phel data structure to JSON using the `encode` function.
 
 ```phel
+(ns my-namespace
+  (:require phel\json))
+
 (json/encode [1 2 3]) # "[1,2,3]"
 (json/encode {:key1 1 :key2 "value2"} # "{\"key1\":1,\"key2\":\"value2\"}"
 ```
 
 ### Decode
 
-You can decode a json string to a phel structure using the json/decode function.
+You can decode a JSON string to a Phel data structure using the `decode` function.
 
 Considering `your.json` as:
 ```json
@@ -40,21 +43,26 @@ Considering `your.json` as:
 ```
 
 ```phel
+(ns my-namespace
+  (:require phel\json))
+
 (def your-json (php/file_get_contents (str __DIR__ "/your.json")))
-(json/decode your-json) # equals to:
-{
-  :name "John Doe"
-  :age 30
-  :image ""
-  :email "john@example.com"
-  :phone "(912) 555-4321"
-  :url "https://example.com"
-  :location {
-    :address "2712 Broadway St"
-    :postalCode "CA 94115"
-    :countryCode "US"
-  }
-}
+
+(json/decode your-json)
+# Evaluates to
+# {
+#   :name "John Doe"
+#   :age 30
+#   :image ""
+#   :email "john@example.com"
+#   :phone "(912) 555-4321"
+#   :url "https://example.com"
+#   :location {
+#     :address "2712 Broadway St"
+#     :postalCode "CA 94115"
+#     :countryCode "US"
+#   }
+# }
 ```
 
 ## Other improvements
