@@ -5,6 +5,10 @@ weight = 120
 
 This page contains a list of libraries and projects that use Phel. If you want to add your project/library to this page please create a Pull Request on GitHub.
 
+## Libraries
+
+* [phel-cli-gui](https://github.com/Chemaclass/phel-cli-gui) Some Phel functions to render in the terminal. It uses the Cursor from the Symfony Command module.
+
 
 ## Projects
 
