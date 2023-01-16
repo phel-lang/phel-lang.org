@@ -1,11 +1,16 @@
 {
     "name": "phel-lang/phel-website",
-    "keywords": ["phel","lisp","functional","language"],
+    "keywords": [
+        "phel",
+        "lisp",
+        "functional",
+        "language"
+    ],
     "homepage": "https://phel-lang.org/",
     "license": "MIT",
     "require": {
         "ext-json": "*",
-        "phel-lang/phel-lang": "^0.7",
+        "phel-lang/phel-lang": "^0.8",
         "gacela-project/gacela": "^0.17",
         "phel-lang/phel-normalized-internal": "dev-main"
     },
