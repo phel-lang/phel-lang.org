@@ -7,11 +7,12 @@ This page contains a list of libraries and projects that use Phel. If you want t
 
 ## Libraries
 
-* [Phel-Json](https://github.com/mabasic/phel-json): Phel library for converting Phel datastructures to and from JSON.
+* [phel-cli-gui](https://github.com/Chemaclass/phel-cli-gui) Some Phel functions to render in the terminal. It uses the Cursor from the Symfony Command module.
 
 
 ## Projects
 
+* [phel-snake](https://github.com/Chemaclass/phel-snake) The snake game using the CLI terminal written in phel.
 * [mariobasic-n7](https://github.com/mabasic/mariobasic-n7) Website of Mario Bašić.
 * [lisp-webscript-examples](https://github.com/kloimhardt/lisp-webscript-examples) Minimal reactive web-apps combining Phel + ClojureScript via GraphQL.
 
