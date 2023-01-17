@@ -154,12 +154,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-normalized-internal.git",
-                "reference": "5b49e4b4ba788bce9c7bca5b4dc8e3396178ea5a"
+                "reference": "451c006b1de20d48524108d115099d96adab7826"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-normalized-internal/zipball/5b49e4b4ba788bce9c7bca5b4dc8e3396178ea5a",
-                "reference": "5b49e4b4ba788bce9c7bca5b4dc8e3396178ea5a",
+                "url": "https://api.github.com/repos/phel-lang/phel-normalized-internal/zipball/451c006b1de20d48524108d115099d96adab7826",
+                "reference": "451c006b1de20d48524108d115099d96adab7826",
                 "shasum": ""
             },
             "require": {
@@ -172,7 +172,7 @@
                 "phpunit/phpunit": "^9.5",
                 "roave/security-advisories": "dev-latest",
                 "symfony/var-dumper": "^5.4",
-                "vimeo/psalm": "^4.23"
+                "vimeo/psalm": "^4.30"
             },
             "default-branch": true,
             "type": "library",
@@ -196,7 +196,7 @@
                 "issues": "https://github.com/phel-lang/phel-normalized-internal/issues",
                 "source": "https://github.com/phel-lang/phel-normalized-internal/tree/main"
             },
-            "time": "2023-01-16T20:57:35+00:00"
+            "time": "2023-01-17T20:46:41+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -1035,16 +1035,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v4.15.2",
+            "version": "v4.15.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "f59bbe44bf7d96f24f3e2b4ddc21cd52c1d2adbc"
+                "reference": "570e980a201d8ed0236b0a62ddf2c9cbb2034039"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/f59bbe44bf7d96f24f3e2b4ddc21cd52c1d2adbc",
-                "reference": "f59bbe44bf7d96f24f3e2b4ddc21cd52c1d2adbc",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/570e980a201d8ed0236b0a62ddf2c9cbb2034039",
+                "reference": "570e980a201d8ed0236b0a62ddf2c9cbb2034039",
                 "shasum": ""
             },
             "require": {
@@ -1085,9 +1085,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v4.15.2"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v4.15.3"
             },
-            "time": "2022-11-12T15:38:23+00:00"
+            "time": "2023-01-16T22:05:37+00:00"
         },
         {
             "name": "phar-io/manifest",
