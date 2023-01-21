@@ -35,9 +35,15 @@ final class Factory extends AbstractFactory
     public function createApiSearchFile(): ApiSearchFile
     {
         return new ApiSearchFile(
-            $this->getPhelApiFacade(),
             $this->createApiSearchGenerator(),
-            $this->getConfig()->getAppRootDir(),
+            $this->getConfig()->getAppRootDir()
+        );
+    }
+
+    private function createApiSearchGenerator(): ApiSearchGenerator
+    {
+        return new ApiSearchGenerator(
+            $this->getPhelApiFacade(),
             $this->getConfig()->allNamespaces()
         );
     }
@@ -45,10 +51,5 @@ final class Factory extends AbstractFactory
     private function getPhelApiFacade(): ApiFacadeInterface
     {
         return $this->getProvidedDependency(DependencyProvider::FACADE_PHEL_API);
-    }
-
-    private function createApiSearchGenerator(): ApiSearchGenerator
-    {
-        return new ApiSearchGenerator();
     }
 }

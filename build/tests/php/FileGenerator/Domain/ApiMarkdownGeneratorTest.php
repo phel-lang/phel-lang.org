@@ -32,8 +32,8 @@ final class ApiMarkdownGeneratorTest extends TestCase
 
     public function test_generate_page_with_one_phel_function(): void
     {
-        $phelFnNormalizer = $this->createStub(ApiFacadeInterface::class);
-        $phelFnNormalizer->method('getNormalizedGroupedFunctions')
+        $apiFacade = $this->createStub(ApiFacadeInterface::class);
+        $apiFacade->method('getNormalizedGroupedFunctions')
             ->willReturn([
                 'group-1' => [
                     NormalizedPhelFunction::fromArray([
@@ -43,7 +43,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
                 ],
             ]);
 
-        $generator = new ApiMarkdownGenerator($phelFnNormalizer);
+        $generator = new ApiMarkdownGenerator($apiFacade);
 
         $expected = [
             '+++',

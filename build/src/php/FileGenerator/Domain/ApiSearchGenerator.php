@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Domain;
 
+use Phel\Api\ApiFacadeInterface;
 use Phel\Api\Transfer\NormalizedPhelFunction;
 
 final class ApiSearchGenerator
 {
     private const SPECIAL_ENDING_CHARS = ['=', '*', '?', '+', '>', '<', '!'];
 
+    public function __construct(
+        private ApiFacadeInterface $phelApiFacade,
+        private array $allNamespaces = []
+    ) {
+    }
+
     /**
-     * @param array<string,list<NormalizedPhelFunction>> $groupNormalizedData
-     *
      * @return array<string,array{
      *     fnName:string,
      *     fnSignature:string,
@@ -20,8 +25,11 @@ final class ApiSearchGenerator
      *     anchor:string,
      * }>
      */
-    public function generateSearchIndex(array $groupNormalizedData): array
+    public function generateSearchIndex(): array
     {
+        $groupNormalizedData = $this->phelApiFacade
+            ->getNormalizedGroupedFunctions($this->allNamespaces);
+
         /**
          * Zola ignores the especial chars, and uses instead a number. This variable keep track
          * of the appearances and uses an autoincrement number to follow the proper link.

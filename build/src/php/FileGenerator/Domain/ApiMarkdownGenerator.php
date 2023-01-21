@@ -21,7 +21,8 @@ final class ApiMarkdownGenerator
     {
         $result = $this->zolaHeaders();
 
-        $groupedPhelFns = $this->phelInternalFacade->getNormalizedGroupedFunctions($this->allNamespaces);
+        $groupedPhelFns = $this->phelInternalFacade
+            ->getNormalizedGroupedFunctions($this->allNamespaces);
 
         foreach ($groupedPhelFns as $values) {
             foreach ($values as $value) {
