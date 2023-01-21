@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PhelDocBuildTests\FileGenerator\Domain;
 
+use Phel\Api\ApiFacadeInterface;
+use Phel\Api\Transfer\NormalizedPhelFunction;
 use PhelDocBuild\FileGenerator\Domain\ApiMarkdownGenerator;
-use PhelNormalizedInternal\PhelNormalizedInternalFacadeInterface;
-use PhelNormalizedInternal\Transfer\NormalizedPhelFunction;
 use PHPUnit\Framework\TestCase;
 
 final class ApiMarkdownGeneratorTest extends TestCase
@@ -14,7 +14,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
     public function test_generate_page_without_phel_functions(): void
     {
         $generator = new ApiMarkdownGenerator(
-            $this->createStub(PhelNormalizedInternalFacadeInterface::class)
+            $this->createStub(ApiFacadeInterface::class)
         );
 
         $expected = [
@@ -32,7 +32,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
 
     public function test_generate_page_with_one_phel_function(): void
     {
-        $phelFnNormalizer = $this->createStub(PhelNormalizedInternalFacadeInterface::class);
+        $phelFnNormalizer = $this->createStub(ApiFacadeInterface::class);
         $phelFnNormalizer->method('getNormalizedGroupedFunctions')
             ->willReturn([
                 'group-1' => [
@@ -62,7 +62,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
 
     public function test_generate_page_with_multiple_phel_functions_in_same_group(): void
     {
-        $phelFnNormalizer = $this->createStub(PhelNormalizedInternalFacadeInterface::class);
+        $phelFnNormalizer = $this->createStub(ApiFacadeInterface::class);
         $phelFnNormalizer->method('getNormalizedGroupedFunctions')
             ->willReturn([
                 'group-1' => [
@@ -98,7 +98,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
 
     public function test_generate_page_with_multiple_phel_functions_in_different_groups(): void
     {
-        $phelFnNormalizer = $this->createStub(PhelNormalizedInternalFacadeInterface::class);
+        $phelFnNormalizer = $this->createStub(ApiFacadeInterface::class);
         $phelFnNormalizer->method('getNormalizedGroupedFunctions')
             ->willReturn([
                 'group-1' => [

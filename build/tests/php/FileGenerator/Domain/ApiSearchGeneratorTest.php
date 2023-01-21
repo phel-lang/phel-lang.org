@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhelDocBuildTests\FileGenerator\Domain;
 
+use Phel\Api\Transfer\NormalizedPhelFunction;
 use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
-use PhelNormalizedInternal\Transfer\NormalizedPhelFunction;
 use PHPUnit\Framework\TestCase;
 
 final class ApiSearchGeneratorTest extends TestCase

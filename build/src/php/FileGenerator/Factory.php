@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace PhelDocBuild\FileGenerator;
 
 use Gacela\Framework\AbstractFactory;
-use Phel\Api\ApiFacade;
 use Phel\Api\ApiFacadeInterface;
 use PhelDocBuild\FileGenerator\Domain\ApiMarkdownGenerator;
 use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
 use PhelDocBuild\FileGenerator\Infrastructure\ApiMarkdownFile;
 use PhelDocBuild\FileGenerator\Infrastructure\ApiSearchFile;
 
+/**
+ * @method Config getConfig()
+ */
 final class Factory extends AbstractFactory
 {
     public function createApiMarkdownFile(): ApiMarkdownFile
@@ -25,7 +27,8 @@ final class Factory extends AbstractFactory
     private function createApiMarkdownGenerator(): ApiMarkdownGenerator
     {
         return new ApiMarkdownGenerator(
-            $this->getPhelApiFacade()
+            $this->getPhelApiFacade(),
+            $this->getConfig()->allNamespaces()
         );
     }
 
@@ -34,7 +37,8 @@ final class Factory extends AbstractFactory
         return new ApiSearchFile(
             $this->getPhelApiFacade(),
             $this->createApiSearchGenerator(),
-            $this->getConfig()->getAppRootDir()
+            $this->getConfig()->getAppRootDir(),
+            $this->getConfig()->allNamespaces()
         );
     }
 

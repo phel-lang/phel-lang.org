@@ -6,20 +6,22 @@ namespace PhelDocBuild\FileGenerator\Infrastructure;
 
 use Phel\Api\ApiFacadeInterface;
 use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
+
 use function json_encode;
 
 final class ApiSearchFile
 {
     public function __construct(
-        private ApiFacadeInterface $phelInternalFacade,
+        private ApiFacadeInterface $phelApiFacade,
         private ApiSearchGenerator $apiSearchGenerator,
-        private string $appRootDir
+        private string $appRootDir,
+        private array $allNamespaces = []
     ) {
     }
 
     public function generate(): void
     {
-        $groupedPhelFns = $this->phelInternalFacade->getNormalizedGroupedFunctions();
+        $groupedPhelFns = $this->phelApiFacade->getNormalizedGroupedFunctions($this->allNamespaces);
         $searchIndex = $this->apiSearchGenerator->generateSearchIndex($groupedPhelFns);
 
         file_put_contents(

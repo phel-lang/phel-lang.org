@@ -9,7 +9,8 @@ use Phel\Api\ApiFacadeInterface;
 final class ApiMarkdownGenerator
 {
     public function __construct(
-        private ApiFacadeInterface $phelInternalFacade
+        private ApiFacadeInterface $phelInternalFacade,
+        private array $allNamespaces = []
     ) {
     }
 
@@ -20,7 +21,7 @@ final class ApiMarkdownGenerator
     {
         $result = $this->zolaHeaders();
 
-        $groupedPhelFns = $this->phelInternalFacade->getNormalizedGroupedFunctions();
+        $groupedPhelFns = $this->phelInternalFacade->getNormalizedGroupedFunctions($this->allNamespaces);
 
         foreach ($groupedPhelFns as $values) {
             foreach ($values as $value) {
