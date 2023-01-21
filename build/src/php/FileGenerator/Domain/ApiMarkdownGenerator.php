@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Domain;
 
-use PhelNormalizedInternal\PhelNormalizedInternalFacadeInterface;
+use Phel\Api\ApiFacadeInterface;
 
 final class ApiMarkdownGenerator
 {
-    private PhelNormalizedInternalFacadeInterface $phelInternalFacade;
-
-    public function __construct(PhelNormalizedInternalFacadeInterface $phelInternalFacade)
-    {
-        $this->phelInternalFacade = $phelInternalFacade;
+    public function __construct(
+        private ApiFacadeInterface $phelInternalFacade
+    ) {
     }
 
     /**

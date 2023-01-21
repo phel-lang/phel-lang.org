@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Domain;
 
-use PhelNormalizedInternal\Transfer\NormalizedPhelFunction;
+use Phel\Api\Transfer\NormalizedPhelFunction;
 
 final class ApiSearchGenerator
 {
@@ -13,7 +13,12 @@ final class ApiSearchGenerator
     /**
      * @param array<string,list<NormalizedPhelFunction>> $groupNormalizedData
      *
-     * @return array<string,array{fnName:string,fnSignature:string,desc:string,anchor:string}>
+     * @return array<string,array{
+     *     fnName:string,
+     *     fnSignature:string,
+     *     desc:string,
+     *     anchor:string,
+     * }>
      */
     public function generateSearchIndex(array $groupNormalizedData): array
     {
@@ -46,12 +51,20 @@ final class ApiSearchGenerator
                 $result[] = [
                     'fnName' => $value->fnName(),
                     'fnSignature' => $value->fnSignature(),
-                    'desc' => $value->description(),
+                    'desc' => $this->formatDescription($value->description()),
                     'anchor' => $anchor,
                 ];
             }
         }
 
         return $result;
+    }
+
+    /**
+     * Transforms links `[printf](https://...)` into `<i>printf</i>`.
+     */
+    private function formatDescription(string $desc): string
+    {
+        return preg_replace('/\[(.*?)\]\((.*?)\)/', '<i>$1</i>', $desc);
     }
 }

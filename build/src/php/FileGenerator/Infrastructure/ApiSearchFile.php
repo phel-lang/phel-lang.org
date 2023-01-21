@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Infrastructure;
 
+use Phel\Api\ApiFacadeInterface;
 use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
-use PhelNormalizedInternal\PhelNormalizedInternalFacadeInterface;
 use function json_encode;
 
 final class ApiSearchFile
 {
     public function __construct(
-        private PhelNormalizedInternalFacadeInterface $phelInternalFacade,
+        private ApiFacadeInterface $phelInternalFacade,
         private ApiSearchGenerator $apiSearchGenerator,
         private string $appRootDir
     ) {
