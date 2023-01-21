@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace PhelDocBuild\FileGenerator\Domain;
 
 use Phel\Api\ApiFacadeInterface;
-use Phel\Api\Transfer\NormalizedPhelFunction;
 
 final class ApiSearchGenerator
 {
     private const SPECIAL_ENDING_CHARS = ['=', '*', '?', '+', '>', '<', '!'];
 
     public function __construct(
-        private ApiFacadeInterface $phelApiFacade,
+        private ApiFacadeInterface $apiFacade,
         private array $allNamespaces = []
     ) {
     }
@@ -27,8 +26,7 @@ final class ApiSearchGenerator
      */
     public function generateSearchIndex(): array
     {
-        $groupNormalizedData = $this->phelApiFacade
-            ->getNormalizedGroupedFunctions($this->allNamespaces);
+        $groupNormalizedData = $this->apiFacade->getGroupedFunctions($this->allNamespaces);
 
         /**
          * Zola ignores the especial chars, and uses instead a number. This variable keep track

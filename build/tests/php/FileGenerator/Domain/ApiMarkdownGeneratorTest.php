@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhelDocBuildTests\FileGenerator\Domain;
 
 use Phel\Api\ApiFacadeInterface;
-use Phel\Api\Transfer\NormalizedPhelFunction;
+use Phel\Api\Transfer\PhelFunction;
 use PhelDocBuild\FileGenerator\Domain\ApiMarkdownGenerator;
 use PHPUnit\Framework\TestCase;
 
@@ -33,10 +33,10 @@ final class ApiMarkdownGeneratorTest extends TestCase
     public function test_generate_page_with_one_phel_function(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getNormalizedGroupedFunctions')
+        $apiFacade->method('getGroupedFunctions')
             ->willReturn([
                 'group-1' => [
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'function-1',
                         'doc' => 'The doc from function 1',
                     ]),
@@ -63,14 +63,14 @@ final class ApiMarkdownGeneratorTest extends TestCase
     public function test_generate_page_with_multiple_phel_functions_in_same_group(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getNormalizedGroupedFunctions')
+        $apiFacade->method('getGroupedFunctions')
             ->willReturn([
                 'group-1' => [
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'function-1',
                         'doc' => 'The doc from function 1',
                     ]),
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'function-2',
                         'doc' => 'The doc from function 2',
                     ]),
@@ -99,16 +99,16 @@ final class ApiMarkdownGeneratorTest extends TestCase
     public function test_generate_page_with_multiple_phel_functions_in_different_groups(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getNormalizedGroupedFunctions')
+        $apiFacade->method('getGroupedFunctions')
             ->willReturn([
                 'group-1' => [
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'function-1',
                         'doc' => 'The doc from function 1',
                     ]),
                 ],
                 'group-2' => [
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'function-2',
                         'doc' => 'The doc from function 2',
                     ]),

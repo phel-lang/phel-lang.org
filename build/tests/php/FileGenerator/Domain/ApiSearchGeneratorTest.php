@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace PhelDocBuildTests\FileGenerator\Domain;
 
 use Phel\Api\ApiFacadeInterface;
-use Phel\Api\Transfer\NormalizedPhelFunction;
+use Phel\Api\Transfer\PhelFunction;
 use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
 use PHPUnit\Framework\TestCase;
 
@@ -14,10 +14,10 @@ final class ApiSearchGeneratorTest extends TestCase
     public function test_generate_search_index_one_item(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getNormalizedGroupedFunctions')
+        $apiFacade->method('getGroupedFunctions')
             ->willReturn([
                 'table' => [
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'table?',
                         'fnSignature' => '(table? x)',
                         'desc' => 'doc for table?',
@@ -43,17 +43,17 @@ final class ApiSearchGeneratorTest extends TestCase
     public function test_multiple_items_in_different_groups(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getNormalizedGroupedFunctions')
+        $apiFacade->method('getGroupedFunctions')
             ->willReturn([
                 'table' => [
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'table',
                         'fnSignature' => '(table & xs)',
                         'desc' => 'doc for table',
                     ]),
                 ],
                 'not' => [
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'not',
                         'fnSignature' => '(not x)',
                         'desc' => 'doc for not',
@@ -85,15 +85,15 @@ final class ApiSearchGeneratorTest extends TestCase
     public function test_multiple_items_in_the_same_group(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getNormalizedGroupedFunctions')
+        $apiFacade->method('getGroupedFunctions')
             ->willReturn([
                 'table' => [
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'table',
                         'fnSignature' => '(table & xs)',
                         'desc' => 'doc for table',
                     ]),
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'table?',
                         'fnSignature' => '(table? x)',
                         'desc' => 'doc for table?',
@@ -125,15 +125,15 @@ final class ApiSearchGeneratorTest extends TestCase
     public function test_fn_name_with_slash_in_the_middle(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getNormalizedGroupedFunctions')
+        $apiFacade->method('getGroupedFunctions')
             ->willReturn([
                 'http-response' => [
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'http/response',
                         'fnSignature' => '',
                         'desc' => '',
                     ]),
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'http/response?',
                         'fnSignature' => '',
                         'desc' => '',
@@ -165,15 +165,15 @@ final class ApiSearchGeneratorTest extends TestCase
     public function test_fn_name_ending_with_minus(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getNormalizedGroupedFunctions')
+        $apiFacade->method('getGroupedFunctions')
             ->willReturn([
                 'defn' => [
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'defn',
                         'fnSignature' => '',
                         'desc' => '',
                     ]),
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'defn-',
                         'fnSignature' => '',
                         'desc' => '',
@@ -205,15 +205,15 @@ final class ApiSearchGeneratorTest extends TestCase
     public function test_fn_name_with_upper_case(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getNormalizedGroupedFunctions')
+        $apiFacade->method('getGroupedFunctions')
             ->willReturn([
                 'nan' => [
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'NAN',
                         'fnSignature' => '',
                         'desc' => '',
                     ]),
-                    NormalizedPhelFunction::fromArray([
+                    PhelFunction::fromArray([
                         'fnName' => 'nan?',
                         'fnSignature' => '',
                         'desc' => '',

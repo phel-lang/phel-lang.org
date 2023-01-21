@@ -90,12 +90,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "1dc5b8841583d471fe2e52b187233e213e48dfbb"
+                "reference": "ad7ba4c81e185b7d444dfb83b9a3af8a7dd61ebd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/1dc5b8841583d471fe2e52b187233e213e48dfbb",
-                "reference": "1dc5b8841583d471fe2e52b187233e213e48dfbb",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/ad7ba4c81e185b7d444dfb83b9a3af8a7dd61ebd",
+                "reference": "ad7ba4c81e185b7d444dfb83b9a3af8a7dd61ebd",
                 "shasum": ""
             },
             "require": {
@@ -146,7 +146,7 @@
                 "issues": "https://github.com/phel-lang/phel-lang/issues",
                 "source": "https://github.com/phel-lang/phel-lang/tree/create-internal-module"
             },
-            "time": "2023-01-21T17:18:59+00:00"
+            "time": "2023-01-21T18:36:40+00:00"
         },
         {
             "name": "phpunit/php-timer",
