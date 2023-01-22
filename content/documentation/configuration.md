@@ -1,6 +1,6 @@
 +++
 title = "Configuration"
-weight = 18
+weight = 19
 +++
 
 Phel comes with some configuration options. They are stored in the `phel-config.php` file in the root directory of every project.
