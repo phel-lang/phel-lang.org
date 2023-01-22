@@ -2,13 +2,13 @@
     <li class="top-navigation__item {% if current_path and current_path == '/' %}active{% endif %}">
         <a href="/">Features</a>
     </li>
-    <li class="top-navigation__item {% if current_path and current_path == '/documentation/getting-started/' %}active{% endif %}">
+    <li class="top-navigation__item {% if current_path and current_path is starting_with('/documentation/') %}active{% endif %}">
         <a href="/documentation/getting-started/">Docs</a>
     </li>
-    <li class="top-navigation__item {% if current_path and current_path == '/tutorials/exercises/basic/' %}active{% endif %}">
+    <li class="top-navigation__item {% if current_path and current_path is starting_with('/tutorials/exercises/') %}active{% endif %}">
         <a href="/tutorials/exercises/basic">Exercises</a>
     </li>
-    <li class="top-navigation__item {% if current_path and current_path == '/blog/' %}active{% endif %}">
+    <li class="top-navigation__item {% if current_path and current_path is starting_with('/blog/') %}active{% endif %}">
         <a href="/blog">Blog</a>
     </li>
     <li class="top-navigation__item top-navigation__item--github">
