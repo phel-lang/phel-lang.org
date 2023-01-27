@@ -10,7 +10,7 @@
     "license": "MIT",
     "require": {
         "ext-json": "*",
-        "phel-lang/phel-lang": "dev-create-internal-module",
+        "phel-lang/phel-lang": "dev-master",
         "gacela-project/gacela": "^1.0"
     },
     "require-dev": {

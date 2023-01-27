@@ -14,6 +14,7 @@ final class Config extends AbstractConfig
     public function allNamespaces(): array
     {
         return [
+            'phel\\core',
             'phel\\http',
             'phel\\html',
             'phel\\test',

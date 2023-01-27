@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1f1729fd62002267640adcb7c1db2566",
+    "content-hash": "061c8bfda933111e0c3c3b7391c6d152",
     "packages": [
         {
             "name": "gacela-project/gacela",
@@ -86,16 +86,16 @@
         },
         {
             "name": "phel-lang/phel-lang",
-            "version": "dev-create-internal-module",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "ad7ba4c81e185b7d444dfb83b9a3af8a7dd61ebd"
+                "reference": "08fb32008d113542f2b2b41626836550ed642426"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/ad7ba4c81e185b7d444dfb83b9a3af8a7dd61ebd",
-                "reference": "ad7ba4c81e185b7d444dfb83b9a3af8a7dd61ebd",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/08fb32008d113542f2b2b41626836550ed642426",
+                "reference": "08fb32008d113542f2b2b41626836550ed642426",
                 "shasum": ""
             },
             "require": {
@@ -115,6 +115,7 @@
                 "symfony/var-dumper": "^6.0",
                 "vimeo/psalm": "^5.4"
             },
+            "default-branch": true,
             "bin": [
                 "phel"
             ],
@@ -144,9 +145,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phel-lang/phel-lang/issues",
-                "source": "https://github.com/phel-lang/phel-lang/tree/create-internal-module"
+                "source": "https://github.com/phel-lang/phel-lang/tree/master"
             },
-            "time": "2023-01-21T18:36:40+00:00"
+            "time": "2023-01-27T13:20:02+00:00"
         },
         {
             "name": "phpunit/php-timer",
