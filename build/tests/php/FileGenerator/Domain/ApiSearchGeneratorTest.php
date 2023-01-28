@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace PhelDocBuildTests\FileGenerator\Domain;
 
-use Phel\Api\ApiFacadeInterface;
 use Phel\Api\Transfer\PhelFunction;
 use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
+use PhelDocBuild\FileGenerator\Domain\PhelFunctionRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 final class ApiSearchGeneratorTest extends TestCase
 {
     public function test_generate_search_index_one_item(): void
     {
-        $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getGroupedFunctions')
+        $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
+        $repository->method('getAllGroupedFunctions')
             ->willReturn([
                 'table' => [
                     PhelFunction::fromArray([
@@ -25,7 +25,7 @@ final class ApiSearchGeneratorTest extends TestCase
                 ],
             ]);
 
-        $generator = new ApiSearchGenerator($apiFacade);
+        $generator = new ApiSearchGenerator($repository);
         $actual = $generator->generateSearchIndex();
 
         $expected = [
@@ -42,8 +42,8 @@ final class ApiSearchGeneratorTest extends TestCase
 
     public function test_multiple_items_in_different_groups(): void
     {
-        $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getGroupedFunctions')
+        $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
+        $repository->method('getAllGroupedFunctions')
             ->willReturn([
                 'table' => [
                     PhelFunction::fromArray([
@@ -61,7 +61,7 @@ final class ApiSearchGeneratorTest extends TestCase
                 ],
             ]);
 
-        $generator = new ApiSearchGenerator($apiFacade);
+        $generator = new ApiSearchGenerator($repository);
         $actual = $generator->generateSearchIndex();
 
         $expected = [
@@ -84,8 +84,8 @@ final class ApiSearchGeneratorTest extends TestCase
 
     public function test_multiple_items_in_the_same_group(): void
     {
-        $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getGroupedFunctions')
+        $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
+        $repository->method('getAllGroupedFunctions')
             ->willReturn([
                 'table' => [
                     PhelFunction::fromArray([
@@ -101,7 +101,7 @@ final class ApiSearchGeneratorTest extends TestCase
                 ],
             ]);
 
-        $generator = new ApiSearchGenerator($apiFacade);
+        $generator = new ApiSearchGenerator($repository);
         $actual = $generator->generateSearchIndex();
 
         $expected = [
@@ -124,8 +124,8 @@ final class ApiSearchGeneratorTest extends TestCase
 
     public function test_fn_name_with_slash_in_the_middle(): void
     {
-        $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getGroupedFunctions')
+        $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
+        $repository->method('getAllGroupedFunctions')
             ->willReturn([
                 'http-response' => [
                     PhelFunction::fromArray([
@@ -141,7 +141,7 @@ final class ApiSearchGeneratorTest extends TestCase
                 ],
             ]);
 
-        $generator = new ApiSearchGenerator($apiFacade);
+        $generator = new ApiSearchGenerator($repository);
         $actual = $generator->generateSearchIndex();
 
         $expected = [
@@ -164,8 +164,8 @@ final class ApiSearchGeneratorTest extends TestCase
 
     public function test_fn_name_ending_with_minus(): void
     {
-        $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getGroupedFunctions')
+        $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
+        $repository->method('getAllGroupedFunctions')
             ->willReturn([
                 'defn' => [
                     PhelFunction::fromArray([
@@ -181,7 +181,7 @@ final class ApiSearchGeneratorTest extends TestCase
                 ],
             ]);
 
-        $generator = new ApiSearchGenerator($apiFacade);
+        $generator = new ApiSearchGenerator($repository);
         $actual = $generator->generateSearchIndex();
 
         $expected = [
@@ -204,8 +204,8 @@ final class ApiSearchGeneratorTest extends TestCase
 
     public function test_fn_name_with_upper_case(): void
     {
-        $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getGroupedFunctions')
+        $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
+        $repository->method('getAllGroupedFunctions')
             ->willReturn([
                 'nan' => [
                     PhelFunction::fromArray([
@@ -221,7 +221,7 @@ final class ApiSearchGeneratorTest extends TestCase
                 ],
             ]);
 
-        $generator = new ApiSearchGenerator($apiFacade);
+        $generator = new ApiSearchGenerator($repository);
         $actual = $generator->generateSearchIndex();
 
         $expected = [

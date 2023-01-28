@@ -14,11 +14,11 @@ final class ApiSearchGenerator
     }
 
     /**
-     * @return array<string,array{
-     *     fnName:string,
-     *     fnSignature:string,
-     *     desc:string,
-     *     anchor:string,
+     * @return array<string, array{
+     *     fnName: string,
+     *     fnSignature: string,
+     *     desc: string,
+     *     anchor: string,
      * }>
      */
     public function generateSearchIndex(): array
