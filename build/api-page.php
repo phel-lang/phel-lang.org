@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Gacela\Framework\Bootstrap\GacelaConfig;
 use Gacela\Framework\Gacela;
-use PhelDocBuild\FileGenerator\Facade;
+use Phel\Phel;
+use PhelDocBuild\FileGenerator\Facade as FileGeneratorFacade;
 
-Gacela::bootstrap(__DIR__, static function (GacelaConfig $config): void {
-    $config->addAppConfig('phel-config.php', 'phel-config-local.php');
-});
+Gacela::bootstrap(__DIR__, Phel::configFn());
 
-$fileGeneratorFacade = new Facade();
-$fileGeneratorFacade->generateApiMarkdownFile();
+$facade = new FileGeneratorFacade();
+$facade->generateApiMarkdownFile();
