@@ -4,15 +4,11 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Domain;
 
-use PhelNormalizedInternal\PhelNormalizedInternalFacadeInterface;
-
 final class ApiMarkdownGenerator
 {
-    private PhelNormalizedInternalFacadeInterface $phelInternalFacade;
-
-    public function __construct(PhelNormalizedInternalFacadeInterface $phelInternalFacade)
-    {
-        $this->phelInternalFacade = $phelInternalFacade;
+    public function __construct(
+        private PhelFunctionRepositoryInterface $repository
+    ) {
     }
 
     /**
@@ -21,14 +17,12 @@ final class ApiMarkdownGenerator
     public function generate(): array
     {
         $result = $this->zolaHeaders();
+        $groupedPhelFns = $this->repository->getAllGroupedFunctions();
 
-        $groupedPhelFns = $this->phelInternalFacade->getNormalizedGroupedFunctions();
-
-        foreach ($groupedPhelFns as $values) {
-            foreach ($values as $value) {
-
-                $result[] = "## `{$value->fnName()}`";
-                $result[] = $value->doc();
+        foreach ($groupedPhelFns as $phelFunctions) {
+            foreach ($phelFunctions as $fn) {
+                $result[] = "## `{$fn->fnName()}`";
+                $result[] = $fn->doc();
             }
         }
 
