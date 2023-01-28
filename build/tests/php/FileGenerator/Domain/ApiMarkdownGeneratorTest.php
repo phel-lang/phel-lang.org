@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PhelDocBuildTests\FileGenerator\Domain;
 
-use Phel\Api\ApiFacadeInterface;
 use Phel\Api\Transfer\PhelFunction;
 use PhelDocBuild\FileGenerator\Domain\ApiMarkdownGenerator;
+use PhelDocBuild\FileGenerator\Domain\PhelFunctionRepositoryInterface;
 use PHPUnit\Framework\TestCase;
 
 final class ApiMarkdownGeneratorTest extends TestCase
@@ -14,7 +14,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
     public function test_generate_page_without_phel_functions(): void
     {
         $generator = new ApiMarkdownGenerator(
-            $this->createStub(ApiFacadeInterface::class)
+            $this->createStub(PhelFunctionRepositoryInterface::class)
         );
 
         $expected = [
@@ -32,8 +32,8 @@ final class ApiMarkdownGeneratorTest extends TestCase
 
     public function test_generate_page_with_one_phel_function(): void
     {
-        $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getGroupedFunctions')
+        $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
+        $repository->method('getAllGroupedFunctions')
             ->willReturn([
                 'group-1' => [
                     PhelFunction::fromArray([
@@ -43,7 +43,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
                 ],
             ]);
 
-        $generator = new ApiMarkdownGenerator($apiFacade);
+        $generator = new ApiMarkdownGenerator($repository);
 
         $expected = [
             '+++',
@@ -62,8 +62,8 @@ final class ApiMarkdownGeneratorTest extends TestCase
 
     public function test_generate_page_with_multiple_phel_functions_in_same_group(): void
     {
-        $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getGroupedFunctions')
+        $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
+        $repository->method('getAllGroupedFunctions')
             ->willReturn([
                 'group-1' => [
                     PhelFunction::fromArray([
@@ -77,7 +77,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
                 ],
             ]);
 
-        $generator = new ApiMarkdownGenerator($apiFacade);
+        $generator = new ApiMarkdownGenerator($repository);
 
         $expected = [
             '+++',
@@ -98,8 +98,8 @@ final class ApiMarkdownGeneratorTest extends TestCase
 
     public function test_generate_page_with_multiple_phel_functions_in_different_groups(): void
     {
-        $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getGroupedFunctions')
+        $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
+        $repository->method('getAllGroupedFunctions')
             ->willReturn([
                 'group-1' => [
                     PhelFunction::fromArray([
@@ -115,7 +115,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
                 ],
             ]);
 
-        $generator = new ApiMarkdownGenerator($apiFacade);
+        $generator = new ApiMarkdownGenerator($repository);
 
         $expected = [
             '+++',
