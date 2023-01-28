@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Domain;
 
-use Phel\Api\ApiFacadeInterface;
-
 final class ApiSearchGenerator
 {
     private const SPECIAL_ENDING_CHARS = ['=', '*', '?', '+', '>', '<', '!'];
 
     public function __construct(
-        private ApiFacadeInterface $apiFacade,
-        private array $allNamespaces = []
+        private PhelFunctionRepositoryInterface $repository
     ) {
     }
 
@@ -26,8 +23,6 @@ final class ApiSearchGenerator
      */
     public function generateSearchIndex(): array
     {
-        $groupNormalizedData = $this->apiFacade->getGroupedFunctions($this->allNamespaces);
-
         /**
          * Zola ignores the especial chars, and uses instead a number. This variable keep track
          * of the appearances and uses an autoincrement number to follow the proper link.
@@ -38,13 +33,14 @@ final class ApiSearchGenerator
          * table? -> table-1
          */
         $groupFnNameAppearances = [];
-
         $result = [];
-        foreach ($groupNormalizedData as $groupKey => $values) {
+        $groupedPhelFns = $this->repository->getAllGroupedFunctions();
+
+        foreach ($groupedPhelFns as $groupKey => $phelFns) {
             $groupFnNameAppearances[$groupKey] = 0;
 
-            foreach ($values as $value) {
-                $fnName = $value->fnName();
+            foreach ($phelFns as $fn) {
+                $fnName = $fn->fnName();
 
                 if ($groupFnNameAppearances[$groupKey] === 0) {
                     $anchor = $groupKey;
@@ -55,9 +51,9 @@ final class ApiSearchGenerator
                 }
 
                 $result[] = [
-                    'fnName' => $value->fnName(),
-                    'fnSignature' => $value->fnSignature(),
-                    'desc' => $this->formatDescription($value->description()),
+                    'fnName' => $fn->fnName(),
+                    'fnSignature' => $fn->fnSignature(),
+                    'desc' => $this->formatDescription($fn->description()),
                     'anchor' => $anchor,
                 ];
             }

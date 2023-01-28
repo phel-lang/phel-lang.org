@@ -8,16 +8,10 @@ use PhelDocBuild\FileGenerator\Domain\ApiMarkdownGenerator;
 
 final class ApiMarkdownFile
 {
-    private ApiMarkdownGenerator $apiMarkdownGenerator;
-
-    private string $appRootDir;
-
     public function __construct(
-        ApiMarkdownGenerator $apiMarkdownGenerator,
-        string $appRootDir,
+        private ApiMarkdownGenerator $apiMarkdownGenerator,
+        private string $appRootDir,
     ) {
-        $this->apiMarkdownGenerator = $apiMarkdownGenerator;
-        $this->appRootDir = $appRootDir;
     }
 
     public function generate(): void
