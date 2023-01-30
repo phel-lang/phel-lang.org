@@ -13,9 +13,9 @@ vendor/bin/phel list
 ## Build the project
 
 ```bash
-php phel build
+php phel compile
 # Usage:
-#   build [options]
+#   compile [options]
 #
 # Options:
 #       --cache|--no-cache            Enable cache
