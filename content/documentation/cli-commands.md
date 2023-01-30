@@ -10,7 +10,7 @@ Phel includes a series of commands out-of-the-box.
 vendor/bin/phel list
 ```
 
-## Build the project
+## Compile the project
 
 ```bash
 php phel compile
@@ -22,7 +22,7 @@ php phel compile
 #       --source-map|--no-source-map  Enable source maps
 ```
 
-Build the current project into the `out-dir` folder. This means that the compiled phel code into PHP will be saved in that directory, so you can run the PHP code directly using the PHP interpreter. This will improve the runtime performance -because there won't be a need to compile the code again.
+Compile the current project into the `out-dir` folder. This means that the compiled phel code into PHP will be saved in that directory, so you can run the PHP code directly using the PHP interpreter. This will improve the runtime performance, because there won't be a need to compile the code again.
 
 [Configuration](/documentation/configuration/) in `phel-config.php`:
 ```php
