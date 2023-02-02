@@ -1,5 +1,8 @@
 document.addEventListener('keyup', function (keyboardEvent) {
-    if (keyboardEvent.key === 's') {
+    if (keyboardEvent.key === 's'
+        || keyboardEvent.key === 'S'
+        || keyboardEvent.key === '/'
+    ) {
         document.getElementById("search").focus();
     }
 });
