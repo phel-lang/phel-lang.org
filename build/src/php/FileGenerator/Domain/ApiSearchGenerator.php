@@ -38,9 +38,7 @@ final class ApiSearchGenerator
 
         foreach ($groupedPhelFns as $fn) {
             $groupKey = $fn->groupKey();
-            if (!isset($groupFnNameAppearances[$groupKey])) {
-                $groupFnNameAppearances[$groupKey] = 0;
-            }
+            $groupFnNameAppearances[$groupKey] ??= 0;
 
             if ($groupFnNameAppearances[$groupKey] === 0) {
                 $anchor = $groupKey;
