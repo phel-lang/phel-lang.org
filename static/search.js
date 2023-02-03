@@ -1,3 +1,12 @@
+document.addEventListener('keyup', function (keyboardEvent) {
+    if (keyboardEvent.key === 's'
+        || keyboardEvent.key === 'S'
+        || keyboardEvent.key === '/'
+    ) {
+        document.getElementById("search").focus();
+    }
+});
+
 if (document.readyState === "complete" || (document.readyState !== "loading" && !document.documentElement.doScroll)) {
     initSearch();
 } else {
