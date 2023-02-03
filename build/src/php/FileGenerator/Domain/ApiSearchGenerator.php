@@ -34,29 +34,28 @@ final class ApiSearchGenerator
          */
         $groupFnNameAppearances = [];
         $result = [];
-        $groupedPhelFns = $this->repository->getAllGroupedFunctions();
+        $groupedPhelFns = $this->repository->getAllPhelFunctions();
 
-        foreach ($groupedPhelFns as $groupKey => $phelFns) {
-            $groupFnNameAppearances[$groupKey] = 0;
-
-            foreach ($phelFns as $fn) {
-                $fnName = $fn->fnName();
-
-                if ($groupFnNameAppearances[$groupKey] === 0) {
-                    $anchor = $groupKey;
-                    $groupFnNameAppearances[$groupKey]++;
-                } else {
-                    $sanitizedFnName = str_replace(['/', ...self::SPECIAL_ENDING_CHARS], ['-', ''], $fnName);
-                    $anchor = rtrim($sanitizedFnName, '-') . '-' . $groupFnNameAppearances[$groupKey]++;
-                }
-
-                $result[] = [
-                    'fnName' => $fn->fnName(),
-                    'fnSignature' => $fn->fnSignature(),
-                    'desc' => $this->formatDescription($fn->description()),
-                    'anchor' => $anchor,
-                ];
+        foreach ($groupedPhelFns as $fn) {
+            $groupKey = $fn->groupKey();
+            if (!isset($groupFnNameAppearances[$groupKey])) {
+                $groupFnNameAppearances[$groupKey] = 0;
             }
+
+            if ($groupFnNameAppearances[$groupKey] === 0) {
+                $anchor = $groupKey;
+                $groupFnNameAppearances[$groupKey]++;
+            } else {
+                $sanitizedFnName = str_replace(['/', ...self::SPECIAL_ENDING_CHARS], ['-', ''], $fn->fnName());
+                $anchor = rtrim($sanitizedFnName, '-') . '-' . $groupFnNameAppearances[$groupKey]++;
+            }
+
+            $result[] = [
+                'fnName' => $fn->fnName(),
+                'fnSignature' => $fn->fnSignature(),
+                'desc' => $this->formatDescription($fn->description()),
+                'anchor' => $anchor,
+            ];
         }
 
         return $result;

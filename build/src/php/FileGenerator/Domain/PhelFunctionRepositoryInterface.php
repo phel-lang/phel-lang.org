@@ -9,7 +9,7 @@ use Phel\Api\Transfer\PhelFunction;
 interface PhelFunctionRepositoryInterface
 {
     /**
-     * @return array<string,list<PhelFunction>>
+     * @return list<PhelFunction>
      */
-    public function getAllGroupedFunctions(): array;
+    public function getAllPhelFunctions(): array;
 }

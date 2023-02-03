@@ -17,10 +17,10 @@ final class PhelFunctionRepository implements PhelFunctionRepositoryInterface
     }
 
     /**
-     * @return array<string,list<PhelFunction>>
+     * @return list<PhelFunction>
      */
-    public function getAllGroupedFunctions(): array
+    public function getAllPhelFunctions(): array
     {
-        return $this->apiFacade->getGroupedFunctions($this->allNamespaces);
+        return $this->apiFacade->getPhelFunctions($this->allNamespaces);
     }
 }
