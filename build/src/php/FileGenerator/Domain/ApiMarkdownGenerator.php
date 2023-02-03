@@ -17,13 +17,11 @@ final class ApiMarkdownGenerator
     public function generate(): array
     {
         $result = $this->zolaHeaders();
-        $groupedPhelFns = $this->repository->getAllGroupedFunctions();
+        $groupedPhelFns = $this->repository->getAllPhelFunctions();
 
-        foreach ($groupedPhelFns as $phelFunctions) {
-            foreach ($phelFunctions as $fn) {
-                $result[] = "## `{$fn->fnName()}`";
-                $result[] = $fn->doc();
-            }
+        foreach ($groupedPhelFns as $fn) {
+            $result[] = "## `{$fn->fnName()}`";
+            $result[] = $fn->doc();
         }
 
         return $result;

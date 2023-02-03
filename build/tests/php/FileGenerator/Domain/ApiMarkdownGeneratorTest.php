@@ -33,14 +33,13 @@ final class ApiMarkdownGeneratorTest extends TestCase
     public function test_generate_page_with_one_phel_function(): void
     {
         $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
-        $repository->method('getAllGroupedFunctions')
+        $repository->method('getAllPhelFunctions')
             ->willReturn([
-                'group-1' => [
-                    PhelFunction::fromArray([
-                        'fnName' => 'function-1',
-                        'doc' => 'The doc from function 1',
-                    ]),
-                ],
+                PhelFunction::fromArray([
+                    'fnName' => 'function-1',
+                    'doc' => 'The doc from function 1',
+                    'groupKey' => 'group-1',
+                ]),
             ]);
 
         $generator = new ApiMarkdownGenerator($repository);
@@ -63,18 +62,16 @@ final class ApiMarkdownGeneratorTest extends TestCase
     public function test_generate_page_with_multiple_phel_functions_in_same_group(): void
     {
         $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
-        $repository->method('getAllGroupedFunctions')
+        $repository->method('getAllPhelFunctions')
             ->willReturn([
-                'group-1' => [
-                    PhelFunction::fromArray([
-                        'fnName' => 'function-1',
-                        'doc' => 'The doc from function 1',
-                    ]),
-                    PhelFunction::fromArray([
-                        'fnName' => 'function-2',
-                        'doc' => 'The doc from function 2',
-                    ]),
-                ],
+                PhelFunction::fromArray([
+                    'fnName' => 'function-1',
+                    'doc' => 'The doc from function 1',
+                ]),
+                PhelFunction::fromArray([
+                    'fnName' => 'function-2',
+                    'doc' => 'The doc from function 2',
+                ]),
             ]);
 
         $generator = new ApiMarkdownGenerator($repository);
@@ -99,20 +96,16 @@ final class ApiMarkdownGeneratorTest extends TestCase
     public function test_generate_page_with_multiple_phel_functions_in_different_groups(): void
     {
         $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
-        $repository->method('getAllGroupedFunctions')
+        $repository->method('getAllPhelFunctions')
             ->willReturn([
-                'group-1' => [
-                    PhelFunction::fromArray([
-                        'fnName' => 'function-1',
-                        'doc' => 'The doc from function 1',
-                    ]),
-                ],
-                'group-2' => [
-                    PhelFunction::fromArray([
-                        'fnName' => 'function-2',
-                        'doc' => 'The doc from function 2',
-                    ]),
-                ],
+                PhelFunction::fromArray([
+                    'fnName' => 'function-1',
+                    'doc' => 'The doc from function 1',
+                ]),
+                PhelFunction::fromArray([
+                    'fnName' => 'function-2',
+                    'doc' => 'The doc from function 2',
+                ]),
             ]);
 
         $generator = new ApiMarkdownGenerator($repository);

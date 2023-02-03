@@ -14,15 +14,14 @@ final class ApiSearchGeneratorTest extends TestCase
     public function test_generate_search_index_one_item(): void
     {
         $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
-        $repository->method('getAllGroupedFunctions')
+        $repository->method('getAllPhelFunctions')
             ->willReturn([
-                'table' => [
-                    PhelFunction::fromArray([
-                        'fnName' => 'table?',
-                        'fnSignature' => '(table? x)',
-                        'desc' => 'doc for table?',
-                    ]),
-                ],
+                PhelFunction::fromArray([
+                    'fnName' => 'table?',
+                    'fnSignature' => '(table? x)',
+                    'desc' => 'doc for table?',
+                    'groupKey' => 'table'
+                ]),
             ]);
 
         $generator = new ApiSearchGenerator($repository);
@@ -43,22 +42,20 @@ final class ApiSearchGeneratorTest extends TestCase
     public function test_multiple_items_in_different_groups(): void
     {
         $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
-        $repository->method('getAllGroupedFunctions')
+        $repository->method('getAllPhelFunctions')
             ->willReturn([
-                'table' => [
-                    PhelFunction::fromArray([
-                        'fnName' => 'table',
-                        'fnSignature' => '(table & xs)',
-                        'desc' => 'doc for table',
-                    ]),
-                ],
-                'not' => [
-                    PhelFunction::fromArray([
-                        'fnName' => 'not',
-                        'fnSignature' => '(not x)',
-                        'desc' => 'doc for not',
-                    ]),
-                ],
+                PhelFunction::fromArray([
+                    'fnName' => 'table',
+                    'fnSignature' => '(table & xs)',
+                    'desc' => 'doc for table',
+                    'groupKey' => 'table',
+                ]),
+                PhelFunction::fromArray([
+                    'fnName' => 'not',
+                    'fnSignature' => '(not x)',
+                    'desc' => 'doc for not',
+                    'groupKey' => 'not',
+                ]),
             ]);
 
         $generator = new ApiSearchGenerator($repository);
@@ -85,20 +82,20 @@ final class ApiSearchGeneratorTest extends TestCase
     public function test_multiple_items_in_the_same_group(): void
     {
         $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
-        $repository->method('getAllGroupedFunctions')
+        $repository->method('getAllPhelFunctions')
             ->willReturn([
-                'table' => [
-                    PhelFunction::fromArray([
-                        'fnName' => 'table',
-                        'fnSignature' => '(table & xs)',
-                        'desc' => 'doc for table',
-                    ]),
-                    PhelFunction::fromArray([
-                        'fnName' => 'table?',
-                        'fnSignature' => '(table? x)',
-                        'desc' => 'doc for table?',
-                    ]),
-                ],
+                PhelFunction::fromArray([
+                    'fnName' => 'table',
+                    'fnSignature' => '(table & xs)',
+                    'desc' => 'doc for table',
+                    'groupKey' => 'table',
+                ]),
+                PhelFunction::fromArray([
+                    'fnName' => 'table?',
+                    'fnSignature' => '(table? x)',
+                    'desc' => 'doc for table?',
+                    'groupKey' => 'table',
+                ]),
             ]);
 
         $generator = new ApiSearchGenerator($repository);
@@ -125,20 +122,20 @@ final class ApiSearchGeneratorTest extends TestCase
     public function test_fn_name_with_slash_in_the_middle(): void
     {
         $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
-        $repository->method('getAllGroupedFunctions')
+        $repository->method('getAllPhelFunctions')
             ->willReturn([
-                'http-response' => [
-                    PhelFunction::fromArray([
-                        'fnName' => 'http/response',
-                        'fnSignature' => '',
-                        'desc' => '',
-                    ]),
-                    PhelFunction::fromArray([
-                        'fnName' => 'http/response?',
-                        'fnSignature' => '',
-                        'desc' => '',
-                    ]),
-                ],
+                PhelFunction::fromArray([
+                    'fnName' => 'http/response',
+                    'fnSignature' => '',
+                    'desc' => '',
+                    'groupKey' => 'http-response',
+                ]),
+                PhelFunction::fromArray([
+                    'fnName' => 'http/response?',
+                    'fnSignature' => '',
+                    'desc' => '',
+                    'groupKey' => 'http-response-1',
+                ]),
             ]);
 
         $generator = new ApiSearchGenerator($repository);
@@ -165,20 +162,20 @@ final class ApiSearchGeneratorTest extends TestCase
     public function test_fn_name_ending_with_minus(): void
     {
         $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
-        $repository->method('getAllGroupedFunctions')
+        $repository->method('getAllPhelFunctions')
             ->willReturn([
-                'defn' => [
-                    PhelFunction::fromArray([
-                        'fnName' => 'defn',
-                        'fnSignature' => '',
-                        'desc' => '',
-                    ]),
-                    PhelFunction::fromArray([
-                        'fnName' => 'defn-',
-                        'fnSignature' => '',
-                        'desc' => '',
-                    ]),
-                ],
+                PhelFunction::fromArray([
+                    'fnName' => 'defn',
+                    'fnSignature' => '',
+                    'desc' => '',
+                    'groupKey' => 'defn',
+                ]),
+                PhelFunction::fromArray([
+                    'fnName' => 'defn-',
+                    'fnSignature' => '',
+                    'desc' => '',
+                    'groupKey' => 'defn',
+                ]),
             ]);
 
         $generator = new ApiSearchGenerator($repository);
@@ -205,20 +202,20 @@ final class ApiSearchGeneratorTest extends TestCase
     public function test_fn_name_with_upper_case(): void
     {
         $repository = $this->createStub(PhelFunctionRepositoryInterface::class);
-        $repository->method('getAllGroupedFunctions')
+        $repository->method('getAllPhelFunctions')
             ->willReturn([
-                'nan' => [
-                    PhelFunction::fromArray([
-                        'fnName' => 'NAN',
-                        'fnSignature' => '',
-                        'desc' => '',
-                    ]),
-                    PhelFunction::fromArray([
-                        'fnName' => 'nan?',
-                        'fnSignature' => '',
-                        'desc' => '',
-                    ]),
-                ],
+                PhelFunction::fromArray([
+                    'fnName' => 'NAN',
+                    'fnSignature' => '',
+                    'desc' => '',
+                    'groupKey' => 'nan',
+                ]),
+                PhelFunction::fromArray([
+                    'fnName' => 'nan?',
+                    'fnSignature' => '',
+                    'desc' => '',
+                    'groupKey' => 'nan',
+                ]),
             ]);
 
         $generator = new ApiSearchGenerator($repository);
