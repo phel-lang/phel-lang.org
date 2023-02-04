@@ -1,3 +1,6 @@
+////////////////////////////////////
+// Interaction with the search input
+////////////////////////////////////
 document.addEventListener('keyup', function (keyboardEvent) {
     if (['s', 'S', '/'].includes(keyboardEvent.key)) {
         document.getElementById("search").focus();
@@ -82,6 +85,9 @@ function addClass(el, className) {
     }
 }
 
+///////////////////////////////
+// Autoload of the search input
+///////////////////////////////
 if (document.readyState === "complete" || (document.readyState !== "loading" && !document.documentElement.doScroll)) {
     initSearch();
 } else {
