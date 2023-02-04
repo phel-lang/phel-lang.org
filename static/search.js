@@ -1,27 +1,25 @@
 document.addEventListener('keyup', function (keyboardEvent) {
-    if (keyboardEvent.key === 's'
-        || keyboardEvent.key === 'S'
-        || keyboardEvent.key === '/'
-    ) {
+    if (['s', 'S', '/'].includes(keyboardEvent.key)) {
         document.getElementById("search").focus();
     }
 });
 
-const UP_ARROW = 38;
-const DOWN_ARROW = 40;
-const ENTER_KEY = 13;
+const UP_ARROW = "ArrowUp";
+const DOWN_ARROW = "ArrowDown";
+const ENTER_KEY = "Enter";
 const searchResultsItems = document.getElementById('search-results__items');
 let searchItemSelected;
 let resultsItemsIndex = -1;
 
-document.addEventListener('keydown', function (e) {
+document.addEventListener('keydown', function (keyboardEvent) {
     const len = searchResultsItems.getElementsByTagName('li').length - 1;
 
-    if (e.which === DOWN_ARROW) {
+    console.log(keyboardEvent.key);
+    if (keyboardEvent.key === DOWN_ARROW) {
         downArrow(len);
-    } else if (e.which === UP_ARROW) {
+    } else if (keyboardEvent.key === UP_ARROW) {
         upArrow(len);
-    } else if (e.which === ENTER_KEY) {
+    } else if (keyboardEvent.key === ENTER_KEY) {
         searchItemSelected.getElementsByTagName('a')[0].click();
     }
 });
@@ -91,8 +89,8 @@ if (document.readyState === "complete" || (document.readyState !== "loading" && 
 }
 
 function initSearch() {
-    const $searchInput = document.getElementById("search");
-    const $searchResults = document.querySelector(".search-results");
+    const searchInput = document.getElementById("search");
+    const searchResults = document.querySelector(".search-results");
 
     elasticlunr.trimmer = function (token) {
         if (token === null || token === undefined) {
@@ -112,29 +110,32 @@ function initSearch() {
     // Load symbols into elasticlunr object
     window.searchIndexApi.forEach(item => index.addDoc(item));
 
-    $searchInput.addEventListener("keyup", function (e) {
-        if (e.which === DOWN_ARROW || e.which === UP_ARROW || e.which === ENTER_KEY) {
+    searchInput.addEventListener("keyup", function (keyboardEvent) {
+        if (keyboardEvent.key === DOWN_ARROW || keyboardEvent.key === UP_ARROW || keyboardEvent.key === ENTER_KEY) {
             return;
         }
+
+        searchItemSelected = null;
+        resultsItemsIndex = -1;
         debounce(showResults(index), 150)();
     });
 
     // Hide results when user press on the 'x' placed inside the search field
-    $searchInput.addEventListener("search", () => $searchResults.style.display = "");
-    $searchInput.addEventListener("focusin", function () {
-        if ($searchInput.value !== "") {
+    searchInput.addEventListener("search", () => searchResults.style.display = "");
+    searchInput.addEventListener("focusin", function () {
+        if (searchInput.value !== "") {
             showResults(index)();
         }
     });
 
-    $searchInput.addEventListener("focusout", function () {
+    searchInput.addEventListener("focusout", function () {
         resultsItemsIndex = -1;
     });
 
     window.addEventListener("click", function (e) {
-        if ($searchResults.style.display === "block") {
-            if (e.target !== $searchInput) {
-                $searchResults.style.display = "";
+        if (searchResults.style.display === "block") {
+            if (e.target !== searchInput) {
+                searchResults.style.display = "";
             }
         }
     });
@@ -157,16 +158,16 @@ function debounce(func, wait) {
 
 function showResults(index) {
     return function () {
-        const $searchInput = document.getElementById("search");
-        const $searchResults = document.querySelector(".search-results");
-        const $searchResultsItems = document.querySelector(".search-results__items");
+        const searchInput = document.getElementById("search");
+        const searchResults = document.querySelector(".search-results");
+        const searchResultsItems = document.querySelector(".search-results__items");
         const MAX_ITEMS = 10;
 
-        const term = $searchInput.value.trim();
-        $searchResults.style.display = term === "" ? "" : "block";
-        $searchResultsItems.innerHTML = "";
+        const term = searchInput.value.trim();
+        searchResults.style.display = term === "" ? "" : "block";
+        searchResultsItems.innerHTML = "";
         if (term === "") {
-            $searchResults.style.display = "";
+            searchResults.style.display = "";
             return;
         }
 
@@ -187,25 +188,31 @@ function showResults(index) {
                 anchor: "#",
             };
 
-            createMenuItem(emptyResult);
+            createMenuItem(emptyResult, null);
             return;
         }
 
         const numberOfResults = Math.min(results.length, MAX_ITEMS);
         for (let i = 0; i < numberOfResults; i++) {
-            createMenuItem(results[i].doc);
+            createMenuItem(results[i].doc, i);
         }
     }
 }
 
-function createMenuItem(result) {
-    const $searchInput = document.getElementById("search");
-    const $searchResultsItems = document.querySelector(".search-results__items");
+function createMenuItem(result, index) {
+    const searchInput = document.getElementById("search");
+    const searchResultsItems = document.querySelector(".search-results__items");
 
     const item = document.createElement("li");
     item.innerHTML = formatSearchResultItem(result);
-    item.addEventListener('click', () => $searchInput.value = "")
-    $searchResultsItems.appendChild(item);
+    item.addEventListener('mouseenter', (mouseEvent) => {
+        removeSelectedClassFromSearchResult();
+        mouseEvent.target.classList.add('selected');
+        searchItemSelected = mouseEvent.target;
+        resultsItemsIndex = index;
+    })
+    item.addEventListener('click', () => searchInput.value = "")
+    searchResultsItems.appendChild(item);
 }
 
 function formatSearchResultItem(item) {
@@ -214,4 +221,11 @@ function formatSearchResultItem(item) {
         + `<small class="fn-signature">${item.fnSignature}</small>`
         + `<span class="desc">${item.desc}</span>`
         + `</div></a>`;
+}
+
+function removeSelectedClassFromSearchResult() {
+    const searchResultsItems = document.querySelector(".search-results__items").children;
+    for (let i = 0; i < searchResultsItems.length; i++) {
+        removeClass(searchResultsItems[i], "selected")
+    }
 }
