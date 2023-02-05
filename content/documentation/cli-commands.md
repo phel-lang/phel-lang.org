@@ -10,12 +10,12 @@ Phel includes a series of commands out-of-the-box.
 vendor/bin/phel list
 ```
 
-## Compile the project
+## Build the project
 
 ```bash
-php phel compile
+php phel build
 # Usage:
-#   compile [options]
+#   build [options]
 #
 # Options:
 #       --cache|--no-cache            Enable cache
