@@ -30,6 +30,11 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "config": {
+        "platform": {
+            "php": "8.0.2"
+        }
+    },
     "scripts": {
         "build": [
             "php build/api-page.php",
