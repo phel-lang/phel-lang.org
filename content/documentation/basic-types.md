@@ -139,28 +139,3 @@ Comments begin with a `#` character and continue until the end of the line. Ther
 ```phel
 # This is a comment
 ```
-
-## Arrays (deprecated, use Vectors)
-
-Arrays are similar to vectors but have a leading `@`.
-
-```phel
-@[]
-@[:a :b :c]
-```
-
-An Array in Phel is an indexed datastructure. In contrast to PHP arrays, Phel arrays cannot be used as Map, HashTable or Dictionary.
-
-## Tables (deprecated, use Maps)
-
-Tables are represented by a sequence of white-space delimited key value pairs surrounded by curly braces and the prefix `@`. There must be an even number of items between curly braces or the parser will signal a parse error. The sequence is defined as key1, value1, key2, value2, etc.
-
-```phel
-@{}
-@{:key1 "value1" :key2 "value2"}
-@{(1 2 3) (4 5 6)}
-@{@[] @[]}
-@{1 2 3 4 5 6}
-```
-
-In contrast to PHP associative arrays, Phel tables can have any type of keys.
