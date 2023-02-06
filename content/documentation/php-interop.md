@@ -40,8 +40,7 @@ Evaluates `expr` and creates a new PHP class using the arguments. The instance o
 Calls a method or property on a PHP object. Both `methodname` and `property` must be symbols and cannot be an evaluated value.
 
 ```phel
-(ns my\module
-  (:use \DateInterval))
+(ns my\module)
 
 (def di (php/new \DateInterval "PT30S"))
 
@@ -138,6 +137,7 @@ Therefore, you have to load the Phel namespace that you want to call at the begi
 For example, see [using-exported-phel-function.php](https://github.com/phel-lang/phel-scaffolding/blob/master/example/using-exported-phel-function.php)
 
 ```php
+<?php
 use Phel\Phel;
 use PhelGenerated\PhelScaffolding\Modules\AdderModule;
 
@@ -161,6 +161,7 @@ The `PhelCallerTrait` can be used to call any Phel function from an existing PHP
 Simply inject the trait in the class and call the `callPhel` function.
 
 ```php
+<?php
 use Phel\Interop\PhelCallerTrait;
 
 class MyExistingClass {
@@ -179,6 +180,7 @@ Alternatively, the `phel export` command can be used. This command will generate
 Before using the `export` command the required configuration options need to be added to `phel-config.php`:
 
 ```php
+<?php
 return [
     // ...
     'export' => [
