@@ -9,6 +9,7 @@
     "homepage": "https://phel-lang.org/",
     "license": "MIT",
     "require": {
+        "php": ">=8.0.2",
         "ext-json": "*",
         "phel-lang/phel-lang": "^v0.9",
         "gacela-project/gacela": "^1.0"
