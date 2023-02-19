@@ -122,6 +122,8 @@ vendor/bin/phel test
 # 
 # Options:
 #   -f, --filter[=FILTER]  Filter by test names.
+#       --testdox          Report test execution progress in TestDox format.
+
 ```
 
 Use the `filter` option to run only the tests that contain that filter. In this example, it will find and run all tests which contain `find-me` in their names.
