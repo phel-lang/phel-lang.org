@@ -7,24 +7,24 @@ Phel comes with some configuration options. They are stored in the `phel-config.
 
 ## Structure
 
-These are all Phel specific configuration options available.
+These are all Phel specific configuration options available, along with the values that are set by default.
 
 ```php
 <?php
 // phel-config.php
-return [
-    'src-dirs' => ['src'],
-    'test-dirs' => ['tests'],
-    'vendor-dir' => 'vendor',
-    'out-dir' => 'out',
-    'export' => [
-        'directories' => ['src'],
-        'namespace-prefix' => 'PhelGenerated',
-        'target-directory' => 'src/PhelGenerated',
-    ],
-    'keep-generated-temp-files' => false,
-    'ignore-when-building' => ['src/ignore.phel'],
-];
+return (new \Phel\Config\PhelConfig())
+    ->setSrcDirs(['src/phel'])
+    ->setTestDirs(['tests/phel'])
+    ->setVendorDir('vendor')
+    ->setOutDir('out')
+    ->setExport((new \Phel\Config\PhelExportConfig())
+        ->setDirectories(['src/phel'])
+        ->setNamespacePrefix('PhelGenerated')
+        ->setTargetDirectory('src/PhelGenerated'))
+    ->setIgnoreWhenBuilding(['src/phel/local.phel'])
+    ->setKeepGeneratedTempFiles(false)
+    ->setFormatDirs(['src', 'tests'])
+;
 ```
 
 ## Options in detail
@@ -32,34 +32,38 @@ return [
 This chapter contains all configuration options explained in detail.
 
 
-### `src-dirs`
+### `setSrcDirs`
 
-A list of directories in which the source files for the project are located.
+Sets a list of directories in which the source files for the project are located.
 
-### `test-dirs`
+### `setTestDirs`
 
-A list of directories in which the test files are located.
+Sets a list of directories in which the test files are located.
 
-### `vendor-dir`
+### `setVendorDir`
 
-The name of the composer vendor directory. Default is `vendor`.
+Sets the name of the composer vendor directory. Default is `vendor`.
 
-### `out-dir`
+### `setOutDir`
 
-The directory where all compiled Phel code will be generated when running `phel build` command.
+Sets the directory where all compiled Phel code will be generated when running `phel build` command.
 
-### `export`
+### `setExport`
 
-These configuration options are used for the Phel export command that is described in the [PHP Interop](/documentation/php-interop/#calling-phel-functions-from-php) chapter. Currently, the export command requires three options:
+Sets configuration options that are being used for the Phel export command that is described in the [PHP Interop](/documentation/php-interop/#calling-phel-functions-from-php) chapter. Currently, the export command requires three options:
 
-- `directories`: Defines a list of directories in which the export command should search for export functions.
-- `namespace-prefix`: Defines a namespace prefix for all generated PHP classes.
-- `target-directory`: Defines the directory where the generated PHP classes are stored.
+- `setDirectories`: Sets a list of directories in which the export command should search for export functions.
+- `setNamespacePrefix`: Sets a namespace prefix for all generated PHP classes.
+- `setTargetDirectory`: Sets the directory where the generated PHP classes are stored.
 
-### `keep-generated-temp-files`
+### `setKeepGeneratedTempFiles`
 
 A flag that removes automatically all generated temporal files once the command `phel run` has been executed. Default is `false`.
 
-### `ignore-when-building`
+### `setIgnoreWhenBuilding`
 
-A list of Phel files that should be ignored when building the code.
+Sets a list of Phel files that should be ignored when building the code.
+
+### `setFormatDirs`
+
+Sets a list of directories whose files will be formatted when running the format command.
