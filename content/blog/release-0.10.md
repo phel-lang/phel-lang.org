@@ -9,7 +9,7 @@ Added support for fluid configuration in `phel-config.php`
 
 ```php
 <?php
-# Instead of an raw array...
+# Instead of a raw array...
 return [
     'src-dirs' => ['some/directory'],
     'test-dirs' => ['another/directory'],
