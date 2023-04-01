@@ -27,10 +27,8 @@ Compile the current project into the `out-dir` folder. This means that the compi
 [Configuration](/documentation/configuration/) in `phel-config.php`:
 ```php
 <?php
-return [
-    // [...]
-    'out-dir' => 'out',
-];
+return (new PhelConfig())
+    ->setOutDir('out');
 ```
 
 ## Export definitions
@@ -46,14 +44,11 @@ vendor/bin/phel export
 [Configuration](/documentation/configuration/) in `phel-config.php`:
 ```php
 <?php
-return [
-    // [...]
-    'export' => [
-        'directories' => ['src'],
-        'namespace-prefix' => 'PhelGenerated',
-        'target-directory' => 'src/PhelGenerated'
-    ]
-];
+return (new PhelConfig())
+    ->setExport((new PhelExportConfig())
+        ->setDirectories(['src'])
+        ->setNamespacePrefix('PhelGenerated')
+        ->setTargetDirectory('src/PhelGenerated'));
 ```
 
 ## Format phel files
@@ -67,6 +62,13 @@ vendor/bin/phel format
 # 
 # Arguments:
 #   paths                 The file paths that you want to format.
+```
+
+[Configuration](/documentation/configuration/) in `phel-config.php`:
+```php
+<?php
+return (new PhelConfig())
+    ->setFormatDirs(['src', 'tests']);
 ```
 
 ## Read-Eval-Print Loop
@@ -99,11 +101,9 @@ vendor/bin/phel run
 [Configuration](/documentation/configuration/) in `phel-config.php`:
 ```php
 <?php
-return [
-    // [...]
-    'src-dirs' => ['src'],
-    'vendor-dir' => 'vendor',
-]
+return (new PhelConfig())
+    ->setSrcDirs(['src'])
+    ->setTestDirs(['tests']);
 ```
 
 Read more about [running the code](/documentation/getting-started/#running-the-code) in the getting started page.
@@ -126,13 +126,11 @@ vendor/bin/phel test
 
 ```
 
-Use the `filter` option to run only the tests that contain that filter. In this example, it will find and run all tests which contain `find-me` in their names.
+Use the `filter` option to run only the tests that contain that filter.
 
 [Configuration](/documentation/configuration/) in `phel-config.php`:
 ```php
 <?php
-return [
-    // [...]
-    'test-dirs' => ['tests'],
-];
+return (new PhelConfig())
+    ->setTestDirs(['tests']);
 ```
