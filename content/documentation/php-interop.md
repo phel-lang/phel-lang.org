@@ -134,18 +134,19 @@ In Phel you can also use PHP Magic Methods `__DIR__` and `__FILE__`. These resol
 Phel also provides a way to let you call Phel functions from PHP. This is useful for existing PHP application that wants to integrate Phel.
 Therefore, you have to load the Phel namespace that you want to call at the beginning of your script. This can be done directly after the `autoload.php` file was loaded.
 
-For example, see [using-exported-phel-function.php](https://github.com/phel-lang/phel-scaffolding/blob/master/example/using-exported-phel-function.php)
+For example, see [using-exported-phel-function.php](https://github.com/phel-lang/cli-skeleton/blob/main/example/using-exported-phel-function.php)
 
 ```php
 <?php
+
 use Phel\Phel;
-use PhelGenerated\PhelScaffolding\Modules\AdderModule;
+use PhelGenerated\CliSkeleton\Modules\AdderModule;
 
-$projectRootDir = dirname(__DIR__) . '/';
+$projectRootDir = dirname(__DIR__);
 
-require $projectRootDir . 'vendor/autoload.php';
+require $projectRootDir . '/vendor/autoload.php';
 
-Phel::run($projectRootDir, 'phel-scaffolding\modules\adder-module');
+Phel::run($projectRootDir, 'cli-skeleton\modules\adder-module');
 
 $adder = new AdderModule();
 $result = $adder->adder(1, 2, 3);
@@ -181,14 +182,12 @@ Before using the `export` command the required configuration options need to be 
 
 ```php
 <?php
-return [
-    // ...
-    'export' => [
-        'directories' => ['src'],
-        'namespace-prefix' => 'PhelGenerated',
-        'target-directory' => 'src/PhelGenerated'
-    ]
-]
+return (new PhelConfig())
+    ->setExport((new PhelExportConfig())
+        ->setDirectories(['src'])
+        ->setNamespacePrefix('PhelGenerated')
+        ->setTargetDirectory('src/PhelGenerated'))
+;
 ```
 
 A detailed description of the options can be found in the [Configuration](/documentation/configuration/#export) chapter.
