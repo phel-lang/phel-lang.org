@@ -1,7 +1,8 @@
 <?php
 
-return [
-    'src-dirs' => [],
-    'test-dirs' => [],
-    'vendor-dir' => '/../vendor',
-];
+use Phel\Config\PhelConfig;
+
+return (new PhelConfig)
+    ->setSrcDirs([])
+    ->setTestDirs([])
+    ->setVendorDir('../vendor/');
