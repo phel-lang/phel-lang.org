@@ -76,9 +76,9 @@ First, create a phel config file, called `phel-config.php` in the root of the pr
 ```php
 <?php
 
-return [
-  'src-dirs' => ['src']
-];
+return (new \Phel\Config\PhelConfig())
+    ->setSrcDirs(['src'])
+;
 ```
 
 > Read the documentation for [Configuration](/documentation/configuration) to see all available configuration options for Phel.
