@@ -31,8 +31,8 @@ Define a function `small?` that returns `true` for numbers under 100.
 Define a function `message` that has three cases:
 ```phel
 (message :boink) # -> "Boink!"
-(message :pig)   # -> "oink"
-(message :ping)  # -> "pong"
+(message :pig)   # -> "Oink!"
+(message :ping)  # -> "Pong"
 ```
 {% end %}
 {% solution() %}
