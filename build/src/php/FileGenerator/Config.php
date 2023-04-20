@@ -15,6 +15,7 @@ final class Config extends AbstractConfig
     {
         return [
             'phel\\core',
+            'phel\\repl',
             'phel\\http',
             'phel\\html',
             'phel\\test',
