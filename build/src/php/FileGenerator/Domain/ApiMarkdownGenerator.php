@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Domain;
 
+use Phel\Api\ApiFacadeInterface;
+
 final class ApiMarkdownGenerator
 {
     public function __construct(
-        private PhelFunctionRepositoryInterface $repository
+        private ApiFacadeInterface $apiFacade
     ) {
     }
 
@@ -17,7 +19,7 @@ final class ApiMarkdownGenerator
     public function generate(): array
     {
         $result = $this->zolaHeaders();
-        $groupedPhelFns = $this->repository->getAllPhelFunctions();
+        $groupedPhelFns = $this->apiFacade->getPhelFunctions();
 
         foreach ($groupedPhelFns as $fn) {
             $result[] = "## `{$fn->fnName()}`";

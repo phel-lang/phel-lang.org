@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Domain;
 
+use Phel\Api\ApiFacadeInterface;
+
 final class ApiSearchGenerator
 {
     private const SPECIAL_ENDING_CHARS = ['=', '*', '?', '+', '>', '<', '!'];
 
     public function __construct(
-        private PhelFunctionRepositoryInterface $repository
+        private ApiFacadeInterface $repository
     ) {
     }
 
@@ -34,7 +36,7 @@ final class ApiSearchGenerator
          */
         $groupFnNameAppearances = [];
         $result = [];
-        $groupedPhelFns = $this->repository->getAllPhelFunctions();
+        $groupedPhelFns = $this->repository->getPhelFunctions();
 
         foreach ($groupedPhelFns as $fn) {
             $groupKey = $fn->groupKey();
