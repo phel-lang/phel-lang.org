@@ -9,10 +9,10 @@ Phel requires PHP 8.0 or higher and [Composer](https://getcomposer.org/).
 
 ## Quick start
 
-To get started right away the [Scaffolding project on GitHub](https://github.com/phel-lang/phel-scaffolding) can be used.
+To get started right away, you can use the [cli-skeleton project on GitHub](https://github.com/phel-lang/cli-skeleton).
 
 ```bash
-git clone https://github.com/phel-lang/phel-scaffolding.git
+git clone https://github.com/phel-lang/cli-skeleton.git
 composer install
 # Start the REPL to try Phel
 ./vendor/bin/phel repl
