@@ -81,7 +81,7 @@ return (new \Phel\Config\PhelConfig())
 ;
 ```
 
-> Read the documentation for [Configuration](/documentation/configuration) to see all available configuration options for Phel.
+> Read the docs for [Configuration](/documentation/configuration) to see all available configuration options for Phel.
 
 Then, create a new directory `src` with a file `boot.phel` inside this directory.
 
@@ -124,6 +124,8 @@ Hello, World!
 
 
 ### With a PHP Server
+
+> Check the [web-skeleton project on GitHub](https://github.com/phel-lang/web-skeleton).
 
 The file `index.php` will be executed by the PHP Server. It initializes the Phel Runtime and loads the namespace from the `boot.phel` file described above, to start the application.
 
