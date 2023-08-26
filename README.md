@@ -2,18 +2,33 @@
 
 This is the code for the website of Phel: https://phel-lang.org.
 
-## Build the documentation
+## How to
+
+1. Build the API page
+2. Build the documentation
+
+### Build the API page
+
+```bash
+# install phel as a composer dependency
+composer install
+
+# build the API doc page & the API search index
+composer build
+```
+
+### Build the documentation
 
 The documentation is build with [Zola](https://www.getzola.org/).
 
+#### Local development
+
 ```bash
 zola serve # build & serve
-zola build # build & publish
 ```
 
-## Build the API page
+#### Prod environment
 
 ```bash
-composer install # install phel as composer dependency
-composer build   # build the API documentation page & the API search index
+zola build # build & publish
 ```
