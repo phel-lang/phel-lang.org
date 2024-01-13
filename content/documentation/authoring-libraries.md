@@ -12,11 +12,11 @@ There are two files to keep in mind while developing a Phel library:
 - composer.json
 - phel-config.php
 
-In order to better provide you with an example, you can view the source code of the first Phel library [mabasic/phel-json](https://github.com/mabasic/phel-json). The library has been merged to core Phel in namespace [phel\json](/documentation/api/#json-decode), but you can still install it and see how it all works. Read more about `phel\json` in the blog post [Release: v0.8.0](/blog/release-0-8/).
+To better provide you with an example, you can view the source code of the first Phel library [mabasic/phel-json](https://github.com/mabasic/phel-json). The library has been merged to core Phel in namespace [phel\json](/documentation/api/#json-decode), but you can still install it and see how it all works. Read more about `phel\json` in the blog post [Release: v0.8.0](/blog/release-0-8/).
 
 ### composer.json
 
-The most important part in this file is the `require` section. In here you need to declare which Phel version your library supports.
+The most important part in this file is the `require` section. In here, you need to declare which Phel version your library supports.
 
 ```json
 "require": {
@@ -35,7 +35,6 @@ Here is an example config:
 
 ```php
 <?php
-
 declare(strict_types=1);
 
 use Phel\Config\PhelConfig;
@@ -81,7 +80,7 @@ Read the documentation on [PHP interop](/documentation/php-interop/#calling-phel
 
 When writing a library you get to decide what function, variables or macros you want to expose to the library users. This is important in cases where you don't want the library users to use a specific function or value for some reason.
 
-Available functions:
+Available macros:
 
 - [`def-`](/documentation/api/#def) - Define a private value that will not be exported.
 - [`defn-`](/documentation/api/#defn-1) - Define a private function that will not be exported.
@@ -92,6 +91,7 @@ Available functions:
 Phel library is just like any PHP library in the sense that the process for publishing is the same. You login to [Packagist](https://packagist.org/) and submit your repository. Then, you can install the library in your Phel or PHP application in the same way:
 
 ```bash
+# For example:
 composer require mabasic/phel-json
 ```
 
