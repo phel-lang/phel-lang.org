@@ -1,0 +1,14 @@
++++
+title = "Release: v0.11.0"
+date = "2023-08-26"
++++
+
+## Improved build
+
+- Improve PHP notices and error messages
+- Create a main script to run after build
+
+## Full list
+
+For a full list of changes, have a look at the [Changelog](https://github.com/phel-lang/phel-lang/blob/master/CHANGELOG.md).
+
