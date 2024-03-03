@@ -48,7 +48,7 @@ Together with `quote` and `defmarco`, it is now possible to define a custom `def
 
 ```phel
 (defmacro mydefn [name args & body]
-  (list 'def name (apply list 'fn name args body)))
+  (list 'def name (apply list 'fn args body)))
 ```
 This macro is very simple at does not support all the feature of `defn`. But it illustrates the basics of a macro.
 
@@ -58,4 +58,4 @@ For better readability of marcos the `quasiquote` special form is defined. It tu
 
 ```phel
 (defmacro mydefn [name args & body]
-  `(def ,name (fn ,name ,args ,@body)))
+  `(def ,name (fn ,args ,@body)))
