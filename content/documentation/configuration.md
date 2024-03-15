@@ -16,7 +16,10 @@ return (new \Phel\Config\PhelConfig())
     ->setSrcDirs(['src/phel'])
     ->setTestDirs(['tests/phel'])
     ->setVendorDir('vendor')
-    ->setOutDir('out')
+    ->setOut((new PhelOutConfig())
+        ->setDestDir('out')
+        ->setMainPhelNamespace('your-ns\main')
+        ->setMainPhpFilename('main'))
     ->setExport((new \Phel\Config\PhelExportConfig())
         ->setDirectories(['src/phel'])
         ->setNamespacePrefix('PhelGenerated')
@@ -44,9 +47,13 @@ Sets a list of directories in which the test files are located.
 
 Sets the name of the composer vendor directory. Default is `vendor`.
 
-### `setOutDir`
+### `setOut`
 
-Sets the directory where all compiled Phel code will be generated when running `phel build` command.
+When running the `phel build` command...
+
+- `DestDir`: the directory where all compiled Phel code will be generated.
+- `setMainPhelNamespace`: the main phel namespace to start compiling the Phel code.
+- `setMainPhpFilename`: the PHP filename entrypoint.
 
 ### `setExport`
 
