@@ -6,6 +6,5 @@ vendor/
 
 .phel-repl-history
 .phpunit.result.cache
-composer.lock
 static/api_search.js
 content/documentation/api.md
