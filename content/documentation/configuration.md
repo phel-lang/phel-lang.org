@@ -17,16 +17,16 @@ return (new \Phel\Config\PhelConfig())
     ->setTestDirs(['tests/phel'])
     ->setVendorDir('vendor')
     ->setOut((new PhelOutConfig())
-        ->setDestDir('out')
         ->setMainPhelNamespace('your-ns\main')
-        ->setMainPhpFilename('main'))
+        ->setMainPhpPath('out/main.php'))
     ->setExport((new \Phel\Config\PhelExportConfig())
         ->setDirectories(['src/phel'])
         ->setNamespacePrefix('PhelGenerated')
         ->setTargetDirectory('src/PhelGenerated'))
     ->setIgnoreWhenBuilding(['src/phel/local.phel'])
-    ->setKeepGeneratedTempFiles(false)
+    ->setNoCacheWhenBuilding(['src/phel/local.phel'])
     ->setFormatDirs(['src', 'tests'])
+    ->setKeepGeneratedTempFiles(false)
 ;
 ```
 
@@ -34,28 +34,26 @@ return (new \Phel\Config\PhelConfig())
 
 This chapter contains all configuration options explained in detail.
 
+### `setSrcDirs(list<string>)`
 
-### `setSrcDirs`
+Set a list of directories in which the source files for the project are located.
 
-Sets a list of directories in which the source files for the project are located.
+### `setTestDirs(list<string>)`
 
-### `setTestDirs`
+Set a list of directories in which the test files are located.
 
-Sets a list of directories in which the test files are located.
+### `setVendorDir(string)`
 
-### `setVendorDir`
+Set the name of the composer vendor directory. Default is `vendor`.
 
-Sets the name of the composer vendor directory. Default is `vendor`.
+### `setOut(PhelOutConfig)`
 
-### `setOut`
+When running the `phel build` command:
 
-When running the `phel build` command...
+- `setMainPhelNamespace`: the main phel namespace to start transpiling the Phel code.
+- `setMainPhpPath`: the entry point of the build PHP result.
 
-- `DestDir`: the directory where all compiled Phel code will be generated.
-- `setMainPhelNamespace`: the main phel namespace to start compiling the Phel code.
-- `setMainPhpFilename`: the PHP filename entrypoint.
-
-### `setExport`
+### `setExport(PhelExportConfig)`
 
 Sets configuration options that are being used for the Phel export command that is described in the [PHP Interop](/documentation/php-interop/#calling-phel-functions-from-php) chapter. Currently, the export command requires three options:
 
@@ -63,14 +61,18 @@ Sets configuration options that are being used for the Phel export command that 
 - `setNamespacePrefix`: Sets a namespace prefix for all generated PHP classes.
 - `setTargetDirectory`: Sets the directory where the generated PHP classes are stored.
 
-### `setKeepGeneratedTempFiles`
+### `setIgnoreWhenBuilding(list<string>)`
 
-A flag that removes automatically all generated temporal files once the command `phel run` has been executed. Default is `false`.
+Set a list of Phel files that should be ignored when building the code.
 
-### `setIgnoreWhenBuilding`
+### `setNoCacheWhenBuilding(list<string>)`
 
-Sets a list of Phel files that should be ignored when building the code.
+Set a list of Phel files that should be not cached when building the code. This means, they will be transpiled all the time; regardless when you use the `--cache` or `--no-cache` flag.
 
-### `setFormatDirs`
+### `setFormatDirs(list<string>)`
 
-Sets a list of directories whose files will be formatted when running the format command.
+Set a list of directories whose files will be formatted when running the format command.
+
+### `setKeepGeneratedTempFiles(bool)`
+
+A flag that automatically removes all generated temporal files once the command `phel run` has been executed. Default is `false`.

@@ -20,7 +20,7 @@ The most important part in this file is the `require` section. In here, you need
 
 ```json
 "require": {
-    "phel-lang/phel-lang": "^0.12"
+    "phel-lang/phel-lang": "^0.13"
 }
 ```
 
