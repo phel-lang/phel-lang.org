@@ -130,18 +130,14 @@ Get the value of a key from a map using a keyword as a function
 {% question() %}
 Use the function `get-in` to return the value `:treasure` from the map:
  ```phel
-{:description "cave"
- :crossroads [{:contents :monster}
-              nil
-              {:contents [:trinket :treasure]}]}
- ```
-{% end %}
-{% solution() %}
-```phel
 (def my-map {:description "cave"
              :crossroads [{:contents :monster}
                           nil
                           {:contents [:trinket :treasure]}]})
+ ```
+{% end %}
+{% solution() %}
+```phel
 (get-in my-map [:crossroads 2 :contents 1])
 ```
 {% end %}
@@ -178,13 +174,15 @@ Add a docstring to the function double. Then show it using `(doc double)`
 {% end %}
 
 {% question() %}
-Implement a `factorial` function using recursion
+Implement a `factorial` function using recursion.
 {% end %}
 {% solution() %}
 ```phel
-(defn factorial [n]
+(defn factorial
+  "Calculate the factorial number for n." 
+  [n]
   (if (<= n 1)
-  n
-  (* n (factorial (dec n)))))
+    n
+    (* n (factorial (dec n)))))
 ```
 {% end %}
