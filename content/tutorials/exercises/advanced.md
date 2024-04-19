@@ -3,9 +3,24 @@ title = "Advanced"
 weight = 4
 +++
 
+{% question() %}
+Implement a `fibonacci` function.
+{% end %}
+{% solution() %}
+```phel
+(defn fib [n]
+  (loop [fib-nums [0 1]]
+    (if (>= (count fib-nums) n)
+      (slice fib-nums 0 n)
+      (let [[n1 n2] (reverse fib-nums)]
+        (recur (push fib-nums (+ n1 n2)))))))
+```
+{% end %}
+
 {% question() %} 
-Print the five most used words from a book. For better results it is useful to remove the most common
-words in the language the book was written in (these are called "[stop words](https://en.wikipedia.org/wiki/Stop_word)").
+Print the five most used words from a book. 
+
+> For better results, it is useful to remove the most common words in the language the book was written in (these are called "[stop words](https://en.wikipedia.org/wiki/Stop_word)").
 
 Some tips:
 1) Save the book content in a variable
