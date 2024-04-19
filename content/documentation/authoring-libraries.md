@@ -43,12 +43,9 @@ use Phel\Config\PhelOutConfig;
 return (new PhelConfig())
     ->setSrcDirs(['src'])
     ->setTestDirs(['tests'])
-    ->setOut(
-        (new PhelOutConfig())
-            ->setDestDir('out')
-            ->setMainPhelNamespace('app\boot')
-            ->setMainPhpFilename('index')
-    )
+    ->setOut((new PhelOutConfig())
+        ->setMainPhelNamespace('your-ns\main')
+        ->setMainPhpPath('out/main.php'))
     ->setFormatDirs(['src', 'tests'])
     ->setIgnoreWhenBuilding(['local.phel'])
     ->setKeepGeneratedTempFiles(false);
