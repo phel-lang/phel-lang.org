@@ -44,7 +44,7 @@ Quote make macros possible, since its helps to distinguish between code and data
 
 The `defmacro` function can be used to create a macro. It takes the same parameters as `defn`.
 
-Together with `quote` and `defmarco`, it is now possible to define a custom `defn`, which is called `mydefn`:
+Together with `quote` and `defmacro`, it is now possible to define a custom `defn`, which is called `mydefn`:
 
 ```phel
 (defmacro mydefn [name args & body]
