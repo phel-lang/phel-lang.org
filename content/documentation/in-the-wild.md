@@ -9,6 +9,7 @@ This page contains a list of libraries and projects that use Phel. If you want t
 
 * [phel-cli-gui](https://github.com/Chemaclass/phel-cli-gui) Some Phel functions to render in the terminal. It uses the Cursor from the Symfony Command module.
 * [phel-str](https://github.com/smeghead/phel-str)  This is a library that provides a group of utility functions related to string manipulation (split, reverse, etc.). Migrated from Clojure.
+* [phel-pdo](https://github.com/smeghead/phel-pdo)  This library is a thin wrapper around PDO.
 
 
 ## Projects
