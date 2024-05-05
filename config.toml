@@ -23,4 +23,5 @@ extra_syntaxes_and_themes = ["syntaxes"]
 [extra]
 # Put all your custom variables here
 
+repo_content_url = "https://github.com/phel-lang/phel-lang.org/blob/master/content/"
 
