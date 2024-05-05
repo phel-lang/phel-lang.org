@@ -90,3 +90,7 @@ To send the response to the client the `emit-response` function can be used.
             {:status 404 :body "Page not found"})]
   (http/emit-response rsp))
 ```
+
+## HTTP Router
+
+A Phel router based on symfony routing component: [phel-lang/router](https://github.com/phel-lang/router)
