@@ -8,7 +8,7 @@ use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
 
 use function json_encode;
 
-final class ApiSearchFile
+final readonly class ApiSearchFile
 {
     public function __construct(
         private ApiSearchGenerator $apiSearchGenerator,
@@ -22,7 +22,7 @@ final class ApiSearchFile
 
         file_put_contents(
             $this->appRootDir . '/../static/api_search.js',
-            "window.searchIndexApi = " . json_encode($searchIndex)
+            "window.searchIndexApi = " . json_encode($searchIndex, JSON_THROW_ON_ERROR)
         );
     }
 }

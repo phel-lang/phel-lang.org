@@ -6,7 +6,7 @@ namespace PhelDocBuild\FileGenerator\Domain;
 
 use Phel\Api\ApiFacadeInterface;
 
-final class ApiSearchGenerator
+final readonly class ApiSearchGenerator
 {
     private const SPECIAL_ENDING_CHARS = ['=', '*', '?', '+', '>', '<', '!'];
 

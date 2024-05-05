@@ -6,7 +6,7 @@ namespace PhelDocBuild\FileGenerator\Infrastructure;
 
 use PhelDocBuild\FileGenerator\Domain\ApiMarkdownGenerator;
 
-final class ApiMarkdownFile
+final readonly class ApiMarkdownFile
 {
     public function __construct(
         private ApiMarkdownGenerator $apiMarkdownGenerator,

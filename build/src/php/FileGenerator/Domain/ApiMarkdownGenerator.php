@@ -6,7 +6,7 @@ namespace PhelDocBuild\FileGenerator\Domain;
 
 use Phel\Api\ApiFacadeInterface;
 
-final class ApiMarkdownGenerator
+final readonly class ApiMarkdownGenerator
 {
     public function __construct(
         private ApiFacadeInterface $apiFacade
