@@ -9,6 +9,10 @@
             {% include "navigation/site-navigation.html" %}
         </aside>
         <main class="two-column-layout__content">
+            <span class="found-a-typo">
+              {% set url = config.extra.repo_content_url ~ page.relative_path %}
+              <a href="{{url}}">Edit me</a>
+            </span>
             {% block content %} {% endblock %}
 
             {% include "footer.html" %}
