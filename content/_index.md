@@ -24,7 +24,7 @@ Feel free to ask questions and join discussions on the [Phel Gitter channel](htt
 
 ## Why Phel?
 
-Phel is a result of my [failed attempts to do functional programming in PHP](/blog/functional-programming-in-php). Basically I wanted:
+Phel is a result of my [failed attempts to do functional programming in PHP](/blog/2020-06-05-functional-programming-in-php). Basically I wanted:
 
 * A LISP-inspired
 * functional programming language

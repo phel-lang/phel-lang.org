@@ -1,6 +1,5 @@
 +++
 title = "Loop and recur"
-date = "2024-05-18"
 aliases = [ "/blog/loop" ]
 +++
 

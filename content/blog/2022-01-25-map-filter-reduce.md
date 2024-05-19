@@ -1,6 +1,5 @@
 +++
 title = "Map, filter and reduce"
-date = "2022-01-25"
 +++
 
 Phel, as many other functional programming languages, comes with three basic tools you should learn right from the beginning:
