@@ -1,9 +1,9 @@
 +++
-title = "Loop"
+title = "Loop and recur"
 date = "2024-05-18"
 +++
 
-Many functional programming models prefer to express repetition by recursive function calls.
+Many functional programming models prefer to express repetition by **recursive** function calls.
 
 In Phel's iteration process, there is a highly functional and convenient `for` macro, but there is also a `loop` special form that performs more primitive loop processing.
 
@@ -36,12 +36,14 @@ When calling as recursion, the `loop` format specifies `recur`, but the recursiv
 For everything else, you can see that you can use `loop` to write iterations in the same way you would write recursive functions.
 
 However, there is one more thing to keep in mind.
-The recursive structure of `loop` must be tail recursive.
+The recursive structure of `loop` must be _**tail recursive**_.
 This means that `recur` can only be placed at the location where it is evaluated last in the iteration process within `loop`.
-If you try to place `recur` in any other location, the following error will be displayed.
+If you try to place `recur` in any other location, the following error will be displayed:
 
 ```
 ERROR: Can't call 'recur here
 ```
 
 If this error is displayed, please check whether the recursive structure of `loop` is tail recursive.
+
+> Note: _**Tail recursion** is a recursive function where the recursive call is the final action in the function. This means the function has nothing else to do after the recursive call, which makes it possible for the compiler or interpreter to optimize the function by transforming it into a loop._
