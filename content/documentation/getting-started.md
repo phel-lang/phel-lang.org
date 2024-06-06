@@ -9,16 +9,28 @@ Phel requires PHP 8.0 or higher and [Composer](https://getcomposer.org/).
 
 ## Quick start
 
-To get started right away, you can use the [cli-skeleton project on GitHub](https://github.com/phel-lang/cli-skeleton).
+To get started right away, you can create a new Phel commandline project via Composer's `create-project` command:
 
 ```bash
-git clone https://github.com/phel-lang/cli-skeleton.git
-composer install
-# Start the REPL to try Phel
-./vendor/bin/phel repl
+composer create-project --stability dev phel-lang/cli-skeleton example-app
 ```
 
-More information can be found in the Readme of the project.
+Once the project has been created, start the REPL (read-evaluate-print loop) to try Phel.
+
+```bash
+cd examle-app
+composer repl
+```
+
+> Alternatively, the `phel-lang/cli-skeleton` package's [GitHub repository](https://github.com/phel-lang/cli-skeleton) is a template from which you may create your project.
+
+More information can be found in the [README](https://packagist.org/packages/phel-lang/cli-skeleton) of the project.
+
+For a web project, you can replace `cli-skeleton` in the instructions above, with `web-skeleton`. You can run the PHP development server with:
+
+```shell
+composer run:dev
+```
 
 ## Manually initialize a new project using Composer
 
@@ -63,11 +75,9 @@ The file `main.phel` contains the actual code of the project. It defines the nam
 (println "Hello, World!")
 ```
 
-
 ## Running the code
 
 There are two ways to run the code: from the command line and with a PHP Server.
-
 
 ### From the Command line
 
@@ -86,7 +96,6 @@ The output will be:
 ```
 Hello, World!
 ```
-
 
 ### With a PHP Server
 
@@ -115,7 +124,6 @@ php -S localhost:8000 ./src/index.php
 ```
 
 In the browser, the URL `http://localhost:8000` will now print "Hello, World!".
-
 
 ## Launch the REPL
 
