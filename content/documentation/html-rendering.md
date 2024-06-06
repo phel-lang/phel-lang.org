@@ -3,11 +3,11 @@ title = "HTML Rendering"
 weight = 16
 +++
 
-Phel offers a template syntax based on Phel's data structures. It uses vectors to represent elements and maps for element's attributes. All values are automatically escaped to provide better defense against cross-site scripting (XSS).
+Phel offers a template syntax based on Phel's data structures. It uses vectors to represent elements and maps to represent an element's attributes. All values are automatically escaped to provide better defense against cross-site scripting (XSS).
 
 ## Syntax
 
-The `html` function in the module `phel\http` is the main function to generate HTML. See the following example:
+The `html` function in the module `phel\html` is the main function to generate HTML. See the following example:
 
 ```phel
 (ns my-namespace
@@ -17,14 +17,14 @@ The `html` function in the module `phel\http` is the main function to generate H
 # Evaluates to <span class="foo">bar</span>
 ```
 
-The data structure that is accepted by `html` takes one of the following forms
+The data structure that is accepted by `html` takes one of the following forms:
 
 ```phel
 [tag body+]
 [tag attributes body+]
 ```
 
-The first item is in the vector is a mandatory tag name. It can be either a keyword or a string. The second item may be an optional map of attributes. All subsequent items in the vector are treated as the element body. This can include strings, nested vector or lists.
+The first item in the vector is a mandatory tag name. It can be either a keyword or a string. The second item is an optional map of attributes. All subsequent items in the vector are treated as the element body. This can include strings, nested vectors or lists.
 
 ```phel
 (html [:div]) # Evaluates to "<div></div>"
@@ -36,9 +36,9 @@ The first item is in the vector is a mandatory tag name. It can be either a keyw
 
 ## Classes and Styles
 
-A common need in building html templates is to adjust element's class list and its inline styles. Therefore, Phel provides special enhancements for `class` and `style` attributes.
+A common need in building HTML templates is to adjust an element's class list and its inline styles. Therefore, Phel provides special enhancements for `class` and `style` attributes.
 
-Instead of concatenation an inline style string, a map can be used. The next two examples evaluate to the same result.
+Instead of concatenating an inline style string, a map can be used. The next two examples evaluate to the same result.
 
 ```phel
 (html [:div {:style "background:green;color:red;"} "bar"])
@@ -47,18 +47,18 @@ Instead of concatenation an inline style string, a map can be used. The next two
 # "<div style=\"background:green;color:red;\">bar</div>"
 ```
 
-Class lists can be build by vectors or maps. If a map is provided the keys of the map are the class names, and the values are evaluated to true or false. Only keys with true values are added to the final class list.
+Class lists can be built by vectors or maps. If a map is provided, the keys of the map are the class names, and the values are evaluated to true or false. Only keys with true values are added to the final class list.
 
 ```phel
 (html [:div {:class [:a]}]) # <div class=\"a\"></div>
 (html [:div {:class [:a "b"]}]) # <div class=\"a b\"></div>
-(html [:div {:class [:a "b"]}]) # <div class=\"a b\"></div>
+(html [:div {:class [:a :b]}]) # <div class=\"a b\"></div>
 (html [:div {:class {:a true :b false}}]) # <div class=\"a\"></div>
 ```
 
 ## Conditional rendering
 
-To conditional render parts of the html the `if` expression can be used.
+To conditionally render parts of the HTML, the `if` expression can be used.
 
 ```phel
 (html [:div [:p "a"] (if true [:p "b"] [:p "c"])])
@@ -69,7 +69,7 @@ To conditional render parts of the html the `if` expression can be used.
 
 ## List rendering
 
-Similar to conditional rendering the `for` expression can be used to render lists.
+Similar to conditional rendering, the `for` expression can be used to render lists.
 
 ```phel
 (html [:ul (for [i :range [0 3]] [:li i])])
@@ -78,7 +78,7 @@ Similar to conditional rendering the `for` expression can be used to render list
 
 ## Raw Html
 
-By default, all values are automatically escaped to provide better defense against cross-site scripting (XSS). In order to output real HTML the `raw-string` function can be used.
+By default, all values are automatically escaped to provide better defense against cross-site scripting (XSS). In order to output unescaped HTML, the `raw-string` function can be used.
 
 ```phel
 (html [:span (raw-string "<a></a>")])
@@ -87,7 +87,7 @@ By default, all values are automatically escaped to provide better defense again
 
 ## Doctypes
 
-To add a doctype at the beginning of each element document the `doctype` function can be used.
+To add a doctype at the beginning of each element document, the `doctype` function can be used.
 
 ```phel
 (html (doctype :html5) [:div])
