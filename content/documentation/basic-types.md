@@ -38,8 +38,7 @@ A keyword is like a symbol that begins with a colon character. However, it is us
 
 ## Numbers
 
-Numbers in Phel are equivalent to numbers in PHP. Next to decimal and
-float numbers, the reader also supports binary, octal and hexadecimal number formats. Binary, octal and hexadecimal formats may contain underscores (`_`) between digits for better readability.
+Phel supports integers and floating-point numbers. Both use the underlying PHP implementation. Integers can be specified in decimal (base 10), hexadecimal (base 16), octal (base 8) and binary (base 2) notations. Binary, octal and hexadecimal formats may contain underscores (`_`) between digits for better readability.
 
 ```phel
 1337 # integer
