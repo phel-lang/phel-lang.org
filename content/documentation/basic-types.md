@@ -5,7 +5,7 @@ weight = 2
 
 ## Nil, True, False
 
-Nil, true and false are literal constants. In Phel `nil` is the same as `null` in PHP. Phel's `true` and `false` are the same as PHP's `true` and `false`.
+Nil, true and false are literal constants. In Phel, `nil` is the same as `null` in PHP. Phel's `true` and `false` are the same as PHP's `true` and `false`.
 
 ```phel
 nil
@@ -26,7 +26,7 @@ my-module/my-function
 
 ## Keywords
 
-Keywords are like symbols that begin with a colon character. However, they are used as constants rather than a name for something.
+A keyword is like a symbol that begins with a colon character. However, it is used as a constant rather than a name for something.
 
 ```phel
 :keyword
@@ -39,7 +39,7 @@ Keywords are like symbols that begin with a colon character. However, they are u
 ## Numbers
 
 Numbers in Phel are equivalent to numbers in PHP. Next to decimal and
-float numbers the reader also supports binary, octal and hexadecimal number formats. Binary, octal and hexadecimal formats may contain underscores (`_`) between digits for better readability.
+float numbers, the reader also supports binary, octal and hexadecimal number formats. Binary, octal and hexadecimal formats may contain underscores (`_`) between digits for better readability.
 
 ```phel
 1337 # integer
@@ -53,23 +53,26 @@ float numbers the reader also supports binary, octal and hexadecimal number form
 7E-10 # float
 
 0b10100111001 # binary number
++0b10100111001 # positive binary number
 -0b10100111001 # negative binary number
 0b101_0011_1001 # binary number with underscores for better readability
 
 0x539 # hexadecimal number
++0x539 # positive hexadecimal number
 -0x539 # negative hexadecimal number
 -0x5_39 # hexadecimal number with underscores
 
 02471 # octal number
--02471 # negativ octal number
++02471 # positive octal number
+-02471 # negative octal number
 024_71 # octal number with underscores
 ```
 
 ## Strings
 
-Strings are surrounded by double quotes. They almost work the same as PHP double-quoted strings. One difference is that the dollar sign (`$`) must not be escaped. Internally Phel strings are represented by PHP strings. Therefore, every PHP string function can be used to operate on the string.
+Strings are surrounded by double quotes. They almost work the same as PHP double-quoted strings. One difference is that the dollar sign (`$`) must not be escaped. Internally, Phel strings are represented by PHP strings. Therefore, every PHP string function can be used to operate on the string.
 
-String can be written in multiple lines. The line break character is then ignored by the reader.
+Strings can be written over multiple lines. The line break character is then ignored by the reader.
 
 ```phel
 "hello world"
@@ -81,7 +84,7 @@ is
 a
 string."
 
-"use backslack to escape \" string"
+"use backslash to escape \" string"
 
 "the dollar must not be escaped: $ or $abc just works"
 
@@ -92,41 +95,45 @@ string."
 
 ## Lists
 
-Lists are a sequence of white space separated values surrounded by parentheses.
+A list is a sequence of whitespace-separated values surrounded by parentheses.
 
 ```phel
 (do 1 2 3)
 ```
 
-Lists will be interpreted as a function calls, a macro call or special form by the compiler.
+A list will be interpreted as a function call, a macro call or a special form by the compiler. A list prefixed with a single quote will be interpreted as data.
+
+```phel
+'(1 2 3)
+```
 
 ## Vectors
 
-Vectors are a sequence of white space separated values surrounded by brackets.
+A vector is a sequence of whitespace-separated values surrounded by brackets.
 
 ```phel
 [1 2 3]
 ```
 
-A Vector in Phel is an indexed datastructure. In contrast to PHP arrays, Phel vectors cannot be used as Map, HashTable or Dictionary.
+A vector in Phel is an indexed data structure. In contrast to PHP arrays, Phel vectors cannot be used as maps, hashtables or dictionaries.
 
 ## Maps
 
-Maps are represented by a sequence of white-space delimited key value pairs surrounded by curly braces. There must be an even number of items between curly braces or the parser will signal a parse error. The sequence is defined as key1, value1, key2, value2, etc.
+A map is a sequence of whitespace-separated key/value pairs surrounded by curly braces, wherein the key and value of each key/value pair are separated by whitespace. There must be an even number of items between curly braces or the parser will signal a parse error. The sequence is defined as key1, value1, key2, value2, etc.
 
 ```phel
 {}
 {:key1 "value1" :key2 "value2"}
-{(1 2 3) (4 5 6)}
+{'(1 2 3) '(4 5 6)}
 {[] []}
 {1 2 3 4 5 6}
 ```
 
-In contrast to PHP associative arrays, Phel Maps can have any type of keys.
+In contrast to PHP associative arrays, Phel maps can have any types of keys.
 
 ## Sets
 
-Sets are a sequence of white space separated values prefixed by the function `set` and the whole being surrounded by parentheses.
+A set is a sequence of whitespace-separated values prefixed by the function `set` and the whole being surrounded by parentheses.
 
 ```phel
 (set 1 2 3)
@@ -134,7 +141,7 @@ Sets are a sequence of white space separated values prefixed by the function `se
 
 ## Comments
 
-Comments begin with a `#` character and continue until the end of the line. There are no multi-line comments.
+A comment begins with a `#` character and continues until the end of the line. There are no multi-line comments.
 
 ```phel
 # This is a comment
