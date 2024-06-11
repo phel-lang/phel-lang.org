@@ -22,18 +22,20 @@ php phel build
 #       --source-map|--no-source-map  Enable source maps
 ```
 
-Compile the current project into the `out-dir` folder. This means that the compiled phel code into PHP will be saved in that directory, so you can run the PHP code directly using the PHP interpreter. This will improve the runtime performance, because there won't be a need to compile the code again.
+Build the current project into the main php path. This means that the compiled phel code into PHP will be saved in that directory being the entry point the `out/index.php`, and you can run the PHP code directly using the PHP interpreter. This will improve the runtime performance, because there won't be a need to compile the code again.
 
-[Configuration](/documentation/configuration/) in `phel-config.php`:
+[Configuration](/documentation/configuration/#buildconfig) in `phel-config.php`:
 ```php
 <?php
-return (new PhelConfig())
-    ->setOutDir('out');
+return (new \Phel\Config\PhelConfig())
+    ->setBuildConfig((new \Phel\Config\PhelBuildConfig())
+        ->setMainPhelNamespace('your-ns\index')
+        ->setMainPhpPath('out/index.php'));
 ```
 
 ## Export definitions
 
-Export all definitions with the meta data `{:export true}` as PHP classes. 
+Export all definitions with the metadata `{:export true}` as PHP classes. 
 
 It generates PHP classes at namespace level and a method for each exported definition. This allows you to use the exported phel functions from your PHP code.
 
@@ -41,12 +43,12 @@ It generates PHP classes at namespace level and a method for each exported defin
 vendor/bin/phel export
 ```
 
-[Configuration](/documentation/configuration/) in `phel-config.php`:
+[Configuration](/documentation/configuration/#export-definitions) in `phel-config.php`:
 ```php
 <?php
-return (new PhelConfig())
-    ->setExport((new PhelExportConfig())
-        ->setDirectories(['src'])
+return (new \Phel\Config\PhelConfig())
+    ->setExportConfig((new \Phel\Config\PhelExportConfig())
+        ->setFromDirectories(['src'])
         ->setNamespacePrefix('PhelGenerated')
         ->setTargetDirectory('src/PhelGenerated'));
 ```
@@ -98,12 +100,11 @@ vendor/bin/phel run
 #   -t, --with-time       With time awareness
 ```
 
-[Configuration](/documentation/configuration/) in `phel-config.php`:
+[Configuration](/documentation/configuration/#srcdirs) in `phel-config.php`:
 ```php
 <?php
 return (new PhelConfig())
-    ->setSrcDirs(['src'])
-    ->setTestDirs(['tests']);
+    ->setSrcDirs(['src']);
 ```
 
 Read more about [running the code](/documentation/getting-started/#running-the-code) in the getting started page.
@@ -124,6 +125,13 @@ vendor/bin/phel test
 #   -f, --filter[=FILTER]  Filter by test names.
 #       --testdox          Report test execution progress in TestDox format.
 
+```
+
+[Configuration](/documentation/configuration/#testdirs) in `phel-config.php`:
+```php
+<?php
+return (new PhelConfig())
+    ->setTestDirs(['tests']);
 ```
 
 Use the `filter` option to run only the tests that contain that filter.

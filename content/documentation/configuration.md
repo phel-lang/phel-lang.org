@@ -140,7 +140,7 @@ The configuration when running the `phel build` command.
 ```php
 <?php
 return (new \Phel\Config\PhelConfig())
-    ->setOut((new PhelBuildConfig())
+    ->setBuildConfig((new \Phel\Config\PhelBuildConfig())
         ->setMainPhelNamespace('your-ns\index')
         ->setMainPhpPath('out/index.php'))
     # ...
@@ -157,7 +157,7 @@ Set configuration options that are being used for the `phel export` command that
 ```php
 <?php
 return (new \Phel\Config\PhelConfig())
-    ->setExport((new \Phel\Config\PhelExportConfig())
+    ->setExportConfig((new \Phel\Config\PhelExportConfig())
         ->setFromDirectories(['src'])
         ->setNamespacePrefix('PhelGenerated')
         ->setTargetDirectory('src/PhelGenerated'))
