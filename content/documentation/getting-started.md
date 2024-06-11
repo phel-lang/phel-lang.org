@@ -22,15 +22,8 @@ cd example-app
 composer repl
 ```
 
-> Alternatively, the `phel-lang/cli-skeleton` package's [GitHub repository](https://github.com/phel-lang/cli-skeleton) is a template from which you may create your project.
+> Alternatively, the [phel-lang/cli-skeleton](https://github.com/phel-lang/cli-skeleton) package's is a template from which you may create your project. For a web project, you can use the [phel-lang/web-skeleton](https://github.com/phel-lang/web-skeleton) template. More information can be found in the [README](https://packagist.org/packages/phel-lang/cli-skeleton) of the project.
 
-More information can be found in the [README](https://packagist.org/packages/phel-lang/cli-skeleton) of the project.
-
-For a web project, you can replace `cli-skeleton` in the instructions above, with `web-skeleton`. You can run the PHP development server with:
-
-```bash
-composer run:dev
-```
 
 ## Manually initialize a new project using Composer
 
@@ -48,17 +41,13 @@ Next, require Phel as a dependency.
 composer require phel-lang/phel-lang
 ```
 
-Optionally, create the "phel config file", named `phel-config.php` in the root of the project:
-
-```php
-<?php
-
-return (new \Phel\Config\PhelConfig())
-    ->setSrcDirs(['src'])
-;
-```
-
-> Read the docs for [Configuration](/documentation/configuration) to see all available configuration options for Phel.
+> Optionally, you can create `phel-config.php` at the root of the project:
+> ```php
+> <?php
+> return (new \Phel\Config\PhelConfig())
+>     ->setSrcDirs(['src']);
+> ```
+> Read the docs to see all available [configuration](/documentation/configuration) options for Phel.
 
 Then, create a new directory `src` with a file `main.phel` inside this directory.
 
