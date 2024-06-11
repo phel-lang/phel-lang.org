@@ -18,7 +18,7 @@ composer create-project --stability dev phel-lang/cli-skeleton example-app
 Once the project has been created, start the REPL (read-evaluate-print loop) to try Phel.
 
 ```bash
-cd examle-app
+cd example-app
 composer repl
 ```
 
