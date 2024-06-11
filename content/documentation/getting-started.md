@@ -7,7 +7,7 @@ weight = 1
 
 Phel requires PHP 8.0 or higher and [Composer](https://getcomposer.org/).
 
-## Quick start
+## Quick start with a scaffolding template
 
 To get started right away, you can create a new Phel commandline project via Composer's `create-project` command:
 
@@ -22,7 +22,7 @@ cd example-app
 composer repl
 ```
 
-> Alternatively, the [phel-lang/cli-skeleton](https://github.com/phel-lang/cli-skeleton) package's is a template from which you may create your project. For a web project, you can use the [phel-lang/web-skeleton](https://github.com/phel-lang/web-skeleton) template. More information can be found in the [README](https://packagist.org/packages/phel-lang/cli-skeleton) of the project.
+> Alternatively to the [phel-lang/cli-skeleton](https://github.com/phel-lang/cli-skeleton), you can also use [phel-lang/web-skeleton](https://github.com/phel-lang/web-skeleton) for a web project. More information can be found in the [README](https://packagist.org/packages/phel-lang/cli-skeleton) of the project.
 
 
 ## Manually initialize a new project using Composer
@@ -113,6 +113,8 @@ php -S localhost:8000 ./src/index.php
 ```
 
 In the browser, the URL `http://localhost:8000` will now print "Hello, World!".
+
+> When using a web server, consider building the project to avoid compilation time for each request; so PHP will run the transpiled PHP code instead to gain performance. See more [Buid the project](/documentation/cli-commands/#build-the-project).
 
 ## Launch the REPL
 
