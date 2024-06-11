@@ -28,7 +28,7 @@ More information can be found in the [README](https://packagist.org/packages/phe
 
 For a web project, you can replace `cli-skeleton` in the instructions above, with `web-skeleton`. You can run the PHP development server with:
 
-```shell
+```bash
 composer run:dev
 ```
 
