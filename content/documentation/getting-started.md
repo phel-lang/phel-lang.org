@@ -5,7 +5,7 @@ weight = 1
 
 ## Requirements
 
-Phel requires PHP 8.0 or higher and [Composer](https://getcomposer.org/).
+Phel requires PHP 8.2 or higher and [Composer](https://getcomposer.org/).
 
 ## Quick start with a scaffolding template
 
@@ -44,6 +44,7 @@ composer require phel-lang/phel-lang
 > Optionally, you can create `phel-config.php` at the root of the project:
 > ```php
 > <?php
+> 
 > return (new \Phel\Config\PhelConfig())
 >     ->setSrcDirs(['src']);
 > ```
