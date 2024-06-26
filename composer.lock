@@ -160,16 +160,16 @@
         },
         {
             "name": "phel-lang/phel-lang",
-            "version": "v0.15.0",
+            "version": "v0.15.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "92de39962c61491fb9a3ba5d6643e762d4d6cee3"
+                "reference": "daa82b882b10a1e1d188fb5926a593aceca890ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/92de39962c61491fb9a3ba5d6643e762d4d6cee3",
-                "reference": "92de39962c61491fb9a3ba5d6643e762d4d6cee3",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/daa82b882b10a1e1d188fb5926a593aceca890ff",
+                "reference": "daa82b882b10a1e1d188fb5926a593aceca890ff",
                 "shasum": ""
             },
             "require": {
@@ -225,9 +225,9 @@
             ],
             "support": {
                 "issues": "https://github.com/phel-lang/phel-lang/issues",
-                "source": "https://github.com/phel-lang/phel-lang/tree/v0.15.0"
+                "source": "https://github.com/phel-lang/phel-lang/tree/v0.15.1"
             },
-            "time": "2024-06-22T04:51:24+00:00"
+            "time": "2024-06-26T20:40:28+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -1661,12 +1661,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "64eaaecdc0e915ce201f399e4707f83155389e96"
+                "reference": "27714b56f04815b654c3805502ab77207505ac19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/64eaaecdc0e915ce201f399e4707f83155389e96",
-                "reference": "64eaaecdc0e915ce201f399e4707f83155389e96",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/27714b56f04815b654c3805502ab77207505ac19",
+                "reference": "27714b56f04815b654c3805502ab77207505ac19",
                 "shasum": ""
             },
             "conflict": {
@@ -1674,7 +1674,7 @@
                 "admidio/admidio": "<4.2.13",
                 "adodb/adodb-php": "<=5.20.20|>=5.21,<=5.21.3",
                 "aheinze/cockpit": "<2.2",
-                "aimeos/ai-client-html": ">=2020.04.1,<2020.10.27|>=2021.04.1,<2021.10.21|>=2022.04.1,<2022.10.12|>=2023.04.1,<2023.10.14|>=2024.04.1,<2024.04.4",
+                "aimeos/ai-client-html": ">=2020.04.1,<2020.10.27|>=2021.04.1,<2021.10.22|>=2022.04.1,<2022.10.13|>=2023.04.1,<2023.10.15|>=2024.04.1,<2024.04.7",
                 "aimeos/aimeos-core": ">=2022.04.1,<2022.10.17|>=2023.04.1,<2023.10.17|>=2024.04.1,<2024.04.7",
                 "aimeos/aimeos-typo3": "<19.10.12|>=20,<20.10.5",
                 "airesvsg/acf-to-rest-api": "<=3.1",
@@ -2057,12 +2057,12 @@
                 "october/cms": "<1.0.469|==1.0.469|==1.0.471|==1.1.1",
                 "october/october": "<=3.4.4",
                 "october/rain": "<1.0.472|>=1.1,<1.1.2",
-                "october/system": "<1.0.476|>=1.1,<1.1.12|>=2,<2.2.34|>=3,<3.5.2",
+                "october/system": "<1.0.476|>=1.1,<1.1.12|>=2,<2.2.34|>=3,<3.5.15",
                 "omeka/omeka-s": "<4.0.3",
                 "onelogin/php-saml": "<2.10.4",
                 "oneup/uploader-bundle": ">=1,<1.9.3|>=2,<2.1.5",
                 "open-web-analytics/open-web-analytics": "<1.7.4",
-                "opencart/opencart": "<=3.0.3.7|>=4,<4.0.2.3-dev",
+                "opencart/opencart": "<=3.0.3.9|>=4",
                 "openid/php-openid": "<2.3",
                 "openmage/magento-lts": "<20.5",
                 "opensolutions/vimbadmin": "<=3.0.15",
@@ -2458,7 +2458,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-06-21T16:04:36+00:00"
+            "time": "2024-06-26T15:05:17+00:00"
         },
         {
             "name": "sebastian/cli-parser",
