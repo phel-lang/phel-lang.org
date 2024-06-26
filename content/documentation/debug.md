@@ -59,3 +59,17 @@ Additionally, you can also use `dd()` to dump and die the execution of the progr
 # OUTPUT:
 10
 ```
+
+## Check the evaluated PHP
+
+You can keep the generated temporal PHP files for debugging purposes. Useful when you see an error occurring on `/private/var/folders/qq/dvftwj.../T/__phelV2KvGD` but the file does not exist. Read the [docs](/documentation/configuration/#keepgeneratedtempfiles).
+
+```php
+<?php # phel-config-local.php
+
+return (require __DIR__ . '/phel-config.php')
+    ->setKeepGeneratedTempFiles(true)
+;
+```
+
+> TIP: Add this file to the `.gitignore` of the project, so you can have control over the configuration while on development without changing the global config.
