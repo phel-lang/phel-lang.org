@@ -20,6 +20,7 @@ This page contains a list of libraries and projects that use Phel. If you want t
 * [zo3ja](https://github.com/smeghead/zo3ja) A simple CLI RSS checker implemented with phel.
 * [phel-tic-tac-toe](https://github.com/smeghead/phel-tic-tac-toe) The tic-tac-toe game using the CLI terminal written in phel.
 * [phel-old-school-guestbook](https://github.com/smeghead/phel-old-school-guestbook) This is a very primitive project of a small bulletin board Phel-lang application using mysql for storage.
-
-
+* [phel-lifegame](https://github.com/smeghead/phel-lifegame) The Lifegame using the CLI terminal written in phel.
+* [phel-saraudon](https://github.com/smeghead/phel-saraudon) A command to Visualize result of `git log --stat`.
+* [phel-cellular-automaton](https://github.com/smeghead/phel-cellular-automaton) The cellular automaton using the CLI terminal written in phel.
 
