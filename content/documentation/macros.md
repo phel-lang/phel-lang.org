@@ -54,7 +54,7 @@ This macro is very simple at does not support all the feature of `defn`. But it 
 
 ## Quasiquote
 
-For better readability of marcos the `quasiquote` special form is defined. It turns the definition of macros around. Instead of quoting values that should not be evaluated, `quasiquote` marks values that should be evaluated. Every other value is not evaluated. A shorthand for `quasiquote` is the `` ` `` character. Values that should be evaluated are marked with the `unquote` function (shorthand `,`) or `unquote-splicing` function (shorthand `,@`). With quasiquote the `mydefn` macro can be expressed as
+For better readability of macros the `quasiquote` special form is defined. It turns the definition of macros around. Instead of quoting values that should not be evaluated, `quasiquote` marks values that should be evaluated. Every other value is not evaluated. A shorthand for `quasiquote` is the `` ` `` character. Values that should be evaluated are marked with the `unquote` function (shorthand `,`) or `unquote-splicing` function (shorthand `,@`). With quasiquote the `mydefn` macro can be expressed as
 
 ```phel
 (defmacro mydefn [name args & body]
