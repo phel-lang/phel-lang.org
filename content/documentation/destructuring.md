@@ -8,7 +8,7 @@ Destructuring works for function parameters, `let` and `loop` bindings.
 
 ### Sequential data structures
 
-Sequential data structures can be extract using the vector syntax.
+Sequential data structures can be extracted using the vector syntax.
 
 ```phel
 (let [[a b] [1 2]]
