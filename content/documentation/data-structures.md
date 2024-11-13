@@ -130,7 +130,7 @@ A Struct is a special kind of Map. It only supports a predefined number of keys 
 (let [x (my-struct 1 2 3)] # Create a new struct
   (my-struct? x) # Evaluates to true
   (get x :a) # Evaluates to 1
-  (put x :a 12) # Evaluates to (my-struct 12 2 3)
+  (put x :a 12)) # Evaluates to (my-struct 12 2 3)
 ```
 
 Internally, Phel Structs are PHP classes where each key correspondence to an object property. Therefore, Structs can be faster than Maps.
