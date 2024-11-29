@@ -24,6 +24,9 @@ final readonly class ApiMarkdownGenerator
         foreach ($groupedPhelFns as $fn) {
             $result[] = "## `{$fn->fnName()}`";
             $result[] = $fn->doc();
+            if ($fn->url() !== '') {
+                $result[] = sprintf('Read more [here](%s).', $fn->url());
+            }
         }
 
         return $result;
