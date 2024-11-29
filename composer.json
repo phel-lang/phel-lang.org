@@ -11,7 +11,7 @@
     "require": {
         "php": ">=8.2",
         "ext-json": "*",
-        "phel-lang/phel-lang": "dev-feat/support-override-url-on-phel-fn-loader",
+        "phel-lang/phel-lang": "dev-main",
         "gacela-project/gacela": "^1.7"
     },
     "require-dev": {

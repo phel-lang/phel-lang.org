@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5eeb3f9bf9e567c9a2a55b95daa62099",
+    "content-hash": "dc491c661bf20c714af79c2d4426f502",
     "packages": [
         {
             "name": "gacela-project/container",
@@ -160,16 +160,16 @@
         },
         {
             "name": "phel-lang/phel-lang",
-            "version": "dev-feat/support-override-url-on-phel-fn-loader",
+            "version": "dev-main",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "d23e8bcba1f26058571342f9dabdbfcda70565d5"
+                "reference": "57717bef6ea4f28a9e739b26d1d323a849783b5f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/d23e8bcba1f26058571342f9dabdbfcda70565d5",
-                "reference": "d23e8bcba1f26058571342f9dabdbfcda70565d5",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/57717bef6ea4f28a9e739b26d1d323a849783b5f",
+                "reference": "57717bef6ea4f28a9e739b26d1d323a849783b5f",
                 "shasum": ""
             },
             "require": {
@@ -192,6 +192,7 @@
                 "symfony/var-dumper": "^7.1",
                 "vimeo/psalm": "^5.26"
             },
+            "default-branch": true,
             "bin": [
                 "bin/phel"
             ],
@@ -226,7 +227,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phel-lang/phel-lang/issues",
-                "source": "https://github.com/phel-lang/phel-lang/tree/feat/support-override-url-on-phel-fn-loader"
+                "source": "https://github.com/phel-lang/phel-lang/tree/main"
             },
             "funding": [
                 {
@@ -234,7 +235,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-11-29T17:02:37+00:00"
+            "time": "2024-11-29T18:34:38+00:00"
         },
         {
             "name": "phpunit/php-timer",
