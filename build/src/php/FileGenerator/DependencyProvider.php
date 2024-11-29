@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator;
 
-use Gacela\Framework\AbstractDependencyProvider;
+use Gacela\Framework\AbstractProvider;
 use Gacela\Framework\Container\Container;
 use Phel\Api\ApiFacade;
 
 /**
  * @method Factory getFactory()
  */
-final class DependencyProvider extends AbstractDependencyProvider
+final class DependencyProvider extends AbstractProvider
 {
     public const FACADE_PHEL_API = 'FACADE_PHEL_API';
 
