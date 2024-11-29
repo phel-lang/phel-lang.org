@@ -7,7 +7,7 @@ namespace PhelDocBuildTests\Integration;
 use Gacela\Framework\Bootstrap\GacelaConfig;
 use Gacela\Framework\Gacela;
 use Phel\Api\ApiFacade;
-use PhelDocBuild\FileGenerator\Domain\ApiMarkdownGenerator;
+use PhelDocBuild\FileGenerator\Application\ApiMarkdownGenerator;
 use PHPUnit\Framework\TestCase;
 
 final class ApiMarkdownGeneratorTest extends TestCase

@@ -6,7 +6,7 @@ namespace PhelDocBuildTests\FileGenerator\Domain;
 
 use Phel\Api\ApiFacadeInterface;
 use Phel\Api\Transfer\PhelFunction;
-use PhelDocBuild\FileGenerator\Domain\ApiMarkdownGenerator;
+use PhelDocBuild\FileGenerator\Application\ApiMarkdownGenerator;
 use PHPUnit\Framework\TestCase;
 
 final class ApiMarkdownGeneratorTest extends TestCase

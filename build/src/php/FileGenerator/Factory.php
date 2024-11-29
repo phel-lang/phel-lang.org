@@ -7,8 +7,8 @@ namespace PhelDocBuild\FileGenerator;
 use Gacela\Framework\AbstractFactory;
 use Gacela\Framework\Config\Config;
 use Phel\Api\ApiFacadeInterface;
-use PhelDocBuild\FileGenerator\Domain\ApiMarkdownGenerator;
-use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
+use PhelDocBuild\FileGenerator\Application\ApiMarkdownGenerator;
+use PhelDocBuild\FileGenerator\Application\ApiSearchGenerator;
 use PhelDocBuild\FileGenerator\Infrastructure\ApiMarkdownFile;
 use PhelDocBuild\FileGenerator\Infrastructure\ApiSearchFile;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Infrastructure;
 
-use PhelDocBuild\FileGenerator\Domain\ApiSearchGenerator;
+use PhelDocBuild\FileGenerator\Application\ApiSearchGenerator;
 
 use function json_encode;
 
