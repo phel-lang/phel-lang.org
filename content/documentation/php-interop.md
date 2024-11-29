@@ -3,6 +3,15 @@ title = "PHP Interop"
 weight = 14
 +++
 
+## Accessing super-globals
+
+Use the `php/` prefix to access the global variables in combination with `get`.
+
+```phel
+(get php/$_SERVER "key") # Similar to $_SERVER['key']
+(get php/$GLOBAL "wpdb") # Similar to $GLOBAL['wpdb']
+```
+
 ## Calling PHP functions
 
 PHP comes with huge set of functions that can be called from Phel by just adding a `php/` prefix to the function name.
