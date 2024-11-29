@@ -9,7 +9,7 @@ Use the `php/` prefix to access the global variables in combination with `get`.
 
 ```phel
 (get php/$_SERVER "key") # Similar to $_SERVER['key']
-(get php/$GLOBAL "wpdb") # Similar to $GLOBAL['wpdb']
+(get php/$GLOBAL "argv") # Similar to $GLOBAL['argv']
 ```
 
 ## Calling PHP functions
