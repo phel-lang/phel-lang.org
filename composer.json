@@ -12,12 +12,12 @@
         "php": ">=8.2",
         "ext-json": "*",
         "phel-lang/phel-lang": "dev-main",
-        "gacela-project/gacela": "^1.7"
+        "gacela-project/gacela": "^1.8"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
-        "phpunit/phpunit": "^9.6",
-        "symfony/var-dumper": "^5.4"
+        "phpunit/phpunit": "^10.0",
+        "symfony/var-dumper": "^6.4"
     },
     "autoload": {
         "psr-4": {
