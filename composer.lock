@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0f7249832c67b3c722bdee2331e4409c",
+    "content-hash": "f3844b235f48fc0008b2ca5414c1a3fd",
     "packages": [
         {
             "name": "gacela-project/container",
@@ -76,16 +76,16 @@
         },
         {
             "name": "gacela-project/gacela",
-            "version": "1.8.1",
+            "version": "1.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gacela-project/gacela.git",
-                "reference": "79cea9f933794c6e8fd9d54754789a46b2048f07"
+                "reference": "7210a8866d843c35ec17c7d9bdde7900d9ee4d48"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gacela-project/gacela/zipball/79cea9f933794c6e8fd9d54754789a46b2048f07",
-                "reference": "79cea9f933794c6e8fd9d54754789a46b2048f07",
+                "url": "https://api.github.com/repos/gacela-project/gacela/zipball/7210a8866d843c35ec17c7d9bdde7900d9ee4d48",
+                "reference": "7210a8866d843c35ec17c7d9bdde7900d9ee4d48",
                 "shasum": ""
             },
             "require": {
@@ -98,7 +98,7 @@
                 "infection/infection": "^0.26",
                 "phpbench/phpbench": "^1.3",
                 "phpmetrics/phpmetrics": "^2.8",
-                "phpstan/phpstan": "^1.11",
+                "phpstan/phpstan": "^1.12",
                 "phpstan/phpstan-strict-rules": "^1.6",
                 "phpunit/phpunit": "^10.5",
                 "psalm/plugin-phpunit": "^0.19",
@@ -148,7 +148,7 @@
             ],
             "support": {
                 "issues": "https://github.com/gacela-project/gacela/issues",
-                "source": "https://github.com/gacela-project/gacela/tree/1.8.1"
+                "source": "https://github.com/gacela-project/gacela/tree/1.9.0"
             },
             "funding": [
                 {
@@ -156,24 +156,24 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-11-09T11:27:57+00:00"
+            "time": "2024-12-01T11:07:40+00:00"
         },
         {
             "name": "phel-lang/phel-lang",
-            "version": "dev-main",
+            "version": "v0.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "0a6270026159d390abad1d2e94684f369d9b4048"
+                "reference": "448119aee08a1606abe16d83fb4bba163a8c88ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/0a6270026159d390abad1d2e94684f369d9b4048",
-                "reference": "0a6270026159d390abad1d2e94684f369d9b4048",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/448119aee08a1606abe16d83fb4bba163a8c88ce",
+                "reference": "448119aee08a1606abe16d83fb4bba163a8c88ce",
                 "shasum": ""
             },
             "require": {
-                "gacela-project/gacela": "^1.8",
+                "gacela-project/gacela": "^1.9",
                 "php": ">=8.2",
                 "phpunit/php-timer": "^6.0",
                 "symfony/console": "^7.0"
@@ -190,7 +190,6 @@
                 "symfony/var-dumper": "^7.2",
                 "vimeo/psalm": "^5.26"
             },
-            "default-branch": true,
             "bin": [
                 "bin/phel"
             ],
@@ -225,7 +224,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phel-lang/phel-lang/issues",
-                "source": "https://github.com/phel-lang/phel-lang/tree/main"
+                "source": "https://github.com/phel-lang/phel-lang/tree/v0.16.0"
             },
             "funding": [
                 {
@@ -233,7 +232,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-11-30T13:54:03+00:00"
+            "time": "2024-12-01T11:19:48+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -3494,7 +3493,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "phel-lang/phel-lang": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": true,
