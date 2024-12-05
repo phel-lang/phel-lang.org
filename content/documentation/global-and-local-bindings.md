@@ -8,11 +8,15 @@ weight = 6
 ```phel
 (def name meta? value)
 ```
-This special form binds a value to a global symbol. A definition cannot be redefined at a later point.
+This special form binds a value to a global symbol. A definition can be redefined in both of REPL and built one.
 
 ```phel
 (def my-name "phel")
 (def sum-of-three (+ 1 2 3))
+
+# OK.
+(def duplicated "first-duplication")
+(def duplicated "second-duplication")
 ```
 
 To each definition metadata can be attached. Metadata is either a Keyword, a String or a Map.
