@@ -3,13 +3,20 @@ title = "PHP Interop"
 weight = 14
 +++
 
-## Accessing super-globals
+## Accessing global variables and named constants
 
-Use the `php/` prefix to access the global variables in combination with `get`.
+Use the `php/` prefix to access the global variables (superglobals) in combination with `get`.
 
 ```phel
 (get php/$_SERVER "key") # Similar to $_SERVER['key']
 (get php/$GLOBALS "argv") # Similar to $GLOBALS['argv']
+```
+
+Named constants set with PHP [`define`](https://www.php.net/manual/en/function.define.php) can be accessed in Phel via `php/CONSTANT_NAME`.
+
+```
+(php/define "MY_SETTING" "My value") # Calls PHP define('MY_SETTING', 'My value");
+php/MY_SETTING # Returns "My value"
 ```
 
 ## Calling PHP functions
