@@ -14,7 +14,7 @@ Use the `php/` prefix to access the global variables (superglobals) in combinati
 
 Named constants set with PHP [`define`](https://www.php.net/manual/en/function.define.php) can be accessed in Phel via `php/CONSTANT_NAME`.
 
-```
+```phel
 (php/define "MY_SETTING" "My value") # Calls PHP define('MY_SETTING', 'My value");
 php/MY_SETTING # Returns "My value"
 ```
