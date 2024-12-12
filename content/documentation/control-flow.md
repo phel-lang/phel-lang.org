@@ -95,7 +95,7 @@ Internally `recur` is implemented as a PHP while loop and therefore prevents the
 (foreach [value valueExpr] expr*)
 (foreach [key value valueExpr] expr*)
 ```
-The `foreach` special form can be used to iterate over all kind of PHP datastructures. The return value of `foreach` is always `nil`. The `loop` special form should be preferred of the `foreach` special form whenever possible.
+The `foreach` special form can be used to iterate over all kind of PHP datastructures for side-effects. The return value of `foreach` is always `nil`. The `loop` special form should be preferred of the `foreach` special form whenever possible.
 
 ```phel
 (foreach [v [1 2 3]]
@@ -154,6 +154,15 @@ have the form `:modifier argument`. The following modifiers are supported:
 
 (for [x :range [0 4] y :range [0 x]] [x y]) # Evaluates to [[1 0] [2 0] [2 1] [3 0] [3 1] [3 2]]
 ```
+
+# Dofor
+
+```
+(dofor [x :in [1 2 3]] (print x)) # Prints 1, 2, 3 and returns nil
+(dofor [x :in [2 3 4 5] :when (even? x)] (print x)) # Prints 1, 2 and returns nil
+```
+
+Iterating over collections for side-effects is also possible with `dofor` which has similar behavior to `for` otherwise but returns `nil` as `foreach` does.
 
 ## Exceptions
 
