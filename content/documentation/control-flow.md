@@ -130,6 +130,7 @@ have the form `:modifier argument`. The following modifiers are supported:
 * `:while` breaks the loop if the expression is falsy.
 * `:let` defines additional bindings.
 * `:when` only evaluates the loop body if the condition is true.
+* `:reduce [accumulator initial-value]` Instead of returning a list, it reduces the values into `accumulator`. Initially `accumulator` is bound to `initial-value`.
 
 ```phel
 (for [x :range [0 3]] x) # Evaluates to [0 1 2]
@@ -143,6 +144,8 @@ have the form `:modifier argument`. The following modifiers are supported:
 
 (for [[k v] :pairs {:a 1 :b 2 :c 3}] [v k]) # Evaluates to [[1 :a] [2 :b] [3 :c]]
 (for [[k v] :pairs [1 2 3]] [k v]) # Evaluates to [[0 1] [1 2] [2 3]]
+(for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}]]
+  (put m k (inc v))) # Evaluates to {:a 2 :b 3 :c 4}
 
 (for [x :in [2 2 2 3 3 4 5 6 6] :while (even? x)] x) # Evaluates to [2 2 2]
 (for [x :in [2 2 2 3 3 4 5 6 6] :when (even? x)] x) # Evaluates to [2 2 2 4 6 6]
