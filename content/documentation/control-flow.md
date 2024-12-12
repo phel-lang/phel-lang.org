@@ -14,12 +14,12 @@ A control flow structure. First evaluates _test_. If _test_ evaluates to `true`,
 The _test_ evaluates to `false` if its value is `false` or equal to `nil`. Every other value evaluates to `true`. In sense of PHP this means (`test != null && test !== false`).
 
 ```phel
-(if true 10) # evaluates to 10
-(if false 10) # evaluates to nil
-(if true (print 1) (print 2)) # prints 1 but not 2
-(if 0 (print 1) (print 2)) # prints 2
-(if nil (print 1) (print 2)) # prints 2
-(if [] (print 1) (print 2)) # prints 2
+(if true 10) # Evaluates to 10
+(if false 10) # Evaluates to nil
+(if true (print 1) (print 2)) # Prints 1 but not 2
+(if 0 (print 1) (print 2)) # Prints 2
+(if nil (print 1) (print 2)) # Prints 2
+(if [] (print 1) (print 2)) # Prints 2
 ```
 
 ## Case
@@ -95,20 +95,20 @@ Internally `recur` is implemented as a PHP while loop and therefore prevents the
 (foreach [value valueExpr] expr*)
 (foreach [key value valueExpr] expr*)
 ```
-The `foreach` special form can be used to iterate over all kind of PHP datastructures. The return value of `foreach` is always `nil`. The `loop` special form should be preferred of the `foreach` special form whenever possible.
+The `foreach` special form can be used to iterate over all kind of PHP datastructures for side-effects. The return value of `foreach` is always `nil`. The `loop` special form should be preferred of the `foreach` special form whenever possible.
 
 ```phel
 (foreach [v [1 2 3]]
-  (print v)) # prints 1, 2 and 3
+  (print v)) # Prints 1, 2 and 3
 
 (foreach [k v {"a" 1 "b" 2}]
   (print k)
-  (print v)) # prints "a", 1, "b" and 2
+  (print v)) # Prints "a", 1, "b" and 2
 ```
 
 ## For
 
-A more powerful loop functionality is provided by the `for` loop. The `for` loop is an elegant way to define and create arrays based on existing collections. It combines the functionality of `foreach`, `let` and `if` in one call.
+A more powerful loop functionality is provided by the `for` loop. The `for` loop is an elegant way to define and create arrays based on existing collections. It combines the functionality of `foreach`, `let`, `if` and `reduce` in one call.
 
 ```phel
 (for head body+)
@@ -130,6 +130,7 @@ have the form `:modifier argument`. The following modifiers are supported:
 * `:while` breaks the loop if the expression is falsy.
 * `:let` defines additional bindings.
 * `:when` only evaluates the loop body if the condition is true.
+* `:reduce [accumulator initial-value]` Instead of returning a list, it reduces the values into `accumulator`. Initially `accumulator` is bound to `initial-value`.
 
 ```phel
 (for [x :range [0 3]] x) # Evaluates to [0 1 2]
@@ -143,14 +144,25 @@ have the form `:modifier argument`. The following modifiers are supported:
 
 (for [[k v] :pairs {:a 1 :b 2 :c 3}] [v k]) # Evaluates to [[1 :a] [2 :b] [3 :c]]
 (for [[k v] :pairs [1 2 3]] [k v]) # Evaluates to [[0 1] [1 2] [2 3]]
+(for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}]]
+  (put m k (inc v))) # Evaluates to {:a 2 :b 3 :c 4}
 
-(for [x :in [2 2 2 3 3 4 5 6 6] :while (even? x)] x) # Evalutes to [2 2 2]
-(for [x :in [2 2 2 3 3 4 5 6 6] :when (even? x)] x) # Evalutaes to [2 2 2 4 6 6]
+(for [x :in [2 2 2 3 3 4 5 6 6] :while (even? x)] x) # Evaluates to [2 2 2]
+(for [x :in [2 2 2 3 3 4 5 6 6] :when (even? x)] x) # Evaluates to [2 2 2 4 6 6]
 
 (for [x :in [1 2 3] :let [y (inc x)]] [x y]) # Evaluates to [[1 2] [2 3] [3 4]]
 
 (for [x :range [0 4] y :range [0 x]] [x y]) # Evaluates to [[1 0] [2 0] [2 1] [3 0] [3 1] [3 2]]
 ```
+
+# Dofor
+
+```
+(dofor [x :in [1 2 3]] (print x)) # Prints 1, 2, 3 and returns nil
+(dofor [x :in [2 3 4 5] :when (even? x)] (print x)) # Prints 1, 2 and returns nil
+```
+
+Iterating over collections for side-effects is also possible with `dofor` which has similar behavior to `for` otherwise but returns `nil` as `foreach` does.
 
 ## Exceptions
 
@@ -169,11 +181,11 @@ The _expr_ is evaluated and thrown, therefore _expr_ must return a value that im
 All expressions are evaluated and if no exception is thrown the value of the last expression is returned. If an exception occurs and a matching _catch-clause_ is provided, its expression is evaluated and the value is returned. If no matching _catch-clause_ can be found the exception is propagated out of the function. Before returning normally or abnormally the optionally _finally-clause_ is evaluated.
 
 ```phel
-(try) # evaluates to nil
+(try) # Evaluates to nil
 
 (try
   (throw (php/new \Exception))
-  (catch \Exception e "error")) # evaluates to "error"
+  (catch \Exception e "error")) # Evaluates to "error"
 
 (try
   (+ 1 1)
@@ -182,7 +194,7 @@ All expressions are evaluated and if no exception is thrown the value of the las
 (try
   (throw (php/new \Exception))
   (catch \Exception e "error")
-  (finally (print "test"))) # evaluates to "error" and prints "test"
+  (finally (print "test"))) # Evaluates to "error" and prints "test"
 ```
 
 ## Statements (do)
