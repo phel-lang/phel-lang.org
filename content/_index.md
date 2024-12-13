@@ -63,9 +63,12 @@ docker run -it --rm phellang/repl
 
 ## Getting started
 
-Phel requires PHP 8.0 or higher and Composer. Read the [Getting Started Guide](/documentation/getting-started) to create your first Phel program.
+Phel requires [PHP >=8.2](https://www.php.net/) and [Composer](https://getcomposer.org/). 
 
+> Read the [Getting Started Guide](/documentation/getting-started) to create your first Phel program.
 
 ## Status of Development
 
-Phel is fairly complete but not marked as ready. We still want to evolve this language without thinking too much about breaking changes. Maybe some of you are willing to test it out and give feedback.
+Phel is nearing completion, but it is not yet marked as fully stable. We want to continue evolving the language and refining it, so we're not shying away from making breaking changes at this stage. If you're curious, we invite you to test it out and share your feedback!
+
+We warmly encourage contributions—whether it's by opening issues to highlight areas for improvement or, even better, submitting pull requests with your suggestions and enhancements!
