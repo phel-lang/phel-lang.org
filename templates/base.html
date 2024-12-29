@@ -29,9 +29,12 @@
 <body>
   {% block body %} {% endblock %}
 
+  <button onclick="backToTop()" id="back-to-top-button" title="Go to top">Top</button>
+
   <script type="text/javascript" src="{{ get_url(path='elasticlunr.min.js') }}" defer></script>
   <script type="text/javascript" src="{{ get_url(path='api_search.js') }}" defer></script>
   <script type="text/javascript" src="{{ get_url(path='search.js') }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path='back_to_top.js') }}" defer></script>
 </body>
 
 </html>
