@@ -11,7 +11,11 @@
     .site-header__container {
         display: flex;
         align-items: center;
-        padding: .2em 2em;
+		padding: .2em 2em;
+
+		@include tablet {
+			padding: .2em 1em;
+		}
 
         .site-header__mobile-menu {
             @include desktop {
