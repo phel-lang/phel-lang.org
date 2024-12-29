@@ -72,15 +72,15 @@
         }
 
         .site-header__search {
-            display: none;
+            display: block;
 
-            @include desktop {
-                display: block;
+            input {
+                padding: 0.2rem;
+                font-size: initial;
+            }
 
-                input {
-                    padding: 0.2rem;
-                    font-size: initial;
-                }
+			@include tablet {
+				margin-left: auto;
             }
         }
 
