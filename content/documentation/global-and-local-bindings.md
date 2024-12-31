@@ -40,6 +40,42 @@ Creates a new lexical context with assignments defined in bindings. Afterwards t
 ```
 All assignments defined in _bindings_ are immutable and cannot be changed.
 
+## Binding
+
+While `let` creates a new lexical context, `binding` temporarily redefines existing definitions while executing the body. This can be useful when writing tests on functions depending on external state as `binding` allows to remap existing functions or values with mocks.
+
+```phel
+(ns my-app\tests\demo
+  (:require phel\test :refer [deftest is]))
+
+# Function that would return e.g. "x86_64", depending on the environment:
+(defn get-system-architecture [] (php/php_uname "m"))
+
+(defn greet-user-by-architecture []
+  (print "Hello" (get-system-architecture) "user!"))
+
+# Bindings with let are not effective outside it's lexical scope
+(deftest greeting-test-let
+  (let [get-system-architecture |(str "i386")] # <- mock function
+    (let [greeting-out (with-output-buffer (greet-user-by-architecture))]
+      (is (= "Hello i386 user!" greeting-out)
+          "i386 system user is greeted accordingly"))))
+
+# Test fails on a x86_64 system, evaluating to "Hello x86_64 user!":
+# ✘ greeting-test-let: i386 system user is greeted accordingly
+
+# With binding, a mock function can bound in place of the original one
+(deftest greeting-test-binding
+  (binding [get-system-architecture |(str "i386")] # <- mock function
+    (let [greeting-out (with-output-buffer (greet-user-by-architecture))]
+      (is (= "Hello i386 user!" greeting-out)
+          "i386 system user is greeted accordingly"))))
+
+# Test is successful:
+# ✔ greet-test-binding: i386 system user is greeted accordingly
+
+```
+
 ## Variables
 
 ```phel
@@ -68,30 +104,4 @@ To update a variable with a function the `swap!` function can be used.
 (def foo (var 10))
 (swap! foo + 2) # Evaluates to 12
 (deref foo) # Evaluates to 12
-```
-
-## Binding
-
-While writing tests on code depending on external state can be challenging, `binding` function allows to remap existing bindings which can be used for mocking functions or values during tests. As example, code depending on runtime environment:
-
-```phel
-(ns my-app\tests\demo
-  (:require phel\test :refer [deftest is]))
-
-# Function that would return e.g. "x86_64", depending on the environment:
-(defn get-system-architecture [] (php/php_uname "m"))
-
-(defn greet-user-by-architecture []
-  (print "Hello" (get-system-architecture) "user!"))
-
-# With binding, a mock function can be used in place of the original one
-# allowing to write tests for cases that depend on system state:
-(deftest greeting-test
-  (binding [get-system-architecture |(str "i386")] # <- mock function
-    (let [greeting-out (with-output-buffer (greet-user-by-architecture))]
-      (is (= "Hello i386 user!" greeting-out)
-          "i386 system user is greeted accordingly"))))
-
-# Test is successful:
-# ✔ greet-test: i386 system user is greeted accordingly
 ```
