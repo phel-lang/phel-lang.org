@@ -69,3 +69,29 @@ To update a variable with a function the `swap!` function can be used.
 (swap! foo + 2) # Evaluates to 12
 (deref foo) # Evaluates to 12
 ```
+
+## Binding
+
+While writing tests on code depending on external state can be challenging, `binding` function allows to remap existing bindings which can be used for mocking functions or values during tests. As example, code depending on runtime environment:
+
+```phel
+(ns my-app\tests\demo
+  (:require phel\test :refer [deftest is]))
+
+# Function that would return e.g. "x86_64", depending on the environment:
+(defn get-system-architecture [] (php/php_uname "m"))
+
+(defn greet-user-by-architecture []
+  (print "Hello" (get-system-architecture) "user!"))
+
+# With binding, a mock function can be used in place of the original one
+# allowing to write tests for cases that depend on system state:
+(deftest greeting-test
+  (binding [get-system-architecture |(str "i386")] # <- mock function
+    (let [greeting-out (with-output-buffer (greet-user-by-architecture))]
+      (is (= "Hello i386 user!" greeting-out)
+          "i386 system user is greeted accordingly"))))
+
+# Test is successful:
+# ✔ greet-test: i386 system user is greeted accordingly
+```
