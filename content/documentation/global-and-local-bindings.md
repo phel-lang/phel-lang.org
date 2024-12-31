@@ -42,7 +42,7 @@ All assignments defined in _bindings_ are immutable and cannot be changed.
 
 ## Binding
 
-While `let` creates a new lexical context, `binding` temporarily redefines existing definitions while executing the body. This can be useful when writing tests on functions depending on external state as `binding` allows to remapping existing functions or values with mocks.
+While `let` creates a new lexical context, `binding` temporarily redefines existing definitions while executing the body. This can be useful when writing tests on functions depending on external state as `binding` allows to remap existing functions or values with mocks.
 
 ```phel
 (ns my-app\tests\demo
