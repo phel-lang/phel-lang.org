@@ -11,7 +11,11 @@
     .site-header__container {
         display: flex;
         align-items: center;
-        padding: .2em 2em;
+		padding: .2em 2em;
+
+		@include tablet {
+			padding: .2em 1em;
+		}
 
         .site-header__mobile-menu {
             @include desktop {
@@ -72,15 +76,15 @@
         }
 
         .site-header__search {
-            display: none;
+            display: block;
 
-            @include desktop {
-                display: block;
+            input {
+                padding: 0.2rem;
+                font-size: initial;
+            }
 
-                input {
-                    padding: 0.2rem;
-                    font-size: initial;
-                }
+			@include tablet {
+				margin-left: auto;
             }
         }
 

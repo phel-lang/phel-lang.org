@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhelDocBuild\FileGenerator\Domain;
+namespace PhelDocBuild\FileGenerator\Application;
 
 use Phel\Api\ApiFacadeInterface;
 
@@ -24,6 +24,9 @@ final readonly class ApiMarkdownGenerator
         foreach ($groupedPhelFns as $fn) {
             $result[] = "## `{$fn->fnName()}`";
             $result[] = $fn->doc();
+            if ($fn->url() !== '') {
+                $result[] = sprintf('Read more [here](%s).', $fn->url());
+            }
         }
 
         return $result;

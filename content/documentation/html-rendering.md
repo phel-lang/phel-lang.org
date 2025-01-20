@@ -67,13 +67,16 @@ To conditionally render parts of the HTML, the `if` expression can be used.
 # Evaluates to "<div><p>a</p><p>c</p></div>"
 ```
 
-## List rendering
+## Rendering sequential data structures
 
-Similar to conditional rendering, the `for` expression can be used to render lists.
+Similar to conditional rendering, the `for` expression can be used to render iterables such as vectors, lists and sets.
 
 ```phel
 (html [:ul (for [i :range [0 3]] [:li i])])
 # Evaluates to "<ul><li>0</li><li>1</li><li>2</li></ul>"
+
+(html [:ul (for [i :in [3 4 5]] [:li i])])
+# Evaluates to "<ul><li>3</li><li>4</li><li>5</li></ul>"
 ```
 
 ## Raw Html

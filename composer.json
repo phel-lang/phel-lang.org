@@ -11,13 +11,13 @@
     "require": {
         "php": ">=8.2",
         "ext-json": "*",
-        "phel-lang/phel-lang": "^0.15",
-        "gacela-project/gacela": "^1.7"
+        "phel-lang/phel-lang": "^0.16",
+        "gacela-project/gacela": "^1.9"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
-        "phpunit/phpunit": "^9.6",
-        "symfony/var-dumper": "^5.4"
+        "phpunit/phpunit": "^10.0",
+        "symfony/var-dumper": "^6.4"
     },
     "autoload": {
         "psr-4": {
