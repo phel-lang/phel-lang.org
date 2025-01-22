@@ -155,6 +155,19 @@ have the form `:modifier argument`. The following modifiers are supported:
 (for [x :range [0 4] y :range [0 x]] [x y]) # Evaluates to [[1 0] [2 0] [2 1] [3 0] [3 1] [3 2]]
 ```
 
+# Do
+
+```phel
+(do expr*)
+```
+
+Evaluates the expressions in order and returns the value of the last expression. If no expression is given, `nil` is returned.
+
+```phel
+(do 1 2 3 4) # Evaluates to 4
+(do (print 1) (print 2) (print 3)) # Print 1, 2, and 3
+```
+
 # Dofor
 
 ```
@@ -164,7 +177,7 @@ have the form `:modifier argument`. The following modifiers are supported:
 
 Iterating over collections for side-effects is also possible with `dofor` which has similar behavior to `for` otherwise but returns `nil` as `foreach` does.
 
-## Exceptions
+# Exceptions
 
 ```phel
 (throw expr)
@@ -195,17 +208,4 @@ All expressions are evaluated and if no exception is thrown the value of the las
   (throw (php/new \Exception))
   (catch \Exception e "error")
   (finally (print "test"))) # Evaluates to "error" and prints "test"
-```
-
-## Statements (do)
-
-```phel
-(do expr*)
-```
-
-Evaluates the expressions in order and returns the value of the last expression. If no expression is given, `nil` is returned.
-
-```phel
-(do 1 2 3 4) # Evaluates to 4
-(do (print 1) (print 2) (print 3)) # Print 1, 2, and 3
 ```
