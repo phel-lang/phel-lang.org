@@ -9,7 +9,7 @@ jobs:
     name: Deploy website to server
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup PHP with tools
         uses: shivammathur/setup-php@v2
