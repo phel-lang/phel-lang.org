@@ -11,7 +11,7 @@ final readonly class ApiSearchGenerator
     private const SPECIAL_ENDING_CHARS = ['=', '*', '?', '+', '>', '<', '!'];
 
     public function __construct(
-        private ApiFacadeInterface $repository
+        private ApiFacadeInterface $apiFacade
     ) {
     }
 
@@ -36,7 +36,7 @@ final readonly class ApiSearchGenerator
          */
         $groupFnNameAppearances = [];
         $result = [];
-        $groupedPhelFns = $this->repository->getPhelFunctions();
+        $groupedPhelFns = $this->apiFacade->getPhelFunctions();
 
         foreach ($groupedPhelFns as $fn) {
             $groupKey = $fn->groupKey();
