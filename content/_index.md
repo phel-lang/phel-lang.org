@@ -1,49 +1,52 @@
 +++
-title="The Phel Language"
+title = "Phel: A Functional Lisp Dialect for PHP Developers"
 +++
 
-Phel is a functional programming language that compiles to PHP. It is a dialect of Lisp inspired by [Clojure](https://clojure.org/) and [Janet](https://janet-lang.org/).
+**Phel** is a functional programming language that compiles down to PHP. It's a modern Lisp dialect inspired by [Clojure](https://clojure.org/) and [Janet](https://janet-lang.org/), tailored to bring functional elegance and expressive code to the world of PHP development.
 
 <p align="center">
-    <img src="/images/logo_phel.svg" width="350" alt="Phel logo"/>
+    <img src="/images/logo_phel.svg" width="350" alt="Phel language logo"/>
 </p>
 
-## Community
+## Join the Phel Developer Community
 
-Feel free to ask questions and join discussions on the [Phel Gitter channel](https://gitter.im/phel-lang/community).
+Got questions? Want to chat about macros, tail recursion, or why parentheses are awesome?  
+Swing by the [Phel Gitter channel](https://gitter.im/phel-lang/community)—we're friendly, nerdy, and always happy to talk code.
 
-## Features
+## Key Features of Phel
 
-* Built on PHP's ecosystem
-* Good error reporting
-* Persistent Datastructures (Lists, Vectors, Maps and Sets)
-* Macros
-* Recursive functions
-* Powerful but simple Syntax
-* REPL
+Why code in Phel? Here's what makes it click:
 
-## Why Phel?
+- ✅ Runs on the rock-solid PHP ecosystem
+- 🧠 Helpful and human-readable error messages
+- 📚 Built-in persistent data structures: Lists, Vectors, Maps, Sets
+- 🧩 Macro system for advanced metaprogramming
+- 🔁 Tail-recursive function support
+- ✨ Minimal, readable Lisp syntax
+- 💬 Interactive REPL for tinkering and prototyping
 
-Phel is a result of my [failed attempts to do functional programming in PHP](/blog/functional-programming-in-php). Basically I wanted:
+## Why Choose Phel for Functional Programming in PHP?
 
-* A LISP-inspired
-* functional programming language
-* that runs on cheap hosting providers
-* and is easy to write and debug
+Phel started as an [experiment in writing functional PHP](/blog/functional-programming-in-php) and quickly turned into its own thing.
 
+It exists because we wanted:
 
-## Example
+- A Lisp-inspired functional language
+- That runs on affordable PHP hosting
+- That's expressive, debug-friendly, and easy to pick up
 
-The following example gives a short impression on how Phel looks like:
+If you've ever wished PHP was a bit more... functional, Phel is for you.
+
+## See Phel in Action — Sample Code
 
 ```phel
 # Define a namespace
 (ns my\example)
 
-# Define a variable with name "my-name" and value "world"
+# Create a variable
 (def my-name "world")
 
-# Define a function with name "print-name" and one argument "your-name"
+# Define a function
 (defn print-name [your-name]
   (print "hello" your-name))
 
@@ -51,9 +54,11 @@ The following example gives a short impression on how Phel looks like:
 (print-name my-name)
 ```
 
-## Try Phel
+If you know Lisp or Clojure, you'll feel right at home. If you don't—this is a great place to start.
 
-The quickest way to try out Phel is to run our REPL Docker container.
+## Try Phel Instantly with Docker
+
+No setup? No problem. You can run Phel's REPL right away:
 
 ```bash
 docker run -it --rm phellang/repl
@@ -61,14 +66,19 @@ docker run -it --rm phellang/repl
 
 ![Try Phel animation](/try-phel.gif "Try Phel Animation")
 
-## Getting started
+## Get Started with Phel in Minutes
 
-Phel requires [PHP >=8.2](https://www.php.net/) and [Composer](https://getcomposer.org/). 
+All you need is [PHP >=8.2](https://www.php.net/) and [Composer](https://getcomposer.org/). 
 
-> Read the [Getting Started Guide](/documentation/getting-started) to create your first Phel program.
+> Follow our [Getting Started Guide](/documentation/getting-started) to build and run your first Phel program today.
 
-## Status of Development
+## Development Status & How to Contribute
 
-Phel is approaching completion, but it’s not yet considered fully stable. We’re committed to continuously improving the language, which means breaking changes may still happen as we refine and evolve the project.
+Phel is approaching its 1.0 release, but we're still actively refining the language —and yes, breaking changes may happen.
 
-We actively welcome suggestions, improvements and bug reports —your feedback plays a vital role in helping us raise the quality of Phel. Whether through opening issues or submitting pull requests, every contribution helps the project grow stronger.
+We're building this in the open. That means:
+- Found a bug? File an issue.
+- Got a cool idea? Open a pull request.
+- Want to shape the language's future? Let's talk.
+
+Your feedback, ideas, and code help Phel grow into something great.
