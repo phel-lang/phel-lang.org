@@ -69,6 +69,6 @@ Phel requires [PHP >=8.2](https://www.php.net/) and [Composer](https://getcompos
 
 ## Status of Development
 
-Phel is nearing completion, but it is not yet marked as fully stable. We want to continue evolving the language and refining it, so we're not shying away from making breaking changes at this stage. If you're curious, we invite you to test it out and share your feedback!
+Phel is approaching completion, but it’s not yet considered fully stable. We’re committed to continuously improving the language, which means breaking changes may still happen as we refine and evolve the project.
 
-We warmly encourage contributions—whether it's by opening issues to highlight areas for improvement or, even better, submitting pull requests with your suggestions and enhancements!
+We actively welcome suggestions, improvements and bug reports —your feedback plays a vital role in helping us raise the quality of Phel. Whether through opening issues or submitting pull requests, every contribution helps the project grow stronger.
