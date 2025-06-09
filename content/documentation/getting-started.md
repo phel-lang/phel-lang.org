@@ -81,31 +81,6 @@ Try:
 
 > 📘 [More on REPL](/documentation/repl)
 
-## Debugging
-
-```phel
-(php/dump (+ 40 2))
-```
-
-Enable temp files in `phel-config-local.php`:
-
-```php
-<?php
-return (require __DIR__ . '/phel-config.php')
-  ->setKeepGeneratedTempFiles(true);
-```
-
-> 📘 [More on debugging](/documentation/debug)
-
-## Build & Deploy
-
-```bash
-vendor/bin/phel build
-php out/index.php
-```
-
-> 📘 [More on build](/documentation/cli-commands/#build-the-project)
-
 ## Testing
 
 ```bash
@@ -113,15 +88,6 @@ vendor/bin/phel test --filter foo
 ```
 
 > 📘 [More on testing](/documentation/testing)
-
-## Handy Macros
-
-```phel
-(when condition (println "if true"))
-(-> {:name "Phel"} (:name) (str "Lang"))
-```
-
-> 📘 [More on macros](/documentation/macros)
 
 ## Editor Support
 
