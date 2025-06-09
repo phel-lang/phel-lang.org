@@ -18,7 +18,7 @@ cd example-app
 composer repl
 ```
 
-> For web projects: [web-skeleton](https://github.com/phel-lang/web-skeleton)
+> For web projects: [web-skeleton](https://github.com/phel-lang/web-skeleton)  
 
 ## Manual Setup
 
@@ -64,6 +64,8 @@ require __DIR__ . '/../vendor/autoload.php';
 php -S localhost:8000 ./src/index.php
 ```
 
+> 📘 [More on running code](/documentation/cli-commands#run-a-script)
+
 ## REPL
 
 ```bash
@@ -76,6 +78,8 @@ Try:
 (def name "World")
 (println "Hello" name)
 ```
+
+> 📘 [More on REPL](/documentation/repl)
 
 ## Debugging
 
@@ -91,6 +95,8 @@ return (require __DIR__ . '/phel-config.php')
   ->setKeepGeneratedTempFiles(true);
 ```
 
+> 📘 [More on debugging](/documentation/debug)
+
 ## Build & Deploy
 
 ```bash
@@ -98,11 +104,15 @@ vendor/bin/phel build
 php out/index.php
 ```
 
+> 📘 [More on build](/documentation/cli-commands/#build-the-project)
+
 ## Testing
 
 ```bash
 vendor/bin/phel test --filter foo
 ```
+
+> 📘 [More on testing](/documentation/testing)
 
 ## Handy Macros
 
@@ -110,6 +120,8 @@ vendor/bin/phel test --filter foo
 (when condition (println "if true"))
 (-> {:name "Phel"} (:name) (str "Lang"))
 ```
+
+> 📘 [More on macros](/documentation/macros)
 
 ## Editor Support
 
