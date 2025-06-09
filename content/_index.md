@@ -1,218 +1,84 @@
 +++
-title = "Getting Started & Developer Experience"
-weight = 1
+title = "Phel: A Functional Lisp Dialect for PHP Developers"
 +++
 
-## Requirements
+**Phel** is a functional programming language that compiles down to PHP. It's a modern Lisp dialect inspired by [Clojure](https://clojure.org/) and [Janet](https://janet-lang.org/), tailored to bring functional elegance and expressive code to the world of PHP development.
 
-Phel requires PHP 8.2 or higher and [Composer](https://getcomposer.org/).
+<p align="center">
+    <img src="/images/logo_phel.svg" width="350" alt="Phel language logo"/>
+</p>
 
----
+## Join the Phel Developer Community
 
-## Quick Start with a Scaffolding Template
+Got questions? Want to chat about macros, tail recursion, or why parentheses are awesome?  
+Swing by the [Phel Gitter channel](https://gitter.im/phel-lang/community)—we're friendly, nerdy, and always happy to talk code.
 
-You can create a new Phel commandline project via Composer’s `create-project` command:
+## Key Features of Phel
 
-```bash
-composer create-project --stability dev phel-lang/cli-skeleton example-app
-cd example-app
-composer repl
-```
+Why code in Phel? Here's what makes it click:
 
-> Alternatively, use [phel-lang/web-skeleton](https://github.com/phel-lang/web-skeleton) for a web project. More details in the [README](https://packagist.org/packages/phel-lang/cli-skeleton).
+- ✅ Runs on the rock-solid PHP ecosystem
+- 🧠 Helpful and human-readable error messages
+- 📚 Built-in persistent data structures: Lists, Vectors, Maps, Sets
+- 🧩 Macro system for advanced metaprogramming
+- 🔁 Tail-recursive function support
+- ✨ Minimal, readable Lisp syntax
+- 💬 Interactive REPL for tinkering and prototyping
 
----
+## Why Choose Phel for Functional Programming in PHP?
 
-## Manual Setup with Composer
+Phel started as an [experiment in writing functional PHP](/blog/functional-programming-in-php) and quickly turned into its own thing.
 
-1. Initialize a new project:
+It exists because we wanted:
 
-```bash
-mkdir hello-world
-cd hello-world
-composer init
-```
+- A Lisp-inspired functional language
+- That runs on affordable PHP hosting
+- That's expressive, debug-friendly, and easy to pick up
 
-2. Require Phel:
+If you've ever wished PHP was a bit more... functional, Phel is for you.
 
-```bash
-composer require phel-lang/phel-lang
-```
-
-> Optionally create `phel-config.php`:
-> ```php
-> <?php
-> return (new \Phel\Config\PhelConfig())->setSrcDirs(['src']);
-> ```
-> See all [configuration options](/documentation/configuration).
-
-3. Create the source directory and a file:
-
-```bash
-mkdir src
-```
-
-4. Write your first Phel program:
+## See Phel in Action — Sample Code
 
 ```phel
-;; src/main.phel
-(ns hello-world\main)
-(println "Hello, World!")
+# Define a namespace
+(ns my\example)
+
+# Create a variable
+(def my-name "world")
+
+# Define a function
+(defn print-name [your-name]
+  (print "hello" your-name))
+
+# Call the function
+(print-name my-name)
 ```
 
----
+If you know Lisp or Clojure, you'll feel right at home. If you don't—this is a great place to start.
 
-## Running the Code
+## Try Phel Instantly with Docker
 
-### From the Command Line
+No setup? No problem. You can run Phel's REPL right away:
 
 ```bash
-vendor/bin/phel run src/main.phel
-# or
-vendor/bin/phel run hello-world\\main
-# or
-vendor/bin/phel run "hello-world\main"
+docker run -it --rm phellang/repl
 ```
 
-Output:
+![Try Phel animation](/try-phel.gif "Try Phel Animation")
 
-```
-Hello, World!
-```
+## Get Started with Phel in Minutes
 
-### With a PHP Server
+All you need is [PHP >=8.2](https://www.php.net/) and [Composer](https://getcomposer.org/).
 
-```php
-// src/index.php
-<?php
+> Follow our [Getting Started Guide](/documentation/getting-started) to build and run your first Phel program today.
 
-use Phel\Phel;
+## Development Status & How to Contribute
 
-$projectRootDir = __DIR__ . '/../';
+Phel is approaching its 1.0 release, but we're still actively refining the language —and yes, breaking changes may happen.
 
-require $projectRootDir . 'vendor/autoload.php';
+We're building this in the open. That means:
+- Found a bug? File an issue.
+- Got a cool idea? Open a pull request.
+- Want to shape the language's future? Let's talk.
 
-Phel::run($projectRootDir, 'hello-world\\main');
-```
-
-Start the server:
-
-```bash
-php -S localhost:8000 ./src/index.php
-```
-
-Visit [http://localhost:8000](http://localhost:8000) to see the output.
-
-> Consider using `phel build` for performance. See [Build the project](/documentation/cli-commands/#build-the-project).
-
----
-
-## Launch the REPL
-
-Start an interactive REPL in any project with Phel installed:
-
-```bash
-./vendor/bin/phel repl
-```
-
-You can evaluate Phel expressions:
-
-```phel
-phel:1> (def name "World")
-phel:2> (println "Hello" name)
-Hello World
-```
-
-The REPL understands multi-line expressions and supports `doc`, `require` and `use` helpers.
-
-> More in the [REPL documentation](/documentation/repl).
-
----
-
-## Debugging Helpers
-
-Use PHP debugging tools:
-
-```phel
-(def result (+ 40 2))
-(php/dump result)
-```
-
-Enable temporary PHP files for inspection:
-
-```php
-// phel-config-local.php
-return (require __DIR__ . '/phel-config.php')
-    ->setKeepGeneratedTempFiles(true);
-```
-
-> Learn more on the [Debug page](/documentation/debug).
-
----
-
-## Building and Deploying
-
-Run directly:
-
-```bash
-vendor/bin/phel run src/main.phel
-```
-
-Build for production:
-
-```bash
-php phel build
-php out/index.php
-```
-
-> More in the [CLI commands](/documentation/cli-commands/#run-a-script).
-
----
-
-## Testing
-
-Run Phel tests:
-
-```bash
-vendor/bin/phel test --filter foo
-```
-
-Run PHP-based tests:
-
-```bash
-composer test
-```
-
-> More in the [Testing section](/documentation/testing).
-
----
-
-## Handy Macros
-
-Example:
-
-```phel
-(when condition
-  (println "only printed when condition is true"))
-
-(-> {:name "Phel"}
-    (:name)
-    (str "Lang"))
-```
-
-These macros keep code concise and readable. Explore the rest of the library for more utilities.
-
-> See the [Macros page](/documentation/macros) for more.
-
----
-
-## Editor Support
-
-Phel supports:
-
-- [VSCode extension](https://github.com/phel-lang/phel-vs-code-extension)
-- [PhpStorm syntax plugin](https://github.com/phel-lang/phel-phpstorm-syntax)
-- [Emacs interactive mode](https://codeberg.org/mmontone/interactive-lang-tools/src/branch/master/backends/phel)
-- [Vim plugin (in progress)](https://github.com/danirod/phel.vim)
-
-> Details also in the [Editor Support](/documentation/getting-started/#editor-support) section.
+Your feedback, ideas, and code help Phel grow into something great.
