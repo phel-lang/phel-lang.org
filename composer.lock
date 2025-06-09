@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d51d1478bd4e7a8e23503b7a8d8686a5",
+    "content-hash": "a382d2c620c33dbaa6e917d988b5028e",
     "packages": [
         {
             "name": "gacela-project/container",
@@ -160,16 +160,16 @@
         },
         {
             "name": "phel-lang/phel-lang",
-            "version": "v0.17.0",
+            "version": "v0.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "548e7e5cd0cfd0a76efdcbdff695c34b336b5bbc"
+                "reference": "d47b18611c86717224c7aa172da9ef1150067199"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/548e7e5cd0cfd0a76efdcbdff695c34b336b5bbc",
-                "reference": "548e7e5cd0cfd0a76efdcbdff695c34b336b5bbc",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/d47b18611c86717224c7aa172da9ef1150067199",
+                "reference": "d47b18611c86717224c7aa172da9ef1150067199",
                 "shasum": ""
             },
             "require": {
@@ -224,7 +224,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phel-lang/phel-lang/issues",
-                "source": "https://github.com/phel-lang/phel-lang/tree/v0.17.0"
+                "source": "https://github.com/phel-lang/phel-lang/tree/v0.18.0"
             },
             "funding": [
                 {
@@ -232,7 +232,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-06-01T01:50:03+00:00"
+            "time": "2025-06-09T16:56:59+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -1611,12 +1611,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "c6007a53027047b08044448c57571988ac9b6e93"
+                "reference": "1f25500e8bf958acb60f7cbaf30e6ceb9658ee21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/c6007a53027047b08044448c57571988ac9b6e93",
-                "reference": "c6007a53027047b08044448c57571988ac9b6e93",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/1f25500e8bf958acb60f7cbaf30e6ceb9658ee21",
+                "reference": "1f25500e8bf958acb60f7cbaf30e6ceb9658ee21",
                 "shasum": ""
             },
             "conflict": {
@@ -1676,11 +1676,12 @@
                 "bagisto/bagisto": "<2.1",
                 "barrelstrength/sprout-base-email": "<1.2.7",
                 "barrelstrength/sprout-forms": "<3.9",
-                "barryvdh/laravel-translation-manager": "<0.6.2",
+                "barryvdh/laravel-translation-manager": "<0.6.8",
                 "barzahlen/barzahlen-php": "<2.0.1",
                 "baserproject/basercms": "<=5.1.1",
                 "bassjobsen/bootstrap-3-typeahead": ">4.0.2",
                 "bbpress/bbpress": "<2.6.5",
+                "bcit-ci/codeigniter": "<3.1.3",
                 "bcosca/fatfree": "<3.7.2",
                 "bedita/bedita": "<4",
                 "bednee/cooluri": "<1.0.30",
@@ -2217,6 +2218,7 @@
                 "rmccue/requests": ">=1.6,<1.8",
                 "robrichards/xmlseclibs": ">=1,<3.0.4",
                 "roots/soil": "<4.1",
+                "roundcube/roundcubemail": "<1.5.10|>=1.6,<1.6.11",
                 "rudloff/alltube": "<3.0.3",
                 "rudloff/rtmpdump-bin": "<=2.3.1",
                 "s-cart/core": "<6.9",
@@ -2468,7 +2470,7 @@
                 "yiisoft/yii2-elasticsearch": "<2.0.5",
                 "yiisoft/yii2-gii": "<=2.2.4",
                 "yiisoft/yii2-jui": "<2.0.4",
-                "yiisoft/yii2-redis": "<2.0.8",
+                "yiisoft/yii2-redis": "<2.0.20",
                 "yikesinc/yikes-inc-easy-mailchimp-extender": "<6.8.6",
                 "yoast-seo-for-typo3/yoast_seo": "<7.2.3",
                 "yourls/yourls": "<=1.8.2",
@@ -2547,7 +2549,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-05-29T18:07:06+00:00"
+            "time": "2025-06-09T14:06:10+00:00"
         },
         {
             "name": "sebastian/cli-parser",
