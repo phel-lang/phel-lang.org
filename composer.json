@@ -9,10 +9,10 @@
     "homepage": "https://phel-lang.org/",
     "license": "MIT",
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.3",
         "ext-json": "*",
-        "phel-lang/phel-lang": "^0.18",
-        "gacela-project/gacela": "^1.9"
+        "phel-lang/phel-lang": "^0.19",
+        "gacela-project/gacela": "^1.10"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
@@ -33,7 +33,7 @@
     "prefer-stable": true,
     "config": {
         "platform": {
-            "php": "8.2"
+            "php": "8.3"
         }
     },
     "scripts": {
