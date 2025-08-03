@@ -21,6 +21,7 @@ return (new \Phel\Config\PhelConfig())
     ->setNoCacheWhenBuilding([])
     ->setFormatDirs(['src', 'tests'])
     ->setKeepGeneratedTempFiles(false)
+	->setTempDir(sys_get_temp_dir().'/phel')
     ->setBuildConfig((new \Phel\Config\PhelBuildConfig())
         ->setMainPhelNamespace('your-ns\index')
         ->setMainPhpPath('out/index.php'))
@@ -132,6 +133,20 @@ return (new \Phel\Config\PhelConfig())
     # ...
 ;
 ```
+
+### TempDir
+
+Allows setting a custom absolute path for temporary files.
+
+```php
+<?php
+return (new \Phel\Config\PhelConfig())
+    ->setTempDir('/tmp/phel')
+    # ...
+;
+```
+
+If the path does not exist and cannot be created or written to, an exception is thrown.
 
 ### BuildConfig
 
