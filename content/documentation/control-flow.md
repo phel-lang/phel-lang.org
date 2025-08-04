@@ -146,6 +146,8 @@ have the form `:modifier argument`. The following modifiers are supported:
 (for [[k v] :pairs [1 2 3]] [k v]) # Evaluates to [[0 1] [1 2] [2 3]]
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}]]
   (put m k (inc v))) # Evaluates to {:a 2 :b 3 :c 4}
+(for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}] :let [x (inc v)]]
+  (put m k x)) # Evaluates to {:a 2 :b 3 :c 4} 
 
 (for [x :in [2 2 2 3 3 4 5 6 6] :while (even? x)] x) # Evaluates to [2 2 2]
 (for [x :in [2 2 2 3 3 4 5 6 6] :when (even? x)] x) # Evaluates to [2 2 2 4 6 6]
