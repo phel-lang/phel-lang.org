@@ -68,7 +68,7 @@ docker run -it --rm phellang/repl
 
 ## Get Started with Phel in Minutes
 
-All you need is [PHP >=8.2](https://www.php.net/) and [Composer](https://getcomposer.org/).
+All you need is [PHP >=8.3](https://www.php.net/) and [Composer](https://getcomposer.org/).
 
 > Follow our [Getting Started Guide](/documentation/getting-started) to build and run your first Phel program today.
 

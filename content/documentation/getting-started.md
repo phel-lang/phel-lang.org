@@ -5,7 +5,7 @@ weight = 1
 
 ## Requirements
 
-- PHP 8.2+
+- PHP 8.3+
 - [Composer](https://getcomposer.org/)
 
 ## Quick Start
