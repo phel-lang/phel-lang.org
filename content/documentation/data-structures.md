@@ -17,12 +17,13 @@ To create a list surround the white space separated values with parentheses or u
 '(1 2 3) # use a quote to create a list
 ```
 
-To access values in a list the functions `get`, `first`, `second`, `next` and `rest` can be used.
+To access values in a list the functions `get`, `first`, `second`, `next`, `rest` and `peek` can be used.
 
 ```phel
 (get (list 1 2 3) 0) # Evaluates to 1
 (first (list 1 2 3)) # Evaluates to 1
 (second (list 1 2 3)) # Evaluates to 2
+(peek (list 1 2 3)) # Evaluates to 3
 (next (list 1 2 3)) # Evaluates to (2 3)
 (next (list)) # Evaluates to nil
 (rest (list 1 2 3)) # Evaluates to (2 3)
@@ -54,12 +55,13 @@ To create a vector wrap the white space seperated values with brackets or use th
 (vector 1 2 3) # Creates a new vector with three values
 ```
 
-To get a value by its index use the `get` function. Similar to list you can use the `first` and `second` function to access the first or second values of the vector.
+To get a value by its index use the `get` function. Similar to list you can use the `first`, `second` and `peek` function to access the first, second and last values of the vector.
 
 ```phel
 (get [1 2 3] 0) # Evaluates to 1
 (first [1 2 3]) # Evaluates to 1
 (second [1 2 3]) # Evaluates to 2
+(peek [1 2 3]) # Evaluates to 3
 ```
 
 New values can be appended by using the `push` function.
