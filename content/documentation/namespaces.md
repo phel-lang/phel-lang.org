@@ -24,7 +24,7 @@ The call also sets the `*ns*` variable to the given namespace.
 
 ### Import a Phel module
 
-Before a Phel module can be used, it has to be imported with the keyword `:require`. Once imported, the module can be accessed by its name followed by a slash and the name of the public function or value.
+Before a Phel module can be used, it has to be imported with the keyword `:require`. Once imported, the module can be accessed by its name followed by a slash and the name of the public function or value. Namespaces are indexed from source file directory which is `src/` by default and can changed with [SrcDirs configuration option](/documentation/configuration/#srcdirs) in `phel-config.php`.
 
 Given, a module `util` is defined in the namespace `hello-world`.
 
