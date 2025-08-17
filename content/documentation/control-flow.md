@@ -130,7 +130,7 @@ have the form `:modifier argument`. The following modifiers are supported:
 * `:while` breaks the loop if the expression is falsy.
 * `:let` defines additional bindings.
 * `:when` only evaluates the loop body if the condition is true.
-* `:reduce [accumulator initial-value]` Instead of returning a list, it reduces the values into `accumulator`. Initially `accumulator` is bound to `initial-value`.
+* `:reduce [accumulator initial-value]` Instead of returning a list, it reduces the values into `accumulator`. Initially `accumulator` is bound to `initial-value`. Normally with `when` macro inside `reduce` function the accumulator becomes `nil` when the condition is not met. However with `for`, `:when` can be used for conditional logic with `:reduce` without this issue.
 
 ```phel
 (for [x :range [0 3]] x) # Evaluates to [0 1 2]
@@ -147,7 +147,9 @@ have the form `:modifier argument`. The following modifiers are supported:
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}]]
   (put m k (inc v))) # Evaluates to {:a 2 :b 3 :c 4}
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}] :let [x (inc v)]]
-  (put m k x)) # Evaluates to {:a 2 :b 3 :c 4} 
+  (put m k x)) # Evaluates to {:a 2 :b 3 :c 4}
+(for [[k v] :pairs {:a 1 :b 2 :c 3} :when (contains-value? [:a :c] k) :reduce [acc {}]]
+    (put acc k v)) # Evaluates to {:a 1 :c 3}
 
 (for [x :in [2 2 2 3 3 4 5 6 6] :while (even? x)] x) # Evaluates to [2 2 2]
 (for [x :in [2 2 2 3 3 4 5 6 6] :when (even? x)] x) # Evaluates to [2 2 2 4 6 6]
