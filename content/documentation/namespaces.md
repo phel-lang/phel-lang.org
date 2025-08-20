@@ -53,6 +53,17 @@ To prevent name collision from other modules in different namespaces, aliases ca
   (:require hello-world\util :as utilities))
 ```
 
+When names collide, names from different namespaces remain available by prefixing them with a namespace identifier (such as `phel\core`). However, care should be taken when referring to names before redefining them, as the names retain their values from the original namespaces before the redefinition.
+
+```phel
+(ns hello-world\http-client)
+
+(defn get [uri]
+  {:status 200 :body "Hello World" :headers {}})
+
+(phel\core/get (get "https://example.com") :status) # Evaluates to 200
+```
+
 Additionally, it is possible to refer symbols of other modules in the current namespace by using `:refer` keyword.
 
 ```phel
