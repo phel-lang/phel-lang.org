@@ -174,7 +174,7 @@ Evaluates the expressions in order and returns the value of the last expression.
 
 # Dofor
 
-```
+```phel
 (dofor [x :in [1 2 3]] (print x)) # Prints 1, 2, 3 and returns nil
 (dofor [x :in [2 3 4 5] :when (even? x)] (print x)) # Prints 1, 2 and returns nil
 ```
