@@ -20,14 +20,27 @@ document.addEventListener("keyup", function (keyboardEvent) {
 });
 
 document.addEventListener("keydown", function (keyboardEvent) {
-    const len = searchResultsItems.getElementsByTagName("li").length - 1;
+    const items = searchResultsItems.getElementsByTagName("li");
+    const len = items.length - 1;
 
-    if (keyboardEvent.key === DOWN_ARROW) {
+    switch (keyboardEvent.key) {
+        case DOWN_ARROW:
+        keyboardEvent.preventDefault();
         downArrow(len);
-    } else if (keyboardEvent.key === UP_ARROW) {
-        upArrow(len);
-    } else if (keyboardEvent.key === ENTER_KEY) {
-        searchItemSelected.getElementsByTagName("a")[0].click();
+        break;
+
+        case UP_ARROW:
+        keyboardEvent.preventDefault();
+        upArrow(len); 
+        break;
+
+        case ENTER_KEY: {
+        const parent = searchItemSelected || searchResultsItems;
+        const target = parent.querySelector("a");
+
+        if (target) target.click();
+        break;
+        }
     }
 });
 
