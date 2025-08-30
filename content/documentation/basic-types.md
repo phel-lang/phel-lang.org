@@ -140,8 +140,20 @@ A set is a sequence of whitespace-separated values prefixed by the function `set
 
 ## Comments
 
-A comment begins with a `#` character and continues until the end of the line. There are no multi-line comments.
+A comment begins with a `#` or `;` character and continues until the end of the line. There are no multi-line comments.
 
 ```phel
 # This is a comment
+; This is also a comment
 ```
+
+Phel also supports inline s-expression commenting with `#_` which comments out the next form. It can also be stacked to comment out two or more forms after it.
+
+```
+[:one :two :three]     # results to [:one :two :three]
+[#_:one :two :three]   # results to [:two :three]
+[#_:one :two #_:three] # results to [:two]
+[#_#_:one :two :three] # results to [:three]
+```
+
+See also the [comment](/documentation/api/#comment) macro which ignores the forms inside and returns `nil` while still requiring the content to be valid Phel code.
