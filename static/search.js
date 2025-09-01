@@ -2,6 +2,7 @@ const MAX_ITEMS = 10;
 const UP_ARROW = "ArrowUp";
 const DOWN_ARROW = "ArrowDown";
 const ENTER_KEY = "Enter";
+const ESCAPE_KEY = "Escape";
 
 const searchInput = document.getElementById("search");
 const searchResults = document.getElementById("search-results");
@@ -41,6 +42,14 @@ document.addEventListener("keydown", function (keyboardEvent) {
         if (target) target.click();
         break;
         }
+
+        case ESCAPE_KEY: {
+            searchInput.value = "";
+            searchResults.style.display = "none";
+            searchInput.blur();
+            break;
+        }
+
     }
 });
 
