@@ -133,7 +133,9 @@ function initSearch() {
     const index = elasticlunr(function () {
         this.addField("fnName");
         this.addField("desc");
-        this.setRef("anchor");
+        this.addField("title");
+        this.addField("content");
+        this.setRef("id");
         elasticlunr.stopWordFilter.stopWords = {};
         elasticlunr.Pipeline.registerFunction(elasticlunr.trimmer, "trimmer");
         elasticlunr.tokenizer.seperator = /[\s~~]+/;
@@ -198,10 +200,12 @@ function showResults(index) {
         }
 
         const options = {
-            bool: "AND",
+            bool: "OR",
             fields: {
                 fnName: {boost: 3},
+                title: {boost: 2},
                 desc: {boost: 1},
+                content: {boost: 1}
             },
             expand: true
         };
@@ -212,6 +216,7 @@ function showResults(index) {
                 fnSignature: "",
                 desc: "Cannot provide any Phel symbol. Try something else",
                 anchor: "#",
+                type: "api"
             };
 
             createMenuItem(emptyResult, null);
@@ -239,11 +244,22 @@ function createMenuItem(result, index) {
 }
 
 function formatSearchResultItem(item) {
-    return `<a href="/documentation/api/#${item.anchor}">`
-        + `<div class="search-results__item">${item.fnName} `
-        + `<small class="fn-signature">${item.fnSignature}</small>`
-        + `<span class="desc">${item.desc}</span>`
-        + `</div></a>`;
+    if (item.type === "documentation") {
+        return `<a href="${item.url}">`
+            + `<div class="search-results__item">`
+            + `<span class="result-type">Documentation: </span>`
+            + `<strong>${item.title}</strong>`
+            + `<span class="desc">${item.content}</span>`
+            + `</div></a>`;
+    } else {
+        return `<a href="/documentation/api/#${item.anchor}">`
+            + `<div class="search-results__item">`
+            + `<span class="result-type">API: </span>`
+            + `${item.fnName} `
+            + `<small class="fn-signature">${item.fnSignature}</small>`
+            + `<span class="desc">${item.desc}</span>`
+            + `</div></a>`;
+    }
 }
 
 function removeSelectedClassFromSearchResult() {
