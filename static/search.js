@@ -26,21 +26,21 @@ document.addEventListener("keydown", function (keyboardEvent) {
 
     switch (keyboardEvent.key) {
         case DOWN_ARROW:
-        keyboardEvent.preventDefault();
-        downArrow(len);
-        break;
+            keyboardEvent.preventDefault();
+            downArrow(len);
+            break;
 
         case UP_ARROW:
-        keyboardEvent.preventDefault();
-        upArrow(len); 
-        break;
+            keyboardEvent.preventDefault();
+            upArrow(len); 
+            break;
 
         case ENTER_KEY: {
-        const parent = searchItemSelected || searchResultsItems;
-        const target = parent.querySelector("a");
+            const parent = searchItemSelected || searchResultsItems;
+            const target = parent.querySelector("a");
 
-        if (target) target.click();
-        break;
+            if (target) target.click();
+            break;
         }
 
         case ESCAPE_KEY: {
@@ -49,7 +49,6 @@ document.addEventListener("keydown", function (keyboardEvent) {
             searchInput.blur();
             break;
         }
-
     }
 });
 
