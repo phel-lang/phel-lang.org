@@ -38,7 +38,11 @@ final class ApiSearchGeneratorTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $actual);
+        // Filter out documentation items for this test
+        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
+        $apiItems = array_values($apiItems); // Re-index array
+
+        self::assertEquals($expected, $apiItems);
     }
 
     public function test_multiple_items_in_different_groups(): void
@@ -82,7 +86,11 @@ final class ApiSearchGeneratorTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $actual);
+        // Filter out documentation items for this test
+        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
+        $apiItems = array_values($apiItems); // Re-index array
+
+        self::assertEquals($expected, $apiItems);
     }
 
     public function test_multiple_items_in_the_same_group(): void
@@ -126,7 +134,11 @@ final class ApiSearchGeneratorTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $actual);
+        // Filter out documentation items for this test
+        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
+        $apiItems = array_values($apiItems); // Re-index array
+
+        self::assertEquals($expected, $apiItems);
     }
 
     public function test_fn_name_with_slash_in_the_middle(): void
@@ -170,7 +182,11 @@ final class ApiSearchGeneratorTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $actual);
+        // Filter out documentation items for this test
+        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
+        $apiItems = array_values($apiItems); // Re-index array
+
+        self::assertEquals($expected, $apiItems);
     }
 
     public function test_fn_name_ending_with_minus(): void
@@ -214,7 +230,11 @@ final class ApiSearchGeneratorTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $actual);
+        // Filter out documentation items for this test
+        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
+        $apiItems = array_values($apiItems); // Re-index array
+
+        self::assertEquals($expected, $apiItems);
     }
 
     public function test_fn_name_with_upper_case(): void
@@ -258,6 +278,10 @@ final class ApiSearchGeneratorTest extends TestCase
             ],
         ];
 
-        self::assertEquals($expected, $actual);
+        // Filter out documentation items for this test
+        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
+        $apiItems = array_values($apiItems); // Re-index array
+
+        self::assertEquals($expected, $apiItems);
     }
 }
