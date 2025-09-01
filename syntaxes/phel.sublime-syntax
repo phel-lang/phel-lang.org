@@ -18,8 +18,8 @@ contexts:
     #- include: symbol
 
   comment:
-    - match: (#).*$\n?
-      scope: comment.line.hash.phel
+    - match: (#|;).*$\n?
+      scope: comment.line.hash-or-semicolon.phel
       captures:
         1: punctuation.definition.comment.phel
 
