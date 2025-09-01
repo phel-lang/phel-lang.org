@@ -2,6 +2,7 @@ const MAX_ITEMS = 10;
 const UP_ARROW = "ArrowUp";
 const DOWN_ARROW = "ArrowDown";
 const ENTER_KEY = "Enter";
+const ESCAPE_KEY = "Escape";
 
 const searchInput = document.getElementById("search");
 const searchResults = document.getElementById("search-results");
@@ -20,14 +21,34 @@ document.addEventListener("keyup", function (keyboardEvent) {
 });
 
 document.addEventListener("keydown", function (keyboardEvent) {
-    const len = searchResultsItems.getElementsByTagName("li").length - 1;
+    const items = searchResultsItems.getElementsByTagName("li");
+    const len = items.length - 1;
 
-    if (keyboardEvent.key === DOWN_ARROW) {
-        downArrow(len);
-    } else if (keyboardEvent.key === UP_ARROW) {
-        upArrow(len);
-    } else if (keyboardEvent.key === ENTER_KEY) {
-        searchItemSelected.getElementsByTagName("a")[0].click();
+    switch (keyboardEvent.key) {
+        case DOWN_ARROW:
+            keyboardEvent.preventDefault();
+            downArrow(len);
+            break;
+
+        case UP_ARROW:
+            keyboardEvent.preventDefault();
+            upArrow(len); 
+            break;
+
+        case ENTER_KEY: {
+            const parent = searchItemSelected || searchResultsItems;
+            const target = parent.querySelector("a");
+
+            if (target) target.click();
+            break;
+        }
+
+        case ESCAPE_KEY: {
+            searchInput.value = "";
+            searchResults.style.display = "none";
+            searchInput.blur();
+            break;
+        }
     }
 });
 
@@ -50,6 +71,7 @@ function downArrow(len) {
     }
 
     searchItemSelected.focus()
+    searchItemSelected.scrollIntoView({ block: "nearest" });
     addClass(searchItemSelected, "selected");
 }
 
@@ -69,7 +91,8 @@ function upArrow(len) {
             searchItemSelected = searchResultsItems.getElementsByTagName("li")[len];
         }
     }
-    searchItemSelected.focus()
+    searchItemSelected.focus();
+    searchItemSelected.scrollIntoView({ block: "nearest" });
     addClass(searchItemSelected, "selected");
 }
 
