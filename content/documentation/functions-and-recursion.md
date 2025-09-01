@@ -7,11 +7,18 @@ weight = 7
 
 ```phel
 (fn [params*] expr*)
+
+(fn
+  ([params1*] expr1*)
+  ([params2*] expr2*)
+  ...)
 ```
 
 Defines a function. A function consists of a list of parameters and a list of expression. The value of the last expression is returned as the result of the function. All other expression are only evaluated for side effects. If no expression is given, the function returns `nil`.
 
-Function also introduce a new lexical scope that is not accessible outside the function.
+Functions can define multiple arities. When calling such a function, the clause matching the number of provided arguments is chosen. Variadic clauses are supported for at most one arity and must be the one with the most parameters. If no arity matches, a readable compile-time or runtime error is thrown.
+
+Function also introduces a new lexical scope that is not accessible outside the function.
 
 ```phel
 (fn []) # Function with no arguments that returns nil
@@ -24,7 +31,13 @@ Function can also be defined as variadic function with an infinite amount of arg
 
 ```phel
 (fn [& args] (count args)) # A variadic function that counts the arguments
+
 (fn [a b c &]) # A variadic function with extra arguments ignored
+
+(fn # A multi-arity function
+  ([] "hi") 
+  ([name] (str "hi " name))
+  ([greeting name & rest] (str greeting " " name rest)))
 ```
 
 There is a shorter form to define an anonymous function. This omits the parameter list and names parameters based on their position.
@@ -44,13 +57,23 @@ There is a shorter form to define an anonymous function. This omits the paramete
 
 ```phel
 (defn name docstring? attributes? [params*] expr*)
+
+(defn name docstring? attributes?
+  ([params1*] expr1*)
+  ([params2*] expr2*)
+  ...)
 ```
 
-Global functions can be defined using `defn`.
+Global functions can be defined using `defn`. Like anonymous functions, they may provide multiple arities. The most specific clause based on the number of arguments is chosen at call time. A single variadic clause is allowed and must declare the maximum number of arguments.
 
 ```phel
 (defn my-add-function [a b]
   (+ a b))
+
+(defn greet
+  ([] "hi")
+  ([name] (str "hi " name))
+  ([greeting name] (str greeting " " name)))
 ```
 
 Each global function can take an optional doc comment and attribute map.
