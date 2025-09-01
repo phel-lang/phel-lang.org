@@ -223,14 +223,14 @@ function formatSearchResultItem(item) {
     if (item.type === "documentation") {
         return `<a href="${item.url}">`
             + `<div class="search-results__item">`
-            + `<span class="result-type">Documentation</span>`
+            + `<span class="result-type">Documentation: </span>`
             + `<strong>${item.title}</strong>`
             + `<span class="desc">${item.content}</span>`
             + `</div></a>`;
     } else {
         return `<a href="/documentation/api/#${item.anchor}">`
             + `<div class="search-results__item">`
-            + `<span class="result-type">API</span>`
+            + `<span class="result-type">API: </span>`
             + `${item.fnName} `
             + `<small class="fn-signature">${item.fnSignature}</small>`
             + `<span class="desc">${item.desc}</span>`
