@@ -149,7 +149,7 @@ A comment begins with a `#` or `;` character and continues until the end of the 
 
 Phel also supports inline s-expression commenting with `#_` which comments out the next form. It can also be stacked to comment out two or more forms after it.
 
-```
+```phel
 [:one :two :three]     # results to [:one :two :three]
 [#_:one :two :three]   # results to [:two :three]
 [#_:one :two #_:three] # results to [:two]
