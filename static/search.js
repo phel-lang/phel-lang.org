@@ -63,6 +63,7 @@ function downArrow(len) {
     }
 
     searchItemSelected.focus()
+    searchItemSelected.scrollIntoView({ block: "nearest" });
     addClass(searchItemSelected, "selected");
 }
 
@@ -82,7 +83,8 @@ function upArrow(len) {
             searchItemSelected = searchResultsItems.getElementsByTagName("li")[len];
         }
     }
-    searchItemSelected.focus()
+    searchItemSelected.focus();
+    searchItemSelected.scrollIntoView({ block: "nearest" });
     addClass(searchItemSelected, "selected");
 }
 
