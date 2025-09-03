@@ -8,7 +8,7 @@ use Phel\Api\ApiFacadeInterface;
 
 final readonly class ApiSearchGenerator
 {
-    private const SPECIAL_ENDING_CHARS = ['=', '*', '?', '+', '>', '<', '!'];
+    private const array SPECIAL_ENDING_CHARS = ['=', '*', '?', '+', '>', '<', '!'];
 
     public function __construct(
         private ApiFacadeInterface $apiFacade
@@ -51,9 +51,9 @@ final readonly class ApiSearchGenerator
             }
 
             $result[] = [
-                'id' => 'api_' . $fn->fnName(),
-                'fnName' => $fn->fnName(),
-                'fnSignature' => $fn->fnSignature(),
+                'id' => 'api_' . $fn->name(),
+                'fnName' => $fn->name(),
+                'fnSignature' => $fn->signature(),
                 'desc' => $this->formatDescription($fn->description()),
                 'anchor' => $anchor,
                 'type' => 'api',
