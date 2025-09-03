@@ -129,6 +129,7 @@ function initSearch() {
 
         return token;
     };
+    
     const index = elasticlunr(function () {
         this.addField("fnName");
         this.addField("desc");
@@ -139,6 +140,37 @@ function initSearch() {
         elasticlunr.Pipeline.registerFunction(elasticlunr.trimmer, "trimmer");
         elasticlunr.tokenizer.seperator = /[\s~~]+/;
     });
+    
+    // Custom tokenizer to handle symbols with '/'
+    const originalTokenizer = elasticlunr.tokenizer;
+    elasticlunr.tokenizer = function (obj, metadata) {
+        if (obj == null || obj == undefined) {
+            return [];
+        }
+        
+        if (Array.isArray(obj)) {
+            return obj.reduce(function (tokens, token) {
+                return tokens.concat(elasticlunr.tokenizer(token, metadata));
+            }, []);
+        }
+        
+        const str = obj.toString().toLowerCase();
+        const tokens = originalTokenizer(str, metadata);
+        
+        // Add additional tokens for strings containing '/'
+        if (str.includes('/')) {
+            const parts = str.split('/');
+            if (parts.length > 1) {
+                const lastPart = parts[parts.length - 1];
+                if (lastPart) {
+                    tokens.push(lastPart);
+                }
+            }
+        }
+        
+        return tokens;
+    };
+    
     // Load symbols into elasticlunr object
     window.searchIndexApi.forEach(item => index.addDoc(item));
 
