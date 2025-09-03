@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block body %}
+{% include "header.html" %}
+
+<div class="page">
+    {% block content %}
+    <div class="page__content" style="max-width: 800px; margin: 0 auto; padding: 0 20px;">
+        {{ section.content | safe }}
+        
+        {% if section.pages %}
+        <ul>
+            {% for page in section.pages %}
+            <li>
+                <a href="{{ page.permalink }}">{{ page.title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    {% endblock %}
+
+    {% include "footer.html" %}
+</div>
+
+{% endblock body %}
