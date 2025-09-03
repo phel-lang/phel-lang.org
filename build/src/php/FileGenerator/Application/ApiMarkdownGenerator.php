@@ -25,7 +25,7 @@ final readonly class ApiMarkdownGenerator
             $result[] = "## `{$fn->fnName()}`";
             $result[] = $fn->doc();
             if ($fn->url() !== '') {
-                $result[] = sprintf('Read more [here](%s).', $fn->url());
+                $result[] = sprintf('<small>[[View source](%s)]</small>', $fn->url());
             }
         }
 
