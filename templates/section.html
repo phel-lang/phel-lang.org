@@ -5,7 +5,7 @@
 
 <div class="page">
     {% block content %}
-    <div class="page__content">
+    <div class="page__content" style="max-width: 800px; margin: 0 auto; padding: 0 20px;">
         {{ section.content | safe }}
         
         {% if section.pages %}
