@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block body %}
+{% include "header.html" %}
+
+<div class="page">
+    {% block content %}
+    <div class="page__content">
+        {{ section.content | safe }}
+    </div>
+    {% endblock %}
+
+    {% include "footer.html" %}
+</div>
+
+{% endblock body %}
