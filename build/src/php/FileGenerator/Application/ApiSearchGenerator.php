@@ -46,14 +46,14 @@ final readonly class ApiSearchGenerator
                 $anchor = $groupKey;
                 $groupFnNameAppearances[$groupKey]++;
             } else {
-                $sanitizedFnName = str_replace(['/', ...self::SPECIAL_ENDING_CHARS], ['-', ''], $fn->fnName());
+                $sanitizedFnName = str_replace(['/', ...self::SPECIAL_ENDING_CHARS], ['-', ''], $fn->name());
                 $anchor = rtrim($sanitizedFnName, '-') . '-' . $groupFnNameAppearances[$groupKey]++;
             }
 
             $result[] = [
                 'id' => 'api_' . $fn->name(),
-                'fnName' => $fn->name(),
-                'fnSignature' => $fn->signature(),
+                'name' => $fn->nameWithNamespace(),
+                'signature' => $fn->signature(),
                 'desc' => $this->formatDescription($fn->description()),
                 'anchor' => $anchor,
                 'type' => 'api',

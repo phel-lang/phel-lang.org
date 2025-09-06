@@ -131,7 +131,7 @@ function initSearch() {
     };
     
     const index = elasticlunr(function () {
-        this.addField("fnName");
+        this.addField("name");
         this.addField("desc");
         this.addField("title");
         this.addField("content");
@@ -233,7 +233,7 @@ function showResults(index) {
         const options = {
             bool: "OR",
             fields: {
-                fnName: {boost: 3},
+                name: {boost: 3},
                 title: {boost: 2},
                 desc: {boost: 1},
                 content: {boost: 1}
@@ -243,8 +243,8 @@ function showResults(index) {
         const results = index.search(term, options);
         if (results.length === 0) {
             let emptyResult = {
-                fnName: "Symbol not found",
-                fnSignature: "",
+                name: "Symbol not found",
+                signature: "",
                 desc: "Cannot provide any Phel symbol. Try something else",
                 anchor: "#",
                 type: "api"
@@ -286,8 +286,8 @@ function formatSearchResultItem(item) {
         return `<a href="/documentation/api/#${item.anchor}">`
             + `<div class="search-results__item">`
             + `<span class="result-type">API: </span>`
-            + `${item.fnName} `
-            + `<small class="fn-signature">${item.fnSignature}</small>`
+            + `${item.name} `
+            + `<small class="fn-signature">${item.signature}</small>`
             + `<span class="desc">${item.desc}</span>`
             + `</div></a>`;
     }

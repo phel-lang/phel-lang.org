@@ -17,8 +17,8 @@ final class ApiSearchGeneratorTest extends TestCase
         $apiFacade->method('getPhelFunctions')
             ->willReturn([
                 PhelFunction::fromArray([
-                    'fnName' => 'table?',
-                    'fnSignature' => '(table? x)',
+                    'name' => 'table?',
+                    'signature' => '(table? x)',
                     'desc' => 'doc for table?',
                     'groupKey' => 'table'
                 ]),
@@ -30,8 +30,8 @@ final class ApiSearchGeneratorTest extends TestCase
         $expected = [
             [
                 'id' => 'api_table?',
-                'fnName' => 'table?',
-                'fnSignature' => '(table? x)',
+                'name' => 'table?',
+                'signature' => '(table? x)',
                 'desc' => 'doc for table?',
                 'anchor' => 'table',
                 'type' => 'api',
@@ -51,14 +51,14 @@ final class ApiSearchGeneratorTest extends TestCase
         $apiFacade->method('getPhelFunctions')
             ->willReturn([
                 PhelFunction::fromArray([
-                    'fnName' => 'table',
-                    'fnSignature' => '(table & xs)',
+                    'name' => 'table',
+                    'signature' => '(table & xs)',
                     'desc' => 'doc for table',
                     'groupKey' => 'table',
                 ]),
                 PhelFunction::fromArray([
-                    'fnName' => 'not',
-                    'fnSignature' => '(not x)',
+                    'name' => 'not',
+                    'signature' => '(not x)',
                     'desc' => 'doc for not',
                     'groupKey' => 'not',
                 ]),
@@ -70,16 +70,16 @@ final class ApiSearchGeneratorTest extends TestCase
         $expected = [
             [
                 'id' => 'api_table',
-                'fnName' => 'table',
-                'fnSignature' => '(table & xs)',
+                'name' => 'table',
+                'signature' => '(table & xs)',
                 'desc' => 'doc for table',
                 'anchor' => 'table',
                 'type' => 'api',
             ],
             [
                 'id' => 'api_not',
-                'fnName' => 'not',
-                'fnSignature' => '(not x)',
+                'name' => 'not',
+                'signature' => '(not x)',
                 'desc' => 'doc for not',
                 'anchor' => 'not',
                 'type' => 'api',
@@ -99,14 +99,14 @@ final class ApiSearchGeneratorTest extends TestCase
         $apiFacade->method('getPhelFunctions')
             ->willReturn([
                 PhelFunction::fromArray([
-                    'fnName' => 'table',
-                    'fnSignature' => '(table & xs)',
+                    'name' => 'table',
+                    'signature' => '(table & xs)',
                     'desc' => 'doc for table',
                     'groupKey' => 'table',
                 ]),
                 PhelFunction::fromArray([
-                    'fnName' => 'table?',
-                    'fnSignature' => '(table? x)',
+                    'name' => 'table?',
+                    'signature' => '(table? x)',
                     'desc' => 'doc for table?',
                     'groupKey' => 'table',
                 ]),
@@ -118,16 +118,16 @@ final class ApiSearchGeneratorTest extends TestCase
         $expected = [
             [
                 'id' => 'api_table',
-                'fnName' => 'table',
-                'fnSignature' => '(table & xs)',
+                'name' => 'table',
+                'signature' => '(table & xs)',
                 'desc' => 'doc for table',
                 'anchor' => 'table',
                 'type' => 'api',
             ],
             [
                 'id' => 'api_table?',
-                'fnName' => 'table?',
-                'fnSignature' => '(table? x)',
+                'name' => 'table?',
+                'signature' => '(table? x)',
                 'desc' => 'doc for table?',
                 'anchor' => 'table-1',
                 'type' => 'api',
@@ -147,14 +147,14 @@ final class ApiSearchGeneratorTest extends TestCase
         $apiFacade->method('getPhelFunctions')
             ->willReturn([
                 PhelFunction::fromArray([
-                    'fnName' => 'http/response',
-                    'fnSignature' => '',
+                    'name' => 'http/response',
+                    'signature' => '',
                     'desc' => '',
                     'groupKey' => 'http-response',
                 ]),
                 PhelFunction::fromArray([
-                    'fnName' => 'http/response?',
-                    'fnSignature' => '',
+                    'name' => 'http/response?',
+                    'signature' => '',
                     'desc' => '',
                     'groupKey' => 'http-response-1',
                 ]),
@@ -166,16 +166,16 @@ final class ApiSearchGeneratorTest extends TestCase
         $expected = [
             [
                 'id' => 'api_http/response',
-                'fnName' => 'http/response',
-                'fnSignature' => '',
+                'name' => 'http/response',
+                'signature' => '',
                 'desc' => '',
                 'anchor' => 'http-response',
                 'type' => 'api',
             ],
             [
                 'id' => 'api_http/response?',
-                'fnName' => 'http/response?',
-                'fnSignature' => '',
+                'name' => 'http/response?',
+                'signature' => '',
                 'desc' => '',
                 'anchor' => 'http-response-1',
                 'type' => 'api',
@@ -195,14 +195,14 @@ final class ApiSearchGeneratorTest extends TestCase
         $apiFacade->method('getPhelFunctions')
             ->willReturn([
                 PhelFunction::fromArray([
-                    'fnName' => 'defn',
-                    'fnSignature' => '',
+                    'name' => 'defn',
+                    'signature' => '',
                     'desc' => '',
                     'groupKey' => 'defn',
                 ]),
                 PhelFunction::fromArray([
-                    'fnName' => 'defn-',
-                    'fnSignature' => '',
+                    'name' => 'defn-',
+                    'signature' => '',
                     'desc' => '',
                     'groupKey' => 'defn',
                 ]),
@@ -214,16 +214,16 @@ final class ApiSearchGeneratorTest extends TestCase
         $expected = [
             [
                 'id' => 'api_defn',
-                'fnName' => 'defn',
-                'fnSignature' => '',
+                'name' => 'defn',
+                'signature' => '',
                 'desc' => '',
                 'anchor' => 'defn',
                 'type' => 'api',
             ],
             [
                 'id' => 'api_defn-',
-                'fnName' => 'defn-',
-                'fnSignature' => '',
+                'name' => 'defn-',
+                'signature' => '',
                 'desc' => '',
                 'anchor' => 'defn-1',
                 'type' => 'api',
@@ -243,14 +243,14 @@ final class ApiSearchGeneratorTest extends TestCase
         $apiFacade->method('getPhelFunctions')
             ->willReturn([
                 PhelFunction::fromArray([
-                    'fnName' => 'NAN',
-                    'fnSignature' => '',
+                    'name' => 'NAN',
+                    'signature' => '',
                     'desc' => '',
                     'groupKey' => 'nan',
                 ]),
                 PhelFunction::fromArray([
-                    'fnName' => 'nan?',
-                    'fnSignature' => '',
+                    'name' => 'nan?',
+                    'signature' => '',
                     'desc' => '',
                     'groupKey' => 'nan',
                 ]),
@@ -262,16 +262,16 @@ final class ApiSearchGeneratorTest extends TestCase
         $expected = [
             [
                 'id' => 'api_NAN',
-                'fnName' => 'NAN',
-                'fnSignature' => '',
+                'name' => 'NAN',
+                'signature' => '',
                 'desc' => '',
                 'anchor' => 'nan',
                 'type' => 'api',
             ],
             [
                 'id' => 'api_nan?',
-                'fnName' => 'nan?',
-                'fnSignature' => '',
+                'name' => 'nan?',
+                'signature' => '',
                 'desc' => '',
                 'anchor' => 'nan-1',
                 'type' => 'api',
