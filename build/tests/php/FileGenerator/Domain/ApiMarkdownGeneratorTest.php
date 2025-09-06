@@ -36,9 +36,10 @@ final class ApiMarkdownGeneratorTest extends TestCase
         $apiFacade->method('getPhelFunctions')
             ->willReturn([
                 PhelFunction::fromArray([
-                    'fnName' => 'function-1',
+                    'name' => 'function-1',
                     'doc' => 'The doc from function 1',
                     'groupKey' => 'group-1',
+                    'namespace' => 'ns-1',
                 ]),
             ]);
 
@@ -52,7 +53,11 @@ final class ApiMarkdownGeneratorTest extends TestCase
             'aliases = [ "/api" ]',
             '+++',
             '',
-            '## `function-1`',
+            '',
+            '---',
+            '',
+            '## `ns-1`',
+            '### `ns-1/function-1`',
             'The doc from function 1',
         ];
 
@@ -65,12 +70,14 @@ final class ApiMarkdownGeneratorTest extends TestCase
         $apiFacade->method('getPhelFunctions')
             ->willReturn([
                 PhelFunction::fromArray([
-                    'fnName' => 'function-1',
+                    'name' => 'function-1',
                     'doc' => 'The doc from function 1',
+                    'namespace' => 'core',
                 ]),
                 PhelFunction::fromArray([
-                    'fnName' => 'function-2',
+                    'name' => 'function-2',
                     'doc' => 'The doc from function 2',
+                    'namespace' => 'core',
                 ]),
             ]);
 
@@ -84,9 +91,13 @@ final class ApiMarkdownGeneratorTest extends TestCase
             'aliases = [ "/api" ]',
             '+++',
             '',
-            '## `function-1`',
+            '',
+            '---',
+            '',
+            '## `core`',
+            '### `function-1`',
             'The doc from function 1',
-            '## `function-2`',
+            '### `function-2`',
             'The doc from function 2',
         ];
 
@@ -99,12 +110,14 @@ final class ApiMarkdownGeneratorTest extends TestCase
         $apiFacade->method('getPhelFunctions')
             ->willReturn([
                 PhelFunction::fromArray([
-                    'fnName' => 'function-1',
+                    'name' => 'function-1',
                     'doc' => 'The doc from function 1',
+                    'namespace' => 'ns-1',
                 ]),
                 PhelFunction::fromArray([
-                    'fnName' => 'function-2',
+                    'name' => 'function-2',
                     'doc' => 'The doc from function 2',
+                    'namespace' => 'ns-2',
                 ]),
             ]);
 
@@ -118,9 +131,17 @@ final class ApiMarkdownGeneratorTest extends TestCase
             'aliases = [ "/api" ]',
             '+++',
             '',
-            '## `function-1`',
+            '',
+            '---',
+            '',
+            '## `ns-1`',
+            '### `ns-1/function-1`',
             'The doc from function 1',
-            '## `function-2`',
+            '',
+            '---',
+            '',
+            '## `ns-2`',
+            '### `ns-2/function-2`',
             'The doc from function 2',
         ];
 

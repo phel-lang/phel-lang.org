@@ -21,17 +21,29 @@ final readonly class ApiMarkdownGenerator
     {
         $result = $this->zolaHeaders();
 
-        /** @var list<PhelFunction> $groupedPhelFns */
-        $groupedPhelFns = $this->apiFacade->getPhelFunctions();
+        /** @var list<PhelFunction> $phelFns */
+        $phelFns = $this->apiFacade->getPhelFunctions();
 
-        foreach ($groupedPhelFns as $fn) {
-            $result[] = "## `{$fn->name()}`";
-            $result[] = "<small><strong>Namespace</strong> `{$fn->namespace()}`</small>";
-            $result[] = $fn->doc();
-            if ($fn->githubUrl() !== '') {
-                $result[] = sprintf('<small>[[View source](%s)]</small>', $fn->githubUrl());
-            }elseif ($fn->docUrl() !== '') {
-                $result[] = sprintf('<small>[[Read more](%s)]</small>', $fn->docUrl());
+        $groupedByNamespace = [];
+        foreach ($phelFns as $fn) {
+            $groupedByNamespace[$fn->namespace()][] = $fn;
+        }
+
+        foreach ($groupedByNamespace as $namespace => $fns) {
+
+            $result[] = "";
+            $result[] = "---";
+            $result[] = "";
+            $result[] = "## `{$namespace}`";
+
+            foreach ($fns as $fn) {
+                $result[] = "### `{$fn->nameWithNamespace()}`";
+                $result[] = $fn->doc();
+                if ($fn->githubUrl() !== '') {
+                    $result[] = sprintf('<small>[[View source](%s)]</small>', $fn->githubUrl());
+                } elseif ($fn->docUrl() !== '') {
+                    $result[] = sprintf('<small>[[Read more](%s)]</small>', $fn->docUrl());
+                }
             }
         }
 
