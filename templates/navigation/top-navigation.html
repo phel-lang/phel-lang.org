@@ -2,8 +2,11 @@
     <li class="top-navigation__item {% if current_path and current_path == '/' %}active{% endif %}">
         <a href="/">Features</a>
     </li>
-    <li class="top-navigation__item {% if current_path and current_path is starting_with('/documentation/') %}active{% endif %}">
+    <li class="top-navigation__item {% if current_path and current_path is starting_with('/documentation/') and not current_path is starting_with('/documentation/api/') %}active{% endif %}">
         <a href="/documentation/getting-started/">Docs</a>
+    </li>
+    <li class="top-navigation__item {% if current_path and current_path is starting_with('/documentation/api/') %}active{% endif %}">
+        <a href="/documentation/api/">API</a>
     </li>
     <li class="top-navigation__item {% if current_path and current_path is starting_with('/tutorials/exercises/') %}active{% endif %}">
         <a href="/tutorials/exercises/basic">Exercises</a>
