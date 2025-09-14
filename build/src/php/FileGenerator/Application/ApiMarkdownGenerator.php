@@ -26,7 +26,7 @@ final readonly class ApiMarkdownGenerator
 
         $groupedByNamespace = [];
         foreach ($phelFns as $fn) {
-            $groupedByNamespace[$fn->namespace()][] = $fn;
+            $groupedByNamespace[$fn->namespace][] = $fn;
         }
 
         foreach ($groupedByNamespace as $namespace => $fns) {
@@ -36,13 +36,14 @@ final readonly class ApiMarkdownGenerator
             $result[] = "";
             $result[] = "## `{$namespace}`";
 
+            /** @var PhelFunction $fn */
             foreach ($fns as $fn) {
                 $result[] = "### `{$fn->nameWithNamespace()}`";
-                $result[] = $fn->doc();
-                if ($fn->githubUrl() !== '') {
-                    $result[] = sprintf('<small>[[View source](%s)]</small>', $fn->githubUrl());
-                } elseif ($fn->docUrl() !== '') {
-                    $result[] = sprintf('<small>[[Read more](%s)]</small>', $fn->docUrl());
+                $result[] = $fn->doc;
+                if ($fn->githubUrl !== '') {
+                    $result[] = sprintf('<small>[[View source](%s)]</small>', $fn->githubUrl);
+                } elseif ($fn->docUrl !== '') {
+                    $result[] = sprintf('<small>[[Read more](%s)]</small>', $fn->docUrl);
                 }
             }
         }

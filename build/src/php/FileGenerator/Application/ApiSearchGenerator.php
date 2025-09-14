@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhelDocBuild\FileGenerator\Application;
 
 use Phel\Api\ApiFacadeInterface;
+use Phel\Api\Transfer\PhelFunction;
 
 final readonly class ApiSearchGenerator
 {
@@ -39,22 +40,22 @@ final readonly class ApiSearchGenerator
         $groupedPhelFns = $this->apiFacade->getPhelFunctions();
 
         foreach ($groupedPhelFns as $fn) {
-            $groupKey = $fn->groupKey();
+            $groupKey = $fn->groupKey;
             $groupFnNameAppearances[$groupKey] ??= 0;
 
             if ($groupFnNameAppearances[$groupKey] === 0) {
                 $anchor = $groupKey;
                 $groupFnNameAppearances[$groupKey]++;
             } else {
-                $sanitizedFnName = str_replace(['/', ...self::SPECIAL_ENDING_CHARS], ['-', ''], $fn->name());
+                $sanitizedFnName = str_replace(['/', ...self::SPECIAL_ENDING_CHARS], ['-', ''], $fn->name);
                 $anchor = rtrim($sanitizedFnName, '-') . '-' . $groupFnNameAppearances[$groupKey]++;
             }
 
             $result[] = [
-                'id' => 'api_' . $fn->name(),
+                'id' => 'api_' . $fn->name,
                 'name' => $fn->nameWithNamespace(),
-                'signature' => $fn->signature(),
-                'desc' => $this->formatDescription($fn->description()),
+                'signature' => $fn->signature,
+                'desc' => $this->formatDescription($fn->description),
                 'anchor' => $anchor,
                 'type' => 'api',
             ];
