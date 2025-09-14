@@ -164,12 +164,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "df810c17ebc4d250ba916be352e95d89a3d78db1"
+                "reference": "ec556186127ac2688e7640029f519af1ed5855a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/df810c17ebc4d250ba916be352e95d89a3d78db1",
-                "reference": "df810c17ebc4d250ba916be352e95d89a3d78db1",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/ec556186127ac2688e7640029f519af1ed5855a5",
+                "reference": "ec556186127ac2688e7640029f519af1ed5855a5",
                 "shasum": ""
             },
             "require": {
@@ -181,7 +181,7 @@
             "require-dev": {
                 "ergebnis/composer-normalize": "^2.48",
                 "ext-readline": "*",
-                "friendsofphp/php-cs-fixer": "^3.86",
+                "friendsofphp/php-cs-fixer": "^3.87",
                 "phpbench/phpbench": "^1.4",
                 "phpstan/phpstan": "^2.1",
                 "phpunit/phpunit": "^10.5",
@@ -214,7 +214,7 @@
                 },
                 {
                     "name": "Jose M. Valera Reales",
-                    "email": "chemaclass@outlook.es",
+                    "email": "phel@chemaclass.es",
                     "homepage": "https://chemaclass.com"
                 }
             ],
@@ -236,7 +236,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-09-14T11:30:21+00:00"
+            "time": "2025-09-14T21:02:07+00:00"
         },
         {
             "name": "phpunit/php-timer",

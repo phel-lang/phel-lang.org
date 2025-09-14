@@ -39,6 +39,12 @@ final readonly class ApiMarkdownGenerator
             /** @var PhelFunction $fn */
             foreach ($fns as $fn) {
                 $result[] = "### `{$fn->nameWithNamespace()}`";
+                if (isset($fn->meta['deprecated'])) {
+                    $result[] = sprintf(
+                        '<small><span style="color: red; font-weight: bold;">Deprecated</span>: %s</small>',
+                        $fn->meta['deprecated']
+                    );
+                }
                 $result[] = $fn->doc;
                 if ($fn->githubUrl !== '') {
                     $result[] = sprintf('<small>[[View source](%s)]</small>', $fn->githubUrl);
