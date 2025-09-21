@@ -73,6 +73,13 @@ You can chain multiple method calls or property accesses in one `php/->` express
 
 # Mix methods and properties: $user->profile->getDisplayName()
 (php/-> user profile (getDisplayName))
+
+# Other example using nested properties:
+(def address (php/new \stdClass))
+(def user (php/new \stdClass))
+(php/oset (php/-> address city) "Berlin")
+(php/oset (php/-> user address) address)
+(php/-> user address city) # Evaluates to "Berlin"
 ```
 
 ## PHP static method and property call
