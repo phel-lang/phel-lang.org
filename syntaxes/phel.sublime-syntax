@@ -18,6 +18,16 @@ contexts:
     #- include: symbol
 
   comment:
+    # Multiline block comments: start with #| and end with |#
+    - match: '#\|'
+      scope: punctuation.definition.comment.begin.phel
+      push:
+        - meta_scope: comment.block.phel
+        - match: '\|#'
+          scope: punctuation.definition.comment.end.phel
+          pop: true
+
+    # Single-line comments: ; ... or # ... (but not "#{")
     - match: (;|#(?!\{)).*$
       scope: comment.line.hash-or-semicolon.phel
       captures:

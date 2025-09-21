@@ -140,11 +140,20 @@ A set is a sequence of whitespace-separated values prefixed by the function `set
 
 ## Comments
 
-A comment begins with a `#` or `;` character and continues until the end of the line. There are no multi-line comments.
+A comment begins with a `#` or `;` character and continues until the end of the line.
 
 ```phel
 # This is a comment
 ; This is also a comment
+```
+
+Phel also supports multiline comments using the Common Lisp `#|` ... `|#` syntax. The comment spans everything between the opening and closing markers, including line breaks.
+
+```phel
+#|
+This whole block
+is a comment
+|#
 ```
 
 Phel also supports inline s-expression commenting with `#_` which comments out the next form. It can also be stacked to comment out two or more forms after it.
