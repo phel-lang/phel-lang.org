@@ -112,6 +112,35 @@ Equivalent to PHP's `arr[index] ?? null`.
 (php/aget (php/array "a" "b" "c") 5) # Evaluates to nil
 ```
 
+## Get nested PHP-Array value
+
+```phel
+(php/aget-in arr path)
+```
+
+Resolves nested values in a PHP array using a sequence of keys or indexes. The
+`path` must be a sequential collection such as a vector. If any step in the
+path is missing, `nil` is returned.
+
+```phel
+(def users
+  (php/array
+    "users"
+    (php/array
+      (php/array "name" "Alice")
+      (php/array "name" "Bob"))))
+
+(php/aget-in users ["users" 1 "name"]) # Evaluates to "Bob"
+
+(php/aget-in 
+    (php/array "meta" (php/array "status" "ok")) 
+    ["meta" "status"]) # Evaluates to "ok"
+
+(php/aget-in 
+    (php/array "meta" (php/array "status" "ok")) 
+    ["meta" "missing"]) # Evaluates to nil
+```
+
 ## Set PHP-Array value
 
 ```phel
@@ -119,6 +148,22 @@ Equivalent to PHP's `arr[index] ?? null`.
 ```
 
 Equivalent to PHP's `arr[index] = value`.
+
+## Set nested PHP-Array value
+
+```phel
+(php/aset-in arr path value)
+```
+
+Creates or updates nested entries inside a PHP array. Intermediate arrays are
+created as needed to ensure the path exists before writing the value.
+
+```phel
+(def data (php/array))
+(php/aset-in data ["user" "profile" "name"] "Charlie")
+(php/aget-in data ["user" "profile" "name"]) # Evaluates to "Charlie"
+# Equivalent to $data['user']['profile']['name'] = 'Charlie';
+```
 
 ## Append PHP-Array value
 
@@ -135,6 +180,22 @@ Equivalent to PHP's `arr[] = value`.
 ```
 
 Equivalent to PHP's `unset(arr[index])`.
+
+## Unset nested PHP-Array value
+
+```phel
+(php/aunset-in arr path)
+```
+
+Removes a nested entry in a PHP array. Once the value is removed, parent arrays
+remain untouched even if they become empty.
+
+```phel
+(def data (php/array "user" (php/array "profile" (php/array "name" "Dora"))))
+(php/aunset-in data ["user" "profile" "name"])
+(php/aget-in data ["user" "profile" "name"]) # Evaluates to nil
+# Equivalent to unset($data['user']['profile']['name']);
+```
 
 ## `__DIR__`, `__FILE__`, and `*file*`
 
