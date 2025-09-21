@@ -122,7 +122,7 @@ contexts:
       scope: constant.numeric.integer.decimal.phel
 
   corelib:
-    - match: "(?<=\\(|\\{|\\[|\\s)(defstruct|definterface|defmacro-|defmacro|defn-|defn|def-|def|recur|fn|throw|try|catch|finally|loop|ns|quote|dofor|do|if-not|if|when-not|when|apply|let|foreach|for|case|cond|list|vector|hash-map|set)(?=\\s|\\)|\\]|\\})"
+    - match: "(?<=\\(|\\{|\\[|\\s)(defstruct|definterface|defmacro-|defmacro|defn-|defn|def-|def|recur|fn|throw|try|catch|finally|loop|ns|quote|dofor|do|if-not|if|when-not|when|apply|let|foreach|for|case|cond|list|vector|hash-map|set|println)(?=\\s|\\)|\\]|\\})"
       scope: keyword.control.phel
     - match: "(?<=\\(|\\{|\\[|\\s)(php\\/[^\\s\\#\\(\\)\\{\\}\\[\\]\\'\\\"\\,\\`]+)(?=\\s|\\)|\\]|\\})"
       scope: keyword.other.phel

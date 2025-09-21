@@ -136,13 +136,24 @@ Equivalent to PHP's `arr[] = value`.
 
 Equivalent to PHP's `unset(arr[index])`.
 
-## `__DIR__` and `__FILE__`
+## `__DIR__`, `__FILE__`, and `*file*`
 
-In Phel you can also use PHP Magic Methods `__DIR__` and `__FILE__`. These resolve to the dirname or filename of the Phel file.
+In Phel you can also use PHP Magic Methods `__DIR__` and `__FILE__`. When the
+compiler runs, these constants are expanded by PHP and therefore point to the
+generated PHP file that is executed (e.g. the temporary file under
+`.phel/cache`).
+
+Sometimes you need the path of the original Phel source file instead. For that
+Phel exposes the special var `*file*`, which contains the absolute path of the
+current Phel file. Combine it with `php/dirname` if you need the source
+directory.
 
 ```phel
-(println __DIR__) # Prints the directory name of the file
-(println __FILE__) # Prints the filename of the file
+(println __DIR__)  # Directory name of the generated PHP file
+(println __FILE__) # Filename of the generated PHP file
+
+(println (php/dirname *file*)) # Directory of the original Phel file
+(println *file*)               # Absolute path of the original file
 ```
 
 ## Calling Phel functions from PHP
@@ -185,7 +196,11 @@ class MyExistingClass {
   use PhelCallerTrait;
 
   public function myExistingMethod(...$arguments) {
-    return $this->callPhel('my\phel\namespace', 'phel-function-name', ...$arguments);
+    return $this->callPhel(
+        'my\phel\namespace', 
+        'phel-function-name', 
+        ...$arguments
+    );
   }
 }
 ```
