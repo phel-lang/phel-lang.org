@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "76e7b1e812e329a9e468bc4db8d75a0e",
+    "content-hash": "640e30d63d1ae87ccdc7e3133b2753a8",
     "packages": [
         {
             "name": "gacela-project/container",
@@ -160,16 +160,16 @@
         },
         {
             "name": "phel-lang/phel-lang",
-            "version": "dev-main",
+            "version": "v0.22.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "548145cfd97ff2103a11ea138f31f7c237814104"
+                "reference": "181535fc445364d7b87185682cbeb1b2bdded334"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/548145cfd97ff2103a11ea138f31f7c237814104",
-                "reference": "548145cfd97ff2103a11ea138f31f7c237814104",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/181535fc445364d7b87185682cbeb1b2bdded334",
+                "reference": "181535fc445364d7b87185682cbeb1b2bdded334",
                 "shasum": ""
             },
             "require": {
@@ -190,7 +190,6 @@
                 "symfony/var-dumper": "^7.3",
                 "vimeo/psalm": "^5.26"
             },
-            "default-branch": true,
             "bin": [
                 "bin/phel"
             ],
@@ -228,7 +227,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phel-lang/phel-lang/issues",
-                "source": "https://github.com/phel-lang/phel-lang/tree/main"
+                "source": "https://github.com/phel-lang/phel-lang/tree/v0.22.0"
             },
             "funding": [
                 {
@@ -236,7 +235,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-09-21T20:20:04+00:00"
+            "time": "2025-09-21T22:36:06+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -3687,7 +3686,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "phel-lang/phel-lang": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": true,
