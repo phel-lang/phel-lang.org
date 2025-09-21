@@ -3,15 +3,85 @@ title = "Debug"
 weight = 18
 +++
 
-Phel doesn't come with an integrated debug framework. However, you can debug the values of your functions by dumping their values. And for this, there are some strategies.
+## Phel debug helpers
 
-## println function
+The Phel standard library ships with helper functions and macros that make it
+easier to inspect values during development.
+
+### `dbg`
+
+`dbg` evaluates an expression, prints the expression together with the
+resulting value, and finally returns that value. It is handy for quick
+one-off inspections in the middle of a pipeline:
 
 ```phel
-(println (+ 1 1))
+(def result
+  (-> 41
+      (inc)
+      (dbg)))
 # OUTPUT:
-2
+; (inc 41) => 42
 ```
+
+### `spy`
+
+`spy` works like `dbg` but lets you provide an optional label so you can
+distinguish multiple probes:
+
+```phel
+(spy "before" (inc 10))
+(spy "after" (* 2 11))
+# OUTPUT:
+; SPY "before" => 11
+; SPY "after" => 22
+```
+
+### `tap`
+
+`tap` passes the value through unchanged while optionally executing a handler
+for side effects (logging, assertions, etc.). Without a handler the value is
+printed using `print-str`:
+
+```phel
+(-> (range 3)
+    (tap)
+    (tap (fn [value] (println "count" (count value)))))
+# OUTPUT:
+; TAP => (0 1 2)
+; count 3
+```
+
+### `dotrace`
+
+`dotrace` wraps a function so every call and result are printed with
+indentation that reflects nesting depth. This is useful to understand the
+flow of recursive functions:
+
+```phel
+(defn fib [n]
+  (if (< n 2)
+    n
+    (+ (fib (dec n)) (fib (- n 2)))))
+
+(def traced-fib (dotrace 'fib fib))
+
+(traced-fib 3)
+# OUTPUT:
+; TRACE t00: (fib 3)
+; TRACE t01: |    (fib 2)
+; TRACE t02: |    |    (fib 1)
+; TRACE t02: |    |    => 1
+; TRACE t03: |    |    (fib 0)
+; TRACE t03: |    |    => 0
+; TRACE t01: |    => 1
+; TRACE t04: |    (fib 1)
+; TRACE t04: |    => 1
+; TRACE t00: => 2
+```
+
+You can reset the tracing counters between runs with `reset-trace-state!` and
+configure the amount of zero-padding for trace identifiers with
+`set-trace-id-padding!`.
 
 ## Native var_dump()
 
