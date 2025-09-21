@@ -18,7 +18,26 @@ cd example-app
 composer repl
 ```
 
-> For web projects: [web-skeleton](https://github.com/phel-lang/web-skeleton)  
+> For web projects: [web-skeleton](https://github.com/phel-lang/web-skeleton)
+
+### Use the standalone PHAR
+
+Prefer to try Phel without installing Composer dependencies? Download the
+pre-built [`phel.phar`](https://github.com/phel-lang/phel-lang/releases) from the
+latest GitHub release:
+
+```bash
+curl -L https://github.com/phel-lang/phel-lang/releases/latest/download/phel.phar -o phel.phar
+php phel.phar --version
+```
+
+You can execute the same commands as the Composer-installed binary. For example:
+
+```bash
+php phel.phar repl
+php phel.phar run src/main.phel
+php phel.phar test --filter foo
+```
 
 ## Manual Setup
 
