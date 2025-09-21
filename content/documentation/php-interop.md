@@ -55,6 +55,8 @@ Evaluates `expr` and creates a new PHP class using the arguments. The instance o
 
 Calls a method or property on a PHP object. Both `methodname` and `property` must be symbols and cannot be an evaluated value.
 
+You can chain multiple method calls or property accesses in one `php/->` expression. Each element is evaluated sequentially on the result of the previous call, allowing fluent-style interactions or access to nested properties.
+
 ```phel
 (ns my\module)
 
@@ -62,6 +64,15 @@ Calls a method or property on a PHP object. Both `methodname` and `property` mus
 
 (php/-> di (format "%s seconds")) # Evaluates to "30 seconds"
 (php/-> di s) # Evaluates to 30
+
+# Chain multiple calls: 
+# (new DateTimeImmutable("2024-03-10"))->modify("+1 day")->format("Y-m-d")
+(php/-> (php/new \DateTimeImmutable "2024-03-10")
+        (modify "+1 day")
+        (format "Y-m-d"))
+
+# Mix methods and properties: $user->profile->getDisplayName()
+(php/-> user profile (getDisplayName))
 ```
 
 ## PHP static method and property call
