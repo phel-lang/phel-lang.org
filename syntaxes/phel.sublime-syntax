@@ -89,6 +89,11 @@ contexts:
           scope: punctuation.definition.group.end.phel
           pop: true
         - include: main
+        # mismatches only if still at this level
+        - match: '\)'
+          scope: invalid.illegal.mismatched-paren.phel
+        - match: '\}'
+          scope: invalid.illegal.mismatched-brace.phel
     - match: '\]'
       scope: invalid.illegal.stray-bracket-end.phel
 
