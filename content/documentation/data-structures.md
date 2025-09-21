@@ -12,35 +12,35 @@ A persistent list is simple a linked list. Access or modifications on the first 
 To create a list surround the white space separated values with parentheses or use the `list` function.
 
 ```phel
-(do 1 2 3) # list with 4 entries
+(do 1 2 3)   # list with 4 entries
 (list 1 2 3) # use the list function to create a new list
-'(1 2 3) # use a quote to create a list
+'(1 2 3)     # use a quote to create a list
 ```
 
 To access values in a list the functions `get`, `first`, `second`, `next`, `rest` and `peek` can be used.
 
 ```phel
-(get (list 1 2 3) 0) # Evaluates to 1
-(first (list 1 2 3)) # Evaluates to 1
+(get (list 1 2 3) 0)  # Evaluates to 1
+(first (list 1 2 3))  # Evaluates to 1
 (second (list 1 2 3)) # Evaluates to 2
-(peek (list 1 2 3)) # Evaluates to 3
-(next (list 1 2 3)) # Evaluates to (2 3)
-(next (list)) # Evaluates to nil
-(rest (list 1 2 3)) # Evaluates to (2 3)
-(rest (list)) # Evaluates to ()
+(peek (list 1 2 3))   # Evaluates to 3
+(next (list 1 2 3))   # Evaluates to (2 3)
+(next (list))         # Evaluates to nil
+(rest (list 1 2 3))   # Evaluates to (2 3)
+(rest (list))         # Evaluates to ()
 ```
 
 New values can only be added to the front of the list with the `cons` function.
 
 ```phel
-(cons 1 (list)) # Evaluates to (1)
+(cons 1 (list))     # Evaluates to (1)
 (cons 3 (list 1 2)) # Evaluates to (3 1 2)
 ```
 
 To get the length of the list the `count` function can be used
 
 ```phel
-(count (list)) # Evaluates to 0
+(count (list))       # Evaluates to 0
 (count (list 1 2 3)) # Evaluates to 3
 ```
 
@@ -51,17 +51,17 @@ Vectors are an indexed, sequential data structure. They offer efficient random a
 To create a vector wrap the white space seperated values with brackets or use the `vector` function.
 
 ```phel
-[1 2 3] # Creates a new vector with three values
-(vector 1 2 3) # Creates a new vector with three values
+[1 2 3]      # Creates a new vector with three values
+(vector 1 2) # Creates a new vector with two values
 ```
 
 To get a value by its index use the `get` function. Similar to list you can use the `first`, `second` and `peek` function to access the first, second and last values of the vector.
 
 ```phel
-(get [1 2 3] 0) # Evaluates to 1
-(first [1 2 3]) # Evaluates to 1
+(get [1 2 3] 0)  # Evaluates to 1
+(first [1 2 3])  # Evaluates to 1
 (second [1 2 3]) # Evaluates to 2
-(peek [1 2 3]) # Evaluates to 3
+(peek [1 2 3])   # Evaluates to 3
 ```
 
 New values can be appended by using the `push` function.
@@ -80,7 +80,7 @@ To change an existing value use the `put` function
 A vector can be counted using the `count` function.
 
 ```phel
-(count []) # Evaluates to 0
+(count [])      # Evaluates to 0
 (count [1 2 3]) # Evaluates to 3
 ```
 
@@ -91,8 +91,8 @@ A Map contains key-value-pairs in random order. Each possible key appears at mos
 To create a map wrap the key and values in curly brackets or use the `hash-map` function.
 
 ```phel
-{:key1 value1 :key2 value2} # Create a new map with two key-value-pairs
-(hash-map :key1 value1 :key2 value2) # Create a new map using the hash-map function
+{:key1 value1 :key2 value2}          # A new has-map using shortcut syntax
+(hash-map :key1 value1 :key2 value2) # A new has-map using the function
 ```
 
 Use the `get` function to access a value by its key
@@ -106,7 +106,7 @@ Use the `get` function to access a value by its key
 To add or update a key-value pair in the map use the `put` function
 
 ```phel
-(put {} :a "hello") # Evaluates to {:a "hello"}
+(put {} :a "hello")       # Evaluates to {:a "hello"}
 (put {:a "foo"} :a "bar") # Evaluates to {:a "bar"}
 ```
 
@@ -119,20 +119,20 @@ A value in a map can be removed with the `unset` function
 As in the other data structures, the `count` function can be used to count the key-value-pairs.
 
 ```phel
-(count {}) # Evaluates to 0
+(count {})         # Evaluates to 0
 (count {:a "foo"}) # Evaluates to 1
 ```
 
 ## Structs
 
-A Struct is a special kind of Map. It only supports a predefined number of keys and is associated to a global name. The Struct not only defines itself but also a predicate function.
+A Struct is a special kind of Map. It only supports a predefined number of keys and is associated with a global name. The Struct not only defines itself but also a predicate function.
 
 ```phel
 (defstruct my-struct [a b c]) # Defines the struct
-(let [x (my-struct 1 2 3)] # Create a new struct
-  (my-struct? x) # Evaluates to true
-  (get x :a) # Evaluates to 1
-  (put x :a 12)) # Evaluates to (my-struct 12 2 3)
+(let [x (my-struct 1 2 3)]    # Create a new struct
+  (my-struct? x)              # Evaluates to true
+  (get x :a)                  # Evaluates to 1
+  (put x :a 12))              # Evaluates to (my-struct 12 2 3)
 ```
 
 Internally, Phel Structs are PHP classes where each key correspondence to an object property. Therefore, Structs can be faster than Maps.
@@ -141,65 +141,68 @@ Internally, Phel Structs are PHP classes where each key correspondence to an obj
 
 A Set contains unique values in random order. All types of values are allowed that implement the `HashableInterface` and the `EqualsInterface`.
 
-A new set can be created by using the `set` function
+A new set can be created by using the `set` function or shortcut syntax `#{}`
 
 ```phel
-(set 1 2 3) # Creates a new set with three values
+#{1 2 3}    # A new set using shortcut syntax
+(set 1 2 3) # A new set using the function
 ```
 
 The `push` function can be used to add a new value to the Set.
 
 ```phel
-(push (set 1 2 3) 4) # Evaluates to (set 1 2 3 4)
-(push (set 1 2 3) 2) # Evaluates to (set 1 2 3)
+(push #{1 2 3} 4) # Evaluates to #{1 2 3 4}
+(push #{1 2 3} 2) # Evaluates to #{1 2 3}
 ```
 
 Similar to the Map the `unset` function can be used to remove a value from the list
 
 ```phel
-(unset (set 1 2 3) 2) # Evaluates to (set 1 3)
+(unset #{1 2 3} 2) # Evaluates to #{1 3}
 ```
 
 Again the `count` function can be used to count the elements in the set
 
 ```phel
-(count (set)) # Evaluates to 0
-(count (set 2)) # Evaluates to 1
+(count #{})  # Evaluates to 0
+(count #{2}) # Evaluates to 1
 ```
 
 Additionally, the union of a collection of sets is the set of all elements in the collection.
 
 ```phel
-(union) # Evaluates to (set)
-(union (set 1 2)) # Evaluates to (set 1 2)
-(union (set 1 2) (set 0 3)) # Evaluates to (set 0 1 2 3)
+(union)               # Evaluates to #{}
+(union #{1 2})        # Evaluates to #{1 2}
+(union #{1 2} #{0 3}) # Evaluates to #{0 1 2 3}
 ```
 
 The intersection of two sets or more is the set containing all elements shared between those sets.
 
 ```phel
-(intersection (set 1 2) (set 0 3)) # Evaluates to (set)
-(intersection (set 1 2) (set 0 1 2 3)) # Evaluates to (set 1 2)
+(intersection #{1 2} #{0 3})     # Evaluates to #{}
+(intersection #{1 2} #{0 1 2 3}) # Evaluates to #{1 2}
 ```
 
 The difference of two sets or more is the set containing all elements in the first set that aren't in the other sets.
 
 ```phel
-(difference (set 1 2) (set 0 3)) # Evaluates to (set 1 2)
-(difference (set 1 2) (set 0 1 2 3)) # Evaluates to (set)
-(difference (set 0 1 2 3) (set 1 2)) # Evaluates to (set 0 3)
+(difference #{1 2} #{0 3})     # Evaluates to #{1 2}
+(difference #{1 2} #{0 1 2 3}) # Evaluates to #{}
+(difference #{0 1 2 3} #{1 2}) # Evaluates to #{0 3}
 ```
 
 The symmetric difference of two sets or more is the set of elements which are in either of the sets and not in their intersection.
 
 ```phel
-(symmetric-difference (set 1 2) (set 0 3)) # Evaluates to (set 0 1 2 3)
-(symmetric-difference (set 1 2) (set 0 1 2 3)) # Evaluates to (set 0 3)
+(symmetric-difference #{1 2} #{0 3})     # Evaluates to #{0 1 2 3}
+(symmetric-difference #{1 2} #{0 1 2 3}) # Evaluates to #{0 3}
 ```
 
 ## Transients
 
-Nearly all persistent data structures have a transient version (except for Persistent List). The transient version of each persistent data structure is a mutable version of them. It stores the value in the same way as the persistent version but instead of returning a new persistent version with every modification it modifies the current version. Transient versions are a bit faster and can be used as builders for new persistent collections. Since transients use the same underlying storage it is very fast to convert a persistent data structure to a transient and back.
+Nearly all persistent data structures have a transient version (except for Persistent List). The transient version of each persistent data structure is a mutable version of them. It stores the value in the same way as the persistent version, but instead of returning a new persistent version with every modification, it modifies the current version. 
+
+Transient versions are faster and can be used as builders for new persistent collections. Since transients use the same underlying storage, it is rapid to convert a persistent data structure to a transient and back.
 
 For example, if we want to convert a PHP Array to a persistent map. This function can be used:
 
@@ -209,7 +212,7 @@ For example, if we want to convert a PHP Array to a persistent map. This functio
   [arr]
   (let [res (transient {})] # Convert a persistent data to a transient
     (foreach [k v arr]
-      (put res k v))  # Fill the transient map (mutable)
+      (put res k v))   # Fill the transient map (mutable)
     (persistent res))) # Convert the transient map to a persistent map.
 ```
 
@@ -219,7 +222,7 @@ In Phel all data structures can also be used as functions.
 
 ```phel
 ((list 1 2 3) 0) # Same as (get (list 1 2 3) 0)
-([1 2 3] 0) # Same as (get [1 2 3] 0)
+([1 2 3] 0)      # Same as (get [1 2 3] 0)
 ({:a 1 :b 2} :a) # Same as (get {:a 1 :b 2} :a)
-((set 1 2 3) 1)
+(#{1 2 3} 1)     # Same as (get #{1 2 3} 1)
 ```

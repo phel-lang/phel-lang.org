@@ -111,7 +111,7 @@ A list will be interpreted as a function call, a macro call or a special form by
 A vector is a sequence of whitespace-separated values surrounded by brackets.
 
 ```phel
-[1 2 3]
+[1 2 3] # same as (vector 1 2 3)
 ```
 
 A vector in Phel is an indexed data structure. In contrast to PHP arrays, Phel vectors cannot be used as maps, hashtables or dictionaries.
@@ -121,7 +121,7 @@ A vector in Phel is an indexed data structure. In contrast to PHP arrays, Phel v
 A map is a sequence of whitespace-separated key/value pairs surrounded by curly braces, wherein the key and value of each key/value pair are separated by whitespace. There must be an even number of items between curly braces or the parser will signal a parse error. The sequence is defined as key1, value1, key2, value2, etc.
 
 ```phel
-{}
+{} # same as (hash-map)
 {:key1 "value1" :key2 "value2"}
 {'(1 2 3) '(4 5 6)}
 {[] []}
@@ -135,7 +135,7 @@ In contrast to PHP associative arrays, Phel maps can have any types of keys.
 A set is a sequence of whitespace-separated values prefixed by the function `set` and the whole being surrounded by parentheses.
 
 ```phel
-(set 1 2 3)
+#{1 2 3} # same as (set 1 2 3)
 ```
 
 ## Comments

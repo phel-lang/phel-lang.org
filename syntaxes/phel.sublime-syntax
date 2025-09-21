@@ -18,7 +18,7 @@ contexts:
     #- include: symbol
 
   comment:
-    - match: (#|;).*$\n?
+    - match: (;|#(?!\{)).*$
       scope: comment.line.hash-or-semicolon.phel
       captures:
         1: punctuation.definition.comment.phel
