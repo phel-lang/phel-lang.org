@@ -1,4 +1,14 @@
 <footer>
     &copy; <time datetime="{{now() | date(format='%Y')}}">2020-{{now() | date(format="%Y")}}</time> Jens Haase
-    <a href="{{ get_url(path='@/legal/disclosure.md') }}">Legal Disclosure</a> | <a href="{{ get_url(path='@/legal/data-protection.md') }}">Data protection</a>
+    <a href="{{ get_url(path='@/legal/disclosure.md') }}">Legal Disclosure</a>
+    | <a href="{{ get_url(path='@/legal/data-protection.md') }}">Data protection</a>
+    | {% if page and page.relative_path != "documentation/api.md" %}
+    <a href="https://github.com/phel-lang/phel-lang.org/edit/master/content/{{ page.relative_path }}">Edit this page</a>
+    {% elif section and section.relative_path != "documentation/api.md" %}
+    <a href="https://github.com/phel-lang/phel-lang.org/edit/master/content/{{ section.relative_path }}">Edit this page</a>
+    {% elif (page and page.relative_path == "documentation/api.md") or (section and section.relative_path == "documentation/api.md") %}
+    <span>API docs auto-generated</span>
+    {% else %}
+    <a href="https://github.com/phel-lang/phel-lang.org/">Edit this page</a>
+    {% endif %}
 </footer>
