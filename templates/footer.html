@@ -6,7 +6,7 @@
     <a href="https://github.com/phel-lang/phel-lang.org/edit/master/content/{{ page.relative_path }}">Edit this page</a>
     {% elif section and section.relative_path != "documentation/api.md" %}
     <a href="https://github.com/phel-lang/phel-lang.org/edit/master/content/{{ section.relative_path }}">Edit this page</a>
-    {% elif (page and page.relative_path == "documentation/api.md") or (section and section.relative_path == "documentation/api.md") %}
+    {% elif ((page and page.relative_path == "documentation/api.md") or (section and section.relative_path == "documentation/api.md")) %}
     <span>API docs auto-generated</span>
     {% else %}
     <a href="https://github.com/phel-lang/phel-lang.org/">Edit this page</a>
