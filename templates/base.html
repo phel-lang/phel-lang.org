@@ -3,6 +3,19 @@
 
 <head>
   <meta charset="utf-8">
+  
+  <!-- Prevent flash of light mode - must run before any rendering -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        document.documentElement.classList.add('dark');
+      }
+    })();
+  </script>
+  
   {% block meta_content %}
   <title>{{ config.title }}</title>
   <meta property="og:title" content="{{ config.title }}" />
@@ -11,7 +24,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="{{ config.description }}">
 
-  <link rel="stylesheet" href="{{ get_url(path='site.css') }}"/>
+  <link rel="stylesheet" href="{{ get_url(path='tailwind.css') }}"/>
+  <link rel="stylesheet" href="{{ get_url(path='syntax-theme-light.css') }}" media="(prefers-color-scheme: light)" />
+  <link rel="stylesheet" href="{{ get_url(path='syntax-theme-dark.css') }}" media="(prefers-color-scheme: dark)" />
   <link rel="alternate icon" type="image/png" href="/favicon-32.png">
 
   <meta property="og:description" content="{{ config.description }}" />
@@ -29,8 +44,9 @@
 <body>
   {% block body %} {% endblock %}
 
-  <button onclick="backToTop()" id="back-to-top-button" title="Go to top">Top</button>
+  <button onclick="backToTop()" id="back-to-top-button" class="back-to-top-button" title="Go to top">Top</button>
 
+  <script type="text/javascript" src="{{ get_url(path='dark-mode.js') }}"></script>
   <script type="text/javascript" src="{{ get_url(path='elasticlunr.min.js') }}" defer></script>
   <script type="text/javascript" src="{{ get_url(path='api_search.js') }}" defer></script>
   <script type="text/javascript" src="{{ get_url(path='search.js') }}" defer></script>

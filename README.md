@@ -24,7 +24,7 @@ The documentation is build with [Zola](https://www.getzola.org/).
 #### Local development
 
 ```bash
-zola serve # build & serve
+npm run dev # serve and watch CSS changes
 ```
 
 #### Prod environment
