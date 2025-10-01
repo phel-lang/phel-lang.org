@@ -1,33 +1,31 @@
 <header class="site-header">
     <div class="site-header__container">
-        <div class="site-header__mobile-menu">
-            <input type="checkbox" id="menu_checkbox">
-            <label for="menu_checkbox">
-                <svg viewBox="0 0 32 32">
-                    <path d="M3,3 29,3 M3,16 29,16 M3,29 29,29"></path>
-                </svg>
-            </label>
-            <nav>
-                {% include "navigation/top-navigation.html" %}
-                {% include "navigation/site-navigation.html" %}
-            </nav>
-        </div>
+        <!-- Mobile hamburger menu (visible only on mobile) -->
+        <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <!-- Logo (always visible) -->
         <div class="site-header__logo">
             {% include "logo.html" %}
         </div>
 
-        <div class="site-header__navigation">
+        <!-- Desktop Navigation (hidden on mobile) -->
+        <nav class="site-header__navigation">
             {% include "navigation/top-navigation.html" %}
-        </div>
+        </nav>
 
+        <!-- Search (always visible, but styled differently on mobile) -->
         <div class="site-header__search">
             <input type="search" id="search" autocomplete="off" placeholder="Search in the docs & API...">
-
             <div id="search-results" class="search-results">
                 <ul id="search-results__items" class="search-results__items"></ul>
             </div>
         </div>
 
+        <!-- Desktop Actions (hidden on mobile) -->
         <div class="site-header__actions">
             <button id="dark-mode-toggle" class="dark-mode-toggle" aria-label="Toggle dark mode" title="Toggle dark mode">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -48,5 +46,23 @@
                 </svg>
             </a>
         </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobile-menu-overlay">
+        <nav class="mobile-menu-nav">
+            {% include "navigation/top-navigation.html" %}
+            
+            <!-- Dark mode toggle in mobile menu -->
+            <div class="mobile-menu-actions">
+                <button class="mobile-dark-mode-toggle" aria-label="Toggle dark mode">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                    <span>Dark Mode</span>
+                </button>
+            </div>
+        </nav>
     </div>
 </header>

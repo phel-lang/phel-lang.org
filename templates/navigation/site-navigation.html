@@ -1,10 +1,13 @@
-<ol class="site-navigation">
-    {% if page.ancestors %}
+{% if page.ancestors %}
+<div class="site-navigation-section">
+    <h2 class="site-navigation-title">Contents</h2>
+    <ol class="site-navigation">
         {% set doc_section = get_section(path=page.ancestors | reverse | first) %}
         {% for page in doc_section.pages %}
             <li class="site-navigation__entry {% if current_path == page.path %}active{% endif %}">
                 <a href="{{ page.permalink }}">{{page.title}}</a>
             </li>
         {% endfor %}
-    {% endif %}
-</ol>
+    </ol>
+</div>
+{% endif %}

@@ -5,6 +5,7 @@
   }
 }
 
+/* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -16,46 +17,7 @@
   }
 }
 
+/* Smooth scrolling utility - used in base.css */
 @utility scroll-smooth {
   scroll-behavior: smooth;
-}
-
-@utility img-optimized {
-  img {
-    loading: lazy;
-    decoding: async;
-  }
-}
-
-@utility critical-above-fold {
-  .site-header,
-  .site-header__container,
-  .site-header__logo {
-    contain: layout style;
-  }
-}
-
-@utility gpu-accelerated {
-  transform: translateZ(0);
-  will-change: transform;
-}
-
-@utility optimized-text {
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-@utility focus-optimized {
-  &:focus-visible {
-    outline: 2px solid var(--color-phel-primary);
-    outline-offset: 2px;
-  }
-}
-
-@container (min-width: 768px) {
-  .responsive-container {
-    display: grid;
-    grid-template-columns: 1fr 3fr;
-  }
 }

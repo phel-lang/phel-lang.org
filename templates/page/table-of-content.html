@@ -1,19 +1,21 @@
 {% if page.toc %}
-<ul class="page-toc-list">
-    {% for h1 in page.toc %}
-    <li class="page-toc-h1">
-        <a href="{{ h1.permalink | safe }}">{{ h1.title }}</a>
-        {% if h1.children %}
-        <ul class="page-toc-h1-children">
-            {% for h2 in h1.children %}
-            <li class="page-toc-h2">
-                <a href="{{ h2.permalink | safe }}">{{ h2.title }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
-<hr>
+<div class="page-toc">
+    <h2>On this page</h2>
+    <ul>
+        {% for h1 in page.toc %}
+        <li>
+            <a href="{{ h1.permalink | safe }}">{{ h1.title }}</a>
+            {% if h1.children %}
+            <ul>
+                {% for h2 in h1.children %}
+                <li>
+                    <a href="{{ h2.permalink | safe }}">{{ h2.title }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
 {% endif %}

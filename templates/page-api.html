@@ -10,9 +10,14 @@
 
     <ul class="api-index">
     {% for namespace in page.toc %}
-        <li class="api-index__entry" style="margin-top: 20px;">
-            Namespace: {{ namespace.title }}
-            <ul>
+        <li class="api-index__entry">
+            <button class="api-namespace-toggle" aria-expanded="false">
+                <h2 class="api-namespace-title">{{ namespace.title }}</h2>
+                <svg class="api-namespace-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <ul class="api-namespace-content">
             {% for fn in namespace.children %}
                 <li>
                     <a href="{{ fn.permalink | safe }}">{{ fn.title }}</a>
