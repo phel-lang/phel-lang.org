@@ -1,0 +1,55 @@
+{
+  "name": "phel-lang-website",
+  "version": "1.0.0",
+  "description": "The official website of the Phel language - a functional programming language that compiles to PHP",
+  "keywords": [
+    "phel",
+    "functional-programming",
+    "php",
+    "zola",
+    "tailwindcss"
+  ],
+  "homepage": "https://phel-lang.org/",
+  "repository": "https://github.com/phel-lang/phel-lang.org",
+  "license": "MIT",
+  "author": "Phel Language Team",
+  "scripts": {
+    "prebuild-css": "node ./scripts/concat-tailwind.js",
+    "build-css": "npm run prebuild-css && postcss ./css/tailwind.entry.css -o ./static/tailwind.css --watch",
+    "build-css-dev": "concurrently \"node ./scripts/concat-tailwind.js --watch\" \"postcss ./css/tailwind.entry.css -o ./static/tailwind.css --watch\" --names \"CONCAT,TAILWIND\" --prefix-colors \"yellow,cyan\"",
+    "build-css-prod": "npm run prebuild-css && postcss ./css/tailwind.entry.css -o ./static/tailwind.css --env production",
+    "dev": "concurrently \"npm run build-css-dev\" \"zola serve\" --names \"CSS,ZOLA\" --prefix-colors \"blue,green\"",
+    "lint:css": "stylelint \"css/**/*.{css,scss}\"",
+    "format:css": "prettier --write \"css/**/*.css\"",
+    "format:templates": "prettier --write \"templates/**/*.html\"",
+    "format": "npm run format:css && npm run format:templates",
+    "clean": "rm -rf static/tailwind.css css/tailwind.entry.css public/",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "css/**/*.{css,scss}": [
+      "stylelint",
+      "prettier --write"
+    ],
+    "templates/**/*.html": [
+      "prettier --write"
+    ]
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.13",
+    "@tailwindcss/postcss": "^4.1.13",
+    "autoprefixer": "^10.4.20",
+    "concurrently": "^9.2.1",
+    "cssnano": "^7.0.6",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.5",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.9",
+    "stylelint": "^16.23.1",
+    "stylelint-config-standard": "^39.0.0",
+    "stylelint-config-tailwindcss": "^1.0.0",
+    "tailwindcss": "^4.1.13"
+  }
+}

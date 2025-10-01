@@ -1,0 +1,99 @@
+@utility doc-container {
+  @apply container-custom py-8;
+}
+
+@utility doc-layout {
+  @apply grid grid-cols-1 gap-8 lg:grid-cols-4;
+}
+
+@utility doc-sidebar {
+  @apply lg:col-span-1;
+}
+
+@utility doc-content {
+  @apply lg:col-span-3;
+}
+
+@utility doc-toc {
+  @apply bg-light-catalogue-item-bg dark:bg-dark-catalogue-item-bg shadow-card sticky top-24 rounded-xl p-6;
+}
+
+@utility doc-toc-title {
+  @apply text-light-text-primary dark:text-dark-text-primary mb-4 text-lg font-semibold;
+}
+
+@utility doc-toc-list {
+  @apply space-y-2;
+}
+
+@utility doc-toc-link {
+  @apply text-light-text-secondary dark:text-dark-text-secondary hover:text-phel-primary dark:hover:text-phel-accent ease-custom block text-sm no-underline transition-colors duration-150;
+}
+
+@utility doc-toc-link-active {
+  @apply text-phel-primary dark:text-phel-accent font-medium;
+}
+
+@utility doc-article {
+  @apply max-w-none;
+}
+
+@utility doc-title {
+  @apply text-light-text-primary dark:text-dark-text-primary mb-6 text-4xl font-bold;
+}
+
+@utility doc-subtitle {
+  @apply text-light-text-secondary dark:text-dark-text-secondary mb-8 text-xl;
+}
+
+@utility doc-section {
+  @apply mb-12;
+}
+
+@utility doc-section-title {
+  @apply text-light-text-primary dark:text-dark-text-primary border-light-border dark:border-dark-border mb-4 border-b pb-2 text-2xl font-semibold;
+}
+
+@utility code-example {
+  @apply mb-6 overflow-x-auto rounded-lg bg-gray-900 p-6 font-mono text-sm text-gray-100;
+}
+
+@utility code-example-title {
+  @apply mb-3 text-xs font-semibold tracking-wide text-gray-400 uppercase;
+}
+
+@utility api-method {
+  @apply inline-block rounded-md px-3 py-1 font-mono text-xs font-bold;
+}
+
+@utility api-method-get {
+  @apply api-method bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+}
+
+@utility api-method-post {
+  @apply api-method bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200;
+}
+
+@utility api-method-put {
+  @apply api-method bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+}
+
+@utility api-method-delete {
+  @apply api-method bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+}
+
+@utility doc-nav {
+  @apply border-light-border dark:border-dark-border mt-12 flex items-center justify-between border-t pt-8;
+}
+
+@utility doc-nav-link {
+  @apply text-light-text-secondary dark:text-dark-text-secondary hover:text-phel-primary dark:hover:text-phel-accent ease-custom flex items-center gap-2 px-4 py-2 text-sm font-medium no-underline transition-colors duration-150;
+}
+
+@utility doc-search {
+  @apply mx-auto mb-8 w-full max-w-md;
+}
+
+@utility doc-search-input {
+  @apply bg-light-catalogue-item-bg dark:bg-dark-catalogue-item-bg border-light-border dark:border-dark-border focus:ring-phel-primary w-full rounded-lg border px-4 py-3 text-sm focus:border-transparent focus:ring-2 focus:outline-none;
+}

@@ -1,0 +1,107 @@
+@utility blog-container {
+  @apply container-custom py-8;
+}
+
+@utility blog-grid {
+  @apply mx-auto grid max-w-4xl gap-8;
+}
+
+@utility blog-post-card {
+  @apply card-base p-6;
+}
+
+@utility blog-post-meta {
+  @apply text-light-text-secondary dark:text-dark-text-secondary mb-3 flex items-center gap-4 text-sm;
+}
+
+@utility blog-post-date {
+  @apply inline-flex items-center gap-1;
+}
+
+@utility blog-post-reading-time {
+  @apply inline-flex items-center gap-1;
+}
+
+@utility blog-post-title {
+  @apply text-light-text-primary dark:text-dark-text-primary hover:text-phel-primary dark:hover:text-phel-accent ease-custom mb-3 text-2xl font-bold transition-colors duration-150;
+}
+
+@utility blog-post-excerpt {
+  @apply text-light-text-secondary dark:text-dark-text-secondary mb-4 leading-relaxed;
+}
+
+@utility blog-post-tags {
+  @apply mb-4 flex flex-wrap gap-2;
+}
+
+@utility blog-tag {
+  @apply bg-light-catalogue-bg dark:bg-dark-catalogue-bg text-light-text-secondary dark:text-dark-text-secondary border-light-border dark:border-dark-border rounded-full border px-3 py-1 text-xs font-medium;
+}
+
+@utility blog-read-more {
+  @apply text-phel-primary dark:text-phel-accent hover:text-phel-secondary dark:hover:text-phel-primary ease-custom inline-flex items-center gap-1 text-sm font-semibold no-underline transition-colors duration-150;
+}
+
+@utility blog-post-header {
+  @apply mb-12 text-center;
+}
+
+@utility blog-post-title-single {
+  @apply text-light-text-primary dark:text-dark-text-primary mb-4 text-4xl font-bold md:text-5xl;
+}
+
+@utility blog-post-meta-single {
+  @apply text-light-text-secondary dark:text-dark-text-secondary flex items-center justify-center gap-6;
+}
+
+@utility blog-post-content {
+  @apply max-w-none;
+}
+
+@utility blog-post-navigation {
+  @apply border-light-border dark:border-dark-border mt-16 flex items-center justify-between border-t pt-8;
+}
+
+@utility blog-nav-link {
+  @apply text-light-text-secondary dark:text-dark-text-secondary hover:text-phel-primary dark:hover:text-phel-accent ease-custom flex items-center gap-2 px-4 py-2 text-sm font-medium no-underline transition-colors duration-150;
+}
+
+@utility blog-pagination {
+  @apply mt-12 flex items-center justify-center gap-4;
+}
+
+@utility blog-pagination-link {
+  @apply text-light-text-secondary dark:text-dark-text-secondary hover:text-phel-primary dark:hover:text-phel-accent bg-light-catalogue-item-bg dark:bg-dark-catalogue-item-bg hover:bg-light-catalogue-bg dark:hover:bg-dark-catalogue-bg border-light-border dark:border-dark-border ease-custom rounded-lg border px-4 py-2 text-sm font-medium no-underline transition-colors duration-150;
+}
+
+@utility blog-pagination-current {
+  @apply bg-phel-primary border-phel-primary rounded-lg border px-4 py-2 text-sm font-medium text-white;
+}
+
+@utility post-list {
+  padding-left: 0;
+  font-size: 1.1rem;
+  color: var(--color-gray-lighter);
+}
+
+.post-list li {
+  list-style: none;
+  margin: 0;
+  padding: 0.5em 0;
+  border-bottom: 1px solid var(--color-phel-lines);
+}
+
+@utility blog-entry {
+  .meta {
+    color: var(--color-gray-lighter);
+  }
+}
+
+@utility pagination {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pagination a.previous {
+  margin-right: auto;
+}

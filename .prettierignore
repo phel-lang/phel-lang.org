@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+public/
+static/tailwind.css
+css/tailwind.entry.css
+
+# Generated files
+*.lock
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Zola generated
+sitemap.xml
+atom.xml
+robots.txt
+
+# Don't format minified files
+*.min.js
+*.min.css

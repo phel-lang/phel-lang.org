@@ -1,0 +1,242 @@
+@utility site-header {
+  background-color: var(--color-phel-primary);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  z-index: 1;
+}
+
+@utility site-header__container {
+  display: flex;
+  align-items: center;
+  padding: 0.2em 2em;
+}
+
+@media (max-width: 1039px) {
+  .site-header__container {
+    padding: 0.2em 1em;
+  }
+}
+
+@utility site-header__mobile-menu {
+  @media (min-width: 1040px) {
+    display: none;
+  }
+}
+
+.site-header__mobile-menu input[type='checkbox'] {
+  display: none;
+  visibility: hidden;
+}
+
+.site-header__mobile-menu label {
+  cursor: pointer;
+  display: block;
+  padding: 0.5em;
+  margin-right: 1em;
+  text-align: center;
+}
+
+.site-header__mobile-menu label svg {
+  max-height: 1em;
+  width: 1em;
+  stroke: white;
+  stroke-width: 5px;
+  vertical-align: middle;
+}
+
+.site-header__mobile-menu nav {
+  display: none;
+}
+
+.site-header__mobile-menu input[type='checkbox']:checked ~ nav {
+  display: block;
+  position: fixed;
+  margin-top: 0;
+  top: var(--header-height);
+  bottom: 0;
+  left: 0;
+  border-right: 1px solid var(--color-gray-lighter);
+  width: 15em;
+  padding: 2em;
+  background-color: white;
+  overflow-y: auto;
+}
+
+@utility site-header__logo {
+  display: flex;
+  align-items: center;
+  
+  a {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5em;
+  }
+
+  .phel-logo {
+    max-height: 1.8em;
+    width: 2.2em;
+    stroke: white;
+    stroke-width: 5px;
+  }
+}
+
+@utility site-header__search {
+  display: block;
+}
+
+@media (max-width: 1039px) {
+  .site-header__search {
+    margin-left: auto;
+  }
+}
+
+@utility site-header__navigation {
+  display: none;
+}
+
+@media (min-width: 1040px) {
+  .site-header__navigation {
+    display: block;
+    flex-grow: 2;
+  }
+
+  .site-header__navigation .top-navigation__item--github {
+    display: none;
+  }
+
+  .site-header__navigation ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-left: 2em;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .site-header__navigation ul li a {
+    padding: 0.5em 1em;
+    display: inline-block;
+    color: white;
+  }
+
+  .site-header__navigation ul li.active a {
+    text-decoration: underline;
+  }
+}
+
+/* Actions container (dark mode + social links) */
+@utility site-header__actions {
+  display: none;
+}
+
+@media (min-width: 1040px) {
+  .site-header__actions {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin-left: 1em;
+  }
+}
+
+/* Individual link styling */
+@utility site-header__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  padding: 0;
+  margin: 0;
+  line-height: 1;
+  transition: opacity 0.2s ease;
+}
+
+.site-header__link:hover {
+  opacity: 0.8;
+}
+
+.site-header__link svg {
+  display: block;
+  width: 18px;
+  height: 18px;
+}
+
+[id]::before {
+  content: '';
+  display: block;
+  height: var(--header-height);
+  margin-top: calc(-1 * var(--header-height));
+  visibility: hidden;
+}
+
+@utility back-to-top-button {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  border: none;
+  outline: none;
+  background-color: var(--color-phel-primary);
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 2px;
+  font-size: 18px;
+}
+
+.back-to-top-button:hover {
+  background-color: var(--color-phel-hover);
+}
+
+@utility site-footer {
+  margin-top: 5em;
+  text-align: center;
+  font-size: 14px;
+}
+
+@utility phel-logo {
+  fill: none;
+  stroke: var(--color-phel-primary);
+  stroke-width: 3px;
+}
+
+@utility api-index {
+  padding: 0;
+}
+
+.api-index li {
+  display: inline-block;
+}
+
+@utility zola-anchor {
+  color: var(--color-gray-lighter);
+  font-style: italic;
+  padding-left: 0.2em;
+}
+
+@utility solution {
+  input + label + pre {
+    display: none;
+  }
+
+  input:checked + label + pre {
+    display: block;
+  }
+}
+
+.solution label {
+  font-style: italic;
+  cursor: pointer;
+  user-select: none;
+}
+
+.solution label:hover {
+  text-decoration: underline;
+}
+
+@utility flex-container {
+  display: flex;
+}

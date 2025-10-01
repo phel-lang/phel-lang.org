@@ -17,11 +17,23 @@ jobs:
           php-version: '8.3'
           tools: composer
 
-      - name: Install dependencies
+      - name: Install PHP dependencies
         run: composer install
 
       - name: Generate API Documentation
         run: composer build
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Node.js dependencies
+        run: npm ci
+
+      - name: Build CSS for production
+        run: npm run build-css-prod
 
       - name: Build and deploy
         uses: jenshaase/deploy-zola-via-lftp-action@main

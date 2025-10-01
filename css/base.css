@@ -1,0 +1,256 @@
+@layer base {
+  :root {
+    box-sizing: border-box;
+    font-family: var(--font-primary);
+    line-height: 1.5;
+    background-color: white;
+    color: var(--color-gray-darker);
+    font-size: var(--font-size);
+    text-rendering: optimizeLegibility;
+  }
+
+  html {
+    @apply scroll-smooth bg-white leading-relaxed;
+    -webkit-text-size-adjust: 100%;
+    -moz-tab-size: 4;
+    tab-size: 4;
+  }
+
+  *,
+  ::after,
+  ::before {
+    @apply box-border border-0 border-solid;
+    border-color: var(--color-phel-lines);
+  }
+
+  body {
+    @apply ease-custom m-0 min-h-screen bg-white antialiased transition-colors duration-150;
+    font-family: var(--font-primary);
+    color: var(--color-gray-darker);
+    font-size: var(--font-size);
+    line-height: 1.5;
+    padding-top: var(--header-height);
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * + * {
+    margin-top: 1.5em;
+  }
+
+  li,
+  kbd,
+  div,
+  input,
+  option,
+  select,
+  a,
+  textarea,
+  body,
+  span,
+  dd,
+  code,
+  label,
+  [column] {
+    margin: 0;
+  }
+
+  a {
+    color: var(--color-phel-primary);
+    text-decoration: none;
+  }
+
+  a:hover,
+  a:focus {
+    text-decoration: underline;
+  }
+
+  a:hover {
+    outline-width: 0;
+  }
+
+  a,
+  area,
+  button,
+  input,
+  label,
+  select,
+  textarea,
+  [tabindex] {
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--color-gray-darker);
+    font-family: var(--font-secondary);
+    font-weight: bold;
+    line-height: 1.3;
+  }
+
+  h1 {
+    font-size: 2.0rem;
+  }
+  h2 {
+    font-size: 1.75rem;
+  }
+  h3 {
+    font-size: 1.5rem;
+  }
+  h4 {
+    font-size: 1.25rem;
+  }
+  h5 {
+    font-size: 1.15rem;
+  }
+  h6 {
+    font-size: 1rem;
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin: 1.5em 0 0.25em;
+  }
+
+  h1 a,
+  h2 a,
+  h3 a {
+    color: inherit;
+  }
+
+  h1 a:hover,
+  h1 a:focus,
+  h2 a:hover,
+  h2 a:focus,
+  h3 a:hover,
+  h3 a:focus {
+    color: var(--color-phel-primary);
+    text-decoration: none;
+  }
+
+  h4,
+  h5,
+  h6 {
+    margin: 0.75em 0;
+  }
+
+  hr {
+    background-color: var(--color-phel-lines);
+    height: 1px;
+    border: 0;
+  }
+
+  nav ol,
+  nav ul {
+    padding-left: 0;
+  }
+
+  nav li {
+    list-style: none;
+  }
+
+  p {
+    @apply mb-4 leading-relaxed;
+  }
+
+  ul,
+  ol {
+    padding-left: 1em;
+  }
+
+  ul {
+    list-style-type: disc;
+    padding-left: 2em;
+  }
+
+  ul ol,
+  ul ul,
+  ol ol,
+  ol ul {
+    padding-left: 1.5em;
+  }
+
+  ol {
+    padding-left: 0;
+    counter-reset: item;
+  }
+
+  ol li {
+    list-style: none;
+  }
+
+  ol li:before {
+    content: counters(item, '.') '. ';
+    counter-increment: item;
+    margin-right: 0.2em;
+  }
+
+  img {
+    max-width: 100%;
+  }
+
+  blockquote {
+    background: var(--color-light-catalogue-bg);
+    margin: 1.5em 0 0;
+    padding: 1.5em 1.5em 0.5em;
+  }
+
+  .separator {
+    @apply border-light-border dark:border-dark-border mx-auto my-12 w-1/5 border-t-8 border-dotted;
+  }
+
+  pre {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    font-size: var(--font-size-code);
+    font-family: var(--font-mono);
+    border-top: 1px solid var(--color-phel-lines);
+    border-bottom: 1px solid var(--color-phel-lines);
+    overflow-x: auto;
+  }
+
+  p code,
+  li code {
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    background-color: var(--color-phel-selection);
+  }
+
+  ::selection {
+    background: rgba(180, 213, 255, 0.6);
+    color: inherit;
+  }
+
+  ::-moz-selection {
+    background: rgba(180, 213, 255, 0.6);
+    color: inherit;
+  }
+
+  :root {
+    --border: var(--color-light-border);
+  }
+
+  .dark {
+    --border: var(--color-dark-border);
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--color-light-text-primary);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  .dark a:focus-visible,
+  .dark button:focus-visible {
+    outline: 2px solid var(--color-dark-text-primary);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+}
