@@ -8,7 +8,7 @@ const outFile = path.join(projectRoot, 'css', 'tailwind.entry.css');
 const parts = [
   'css/theme.css',
   'css/base.css',
-  'css/components/base.css',
+  'css/components/footer.css',
   'css/components/header.css',
   'css/components/navigation.css',
   'css/components/layout.css',

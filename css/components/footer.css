@@ -1,0 +1,7 @@
+@utility site-footer {
+  padding-top: var(--space-2xl);
+  padding-bottom: var(--space-lg);
+  text-align: center;
+  font-size: var(--text-sm);
+  color: var(--color-light-text-secondary);
+}

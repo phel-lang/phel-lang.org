@@ -5,80 +5,95 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --color-light-bg: #fcfcfd;
-  --color-dark-bg: #161e32;
-  --color-light-text-primary: #374151;
-  --color-light-text-secondary: #4b5563;
-  --color-light-text-accent: #00a3f1;
-  --color-light-link: #3b82f6;
-  --color-dark-text-primary: #cbd5e1;
-  --color-dark-text-secondary: #a1a1aa;
-  --color-dark-text-accent: #60a5fa;
-  --color-dark-link: #70acf6;
-  --color-light-border: #e5e7eb;
+  /* Modern Color Palette - Light Mode */
+  --color-light-bg: #ffffff;
+  --color-light-bg-secondary: #f8fafc;
+  --color-light-text-primary: #0f172a;
+  --color-light-text-secondary: #475569;
+  --color-light-text-muted: #64748b;
+  --color-light-text-accent: #0ea5e9;
+  --color-light-link: #6366f1;
+  --color-light-border: #e2e8f0;
+  --color-light-border-subtle: #f1f5f9;
+  
+  /* Modern Color Palette - Dark Mode */
+  --color-dark-bg: #0f172a;
+  --color-dark-bg-secondary: #1e293b;
+  --color-dark-text-primary: #f1f5f9;
+  --color-dark-text-secondary: #cbd5e1;
+  --color-dark-text-muted: #94a3b8;
+  --color-dark-text-accent: #38bdf8;
+  --color-dark-link: #818cf8;
   --color-dark-border: #334155;
-  --color-dark-header-footer-border: #1f2937;
-  --color-dark-header-bg: #0f172acc;
-  --color-light-catalogue-bg: #f5f5f5;
-  --color-light-catalogue-item-bg: #fff;
-  --color-dark-catalogue-bg: #1b2638;
-  --color-dark-catalogue-item-bg: #1b2537;
-  --color-light-code-bg: rgba(27, 31, 35, 0.05);
-  --color-light-code-inline-bg: #1b1f230d;
-  --color-dark-code-bg: #0f162b;
-  --color-dark-code-inline-bg: #2d2d2d;
+  --color-dark-border-subtle: #1e293b;
+  --color-dark-header-footer-border: #1e293b;
+  --color-dark-header-bg: rgba(15, 23, 42, 0.8);
+  
+  /* Card & Surface Colors */
+  --color-light-surface: #ffffff;
+  --color-light-surface-hover: #f8fafc;
+  --color-dark-surface: #1e293b;
+  --color-dark-surface-hover: #334155;
+  
+  /* Code & Catalogue */
+  --color-light-code-bg: #f1f5f9;
+  --color-light-code-inline-bg: #e2e8f0;
+  --color-dark-code-bg: #1e293b;
+  --color-dark-code-inline-bg: #334155;
+  
+  /* Anchor Links */
+  --color-light-anchor: #bbb;
+  --color-dark-anchor: #bccccc;
+  
+  /* Blockquote */
   --color-light-blockquote-bg: #eff6ff;
   --color-light-blockquote-border: #3b82f6;
-  --color-dark-blockquote-bg: #0f172a;
-  --color-dark-blockquote-border: #334155;
-  --color-light-timeline-bg: #00a3f1;
-  --color-dark-timeline-bg: #3b82f6;
-  --color-light-current-badge-bg: rgba(34, 197, 94, 0.2);
-  --color-light-current-badge-text: #166534;
-  --color-dark-current-badge-bg: rgb(20 83 45);
-  --color-dark-current-badge-text: #73ffa9;
-
-  /* Phel-specific colors (from SASS) */
-  --color-phel-primary: #512da8;
+  --color-dark-blockquote-bg: #1e293b;
+  --color-dark-blockquote-border: #475569;
+  
+  /* Phel Brand Colors - Modernized */
+  --color-phel-primary: #6366f1;
+  --color-phel-primary-hover: #4f46e5;
   --color-phel-secondary: #8b5cf6;
-  --color-phel-accent: #06b6d4;
-  --color-phel-success: #10a887;
-  --color-phel-warning: #f17f42;
-  --color-phel-error: #da3c3c;
-  --color-phel-hover: rgba(81, 45, 168, 0.15);
-  --color-phel-selection: rgba(27, 31, 35, 0.05);
-  --color-phel-lines: #dcdcdc;
+  --color-phel-accent: #0ea5e9;
+  --color-phel-success: #10b981;
+  --color-phel-warning: #f59e0b;
+  --color-phel-error: #ef4444;
+  --color-phel-hover: rgba(99, 102, 241, 0.08);
+  --color-phel-selection: rgba(99, 102, 241, 0.12);
+  --color-phel-lines: #e2e8f0;
+  --color-phel-lines-dark: #334155;
 
-  /* Additional Phel colors from SASS */
-  --color-blue-darker: #1573b6;
-  --color-blue-dark: #1e80c6;
-  --color-blue-base: #2b90d9;
-  --color-blue-light: #3fa2e9;
-  --color-blue-lighter: #4eb1f9;
+  /* Extended Color Palette */
+  --color-blue-darker: #1e40af;
+  --color-blue-dark: #2563eb;
+  --color-blue-base: #3b82f6;
+  --color-blue-light: #60a5fa;
+  --color-blue-lighter: #93c5fd;
 
-  --color-green-darker: #089073;
-  --color-green-dark: #0b9d7d;
-  --color-green-base: #10a887;
-  --color-green-light: #1eb896;
-  --color-green-lighter: #28ceaa;
+  --color-green-darker: #047857;
+  --color-green-dark: #059669;
+  --color-green-base: #10b981;
+  --color-green-light: #34d399;
+  --color-green-lighter: #6ee7b7;
 
-  --color-red-darker: #653131;
-  --color-red-dark: #b73333;
-  --color-red-base: #da3c3c;
-  --color-red-light: #f25a5a;
-  --color-red-lighter: #fa8181;
+  --color-red-darker: #b91c1c;
+  --color-red-dark: #dc2626;
+  --color-red-base: #ef4444;
+  --color-red-light: #f87171;
+  --color-red-lighter: #fca5a5;
 
-  --color-gray-darker: #333333;
-  --color-gray-dark: #4d4d4d;
-  --color-gray-base: #666666;
-  --color-gray-light: #808080;
-  --color-gray-lighter: #999999;
+  --color-gray-darker: #1e293b;
+  --color-gray-dark: #475569;
+  --color-gray-base: #64748b;
+  --color-gray-light: #94a3b8;
+  --color-gray-lighter: #cbd5e1;
 
-  --font-primary: 'Helvetica', 'Arial', sans-serif;
-  --font-secondary: 'Helvetica', 'Arial', sans-serif;
-  --font-mono: 'Consolas', monospace;
-  --font-inter:
-    Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+  /* Modern Typography */
+  --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-secondary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', 'Monaco', monospace;
+  --font-inter: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
 
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -89,41 +104,78 @@
   --text-3xl: 1.875rem;
   --text-4xl: 2.25rem;
   --text-5xl: 3rem;
-  --text-body: 1.125rem;
+  --text-6xl: 3.75rem;
+  --text-body: 1.0625rem;
 
-  /* SASS font sizes */
-  --font-size: 18px;
-  --font-size-large: 22px;
-  --font-size-code: 16px;
+  /* Font sizes */
+  --font-size: 17px;
+  --font-size-large: 20px;
+  --font-size-code: 15px;
 
   /* Layout dimensions */
-  --header-height: 60px;
-
-  --leading-relaxed: 1.6;
-
+  --header-height: 72px;
+  --leading-relaxed: 1.7;
   --container-content: 56rem;
-  --container-catalogue-image: 250px;
+  --container-wide: 80rem;
+  
+  /* Border Radius - Modern rounded corners */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-full: 9999px;
 
-  --min-height-catalogue-card: 140px;
-  --min-height-catalogue-image-mobile: 200px;
+  /* Spacing System */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
 
-  --height-book-cover: 380px;
-  --height-book-cover-md: 450px;
-  --height-book-cover-sm: 500px;
+  /* Modern Shadows - Layered approach */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  
+  /* Dark mode shadows */
+  --shadow-dark-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+  --shadow-dark-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+  --shadow-dark-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+  
+  /* Glassmorphism */
+  --backdrop-blur-sm: 8px;
+  --backdrop-blur-md: 12px;
+  --backdrop-blur-lg: 16px;
+  --backdrop-blur-header: 12px;
 
-  --width-catalogue-image: 250px;
+  /* Animation Timings */
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+  --duration-slower: 500ms;
 
-  --backdrop-blur-header: 6px;
-
-  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-card-hover: 0 4px 6px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
-  --shadow-card-dark-hover: 0 2px 4px rgba(0, 0, 0, 0.4), 0 4px 8px rgba(0, 0, 0, 0.2);
-  --shadow-button-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
-  --shadow-button-secondary-hover: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-  --transition-duration-150: 150ms;
-
+  /* Easing Functions */
   --ease-custom: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Z-index layers */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
 }
 
 @layer base {
@@ -136,6 +188,3 @@
   }
 }
 
-@utility font-variant-numeric-oldstyle {
-  font-variant-numeric: oldstyle-nums;
-}
