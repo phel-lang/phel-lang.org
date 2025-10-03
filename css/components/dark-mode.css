@@ -426,6 +426,38 @@
   color: var(--color-dark-text-secondary);
 }
 
+/* Dark mode blog pagination */
+.dark .pagination a {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+  color: var(--color-dark-text-primary);
+}
+
+.dark .pagination a:hover {
+  background: var(--color-dark-surface-hover);
+  border-color: var(--color-light-text-accent);
+  color: var(--color-light-text-accent);
+}
+
+.dark .pagination a.active {
+  background: var(--color-light-text-accent);
+  color: var(--color-dark-bg);
+  border-color: var(--color-light-text-accent);
+}
+
+/* Dark mode blog tags */
+.dark .blog-tag {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .blog-tag:hover {
+  background: var(--color-dark-surface-hover);
+  border-color: var(--color-light-text-accent);
+  color: var(--color-light-text-accent);
+}
+
 /* Dark API Index Pills */
 .dark .api-namespace-toggle {
   border-bottom-color: var(--color-dark-border);
@@ -517,14 +549,9 @@
 
 /* Dark cards and navigation */
 .dark .related-container {
-  background: var(--color-dark-bg-secondary);
-  border-color: var(--color-dark-border);
-  box-shadow: var(--shadow-dark-sm);
-}
-
-.dark .related-container:hover {
-  box-shadow: var(--shadow-dark-md);
-  border-color: var(--color-light-text-accent);
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
 
 .dark .related-container .link {
@@ -533,9 +560,8 @@
 }
 
 .dark .related-container .link:hover {
-  box-shadow: var(--shadow-dark-md);
   border-color: var(--color-light-text-accent);
-  background: rgba(56, 189, 248, 0.15);
+  background: var(--color-dark-surface-hover);
 }
 
 .dark .related-container .link a {
