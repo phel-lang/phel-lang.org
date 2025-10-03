@@ -21,6 +21,6 @@
 {% block editable %}
 <span class="found-a-typo">
   {% set url = config.extra.repo_content_url ~ page.relative_path %}
-  <a href="{{url}}">Edit me</a>
+  <a href="{{url}}" target="_blank" rel="noopener noreferrer">Edit me</a>
 </span>
 {% endblock editable %}

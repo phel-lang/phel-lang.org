@@ -276,18 +276,24 @@ function createMenuItem(result, index) {
 
 function formatSearchResultItem(item) {
     if (item.type === "documentation") {
-        return `<a href="${item.url}">`
+        return `<a class="search-result-link" href="${item.url}">`
             + `<div class="search-results__item">`
-            + `<span class="result-type">Documentation: </span>`
-            + `<strong>${item.title}</strong>`
+            + `<div class="search-results__header">`
+            + `<strong class="title">${item.title}</strong>`
+            + `<span class="result-type-badge result-type-badge--docs">Docs</span>`
+            + `</div>`
             + `<span class="desc">${item.content}</span>`
             + `</div></a>`;
     } else {
-        return `<a href="/documentation/api/#${item.anchor}">`
+        return `<a class="search-result-link" href="/documentation/api/#${item.anchor}">`
             + `<div class="search-results__item">`
-            + `<span class="result-type">API: </span>`
-            + `${item.name} `
+            + `<div class="search-results__header">`
+            + `<div class="fn-info">`
+            + `<span class="fn-name">${item.name}</span> `
             + `<small class="fn-signature">${item.signature}</small>`
+            + `</div>`
+            + `<span class="result-type-badge result-type-badge--api">API</span>`
+            + `</div>`
             + `<span class="desc">${item.desc}</span>`
             + `</div></a>`;
     }

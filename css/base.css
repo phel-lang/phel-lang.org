@@ -24,7 +24,7 @@
   ::after,
   ::before {
     @apply box-border border-0 border-solid;
-    border-color: var(--color-phel-lines);
+    border-color: var(--color-light-border);
   }
 
   body {
@@ -64,7 +64,7 @@
 
   /* Modern Link Styling */
   a {
-    color: var(--color-phel-primary);
+    color: var(--color-light-link);
     text-decoration: none;
     transition: all var(--duration-fast) var(--ease-out);
     border-radius: var(--radius-sm);
@@ -72,12 +72,12 @@
   }
 
   a:hover {
-    color: var(--color-phel-primary-hover);
+    color: var(--color-light-link);
     text-decoration: none;
   }
 
   a:focus-visible {
-    outline: 2px solid var(--color-phel-primary);
+    outline: 2px solid var(--color-light-link);
     outline-offset: 3px;
   }
 
@@ -89,7 +89,7 @@
     left: 0;
     width: 0;
     height: 2px;
-    background: var(--color-phel-primary);
+    background: var(--color-light-link);
     transition: width var(--duration-normal) var(--ease-out);
   }
 
@@ -174,7 +174,7 @@
   h2 a:focus,
   h3 a:hover,
   h3 a:focus {
-    color: var(--color-phel-primary);
+    color: var(--color-light-link);
     text-decoration: none;
   }
 
@@ -183,8 +183,8 @@
     background: linear-gradient(
       90deg,
       transparent,
-      var(--color-phel-lines) 20%,
-      var(--color-phel-lines) 80%,
+      var(--color-light-border) 20%,
+      var(--color-light-border) 80%,
       transparent
     );
     height: 1px;
@@ -232,7 +232,7 @@
     top: 0.65em;
     width: 0.5em;
     height: 0.5em;
-    background: var(--color-phel-primary);
+    background: var(--color-light-link);
     border-radius: 50%;
     transition: transform var(--duration-fast) var(--ease-bounce);
   }
@@ -265,7 +265,7 @@
     position: absolute;
     left: -1.5em;
     font-weight: 700;
-    color: var(--color-phel-primary);
+    color: var(--color-light-link);
   }
 
   /* Images with modern styling */
@@ -280,31 +280,40 @@
     position: relative;
     background: var(--color-light-blockquote-bg);
     margin: 2em 0;
-    padding: 1.5em 1.5em 1.5em 2.5em;
-    border-left: 4px solid var(--color-light-blockquote-border);
+    padding: var(--space-md) var(--space-lg);
+    padding-left: calc(var(--space-lg) + 2em);
+    border-left: 3px solid var(--color-light-blockquote-border);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-sm);
     font-style: italic;
     color: var(--color-light-text-secondary);
+    display: flex;
+    align-items: center;
+    min-height: 3em;
   }
 
   blockquote::before {
     content: '"';
     position: absolute;
-    left: 0.5em;
-    top: 0.2em;
-    font-size: 3em;
+    left: var(--space-md);
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2.5em;
     color: var(--color-light-blockquote-border);
-    opacity: 0.2;
+    opacity: 0.3;
     font-family: Georgia, serif;
     line-height: 1;
+  }
+
+  blockquote p {
+    margin-bottom: 0;
   }
 
   /* Separator */
   .separator {
     @apply mx-auto my-12 border-t-8 border-dotted;
     width: 20%;
-    border-color: var(--color-phel-lines);
+    border-color: var(--color-light-border);
     opacity: 0.5;
   }
 
@@ -348,7 +357,7 @@
     font-size: 0.9em;
     font-family: var(--font-mono);
     background-color: var(--color-light-code-inline-bg);
-    color: var(--color-phel-primary);
+    color: var(--color-light-link);
     border-radius: var(--radius-sm);
     border: 1px solid var(--color-light-border);
     font-weight: 500;
@@ -356,12 +365,12 @@
 
   /* Modern Selection */
   ::selection {
-    background: var(--color-phel-selection);
+    background: rgba(99, 102, 241, 0.2);
     color: inherit;
   }
 
   ::-moz-selection {
-    background: var(--color-phel-selection);
+    background: rgba(99, 102, 241, 0.2);
     color: inherit;
   }
 
@@ -375,7 +384,7 @@
   }
 
   button:focus-visible {
-    outline: 2px solid var(--color-phel-primary);
+    outline: 2px solid var(--color-light-link);
     outline-offset: 3px;
     border-radius: var(--radius-md);
   }
@@ -400,7 +409,7 @@
     text-align: left;
     font-weight: 600;
     color: var(--color-light-text-primary);
-    border-bottom: 2px solid var(--color-phel-primary);
+    border-bottom: 2px solid var(--color-light-link);
   }
 
   td {

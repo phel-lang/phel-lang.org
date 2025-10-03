@@ -18,7 +18,8 @@
 }
 
 @media (min-width: 1040px) {
-  .top-navigation__item--github {
+  .top-navigation__item--github,
+  .top-navigation__item--x {
     display: none;
   }
 }
@@ -74,14 +75,14 @@
 }
 
 .site-navigation__entry a:hover {
-  color: var(--color-phel-primary);
-  background: var(--color-phel-hover);
+  color: var(--color-light-link);
+  background: var(--color-light-surface-hover);
   transform: translateX(4px);
 }
 
 .site-navigation__entry.active a {
-  color: var(--color-phel-primary);
-  background: var(--color-phel-hover);
+  color: var(--color-light-link);
+  background: var(--color-light-surface-hover);
   font-weight: 600;
   padding-left: calc(var(--space-md) - 3px);
 }
