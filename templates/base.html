@@ -37,7 +37,10 @@
   <meta property="og:image:height" content="512" />
 
   {% block rss %}
-  <link rel="alternate" type="application/atom+xml" title="Blog" href="{{ get_url(path='atom.xml', trailing_slash=false) }}">
+  {% if config.generate_feeds %}
+  <link type="application/atom+xml" rel="alternate" title="{{ config.title }} - Blog" href="{{ get_url(path=config.feed_filename | default(value='atom.xml')) | safe }}">
+  <link type="application/rss+xml" rel="alternate" title="{{ config.title }} - Blog" href="{{ get_url(path=config.feed_filename | default(value='atom.xml')) | safe }}" >
+  {% endif %}
   {% endblock %}
 </head>
 
