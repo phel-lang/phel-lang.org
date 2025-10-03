@@ -7,10 +7,10 @@
     {% elif section and section.relative_path == "documentation/api.md" %}
     <span>API docs auto-generated</span>
     {% elif page %}
-    <a href="https://github.com/phel-lang/phel-lang.org/edit/master/content/{{ page.relative_path }}">Edit this page</a>
+    <a href="https://github.com/phel-lang/phel-lang.org/edit/master/content/{{ page.relative_path }}" target="_blank" rel="noopener noreferrer">Edit this page</a>
     {% elif section %}
-    <a href="https://github.com/phel-lang/phel-lang.org/edit/master/content/{{ section.relative_path }}">Edit this page</a>
+    <a href="https://github.com/phel-lang/phel-lang.org/edit/master/content/{{ section.relative_path }}" target="_blank" rel="noopener noreferrer">Edit this page</a>
     {% else %}
-    <a href="https://github.com/phel-lang/phel-lang.org/">Edit this page</a>
+    <a href="https://github.com/phel-lang/phel-lang.org/" target="_blank" rel="noopener noreferrer">Edit this page</a>
     {% endif %}
 </footer>

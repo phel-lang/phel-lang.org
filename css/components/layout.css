@@ -78,7 +78,7 @@
 
 .sidebar-toggle:hover {
   background: var(--color-light-surface-hover);
-  border-color: var(--color-phel-primary);
+  border-color: var(--color-light-link);
 }
 
 .sidebar-toggle[aria-expanded="true"] .sidebar-toggle-text::before {
@@ -208,7 +208,7 @@
 
 .related-container:hover {
   box-shadow: var(--shadow-md);
-  border-color: var(--color-phel-primary);
+  border-color: var(--color-light-link);
 }
 
 .related-container .link {
@@ -226,12 +226,12 @@
 .related-container .link:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
-  border-color: var(--color-phel-primary);
-  background: var(--color-phel-hover);
+  border-color: var(--color-light-link);
+  background: var(--color-light-surface-hover);
 }
 
 .related-container .link a {
-  color: var(--color-phel-primary);
+  color: var(--color-light-link);
   font-weight: 600;
   text-decoration: none;
 }
@@ -241,12 +241,12 @@
 }
 
 .related-container .link a:hover {
-  color: var(--color-phel-primary-hover);
+  color: var(--color-light-link);
 }
 
 .related-container .link span {
   font-size: var(--text-2xl);
-  color: var(--color-phel-primary);
+  color: var(--color-light-link);
   transition: transform var(--duration-fast) var(--ease-out);
 }
 
@@ -271,10 +271,10 @@
 @utility back-to-top-button {
   position: fixed;
   bottom: var(--space-2xl);
-  right: var(--space-2xl);
-  width: 48px;
+  right: var(--space-xl);
+  width: 56px;
   height: 48px;
-  background: var(--color-phel-primary);
+  background: var(--color-light-link);
   color: white;
   border: none;
   border-radius: var(--radius-full);
@@ -299,7 +299,7 @@
 }
 
 .back-to-top-button:hover {
-  background: var(--color-phel-primary-hover);
+  background: var(--color-light-link);
   box-shadow: var(--shadow-xl);
 }
 

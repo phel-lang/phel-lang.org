@@ -278,21 +278,23 @@ function formatSearchResultItem(item) {
     if (item.type === "documentation") {
         return `<a class="search-result-link" href="${item.url}">`
             + `<div class="search-results__item">`
-            + `<div class="search-results__content">`
-            + `<strong>${item.title}</strong>`
-            + `<span class="desc">${item.content}</span>`
-            + `</div>`
+            + `<div class="search-results__header">`
+            + `<strong class="title">${item.title}</strong>`
             + `<span class="result-type-badge result-type-badge--docs">Docs</span>`
+            + `</div>`
+            + `<span class="desc">${item.content}</span>`
             + `</div></a>`;
     } else {
         return `<a class="search-result-link" href="/documentation/api/#${item.anchor}">`
             + `<div class="search-results__item">`
-            + `<div class="search-results__content">`
+            + `<div class="search-results__header">`
+            + `<div class="fn-info">`
             + `<span class="fn-name">${item.name}</span> `
             + `<small class="fn-signature">${item.signature}</small>`
-            + `<span class="desc">${item.desc}</span>`
             + `</div>`
             + `<span class="result-type-badge result-type-badge--api">API</span>`
+            + `</div>`
+            + `<span class="desc">${item.desc}</span>`
             + `</div></a>`;
     }
 }

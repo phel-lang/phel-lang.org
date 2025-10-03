@@ -47,22 +47,10 @@
   
   /* Blockquote */
   --color-light-blockquote-bg: #eff6ff;
-  --color-light-blockquote-border: #3b82f6;
-  --color-dark-blockquote-bg: #1e293b;
-  --color-dark-blockquote-border: #475569;
+  --color-light-blockquote-border: #afc4e7;
+  --color-dark-blockquote-bg: rgba(255, 255, 255, 0.05);
+  --color-dark-blockquote-border: #466173;
   
-  /* Phel Brand Colors - Modernized */
-  --color-phel-primary: #6366f1;
-  --color-phel-primary-hover: #4f46e5;
-  --color-phel-secondary: #8b5cf6;
-  --color-phel-accent: #0ea5e9;
-  --color-phel-success: #10b981;
-  --color-phel-warning: #f59e0b;
-  --color-phel-error: #ef4444;
-  --color-phel-hover: rgba(99, 102, 241, 0.08);
-  --color-phel-selection: rgba(99, 102, 241, 0.12);
-  --color-phel-lines: #e2e8f0;
-  --color-phel-lines-dark: #3a3a3a;
 
   /* Extended Color Palette */
   --color-blue-darker: #1e40af;
