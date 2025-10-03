@@ -421,14 +421,35 @@
   color: var(--color-phel-accent);
 }
 
+.dark .api-namespace-toggle-text {
+  color: var(--color-phel-accent);
+  opacity: 0.8;
+}
+
+.dark .api-namespace-toggle:hover .api-namespace-toggle-text {
+  opacity: 1;
+}
+
 .dark .api-namespace-icon {
   color: var(--color-phel-accent);
+  opacity: 0.8;
+}
+
+.dark .api-namespace-toggle:hover .api-namespace-icon {
+  opacity: 1;
 }
 
 .dark .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content::after {
   background: linear-gradient(to bottom, 
     transparent 0%, 
     var(--color-dark-bg) 100%);
+}
+
+.dark .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow {
+  background: linear-gradient(to bottom,
+    rgba(255, 255, 255, 0.02) 0%,
+    rgba(255, 255, 255, 0.04) 50%,
+    rgba(255, 255, 255, 0.05) 100%);
 }
 
 .dark .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow::before {

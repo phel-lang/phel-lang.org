@@ -232,22 +232,73 @@
   margin: 0;
   padding: 0;
   letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.api-namespace-toggle-indicator {
+  display: none;
+  align-items: flex-end;
+  gap: var(--space-sm);
+  flex-shrink: 0;
+}
+
+/* Only show indicator when there's overflow */
+.api-index__entry:has(.api-namespace-content.has-overflow) .api-namespace-toggle-indicator {
+  display: flex;
+}
+
+.api-namespace-toggle-text {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-phel-primary);
+  opacity: 0.8;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.api-namespace-toggle:hover .api-namespace-toggle-text {
+  opacity: 1;
+  color: var(--color-phel-primary);
+}
+
+/* When hovering over collapsed area, highlight the toggle text */
+.api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow:hover ~ .api-namespace-toggle .api-namespace-toggle-text,
+.api-index__entry:has(.api-namespace-content.has-overflow:hover) .api-namespace-toggle-text {
+  opacity: 1;
+  color: var(--color-phel-primary);
+}
+
+/* Update text content based on state */
+.api-namespace-toggle[aria-expanded="true"] .api-namespace-toggle-text::before {
+  content: "Show less";
+}
+
+.api-namespace-toggle[aria-expanded="false"] .api-namespace-toggle-text::before {
+  content: "Show all";
 }
 
 .api-namespace-icon {
   flex-shrink: 0;
   color: var(--color-phel-primary);
   transition: transform var(--duration-normal) var(--ease-out);
-  display: none;
+  opacity: 0.8;
+  width: 24px;
+  height: 24px;
 }
 
-/* Only show icon when there's overflow */
-.api-index__entry:has(.api-namespace-content.has-overflow) .api-namespace-icon {
-  display: block;
+.api-namespace-toggle:hover .api-namespace-icon {
+  opacity: 1;
+  color: var(--color-phel-primary-hover);
 }
 
-.api-namespace-toggle[aria-expanded="false"] .api-namespace-icon {
-  transform: rotate(-90deg);
+/* When hovering over collapsed area, highlight the icon */
+.api-index__entry:has(.api-namespace-content.has-overflow:hover) .api-namespace-icon {
+  opacity: 1;
+  color: var(--color-phel-primary-hover);
+}
+
+/* Collapsed (closed) = chevron down (V), Expanded (open) = chevron up (^) */
+.api-namespace-toggle[aria-expanded="true"] .api-namespace-icon {
+  transform: rotate(180deg);
 }
 
 .api-namespace-content {
@@ -284,6 +335,12 @@
 /* Make entire collapsed area clickable */
 .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow {
   cursor: pointer;
+  background: linear-gradient(to bottom,
+    rgba(0, 0, 0, 0.01) 0%,
+    rgba(0, 0, 0, 0.03) 50%,
+    rgba(0, 0, 0, 0.04) 100%);
+  border-radius: var(--radius-lg);
+  width: calc(100% + var(--space-md) * 2);
 }
 
 /* Disable pill interactions when collapsed and has overflow */
@@ -328,7 +385,7 @@
   box-shadow: var(--shadow-lg);
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--duration-fast) var(--ease-out);
+  transition: opacity var(--duration-normal) var(--ease-in);
   z-index: 10;
 }
 
@@ -356,7 +413,7 @@
 
 .api-index__entry > ul a {
   display: inline-block;
-  padding: var(--space-xs) var(--space-lg);
+  padding: var(--space-xs) var(--space-md);
   background: var(--color-light-bg-secondary);
   color: var(--color-light-text-secondary);
   font-size: var(--text-sm);

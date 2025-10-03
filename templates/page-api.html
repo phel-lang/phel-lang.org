@@ -13,9 +13,12 @@
         <li class="api-index__entry">
             <button class="api-namespace-toggle" aria-expanded="false">
                 <h2 class="api-namespace-title">{{ namespace.title }}</h2>
-                <svg class="api-namespace-icon" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <div class="api-namespace-toggle-indicator">
+                    <span class="api-namespace-toggle-text"></span>
+                    <svg class="api-namespace-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
             </button>
             <ul class="api-namespace-content">
             {% for fn in namespace.children %}
