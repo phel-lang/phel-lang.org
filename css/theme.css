@@ -17,29 +17,29 @@
   --color-light-border-subtle: #f1f5f9;
   
   /* Modern Color Palette - Dark Mode */
-  --color-dark-bg: #1e1e1e;
+  --color-dark-bg: #212830;
   --color-dark-bg-secondary: #252525;
   --color-dark-text-primary: #f1f5f9;
   --color-dark-text-secondary: #cbd5e1;
   --color-dark-text-muted: #94a3b8;
-  --color-dark-text-accent: #38bdf8;
-  --color-dark-link: #818cf8;
+  --color-dark-text-accent: #bfa4ff;
+  --color-dark-link: #bfa4ff;
   --color-dark-border: #3a3a3a;
   --color-dark-border-subtle: #2a2a2a;
-  --color-dark-header-footer-border: #2a2a2a;
-  --color-dark-header-bg: #161616;
+  --color-dark-header-footer-border: #151a24;
+  --color-dark-header-bg: #151a24;
   
   /* Card & Surface Colors */
   --color-light-surface: #ffffff;
   --color-light-surface-hover: #f8fafc;
-  --color-dark-surface: #252525;
-  --color-dark-surface-hover: #2f2f2f;
+  --color-dark-surface: #2a313c;
+  --color-dark-surface-hover: #262c36;
   
   /* Code & Catalogue */
   --color-light-code-bg: #f1f5f9;
   --color-light-code-inline-bg: #e2e8f0;
-  --color-dark-code-bg: #252525;
-  --color-dark-code-inline-bg: #2f2f2f;
+  --color-dark-code-bg: #262c36;
+  --color-dark-code-inline-bg: #2f3741;
   
   /* Anchor Links */
   --color-light-anchor: #bbb;
@@ -48,7 +48,7 @@
   /* Blockquote */
   --color-light-blockquote-bg: #eff6ff;
   --color-light-blockquote-border: #afc4e7;
-  --color-dark-blockquote-bg: rgba(255, 255, 255, 0.05);
+  --color-dark-blockquote-bg: #2a313c;
   --color-dark-blockquote-border: #466173;
   
 

@@ -29,6 +29,7 @@
   font-size: var(--text-sm);
   font-weight: 700;
   color: var(--color-light-text-primary);
+  margin: 0 0 var(--space-md) 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -77,13 +78,11 @@
 .site-navigation__entry a:hover {
   color: var(--color-light-link);
   background: var(--color-light-surface-hover);
-  transform: translateX(4px);
 }
 
 .site-navigation__entry.active a {
   color: var(--color-light-link);
   background: var(--color-light-surface-hover);
   font-weight: 600;
-  padding-left: calc(var(--space-md) - 3px);
 }
 

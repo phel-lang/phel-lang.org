@@ -126,8 +126,6 @@
   text-decoration: none;
   border-radius: var(--radius-sm);
   transition: all var(--duration-fast) var(--ease-out);
-  border-left: 2px solid transparent;
-  padding-left: var(--space-md);
 }
 
 .page-toc a::after {
@@ -143,7 +141,6 @@
   color: var(--color-light-link);
   font-weight: 600;
   background: var(--color-light-surface-hover);
-  border-left-color: var(--color-light-link);
 }
 
 .page-toc ul ul {
@@ -335,10 +332,6 @@
 /* Make entire collapsed area clickable */
 .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow {
   cursor: pointer;
-  background: linear-gradient(to bottom,
-    rgba(0, 0, 0, 0.01) 0%,
-    rgba(0, 0, 0, 0.03) 50%,
-    rgba(0, 0, 0, 0.04) 100%);
   border-radius: var(--radius-lg);
   width: calc(100% + var(--space-md) * 2);
 }
@@ -355,7 +348,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  height: 60px;
+  height: 120px;
   background: linear-gradient(to bottom, 
     transparent 0%, 
     var(--color-light-bg) 100%);
@@ -373,24 +366,21 @@
 .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow::before {
   content: 'Expand';
   position: absolute;
-  top: 75%;
+  top: 60%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #0982b8;
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--color-light-link);
   color: white;
-  padding: var(--space-xs) var(--space-xl);
-  border-radius: var(--radius-full);
+  border: 1px solid var(--color-light-link);
+  border-radius: var(--radius-lg);
   font-size: var(--text-sm);
   font-weight: 600;
-  box-shadow: var(--shadow-lg);
-  opacity: 0;
+  box-shadow: none;
+  opacity: 0.8;
   pointer-events: none;
   transition: opacity var(--duration-normal) var(--ease-in);
   z-index: 10;
-}
-
-.api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow:hover::before {
-  opacity: 1;
 }
 
 /* Expanded state - show all */
@@ -419,7 +409,7 @@
   font-size: var(--text-sm);
   font-weight: 500;
   border: 1px solid var(--color-light-border);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-lg);
   text-decoration: none;
   transition: all var(--duration-fast) var(--ease-out);
   box-shadow: var(--shadow-xs);
@@ -467,10 +457,13 @@
 }
 
 .solution label {
-  display: inline-block;
-  padding: var(--space-xs) var(--space-lg);
-  background: var(--color-light-link);
-  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-light-surface);
+  color: var(--color-light-link);
+  border: 1px solid var(--color-light-border);
   border-radius: var(--radius-md);
   cursor: pointer;
   font-size: var(--text-sm);
@@ -480,7 +473,8 @@
 }
 
 .solution label:hover {
-  background: var(--color-light-text-accent);
+  border-color: var(--color-light-link);
+  background: var(--color-light-surface-hover);
 }
 
 /* Hide solution content by default */
@@ -498,12 +492,14 @@
 }
 
 .solution input[type="checkbox"]:checked ~ label {
-  display: inline-block;
-  background: var(--color-light-text-accent);
+  display: inline-flex;
+  background: var(--color-light-link);
+  color: white;
+  border-color: var(--color-light-link);
 }
 
 .solution input[type="checkbox"]:checked ~ label::before {
-  content: '↓ Hide solution';
+  content: '← Hide solution';
 }
 
 .solution input[type="checkbox"]:not(:checked) ~ label::before {
@@ -708,7 +704,7 @@ h6:hover .zola-anchor {
 }
 
 .breadcrumbs span:not(:last-child)::after {
-  content: '›';
+  content: '→';
   margin-left: var(--space-sm);
   color: var(--color-gray-light);
 }

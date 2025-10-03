@@ -234,11 +234,6 @@
     height: 0.5em;
     background: var(--color-light-link);
     border-radius: 50%;
-    transition: transform var(--duration-fast) var(--ease-bounce);
-  }
-
-  ul li:hover::before {
-    transform: scale(1.3);
   }
 
   ul ol,
@@ -295,7 +290,7 @@
   blockquote::before {
     content: '"';
     position: absolute;
-    left: var(--space-md);
+    left: 1.7rem;
     top: 50%;
     transform: translateY(-50%);
     font-size: 2.5em;
