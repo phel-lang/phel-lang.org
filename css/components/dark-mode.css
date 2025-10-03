@@ -557,6 +557,7 @@
 .dark .related-container .link {
   background: var(--color-dark-surface);
   border-color: var(--color-dark-border);
+  color: var(--color-light-text-accent);
 }
 
 .dark .related-container .link:hover {
@@ -564,11 +565,11 @@
   background: var(--color-dark-surface-hover);
 }
 
-.dark .related-container .link a {
+.dark .related-container .link .link-title {
   color: var(--color-light-text-accent);
 }
 
-.dark .related-container .link span {
+.dark .related-container .link > span:not(.link-title) {
   color: var(--color-light-text-accent);
 }
 

@@ -188,21 +188,15 @@
 
 /* Modern Page Navigation (Previous/Next) */
 @utility related-container {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  justify-content: space-between;
   gap: var(--space-lg);
   margin: var(--space-2xl) 0;
-  padding: 0;
-  background: transparent;
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-  transition: none;
+  flex-wrap: wrap;
 }
 
 @media (min-width: 768px) {
   .related-container {
-    grid-template-columns: 1fr 1fr;
     gap: var(--space-xl);
   }
 }
@@ -211,12 +205,14 @@
   display: flex;
   align-items: center;
   gap: var(--space-sm);
-  padding: var(--space-md) var(--space-lg);
+  padding: var(--space-sm) var(--space-md);
   background: var(--color-light-surface);
   border: 1px solid var(--color-light-border);
   border-radius: var(--radius-md);
   transition: all var(--duration-fast) var(--ease-out);
   text-decoration: none;
+  color: var(--color-light-link);
+  font-weight: 600;
 }
 
 .related-container .link:hover {
@@ -224,41 +220,18 @@
   background: var(--color-light-surface-hover);
 }
 
-.related-container .link a {
-  color: var(--color-light-link);
-  font-weight: 600;
-  text-decoration: none;
-  flex: 1;
-  pointer-events: none;
-}
-
-.related-container .link a::after {
+.related-container .link::after {
   display: none;
 }
 
-.related-container .link span {
-  font-size: var(--text-2xl);
+.related-container .link .link-title {
+  flex: 1;
   color: var(--color-light-link);
-  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.related-container .link > span:not(.link-title) {
+  color: var(--color-light-link);
   flex-shrink: 0;
-  pointer-events: none;
-}
-
-.related-container .link-previous {
-  justify-content: flex-start;
-}
-
-.related-container .link-previous:hover span {
-  transform: translateX(-4px);
-}
-
-.related-container .link-next {
-  justify-content: flex-end;
-  text-align: right;
-}
-
-.related-container .link-next:hover span {
-  transform: translateX(4px);
 }
 
 /* Back to Top Button - Modern floating action */
