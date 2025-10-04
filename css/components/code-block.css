@@ -59,3 +59,29 @@
   stroke: white;
 }
 
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+.dark .copy-code-button {
+  background-color: rgba(42, 49, 60, 0.95);
+  border-color: #475569;
+}
+
+.dark .copy-code-button svg {
+  stroke: #cbd5e1;
+}
+
+.dark .copy-code-button:hover {
+  background-color: #2f3741;
+}
+
+.dark .copy-code-button.copied {
+  background-color: var(--color-dark-text-accent);
+  border-color: var(--color-dark-text-accent);
+}
+
+.dark .copy-code-button.copied svg {
+  stroke: white;
+}
+

@@ -302,3 +302,69 @@
     margin-top: var(--space-3xl);
   }
 }
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+.dark .site-footer {
+  background: var(--color-dark-header-bg);
+  border-top-color: var(--color-dark-header-footer-border);
+}
+
+.dark .footer-logo .phel-logo {
+  stroke: white;
+}
+
+.dark .footer-logo .logo-text {
+  color: var(--color-dark-text-primary);
+}
+
+.dark .footer-description {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .footer-social a {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+  color: var(--color-dark-text-primary);
+}
+
+.dark .footer-social a:hover {
+  background: var(--color-dark-text-accent);
+  border-color: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+}
+
+.dark .footer-column h3 {
+  color: var(--color-dark-text-primary);
+}
+
+.dark .footer-column ul li a {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .footer-column ul li a:hover {
+  color: var(--color-dark-text-accent);
+}
+
+.dark .footer-bottom {
+  border-top-color: var(--color-dark-border);
+}
+
+.dark .footer-copyright {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .footer-badge {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .footer-badge-separator {
+  color: var(--color-dark-text-muted);
+}
+
+.dark .footer-badge-version {
+  background: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+}

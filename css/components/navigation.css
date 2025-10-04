@@ -86,3 +86,47 @@
   font-weight: 600;
 }
 
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+.dark .site-navigation-title {
+  color: var(--color-dark-text-primary);
+}
+
+.dark .site-navigation__entry a {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .site-navigation__entry a:hover {
+  background: var(--color-dark-surface-hover);
+  color: var(--color-dark-text-accent);
+}
+
+.dark .site-navigation__entry.active a {
+  color: var(--color-dark-text-accent);
+  background: var(--color-dark-surface-hover);
+}
+
+.dark .page-toc {
+  border-bottom-color: var(--color-dark-border);
+}
+
+.dark .page-toc h2 {
+  color: var(--color-dark-text-primary);
+}
+
+.dark .page-toc a {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .page-toc a:hover {
+  color: var(--color-dark-text-accent);
+  background: var(--color-dark-surface-hover);
+}
+
+.dark .page-toc a.active {
+  color: var(--color-dark-text-accent);
+  background: var(--color-dark-surface-hover);
+}
+

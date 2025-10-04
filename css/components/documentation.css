@@ -630,3 +630,96 @@ h6:hover .zola-anchor {
   margin-left: var(--space-sm);
   color: var(--color-gray-light);
 }
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+.dark .api-namespace-toggle {
+  border-bottom-color: var(--color-dark-border);
+}
+
+.dark .api-namespace-title {
+  color: var(--color-dark-text-accent);
+}
+
+.dark .api-namespace-toggle-text {
+  color: #bfa4ff;
+  opacity: 0.8;
+}
+
+.dark .api-namespace-toggle:hover .api-namespace-toggle-text {
+  opacity: 1;
+  color: #c2acf5;
+}
+
+.dark .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow:hover ~ .api-namespace-toggle .api-namespace-toggle-text,
+.dark .api-index__entry:has(.api-namespace-content.has-overflow:hover) .api-namespace-toggle-text {
+  opacity: 1;
+  color: #c2acf5;
+}
+
+.dark .api-namespace-icon {
+  color: #bfa4ff;
+  opacity: 0.8;
+}
+
+.dark .api-namespace-toggle:hover .api-namespace-icon {
+  opacity: 1;
+  color: #c2acf5;
+}
+
+.dark .api-index__entry:has(.api-namespace-content.has-overflow:hover) .api-namespace-icon {
+  opacity: 1;
+  color: #c2acf5;
+}
+
+.dark .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content::after {
+  background: linear-gradient(to bottom, 
+    transparent 0%, 
+    var(--color-dark-bg) 100%);
+}
+
+.dark .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow::before {
+  background: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+  border: 1px solid var(--color-dark-text-accent);
+  box-shadow: none;
+}
+
+.dark .api-index__entry > ul a {
+  background: var(--color-dark-surface);
+  color: var(--color-dark-text-secondary);
+  border-color: var(--color-dark-border);
+  box-shadow: var(--shadow-dark-sm);
+}
+
+.dark .api-index__entry > ul a:hover {
+  background: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+  border-color: var(--color-dark-text-accent);
+  box-shadow: var(--shadow-dark-md);
+}
+
+.dark .solution label {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+  color: var(--color-dark-text-primary);
+}
+
+.dark .solution label:hover {
+  background: var(--color-dark-surface-hover);
+  border-color: var(--color-dark-text-accent);
+  color: var(--color-dark-text-accent);
+}
+
+.dark .solution input[type="checkbox"]:checked ~ label {
+  background: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+  border-color: var(--color-dark-text-accent);
+}
+
+.dark .zola-anchor,
+.dark .zola-anchor:hover {
+  color: var(--color-dark-anchor);
+}

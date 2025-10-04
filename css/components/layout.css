@@ -311,3 +311,99 @@
     opacity: 0.8;
   }
 }
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+@media (min-width: 1040px) {
+  .dark .two-column-layout__sidebar {
+    background: var(--color-dark-surface);
+    border-color: var(--color-dark-border);
+    box-shadow: var(--shadow-dark-sm);
+  }
+}
+
+@media (max-width: 1039px) {
+  .dark .two-column-layout__sidebar {
+    background: transparent;
+    border-bottom-color: var(--color-dark-border);
+  }
+}
+
+.dark .sidebar-toggle {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-text-secondary);
+  color: var(--color-dark-text-primary);
+}
+
+.dark .sidebar-toggle:hover {
+  background: var(--color-dark-surface-hover);
+  border-color: var(--color-dark-text-accent);
+  color: var(--color-dark-text-accent);
+}
+
+.dark .two-column-layout__sidebar:has(.sidebar-content.active) {
+  border-bottom-color: var(--color-dark-border);
+}
+
+.dark .two-column-layout__sidebar::-webkit-scrollbar-thumb {
+  background: var(--color-dark-border);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.dark .two-column-layout__sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-base);
+  background-clip: padding-box;
+}
+
+.dark .related-container {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.dark .related-container .link {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+  color: var(--color-dark-text-accent);
+}
+
+.dark .related-container .link:hover {
+  border-color: var(--color-dark-text-accent);
+  background: var(--color-dark-surface-hover);
+}
+
+.dark .related-container .link .link-title {
+  color: var(--color-dark-text-accent);
+}
+
+.dark .related-container .link > span:not(.link-title) {
+  color: var(--color-dark-text-accent);
+}
+
+.dark .back-to-top-button,
+.dark #back-to-top-button {
+  background: var(--color-dark-surface);
+  color: var(--color-dark-text-primary);
+  border: 1px solid var(--color-dark-border);
+}
+
+.dark .back-to-top-button:hover,
+.dark #back-to-top-button:hover {
+  background: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+  border-color: var(--color-dark-text-accent);
+}
+
+.dark .card {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+  box-shadow: var(--shadow-dark-sm);
+}
+
+.dark .card:hover {
+  box-shadow: var(--shadow-dark-lg);
+  border-color: var(--color-dark-text-accent);
+}
