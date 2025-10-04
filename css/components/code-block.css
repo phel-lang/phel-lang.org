@@ -16,7 +16,7 @@
 
 .copy-code-button {
   position: absolute;
-  top: 0;
+  top: -0.5rem;
   right: 0.75rem;
   width: 36px;
   height: 36px;

@@ -154,20 +154,23 @@
 
   /* Custom scrollbar for sidebar */
   .two-column-layout__sidebar::-webkit-scrollbar {
-    width: 6px;
+    width: 8px;
   }
 
   .two-column-layout__sidebar::-webkit-scrollbar-track {
     background: transparent;
+    margin: 8px 0;
   }
 
   .two-column-layout__sidebar::-webkit-scrollbar-thumb {
     background: var(--color-light-border);
     border-radius: var(--radius-full);
+    background-clip: padding-box;
   }
 
   .two-column-layout__sidebar::-webkit-scrollbar-thumb:hover {
     background: var(--color-gray-base);
+    background-clip: padding-box;
   }
 }
 
