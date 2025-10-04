@@ -776,3 +776,84 @@
 .dark ::-moz-selection {
   background: rgba(191, 164, 255, 0.3);
 }
+
+/* Homepage Title Accent - Dark Mode */
+.dark .homepage-title-accent {
+  color: var(--color-dark-text-accent);
+}
+
+.dark .homepage-content > p:first-of-type {
+  color: var(--color-dark-text-primary);
+}
+
+.dark .why-card {
+  background: var(--color-dark-bg);
+  border-color: var(--color-dark-border);
+  color: var(--color-dark-text-primary);
+}
+
+.dark .why-card:hover {
+  border-color: var(--color-dark-text-accent);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+.dark .why-card-icon {
+  color: var(--color-dark-text-accent);
+}
+
+/* Homepage Code Section - Dark Mode */
+.dark .homepage-code-section {
+  background: rgba(191, 164, 255, 0.05);
+}
+
+/* Homepage CTA Buttons - Dark Mode */
+.dark .homepage-cta-primary {
+  background: var(--color-dark-text-accent);
+  border-color: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+}
+
+.dark .homepage-cta-primary:hover {
+  background: #c2acf5;
+  border-color: #c2acf5;
+  color: var(--color-dark-bg);;
+}
+
+.dark .homepage-cta-secondary {
+  background: transparent;
+  color: var(--color-dark-text-primary);
+  border-color: var(--color-dark-border);
+}
+
+.dark .homepage-cta-secondary:hover {
+  border-color: var(--color-dark-text-accent);
+  color: var(--color-dark-text-accent);
+}
+
+/* Features Grid - Dark Mode */
+.dark .feature-card {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+}
+
+.dark .feature-card:hover {
+  border-color: var(--color-dark-text-accent);
+  box-shadow: var(--shadow-dark-sm);
+}
+
+.dark .feature-icon {
+  color: var(--color-dark-text-accent);
+}
+
+.dark .feature-title {
+  color: var(--color-dark-text-primary);
+}
+
+.dark .feature-description {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .feature-items p,
+.dark .feature-items li {
+  color: var(--color-dark-text-secondary);
+}

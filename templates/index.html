@@ -5,6 +5,8 @@
     <meta property="og:title" content="{{ section.title }}" />
 {% endblock meta_content %}
 {% block content %}
-    <h1>The Phel Language</h1>
-    {{ section.content | safe }}
+    <div class="homepage-content">
+        <h1>The <span class="homepage-title-accent">Phel</span> Language</h1>
+        {{ section.content | safe }}
+    </div>
 {% endblock content %}
