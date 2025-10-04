@@ -20,11 +20,21 @@
   text-decoration: none;
   transition: all var(--duration-fast) var(--ease-out);
   position: relative;
-  border-bottom: 1px solid var(--color-light-border);
 }
 
 .post-list li a::after {
-  display: none;
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--color-light-link);
+  transition: width var(--duration-normal) var(--ease-out);
+}
+
+.post-list li a:hover::after {
+  width: 100%;
 }
 
 /* Blog post title */
