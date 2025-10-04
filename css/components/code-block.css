@@ -1,0 +1,61 @@
+/* Code block with copy button */
+.code-block-wrapper {
+  position: relative;
+}
+
+.code-block-wrapper pre {
+  margin: 0;
+}
+
+/* Preserve default margins for wrapped pre elements not in homepage */
+.two-column-layout .code-block-wrapper,
+.blog-entry .code-block-wrapper,
+.one-column-layout .code-block-wrapper:not(.homepage-content .code-block-wrapper) {
+  margin: var(--space-lg) 0;
+}
+
+.copy-code-button {
+  position: absolute;
+  top: 0;
+  right: 0.75rem;
+  width: 36px;
+  height: 36px;
+  opacity: 0;
+  transition: opacity 200ms ease-in-out, background-color 200ms ease-in-out, transform 200ms ease-in-out;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 1px solid #d1d5db;
+  border-radius: var(--radius-md);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.copy-code-button svg {
+  width: 20px;
+  height: 20px;
+  stroke: #475569;
+  stroke-width: 2;
+}
+
+.code-block-wrapper:hover .copy-code-button {
+  opacity: 1;
+}
+
+.copy-code-button:hover {
+  background-color: #f3f4f6;
+  transform: scale(1.05);
+}
+
+.copy-code-button.copied {
+  background-color: var(--color-phel-primary);
+  border-color: var(--color-phel-primary);
+}
+
+.copy-code-button.copied svg {
+  stroke: white;
+}
+

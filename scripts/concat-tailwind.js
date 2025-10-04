@@ -16,6 +16,7 @@ const parts = [
   'css/components/documentation.css',
   'css/components/blog.css',
   'css/components/features.css',
+  'css/components/code-block.css',
   'css/components/dark-mode.css',
 ];
 
