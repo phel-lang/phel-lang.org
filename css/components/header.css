@@ -586,24 +586,3 @@ body.menu-open {
     opacity: 1;
   }
 }
-
-/* ========================================
-   SCROLL EFFECTS
-   ======================================== */
-
-@media (min-width: 1040px) {
-  .site-header.scrolled {
-    height: 60px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  }
-}
-
-/* Anchor scroll offset */
-[id]::before {
-  content: '';
-  display: block;
-  height: var(--header-height);
-  margin-top: calc(var(--header-height) * -1);
-  visibility: hidden;
-  pointer-events: none;
-}
