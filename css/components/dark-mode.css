@@ -33,10 +33,10 @@
 
 /* Modern Dark Header with glassmorphism */
 .dark .site-header {
-  background: #0a0a0a;
+  background: var(--color-dark-header-bg);
   backdrop-filter: blur(var(--backdrop-blur-header)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--backdrop-blur-header)) saturate(180%);
-  border-bottom-color: rgba(51, 65, 85, 0.3);
+  border-bottom-color: var(--color-dark-header-footer-border);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3),
               0 2px 4px -1px rgba(0, 0, 0, 0.2);
 }
@@ -62,16 +62,16 @@
 }
 
 .dark .site-header__navigation a::after {
-  background: var(--color-light-text-accent);
+  background: var(--color-dark-text-accent);
 }
 
 .dark .site-header__navigation a:hover {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 .dark .site-header__navigation a[aria-current='page'],
 .dark .site-header__navigation a.active {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 /* Mobile hamburger icon dark mode */
@@ -80,13 +80,13 @@
 }
 
 .dark .site-header__mobile-menu .hamburger-icon:hover {
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(191, 164, 255, 0.15);
 }
 
 /* Mobile navigation overlay dark */
 @media (max-width: 1039px) {
   .dark .mobile-menu-overlay {
-    background: #0a0a0a;
+    background: var(--color-dark-header-bg);
     backdrop-filter: blur(var(--backdrop-blur-lg));
     -webkit-backdrop-filter: blur(var(--backdrop-blur-lg));
   }
@@ -99,8 +99,8 @@
 
   .dark .mobile-menu-nav a:hover,
   .dark .mobile-menu-nav a:active {
-    background: var(--color-light-text-accent);
-    border-color: var(--color-light-text-accent);
+    background: var(--color-dark-text-accent);
+    border-color: var(--color-dark-text-accent);
     color: var(--color-dark-bg);
   }
 
@@ -112,8 +112,8 @@
 
   .dark .mobile-menu-link:hover,
   .dark .mobile-menu-link:active {
-    background: var(--color-light-text-accent);
-    border-color: var(--color-light-text-accent);
+    background: var(--color-dark-text-accent);
+    border-color: var(--color-dark-text-accent);
     color: var(--color-dark-bg);
   }
 
@@ -128,8 +128,8 @@
   }
 
   .dark .mobile-dark-mode-toggle:hover {
-    background: rgba(56, 189, 248, 0.15);
-    border-color: var(--color-light-text-accent);
+    background: rgba(191, 164, 255, 0.15);
+    border-color: var(--color-dark-text-accent);
   }
 
   .dark .mobile-menu-toggle span {
@@ -137,7 +137,7 @@
   }
 
   .dark .mobile-menu-toggle:hover {
-    background: rgba(56, 189, 248, 0.15);
+    background: rgba(191, 164, 255, 0.15);
   }
 }
 
@@ -199,8 +199,8 @@
 
 .dark .site-header__link:hover,
 .dark .dark-mode-toggle:hover {
-  color: var(--color-light-text-accent);
-  background: rgba(56, 189, 248, 0.15);
+  color: var(--color-dark-text-accent);
+  background: rgba(191, 164, 255, 0.15);
 }
 
 /* Dark typography */
@@ -218,24 +218,24 @@
 }
 
 .dark a {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 .dark a:hover {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 .dark a:not([class])::after {
-  background: var(--color-light-text-accent);
+  background: var(--color-dark-text-accent);
 }
 
 /* Dark lists */
 .dark ul li::before {
-  background: var(--color-light-text-accent);
+  background: var(--color-dark-text-accent);
 }
 
 .dark ol li:before {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 /* Dark images - no animations */
@@ -279,7 +279,7 @@
 .dark p code,
 .dark li code {
   background-color: var(--color-dark-code-inline-bg);
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
   border-color: var(--color-dark-border);
 }
 
@@ -291,7 +291,7 @@
 .dark th {
   background: var(--color-dark-bg-secondary);
   color: var(--color-dark-text-primary);
-  border-bottom-color: var(--color-light-text-accent);
+  border-bottom-color: var(--color-dark-text-accent);
 }
 
 .dark td {
@@ -348,7 +348,7 @@
 
 .dark .sidebar-toggle:hover {
   background: var(--color-dark-surface-hover);
-  border-color: var(--color-light-link);
+  border-color: var(--color-dark-text-accent);
 }
 
 /* Dark mode for sidebar accordion open state */
@@ -382,22 +382,27 @@
 
 /* Dark mode solution toggle */
 .dark .solution label {
-  background: var(--color-light-text-accent);
-  color: var(--color-dark-bg);
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+  color: var(--color-dark-text-primary);
 }
 
 .dark .solution label:hover {
-  background: var(--color-light-link);
+  background: var(--color-dark-surface-hover);
+  border-color: var(--color-dark-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 .dark .solution input[type="checkbox"]:checked ~ label {
-  background: var(--color-light-link);
+  background: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+  border-color: var(--color-dark-text-accent);
 }
 
 /* Dark mode navigation */
 .dark .site-navigation__entry a:hover {
   background: var(--color-dark-surface-hover);
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 .dark .site-navigation__entry.active a {
@@ -415,7 +420,7 @@
 }
 
 .dark .post-list li a:hover h2 {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 .dark .post-list li a .meta {
@@ -435,14 +440,14 @@
 
 .dark .pagination a:hover {
   background: var(--color-dark-surface-hover);
-  border-color: var(--color-light-text-accent);
-  color: var(--color-light-text-accent);
+  border-color: var(--color-dark-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 .dark .pagination a.active {
-  background: var(--color-light-text-accent);
+  background: var(--color-dark-text-accent);
   color: var(--color-dark-bg);
-  border-color: var(--color-light-text-accent);
+  border-color: var(--color-dark-text-accent);
 }
 
 /* Dark mode blog tags */
@@ -454,8 +459,8 @@
 
 .dark .blog-tag:hover {
   background: var(--color-dark-surface-hover);
-  border-color: var(--color-light-text-accent);
-  color: var(--color-light-text-accent);
+  border-color: var(--color-dark-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 /* Dark API Index Pills */
@@ -464,40 +469,40 @@
 }
 
 .dark .api-namespace-title {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 .dark .api-namespace-toggle-text {
-  color: #0ea5e9;
+  color: #bfa4ff;
   opacity: 0.8;
 }
 
 .dark .api-namespace-toggle:hover .api-namespace-toggle-text {
   opacity: 1;
-  color: #3ca5e9;
+  color: #c2acf5;
 }
 
 /* When hovering over collapsed area in dark mode */
 .dark .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow:hover ~ .api-namespace-toggle .api-namespace-toggle-text,
 .dark .api-index__entry:has(.api-namespace-content.has-overflow:hover) .api-namespace-toggle-text {
   opacity: 1;
-  color: #3ca5e9;
+  color: #c2acf5;
 }
 
 .dark .api-namespace-icon {
-  color: #0ea5e9;
+  color: #bfa4ff;
   opacity: 0.8;
 }
 
 .dark .api-namespace-toggle:hover .api-namespace-icon {
   opacity: 1;
-  color: #3ca5e9;
+  color: #c2acf5;
 }
 
 /* When hovering over collapsed area in dark mode */
 .dark .api-index__entry:has(.api-namespace-content.has-overflow:hover) .api-namespace-icon {
   opacity: 1;
-  color: #3ca5e9;
+  color: #c2acf5;
 }
 
 .dark .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content::after {
@@ -506,17 +511,11 @@
     var(--color-dark-bg) 100%);
 }
 
-.dark .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow {
-  background: linear-gradient(to bottom,
-    rgba(255, 255, 255, 0.02) 0%,
-    rgba(255, 255, 255, 0.04) 50%,
-    rgba(255, 255, 255, 0.05) 100%);
-}
-
 .dark .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow::before {
-  background: var(--color-light-text-accent);
+  background: var(--color-dark-text-accent);
   color: var(--color-dark-bg);
-  box-shadow: var(--shadow-dark-lg);
+  border: 1px solid var(--color-dark-text-accent);
+  box-shadow: none;
 }
 
 .dark .api-index__entry > ul a {
@@ -527,9 +526,9 @@
 }
 
 .dark .api-index__entry > ul a:hover {
-  background: var(--color-light-text-accent);
+  background: var(--color-dark-text-accent);
   color: var(--color-dark-bg);
-  border-color: var(--color-light-text-accent);
+  border-color: var(--color-dark-text-accent);
   box-shadow: var(--shadow-dark-md);
 }
 
@@ -538,12 +537,12 @@
 }
 
 .dark .page-toc a:hover {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
   background: var(--color-dark-surface-hover);
 }
 
 .dark .page-toc a.active {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
   background: var(--color-dark-surface-hover);
 }
 
@@ -557,20 +556,20 @@
 .dark .related-container .link {
   background: var(--color-dark-surface);
   border-color: var(--color-dark-border);
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 .dark .related-container .link:hover {
-  border-color: var(--color-light-text-accent);
+  border-color: var(--color-dark-text-accent);
   background: var(--color-dark-surface-hover);
 }
 
 .dark .related-container .link .link-title {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 .dark .related-container .link > span:not(.link-title) {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 /* Dark card */
@@ -582,13 +581,13 @@
 
 .dark .card:hover {
   box-shadow: var(--shadow-dark-lg);
-  border-color: var(--color-light-text-accent);
+  border-color: var(--color-dark-text-accent);
 }
 
 /* Dark badges */
 .dark .badge-primary {
-  background: rgba(56, 189, 248, 0.2);
-  color: var(--color-light-text-accent);
+  background: rgba(191, 164, 255, 0.2);
+  color: var(--color-dark-text-accent);
 }
 
 .dark .badge-success {
@@ -608,24 +607,24 @@
 
 /* Dark buttons */
 .dark .btn-primary {
-  background: var(--color-light-text-accent);
+  background: var(--color-dark-text-accent);
   color: var(--color-dark-bg);
   box-shadow: var(--shadow-dark-sm);
 }
 
 .dark .btn-primary:hover {
-  background: var(--color-light-text-accent);
+  background: #c2acf5;
   box-shadow: var(--shadow-dark-md);
 }
 
 .dark .btn-secondary {
   background: var(--color-dark-surface);
-  color: var(--color-light-text-accent);
-  border-color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
+  border-color: var(--color-dark-text-accent);
 }
 
 .dark .btn-secondary:hover {
-  background: rgba(56, 189, 248, 0.15);
+  background: rgba(191, 164, 255, 0.15);
 }
 
 /* Dark back to top button */
@@ -634,15 +633,13 @@
   background: var(--color-dark-surface);
   color: var(--color-dark-text-primary);
   border: 1px solid var(--color-dark-border);
-  box-shadow: var(--shadow-dark-lg);
 }
 
 .dark .back-to-top-button:hover,
 .dark #back-to-top-button:hover {
-  background: var(--color-light-text-accent);
+  background: var(--color-dark-text-accent);
   color: var(--color-dark-bg);
-  box-shadow: var(--shadow-dark-xl);
-  border-color: var(--color-light-text-accent);
+  border-color: var(--color-dark-text-accent);
 }
 
 /* Dark search results */
@@ -666,27 +663,27 @@
 }
 
 .dark .result-type-badge--api {
-  background: rgba(99, 102, 241, 0.3);
-  color: #b0b3ff;
-  border: 1px solid rgba(99, 102, 241, 0.5);
+  background: rgba(191, 164, 255, 0.3);
+  color: #bfa4ff;
+  border: 1px solid rgba(191, 164, 255, 0.5);
 }
 
 .dark .result-type-badge--docs {
-  background: rgba(14, 165, 233, 0.3);
-  color: #7dd3fc;
-  border: 1px solid rgba(14, 165, 233, 0.5);
+  background: rgba(191, 164, 255, 0.3);
+  color: #bfa4ff;
+  border: 1px solid rgba(191, 164, 255, 0.5);
 }
 
 .dark .search-results__item .fn-name {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 .dark .search-results__item .fn-signature {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 .dark .search-results__item strong {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 .dark .search-results__item .title {
@@ -698,14 +695,14 @@
 }
 
 .dark .search-results__item mark {
-  background: rgba(56, 189, 248, 0.3);
-  color: var(--color-light-text-accent);
+  background: rgba(191, 164, 255, 0.3);
+  color: var(--color-dark-text-accent);
 }
 
 /* Dark footer */
 .dark .site-footer {
-  background: var(--color-dark-bg-secondary);
-  border-top-color: var(--color-dark-border);
+  background: var(--color-dark-header-bg);
+  border-top-color: var(--color-dark-header-footer-border);
 }
 
 .dark .footer-logo .phel-logo {
@@ -727,8 +724,8 @@
 }
 
 .dark .footer-social a:hover {
-  background: var(--color-light-text-accent);
-  border-color: var(--color-light-text-accent);
+  background: var(--color-dark-text-accent);
+  border-color: var(--color-dark-text-accent);
   color: var(--color-dark-bg);
 }
 
@@ -741,7 +738,7 @@
 }
 
 .dark .footer-column ul li a:hover {
-  color: var(--color-light-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 .dark .footer-bottom {
@@ -761,21 +758,21 @@
 }
 
 .dark .footer-badge-version {
-  background: var(--color-light-text-accent);
+  background: var(--color-dark-text-accent);
   color: var(--color-dark-bg);
 }
 
 /* Dark focus states */
 .dark a:focus-visible,
 .dark button:focus-visible {
-  outline-color: var(--color-light-text-accent);
+  outline-color: var(--color-dark-text-accent);
 }
 
 /* Dark selection */
 .dark ::selection {
-  background: rgba(56, 189, 248, 0.3);
+  background: rgba(191, 164, 255, 0.3);
 }
 
 .dark ::-moz-selection {
-  background: rgba(56, 189, 248, 0.3);
+  background: rgba(191, 164, 255, 0.3);
 }
