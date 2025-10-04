@@ -5,7 +5,11 @@
   <h3 class="feature-title">{{ title }}</h3>
   <p class="feature-description">{{ description }}</p>
   <ul class="feature-items">
-    {{ body | safe }}
+    {% set lines = body | trim | split(pat="\n") %}
+    {% for line in lines %}
+      {% if line | trim %}
+        <li>{{ line | trim }}</li>
+      {% endif %}
+    {% endfor %}
   </ul>
 </div>
-

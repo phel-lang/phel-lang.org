@@ -358,6 +358,12 @@
 
 .dark .two-column-layout__sidebar::-webkit-scrollbar-thumb {
   background: var(--color-dark-border);
+  background-clip: padding-box;
+}
+
+.dark .two-column-layout__sidebar::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-base);
+  background-clip: padding-box;
 }
 
 /* Dark TOC */

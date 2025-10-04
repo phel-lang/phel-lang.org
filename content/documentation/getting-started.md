@@ -83,7 +83,7 @@ require __DIR__ . '/../vendor/autoload.php';
 php -S localhost:8000 ./src/index.php
 ```
 
-> 📘 [More on running code](/documentation/cli-commands#run-a-script)
+> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle; margin-right: 4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> [More on running code](/documentation/cli-commands#run-a-script)
 
 ## REPL
 
@@ -98,7 +98,7 @@ Try:
 (println "Hello" name)
 ```
 
-> 📘 [More on REPL](/documentation/repl)
+> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle; margin-right: 4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> [More on REPL](/documentation/repl)
 
 ## Testing
 
@@ -106,7 +106,7 @@ Try:
 vendor/bin/phel test --filter foo
 ```
 
-> 📘 [More on testing](/documentation/testing)
+> <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; display: inline-block; vertical-align: middle; margin-right: 4px;"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg> [More on testing](/documentation/testing)
 
 ## Editor Support
 
