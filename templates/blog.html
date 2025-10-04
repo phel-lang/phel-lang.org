@@ -6,7 +6,7 @@
 {% endblock meta_content %}
 {% block content %}
 <h1>Blog</h1>
-<p>Find the newest information about Phel in our Blog. Subscribe the <a href="{{ get_url(path="atom.xml", trailing_slash=false) }}">Atom/RSS feed</a> if you never want to miss a new entry.</p>
+<p>Find the newest information about Phel in our Blog.</p>
 <ul class="post-list">
     {% for page in paginator.pages %}
     <li>
