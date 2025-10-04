@@ -80,13 +80,15 @@
   padding: var(--space-md) var(--space-xl) var(--space-lg) var(--space-lg) ;
   margin: var(--space-xs) 0;
   border-radius: var(--radius-lg);
-  transition: background-color var(--duration-fast) var(--ease-out);
+  transition: background-color var(--duration-fast) var(--ease-out), opacity var(--duration-fast) var(--ease-out);
   cursor: pointer;
   border-bottom: none;
+  opacity: 0.8;
 }
 
 .search-results__item:hover {
   background: var(--color-light-surface-hover);
+  opacity: 0.9;
 }
 
 .search-result-link {

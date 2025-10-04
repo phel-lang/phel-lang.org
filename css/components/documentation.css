@@ -247,21 +247,21 @@
 .api-namespace-toggle-text {
   font-size: var(--text-sm);
   font-weight: 600;
-  color: #0982b8;
+  color: var(--color-phel-primary);
   opacity: 0.8;
   transition: opacity var(--duration-fast) var(--ease-out);
 }
 
 .api-namespace-toggle:hover .api-namespace-toggle-text {
   opacity: 1;
-  color: #0982b8;
+  color: var(--color-phel-primary);
 }
 
 /* When hovering over collapsed area, highlight the toggle text */
 .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow:hover ~ .api-namespace-toggle .api-namespace-toggle-text,
 .api-index__entry:has(.api-namespace-content.has-overflow:hover) .api-namespace-toggle-text {
   opacity: 1;
-  color: #0982b8;
+  color: var(--color-phel-primary);
 }
 
 /* Update text content based on state */
@@ -275,7 +275,7 @@
 
 .api-namespace-icon {
   flex-shrink: 0;
-  color: #0982b8;
+  color: var(--color-phel-primary);
   transition: transform var(--duration-normal) var(--ease-out);
   opacity: 0.8;
   width: 24px;
@@ -284,13 +284,13 @@
 
 .api-namespace-toggle:hover .api-namespace-icon {
   opacity: 1;
-  color: #0982b8;
+  color: var(--color-phel-primary);
 }
 
 /* When hovering over collapsed area, highlight the icon */
 .api-index__entry:has(.api-namespace-content.has-overflow:hover) .api-namespace-icon {
   opacity: 1;
-  color: #0982b8;
+  color: var(--color-phel-primary);
 }
 
 /* Collapsed (closed) = chevron down (V), Expanded (open) = chevron up (^) */
@@ -366,7 +366,7 @@
 .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow::before {
   content: 'Expand';
   position: absolute;
-  top: 60%;
+  top: 65%;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: var(--space-sm) var(--space-lg);
