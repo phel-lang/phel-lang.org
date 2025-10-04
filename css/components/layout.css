@@ -1,5 +1,5 @@
 /* Layout Container with smooth transitions */
-@utility layout-container {
+.layout-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -8,7 +8,7 @@
 }
 
 /* One Column Layout - Modern Content */
-@utility one-column-layout {
+.one-column-layout {
   margin: 0 auto;
   width: 100%;
   max-width: var(--container-content);
@@ -23,7 +23,7 @@
 }
 
 /* Two Column Layout - Modern Documentation */
-@utility two-column-layout {
+.two-column-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-md);
@@ -52,7 +52,7 @@
 }
 
 /* Sidebar with modern sticky behavior */
-@utility two-column-layout__sidebar {
+.two-column-layout__sidebar {
   order: -1;
 }
 
@@ -175,7 +175,7 @@
 }
 
 /* Main content area */
-@utility two-column-layout__main {
+.two-column-layout__main {
   order: 1;
   min-width: 0;
   width: 100%;
@@ -192,7 +192,7 @@
 }
 
 /* Modern Page Navigation (Previous/Next) */
-@utility related-container {
+.related-container {
   display: flex;
   justify-content: space-between;
   gap: var(--space-lg);
@@ -241,7 +241,7 @@
 }
 
 /* Back to Top Button */
-@utility back-to-top-button {
+.back-to-top-button {
   position: fixed;
   bottom: var(--space-2xl);
   right: var(--space-xl);
@@ -394,16 +394,5 @@
 .dark #back-to-top-button:hover {
   background: var(--color-dark-text-accent);
   color: var(--color-dark-bg);
-  border-color: var(--color-dark-text-accent);
-}
-
-.dark .card {
-  background: var(--color-dark-surface);
-  border-color: var(--color-dark-border);
-  box-shadow: var(--shadow-dark-sm);
-}
-
-.dark .card:hover {
-  box-shadow: var(--shadow-dark-lg);
   border-color: var(--color-dark-text-accent);
 }

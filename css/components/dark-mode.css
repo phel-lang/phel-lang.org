@@ -145,11 +145,6 @@
   );
 }
 
-/* Dark separator */
-.dark .separator {
-  border-color: var(--color-dark-border);
-}
-
 /* Dark layout components */
 .dark .one-column-layout,
 .dark .two-column-layout {

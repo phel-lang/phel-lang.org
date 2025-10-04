@@ -220,6 +220,7 @@
 .homepage-cta-primary:hover {
   background: #6d3fc2;
   border-color: #6d3fc2;
+  color: white;
 }
 
 .homepage-cta-secondary {
@@ -382,7 +383,7 @@
 .dark .homepage-cta-primary:hover {
   background: #c2acf5;
   border-color: #c2acf5;
-  color: white;
+  color: var(--color-dark-bg);
 }
 
 .dark .homepage-cta-secondary {

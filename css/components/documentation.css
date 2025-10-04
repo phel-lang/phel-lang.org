@@ -1,5 +1,5 @@
 /* Documentation navigation in sidebar */
-@utility docs-nav {
+.docs-nav {
   padding: 0;
   margin: 0;
 }
@@ -80,7 +80,7 @@
 }
 
 /* Table of contents */
-@utility page-toc {
+.page-toc {
   display: none;
   margin-bottom: var(--space-2xl);
   padding-bottom: var(--space-xl);
@@ -167,7 +167,7 @@
 }
 
 /* API Index - Pill Style */
-@utility api-index {
+.api-index {
   list-style: none;
   padding: 0;
   margin: var(--space-2xl) 0;
@@ -574,61 +574,6 @@ h6:hover .zola-anchor {
   padding: 0 var(--space-lg);
   color: var(--color-light-text-secondary);
   line-height: var(--leading-relaxed);
-}
-
-/* Code examples with header */
-.code-block-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--space-sm) var(--space-lg);
-  background: var(--color-light-bg-secondary);
-  border: 1px solid var(--color-light-border);
-  border-bottom: none;
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--color-light-text-secondary);
-}
-
-.code-block-header + pre {
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
-}
-
-.copy-code-button:active {
-  transform: translateY(0);
-}
-
-/* Breadcrumbs */
-.breadcrumbs {
-  display: flex;
-  align-items: center;
-  gap: var(--space-sm);
-  margin-bottom: var(--space-xl);
-  padding: var(--space-md);
-  background: var(--color-light-bg-secondary);
-  border-radius: var(--radius-lg);
-  font-size: var(--text-sm);
-}
-
-.breadcrumbs a {
-  color: var(--color-light-link);
-  text-decoration: none;
-  transition: color var(--duration-fast) var(--ease-out);
-}
-
-.breadcrumbs a::after {
-  display: none;
-}
-
-.breadcrumbs a:hover {
-  color: var(--color-light-link);
-}
-
-.breadcrumbs span:not(:last-child)::after {
-  content: '→';
-  margin-left: var(--space-sm);
-  color: var(--color-gray-light);
 }
 
 /* ========================================

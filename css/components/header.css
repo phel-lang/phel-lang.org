@@ -1,5 +1,5 @@
 /* Header Container */
-@utility site-header {
+.site-header {
   position: fixed;
   top: 0;
   left: 0;
@@ -94,7 +94,7 @@
    LOGO
    ======================================== */
 
-@utility site-header__logo {
+.site-header__logo {
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -130,7 +130,7 @@
    DESKTOP NAVIGATION
    ======================================== */
 
-@utility site-header__navigation {
+.site-header__navigation {
   display: none;
   flex: 0 1 auto;
   align-items: center;
@@ -207,7 +207,7 @@
    SEARCH
    ======================================== */
 
-@utility site-header__search {
+.site-header__search {
   position: relative;
   margin-left: auto;
   flex: 1;
@@ -354,7 +354,7 @@
    DESKTOP ACTIONS (Dark Mode, Social)
    ======================================== */
 
-@utility site-header__actions {
+.site-header__actions {
   display: none;
 }
 
@@ -367,7 +367,7 @@
   }
 }
 
-@utility site-header__link {
+.site-header__link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -389,7 +389,7 @@
   height: 20px;
 }
 
-@utility dark-mode-toggle {
+.dark-mode-toggle {
   display: inline-flex;
   align-items: center;
   justify-content: center;
