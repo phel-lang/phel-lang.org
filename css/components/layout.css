@@ -67,10 +67,8 @@
   border: 1px solid var(--color-light-border);
   border-radius: var(--radius-lg);
   color: var(--color-light-text-primary);
-  font-weight: 600;
-  font-size: var(--text-sm);
   cursor: pointer;
-  margin: var(--space-md) 0;
+  margin: var(--space-xl) 0;
   transition: all var(--duration-fast) var(--ease-out);
   position: relative;
   z-index: 10;
@@ -82,10 +80,14 @@
 }
 
 .sidebar-toggle[aria-expanded="true"] .sidebar-toggle-text::before {
+  font-weight: 600;
+  font-size: var(--text-base);
   content: 'Hide navigation';
 }
 
 .sidebar-toggle[aria-expanded="false"] .sidebar-toggle-text::before {
+  font-weight: 600;
+  font-size: var(--text-base);
   content: 'Show navigation';
 }
 

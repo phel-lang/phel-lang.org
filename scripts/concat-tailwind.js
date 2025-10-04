@@ -17,7 +17,6 @@ const parts = [
   'css/components/blog.css',
   'css/components/features.css',
   'css/components/dark-mode.css',
-  'css/components/performance.css',
 ];
 
 // Check if we're in watch mode

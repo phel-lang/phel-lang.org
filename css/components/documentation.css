@@ -317,8 +317,12 @@
 @media (max-width: 767px) {
   .api-namespace-content {
     gap: var(--space-xs);
-    max-width: 100vw;
+    max-width: 100%;
     padding: 0;
+  }
+  
+  .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow {
+    width: 100%;
   }
 }
 

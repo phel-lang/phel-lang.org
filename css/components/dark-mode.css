@@ -340,14 +340,15 @@
 
 /* Dark mode for sidebar toggle */
 .dark .sidebar-toggle {
-  background: var(--color-dark-bg-secondary);
-  border-color: var(--color-dark-border);
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-text-secondary);
   color: var(--color-dark-text-primary);
 }
 
 .dark .sidebar-toggle:hover {
   background: var(--color-dark-surface-hover);
   border-color: var(--color-dark-text-accent);
+  color: var(--color-dark-text-accent);
 }
 
 /* Dark mode for sidebar accordion open state */
@@ -672,15 +673,9 @@
 }
 
 .dark .result-type-badge--api {
-  background: rgba(191, 164, 255, 0.3);
-  color: #bfa4ff;
-  border: 1px solid rgba(191, 164, 255, 0.5);
-}
-
-.dark .result-type-badge--docs {
-  background: rgba(191, 164, 255, 0.3);
-  color: #bfa4ff;
-  border: 1px solid rgba(191, 164, 255, 0.5);
+  background: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+  border: 1px solid var(--color-dark-text-accent);
 }
 
 .dark .search-results__item .fn-name {
