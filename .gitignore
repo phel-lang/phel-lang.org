@@ -1,6 +1,8 @@
 .idea/
 .vscode/
 .cache/
+.claude/
+
 public/
 vendor/
 node_modules/
