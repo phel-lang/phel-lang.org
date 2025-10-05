@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PhelDocBuild\FileGenerator;
+namespace PhelWeb\FileGenerator;
 
 use Gacela\Framework\AbstractFactory;
 use Gacela\Framework\Config\Config;
 use Phel\Shared\Facade\ApiFacadeInterface;
-use PhelDocBuild\FileGenerator\Application\ApiMarkdownGenerator;
-use PhelDocBuild\FileGenerator\Application\ApiSearchGenerator;
-use PhelDocBuild\FileGenerator\Infrastructure\ApiMarkdownFile;
-use PhelDocBuild\FileGenerator\Infrastructure\ApiSearchFile;
+use PhelWeb\FileGenerator\Application\ApiMarkdownGenerator;
+use PhelWeb\FileGenerator\Application\ApiSearchGenerator;
+use PhelWeb\FileGenerator\Infrastructure\ApiMarkdownFile;
+use PhelWeb\FileGenerator\Infrastructure\ApiSearchFile;
 
 /**
  * @method Config getConfig()

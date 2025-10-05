@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhelDocBuildTests\FileGenerator\Domain;
+namespace PhelWebTests\FileGenerator\Domain;
 
 use Phel\Api\Transfer\PhelFunction;
 use Phel\Shared\Facade\ApiFacadeInterface;
-use PhelDocBuild\FileGenerator\Application\ApiSearchGenerator;
+use PhelWeb\FileGenerator\Application\ApiSearchGenerator;
 use PHPUnit\Framework\TestCase;
 
 final class ApiSearchGeneratorTest extends TestCase

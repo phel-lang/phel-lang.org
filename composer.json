@@ -21,12 +21,12 @@
     },
     "autoload": {
         "psr-4": {
-            "PhelDocBuild\\": "build/src/php/"
+            "PhelWeb\\": "build/src/php/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "PhelDocBuildTests\\": "build/tests/php"
+            "PhelWebTests\\": "build/tests/php"
         }
     },
     "minimum-stability": "dev",

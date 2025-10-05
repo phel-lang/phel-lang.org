@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhelDocBuild\FileGenerator;
+namespace PhelWeb\FileGenerator;
 
 use Gacela\Framework\AbstractFacade;
 
