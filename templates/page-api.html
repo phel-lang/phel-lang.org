@@ -11,16 +11,16 @@
     <ul class="api-index">
     {% for namespace in page.toc %}
         <li class="api-index__entry">
-            <button class="api-namespace-toggle" aria-expanded="false">
-                <h2 class="api-namespace-title">{{ namespace.title }}</h2>
-                <div class="api-namespace-toggle-indicator">
-                    <span class="api-namespace-toggle-text"></span>
-                    <svg class="api-namespace-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <button class="api-namespace__toggle" aria-expanded="false">
+                <h2 class="api-namespace__title">{{ namespace.title }}</h2>
+                <div class="api-namespace__toggle-indicator">
+                    <span class="api-namespace__toggle-text"></span>
+                    <svg class="api-namespace__icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
             </button>
-            <ul class="api-namespace-content">
+            <ul class="api-namespace__content">
             {% for fn in namespace.children %}
                 <li>
                     <a href="{{ fn.permalink | safe }}">{{ fn.title }}</a>

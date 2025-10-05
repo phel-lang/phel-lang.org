@@ -1,5 +1,7 @@
 <div class="solution">
-    <input type="checkbox" style="display: none" id="cb{{ nth }}">
-    <label for="cb{{ nth }}">→ Show solution</label>
-    {{ body | markdown | safe }}
+    <input type="checkbox" id="cb{{ nth }}">
+    <label for="cb{{ nth }}" class="btn btn-secondary"></label>
+    <div class="solution-content">
+        {{ body | markdown | safe }}
+    </div>
 </div>

@@ -1,5 +1,10 @@
-/* Blog post list */
-@utility post-list {
+.blog-intro {
+  font-size: var(--text-lg);
+  color: var(--color-light-text-secondary);
+  margin-bottom: var(--space-2xl);
+}
+
+.post-list {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -22,10 +27,10 @@
 .post-list li a::after {
   content: '';
   position: absolute;
-  bottom: 0;
+  bottom: -2px;
   left: 0;
   width: 0;
-  height: 1px;
+  height: 2px;
   background: var(--color-light-link);
   transition: width var(--duration-normal) var(--ease-out);
 }
@@ -35,7 +40,7 @@
 }
 
 /* Pagination */
-@utility pagination {
+.pagination {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,55 +48,51 @@
   margin: var(--space-3xl) 0;
 }
 
-.pagination a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 40px;
-  height: 40px;
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-light-surface);
+.pagination .btn {
   color: var(--color-light-link);
-  border: 1px solid var(--color-light-border);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  text-decoration: none;
-  transition: all var(--duration-fast) var(--ease-out);
 }
 
-.pagination a::after {
-  display: none;
-}
-
-.pagination a.active {
-  background: var(--color-light-link);
-  color: white;
-  border-color: var(--color-light-link);
-}
-
-.pagination a.previous {
+.pagination__btn--previous {
   margin-right: auto;
 }
 
-.pagination a.next {
+.pagination__btn--next {
   margin-left: auto;
 }
 
-.pagination a.next::after {
-  content: ' →';
-  margin-left: var(--space-xs);
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+.dark .blog-intro {
+  color: var(--color-dark-text-secondary);
 }
 
-/* Featured post highlight */
-/*.post-list li.featured a {*/
-/*  border: 2px solid var(--color-light-link);*/
-/*  background: linear-gradient(*/
-/*    135deg,*/
-/*    rgba(99, 102, 241, 0.05),*/
-/*    transparent*/
-/*  );*/
-/*}*/
+.dark .post-list li a {
+  border-bottom-color: var(--color-dark-border);
+}
 
-/*.post-list li.featured a::before {*/
-/*  transform: scaleY(1);*/
-/*}*/
+.dark .post-list li a::after {
+  background: var(--color-dark-text-accent);
+}
+
+.dark .post-list li a h2 {
+  color: var(--color-dark-text-primary);
+}
+
+.dark .post-list li a:hover h2 {
+  color: var(--color-dark-text-accent);
+}
+
+.dark .post-list li a .meta {
+  color: var(--color-dark-text-muted);
+}
+
+.dark .post-list li a .excerpt {
+  color: var(--color-dark-text-secondary);
+}
+
+/* Pagination dark mode - inherit from .btn-secondary, add link color */
+.dark .pagination .btn {
+  color: var(--color-dark-text-accent);
+}

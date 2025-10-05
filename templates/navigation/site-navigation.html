@@ -1,6 +1,6 @@
 {% if page.ancestors %}
 <div class="site-navigation-section">
-    <h2 class="site-navigation-title">Contents</h2>
+    <h2 class="site-navigation__title">Contents</h2>
     <ol class="site-navigation">
         {% set doc_section = get_section(path=page.ancestors | reverse | first) %}
         {% for page in doc_section.pages %}

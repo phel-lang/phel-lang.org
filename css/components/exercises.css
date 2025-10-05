@@ -1,0 +1,40 @@
+.solution {
+  margin: var(--space-xl) 0;
+}
+
+.solution input[type="checkbox"] {
+  display: none;
+}
+
+.solution .btn::before {
+  content: '→ Show solution';
+}
+
+.solution input[type="checkbox"]:checked ~ .btn.btn-secondary {
+  background: var(--color-light-link) !important;
+  color: white !important;
+  border-color: var(--color-light-link) !important;
+}
+
+.solution input[type="checkbox"]:checked ~ .btn::before {
+  content: '← Hide solution';
+}
+
+.solution .solution-content {
+  display: none;
+}
+
+.solution input[type="checkbox"]:checked ~ .solution-content {
+  display: block;
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+.dark .solution input[type="checkbox"]:checked ~ .btn.btn-secondary {
+  background: var(--color-dark-text-accent) !important;
+  color: var(--color-dark-bg) !important;
+  border-color: var(--color-dark-text-accent) !important;
+}
+

@@ -110,7 +110,7 @@ vendor/bin/phel test --filter foo
 
 ## Editor Support
 
-- [VSCode](https://github.com/phel-lang/phel-vs-code-extension)
 - [PhpStorm](https://github.com/phel-lang/phel-intellij-plugin)
+- [VSCode](https://github.com/phel-lang/phel-vs-code-extension)
 - [Emacs](https://codeberg.org/mmontone/interactive-lang-tools)
 - [Vim](https://github.com/danirod/phel.vim)

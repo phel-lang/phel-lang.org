@@ -1,0 +1,319 @@
+/* ========================================
+   UTILITY CLASSES
+   Base classes for common patterns
+   ======================================== */
+
+/* ========================================
+   BUTTONS
+   ======================================== */
+
+/* Base button styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  user-select: none;
+  border: 1px solid transparent;
+}
+
+/* Button variants */
+.btn-primary {
+  background: var(--color-light-link);
+  color: white;
+  border-color: var(--color-light-link);
+}
+
+.btn-primary:hover {
+  background: var(--color-light-link-hover, #5a5fcf);
+  border-color: var(--color-light-link-hover, #5a5fcf);
+}
+
+.btn-secondary {
+  background: var(--color-light-surface);
+  color: var(--color-light-text-primary);
+  border-color: var(--color-light-border);
+}
+
+.btn-secondary:hover {
+  background: var(--color-light-surface-hover);
+  border-color: var(--color-light-link);
+  color: var(--color-light-link);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-gray-dark);
+  border-color: transparent;
+}
+
+.btn-ghost:hover {
+  background: var(--color-light-surface-hover);
+  color: var(--color-light-link);
+}
+
+/* Button sizes */
+.btn-sm {
+  min-width: 40px;
+  height: 40px;
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--text-xs);
+}
+
+.btn-md {
+  min-width: 40px;
+  height: 40px;
+  padding: var(--space-sm) var(--space-md);
+}
+
+.btn-lg {
+  padding: var(--space-md) var(--space-lg);
+  font-size: var(--text-base);
+}
+
+/* Button shapes */
+.btn-rounded {
+  border-radius: var(--radius-lg);
+}
+
+.btn-pill {
+  border-radius: var(--radius-full);
+}
+
+.btn-square {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+}
+
+/* ========================================
+   BADGES
+   ======================================== */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 8px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-primary {
+  background: var(--color-light-link);
+  color: white;
+}
+
+.badge-secondary {
+  background: var(--color-light-surface);
+  color: var(--color-light-text-secondary);
+  border: 1px solid var(--color-light-border);
+}
+
+/* ========================================
+   FLEX UTILITIES
+   ======================================== */
+
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.gap-sm {
+  gap: var(--space-sm);
+}
+
+.gap-md {
+  gap: var(--space-md);
+}
+
+.gap-lg {
+  gap: var(--space-lg);
+}
+
+/* ========================================
+   SPACING UTILITIES
+   ======================================== */
+
+.m-0 {
+  margin: 0;
+}
+
+.mt-sm {
+  margin-top: var(--space-sm);
+}
+
+.mt-md {
+  margin-top: var(--space-md);
+}
+
+.mt-lg {
+  margin-top: var(--space-lg);
+}
+
+.mb-sm {
+  margin-bottom: var(--space-sm);
+}
+
+.mb-md {
+  margin-bottom: var(--space-md);
+}
+
+.mb-lg {
+  margin-bottom: var(--space-lg);
+}
+
+/* ========================================
+   TEXT UTILITIES
+   ======================================== */
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+/* ========================================
+   DISPLAY UTILITIES
+   ======================================== */
+
+.hidden {
+  display: none;
+}
+
+.block {
+  display: block;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+/* ========================================
+   SIZE UTILITIES
+   ======================================== */
+
+.w-full {
+  width: 100%;
+}
+
+.w-auto {
+  width: auto;
+}
+
+.h-full {
+  height: 100%;
+}
+
+.h-auto {
+  height: auto;
+}
+
+.max-w-full {
+  max-width: 100%;
+}
+
+.min-w-0 {
+  min-width: 0;
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+.dark .btn-primary {
+  background: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+  border-color: var(--color-dark-text-accent);
+}
+
+.dark .btn-primary:hover {
+  background: #c2acf5;
+  border-color: #c2acf5;
+}
+
+.dark .btn-secondary {
+  background: var(--color-dark-surface);
+  color: var(--color-dark-text-primary);
+  border-color: var(--color-dark-border);
+}
+
+.dark .btn-secondary:hover {
+  background: var(--color-dark-surface-hover);
+  border-color: var(--color-dark-text-accent);
+  color: var(--color-dark-text-accent);
+}
+
+.dark .btn-ghost {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .btn-ghost:hover {
+  background: rgba(191, 164, 255, 0.15);
+  color: var(--color-dark-text-accent);
+}
+
+.dark .badge-primary {
+  background: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+}
+
+.dark .badge-secondary {
+  background: var(--color-dark-surface);
+  color: var(--color-dark-text-secondary);
+  border-color: var(--color-dark-border);
+}
+

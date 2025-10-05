@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import 'tailwindcss/theme' layer(theme);
 
 @source '../content/**/*.md';
 
@@ -15,7 +15,6 @@
   --color-light-link: #512da8;
   --color-light-border: #e2e8f0;
   --color-light-border-subtle: #f1f5f9;
-  --color-phel-primary: #512da8;
   
   /* Modern Color Palette - Dark Mode */
   --color-dark-bg: #212830;
@@ -24,7 +23,7 @@
   --color-dark-text-secondary: #cbd5e1;
   --color-dark-text-muted: #94a3b8;
   --color-dark-text-accent: #bfa4ff;
-  --color-dark-link: #bfa4ff;
+  --color-dark-link: #d1c7e5;
   --color-dark-border: #3a3a3a;
   --color-dark-border-subtle: #2a2a2a;
   --color-dark-header-footer-border: #151a24;
@@ -36,7 +35,7 @@
   --color-dark-surface: #2a313c;
   --color-dark-surface-hover: #262c36;
   
-  /* Code & Catalogue */
+  /* Code */
   --color-light-code-bg: #f1f5f9;
   --color-light-code-inline-bg: #e2e8f0;
   --color-dark-code-bg: #262c36;
@@ -54,33 +53,14 @@
   
 
   /* Extended Color Palette */
-  --color-blue-darker: #1e40af;
-  --color-blue-dark: #2563eb;
-  --color-blue-base: #3b82f6;
-  --color-blue-light: #60a5fa;
-  --color-blue-lighter: #93c5fd;
-
-  --color-green-darker: #047857;
-  --color-green-dark: #059669;
-  --color-green-base: #10b981;
-  --color-green-light: #34d399;
-  --color-green-lighter: #6ee7b7;
-
-  --color-red-darker: #b91c1c;
-  --color-red-dark: #dc2626;
-  --color-red-base: #ef4444;
-  --color-red-light: #f87171;
-  --color-red-lighter: #fca5a5;
-
   --color-gray-darker: #252525;
   --color-gray-dark: #475569;
   --color-gray-base: #64748b;
   --color-gray-light: #94a3b8;
   --color-gray-lighter: #cbd5e1;
 
-  /* Modern Typography */
+  /* Typography */
   --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-secondary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', 'Monaco', monospace;
   --font-inter: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
 

@@ -64,7 +64,7 @@ if (document.readyState !== 'loading') {
 
 // Mobile dark mode toggle (separate initialization)
 document.addEventListener('DOMContentLoaded', function() {
-  const mobileDarkToggle = document.querySelector('.mobile-dark-mode-toggle');
+  const mobileDarkToggle = document.querySelector('.mobile-menu__dark-mode-toggle');
   const mainDarkToggle = document.getElementById('dark-mode-toggle');
   
   if (mobileDarkToggle && mainDarkToggle) {
