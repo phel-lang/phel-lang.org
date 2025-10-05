@@ -1,11 +1,9 @@
-/* Blog intro text */
 .blog-intro {
   font-size: var(--text-lg);
   color: var(--color-light-text-secondary);
   margin-bottom: var(--space-2xl);
 }
 
-/* Blog post list */
 .post-list {
   list-style: none;
   padding: 0;

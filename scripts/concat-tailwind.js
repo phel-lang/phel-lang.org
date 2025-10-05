@@ -6,17 +6,29 @@ const outFile = path.join(projectRoot, 'css', 'tailwind.entry.css');
 
 // Define concatenation order (top → bottom)
 const parts = [
+  // 1. Foundation
   'css/theme.css',
   'css/base.css',
-  'css/components/footer.css',
-  'css/components/header.css',
-  'css/components/navigation.css',
+  
+  // 2. Layout & Structure
   'css/components/layout.css',
-  'css/components/search.css',
-  'css/components/documentation.css',
+  'css/components/header.css',
+  'css/components/footer.css',
+  'css/components/navigation.css',
+  'css/components/sidebar.css',
+  
+  // 3. Pages
+  'css/components/homepage.css',
   'css/components/blog.css',
-  'css/components/features.css',
+  'css/components/documentation.css',
+  'css/components/api.css',
+  'css/components/exercises.css',
+  
+  // 4. Features
+  'css/components/search.css',
   'css/components/code-block.css',
+  
+  // 5. Dark Mode (last to override)
   'css/components/dark-mode.css',
 ];
 

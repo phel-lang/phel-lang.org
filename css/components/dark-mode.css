@@ -1,7 +1,3 @@
-/* ============================================
-   DARK MODE - Global Styles
-   ============================================ */
-
 @media (prefers-color-scheme: dark) {
   :root {
     --color-bg: var(--color-dark-bg);

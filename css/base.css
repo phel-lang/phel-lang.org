@@ -122,7 +122,6 @@ h4,
 h5,
 h6 {
   color: var(--color-light-text-primary);
-  font-family: var(--font-secondary);
   font-weight: 700;
   line-height: 1.2;
   letter-spacing: -0.02em;
