@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhelDocBuild\FileGenerator\Application;
 
-use Phel\Api\ApiFacadeInterface;
 use Phel\Api\Transfer\PhelFunction;
+use Phel\Shared\Facade\ApiFacadeInterface;
 
 final readonly class ApiMarkdownGenerator
 {

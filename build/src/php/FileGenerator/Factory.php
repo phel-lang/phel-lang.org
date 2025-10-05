@@ -6,7 +6,7 @@ namespace PhelDocBuild\FileGenerator;
 
 use Gacela\Framework\AbstractFactory;
 use Gacela\Framework\Config\Config;
-use Phel\Api\ApiFacadeInterface;
+use Phel\Shared\Facade\ApiFacadeInterface;
 use PhelDocBuild\FileGenerator\Application\ApiMarkdownGenerator;
 use PhelDocBuild\FileGenerator\Application\ApiSearchGenerator;
 use PhelDocBuild\FileGenerator\Infrastructure\ApiMarkdownFile;

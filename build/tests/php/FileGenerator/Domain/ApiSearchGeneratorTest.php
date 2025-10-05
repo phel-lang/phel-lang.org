@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace PhelDocBuildTests\FileGenerator\Domain;
 
-use Phel\Api\ApiFacadeInterface;
 use Phel\Api\Transfer\PhelFunction;
+use Phel\Shared\Facade\ApiFacadeInterface;
 use PhelDocBuild\FileGenerator\Application\ApiSearchGenerator;
 use PHPUnit\Framework\TestCase;
 
