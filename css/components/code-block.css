@@ -51,8 +51,8 @@
 }
 
 .copy-code-button.copied {
-  background-color: var(--color-phel-primary);
-  border-color: var(--color-phel-primary);
+  background-color: var(--color-light-link);
+  border-color: var(--color-light-link);
 }
 
 .copy-code-button.copied svg {

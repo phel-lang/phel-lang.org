@@ -293,11 +293,11 @@
   opacity: 1 !important;
 }
 
-.mobile-menu-nav {
+.mobile-menu__nav {
   padding: var(--space-xl) var(--space-lg);
 }
 
-.mobile-menu-nav ul {
+.mobile-menu__nav ul {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -306,19 +306,19 @@
   gap: var(--space-md);
 }
 
-.mobile-menu-nav li {
+.mobile-menu__nav li {
   margin: 0;
   width: 100%;
 }
 
-.mobile-menu-nav li::before {
+.mobile-menu__nav li::before {
   display: none;
 }
 
-.mobile-menu-nav a {
+.mobile-menu__nav a {
   display: block;
   width: 100%;
-  padding: var(--space-sm) var(--space-md);
+  padding: 0.4rem var(--space-md);
   font-size: var(--text-xl);
   font-weight: 600;
   color: var(--color-light-text-primary);
@@ -331,12 +331,12 @@
   box-sizing: border-box;
 }
 
-.mobile-menu-nav a::after {
+.mobile-menu__nav a::after {
   display: none;
 }
 
-.mobile-menu-nav a:hover,
-.mobile-menu-nav a:active {
+.mobile-menu__nav a:hover,
+.mobile-menu__nav a:active {
   background: var(--color-light-link);
   color: white;
   border-color: var(--color-light-link);
@@ -344,7 +344,7 @@
 }
 
 /* Mobile menu social links */
-.mobile-menu-link {
+.mobile-menu__link {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -364,30 +364,37 @@
   margin-top: var(--space-md);
 }
 
-.mobile-menu-link::after {
+.mobile-menu__link::after {
   display: none;
 }
 
-.mobile-menu-link:hover,
-.mobile-menu-link:active {
+.mobile-menu__link:hover,
+.mobile-menu__link:active {
   background: var(--color-light-link);
   color: white;
   border-color: var(--color-light-link);
   transform: scale(1.02);
 }
 
-.mobile-menu-link svg {
+.mobile-menu__link svg {
   flex-shrink: 0;
 }
 
-/* Mobile menu actions (Dark mode toggle) */
-.mobile-menu-actions {
-  margin-top: var(--space-2xl);
-  padding-top: var(--space-xl);
+/* Mobile menu actions (Social links + Dark mode toggle) */
+.mobile-menu__actions {
+  margin-top: var(--space-xl);
+  padding-top: var(--space-sm);
   border-top: 2px solid var(--color-light-border);
 }
 
-.mobile-dark-mode-toggle {
+.mobile-menu__social-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.mobile-menu__dark-mode-toggle {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -402,15 +409,14 @@
   border-radius: var(--radius-xl);
   cursor: pointer;
   transition: all var(--duration-fast) var(--ease-out);
-  font-family: var(--font-primary);
 }
 
-.mobile-dark-mode-toggle:hover {
+.mobile-menu__dark-mode-toggle:hover {
   background: var(--color-light-surface-hover);
   border-color: var(--color-light-link);
 }
 
-.mobile-dark-mode-toggle svg {
+.mobile-menu__dark-mode-toggle svg {
   width: 24px;
   height: 24px;
 }
@@ -424,19 +430,6 @@ body.menu-open {
 @media (min-width: 1040px) {
   .mobile-menu-overlay {
     display: none !important;
-  }
-}
-
-/* ========================================
-   ANIMATIONS
-   ======================================== */
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
   }
 }
 
@@ -513,43 +506,43 @@ body.menu-open {
     -webkit-backdrop-filter: blur(var(--backdrop-blur-lg));
   }
 
-  .dark .mobile-menu-nav a {
+  .dark .mobile-menu__nav a {
     background: var(--color-dark-surface);
     border-color: var(--color-dark-border);
     color: var(--color-dark-text-primary);
   }
 
-  .dark .mobile-menu-nav a:hover,
-  .dark .mobile-menu-nav a:active {
+  .dark .mobile-menu__nav a:hover,
+  .dark .mobile-menu__nav a:active {
     background: var(--color-dark-text-accent);
     border-color: var(--color-dark-text-accent);
     color: var(--color-dark-bg);
   }
 
-  .dark .mobile-menu-link {
+  .dark .mobile-menu__link {
     background: var(--color-dark-surface);
     border-color: var(--color-dark-border);
     color: var(--color-dark-text-primary);
   }
 
-  .dark .mobile-menu-link:hover,
-  .dark .mobile-menu-link:active {
+  .dark .mobile-menu__link:hover,
+  .dark .mobile-menu__link:active {
     background: var(--color-dark-text-accent);
     border-color: var(--color-dark-text-accent);
     color: var(--color-dark-bg);
   }
 
-  .dark .mobile-menu-actions {
+  .dark .mobile-menu__actions {
     border-top-color: var(--color-dark-border);
   }
 
-  .dark .mobile-dark-mode-toggle {
+  .dark .mobile-menu__dark-mode-toggle {
     background: var(--color-dark-surface);
     border-color: var(--color-dark-border);
     color: var(--color-dark-text-primary);
   }
 
-  .dark .mobile-dark-mode-toggle:hover {
+  .dark .mobile-menu__dark-mode-toggle:hover {
     background: rgba(191, 164, 255, 0.15);
     border-color: var(--color-dark-text-accent);
   }

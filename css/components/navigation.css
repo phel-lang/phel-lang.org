@@ -16,10 +16,3 @@
 .top-navigation li::before {
   display: none;
 }
-
-@media (min-width: 1040px) {
-  .top-navigation__item--github,
-  .top-navigation__item--x {
-    display: none;
-  }
-}

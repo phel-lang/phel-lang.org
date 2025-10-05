@@ -2,16 +2,16 @@
 title = "Phel: A Functional Lisp Dialect for PHP Developers"
 +++
 
-**Phel** is a functional programming language that compiles down to PHP. It's a modern Lisp dialect inspired by [Clojure](https://clojure.org/) and [Janet](https://janet-lang.org/), tailored to bring functional elegance and expressive code to the world of PHP development.
+<img src="/images/logo_phel.svg" width="380" alt="Phel language logo"/>
 
-<img src="/images/logo_phel.svg" width="450" alt="Phel language logo"/>
+**Phel** is a functional programming language that compiles to PHP — a modern Lisp dialect inspired by [Clojure](https://clojure.org/) and [Janet](https://janet-lang.org/), bringing functional elegance and expressive code to PHP development.
 
 <div class="homepage-cta">
-  <a href="#try-phel-instantly-with-docker" class="homepage-cta-button homepage-cta-primary">
+  <a href="#try-phel-instantly-with-docker" class="btn btn-primary homepage-cta-button homepage-cta-primary">
     <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
     Try Phel with Docker
   </a>
-  <a href="/documentation/getting-started" class="homepage-cta-button homepage-cta-secondary">
+  <a href="/documentation/getting-started" class="btn btn-secondary homepage-cta-button homepage-cta-secondary">
     <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
     Read Documentation
   </a>

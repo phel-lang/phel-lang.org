@@ -14,15 +14,15 @@
 
     <div class="related-container">
       {% if page.lower %}
-      <a href="{{ page.lower.permalink }}" class="link link-previous">
+      <a href="{{ page.lower.permalink }}" class="btn btn-secondary link link--previous">
         <span>←</span>
-        <span class="link-title">{{ page.lower.title }}</span>
+        <span class="link__title">{{ page.lower.title }}</span>
       </a>
       {% endif %}
 
       {% if page.higher %}
-      <a href="{{ page.higher.permalink }}" class="link link-next">
-        <span class="link-title">{{ page.higher.title }}</span>
+      <a href="{{ page.higher.permalink }}" class="btn btn-secondary link link--next">
+        <span class="link__title">{{ page.higher.title }}</span>
         <span>→</span>
       </a>
       {% endif %}

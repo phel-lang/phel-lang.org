@@ -17,7 +17,6 @@
   padding: var(--space-sm) var(--space-md);
   padding-left: 36px;
   font-size: var(--text-sm);
-  font-family: var(--font-primary);
   color: var(--color-light-text-primary);
   background-color: var(--color-light-bg-secondary);
   border: 1px solid var(--color-light-border);
@@ -130,17 +129,6 @@
   }
 }
 
-@keyframes expandSearch {
-  from {
-    transform: scale(0.95);
-    opacity: 0.8;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
 /* Search results dropdown with glassmorphism */
 .search-results {
   position: absolute;
@@ -234,7 +222,7 @@
   opacity: 0.9;
 }
 
-.search-result-link {
+.search-results__link {
   display: block;
   text-decoration: none;
   color: var(--color-light-text-primary);
@@ -256,7 +244,7 @@
   min-width: 0;
 }
 
-.result-type-badge {
+.search-results__badge {
   display: inline-flex;
   align-items: center;
   padding: 3px 8px;
@@ -270,12 +258,12 @@
   line-height: 1.2;
 }
 
-.result-type-badge--api {
+.search-results__badge--api {
   background: var(--color-light-link);
   color: white;
 }
 
-.result-type-badge--docs {
+.search-results__badge--docs {
   background: var(--color-light-text-accent);
   color: white;
 }
@@ -360,18 +348,6 @@
   border-left: 3px solid var(--color-light-link);
 }
 
-/* Animation keyframes */
-@keyframes slideInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* Mobile responsive */
 @media (max-width: 1039px) {
   .search-results {
@@ -435,7 +411,7 @@
   opacity: 0.7;
 }
 
-.dark .search-result-link {
+.dark .search-results__link {
   color: var(--color-dark-text-primary);
 }
 
@@ -444,16 +420,16 @@
   opacity: 0.8;
 }
 
-.dark .result-type-badge--api {
+.dark .search-results__badge--api {
   background: var(--color-dark-text-accent);
   color: var(--color-dark-bg);
   border: 1px solid var(--color-dark-text-accent);
 }
 
-.dark .result-type-badge--docs {
-  background: rgba(59, 130, 246, 0.2);
-  color: #60a5fa;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+.dark .search-results__badge--docs {
+  background: var(--color-dark-link);
+  color: var(--color-dark-bg);
+  border: 1px solid var(--color-dark-link);
 }
 
 .dark .search-results__item .fn-name {

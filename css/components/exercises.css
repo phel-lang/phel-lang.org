@@ -6,41 +6,17 @@
   display: none;
 }
 
-.solution label {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 40px;
-  height: 40px;
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-light-surface);
-  border: 1px solid var(--color-light-border);
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  color: var(--color-light-text-primary);
-  transition: all var(--duration-fast) var(--ease-out);
-  user-select: none;
-}
-
-.solution label::before {
+.solution .btn::before {
   content: '→ Show solution';
 }
 
-.solution label:hover {
-  background: var(--color-light-surface-hover);
-  border-color: var(--color-light-link);
-  color: var(--color-light-link);
+.solution input[type="checkbox"]:checked ~ .btn.btn-secondary {
+  background: var(--color-light-link) !important;
+  color: white !important;
+  border-color: var(--color-light-link) !important;
 }
 
-.solution input[type="checkbox"]:checked ~ label {
-  background: var(--color-light-link);
-  color: white;
-  border-color: var(--color-light-link);
-}
-
-.solution input[type="checkbox"]:checked ~ label::before {
+.solution input[type="checkbox"]:checked ~ .btn::before {
   content: '← Hide solution';
 }
 
@@ -56,21 +32,9 @@
    DARK MODE
    ======================================== */
 
-.dark .solution label {
-  background: var(--color-dark-surface);
-  border-color: var(--color-dark-border);
-  color: var(--color-dark-text-primary);
-}
-
-.dark .solution label:hover {
-  background: var(--color-dark-surface-hover);
-  border-color: var(--color-dark-text-accent);
-  color: var(--color-dark-text-accent);
-}
-
-.dark .solution input[type="checkbox"]:checked ~ label {
-  background: var(--color-dark-text-accent);
-  color: var(--color-dark-bg);
-  border-color: var(--color-dark-text-accent);
+.dark .solution input[type="checkbox"]:checked ~ .btn.btn-secondary {
+  background: var(--color-dark-text-accent) !important;
+  color: var(--color-dark-bg) !important;
+  border-color: var(--color-dark-text-accent) !important;
 }
 

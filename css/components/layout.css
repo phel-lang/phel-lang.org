@@ -26,7 +26,6 @@
 .two-column-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-md);
   max-width: var(--container-wide);
   width: 100%;
   margin: 0 auto;
@@ -62,13 +61,13 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: var(--space-md);
+  padding: 0.7rem;
   background: var(--color-light-bg-secondary);
   border: 1px solid var(--color-light-border);
   border-radius: var(--radius-lg);
   color: var(--color-light-text-primary);
   cursor: pointer;
-  margin: var(--space-xl) 0;
+  margin: var(--space-xl) 0 var(--space-sm);
   transition: all var(--duration-fast) var(--ease-out);
   position: relative;
   z-index: 10;
@@ -111,7 +110,7 @@
 
 /* Add bottom border to sidebar when accordion is open on mobile */
 .two-column-layout__sidebar:has(.sidebar-content.active) {
-  padding-bottom: var(--space-xl);
+  padding-bottom: var(--space-md);
   border-bottom: 2px solid var(--color-light-border);
 }
 
@@ -127,16 +126,15 @@
   .two-column-layout__sidebar {
     order: -1;
     margin-bottom: 0;
-    padding-bottom: 0;
-    padding: var(--space-xl);
-    border-bottom: none;
+    padding: var(--space-xl) var(--space-xl) 0 var(--space-xl);
+    /*border-bottom: none;*/
+    border: 1px solid var(--color-light-border);
     position: sticky;
     top: calc(var(--header-height) + var(--space-xl));
     align-self: start;
     max-height: calc(100vh - var(--header-height) - var(--space-2xl));
     overflow-y: auto;
     background: var(--color-light-surface);
-    border: 1px solid var(--color-light-border);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-sm);
     transition: all var(--duration-normal) var(--ease-out);
@@ -206,37 +204,16 @@
   }
 }
 
-.related-container .link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  min-width: 40px;
-  height: 40px;
-  padding: var(--space-sm) var(--space-md);
-  background: var(--color-light-surface);
+/* Related navigation buttons now use .btn from utilities */
+.related-container .btn {
   color: var(--color-light-link);
-  border: 1px solid var(--color-light-border);
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  text-decoration: none;
-  transition: all var(--duration-fast) var(--ease-out);
 }
 
-.related-container .link:hover {
-  border-color: var(--color-light-link);
-  background: var(--color-light-surface-hover);
-}
-
-.related-container .link::after {
-  display: none;
-}
-
-.related-container .link .link-title {
+.related-container .link__title {
   flex: 1;
 }
 
-.related-container .link > span:not(.link-title) {
+.related-container .link > span:not(.link__title) {
   flex-shrink: 0;
 }
 
@@ -278,38 +255,6 @@
 
 .back-to-top-button:active {
   transform: scale(0.95);
-}
-
-/* Animation keyframes */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
 }
 
 /* ========================================
@@ -364,18 +309,8 @@
   box-shadow: none;
 }
 
-.dark .related-container .link {
-  background: var(--color-dark-surface);
-  border-color: var(--color-dark-border);
-  color: var(--color-dark-text-accent);
-}
-
-.dark .related-container .link:hover {
-  border-color: var(--color-dark-text-accent);
-  background: var(--color-dark-surface-hover);
-}
-
-.dark .related-container .link .link-title {
+/* Related container dark mode - btn styles inherited, add link color */
+.dark .related-container .btn {
   color: var(--color-dark-text-accent);
 }
 

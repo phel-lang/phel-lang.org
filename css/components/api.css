@@ -22,7 +22,7 @@
 }
 
 /* API Namespace Toggle */
-.api-namespace-toggle {
+.api-namespace__toggle {
   align-items: flex-end;
   background: 0 0;
   border: none;
@@ -30,14 +30,13 @@
   cursor: default;
   display: flex;
   justify-content: space-between;
-  margin-bottom: var(--space-lg);
   padding: 0 0 var(--space-sm);
   text-align: left;
   transition: all var(--duration-fast) var(--ease-out);
   width: 100%;
 }
 
-.api-namespace-title {
+.api-namespace__title {
   color: var(--color-light-link);
   font-size: var(--text-2xl);
   font-weight: 600;
@@ -47,7 +46,7 @@
   padding: 0;
 }
 
-.api-namespace-toggle-indicator {
+.api-namespace__toggle-indicator {
   align-items: flex-end;
   display: flex;
   flex-direction: row;
@@ -56,47 +55,44 @@
 }
 
 /* Hide indicator for namespaces without overflow */
-.api-namespace-toggle[aria-expanded="false"] + .api-namespace-content:not(.has-overflow) ~ * .api-namespace-toggle-indicator,
-.api-index__entry:has(.api-namespace-content:not(.has-overflow)) .api-namespace-toggle-indicator {
+.api-namespace__toggle[aria-expanded="false"] + .api-namespace__content:not(.has-overflow) ~ * .api-namespace__toggle-indicator,
+.api-index__entry:has(.api-namespace__content:not(.has-overflow)) .api-namespace__toggle-indicator {
   display: none;
 }
 
-.api-index__entry:has(.api-namespace-content.has-overflow) .api-namespace-toggle {
+.api-index__entry:has(.api-namespace__content.has-overflow) .api-namespace__toggle {
   cursor: pointer;
 }
 
-.api-namespace-toggle-text {
-  color: var(--color-phel-primary);
+.api-namespace__toggle-text {
+  color: var(--color-light-link);
   opacity: 0.8;
   font-size: var(--text-sm);
   font-weight: 600;
   transition: opacity var(--duration-fast) var(--ease-out);
 }
 
-.api-namespace-icon {
-  color: var(--color-phel-primary);
+.api-namespace__icon {
+  color: var(--color-light-link);
   flex-shrink: 0;
-  height: 24px;
+  height: 18px;
   opacity: .8;
   transition: transform var(--duration-normal) var(--ease-out);
-  width: 24px;
+  width: 18px;
 }
 
-.api-namespace-toggle:hover .api-namespace-toggle-text {
+.api-namespace__toggle:hover .api-namespace__toggle-text,
+.api-namespace__toggle:hover .api-namespace__icon {
   opacity: 1;
-  color: var(--color-phel-primary);
-}
-.api-namespace-toggle:hover .api-namespace-icon {
-  opacity: 1;
-  color: var(--color-phel-primary);
+  color: var(--color-light-link);
 }
 
-.api-namespace-toggle[aria-expanded="true"] .api-namespace-icon {
+.api-namespace__toggle[aria-expanded="true"] .api-namespace__icon {
   transform: rotate(180deg);
 }
 
 /* API Namespace Content */
-.api-namespace-content {
+.api-namespace__content {
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
@@ -115,13 +111,13 @@
 }
 
 /* Only collapse if has overflow */
-.api-namespace-toggle[aria-expanded="false"] + .api-namespace-content {
+.api-namespace__toggle[aria-expanded="false"] + .api-namespace__content {
   margin-bottom: var(--space-lg);
   max-height: 160px;
   overflow: hidden;
 }
 
-.api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow {
+.api-namespace__toggle[aria-expanded="false"] + .api-namespace__content.has-overflow {
   border-radius: var(--radius-lg);
   cursor: pointer;
   width: calc(100% + var(--space-md) * 2);
@@ -129,12 +125,12 @@
 
 /* Pills Container */
 .api-index__entry > ul {
+  margin-bottom: var(--space-lg);
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-sm);
   list-style: none;
   padding: var(--space-lg) 0;
-  margin: 0;
 }
 
 .api-index__entry > ul li {
@@ -168,7 +164,7 @@
 }
 
 /* Collapsed State with Fade - ONLY for items with overflow */
-.api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow::after {
+.api-namespace__toggle[aria-expanded="false"] + .api-namespace__content.has-overflow::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -191,13 +187,13 @@
 }
 
 /* Hide fade when expanded */
-.api-namespace-toggle[aria-expanded="true"] + .api-namespace-content.has-overflow::after {
+.api-namespace__toggle[aria-expanded="true"] + .api-namespace__content.has-overflow::after {
   opacity: 0;
   animation: none;
 }
 
 /* Expand Button */
-.api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow::before {
+.api-namespace__toggle[aria-expanded="false"] + .api-namespace__content.has-overflow::before {
   content: 'Expand';
   position: absolute;
   top: 65%;
@@ -229,27 +225,27 @@
 }
 
 /* Hide button when expanded */
-.api-namespace-toggle[aria-expanded="true"] + .api-namespace-content.has-overflow::before {
+.api-namespace__toggle[aria-expanded="true"] + .api-namespace__content.has-overflow::before {
   opacity: 0;
   animation: none;
 }
 
-.api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow:hover::before {
+.api-namespace__toggle[aria-expanded="false"] + .api-namespace__content.has-overflow:hover::before {
   opacity: 1;
 }
 
 /* Namespaces without overflow should not have pointer cursor on toggle */
-.api-index__entry:has(.api-namespace-content:not(.has-overflow)) .api-namespace-toggle {
+.api-index__entry:has(.api-namespace__content:not(.has-overflow)) .api-namespace__toggle {
   cursor: default;
 }
 
 /* Disable all interaction with pills when collapsed */
-.api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow a {
+.api-namespace__toggle[aria-expanded="false"] + .api-namespace__content.has-overflow a {
   pointer-events: none;
   cursor: default;
 }
 
-.api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow a:hover {
+.api-namespace__toggle[aria-expanded="false"] + .api-namespace__content.has-overflow a:hover {
   background: var(--color-light-bg-secondary) !important;
   color: var(--color-light-text-secondary) !important;
   border-color: var(--color-light-border) !important;
@@ -258,25 +254,25 @@
 }
 
 /* Enable interaction when expanded */
-.api-namespace-toggle[aria-expanded="true"] + .api-namespace-content a {
+.api-namespace__toggle[aria-expanded="true"] + .api-namespace__content a {
   pointer-events: auto;
 }
 
 /* When hovering over collapsed area */
-.api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow:hover ~ .api-namespace-toggle .api-namespace-toggle-text,
-.api-index__entry:has(.api-namespace-content.has-overflow:hover) .api-namespace-toggle-text {
+.api-namespace__toggle[aria-expanded="false"] + .api-namespace__content.has-overflow:hover ~ .api-namespace__toggle .api-namespace__toggle-text,
+.api-index__entry:has(.api-namespace__content.has-overflow:hover) .api-namespace__toggle-text {
   opacity: 1;
-  color: var(--color-phel-primary);
+  color: var(--color-light-link);
 }
 
-.api-index__entry:has(.api-namespace-content.has-overflow:hover) .api-namespace-icon {
+.api-index__entry:has(.api-namespace__content.has-overflow:hover) .api-namespace__icon {
   opacity: 1;
-  color: var(--color-phel-primary);
+  color: var(--color-light-link);
 }
 
 /* Mobile responsiveness */
 @media (max-width: 767px) {
-  .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow {
+  .api-namespace__toggle[aria-expanded="false"] + .api-namespace__content.has-overflow {
     width: 100%;
   }
 }
@@ -286,20 +282,20 @@
   margin: var(--space-2xl) 0;
 }
 
-.api-doc-header {
+.api-doc__header {
   display: flex;
   align-items: baseline;
   gap: var(--space-md);
   margin-bottom: var(--space-lg);
 }
 
-.api-doc-name {
+.api-doc__name {
   font-size: var(--text-2xl);
   font-weight: 700;
   color: var(--color-light-text-primary);
 }
 
-.api-doc-type {
+.api-doc__type {
   font-size: var(--text-sm);
   color: var(--color-light-text-secondary);
   background: var(--color-light-surface);
@@ -308,7 +304,7 @@
   border: 1px solid var(--color-light-border);
 }
 
-.api-doc-description {
+.api-doc__description {
   padding: 0 var(--space-lg);
   color: var(--color-light-text-secondary);
   line-height: var(--leading-relaxed);
@@ -358,52 +354,52 @@
   background: var(--color-dark-surface-hover);
 }
 
-.dark .api-namespace-toggle {
+.dark .api-namespace__toggle {
   border-bottom-color: var(--color-dark-border);
 }
 
-.dark .api-namespace-title {
+.dark .api-namespace__title {
   color: var(--color-dark-text-accent);
 }
 
-.dark .api-namespace-toggle-text {
+.dark .api-namespace__toggle-text {
   color: #bfa4ff;
   opacity: 0.8;
 }
 
-.dark .api-namespace-toggle:hover .api-namespace-toggle-text {
+.dark .api-namespace__toggle:hover .api-namespace__toggle-text {
   opacity: 1;
   color: #c2acf5;
 }
 
-.dark .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow:hover ~ .api-namespace-toggle .api-namespace-toggle-text,
-.dark .api-index__entry:has(.api-namespace-content.has-overflow:hover) .api-namespace-toggle-text {
+.dark .api-namespace__toggle[aria-expanded="false"] + .api-namespace__content.has-overflow:hover ~ .api-namespace__toggle .api-namespace__toggle-text,
+.dark .api-index__entry:has(.api-namespace__content.has-overflow:hover) .api-namespace__toggle-text {
   opacity: 1;
   color: #c2acf5;
 }
 
-.dark .api-namespace-icon {
+.dark .api-namespace__icon {
   color: #bfa4ff;
   opacity: 0.8;
 }
 
-.dark .api-namespace-toggle:hover .api-namespace-icon {
+.dark .api-namespace__toggle:hover .api-namespace__icon {
   opacity: 1;
   color: #c2acf5;
 }
 
-.dark .api-index__entry:has(.api-namespace-content.has-overflow:hover) .api-namespace-icon {
+.dark .api-index__entry:has(.api-namespace__content.has-overflow:hover) .api-namespace__icon {
   opacity: 1;
   color: #c2acf5;
 }
 
-.dark .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content::after {
+.dark .api-namespace__toggle[aria-expanded="false"] + .api-namespace__content::after {
   background: linear-gradient(to bottom, 
     transparent 0%, 
     var(--color-dark-bg) 100%);
 }
 
-.dark .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow::before {
+.dark .api-namespace__toggle[aria-expanded="false"] + .api-namespace__content.has-overflow::before {
   background: var(--color-dark-text-accent);
   color: var(--color-dark-bg);
   border: 1px solid var(--color-dark-text-accent);
@@ -425,7 +421,7 @@
 }
 
 /* Disable hover effects on pills when collapsed - Dark Mode */
-.dark .api-namespace-toggle[aria-expanded="false"] + .api-namespace-content.has-overflow a:hover {
+.dark .api-namespace__toggle[aria-expanded="false"] + .api-namespace__content.has-overflow a:hover {
   background: var(--color-dark-surface) !important;
   color: var(--color-dark-text-secondary) !important;
   border-color: var(--color-dark-border) !important;

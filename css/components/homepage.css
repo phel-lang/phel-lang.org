@@ -1,28 +1,4 @@
 /* Homepage Content Container */
-.homepage-content h1 {
-  font-size: 2.5rem;
-  font-weight: 800;
-  line-height: 1.1;
-  margin: var(--space-3xl) 0 var(--space-lg);
-  text-align: center;
-}
-
-.homepage-title-accent {
-  color: var(--color-phel-primary);
-}
-
-@media (min-width: 640px) {
-  .homepage-content h1 {
-    font-size: 3rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .homepage-content h1 {
-    font-size: 3.5rem;
-  }
-}
-
 .homepage-content h2 {
   text-align: center;
   font-size: var(--text-3xl);
@@ -42,7 +18,7 @@
 .homepage-content > p:first-of-type {
   font-size: var(--text-lg);
   color: var(--color-light-text-secondary);
-  margin-bottom: var(--space-2xl);
+  margin-bottom: var(--space-xl);
   max-width: 50rem;
   margin-left: auto;
   margin-right: auto;
@@ -50,9 +26,7 @@
 
 .homepage-content img {
   display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: var(--space-3xl);
+  margin: var(--space-2xl) auto;
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
@@ -131,12 +105,12 @@
 }
 
 .why-card:hover {
-  border-color: var(--color-phel-primary);
+  border-color: var(--color-light-link);
   box-shadow: var(--shadow-sm);
 }
 
 .why-card-icon {
-  color: var(--color-phel-primary);
+  color: var(--color-light-link);
 }
 
 .why-card-icon svg {
@@ -212,9 +186,9 @@
 }
 
 .homepage-cta-primary {
-  background: var(--color-phel-primary);
+  background: var(--color-light-link);
   color: white;
-  border: 2px solid var(--color-phel-primary);
+  border: 2px solid var(--color-light-link);
 }
 
 .homepage-cta-primary:hover {
@@ -230,8 +204,8 @@
 }
 
 .homepage-cta-secondary:hover {
-  border-color: var(--color-phel-primary);
-  color: var(--color-phel-primary);
+  border-color: var(--color-light-link);
+  color: var(--color-light-link);
 }
 
 .homepage-cta-icon {
@@ -278,12 +252,12 @@
 }
 
 .feature-card:hover {
-  border-color: var(--color-phel-primary);
+  border-color: var(--color-light-link);
   box-shadow: var(--shadow-sm);
 }
 
 .feature-icon {
-  color: var(--color-phel-primary);
+  color: var(--color-light-link);
   margin-bottom: var(--space-sm);
 }
 
@@ -346,10 +320,6 @@
 /* ========================================
    DARK MODE
    ======================================== */
-
-.dark .homepage-title-accent {
-  color: var(--color-dark-text-accent);
-}
 
 .dark .homepage-content > p:first-of-type {
   color: var(--color-dark-text-primary);

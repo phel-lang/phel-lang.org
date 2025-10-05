@@ -17,10 +17,10 @@
 </ul>
 <div class="pagination">
       {% if paginator.previous %}
-        <a class="previous" href="{{ paginator.previous }}">← Newer posts</a>
+        <a class="btn btn-secondary pagination__btn pagination__btn--previous" href="{{ paginator.previous }}">← Newer posts</a>
       {% endif %}
       {% if paginator.next %}
-        <a class="next" href="{{ paginator.next }}">Older posts →</a>
+        <a class="btn btn-secondary pagination__btn pagination__btn--next" href="{{ paginator.next }}">Older posts →</a>
       {% endif %}
 </div>
 {% endblock content %}

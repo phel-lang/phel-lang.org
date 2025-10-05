@@ -1,13 +1,13 @@
 // API Namespace Accordion
 document.addEventListener('DOMContentLoaded', function() {
-  const toggleButtons = document.querySelectorAll('.api-namespace-toggle');
+  const toggleButtons = document.querySelectorAll('.api-namespace__toggle');
   
   toggleButtons.forEach(function(button) {
     // Check if content has overflow
     const content = button.nextElementSibling;
-    const toggleText = button.querySelector('.api-namespace-toggle-text');
+    const toggleText = button.querySelector('.api-namespace__toggle-text');
     
-    if (content && content.classList.contains('api-namespace-content')) {
+    if (content && content.classList.contains('api-namespace__content')) {
       // Check if content height exceeds the collapsed max-height (160px)
       if (content.scrollHeight > 160) {
         content.classList.add('has-overflow');

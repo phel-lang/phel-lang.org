@@ -9,6 +9,7 @@ const parts = [
   // 1. Foundation
   'css/theme.css',
   'css/base.css',
+  'css/components/utilities.css',
   
   // 2. Layout & Structure
   'css/components/layout.css',
@@ -28,7 +29,10 @@ const parts = [
   'css/components/search.css',
   'css/components/code-block.css',
   
-  // 5. Dark Mode (last to override)
+  // 5. Animations
+  'css/components/animations.css',
+  
+  // 6. Dark Mode (last to override)
   'css/components/dark-mode.css',
 ];
 
