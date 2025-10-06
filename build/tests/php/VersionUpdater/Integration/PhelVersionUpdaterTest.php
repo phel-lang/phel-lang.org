@@ -10,13 +10,20 @@ use PHPUnit\Framework\TestCase;
 
 final class PhelVersionUpdaterTest extends TestCase
 {
-    /** @var false|resource */
+    /** @var resource */
     private $file;
 
     protected function setUp(): void
     {
         $this->file = tmpfile();
-        fwrite($this->file, 'phel_version = "v.0.9"');
+        fwrite(
+            $this->file,
+            <<<TXT
+Some random directives
+phel_version = "v.0.9"
+And more here
+TXT
+        );
     }
 
     protected function tearDown(): void
@@ -26,32 +33,19 @@ final class PhelVersionUpdaterTest extends TestCase
 
     public function test_update_phel_version(): void
     {
-        $consoleFacade = $this->createAnonConsoleFacade();
+        $consoleFacade = self::createStub(ConsoleFacadeInterface::class);
+        $consoleFacade->method('getVersion')->willReturn('v1.0');
 
         $path = stream_get_meta_data($this->file)['uri'];
         $phelVersionUpdater = new PhelVersionUpdater($consoleFacade, $path);
         $phelVersionUpdater->update();
 
         $content = file_get_contents($path);
-
-        $expected = 'phel_version = "v1.0"';
-
+        $expected = <<<TXT
+Some random directives
+phel_version = "v1.0"
+And more here
+TXT;
         self::assertSame($expected, $content);
-    }
-
-    private function createAnonConsoleFacade(): ConsoleFacadeInterface
-    {
-        return new class implements ConsoleFacadeInterface {
-
-            public function getVersion(): string
-            {
-                return 'v1.0';
-            }
-
-            public function runConsole(): void
-            {
-                // ignore
-            }
-        };
     }
 }
