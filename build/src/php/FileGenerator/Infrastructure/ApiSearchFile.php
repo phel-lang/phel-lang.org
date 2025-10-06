@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhelDocBuild\FileGenerator\Infrastructure;
+namespace PhelWeb\FileGenerator\Infrastructure;
 
-use PhelDocBuild\FileGenerator\Application\ApiSearchGenerator;
+use PhelWeb\FileGenerator\Application\ApiSearchGenerator;
 
 use function json_encode;
 

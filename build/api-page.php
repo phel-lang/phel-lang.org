@@ -6,7 +6,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Gacela\Framework\Gacela;
 use Phel\Phel;
-use PhelDocBuild\FileGenerator\Facade as FileGeneratorFacade;
+use PhelWeb\FileGenerator\Facade as FileGeneratorFacade;
 
 Gacela::bootstrap(__DIR__, Phel::configFn());
 

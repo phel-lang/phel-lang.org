@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhelDocBuild\FileGenerator\Application;
+namespace PhelWeb\FileGenerator\Application;
 
 use Phel\Shared\Facade\ApiFacadeInterface;
 

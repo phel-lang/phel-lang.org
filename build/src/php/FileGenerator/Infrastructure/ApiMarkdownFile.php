@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhelDocBuild\FileGenerator\Infrastructure;
+namespace PhelWeb\FileGenerator\Infrastructure;
 
-use PhelDocBuild\FileGenerator\Application\ApiMarkdownGenerator;
+use PhelWeb\FileGenerator\Application\ApiMarkdownGenerator;
 
 final readonly class ApiMarkdownFile
 {

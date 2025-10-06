@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhelDocBuildTests\Integration;
+namespace PhelWebTests\FileGenerator\Integration;
 
 use Gacela\Framework\Bootstrap\GacelaConfig;
 use Gacela\Framework\Gacela;
 use Phel\Api\ApiFacade;
-use PhelDocBuild\FileGenerator\Application\ApiMarkdownGenerator;
+use PhelWeb\FileGenerator\Application\ApiMarkdownGenerator;
 use PHPUnit\Framework\TestCase;
 
 final class ApiMarkdownGeneratorTest extends TestCase
@@ -17,7 +17,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
      */
     public function test_generate_api_markdown_file(): void
     {
-        Gacela::bootstrap(__DIR__ . '/../../..', static function (GacelaConfig $config): void {
+        Gacela::bootstrap(__DIR__ . '/../../../..', static function (GacelaConfig $config): void {
             $config->addAppConfig('phel-config.php', 'phel-config-local.php');
         });
 
