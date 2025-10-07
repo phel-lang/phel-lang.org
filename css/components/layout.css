@@ -126,8 +126,7 @@
   .two-column-layout__sidebar {
     order: -1;
     margin-bottom: 0;
-    padding: var(--space-xl) var(--space-xl) 0 var(--space-xl);
-    /*border-bottom: none;*/
+    padding: var(--space-xl);
     border: 1px solid var(--color-light-border);
     position: sticky;
     top: calc(var(--header-height) + var(--space-xl));
