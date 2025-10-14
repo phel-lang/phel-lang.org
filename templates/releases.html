@@ -1,0 +1,38 @@
+{% extends "layouts/one-column-layout.html" %}
+
+{% block meta_content %}
+<title>{{ section.title }} | {{ config.title }}</title>
+<meta property="og:title" content="{{ section.title }} | {{ config.title }}"/>
+<meta property="og:description" content="Complete list of Phel releases, automatically generated from the Phel GitHub releases."/>
+{% endblock meta_content %}
+
+{% block content %}
+{% if paginator.current_index == 1 %}
+<h1>Phel Releases</h1>
+<p class="releases-intro">Complete list of Phel releases, automatically generated from the <a href="https://github.com/phel-lang/phel-lang/releases">Phel GitHub releases</a>.</p>
+{% endif %}
+
+{% for page in paginator.pages %}
+<div>
+    <h2 class="release-link"><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h2>
+
+    {% if page.date %}
+    <p><strong>Released:</strong> {{ page.date | date(format="%B %-d, %Y") }}</p>
+    {% endif %}
+
+    {% if page.description %}
+    <p>{{ page.description }}</p>
+</div>
+{% endif %}
+<hr>
+{% endfor %}
+
+<div class="pagination">
+    {% if paginator.previous %}
+    <a class="btn btn-secondary pagination__btn pagination__btn--previous" href="{{ paginator.previous }}">← Newer releases</a>
+    {% endif %}
+    {% if paginator.next %}
+    <a class="btn btn-secondary pagination__btn pagination__btn--next" href="{{ paginator.next }}">Older releases →</a>
+    {% endif %}
+</div>
+{% endblock content %}

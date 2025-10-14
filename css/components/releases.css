@@ -1,0 +1,81 @@
+.releases-intro {
+  font-size: var(--text-lg);
+  color: var(--color-light-text-secondary);
+  margin-bottom: var(--space-2xl);
+}
+
+.release-link {
+  margin-bottom: var(--space-xs);
+}
+
+.release-link a {
+  color: var(--color-light-link);
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+}
+
+.release-link a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-light-link);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-normal) var(--ease-out);
+  display: block; /* Override base.css h2 a::after { display: none; } */
+}
+
+.release-link a:hover::after {
+  transform: scaleX(1);
+}
+
+.release-link + p {
+  margin-top: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-md);
+  margin: var(--space-3xl) 0;
+}
+
+.pagination .btn {
+  color: var(--color-light-link);
+}
+
+.pagination__btn--previous {
+  margin-right: auto;
+}
+
+.pagination__btn--next {
+  margin-left: auto;
+}
+
+/* ========================================
+   DARK MODE
+   ======================================== */
+
+.dark .releases-intro {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .release-link a {
+  color: var(--color-dark-text-accent);
+}
+
+.dark .release-link a::after {
+  background-color: var(--color-dark-text-accent);
+  display: block; /* Override base.css h2 a::after { display: none; } */
+}
+
+.dark .pagination .btn {
+  color: var(--color-dark-text-accent);
+}

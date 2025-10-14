@@ -13,7 +13,7 @@ This is the code for the website of Phel: https://phel-lang.org.
 # install phel as a composer dependency
 composer install
 
-# build the API doc page & the API search index
+# build the API doc page, API search index & releases pages
 composer build
 ```
 
