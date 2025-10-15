@@ -7,9 +7,28 @@ const ESCAPE_KEY = "Escape";
 const searchInput = document.getElementById("search");
 const searchResults = document.getElementById("search-results");
 const searchResultsItems = document.getElementById("search-results__items");
+const searchContainer = document.querySelector(".site-header__search");
+const headerContainer = document.querySelector(".site-header__container");
 
 let searchItemSelected = null;
 let resultsItemsIndex = -1;
+
+// Function to update search container class based on input content
+function updateSearchContainerClass() {
+    if (searchInput && searchContainer) {
+        if (searchInput.value.trim() !== "") {
+            searchContainer.classList.add("has-content");
+            if (headerContainer) {
+                headerContainer.classList.add("search-expanded");
+            }
+        } else {
+            searchContainer.classList.remove("has-content");
+            if (headerContainer) {
+                headerContainer.classList.remove("search-expanded");
+            }
+        }
+    }
+}
 
 ////////////////////////////////////
 // Interaction with the search input
@@ -47,6 +66,7 @@ document.addEventListener("keydown", function (keyboardEvent) {
             searchInput.value = "";
             searchResults.style.display = "none";
             searchInput.blur();
+            updateSearchContainerClass();
             break;
         }
     }
@@ -122,6 +142,8 @@ if (document.readyState === "complete" || (document.readyState !== "loading" && 
 }
 
 function initSearch() {
+    updateSearchContainerClass();
+    
     elasticlunr.trimmer = function (token) {
         if (token === null || token === undefined) {
             throw new Error("token should not be undefined");
@@ -181,11 +203,15 @@ function initSearch() {
 
         searchItemSelected = null;
         resultsItemsIndex = -1;
+        updateSearchContainerClass();
         debounce(showResults(index), 150)();
     });
 
     // Hide results when user press on the "x" placed inside the search field
-    searchInput.addEventListener("search", () => searchResults.style.display = "");
+    searchInput.addEventListener("search", () => {
+        searchResults.style.display = "";
+        updateSearchContainerClass();
+    });
     searchInput.addEventListener("focusin", function () {
         if (searchInput.value !== "") {
             showResults(index)();
@@ -270,7 +296,10 @@ function createMenuItem(result, index) {
         searchItemSelected = mouseEvent.target;
         resultsItemsIndex = index;
     })
-    item.addEventListener("click", () => searchInput.value = "")
+    item.addEventListener("click", () => {
+        searchInput.value = "";
+        updateSearchContainerClass();
+    })
     searchResultsItems.appendChild(item);
 }
 

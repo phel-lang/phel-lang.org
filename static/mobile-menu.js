@@ -95,12 +95,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Collapse search on blur (mobile only)
+  // Collapse search on blur (mobile only) - only if empty
   searchInput.addEventListener('blur', function() {
     if (isMobile()) {
       // Small delay to allow clicking search results
       setTimeout(function() {
-        headerContainer.classList.remove('search-expanded');
+        // Only remove search-expanded if the input is empty
+        if (searchInput.value.trim() === "") {
+          headerContainer.classList.remove('search-expanded');
+        }
       }, 200);
     }
   });
@@ -108,7 +111,10 @@ document.addEventListener('DOMContentLoaded', function() {
   // Re-check on window resize
   window.addEventListener('resize', function() {
     if (!isMobile()) {
-      headerContainer.classList.remove('search-expanded');
+      // Only remove if empty when switching to desktop
+      if (searchInput.value.trim() === "") {
+        headerContainer.classList.remove('search-expanded');
+      }
     }
   });
 });
