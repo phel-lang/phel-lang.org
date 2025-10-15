@@ -1,6 +1,6 @@
 +++
 title = "Data protection"
-template = "blog-entry.html"
+template = "simple-page.html"
 +++
 
 ## How is responsible for this website

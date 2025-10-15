@@ -1,6 +1,5 @@
 +++
 title = "My attempt on functional programming in PHP"
-template = "blog-entry.html"
 +++
 
 PHP was one of my first languages I learned. Even so, this dates back over 10 years, I still use PHP every day at work. However, in the meantime I also learned a lot of other languages like Java, Clojure, Scala, Python, Javascript and Scheme. By learning all the languages and their concepts, the concept of functional programming always was my favorite, and so I tried to make my PHP programming style more functional. In the following article you can read some approaches I tried.

@@ -15,7 +15,7 @@ final readonly class Asset
     public static function fromArray(array $data): self
     {
         return new self(
-            name: $data['name'] ?? 'Unknown',
+            name: $data['name'],
             downloadUrl: $data['browser_download_url'],
             size: $data['size'],
         );

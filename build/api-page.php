@@ -6,9 +6,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Gacela\Framework\Gacela;
 use Phel\Phel;
-use PhelWeb\FileGenerator\Facade as FileGeneratorFacade;
+use PhelWeb\ApiGenerator\Facade as ApiGeneratorFacade;
 
 Gacela::bootstrap(__DIR__, Phel::configFn());
 
-$facade = new FileGeneratorFacade();
+$facade = new ApiGeneratorFacade();
 $facade->generateApiMarkdownFile();
