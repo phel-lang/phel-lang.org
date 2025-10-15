@@ -1,0 +1,31 @@
+{% extends "layouts/one-column-layout.html" %}
+
+{% block meta_content %}
+    <title>{{ page.title }} | {{ config.title }}</title>
+    <meta property="og:title" content="{{ page.title }} | {{ config.title }}" />
+{% endblock meta_content %}
+{% block content %}
+  <div class="release-entry">
+    <h1>{{page.title}}</h1>
+    {% if page.date %}
+      <div class="meta">Released <time datetime="{{page.date}}">{{ page.date | date(format="%b, %e %Y") }}</time></div>
+    {% endif %}
+    {{page.content | safe}}
+
+    <div class="related-container">
+      {% if page.lower %}
+      <a href="{{ page.lower.permalink }}" class="btn btn-secondary link link--previous">
+        <span>←</span>
+        <span class="link__title">{{ page.lower.title }}</span>
+      </a>
+      {% endif %}
+
+      {% if page.higher %}
+      <a href="{{ page.higher.permalink }}" class="btn btn-secondary link link--next">
+        <span class="link__title">{{ page.higher.title }}</span>
+        <span>→</span>
+      </a>
+      {% endif %}
+    </div>
+  </div>
+{% endblock content %}
