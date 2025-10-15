@@ -11,5 +11,4 @@ use PhelWeb\ReleasesGenerator\Facade as ReleasesGeneratorFacade;
 Gacela::bootstrap(__DIR__, Phel::configFn());
 
 $facade = new ReleasesGeneratorFacade();
-$facade->generateIndexReleasePage();
 $facade->generateIndividualReleasePages();

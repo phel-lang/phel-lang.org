@@ -21,3 +21,6 @@ content/documentation/api.md
 /css/tailwind.entry.css
 /static/syntax-theme-dark.css
 /static/syntax-theme-light.css
+
+/content/releases/*
+!/content/releases/_index.md

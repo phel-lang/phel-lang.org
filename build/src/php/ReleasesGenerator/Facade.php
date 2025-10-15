@@ -11,14 +11,6 @@ use Gacela\Framework\AbstractFacade;
  */
 final class Facade extends AbstractFacade
 {
-    public function generateIndexReleasePage(): void
-    {
-        $this
-            ->getFactory()
-            ->createIndexReleasePage()
-            ->generate();
-    }
-
     public function generateIndividualReleasePages(): void
     {
         $this
