@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace PhelWebTests\VersionUpdater\Integration;
 
 use Phel\Shared\Facade\ConsoleFacadeInterface;
-use PhelWeb\VersionUpdater\Infrastructure\PhelVersionUpdater;
 use PHPUnit\Framework\TestCase;
+use PhelWeb\VersionUpdater\Infrastructure\PhelVersionUpdater;
 
 final class PhelVersionUpdaterTest extends TestCase
 {

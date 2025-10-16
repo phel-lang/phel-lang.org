@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PhelWeb\ReleasesGenerator\Infrastructure;
 
+use RuntimeException;
 use PhelWeb\ReleasesGenerator\Application\GitHubReleasePagesGenerator;
 use PhelWeb\ReleasesGenerator\Domain\Release;
-use RuntimeException;
 
 final readonly class GitHubReleasePages
 {

@@ -6,10 +6,9 @@ namespace PhelWebTests\ReleasesGenerator\Integration;
 
 use Gacela\Framework\Bootstrap\GacelaConfig;
 use Gacela\Framework\Gacela;
+use PHPUnit\Framework\TestCase;
 use PhelWeb\ReleasesGenerator\Application\GitHubReleasePagesGenerator;
 use PhelWeb\ReleasesGenerator\Domain\Release;
-use PhelWeb\ReleasesGenerator\Infrastructure\GitHubReleasePages;
-use PHPUnit\Framework\TestCase;
 
 final class GitHubReleasePagesTest extends TestCase
 {

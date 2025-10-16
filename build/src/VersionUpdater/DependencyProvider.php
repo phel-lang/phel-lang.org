@@ -7,7 +7,6 @@ namespace PhelWeb\VersionUpdater;
 use Gacela\Framework\AbstractProvider;
 use Gacela\Framework\Container\Container;
 use Phel\Console\ConsoleFacade;
-use Phel\Shared\Facade\ConsoleFacadeInterface;
 
 /**
  * @method Factory getFactory()

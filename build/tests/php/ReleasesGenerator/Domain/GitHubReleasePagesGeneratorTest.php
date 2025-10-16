@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PhelWebTests\ReleasesGenerator\Domain;
 
+use PHPUnit\Framework\TestCase;
 use PhelWeb\ReleasesGenerator\Application\GitHubReleasePagesGenerator;
 use PhelWeb\ReleasesGenerator\Domain\Release;
-use PHPUnit\Framework\TestCase;
 
 final class GitHubReleasePagesGeneratorTest extends TestCase
 {

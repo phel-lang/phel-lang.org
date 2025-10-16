@@ -6,8 +6,8 @@ namespace PhelWebTests\FileGenerator\Domain;
 
 use Phel\Api\Transfer\PhelFunction;
 use Phel\Shared\Facade\ApiFacadeInterface;
-use PhelWeb\ApiGenerator\Application\ApiSearchGenerator;
 use PHPUnit\Framework\TestCase;
+use PhelWeb\ApiGenerator\Application\ApiSearchGenerator;
 
 final class ApiSearchGeneratorTest extends TestCase
 {
