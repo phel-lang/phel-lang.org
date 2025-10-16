@@ -39,7 +39,8 @@
     "scripts": {
         "build": [
             "php build/api-page.php",
-            "php build/api-search.php"
+            "php build/api-search.php",
+            "php build/generate-releases.php"
         ],
         "test": "./vendor/bin/phpunit",
         "post-install-cmd": [

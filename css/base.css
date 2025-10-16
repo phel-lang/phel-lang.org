@@ -277,14 +277,15 @@ blockquote {
   position: relative;
   background: var(--color-light-blockquote-bg);
   margin: 2em 0;
-  padding: var(--space-md) var(--space-lg);
-  padding-left: calc(var(--space-lg) + 2em);
+  padding: var(--space-md) var(--space-xl);
+  padding-left: calc(var(--space-lg) + 1.7em);
   border-left: 3px solid var(--color-light-blockquote-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   font-style: italic;
   color: var(--color-light-text-secondary);
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   min-height: 3em;
 }
@@ -292,8 +293,8 @@ blockquote {
 blockquote::before {
   content: '"';
   position: absolute;
-  left: 1.7rem;
-  top: 50%;
+  left: 1.5rem;
+  top: 2.7rem;
   transform: translateY(-50%);
   font-size: 2.5em;
   color: var(--color-light-blockquote-border);

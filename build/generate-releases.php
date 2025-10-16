@@ -6,9 +6,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Gacela\Framework\Gacela;
 use Phel\Phel;
-use PhelWeb\ApiGenerator\Facade as FileGeneratorFacade;
+use PhelWeb\ReleasesGenerator\Facade as ReleasesGeneratorFacade;
 
 Gacela::bootstrap(__DIR__, Phel::configFn());
 
-$facade = new FileGeneratorFacade();
-$facade->generateApiSearchFile();
+$facade = new ReleasesGeneratorFacade();
+$facade->generateIndividualReleasePages();

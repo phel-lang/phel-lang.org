@@ -24,6 +24,7 @@ const parts = [
   'css/components/documentation.css',
   'css/components/api.css',
   'css/components/exercises.css',
+  'css/components/releases.css',
   
   // 4. Features
   'css/components/search.css',

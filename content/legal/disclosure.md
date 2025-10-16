@@ -1,6 +1,6 @@
 +++
 title = "Disclosure"
-template = "blog-entry.html"
+template = "simple-page.html"
 +++
 
 This website is operated by
