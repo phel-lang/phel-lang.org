@@ -1,5 +1,3 @@
-// Mobile Menu Toggle - Simple and Robust
-
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
   const menuToggle = document.getElementById('mobile-menu-toggle');

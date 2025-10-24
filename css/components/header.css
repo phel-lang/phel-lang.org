@@ -27,6 +27,13 @@
   box-sizing: border-box;
 }
 
+@media (min-width: 1040px) and (max-width: 1280px) {
+  .site-header__container {
+    gap: var(--space-sm);
+    padding: 0 var(--space-md);
+  }
+}
+
 @media (max-width: 767px) {
   .site-header__container {
     padding: 0 var(--space-md);
@@ -151,6 +158,12 @@
     list-style: none;
     padding: 0;
     margin: 0;
+  }
+
+  @media (max-width: 1280px) {
+    .site-header__navigation ul {
+      gap: var(--space-md);
+    }
   }
 
   .site-header__navigation li {

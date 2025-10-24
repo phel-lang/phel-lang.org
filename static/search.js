@@ -13,10 +13,14 @@ const headerContainer = document.querySelector(".site-header__container");
 let searchItemSelected = null;
 let resultsItemsIndex = -1;
 
-// Function to update search container class based on input content
+// Function to update search container class based on input content and focus
 function updateSearchContainerClass() {
     if (searchInput && searchContainer) {
-        if (searchInput.value.trim() !== "") {
+        const hasContent = searchInput.value.trim() !== "";
+        const isFocused = document.activeElement === searchInput;
+        
+        // Keep expanded if input has content OR is focused
+        if (hasContent || isFocused) {
             searchContainer.classList.add("has-content");
             if (headerContainer) {
                 headerContainer.classList.add("search-expanded");
@@ -213,6 +217,7 @@ function initSearch() {
         updateSearchContainerClass();
     });
     searchInput.addEventListener("focusin", function () {
+        updateSearchContainerClass();
         if (searchInput.value !== "") {
             showResults(index)();
         }
@@ -220,6 +225,7 @@ function initSearch() {
 
     searchInput.addEventListener("focusout", function () {
         resultsItemsIndex = -1;
+        updateSearchContainerClass();
     });
 
     window.addEventListener("click", function (mouseEvent) {
