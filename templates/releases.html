@@ -12,20 +12,26 @@
 <p class="releases-intro">Complete list of Phel releases, automatically generated from the <a href="https://github.com/phel-lang/phel-lang/releases">Phel GitHub releases</a>.</p>
 {% endif %}
 
+<div class="release-list post-list">
 {% for page in paginator.pages %}
-<div>
-    <h2 class="release-link"><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h2>
-
-    {% if page.date %}
-    <p><strong>Released:</strong> {{ page.date | date(format="%B %-d, %Y") }}</p>
-    {% endif %}
-
-    {% if page.description %}
-    <p>{{ page.description }}</p>
-</div>
-{% endif %}
-<hr>
+    <div class="post-list__item">
+        <a class="post-card" href="{{ page.permalink | safe }}">
+            {% if page.date %}
+            <div class="post-card__meta">
+                <time class="post-card__date" datetime="{{ page.date }}">{{ page.date | date(format="%B %-d, %Y") }}</time>
+            </div>
+            {% endif %}
+            <h2 class="post-card__title">{{ page.title }}</h2>
+            {% if page.description %}
+            <p class="post-card__excerpt">{{ page.description }}</p>
+            {% elif page.summary %}
+            <p class="post-card__excerpt">{{ page.summary | striptags }}</p>
+            {% endif %}
+            <span class="post-card__cta">View release →</span>
+        </a>
+    </div>
 {% endfor %}
+</div>
 
 <div class="pagination">
     {% if paginator.previous %}
