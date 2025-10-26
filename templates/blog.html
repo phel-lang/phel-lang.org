@@ -7,14 +7,24 @@
 {% block content %}
 <h1>Blog</h1>
 <p class="blog-intro">Find the newest information about Phel in our Blog.</p>
-<ul class="post-list">
+<div class="post-list">
     {% for page in paginator.pages %}
-    <li>
-        <a href="{{ page.permalink | safe }}">{{ page.title }}</a>
-        / Published <time datetime="{{page.date}}">{{ page.date | date(format="%b, %e %Y") }}</time>
-    </li>
+    <div class="post-list__item">
+        <a class="post-card" href="{{ page.permalink | safe }}">
+            <div class="post-card__meta">
+                <time class="post-card__date" datetime="{{ page.date }}">{{ page.date | date(format="%B %e, %Y") }}</time>
+            </div>
+            <h2 class="post-card__title">{{ page.title }}</h2>
+            {% if page.description %}
+            <p class="post-card__excerpt">{{ page.description }}</p>
+            {% elif page.summary %}
+            <p class="post-card__excerpt">{{ page.summary | striptags }}</p>
+            {% endif %}
+            <span class="post-card__cta">Read post →</span>
+        </a>
+    </div>
     {% endfor %}
-</ul>
+</div>
 <div class="pagination">
       {% if paginator.previous %}
         <a class="btn btn-secondary pagination__btn pagination__btn--previous" href="{{ paginator.previous }}">← Newer posts</a>

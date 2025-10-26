@@ -1,6 +1,7 @@
 +++
 title = "Pattern Matching: Writing Cleaner Code with Less Conditional Logic"
 aliases = [ "/blog/pattern-matching" ]
+description = "Trade if/elseif chains for case and cond, with PHP-friendly examples that show when each match shines."
 +++
 
 Remember those giant `if/elseif/else` ladders we write in PHP? They start off harmless and suddenly fill half a file. Phel ships with friendlier tools so you can keep the logic flat and readable. We will look at the two big helpers - [`case`](/documentation/control-flow/#case) and [`cond`](/documentation/control-flow/#cond) - and how they feel when you are new to Lisp syntax.

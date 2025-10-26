@@ -1,6 +1,7 @@
 +++
 title = "Loop and Recur: Tail-Recursive Iteration Made Easy"
 aliases = [ "/blog/loop" ]
+description = "Learn how Phel's loop and recur forms give you tail-recursive iteration without losing readability."
 +++
 
 Many functional programming models prefer to express repetition by **recursive** function calls.

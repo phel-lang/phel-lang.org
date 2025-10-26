@@ -1,5 +1,6 @@
 +++
 title = "Threading Macros in Phel: Thread-First vs. Thread-Last"
+description = "Compare the thread-first and thread-last macros and learn which one keeps each pipeline readable."
 +++
 
 Phel includes two handy threading macros that let you express a sequence of transformations in a linear, readable style.

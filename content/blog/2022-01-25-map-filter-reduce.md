@@ -1,5 +1,6 @@
 +++
 title = "Map, Filter, Reduce: Your First Functional Toolkit in Phel"
+description = "A quick tour of map, filter, and reduce in Phel with easy examples you can paste into the REPL."
 +++
 
 Phel, as many other functional programming languages, comes with three basic tools you should learn right from the beginning:

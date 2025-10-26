@@ -1,6 +1,7 @@
 +++
 title = "Immutability in Phel: Why Your Data Should Never Change"
 aliases = [ "/blog/immutability" ]
+description = "See how persistent data structures make day-to-day Phel code predictable, testable, and side-effect free."
 +++
 
 Phel lives and breathes persistent data structures. Instead of rewriting values in place, every operation hands you a fresh value that still shares most of the old data. It is the easiest way to keep code honest in a functional world.
