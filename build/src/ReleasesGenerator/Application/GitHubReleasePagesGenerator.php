@@ -119,7 +119,8 @@ final readonly class GitHubReleasePagesGenerator
         return empty($line)
             || str_starts_with($line, '#')
             || str_starts_with($line, '-')
-            || str_starts_with($line, '*');
+            || str_starts_with($line, '*')
+            || str_starts_with($line, '@');
     }
 
     private function truncateDescription(string $description): string
