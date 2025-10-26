@@ -36,4 +36,5 @@ vendor/bin/phel run src/main.phel
 - Set up Phel another way? See [Installation](/documentation/installation).
 - Dive into the CLI workflow: [CLI Commands](/documentation/cli-commands).
 - Explore the REPL deeper: [REPL guide](/documentation/repl).
+- Configure your editor: [Editor Support](/documentation/editor-support).
 - Learn the core language features: [Basic Types](/documentation/basic-types).
