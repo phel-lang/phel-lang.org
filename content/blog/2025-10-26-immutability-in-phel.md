@@ -32,14 +32,14 @@ Because `groceries` never changes, any function that already received it can kee
     {:id 42 :name "Ada" :email "ada@example.com"}]
 ```
 
-`put` returns a new map that shares everything it can with the original. The copy is cheap thanks to structural sharing—Phel only allocates the path that actually changed.
+`put` returns a new map that shares everything it can with the original. The copy is cheap thanks to structural sharing, Phel only allocates the path that actually changed.
 
-## Benefits of data that never moves
+## Benefits of data that never changes
 
-- **Predictable functions**: When inputs stay frozen, the only way to change results is to change the arguments. That keeps functions referentially transparent and stops ghost bugs.
-- **Stress-free tests**: Pure functions are a breeze to unit test—you pass data in, check the value coming out, and never mock hidden state changes.
-- **Simpler debugging**: Log a value once and you can trust it forever. Nothing mutates underneath any traces.
-- **Effortless concurrency**: Share the same collection between threads or async tasks with zero drama.
+- **Predictable functions**: With immutable inputs, the only variable is the arguments themselves. This guarantees referential transparency and eliminates hidden, hard-to-trace bugs.
+- **Stress-free tests**: Testing pure functions is effortless, just pass in data, check the result, and forget about mocking or side effects.
+- **Simpler debugging**: Log it once, and it stays true, no sneaky mutations hiding under your traces.
+- **Effortless concurrency**: Pass the same data between async jobs without race conditions or surprises.
 
 ## Transforming data in steps
 
@@ -62,6 +62,8 @@ The vector `scores` is still the same after the reduction, ready to reuse later.
 
 ## Managing change at the edges
 
-Of course, real systems still have to talk to databases, HTTP clients, or the filesystem. Immutability just asks you to fence off those effectful bits. Keep updates at well-defined entry points, translate external state into immutable Phel values, and let the rest of your code cruise on pure data. When you do need a new version, reach for helpers like `put-in`, `unset`, or `push` and pass the result forward.
+Real programs still need to talk to the outside world; databases, APIs, the filesystem. Immutability doesn’t stop that; it just asks you to keep those side effects in their own little corner.
 
-Once you stop mutating data in place, your mental load shrinks: there's the value you received, and the value you return. **That's it**. Everything else becomes easier to trust — and that's why, in Phel, your data should never change.
+Do your updates at clear entry points, turn any external data into immutable Phel values, and let the rest of your code run safely on pure data. When you need a new version, use helpers like `put-in`, `unset`, or `push`, and pass the new value forward instead of mutating it.
+
+Once you stop changing data in place, life gets simpler: there’s the value you got, and the value you return. **That's it**. Everything else becomes easier to trust, and that’s why, in Phel, your data never changes.
