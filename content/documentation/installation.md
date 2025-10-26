@@ -3,13 +3,11 @@ title = "Installation"
 weight = 1
 +++
 
-Phel targets PHP 8.3+, so make sure your environment ships with a compatible PHP
-runtime and [Composer](https://getcomposer.org/). Choose the setup that fits
-your workflow:
+Phel requires PHP 8.3+. Choose the installation method that works best for you:
 
 ## Composer
 
-For a ready-to-run starter project:
+**Recommended for most projects.** Create a new project:
 
 ```bash
 composer create-project --stability dev phel-lang/cli-skeleton example-app
@@ -17,18 +15,17 @@ cd example-app
 composer repl
 ```
 
-Prefer to wire Phel into an existing codebase? Pull it in as a dependency:
+Or add Phel to an existing project:
 
 ```bash
 composer require phel-lang/phel-lang
 ```
 
-Then add a source directory and start writing `*.phel` files. Commands are
-available through `vendor/bin/phel`.
+Commands are available through `vendor/bin/phel`.
 
-## Standalone PHAR
+## PHAR
 
-Try Phel without touching `composer.json`. Download the pre-built PHAR from the
+**No project setup needed.** Download the pre-built PHAR from the
 [latest GitHub release](https://github.com/phel-lang/phel-lang/releases):
 
 ```bash
@@ -44,54 +41,16 @@ php phel.phar run src/main.phel
 php phel.phar test --filter foo
 ```
 
-## NixOS
+## Nix
 
-Phel needs PHP 8.3+ and Composer. On NixOS you can spin up an environment that
-provides both tools without polluting your system profile.
-
-### Install from nixpkgs
-
-`phel` is available in [nixpkgs](https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/ph/phel/package.nix),
-so you can make it part of your system or user environment:
-
-```nix
-{ pkgs, ... }: {
-  environment.systemPackages = with pkgs; [ phel ];
-}
-```
-
-With [Home Manager](https://nix-community.github.io/home-manager/):
-
-```nix
-{ pkgs, ... }: {
-  home.packages = [
-    pkgs.phel
-  ];
-}
-```
-
-To try Phel without persisting it, start an ad-hoc shell:
+**For Nix users.** Quickly try Phel without installing it globally:
 
 ```bash
 nix shell nixpkgs#phel
+phel repl
 ```
 
-### Ephemeral shell
-
-Run Composer-based workflows inside an ad-hoc shell:
-
-```bash
-nix-shell -p php83 php83Packages.composer --run \
-  "composer create-project --stability dev phel-lang/cli-skeleton example-app"
-```
-
-Inside the spawned shell, `cd example-app` and use commands such as
-`composer repl` or `vendor/bin/phel`.
-
-### Project shell.nix
-
-For a repeatable development setup, drop this `shell.nix` into your project and
-run `nix-shell`:
+For a repeatable development environment, create a `shell.nix` in your project:
 
 ```nix
 { pkgs ? import <nixpkgs> { } }:
@@ -104,5 +63,4 @@ pkgs.mkShell {
 }
 ```
 
-> Using flakes? Replace the last snippet with a `devShell` definition that pulls
-> in the same `php83` and `php83Packages.composer` packages.
+Then run `nix-shell` and use Composer as normal.
