@@ -279,7 +279,7 @@ function showResults(index) {
                 signature: "",
                 desc: "Cannot provide any Phel symbol. Try something else",
                 anchor: "#",
-                type: "api"
+                type: "empty"
             };
 
             createMenuItem(emptyResult, null);
@@ -318,6 +318,17 @@ function formatSearchResultItem(item) {
             + `<span class="search-results__badge search-results__badge--docs">Docs</span>`
             + `</div>`
             + `<span class="desc">${item.content}</span>`
+            + `</div></a>`;
+    } else if (item.type === "empty") {
+        return `<a class="search-results__link" href="${item.anchor}">`
+            + `<div class="search-results__item">`
+            + `<div class="search-results__header">`
+            + `<div class="fn-info">`
+            + `<span class="fn-name">${item.name}</span> `
+            + `<small class="fn-signature">${item.signature}</small>`
+            + `</div>`
+            + `</div>`
+            + `<span class="desc">${item.desc}</span>`
             + `</div></a>`;
     } else {
         return `<a class="search-results__link" href="/documentation/api/#${item.anchor}">`
