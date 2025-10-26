@@ -1,5 +1,5 @@
 +++
-title = "Phel Releases"
+title = "Releases"
 sort_by = "date"
 template = "releases.html"
 page_template = "release-entry.html"

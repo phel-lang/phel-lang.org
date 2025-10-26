@@ -4,10 +4,6 @@
   margin-bottom: var(--space-xl);
 }
 
-.release-list {
-  margin: var(--space-3xl) 0;
-}
-
 .dark .releases-intro {
   color: var(--color-dark-text-secondary);
 }
