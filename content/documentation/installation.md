@@ -29,7 +29,7 @@ Commands are available through `vendor/bin/phel`.
 [latest GitHub release](https://github.com/phel-lang/phel-lang/releases):
 
 ```bash
-curl -L https://github.com/phel-lang/phel-lang/releases/latest/download/phel.phar -o phel.phar
+curl -L https://phel-lang.org/phar -o phel.phar
 php phel.phar --version
 ```
 
