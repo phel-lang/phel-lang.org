@@ -1,5 +1,5 @@
 +++
-title = "Loop and recur"
+title = "Loop and Recur: Tail-Recursive Iteration Made Easy"
 aliases = [ "/blog/loop" ]
 +++
 

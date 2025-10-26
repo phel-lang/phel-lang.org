@@ -1,5 +1,5 @@
 +++
-title = "Thread-first (->) vs Thread-last (->>)"
+title = "Threading Macros in Phel: Thread-First vs. Thread-Last"
 +++
 
 Phel includes two handy threading macros that let you express a sequence of transformations in a linear, readable style.

@@ -1,5 +1,5 @@
 +++
-title = "Map, filter and reduce"
+title = "Map, Filter, Reduce: Your First Functional Toolkit in Phel"
 +++
 
 Phel, as many other functional programming languages, comes with three basic tools you should learn right from the beginning:
@@ -44,4 +44,3 @@ The reduce function takes three arguments. The first argument is a two-argument 
 # concat all numbers to a string
 (reduce str "" [1 2 3]) # evaluates to "123"
 ```
-
