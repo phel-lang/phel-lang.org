@@ -11,7 +11,7 @@ final readonly class ApiSearchGenerator
     private const array SPECIAL_ENDING_CHARS = ['=', '*', '?', '+', '>', '<', '!'];
 
     public function __construct(
-        private ApiFacadeInterface $apiFacade
+        private ApiFacadeInterface $apiFacade,
     ) {
     }
 
@@ -62,9 +62,8 @@ final readonly class ApiSearchGenerator
 
         // Add documentation files to search index
         $documentationItems = $this->generateDocumentationSearchItems();
-        $result = array_merge($result, $documentationItems);
 
-        return $result;
+        return array_merge($result, $documentationItems);
     }
 
     /**
@@ -83,8 +82,8 @@ final readonly class ApiSearchGenerator
     private function generateDocumentationSearchItems(): array
     {
         $result = [];
-        $documentationPath = __DIR__ . '/../../../../../content/documentation';
-        
+        $documentationPath = __DIR__ . '/../../../../content/documentation';
+
         if (!is_dir($documentationPath)) {
             error_log("Documentation path not found: " . $documentationPath);
             return [];
@@ -95,31 +94,31 @@ final readonly class ApiSearchGenerator
             error_log("Could not scan documentation directory: " . $documentationPath);
             return [];
         }
-        
+
         foreach ($files as $file) {
             if (pathinfo($file, PATHINFO_EXTENSION) !== 'md' || $file === '_index.md') {
                 continue;
             }
-            
+
             $filePath = $documentationPath . '/' . $file;
             $content = file_get_contents($filePath);
-            
+
             // Extract title from frontmatter
             $title = pathinfo($file, PATHINFO_FILENAME);
             if (preg_match('/title = "([^"]+)"/', $content, $matches)) {
                 $title = $matches[1];
             }
-            
+
             // Remove frontmatter
             $content = preg_replace('/\+\+\+.*?\+\+\+/s', '', $content);
-            
+
             // Remove markdown formatting and clean content
             $content = preg_replace('/[#`*\[\]()]/', ' ', $content);
             $content = preg_replace('/\s+/', ' ', trim($content));
-            
+
             // Limit content length for search index
             $content = substr($content, 0, 500);
-            
+
             $result[] = [
                 'id' => 'doc_' . pathinfo($file, PATHINFO_FILENAME),
                 'title' => $title,
