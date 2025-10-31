@@ -7,9 +7,9 @@ This page contains a list of libraries and projects that use Phel. If you want t
 
 ## Libraries
 
-* [phel-cli-gui](https://github.com/Chemaclass/phel-cli-gui) Some Phel functions to render in the terminal. It uses the Cursor from the Symfony Command module.
-* [phel-pdo](https://github.com/phel-lang/phel-pdo)  This library is a thin wrapper around PDO.
-* [phel-schema](https://github.com/phel-lang/phel-schema)  This library is a schema validation library in phel. The library inspired by zod.
+* [Chemaclass/phel-cli-gui](https://github.com/Chemaclass/phel-cli-gui): Functions to render in the CLI terminal.
+* [phel-lang/phel-pdo](https://github.com/phel-lang/phel-pdo): A wrapper around PDO.
+* [phel-lang/phel-schema](https://github.com/phel-lang/phel-schema): A schema validation library for phel – inspired by zod.
 
 
 ## Projects
