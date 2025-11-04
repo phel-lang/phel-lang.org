@@ -27,12 +27,12 @@
   --color-dark-border: #3a3a3a;
   --color-dark-border-subtle: #2a2a2a;
   --color-dark-header-footer-border: #151a24;
-  --color-dark-header-bg: #151a24;
+  --color-dark-header-bg: #151a24cc;
   
   /* Card & Surface Colors */
   --color-light-surface: #ffffff;
   --color-light-surface-hover: #f8fafc;
-  --color-dark-surface: #2a313c;
+  --color-dark-surface: #2a313cfa;
   --color-dark-surface-hover: #262c36;
   
   /* Code */

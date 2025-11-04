@@ -1,7 +1,6 @@
 .releases-intro {
   font-size: var(--text-lg);
   color: var(--color-light-text-secondary);
-  margin-bottom: var(--space-xl);
 }
 
 .dark .releases-intro {
