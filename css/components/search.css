@@ -47,6 +47,32 @@
   color: var(--color-gray-light);
 }
 
+/* Keyboard shortcut indicator */
+.search-shortcut {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 3px 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-gray-light);
+  background-color: var(--color-light-bg-secondary);
+  border: 1px solid var(--color-light-border);
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+  transition: opacity var(--duration-fast) var(--ease-out);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  line-height: 1;
+}
+
+/* Hide shortcut when input has content or is focused */
+.site-header__search.has-content .search-shortcut,
+#search:focus + .search-shortcut {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Custom clear button for search input */
 #search::-webkit-search-cancel-button {
   -webkit-appearance: none;
@@ -388,6 +414,12 @@
 
 .dark #search::placeholder {
   color: var(--color-dark-text-muted);
+}
+
+.dark .search-shortcut {
+  color: var(--color-dark-text-muted);
+  background-color: rgba(255, 255, 255, 0.05);
+  border-color: #3a3a3a;
 }
 
 .dark #search::-webkit-search-cancel-button {

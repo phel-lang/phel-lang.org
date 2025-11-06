@@ -519,6 +519,10 @@ body.menu-open {
     -webkit-backdrop-filter: blur(var(--backdrop-blur-lg));
   }
 
+  .dark .mobile-menu-overlay.active {
+    background: #151a24f6;
+  }
+
   .dark .mobile-menu__nav a {
     background: var(--color-dark-surface);
     border-color: var(--color-dark-border);
