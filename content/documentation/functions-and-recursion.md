@@ -83,13 +83,27 @@ Each global function can take an optional doc comment and attribute map.
   "adds value a and b"
   [a b]
   (+ a b))
+```
 
+### Private functions
+
+Private functions are not exported from the namespace and cannot be accessed from other namespaces. You can create private functions in two ways:
+
+1. Using the `{:private true}` attribute map
+2. Using the `defn-` shorthand
+
+```phel
 (defn my-private-add-function
-  "adds value a and b"
   {:private true}
   [a b]
   (+ a b))
+  
+(defn- my-private-add-function 
+  [a b]
+  (+ a b))
 ```
+
+Both approaches are equivalent, but `defn-` provides a more concise syntax for defining private functions.
 
 ## Recursion
 
