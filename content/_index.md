@@ -140,6 +140,8 @@ No setup? No problem. You can run Phel's REPL right away:
 
 ```bash
 docker run -it --rm phellang/repl
+# To update to the latest version of Phel:
+# docker pull phellang/repl
 ```
 
 ![Try Phel animation](/try-phel.gif "Try Phel Animation")
