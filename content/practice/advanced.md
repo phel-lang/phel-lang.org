@@ -38,28 +38,22 @@ Some tips:
 {% end %}
 {% solution() %}
 ```phel
-# Load the full book content from the web into the `full-book` constant
 (def book-url "https://gist.githubusercontent.com/Chemaclass/da9a0ba72adee6644193c730d4f307b2/raw/1164593f76ae7157d816bcc8d700937dfb73420e/moby-dick.txt")
 (def full-book (php/file_get_contents book-url)) # total length 643063 chars
+(def words (re-seq "/\\w+/" full-book))
 
-# Take only a part of the full-book in order to speed the execution example.
-(def book (php/substr full-book 0 30000))
+# Create a set with common stop-words (all lowercase for consistency)
+(def stop-words #{"the" "he" "at" "but" "there" "of" "was" "be" "not" "use" "and" "for" "this" "what" "an" "a" "on" "have" "all" "each" "to" "are" "from" "were" "which" "in" "as" "or" "we" "she" "is" "with" "ine" "when" "do" "you" "his" "had" "your" "how" "that" "they" "by" "can" "their" "it" "I" "word" "said" "if" "i" "s"})
 
-# Create a vector using all words from the book
-(def words (re-seq "/\b\w+\b/" book))
-
-# Create a set with the common words that you want to filter out
-(def stop-words (set "the" "he" "at" "but" "there" "of" "was" "be" "not" "use" "and" "for" "this" "what" "an" "a" "on" "have" "all" "each" "to" "are" "from" "were" "which" "in" "as" "or" "we" "she" "is" "with" "ine" "when" "do" "you" "his" "had" "your" "how" "that" "they" "by" "can" "their" "it" "I" "word" "said" "if" "i" "s"))
-
-# To each word
+# Process words and find top 5 most frequent (excluding stop-words)
 (->> words
-     # map them as lower case
+     # map to lowercase for case-insensitive comparison
      (map php/strtolower)
-     # filter out the common words
-     (filter |(nil? (stop-words $)))
-     # calculate the frequencies of their appearance
+     # filter out common stop-words
+     (filter |(not (contains? stop-words $)))
+     # calculate frequency of each word
      (frequencies)
-     # and create pairs of `word -> number of occurrences`
+     # convert to [word count] pairs
      (pairs)
      # sort by the number of occurrences
      (sort-by second)
@@ -71,7 +65,7 @@ Some tips:
      (apply println))
 
 # Output:
-# [whale 81] [whales 26] [sea 21] [some 19] [up 17]
+# [whale 566] [like 323] [then 302] [upon 298] [ye 288]
 ```
 {% end %}
 
