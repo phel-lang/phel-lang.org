@@ -28,5 +28,4 @@ extra_syntaxes_and_themes = ["syntaxes"]
 # Put all your custom variables here
 
 repo_content_url = "https://github.com/phel-lang/phel-lang.org/blob/master/content/"
-phel_version = "v0.24.0"
-
+phel_version = "v0.26.0"

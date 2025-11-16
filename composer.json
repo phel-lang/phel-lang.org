@@ -11,8 +11,8 @@
     "require": {
         "php": ">=8.3",
         "ext-json": "*",
-        "phel-lang/phel-lang": "^0.24",
-        "gacela-project/gacela": "^1.10"
+        "phel-lang/phel-lang": "^0.26",
+        "gacela-project/gacela": "^1.12"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
