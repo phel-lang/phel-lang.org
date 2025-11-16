@@ -45,9 +45,11 @@ final readonly class ApiMarkdownGenerator
                         $fn->meta['deprecated']
                     );
                     if (isset($fn->meta['superseded-by'])) {
+                        $supersededBy = $fn->meta['superseded-by'];
                         $deprecatedMessage .= sprintf(
-                            ' &mdash; Use `%s` instead',
-                            $fn->meta['superseded-by']
+                            ' &mdash; Use [`%s`](#%s) instead',
+                            $supersededBy,
+                            $supersededBy
                         );
                     }
                     $deprecatedMessage .= '</small>';
