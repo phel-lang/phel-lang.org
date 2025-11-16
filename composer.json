@@ -43,9 +43,6 @@
             "php build/generate-releases.php"
         ],
         "test": "./vendor/bin/phpunit",
-        "post-install-cmd": [
-            "php build/update-phel-version.php"
-        ],
         "post-update-cmd": [
             "php build/update-phel-version.php"
         ]
