@@ -62,6 +62,71 @@ h6:hover .zola-anchor {
   color: var(--color-light-link);
 }
 
+/* Developer Notes (Collapsible) */
+.dev-note {
+  margin: var(--space-lg) 0;
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  border-left: 4px solid;
+  background-color: var(--color-light-surface);
+}
+
+.dev-note summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: var(--text-base);
+  user-select: none;
+  list-style: none;
+  padding: var(--space-sm);
+  margin: calc(-1 * var(--space-sm));
+  border-radius: var(--radius-sm);
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+.dev-note summary::-webkit-details-marker {
+  display: none;
+}
+
+.dev-note summary::before {
+  content: '▶';
+  display: inline-block;
+  margin-right: var(--space-sm);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.dev-note[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.dev-note summary:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dev-note-content {
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+}
+
+.dev-note-content > *:first-child {
+  margin-top: 0;
+}
+
+.dev-note-content > *:last-child {
+  margin-bottom: 0;
+}
+
+/* PHP Note Styling */
+.php-note {
+  border-left-color: #8892bf; /* PHP purple/blue */
+  background-color: #f8f9ff;
+}
+
+/* Clojure Note Styling */
+.clojure-note {
+  border-left-color: #63b132; /* Clojure green */
+  background-color: #f6faf3;
+}
+
 /* ========================================
    DARK MODE
    ======================================== */
@@ -73,4 +138,22 @@ h6:hover .zola-anchor {
 .dark .zola-anchor,
 .dark .zola-anchor:hover {
   color: var(--color-dark-anchor);
+}
+
+.dark .dev-note {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dark .dev-note summary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.dark .php-note {
+  background-color: rgba(136, 146, 191, 0.1);
+  border-left-color: #a0a8d4;
+}
+
+.dark .clojure-note {
+  background-color: rgba(99, 177, 50, 0.1);
+  border-left-color: #7bc950;
 }

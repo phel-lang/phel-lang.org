@@ -17,9 +17,9 @@ The _test_ evaluates to `false` if its value is `false` or equal to `nil`. Every
 (if true 10) # Evaluates to 10
 (if false 10) # Evaluates to nil
 (if true (print 1) (print 2)) # Prints 1 but not 2
-(if 0 (print 1) (print 2)) # Prints 2
+(if 0 (print 1) (print 2)) # Prints 1
 (if nil (print 1) (print 2)) # Prints 2
-(if [] (print 1) (print 2)) # Prints 2
+(if [] (print 1) (print 2)) # Prints 1
 ```
 
 ## Case
@@ -145,11 +145,11 @@ have the form `:modifier argument`. The following modifiers are supported:
 (for [[k v] :pairs {:a 1 :b 2 :c 3}] [v k]) # Evaluates to [[1 :a] [2 :b] [3 :c]]
 (for [[k v] :pairs [1 2 3]] [k v]) # Evaluates to [[0 1] [1 2] [2 3]]
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}]]
-  (put m k (inc v))) # Evaluates to {:a 2 :b 3 :c 4}
+  (assoc m k (inc v))) # Evaluates to {:a 2 :b 3 :c 4}
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}] :let [x (inc v)]]
-  (put m k x)) # Evaluates to {:a 2 :b 3 :c 4}
+  (assoc m k x)) # Evaluates to {:a 2 :b 3 :c 4}
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :when (contains-value? [:a :c] k) :reduce [acc {}]]
-    (put acc k v)) # Evaluates to {:a 1 :c 3}
+    (assoc acc k v)) # Evaluates to {:a 1 :c 3}
 
 (for [x :in [2 2 2 3 3 4 5 6 6] :while (even? x)] x) # Evaluates to [2 2 2]
 (for [x :in [2 2 2 3 3 4 5 6 6] :when (even? x)] x) # Evaluates to [2 2 2 4 6 6]
