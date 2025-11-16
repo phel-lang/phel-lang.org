@@ -40,10 +40,18 @@ final readonly class ApiMarkdownGenerator
             foreach ($fns as $fn) {
                 $result[] = "### `{$fn->nameWithNamespace()}`";
                 if (isset($fn->meta['deprecated'])) {
-                    $result[] = sprintf(
-                        '<small><span style="color: red; font-weight: bold;">Deprecated</span>: %s</small>',
+                    $deprecatedMessage = sprintf(
+                        '<small><span style="color: red; font-weight: bold;">Deprecated</span>: %s',
                         $fn->meta['deprecated']
                     );
+                    if (isset($fn->meta['superseded-by'])) {
+                        $deprecatedMessage .= sprintf(
+                            ' &mdash; Use `%s` instead',
+                            $fn->meta['superseded-by']
+                        );
+                    }
+                    $deprecatedMessage .= '</small>';
+                    $result[] = $deprecatedMessage;
                 }
                 $result[] = $fn->doc;
                 if ($fn->githubUrl !== '') {
