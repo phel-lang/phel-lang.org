@@ -60,19 +60,15 @@ A keyword is like a symbol that begins with a colon character. However, it is us
 ::
 ```
 
-Keywords are commonly used as map keys and function options:
+Keywords are commonly used as map keys:
 
 ```phel
-# Map keys
+# Map with keyword keys
 {:name "Alice" :email "alice@example.com"}
 
-# Function arguments for options
-(defn greet [name & {:keys [formal?]}]
-  (if formal?
-    (str "Good day, " name)
-    (str "Hey, " name)))
-
-(greet "Alice" :formal? true)  # => "Good day, Alice"
+# Accessing map values with keywords
+(get {:name "Alice" :age 30} :name)  # => "Alice"
+(:name {:name "Alice" :age 30})      # => "Alice" (keywords are functions!)
 ```
 
 {% php_note() %}

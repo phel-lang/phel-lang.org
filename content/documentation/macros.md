@@ -7,7 +7,7 @@ weight = 11
 
 Macros are functions that take code as input and return transformed code as output. A macro is like a function that is executed at compile time. They are useful to extend the syntax of the language itself.
 
-Phel's core library itself uses macro to define the language. For example `defn` is as macro.
+Phel's core library uses macros to define the language. For example, `defn` is a macro.
 
 ```phel
 (defn add [a b] (+ a b))
@@ -16,6 +16,28 @@ is transformed to
 ```phel
 (def add (fn [a b] (+ a b)))
 ```
+
+{% php_note() %}
+Macros are **not** like PHP functions. They run at compile-time and transform code before execution:
+
+```php
+// PHP - No macro system
+// You'd need to use code generation or eval()
+
+// Phel - Macros transform code at compile time
+(defmacro unless [test then else]
+  `(if (not ,test) ,then ,else))
+
+(unless false "yes" "no")  # => "yes"
+# Expands to: (if (not false) "yes" "no") at compile time
+```
+
+This is more powerful and safer than PHP's `eval()` or code generation.
+{% end %}
+
+{% clojure_note() %}
+Macros work exactly like Clojure macros—they transform code at compile time using quote, unquote, and syntax-quote.
+{% end %}
 
 ## Quote
 
@@ -59,3 +81,11 @@ For better readability of macros the `quasiquote` special form is defined. It tu
 ```phel
 (defmacro mydefn [name args & body]
   `(def ,name (fn ,args ,@body)))
+```
+
+{% clojure_note() %}
+Quasiquote syntax works like Clojure:
+- `` ` `` for quasiquote (syntax-quote)
+- `,` for unquote
+- `,@` for unquote-splicing
+{% end %}
