@@ -38,43 +38,127 @@ Creates a new lexical context with assignments defined in bindings. Afterwards t
 (let [x 1
       y (+ x 2)]) # Evaluates to nil
 ```
+
 All assignments defined in _bindings_ are immutable and cannot be changed.
+
+{% php_note() %}
+`let` creates block-scoped bindings, similar to PHP's block scope, but with immutability:
+
+```php
+// PHP - mutable variables
+$x = 1;
+$y = $x + 2;
+$x = 10;  // Can reassign
+
+// Phel - immutable bindings
+(let [x 1
+      y (+ x 2)]
+  ; x = 10  <- This would be a compile error!
+  (+ x y))
+```
+{% end %}
+
+{% clojure_note() %}
+`let` works exactly like Clojure's `let`—creates lexically scoped, immutable bindings.
+{% end %}
 
 ## Binding
 
 While `let` creates a new lexical context, `binding` temporarily redefines existing definitions while executing the body. This can be useful when writing tests on functions depending on external state as `binding` allows to remap existing functions or values with mocks.
 
+**Key difference:**
+- `let` creates new local variables (lexical scope only)
+- `binding` temporarily overrides global definitions (dynamic scope)
+
 ```phel
+# Example 1: Simple binding demonstration
+(def *config* "production")
+
+(defn get-config []
+  *config*)
+
+(get-config)  # => "production"
+
+# let doesn't affect the global definition
+(let [*config* "test"]
+  (get-config))  # => "production" (still uses global!)
+
+# binding temporarily overrides the global definition
+(binding [*config* "test"]
+  (get-config))  # => "test" (uses binding!)
+
+(get-config)  # => "production" (back to original)
+
+# Example 2: Mocking functions for testing
+(defn get-system-architecture []
+  (php/php_uname "m"))
+
+(defn greet-user-by-architecture []
+  (str "Hello " (get-system-architecture) " user!"))
+
+# Without binding - calls actual system function
+(greet-user-by-architecture)  # => "Hello x86_64 user!" (or your system arch)
+
+# With let - doesn't work! Function still calls original
+(let [get-system-architecture |(str "i386")]
+  (greet-user-by-architecture))  # => "Hello x86_64 user!" (original still used!)
+
+# With binding - successfully mocks the function
+(binding [get-system-architecture |(str "i386")]
+  (greet-user-by-architecture))  # => "Hello i386 user!" (mocked!)
+
+# Example 3: Testing with binding
 (ns my-app\tests\demo
   (:require phel\test :refer [deftest is]))
 
-# Function that would return e.g. "x86_64", depending on the environment:
-(defn get-system-architecture [] (php/php_uname "m"))
-
-(defn greet-user-by-architecture []
-  (print "Hello" (get-system-architecture) "user!"))
-
-# Bindings with let are not effective outside it's lexical scope
-(deftest greeting-test-let
-  (let [get-system-architecture |(str "i386")] # <- mock function
-    (let [greeting-out (with-output-buffer (greet-user-by-architecture))]
-      (is (= "Hello i386 user!" greeting-out)
-          "i386 system user is greeted accordingly"))))
-
-# Test fails on a x86_64 system, evaluating to "Hello x86_64 user!":
-# ✘ greeting-test-let: i386 system user is greeted accordingly
-
-# With binding, a mock function can bound in place of the original one
 (deftest greeting-test-binding
-  (binding [get-system-architecture |(str "i386")] # <- mock function
-    (let [greeting-out (with-output-buffer (greet-user-by-architecture))]
-      (is (= "Hello i386 user!" greeting-out)
-          "i386 system user is greeted accordingly"))))
+  (binding [get-system-architecture |(str "i386")]
+    (is (= "Hello i386 user!" (greet-user-by-architecture))
+        "i386 system user is greeted accordingly")))
+# ✔ greeting-test-binding: i386 system user is greeted accordingly
 
-# Test is successful:
-# ✔ greet-test-binding: i386 system user is greeted accordingly
+# Example 4: Multiple bindings at once
+(def *db-host* "production-db")
+(def *db-port* 5432)
 
+(defn connect []
+  (str "Connecting to " *db-host* ":" *db-port*))
+
+(binding [*db-host* "test-db"
+          *db-port* 3306]
+  (connect))  # => "Connecting to test-db:3306"
+
+(connect)  # => "Connecting to production-db:5432"
 ```
+
+{% php_note() %}
+`binding` is useful for dependency injection and testing, similar to mocking frameworks in PHP:
+
+```php
+// PHP - using dependency injection
+class UserService {
+    public function __construct(private DbConnection $db) {}
+}
+
+// In tests:
+$mockDb = $this->createMock(DbConnection::class);
+$service = new UserService($mockDb);
+
+// Phel - using binding (simpler for testing)
+(defn get-user [id]
+  (query-db (str "SELECT * FROM users WHERE id=" id)))
+
+(deftest test-get-user
+  (binding [query-db (fn [q] {:id 1 :name "Alice"})]
+    (is (= "Alice" (:name (get-user 1))))))
+```
+
+Binding is particularly useful for testing code that depends on global state or external systems.
+{% end %}
+
+{% clojure_note() %}
+`binding` works exactly like Clojure's `binding`—it creates dynamic scope bindings that affect all code executed within the binding form.
+{% end %}
 
 ## Variables
 
@@ -105,3 +189,23 @@ To update a variable with a function the `swap!` function can be used.
 (swap! foo + 2) # Evaluates to 12
 (deref foo) # Evaluates to 12
 ```
+
+{% php_note() %}
+Variables provide mutable state similar to PHP variables, but are explicit and contained:
+
+```php
+// PHP - everything is mutable by default
+$count = 0;
+$count++;
+
+// Phel - explicit mutability with variables
+(def count (var 0))
+(swap! count inc)
+```
+
+Use Phel's immutable data structures when possible. Variables are mainly useful for interop with PHP code or managing application state.
+{% end %}
+
+{% clojure_note() %}
+Phel variables work like Clojure atoms—they're thread-safe containers for mutable state. Use `deref` or `@` to read, `swap!` to update.
+{% end %}

@@ -52,6 +52,24 @@ There is a shorter form to define an anonymous function. This omits the paramete
 |(sum $&) # Same as (fn [& xs] (sum xs))
 ```
 
+{% php_note() %}
+The short-form anonymous function syntax `|` is similar to PHP's arrow functions:
+
+```php
+// PHP
+$add = fn($x) => $x + 6;
+array_map(fn($x) => $x * 2, $array);
+
+// Phel
+(def add |(+ $ 6))
+(map |(* $ 2) array)
+```
+{% end %}
+
+{% clojure_note() %}
+The short-form `|` syntax is inspired by Clojure's `#()` reader macro, but uses different parameter names (`$` instead of `%`).
+{% end %}
+
 
 ## Global functions
 
@@ -107,19 +125,81 @@ Both approaches are equivalent, but `defn-` provides a more concise syntax for d
 
 ## Recursion
 
-Similar to `loop`, functions can be made recursive using `recur`.
+Similar to `loop`, functions can be made recursive using `recur`. The `recur` special form enables tail-call optimization, preventing stack overflow errors.
 
 ```phel
-(fn [x]
-  (if (php/== x 0)
-    x
-    (recur (php/- x 1))))
+# Recursive factorial (regular recursion - can stack overflow)
+(defn factorial [n]
+  (if (<= n 1)
+    1
+    (* n (factorial (dec n)))))
 
-(defn my-recur-fn [x]
-  (if (php/== x 0)
-    x
-    (recur (php/- x 1))))
+(factorial 5)  # => 120
+
+# Tail-recursive factorial using recur with loop
+(defn factorial-recur [n]
+  (loop [acc 1
+         n n]
+    (if (<= n 1)
+      acc
+      (recur (* acc n) (dec n)))))
+
+(factorial-recur 5)  # => 120
+
+# Recursive sum (can stack overflow on large collections)
+(defn sum-recursive [coll]
+  (if (empty? coll)
+    0
+    (+ (first coll) (sum-recursive (rest coll)))))
+
+(sum-recursive [1 2 3 4 5])  # => 15
+
+# Tail-recursive sum using recur (safe for large collections)
+(defn sum-recur [coll]
+  (loop [acc 0
+         remaining coll]
+    (if (empty? remaining)
+      acc
+      (recur (+ acc (first remaining)) (rest remaining)))))
+
+(sum-recur [1 2 3 4 5])  # => 15
+
+# Using recur directly in function (also tail-call optimized)
+(defn countdown [n]
+  (if (<= n 0)
+    "Done!"
+    (do
+      (println n)
+      (recur (dec n)))))
+
+# (countdown 5)  # Prints: 5, 4, 3, 2, 1, then returns "Done!"
 ```
+
+{% php_note() %}
+`recur` is compiled to a PHP `while` loop, preventing "Maximum function nesting level" errors that would occur with regular recursive calls in PHP.
+
+```php
+// PHP - This will cause stack overflow for large n
+function factorial($n) {
+    if ($n <= 1) return 1;
+    return $n * factorial($n - 1);  // Stack overflow for large n!
+}
+
+// Phel with recur - This works for any size n
+(defn factorial-recur [n]
+  (loop [acc 1
+         n n]
+    (if (<= n 1)
+      acc
+      (recur (* acc n) (dec n)))))
+```
+
+**Key difference:** Regular recursion builds up a call stack, while `recur` reuses the same stack frame (tail-call optimization).
+{% end %}
+
+{% clojure_note() %}
+`recur` works exactly like Clojure's `recur`—it provides tail-call optimization by compiling to a loop.
+{% end %}
 
 ## Apply functions
 
@@ -144,3 +224,20 @@ Sometimes it is required that a variable should pass to a function by reference.
 ```
 
 Support for references is very limited in Phel. Currently, it only works for function arguments (except destructuring).
+
+{% php_note() %}
+This is equivalent to PHP's `&` reference operator:
+
+```php
+// PHP
+function addToArray(&$arr) {
+    $arr[] = 10;
+}
+
+// Phel
+(defn add-to-array [^:reference arr]
+  (php/apush arr 10))
+```
+
+**Note:** Use references sparingly. Phel's immutable data structures are usually a better choice than mutating PHP arrays.
+{% end %}

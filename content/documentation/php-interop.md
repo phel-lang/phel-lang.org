@@ -19,6 +19,24 @@ Named constants set with PHP [`define`](https://www.php.net/manual/en/function.d
 php/MY_SETTING # Returns "My value"
 ```
 
+{% php_note() %}
+The `php/` prefix gives you direct access to PHP's global scope:
+
+```php
+// PHP
+$_SERVER['key']
+$GLOBALS['argv']
+MY_SETTING
+
+// Phel
+(get php/$_SERVER "key")
+(get php/$GLOBALS "argv")
+php/MY_SETTING
+```
+
+**Note:** Use Phel's immutable data structures when possible. Only use PHP arrays when you need to interop with PHP libraries that expect them.
+{% end %}
+
 ## Calling PHP functions
 
 PHP comes with huge set of functions that can be called from Phel by just adding a `php/` prefix to the function name.
@@ -27,6 +45,24 @@ PHP comes with huge set of functions that can be called from Phel by just adding
 (php/strlen "test") # Calls PHP's strlen function and evaluates to 4
 (php/date "l") # Evaluates to something like "Monday"
 ```
+
+{% php_note() %}
+Any PHP function can be called by adding the `php/` prefix:
+
+```php
+// PHP
+strlen("test");
+date("l");
+array_map($fn, $array);
+
+// Phel
+(php/strlen "test")
+(php/date "l")
+(php/array_map fn array)
+```
+
+However, Phel provides functional equivalents for many operations. For example, use `(count "test")` instead of `(php/strlen "test")` when working with Phel data structures.
+{% end %}
 
 ## PHP class instantiation
 
@@ -45,6 +81,24 @@ Evaluates `expr` and creates a new PHP class using the arguments. The instance o
 
 (php/new "\\DateTimeImmutable") # instantiate a new PHP class from string
 ```
+
+{% php_note() %}
+Class instantiation in Phel uses `php/new` instead of PHP's `new` keyword:
+
+```php
+// PHP
+new DateTime();
+new DateTime("now");
+new \DateTimeImmutable();
+
+// Phel
+(php/new DateTime)
+(php/new DateTime "now")
+(php/new "\\DateTimeImmutable")
+```
+
+You can import classes with `:use` to avoid repeating the namespace, just like PHP's `use` statement.
+{% end %}
 
 ## PHP method and property call
 
@@ -65,7 +119,7 @@ You can chain multiple method calls or property accesses in one `php/->` express
 (php/-> di (format "%s seconds")) # Evaluates to "30 seconds"
 (php/-> di s) # Evaluates to 30
 
-# Chain multiple calls: 
+# Chain multiple calls:
 # (new DateTimeImmutable("2024-03-10"))->modify("+1 day")->format("Y-m-d")
 (php/-> (php/new \DateTimeImmutable "2024-03-10")
         (modify "+1 day")
@@ -81,6 +135,32 @@ You can chain multiple method calls or property accesses in one `php/->` express
 (php/oset (php/-> user address) address)
 (php/-> user address city) # Evaluates to "Berlin"
 ```
+
+{% php_note() %}
+The `php/->` operator is similar to PHP's `->` but allows chaining in a more functional style:
+
+```php
+// PHP
+$di->format("%s seconds");
+$di->s;
+(new DateTimeImmutable("2024-03-10"))->modify("+1 day")->format("Y-m-d");
+$user->profile->getDisplayName();
+
+// Phel
+(php/-> di (format "%s seconds"))
+(php/-> di s)
+(php/-> (php/new \DateTimeImmutable "2024-03-10")
+        (modify "+1 day")
+        (format "Y-m-d"))
+(php/-> user profile (getDisplayName))
+```
+
+Method calls use parentheses `(methodname args)`, while property access is just the symbol name.
+{% end %}
+
+{% clojure_note() %}
+The `php/->` operator is inspired by Clojure's thread-first macro `->`, but specifically designed for PHP object method chaining.
+{% end %}
 
 ## PHP static method and property call
 
@@ -99,8 +179,21 @@ Same as above, but for static calls on PHP classes.
 
 # Evaluates to a new instance of DateTimeImmutable
 (php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2020-03-22"))
-
 ```
+
+{% php_note() %}
+The `php/::` operator is equivalent to PHP's `::` for static method and property access:
+
+```php
+// PHP
+DateTimeImmutable::ATOM;
+DateTimeImmutable::createFromFormat("Y-m-d", "2020-03-22");
+
+// Phel
+(php/:: DateTimeImmutable ATOM)
+(php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2020-03-22"))
+```
+{% end %}
 
 ## PHP set object properties
 
@@ -116,6 +209,22 @@ Use `php/oset` to set a value to a class/object property.
 (php/oset (php/-> x name) "foo")
 ```
 
+{% php_note() %}
+`php/oset` is the Phel equivalent of PHP's property assignment:
+
+```php
+// PHP
+$x = new stdClass();
+$x->name = "foo";
+
+// Phel
+(def x (php/new \stdclass))
+(php/oset (php/-> x name) "foo")
+```
+
+**Note:** This mutates the PHP object. When possible, use Phel's immutable data structures instead.
+{% end %}
+
 ## Get PHP-Array value
 
 ```phel
@@ -129,6 +238,26 @@ Equivalent to PHP's `arr[index] ?? null`.
 (php/aget (php/array "a" "b" "c") 1) # Evaluates to "b"
 (php/aget (php/array "a" "b" "c") 5) # Evaluates to nil
 ```
+
+{% php_note() %}
+`php/aget` safely accesses PHP array elements:
+
+```php
+// PHP
+$arr[0] ?? null;
+$arr[1] ?? null;
+$arr[5] ?? null;  // Returns null
+
+// Phel
+(php/aget arr 0)
+(php/aget arr 1)
+(php/aget arr 5)  # Returns nil
+```
+
+**Important distinction:**
+- Use `php/aget` for **PHP arrays** (mutable)
+- Use `get` for **Phel data structures** (immutable vectors, maps)
+{% end %}
 
 ## Get nested PHP-Array value
 
@@ -150,14 +279,32 @@ path is missing, `nil` is returned.
 
 (php/aget-in users ["users" 1 "name"]) # Evaluates to "Bob"
 
-(php/aget-in 
-    (php/array "meta" (php/array "status" "ok")) 
+(php/aget-in
+    (php/array "meta" (php/array "status" "ok"))
     ["meta" "status"]) # Evaluates to "ok"
 
-(php/aget-in 
-    (php/array "meta" (php/array "status" "ok")) 
+(php/aget-in
+    (php/array "meta" (php/array "status" "ok"))
     ["meta" "missing"]) # Evaluates to nil
 ```
+
+{% php_note() %}
+`php/aget-in` provides safe nested array access:
+
+```php
+// PHP - manual nested access with null coalescing
+$users['users'][1]['name'] ?? null;
+$data['meta']['status'] ?? null;
+$data['meta']['missing'] ?? null;
+
+// Phel - clean path-based access
+(php/aget-in users ["users" 1 "name"])
+(php/aget-in data ["meta" "status"])
+(php/aget-in data ["meta" "missing"])  # Returns nil safely
+```
+
+This is similar to Phel's `get-in` for immutable data structures, but specifically for PHP arrays.
+{% end %}
 
 ## Set PHP-Array value
 
@@ -166,6 +313,20 @@ path is missing, `nil` is returned.
 ```
 
 Equivalent to PHP's `arr[index] = value`.
+
+{% php_note() %}
+`php/aset` mutates a PHP array in place:
+
+```php
+// PHP
+$arr[0] = "value";
+
+// Phel
+(php/aset arr 0 "value")
+```
+
+**Important:** This mutates the array. For immutable operations, use Phel's `assoc` on Phel data structures instead.
+{% end %}
 
 ## Set nested PHP-Array value
 
@@ -183,6 +344,22 @@ created as needed to ensure the path exists before writing the value.
 # Equivalent to $data['user']['profile']['name'] = 'Charlie';
 ```
 
+{% php_note() %}
+`php/aset-in` creates nested structures automatically:
+
+```php
+// PHP - manual nested array creation
+$data = [];
+$data['user']['profile']['name'] = 'Charlie';
+
+// Phel - automatic path creation
+(def data (php/array))
+(php/aset-in data ["user" "profile" "name"] "Charlie")
+```
+
+This is the mutable counterpart to Phel's `assoc-in` for immutable data structures.
+{% end %}
+
 ## Append PHP-Array value
 
 ```phel
@@ -191,6 +368,20 @@ created as needed to ensure the path exists before writing the value.
 
 Equivalent to PHP's `arr[] = value`.
 
+{% php_note() %}
+`php/apush` appends to a PHP array:
+
+```php
+// PHP
+$arr[] = "new value";
+
+// Phel
+(php/apush arr "new value")
+```
+
+For immutable operations, use `conj` on Phel vectors instead.
+{% end %}
+
 ## Unset PHP-Array value
 
 ```phel
@@ -198,6 +389,20 @@ Equivalent to PHP's `arr[] = value`.
 ```
 
 Equivalent to PHP's `unset(arr[index])`.
+
+{% php_note() %}
+`php/aunset` removes an element from a PHP array:
+
+```php
+// PHP
+unset($arr[0]);
+
+// Phel
+(php/aunset arr 0)
+```
+
+For immutable operations, use `dissoc` on Phel maps instead.
+{% end %}
 
 ## Unset nested PHP-Array value
 
@@ -214,6 +419,20 @@ remain untouched even if they become empty.
 (php/aget-in data ["user" "profile" "name"]) # Evaluates to nil
 # Equivalent to unset($data['user']['profile']['name']);
 ```
+
+{% php_note() %}
+`php/aunset-in` removes nested array elements:
+
+```php
+// PHP
+unset($data['user']['profile']['name']);
+
+// Phel
+(php/aunset-in data ["user" "profile" "name"])
+```
+
+Parent arrays remain intact even if they become empty after the unset.
+{% end %}
 
 ## `__DIR__`, `__FILE__`, and `*file*`
 
@@ -234,6 +453,21 @@ directory.
 (println (php/dirname *file*)) # Directory of the original Phel file
 (println *file*)               # Absolute path of the original file
 ```
+
+{% php_note() %}
+**Important distinction:**
+
+```php
+// PHP magic constants
+__DIR__   // Points to .phel/cache directory (generated PHP)
+__FILE__  // Points to cached .php file
+
+// Phel special var
+*file*    // Points to your actual .phel source file
+```
+
+Use `*file*` when you need to reference the original Phel source location, such as for loading resources relative to your source code.
+{% end %}
 
 ## Calling Phel functions from PHP
 

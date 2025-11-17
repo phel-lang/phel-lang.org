@@ -22,6 +22,34 @@ Defines the namespace for the current file and adds imports to the environment. 
 
 The call also sets the `*ns*` variable to the given namespace.
 
+{% php_note() %}
+Phel namespaces are similar to PHP namespaces, but with key differences:
+
+```php
+// PHP
+namespace My\Custom\Module;
+use Some\Php\Class;
+use My\Phel\Module as Utilities;
+
+// Phel
+(ns my\custom\module
+  (:use Some\Php\Class)
+  (:require my\phel\module :as utilities))
+```
+
+**Key differences:**
+- Phel uses `\` as separator (like PHP)
+- `:require` for Phel modules, `:use` for PHP classes
+- Functions/values are accessed with `/` not `::`
+{% end %}
+
+{% clojure_note() %}
+Namespaces work similarly to Clojure, but:
+- Use `\` instead of `.` as separator (following PHP conventions)
+- `:use` is for PHP classes (not Clojure vars)
+- `:require` works like Clojure's `:require`
+{% end %}
+
 ### Import a Phel module
 
 Before a Phel module can be used, it has to be imported with the keyword `:require`. Once imported, the module can be accessed by its name followed by a slash and the name of the public function or value. Namespaces are indexed from source file directory which is `src/` by default and can changed with [SrcDirs configuration option](/documentation/configuration/#srcdirs) in `phel-config.php`.
@@ -74,6 +102,10 @@ Additionally, it is possible to refer symbols of other modules in the current na
 ```
 
 Both, `:refer` and `:as` can be combined in any order.
+
+{% clojure_note() %}
+`:refer` works exactly like Clojure's `:refer`—imports specific symbols into the current namespace.
+{% end %}
 
 ### Import a PHP class
 

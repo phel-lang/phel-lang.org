@@ -5,6 +5,29 @@ weight = 17
 
 Phel comes with an integrated unit testing framework.
 
+{% php_note() %}
+Unlike PHPUnit which uses classes and methods, Phel's testing is more lightweight:
+
+```php
+// PHPUnit - class-based tests
+class MyTest extends TestCase {
+    public function testAddition() {
+        $this->assertEquals(4, 2 + 2);
+    }
+}
+
+// Phel - function-based tests
+(deftest my-test
+  (is (= 4 (+ 2 2))))
+```
+
+Phel's approach is simpler for functional code and doesn't require class boilerplate.
+{% end %}
+
+{% clojure_note() %}
+Phel's testing framework is modeled after `clojure.test`—same `is` macro, same `deftest` structure.
+{% end %}
+
 ## Assertions
 
 The core of the library is the `is` macro, which can be used to defined assertions.
@@ -59,6 +82,35 @@ This tests whether the execution of `body` throws an exception of type `exceptio
 ```
 This tests whether the execution of `body` prints the `expected` text to the output stream.
 
+{% php_note() %}
+Exception testing in Phel is more concise than PHPUnit:
+
+```php
+// PHPUnit
+$this->expectException(Exception::class);
+throw new Exception("test");
+
+// or
+$this->expectException(Exception::class);
+$this->expectExceptionMessage("test");
+throw new Exception("test");
+
+// Phel - inline exception assertions
+(is (thrown? \Exception (throw (php/new \Exception "test"))))
+(is (thrown-with-msg? \Exception "test" (throw (php/new \Exception "test"))))
+```
+
+The `output?` assertion is similar to PHPUnit's output buffering:
+```php
+// PHPUnit
+$this->expectOutputString("hello");
+echo "hello";
+
+// Phel
+(is (output? "hello" (php/echo "hello")))
+```
+{% end %}
+
 ## Defining tests
 
 Test can be defined by using the `deftest` macro. This macro is like a function without arguments.
@@ -90,6 +142,24 @@ To filter tests that should run by name, `--filter` command line argument can be
 Test report can be set to more verbose TestDox format showing individual test names with `--testdox` flag. Output can also be suppressed with `--quiet` flag to only include errors or silenced fully with `--silent` flag.
 
 See more options available by running `./vendor/bin/phel test --help`.
+
+{% php_note() %}
+Phel's test command is similar to PHPUnit:
+
+```bash
+# PHPUnit
+./vendor/bin/phpunit tests/
+./vendor/bin/phpunit tests/MainTest.php
+./vendor/bin/phpunit --filter testMyFunction
+
+# Phel
+./vendor/bin/phel test
+./vendor/bin/phel test tests/main.phel
+./vendor/bin/phel test --filter my-test-function
+```
+
+Both support filtering, verbose output, and running specific test files.
+{% end %}
 
 
 If you want to run tests from Phel code, the `run-tests` function can be used. As arguments, it takes a map of options (that can be empty) and one or more namespaces that should be tested.

@@ -5,13 +5,37 @@ weight = 2
 
 ## Nil, True, False
 
-Nil, true and false are literal constants. In Phel, `nil` is the same as `null` in PHP. Phel's `true` and `false` are the same as PHP's `true` and `false`.
+Nil, true and false are literal constants.
 
 ```phel
 nil
 true
 false
 ```
+
+In Phel, only `false` and `nil` are falsy. Everything else is truthy—including `0`, `""`, and `[]`.
+
+```phel
+# Truthiness examples
+(if nil "yes" "no")   # => "no"  (nil is falsy)
+(if false "yes" "no") # => "no"  (false is falsy)
+(if 0 "yes" "no")     # => "yes" (0 is truthy!)
+(if "" "yes" "no")    # => "yes" (empty string is truthy!)
+(if [] "yes" "no")    # => "yes" (empty vector is truthy!)
+```
+
+{% php_note() %}
+In PHP, `nil` is the same as `null`, and `true`/`false` are the same. However, truthiness works differently:
+
+**PHP**: `0`, `""`, `[]`, `null`, and `false` are all falsy
+**Phel**: Only `false` and `nil` are falsy
+
+This means `if (0)` in PHP is false, but `(if 0 ...)` in Phel is true!
+{% end %}
+
+{% clojure_note() %}
+Truthiness is the same as Clojure—only `false` and `nil` are falsy.
+{% end %}
 
 ## Symbol
 
@@ -26,7 +50,7 @@ my-module/my-function
 
 ## Keywords
 
-A keyword is like a symbol that begins with a colon character. However, it is used as a constant rather than a name for something.
+A keyword is like a symbol that begins with a colon character. However, it is used as a constant rather than a name for something. Keywords are interned and fast for equality checks.
 
 ```phel
 :keyword
@@ -35,6 +59,35 @@ A keyword is like a symbol that begins with a colon character. However, it is us
 :a-keyword
 ::
 ```
+
+Keywords are commonly used as map keys:
+
+```phel
+# Map with keyword keys
+{:name "Alice" :email "alice@example.com"}
+
+# Accessing map values with keywords
+(get {:name "Alice" :age 30} :name)  # => "Alice"
+(:name {:name "Alice" :age 30})      # => "Alice" (keywords are functions!)
+```
+
+{% php_note() %}
+Keywords are like string constants, but more efficient for map keys. Use keywords instead of strings for map keys:
+
+```phel
+# Less idiomatic:
+{"name" "Alice" "age" 30}
+
+# Idiomatic:
+{:name "Alice" :age 30}
+```
+
+Keywords are interned (only one instance exists in memory), making equality checks very fast.
+{% end %}
+
+{% clojure_note() %}
+Keywords work exactly like in Clojure—they're interned, fast for equality checks, and self-evaluate.
+{% end %}
 
 ## Numbers
 
@@ -69,9 +122,7 @@ Phel supports integers and floating-point numbers. Both use the underlying PHP i
 
 ## Strings
 
-Strings are surrounded by double quotes. They almost work the same as PHP double-quoted strings. One difference is that the dollar sign (`$`) must not be escaped. Internally, Phel strings are represented by PHP strings. Therefore, every PHP string function can be used to operate on the string.
-
-Strings can be written over multiple lines. The line break character is then ignored by the reader.
+Strings are surrounded by double quotes. The dollar sign (`$`) does not need to be escaped.
 
 ```phel
 "hello world"
@@ -89,8 +140,27 @@ string."
 
 "Hexadecimal notation is supported: \x41"
 
-"Unicodes can be encoded as in PHP: \u{1000}"
+"Unicodes can be encoded: \u{1000}"
 ```
+
+String concatenation and conversion using `str`:
+
+```phel
+(str "Hello" " " "World")  # => "Hello World"
+(str "The answer is " 42)  # => "The answer is 42"
+```
+
+{% php_note() %}
+Phel strings are PHP strings internally, so you can use all PHP string functions:
+
+```phel
+(php/strlen "hello")                 # => 5
+(php/strtoupper "hello")             # => "HELLO"
+(php/str_replace "o" "0" "hello")    # => "hell0"
+```
+
+Strings work almost the same as PHP double-quoted strings, with one difference: the dollar sign (`$`) doesn't need escaping.
+{% end %}
 
 ## Lists
 
@@ -118,17 +188,42 @@ A vector in Phel is an indexed data structure. In contrast to PHP arrays, Phel v
 
 ## Maps
 
-A map is a sequence of whitespace-separated key/value pairs surrounded by curly braces, wherein the key and value of each key/value pair are separated by whitespace. There must be an even number of items between curly braces or the parser will signal a parse error. The sequence is defined as key1, value1, key2, value2, etc.
+A map is a sequence of whitespace-separated key/value pairs surrounded by curly braces. The sequence is defined as key1, value1, key2, value2, etc. There must be an even number of items.
 
 ```phel
 {} # same as (hash-map)
 {:key1 "value1" :key2 "value2"}
-{'(1 2 3) '(4 5 6)}
-{[] []}
-{1 2 3 4 5 6}
+
+# Any type can be a key
+{'(1 2 3) '(4 5 6)}  # Lists as keys
+{[] []}              # Vectors as keys
+{1 2 3 4 5 6}        # Numbers as keys
+
+# Common pattern: keywords as keys
+{:name "Alice" :age 30 :email "alice@example.com"}
 ```
 
-In contrast to PHP associative arrays, Phel maps can have any types of keys.
+{% php_note() %}
+Unlike PHP associative arrays, Phel maps:
+- Can have **any type** as keys (not just strings/integers): vectors, lists, or even other maps
+- Are **immutable**: operations return new maps without modifying the original
+- Are **not** PHP arrays internally—they're their own data structure
+
+```phel
+# PHP:
+$map = ['name' => 'Alice'];
+$map['name'] = 'Bob';  // Mutates in place
+
+# Phel:
+(def map {:name "Alice"})
+(def new-map (assoc map :name "Bob"))  # Returns new map
+# map is still {:name "Alice"}
+```
+{% end %}
+
+{% clojure_note() %}
+Maps work exactly like Clojure maps, including support for any hashable type as keys.
+{% end %}
 
 ## Sets
 
