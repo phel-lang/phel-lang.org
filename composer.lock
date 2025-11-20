@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ea61b8a3d17d6af0a6cbf284b949e651",
+    "content-hash": "bb0b9827f5c2d4c467d3bb370193d32f",
     "packages": [
         {
             "name": "gacela-project/container",
@@ -160,17 +160,11 @@
         },
         {
             "name": "phel-lang/phel-lang",
-            "version": "v0.26.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "2ccab192ffe8a4a25410bbfae5fb8762b7fb450d"
-            },
+            "version": "dev-main",
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/2ccab192ffe8a4a25410bbfae5fb8762b7fb450d",
-                "reference": "2ccab192ffe8a4a25410bbfae5fb8762b7fb450d",
-                "shasum": ""
+                "type": "path",
+                "url": "/Users/chema/Code/phel-lang/phel-lang",
+                "reference": "9474b9c8f7113e5776197deca9fc45d04fb5945f"
             },
             "require": {
                 "gacela-project/gacela": "^1.12",
@@ -202,7 +196,72 @@
                     "src/Phel.php"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "PhelTest\\": "tests/php"
+                }
+            },
+            "scripts": {
+                "csfix": [
+                    "./vendor/bin/php-cs-fixer fix"
+                ],
+                "csrun": [
+                    "./vendor/bin/php-cs-fixer fix --dry-run"
+                ],
+                "fix": [
+                    "@rector",
+                    "@csfix"
+                ],
+                "phpbench": [
+                    "./vendor/bin/phpbench run --report=aggregate --ansi"
+                ],
+                "phpbench-base": [
+                    "./vendor/bin/phpbench run --tag=baseline --report=aggregate --progress=plain --ansi"
+                ],
+                "phpbench-ref": [
+                    "./vendor/bin/phpbench run --ref=baseline --report=aggregate --progress=plain --ansi"
+                ],
+                "phpstan": [
+                    "./vendor/bin/phpstan --memory-limit=1G"
+                ],
+                "psalm": [
+                    "./vendor/bin/psalm --no-cache"
+                ],
+                "rector": [
+                    "./vendor/bin/rector process"
+                ],
+                "rectorrun": [
+                    "./vendor/bin/rector process --dry-run"
+                ],
+                "static-clear-cache": [
+                    "vendor/bin/psalm --clear-cache",
+                    "vendor/bin/phpstan clear-result-cache"
+                ],
+                "test": [
+                    "@test-all"
+                ],
+                "test-all": [
+                    "@static-clear-cache",
+                    "@test-quality",
+                    "@test-compiler",
+                    "@test-core"
+                ],
+                "test-compiler": [
+                    "./vendor/bin/phpunit --testsuite=unit,integration --log-junit=data/log-junit.xml"
+                ],
+                "test-compiler:coverage": [
+                    "XDEBUG_MODE=coverage ./vendor/bin/phpunit --testsuite=unit,integration --coverage-html=data/coverage-html --coverage-xml=data/coverage-xml --log-junit=data/coverage-xml/junit.xml"
+                ],
+                "test-core": [
+                    "./bin/phel test"
+                ],
+                "test-quality": [
+                    "@csrun",
+                    "@psalm",
+                    "@phpstan",
+                    "@rectorrun"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -225,17 +284,9 @@
                 "lisp",
                 "phel"
             ],
-            "support": {
-                "issues": "https://github.com/phel-lang/phel-lang/issues",
-                "source": "https://github.com/phel-lang/phel-lang/tree/v0.26.0"
-            },
-            "funding": [
-                {
-                    "url": "https://chemaclass.com/sponsor",
-                    "type": "custom"
-                }
-            ],
-            "time": "2025-11-16T15:58:36+00:00"
+            "transport-options": {
+                "relative": false
+            }
         },
         {
             "name": "phpunit/php-timer",
@@ -3721,6 +3772,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "phel-lang/phel-lang": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": true,
