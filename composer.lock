@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bb0b9827f5c2d4c467d3bb370193d32f",
+    "content-hash": "cacf2b085f71571868bce9b046fc74b9",
     "packages": [
         {
             "name": "gacela-project/container",
@@ -161,10 +161,16 @@
         {
             "name": "phel-lang/phel-lang",
             "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phel-lang/phel-lang.git",
+                "reference": "e82dc40486b1c3d1e094cd1d97be6764e7cad5d3"
+            },
             "dist": {
-                "type": "path",
-                "url": "/Users/chema/Code/phel-lang/phel-lang",
-                "reference": "9474b9c8f7113e5776197deca9fc45d04fb5945f"
+                "type": "zip",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/e82dc40486b1c3d1e094cd1d97be6764e7cad5d3",
+                "reference": "e82dc40486b1c3d1e094cd1d97be6764e7cad5d3",
+                "shasum": ""
             },
             "require": {
                 "gacela-project/gacela": "^1.12",
@@ -184,6 +190,7 @@
                 "symfony/var-dumper": "^7.3",
                 "vimeo/psalm": "^6.13"
             },
+            "default-branch": true,
             "bin": [
                 "bin/phel"
             ],
@@ -196,72 +203,7 @@
                     "src/Phel.php"
                 ]
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "PhelTest\\": "tests/php"
-                }
-            },
-            "scripts": {
-                "csfix": [
-                    "./vendor/bin/php-cs-fixer fix"
-                ],
-                "csrun": [
-                    "./vendor/bin/php-cs-fixer fix --dry-run"
-                ],
-                "fix": [
-                    "@rector",
-                    "@csfix"
-                ],
-                "phpbench": [
-                    "./vendor/bin/phpbench run --report=aggregate --ansi"
-                ],
-                "phpbench-base": [
-                    "./vendor/bin/phpbench run --tag=baseline --report=aggregate --progress=plain --ansi"
-                ],
-                "phpbench-ref": [
-                    "./vendor/bin/phpbench run --ref=baseline --report=aggregate --progress=plain --ansi"
-                ],
-                "phpstan": [
-                    "./vendor/bin/phpstan --memory-limit=1G"
-                ],
-                "psalm": [
-                    "./vendor/bin/psalm --no-cache"
-                ],
-                "rector": [
-                    "./vendor/bin/rector process"
-                ],
-                "rectorrun": [
-                    "./vendor/bin/rector process --dry-run"
-                ],
-                "static-clear-cache": [
-                    "vendor/bin/psalm --clear-cache",
-                    "vendor/bin/phpstan clear-result-cache"
-                ],
-                "test": [
-                    "@test-all"
-                ],
-                "test-all": [
-                    "@static-clear-cache",
-                    "@test-quality",
-                    "@test-compiler",
-                    "@test-core"
-                ],
-                "test-compiler": [
-                    "./vendor/bin/phpunit --testsuite=unit,integration --log-junit=data/log-junit.xml"
-                ],
-                "test-compiler:coverage": [
-                    "XDEBUG_MODE=coverage ./vendor/bin/phpunit --testsuite=unit,integration --coverage-html=data/coverage-html --coverage-xml=data/coverage-xml --log-junit=data/coverage-xml/junit.xml"
-                ],
-                "test-core": [
-                    "./bin/phel test"
-                ],
-                "test-quality": [
-                    "@csrun",
-                    "@psalm",
-                    "@phpstan",
-                    "@rectorrun"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -284,9 +226,17 @@
                 "lisp",
                 "phel"
             ],
-            "transport-options": {
-                "relative": false
-            }
+            "support": {
+                "issues": "https://github.com/phel-lang/phel-lang/issues",
+                "source": "https://github.com/phel-lang/phel-lang/tree/main"
+            },
+            "funding": [
+                {
+                    "url": "https://chemaclass.com/sponsor",
+                    "type": "custom"
+                }
+            ],
+            "time": "2025-11-20T00:43:08+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -1692,12 +1642,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "6c7e6e7ebf679f9228c82ec3f7a432b4e8df538e"
+                "reference": "070af2db86d1502f430fd627a045e7b078abf63f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/6c7e6e7ebf679f9228c82ec3f7a432b4e8df538e",
-                "reference": "6c7e6e7ebf679f9228c82ec3f7a432b4e8df538e",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/070af2db86d1502f430fd627a045e7b078abf63f",
+                "reference": "070af2db86d1502f430fd627a045e7b078abf63f",
                 "shasum": ""
             },
             "conflict": {
@@ -1750,7 +1700,7 @@
                 "aws/aws-sdk-php": "<3.288.1",
                 "azuracast/azuracast": "<0.18.3",
                 "b13/seo_basics": "<0.8.2",
-                "backdrop/backdrop": "<1.27.3|>=1.28,<1.28.2",
+                "backdrop/backdrop": "<=1.32",
                 "backpack/crud": "<3.4.9",
                 "backpack/filemanager": "<2.0.2|>=3,<3.0.9",
                 "bacula-web/bacula-web": "<9.7.1",
@@ -1847,6 +1797,7 @@
                 "derhansen/sf_event_mgt": "<4.3.1|>=5,<5.1.1|>=7,<7.4",
                 "desperado/xml-bundle": "<=0.1.7",
                 "dev-lancer/minecraft-motd-parser": "<=1.0.5",
+                "devcode-it/openstamanager": "<=2.9.4",
                 "devgroup/dotplant": "<2020.09.14-dev",
                 "digimix/wp-svg-upload": "<=1",
                 "directmailteam/direct-mail": "<6.0.3|>=7,<7.0.3|>=8,<9.5.2",
@@ -1876,10 +1827,11 @@
                 "drupal/commerce_alphabank_redirect": "<1.0.3",
                 "drupal/commerce_eurobank_redirect": "<2.1.1",
                 "drupal/config_split": "<1.10|>=2,<2.0.2",
-                "drupal/core": ">=6,<6.38|>=7,<7.102|>=8,<10.3.14|>=10.4,<10.4.5|>=11,<11.0.13|>=11.1,<11.1.5",
+                "drupal/core": ">=6,<6.38|>=7,<7.102|>=8,<10.4.9|>=10.5,<10.5.6|>=11,<11.1.9|>=11.2,<11.2.8",
                 "drupal/core-recommended": ">=7,<7.102|>=8,<10.2.11|>=10.3,<10.3.9|>=11,<11.0.8",
                 "drupal/currency": "<3.5",
                 "drupal/drupal": ">=5,<5.11|>=6,<6.38|>=7,<7.102|>=8,<10.2.11|>=10.3,<10.3.9|>=11,<11.0.8",
+                "drupal/email_tfa": "<2.0.6",
                 "drupal/formatter_suite": "<2.1",
                 "drupal/gdpr": "<3.0.1|>=3.1,<3.1.2",
                 "drupal/google_tag": "<1.8|>=2,<2.0.8",
@@ -1895,6 +1847,7 @@
                 "drupal/quick_node_block": "<2",
                 "drupal/rapidoc_elements_field_formatter": "<1.0.1",
                 "drupal/reverse_proxy_header": "<1.1.2",
+                "drupal/simple_multistep": "<2",
                 "drupal/simple_oauth": ">=6,<6.0.7",
                 "drupal/spamspan": "<3.2.1",
                 "drupal/tfa": "<1.10",
@@ -1987,7 +1940,7 @@
                 "geshi/geshi": "<=1.0.9.1",
                 "getformwork/formwork": "<1.13.1|>=2.0.0.0-beta1,<2.0.0.0-beta4",
                 "getgrav/grav": "<1.7.46",
-                "getkirby/cms": "<3.9.8.3-dev|>=3.10,<3.10.1.2-dev|>=4,<4.7.1",
+                "getkirby/cms": "<3.9.8.3-dev|>=3.10,<3.10.1.2-dev|>=4,<4.7.1|>=5,<5.1.4",
                 "getkirby/kirby": "<3.9.8.3-dev|>=3.10,<3.10.1.2-dev|>=4,<4.7.1",
                 "getkirby/panel": "<2.5.14",
                 "getkirby/starterkit": "<=3.7.0.2",
@@ -2167,6 +2120,7 @@
                 "modx/revolution": "<=3.1",
                 "mojo42/jirafeau": "<4.4",
                 "mongodb/mongodb": ">=1,<1.9.2",
+                "mongodb/mongodb-extension": "<1.21.2",
                 "monolog/monolog": ">=1.8,<1.12",
                 "moodle/moodle": "<4.4.11|>=4.5.0.0-beta,<4.5.7|>=5.0.0.0-beta,<5.0.3",
                 "moonshine/moonshine": "<=3.12.5",
@@ -2174,10 +2128,9 @@
                 "movim/moxl": ">=0.8,<=0.10",
                 "movingbytes/social-network": "<=1.2.1",
                 "mpdf/mpdf": "<=7.1.7",
-                "munkireport/comment": "<4.1",
+                "munkireport/comment": "<4",
                 "munkireport/managedinstalls": "<2.6",
                 "munkireport/munki_facts": "<1.5",
-                "munkireport/munkireport": ">=2.5.3,<5.6.3",
                 "munkireport/reportdata": "<3.5",
                 "munkireport/softwareupdate": "<1.6",
                 "mustache/mustache": ">=2,<2.14.1",
@@ -2262,7 +2215,7 @@
                 "phpmailer/phpmailer": "<6.5",
                 "phpmussel/phpmussel": ">=1,<1.6",
                 "phpmyadmin/phpmyadmin": "<5.2.2",
-                "phpmyfaq/phpmyfaq": "<3.2.5|==3.2.5|>=3.2.10,<=4.0.1",
+                "phpmyfaq/phpmyfaq": "<=4.0.13",
                 "phpoffice/common": "<0.2.9",
                 "phpoffice/math": "<=0.2",
                 "phpoffice/phpexcel": "<=1.8.2",
@@ -2483,7 +2436,7 @@
                 "thelia/thelia": ">=2.1,<2.1.3",
                 "theonedemon/phpwhois": "<=4.2.5",
                 "thinkcmf/thinkcmf": "<6.0.8",
-                "thorsten/phpmyfaq": "<=4.0.1|>=4.0.7,<4.0.13",
+                "thorsten/phpmyfaq": "<=4.0.13",
                 "tikiwiki/tiki-manager": "<=17.1",
                 "timber/timber": ">=0.16.6,<1.23.1|>=1.24,<1.24.1|>=2,<2.1",
                 "tinymce/tinymce": "<7.2",
@@ -2676,7 +2629,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-11-14T21:05:13+00:00"
+            "time": "2025-11-19T21:05:11+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -3720,16 +3673,16 @@
         },
         {
             "name": "theseer/tokenizer",
-            "version": "1.3.0",
+            "version": "1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/theseer/tokenizer.git",
-                "reference": "d74205c497bfbca49f34d4bc4c19c17e22db4ebb"
+                "reference": "b7489ce515e168639d17feec34b8847c326b0b3c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/theseer/tokenizer/zipball/d74205c497bfbca49f34d4bc4c19c17e22db4ebb",
-                "reference": "d74205c497bfbca49f34d4bc4c19c17e22db4ebb",
+                "url": "https://api.github.com/repos/theseer/tokenizer/zipball/b7489ce515e168639d17feec34b8847c326b0b3c",
+                "reference": "b7489ce515e168639d17feec34b8847c326b0b3c",
                 "shasum": ""
             },
             "require": {
@@ -3758,7 +3711,7 @@
             "description": "A small library for converting tokenized PHP source code into XML and potentially other formats",
             "support": {
                 "issues": "https://github.com/theseer/tokenizer/issues",
-                "source": "https://github.com/theseer/tokenizer/tree/1.3.0"
+                "source": "https://github.com/theseer/tokenizer/tree/1.3.1"
             },
             "funding": [
                 {
@@ -3766,7 +3719,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-11-13T13:44:09+00:00"
+            "time": "2025-11-17T20:03:58+00:00"
         }
     ],
     "aliases": [],
@@ -3781,7 +3734,7 @@
         "php": ">=8.3",
         "ext-json": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "8.3"
     },
