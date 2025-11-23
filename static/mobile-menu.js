@@ -64,55 +64,10 @@ if (document.readyState !== 'loading') {
 document.addEventListener('DOMContentLoaded', function() {
   const mobileDarkToggle = document.querySelector('.mobile-menu__dark-mode-toggle');
   const mainDarkToggle = document.getElementById('dark-mode-toggle');
-  
+
   if (mobileDarkToggle && mainDarkToggle) {
     mobileDarkToggle.addEventListener('click', function() {
       mainDarkToggle.click();
     });
   }
-});
-
-// Mobile search expansion
-document.addEventListener('DOMContentLoaded', function() {
-  // Only run on mobile screens
-  function isMobile() {
-    return window.innerWidth < 1040;
-  }
-
-  const searchInput = document.getElementById('search');
-  const headerContainer = document.querySelector('.site-header__container');
-  
-  if (!searchInput || !headerContainer) {
-    return;
-  }
-
-  // Expand search on focus (mobile only)
-  searchInput.addEventListener('focus', function() {
-    if (isMobile()) {
-      headerContainer.classList.add('search-expanded');
-    }
-  });
-
-  // Collapse search on blur (mobile only) - only if empty
-  searchInput.addEventListener('blur', function() {
-    if (isMobile()) {
-      // Small delay to allow clicking search results
-      setTimeout(function() {
-        // Only remove search-expanded if the input is empty
-        if (searchInput.value.trim() === "") {
-          headerContainer.classList.remove('search-expanded');
-        }
-      }, 200);
-    }
-  });
-
-  // Re-check on window resize
-  window.addEventListener('resize', function() {
-    if (!isMobile()) {
-      // Only remove if empty when switching to desktop
-      if (searchInput.value.trim() === "") {
-        headerContainer.classList.remove('search-expanded');
-      }
-    }
-  });
 });
