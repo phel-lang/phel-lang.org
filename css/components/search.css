@@ -153,6 +153,9 @@
   align-items: center;
   gap: var(--space-sm);
   padding: var(--space-md) var(--space-lg);
+  border-bottom: 2px solid transparent;
+  border-radius: inherit;
+  transition: border-color var(--duration-fast) var(--ease-out);
 }
 
 .search-modal__icon {
@@ -234,15 +237,18 @@
 
 .search-modal__results::-webkit-scrollbar-track {
   background: transparent;
+  margin: 8px 0;
 }
 
 .search-modal__results::-webkit-scrollbar-thumb {
   background: var(--color-light-border);
   border-radius: var(--radius-full);
+  background-clip: padding-box;
 }
 
 .search-modal__results::-webkit-scrollbar-thumb:hover {
   background: var(--color-gray-base);
+  background-clip: padding-box;
 }
 
 .search-modal__results-list {
@@ -375,14 +381,25 @@
 
   .search-modal__container {
     max-width: 100%;
+    width: 100%;
+    height: auto;
+    max-height: calc(100vh - 32px);
   }
 
   .search-modal__content {
     border-radius: var(--radius-lg);
+    height: auto;
+    max-height: calc(100vh - 32px);
+  }
+  
+  /* When results are visible, expand to full height */
+  .search-modal__content:has(.search-modal__results[style*="display: block"]) {
+    height: calc(100vh - 32px);
   }
 
   .search-modal__input-wrapper {
     padding: var(--space-md) var(--space-lg);
+    flex-shrink: 0;
   }
 
   .search-modal__input {
@@ -390,7 +407,14 @@
   }
 
   .search-modal__results {
-    max-height: 50vh;
+    flex: 1;
+    max-height: none;
+    overflow-y: auto;
+  }
+  
+  .search-modal__results[style*="display: none"] {
+    flex: 0;
+    display: none;
   }
 
   .search-results__item {
@@ -473,10 +497,13 @@
 
 .dark .search-modal__results::-webkit-scrollbar-thumb {
   background: var(--color-dark-border);
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 .dark .search-modal__results::-webkit-scrollbar-thumb:hover {
-  background: var(--color-dark-border-subtle);
+  background: var(--color-gray-base);
+  background-clip: padding-box;
 }
 
 .dark .search-modal__results-list li.selected .search-results__item {

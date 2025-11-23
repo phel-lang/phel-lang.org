@@ -23,9 +23,22 @@ function openSearchModal() {
     document.body.style.overflow = "hidden";
 
     // Focus the search input after a brief delay to ensure modal is visible
+    // Longer delay for mobile devices to ensure proper focus
+    const isMobile = window.innerWidth <= 768;
+    const delay = isMobile ? 200 : 100;
+    
+    // On mobile, hide results when input is empty (input stays visible)
+    if (isMobile && searchResults) {
+        searchResults.style.display = searchInput.value.trim() === "" ? "none" : "block";
+    }
+    
     setTimeout(() => {
         searchInput.focus();
-    }, 100);
+        // For mobile, ensure keyboard shows up
+        if (isMobile) {
+            searchInput.click();
+        }
+    }, delay);
 }
 
 function closeSearchModal() {
@@ -51,6 +64,17 @@ if (searchModalBackdrop) {
 const searchModalShortcut = document.querySelector(".search-modal__shortcut");
 if (searchModalShortcut) {
     searchModalShortcut.addEventListener("click", closeSearchModal);
+}
+
+// Focus input when clicking anywhere in the input wrapper (helpful on mobile)
+const searchInputWrapper = document.querySelector(".search-modal__input-wrapper");
+if (searchInputWrapper) {
+    searchInputWrapper.addEventListener("click", (e) => {
+        // Don't focus if clicking the ESC button
+        if (!e.target.classList.contains("search-modal__shortcut")) {
+            searchInput.focus();
+        }
+    });
 }
 
 ////////////////////////////////////
@@ -275,6 +299,7 @@ function debounce(func, wait) {
 function showResults(index) {
     return function () {
         const term = searchInput.value.trim();
+        
         searchResults.style.display = term === "" ? "none" : "block";
         searchResultsItems.innerHTML = "";
 
