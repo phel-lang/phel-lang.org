@@ -1,77 +1,111 @@
-const MAX_ITEMS = 10;
+const MAX_ITEMS = 15;
 const UP_ARROW = "ArrowUp";
 const DOWN_ARROW = "ArrowDown";
 const ENTER_KEY = "Enter";
 const ESCAPE_KEY = "Escape";
 
+const searchTrigger = document.getElementById("search-trigger");
+const searchModal = document.getElementById("search-modal");
+const searchModalBackdrop = document.getElementById("search-modal-backdrop");
 const searchInput = document.getElementById("search");
 const searchResults = document.getElementById("search-results");
 const searchResultsItems = document.getElementById("search-results__items");
-const searchContainer = document.querySelector(".site-header__search");
-const headerContainer = document.querySelector(".site-header__container");
 
 let searchItemSelected = null;
 let resultsItemsIndex = -1;
 
-// Function to update search container class based on input content and focus
-function updateSearchContainerClass() {
-    if (searchInput && searchContainer) {
-        const hasContent = searchInput.value.trim() !== "";
-        const isFocused = document.activeElement === searchInput;
-        
-        // Keep expanded if input has content OR is focused
-        if (hasContent || isFocused) {
-            searchContainer.classList.add("has-content");
-            if (headerContainer) {
-                headerContainer.classList.add("search-expanded");
-            }
-        } else {
-            searchContainer.classList.remove("has-content");
-            if (headerContainer) {
-                headerContainer.classList.remove("search-expanded");
-            }
-        }
-    }
+////////////////////////////////////
+// Modal Management
+////////////////////////////////////
+
+function openSearchModal() {
+    searchModal.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+
+    // Focus the search input after a brief delay to ensure modal is visible
+    setTimeout(() => {
+        searchInput.focus();
+    }, 100);
+}
+
+function closeSearchModal() {
+    searchModal.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+    searchInput.value = "";
+    searchResults.style.display = "none";
+    searchItemSelected = null;
+    resultsItemsIndex = -1;
+}
+
+// Open modal when trigger button is clicked
+if (searchTrigger) {
+    searchTrigger.addEventListener("click", openSearchModal);
+}
+
+// Close modal when backdrop is clicked
+if (searchModalBackdrop) {
+    searchModalBackdrop.addEventListener("click", closeSearchModal);
+}
+
+// Close modal when ESC shortcut indicator is clicked
+const searchModalShortcut = document.querySelector(".search-modal__shortcut");
+if (searchModalShortcut) {
+    searchModalShortcut.addEventListener("click", closeSearchModal);
 }
 
 ////////////////////////////////////
-// Interaction with the search input
+// Keyboard shortcuts
 ////////////////////////////////////
-document.addEventListener("keyup", function (keyboardEvent) {
-    if (["s", "S", "/"].includes(keyboardEvent.key)) {
-        searchInput.focus();
-    }
-});
 
 document.addEventListener("keydown", function (keyboardEvent) {
-    const items = searchResultsItems.getElementsByTagName("li");
-    const len = items.length - 1;
-
-    switch (keyboardEvent.key) {
-        case DOWN_ARROW:
-            keyboardEvent.preventDefault();
-            downArrow(len);
-            break;
-
-        case UP_ARROW:
-            keyboardEvent.preventDefault();
-            upArrow(len); 
-            break;
-
-        case ENTER_KEY: {
-            const parent = searchItemSelected || searchResultsItems;
-            const target = parent.querySelector("a");
-
-            if (target) target.click();
-            break;
+    // Open modal with /, s, or S (only if modal is not already open)
+    if (["s", "S", "/"].includes(keyboardEvent.key) && searchModal.getAttribute("aria-hidden") === "true") {
+        // Don't trigger if user is typing in an input/textarea
+        if (document.activeElement.tagName === "INPUT" ||
+            document.activeElement.tagName === "TEXTAREA" ||
+            document.activeElement.isContentEditable) {
+            return;
         }
+        keyboardEvent.preventDefault();
+        openSearchModal();
+        return;
+    }
 
-        case ESCAPE_KEY: {
-            searchInput.value = "";
-            searchResults.style.display = "none";
-            searchInput.blur();
-            updateSearchContainerClass();
-            break;
+    // Only handle these keys when modal is open
+    if (searchModal.getAttribute("aria-hidden") === "false") {
+        const items = searchResultsItems.getElementsByTagName("li");
+        const len = items.length - 1;
+
+        switch (keyboardEvent.key) {
+            case DOWN_ARROW:
+                if (items.length > 0) {
+                    keyboardEvent.preventDefault();
+                    downArrow(len);
+                }
+                break;
+
+            case UP_ARROW:
+                if (items.length > 0) {
+                    keyboardEvent.preventDefault();
+                    upArrow(len);
+                }
+                break;
+
+            case ENTER_KEY: {
+                const parent = searchItemSelected || searchResultsItems;
+                const target = parent.querySelector("a");
+
+                if (target) {
+                    target.click();
+                    closeSearchModal();
+                }
+                break;
+            }
+
+            case ESCAPE_KEY:
+                keyboardEvent.preventDefault();
+                closeSearchModal();
+                break;
         }
     }
 });
@@ -94,7 +128,6 @@ function downArrow(len) {
         }
     }
 
-    searchItemSelected.focus()
     searchItemSelected.scrollIntoView({ block: "nearest" });
     addClass(searchItemSelected, "selected");
 }
@@ -115,7 +148,6 @@ function upArrow(len) {
             searchItemSelected = searchResultsItems.getElementsByTagName("li")[len];
         }
     }
-    searchItemSelected.focus();
     searchItemSelected.scrollIntoView({ block: "nearest" });
     addClass(searchItemSelected, "selected");
 }
@@ -137,8 +169,9 @@ function addClass(el, className) {
 }
 
 ///////////////////////////////
-// Autoload of the search input
+// Initialize search
 ///////////////////////////////
+
 if (document.readyState === "complete" || (document.readyState !== "loading" && !document.documentElement.doScroll)) {
     initSearch();
 } else {
@@ -146,8 +179,6 @@ if (document.readyState === "complete" || (document.readyState !== "loading" && 
 }
 
 function initSearch() {
-    updateSearchContainerClass();
-    
     elasticlunr.trimmer = function (token) {
         if (token === null || token === undefined) {
             throw new Error("token should not be undefined");
@@ -155,7 +186,7 @@ function initSearch() {
 
         return token;
     };
-    
+
     const index = elasticlunr(function () {
         this.addField("name");
         this.addField("desc");
@@ -166,23 +197,23 @@ function initSearch() {
         elasticlunr.Pipeline.registerFunction(elasticlunr.trimmer, "trimmer");
         elasticlunr.tokenizer.seperator = /[\s~~]+/;
     });
-    
+
     // Custom tokenizer to handle symbols with '/'
     const originalTokenizer = elasticlunr.tokenizer;
     elasticlunr.tokenizer = function (obj, metadata) {
-        if (obj == null || obj == undefined) {
+        if (obj == null) {
             return [];
         }
-        
+
         if (Array.isArray(obj)) {
             return obj.reduce(function (tokens, token) {
                 return tokens.concat(elasticlunr.tokenizer(token, metadata));
             }, []);
         }
-        
+
         const str = obj.toString().toLowerCase();
         const tokens = originalTokenizer(str, metadata);
-        
+
         // Add additional tokens for strings containing '/'
         if (str.includes('/')) {
             const parts = str.split('/');
@@ -193,46 +224,35 @@ function initSearch() {
                 }
             }
         }
-        
+
         return tokens;
     };
-    
+
     // Load symbols into elasticlunr object
     window.searchIndexApi.forEach(item => index.addDoc(item));
 
+    // Search on input
     searchInput.addEventListener("keyup", function (keyboardEvent) {
-        if (keyboardEvent.key === DOWN_ARROW || keyboardEvent.key === UP_ARROW || keyboardEvent.key === ENTER_KEY) {
+        if (keyboardEvent.key === DOWN_ARROW || keyboardEvent.key === UP_ARROW || keyboardEvent.key === ENTER_KEY || keyboardEvent.key === ESCAPE_KEY) {
             return;
         }
 
         searchItemSelected = null;
         resultsItemsIndex = -1;
-        updateSearchContainerClass();
         debounce(showResults(index), 150)();
     });
 
-    // Hide results when user press on the "x" placed inside the search field
+    // Hide results when user clears the search field
     searchInput.addEventListener("search", () => {
-        searchResults.style.display = "";
-        updateSearchContainerClass();
-    });
-    searchInput.addEventListener("focusin", function () {
-        updateSearchContainerClass();
-        if (searchInput.value !== "") {
-            showResults(index)();
+        if (searchInput.value === "") {
+            searchResults.style.display = "none";
         }
     });
 
-    searchInput.addEventListener("focusout", function () {
-        resultsItemsIndex = -1;
-        updateSearchContainerClass();
-    });
-
-    window.addEventListener("click", function (mouseEvent) {
-        if (searchResults.style.display === "block") {
-            if (mouseEvent.target !== searchInput) {
-                searchResults.style.display = "";
-            }
+    // Show results when input is focused and has value
+    searchInput.addEventListener("focus", function () {
+        if (searchInput.value.trim() !== "") {
+            showResults(index)();
         }
     });
 }
@@ -255,10 +275,11 @@ function debounce(func, wait) {
 function showResults(index) {
     return function () {
         const term = searchInput.value.trim();
-        searchResults.style.display = term === "" ? "" : "block";
+        searchResults.style.display = term === "" ? "none" : "block";
         searchResultsItems.innerHTML = "";
+
         if (term === "") {
-            searchResults.style.display = "";
+            searchResults.style.display = "none";
             return;
         }
 
@@ -272,7 +293,9 @@ function showResults(index) {
             },
             expand: true
         };
+
         const results = index.search(term, options);
+
         if (results.length === 0) {
             let emptyResult = {
                 name: "Symbol not found",
@@ -296,16 +319,18 @@ function showResults(index) {
 function createMenuItem(result, index) {
     const item = document.createElement("li");
     item.innerHTML = formatSearchResultItem(result);
+
     item.addEventListener("mouseenter", (mouseEvent) => {
         removeSelectedClassFromSearchResult();
-        mouseEvent.target.classList.add("selected");
-        searchItemSelected = mouseEvent.target;
+        mouseEvent.currentTarget.classList.add("selected");
+        searchItemSelected = mouseEvent.currentTarget;
         resultsItemsIndex = index;
-    })
+    });
+
     item.addEventListener("click", () => {
-        searchInput.value = "";
-        updateSearchContainerClass();
-    })
+        closeSearchModal();
+    });
+
     searchResultsItems.appendChild(item);
 }
 
