@@ -15,17 +15,53 @@ let searchItemSelected = null;
 let resultsItemsIndex = -1;
 
 ////////////////////////////////////
+// Viewport Height Handler for Mobile
+////////////////////////////////////
+
+// Set CSS custom property for viewport height (for browsers without dvh support)
+function setViewportHeight() {
+    // Get the actual viewport height (excludes keyboard on mobile)
+    const vh = window.visualViewport ? window.visualViewport.height * 0.01 : window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+}
+
+// Initialize and listen for viewport changes
+if (window.visualViewport) {
+    setViewportHeight();
+    window.visualViewport.addEventListener('resize', setViewportHeight);
+} else {
+    // Fallback for browsers without visualViewport API
+    setViewportHeight();
+    window.addEventListener('resize', setViewportHeight);
+}
+
+////////////////////////////////////
 // Modal Management
 ////////////////////////////////////
 
 function openSearchModal() {
     searchModal.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
+    
+    // Detect iOS devices
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    
+    if (isIOS) {
+        // iOS-specific scroll lock (position: fixed approach)
+        const scrollY = window.scrollY;
+        document.body.style.position = "fixed";
+        document.body.style.top = `-${scrollY}px`;
+        document.body.style.width = "100%";
+        document.body.style.overflow = "hidden";
+        document.body.setAttribute("data-scroll-y", scrollY.toString());
+    } else {
+        // Simple overflow: hidden for other browsers
+        document.body.style.overflow = "hidden";
+    }
 
     // Focus the search input after a brief delay to ensure modal is visible
-    // Longer delay for mobile devices to ensure proper focus
+    // Longer delay for iOS to account for position: fixed layout changes
     const isMobile = window.innerWidth <= 768;
-    const delay = isMobile ? 200 : 100;
+    const delay = isIOS ? 300 : (isMobile ? 200 : 100);
     
     // On mobile, hide results when input is empty (input stays visible)
     if (isMobile && searchResults) {
@@ -38,12 +74,39 @@ function openSearchModal() {
         if (isMobile) {
             searchInput.click();
         }
+        
+        // iOS sometimes needs an additional nudge
+        if (isIOS) {
+            setTimeout(() => {
+                searchInput.focus();
+                searchInput.click();
+            }, 50);
+        }
     }, delay);
 }
 
 function closeSearchModal() {
     searchModal.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
+    
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    
+    if (isIOS) {
+        // iOS-specific: restore scroll position
+        const scrollY = document.body.getAttribute("data-scroll-y");
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.width = "";
+        document.body.style.overflow = "";
+        document.body.removeAttribute("data-scroll-y");
+        
+        if (scrollY) {
+            window.scrollTo(0, parseInt(scrollY));
+        }
+    } else {
+        // Simple overflow restore for other browsers
+        document.body.style.overflow = "";
+    }
+    
     searchInput.value = "";
     searchResults.style.display = "none";
     searchItemSelected = null;

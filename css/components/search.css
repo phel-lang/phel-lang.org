@@ -12,7 +12,7 @@
   color: var(--color-light-text-primary);
   background-color: var(--color-light-bg-secondary);
   border: 1px solid var(--color-light-border);
-  border-radius: var(--radius-full);
+  border-radius: var(--radius-xl);
   outline: none;
   cursor: pointer;
   transition: all var(--duration-normal) var(--ease-out);
@@ -72,6 +72,14 @@
 
   .site-header__search-trigger .search-trigger-text {
     font-size: max(var(--text-sm), 16px);
+  }
+}
+
+@media (max-width: 768px) {
+  .site-header__search-trigger {
+    max-width: none;
+    width: 100%;
+    flex: 1;
   }
 }
 
@@ -383,18 +391,21 @@
     max-width: 100%;
     width: 100%;
     height: auto;
-    max-height: calc(100vh - 32px);
+    max-height: calc(100dvh - 32px);
+    max-height: calc(var(--vh, 1vh) * 100 - 32px); /* Fallback for browsers without dvh support */
   }
 
   .search-modal__content {
     border-radius: var(--radius-lg);
     height: auto;
-    max-height: calc(100vh - 32px);
+    max-height: calc(100dvh - 32px);
+    max-height: calc(var(--vh, 1vh) * 100 - 32px);
   }
   
   /* When results are visible, expand to full height */
   .search-modal__content:has(.search-modal__results[style*="display: block"]) {
-    height: calc(100vh - 32px);
+    height: calc(100dvh - 32px);
+    height: calc(var(--vh, 1vh) * 100 - 32px);
   }
 
   .search-modal__input-wrapper {
