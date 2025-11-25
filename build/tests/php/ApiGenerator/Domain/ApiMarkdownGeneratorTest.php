@@ -24,7 +24,6 @@ final class ApiMarkdownGeneratorTest extends TestCase
             'template = "page-api.html"',
             'aliases = [ "/api" ]',
             '+++',
-            '',
         ];
 
         self::assertEquals($expected, $generator->generate());
@@ -53,12 +52,13 @@ final class ApiMarkdownGeneratorTest extends TestCase
             'aliases = [ "/api" ]',
             '+++',
             '',
-            '',
             '---',
             '',
             '## `ns-1`',
+            '',
             '### `ns-1/function-1`',
             'The doc from function 1',
+            '',
         ];
 
         self::assertEquals($expected, $generator->generate());
@@ -91,14 +91,16 @@ final class ApiMarkdownGeneratorTest extends TestCase
             'aliases = [ "/api" ]',
             '+++',
             '',
-            '',
             '---',
             '',
             '## `core`',
+            '',
             '### `function-1`',
             'The doc from function 1',
+            '',
             '### `function-2`',
             'The doc from function 2',
+            '',
         ];
 
         self::assertEquals($expected, $generator->generate());
@@ -131,18 +133,21 @@ final class ApiMarkdownGeneratorTest extends TestCase
             'aliases = [ "/api" ]',
             '+++',
             '',
-            '',
             '---',
             '',
             '## `ns-1`',
+            '',
             '### `ns-1/function-1`',
             'The doc from function 1',
+            '',
             '',
             '---',
             '',
             '## `ns-2`',
+            '',
             '### `ns-2/function-2`',
             'The doc from function 2',
+            '',
         ];
 
         self::assertEquals($expected, $generator->generate());

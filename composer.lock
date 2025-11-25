@@ -164,12 +164,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "e82dc40486b1c3d1e094cd1d97be6764e7cad5d3"
+                "reference": "c6c96d7562ffbf9427889f2892e3764af774fbad"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/e82dc40486b1c3d1e094cd1d97be6764e7cad5d3",
-                "reference": "e82dc40486b1c3d1e094cd1d97be6764e7cad5d3",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/c6c96d7562ffbf9427889f2892e3764af774fbad",
+                "reference": "c6c96d7562ffbf9427889f2892e3764af774fbad",
                 "shasum": ""
             },
             "require": {
@@ -236,7 +236,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-11-20T00:43:08+00:00"
+            "time": "2025-11-25T23:00:43+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -1642,12 +1642,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "070af2db86d1502f430fd627a045e7b078abf63f"
+                "reference": "ccd1dbf6d6823ddeb0c9d800a77740abff191e07"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/070af2db86d1502f430fd627a045e7b078abf63f",
-                "reference": "070af2db86d1502f430fd627a045e7b078abf63f",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/ccd1dbf6d6823ddeb0c9d800a77740abff191e07",
+                "reference": "ccd1dbf6d6823ddeb0c9d800a77740abff191e07",
                 "shasum": ""
             },
             "conflict": {
@@ -1773,7 +1773,7 @@
                 "contao/comments-bundle": ">=2,<4.13.40|>=5.0.0.0-RC1-dev,<5.3.4",
                 "contao/contao": ">=3,<3.5.37|>=4,<4.4.56|>=4.5,<4.13.56|>=5,<5.3.38|>=5.4.0.0-RC1-dev,<5.6.1",
                 "contao/core": "<3.5.39",
-                "contao/core-bundle": "<4.13.56|>=5,<5.3.38|>=5.4,<5.6.1",
+                "contao/core-bundle": "<4.13.57|>=5,<5.3.42|>=5.4,<5.6.5",
                 "contao/listing-bundle": ">=3,<=3.5.30|>=4,<4.4.8",
                 "contao/managed-edition": "<=1.5",
                 "corveda/phpsandbox": "<1.3.5",
@@ -1938,7 +1938,7 @@
                 "genix/cms": "<=1.1.11",
                 "georgringer/news": "<1.3.3",
                 "geshi/geshi": "<=1.0.9.1",
-                "getformwork/formwork": "<1.13.1|>=2.0.0.0-beta1,<2.0.0.0-beta4",
+                "getformwork/formwork": "<2.2",
                 "getgrav/grav": "<1.7.46",
                 "getkirby/cms": "<3.9.8.3-dev|>=3.10,<3.10.1.2-dev|>=4,<4.7.1|>=5,<5.1.4",
                 "getkirby/kirby": "<3.9.8.3-dev|>=3.10,<3.10.1.2-dev|>=4,<4.7.1",
@@ -2220,6 +2220,7 @@
                 "phpoffice/math": "<=0.2",
                 "phpoffice/phpexcel": "<=1.8.2",
                 "phpoffice/phpspreadsheet": "<1.30|>=2,<2.1.12|>=2.2,<2.4|>=3,<3.10|>=4,<5",
+                "phppgadmin/phppgadmin": "<=7.13",
                 "phpseclib/phpseclib": "<2.0.47|>=3,<3.0.36",
                 "phpservermon/phpservermon": "<3.6",
                 "phpsysinfo/phpsysinfo": "<3.4.3",
@@ -2344,7 +2345,7 @@
                 "slim/slim": "<2.6",
                 "slub/slub-events": "<3.0.3",
                 "smarty/smarty": "<4.5.3|>=5,<5.1.1",
-                "snipe/snipe-it": "<8.1.18",
+                "snipe/snipe-it": "<=8.3.4",
                 "socalnick/scn-social-auth": "<1.15.2",
                 "socialiteproviders/steam": "<1.1",
                 "solspace/craft-freeform": ">=5,<5.10.16",
@@ -2629,7 +2630,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-11-19T21:05:11+00:00"
+            "time": "2025-11-25T21:05:31+00:00"
         },
         {
             "name": "sebastian/cli-parser",

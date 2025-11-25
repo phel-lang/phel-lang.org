@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace PhelWeb\ApiGenerator\Application;
 
 use Phel\Api\Transfer\PhelFunction;
-use Phel\Lang\Symbol;
 use Phel\Shared\Facade\ApiFacadeInterface;
 
 final readonly class ApiMarkdownGenerator
 {
     public function __construct(
-        private ApiFacadeInterface $apiFacade
+        private ApiFacadeInterface $apiFacade,
     ) {
     }
 
@@ -24,11 +23,12 @@ final readonly class ApiMarkdownGenerator
         $phelFns = $this->apiFacade->getPhelFunctions();
         $groupedByNamespace = $this->groupFunctionsByNamespace($phelFns);
 
+        $namespaces = [];
         foreach ($groupedByNamespace as $namespace => $functions) {
-            $result = array_merge($result, $this->buildNamespaceSection($namespace, $functions));
+            $namespaces[] = $this->buildNamespaceSection($namespace, $functions);
         }
 
-        return $result;
+        return array_merge($result, ...$namespaces);
     }
 
     /**
@@ -50,18 +50,12 @@ final readonly class ApiMarkdownGenerator
      */
     private function buildNamespaceSection(string $namespace, array $functions): array
     {
-        $lines = [
-            '',
-            '---',
-            '',
-            "## `{$namespace}`",
-        ];
-
+        $elements = [];
         foreach ($functions as $fn) {
-            $lines = array_merge($lines, $this->buildFunctionSection($fn));
+            $elements[] = $this->buildFunctionSection($fn);
         }
 
-        return $lines;
+        return array_merge(['', '---', '', "## `{$namespace}`", ''], ...$elements);
     }
 
     /**
@@ -75,7 +69,16 @@ final readonly class ApiMarkdownGenerator
             $lines[] = $deprecation;
         }
 
-        $lines[] = $fn->doc;
+        // Handle exceptional documentation blocks
+        if ($fn->name === 'with-mock-wrapper' || $fn->name === 'with-mocks') {
+            $input = preg_replace('/```phel/', '```clojure', $fn->doc, 1);
+            $input = preg_replace('/^[ \t]+/m', '', $input);
+            $input = preg_replace('/(?<!\n)\n(```phel)/', "\n\n$1", $input);
+        } else {
+            $input = $fn->doc;
+        }
+
+        $lines[] = $input;
 
         if ($example = $this->buildExampleSection($fn)) {
             $lines = array_merge($lines, $example);
@@ -88,6 +91,7 @@ final readonly class ApiMarkdownGenerator
         if ($sourceLink = $this->buildSourceLink($fn)) {
             $lines[] = $sourceLink;
         }
+        $lines[] = '';
 
         return $lines;
     }
@@ -100,7 +104,7 @@ final readonly class ApiMarkdownGenerator
 
         $message = sprintf(
             '<small><span style="color: red; font-weight: bold;">Deprecated</span>: %s',
-            $fn->meta['deprecated']
+            $fn->meta['deprecated'],
         );
 
         if (isset($fn->meta['superseded-by'])) {
@@ -109,7 +113,7 @@ final readonly class ApiMarkdownGenerator
             $message .= sprintf(
                 ' &mdash; Use [`%s`](#%s) instead',
                 $supersededBy,
-                $anchor
+                $anchor,
             );
         }
 
@@ -129,7 +133,7 @@ final readonly class ApiMarkdownGenerator
             '',
             '**Example:**',
             '',
-            '```phel',
+            '```clojure',
             $fn->meta['example'],
             '```',
         ];
@@ -158,10 +162,7 @@ final readonly class ApiMarkdownGenerator
      */
     private function extractFunctionNames(mixed $seeAlso): array
     {
-        return array_map(
-            fn(Symbol $symbol) => $symbol->getName(),
-            iterator_to_array($seeAlso)
-        );
+        return iterator_to_array($seeAlso);
     }
 
     /**
@@ -171,12 +172,8 @@ final readonly class ApiMarkdownGenerator
     private function buildFunctionLinks(array $functionNames): array
     {
         return array_map(
-            fn(string $func) => sprintf(
-                '[`%s`](#%s)',
-                $func,
-                $this->sanitizeAnchor($func)
-            ),
-            $functionNames
+            fn(string $func) => sprintf('[`%s`](#%s)', $func, $this->sanitizeAnchor($func)),
+            $functionNames,
         );
     }
 
@@ -219,7 +216,6 @@ final readonly class ApiMarkdownGenerator
             'template = "page-api.html"',
             'aliases = [ "/api" ]',
             '+++',
-            '',
         ];
     }
 }
