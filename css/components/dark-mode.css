@@ -81,11 +81,6 @@
   background: var(--color-dark-blockquote-bg);
   border-left-color: var(--color-dark-blockquote-border);
   color: var(--color-dark-text-secondary);
-  box-shadow: var(--shadow-dark-sm);
-}
-
-.dark blockquote::before {
-  color: var(--color-dark-blockquote-border);
 }
 
 /* Dark code blocks */

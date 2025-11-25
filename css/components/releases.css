@@ -6,3 +6,7 @@
 .dark .releases-intro {
   color: var(--color-dark-text-secondary);
 }
+
+.release-entry .meta {
+  color: var(--color-gray-light);
+}
