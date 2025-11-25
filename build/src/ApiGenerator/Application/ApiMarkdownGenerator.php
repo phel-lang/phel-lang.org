@@ -70,12 +70,10 @@ final readonly class ApiMarkdownGenerator
         }
 
         // Handle exceptional documentation blocks
+        $input = preg_replace('/```phel/', '```clojure', $fn->doc);
         if ($fn->name === 'with-mock-wrapper' || $fn->name === 'with-mocks') {
-            $input = preg_replace('/```phel/', '```clojure', $fn->doc, 1);
             $input = preg_replace('/^[ \t]+/m', '', $input);
             $input = preg_replace('/(?<!\n)\n(```phel)/', "\n\n$1", $input);
-        } else {
-            $input = $fn->doc;
         }
 
         $lines[] = $input;
