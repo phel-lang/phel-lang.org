@@ -1,11 +1,26 @@
 // Get the button:
 let mybutton = document.getElementById("back-to-top-button");
 
-// When the user scrolls down 300px from the top of the document, show the button
+// Track last scroll position for detecting scroll direction
+let lastScrollTop = 0;
+let isScrollingUp = false;
+
+// When the user scrolls, check position and direction
 window.onscroll = function() {scrollFunction()};
 
 function scrollFunction() {
-  if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+  const currentScrollTop = document.body.scrollTop || document.documentElement.scrollTop;
+  
+  // Determine scroll direction
+  if (currentScrollTop < lastScrollTop) {
+    isScrollingUp = true;
+  } else {
+    isScrollingUp = false;
+  }
+  lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
+  
+  // Show button only when scrolling up AND past 300px (all resolutions)
+  if (currentScrollTop > 300 && isScrollingUp) {
     mybutton.classList.add("visible");
   } else {
     mybutton.classList.remove("visible");

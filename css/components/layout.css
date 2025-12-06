@@ -7,6 +7,12 @@
   transition: background-color var(--duration-normal) var(--ease-out);
 }
 
+@media (max-width: 767px) {
+  .layout-container {
+    margin-top: var(--header-height);
+  }
+}
+
 /* One Column Layout - Modern Content */
 .one-column-layout {
   margin: 0 auto;
