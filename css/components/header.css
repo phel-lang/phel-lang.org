@@ -35,6 +35,10 @@
 }
 
 @media (max-width: 767px) {
+  .site-header {
+    position: relative;
+  }
+
   .site-header__container {
     padding: 0 var(--space-md);
     gap: var(--space-sm);

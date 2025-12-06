@@ -36,6 +36,7 @@
   height: 16px;
   color: var(--color-light-link);
   flex-shrink: 0;
+  pointer-events: none;
 }
 
 .site-header__search-trigger .search-trigger-text {
@@ -45,6 +46,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   font-weight: 400;
+  pointer-events: none;
 }
 
 .site-header__search-trigger .search-shortcut {
@@ -383,7 +385,7 @@
 
 @media (max-width: 768px) {
   .search-modal {
-    padding: 16px;
+    padding: 8px;
     align-items: flex-start;
   }
 
@@ -391,21 +393,21 @@
     max-width: 100%;
     width: 100%;
     height: auto;
-    max-height: calc(100dvh - 32px);
-    max-height: calc(var(--vh, 1vh) * 100 - 32px); /* Fallback for browsers without dvh support */
+    max-height: calc(100dvh - 12px);
+    max-height: calc(var(--vh, 1vh) * 100 - 12px); /* Fallback for browsers without dvh support */
   }
 
   .search-modal__content {
     border-radius: var(--radius-lg);
     height: auto;
-    max-height: calc(100dvh - 32px);
-    max-height: calc(var(--vh, 1vh) * 100 - 32px);
+    max-height: calc(100dvh - 12px);
+    max-height: calc(var(--vh, 1vh) * 100 - 12px);
   }
   
   /* When results are visible, expand to full height */
   .search-modal__content:has(.search-modal__results[style*="display: block"]) {
-    height: calc(100dvh - 32px);
-    height: calc(var(--vh, 1vh) * 100 - 32px);
+    height: calc(100dvh - 12px);
+    height: calc(var(--vh, 1vh) * 100 - 12px);
   }
 
   .search-modal__input-wrapper {
