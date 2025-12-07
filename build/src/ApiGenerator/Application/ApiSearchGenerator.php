@@ -112,12 +112,30 @@ final readonly class ApiSearchGenerator
             // Remove frontmatter
             $content = preg_replace('/\+\+\+.*?\+\+\+/s', '', $content);
 
-            // Remove markdown formatting and clean content
+            // Extract code blocks content (preserves important terms like SrcDirs, :pairs, etc.)
+            preg_match_all('/```\w*\n?([\s\S]*?)```/', $content, $codeBlocks);
+            $codeContent = '';
+            if (!empty($codeBlocks[1])) {
+                $codeContent = implode(' ', $codeBlocks[1]);
+                // Clean code content: remove extra whitespace but preserve all characters
+                $codeContent = preg_replace('/\s+/', ' ', trim($codeContent));
+            }
+
+            // Remove code blocks from main content
+            $content = preg_replace('/```[\s\S]*?```/', ' ', $content);
+
+            // Remove markdown formatting but preserve colons (:) for keywords like :pairs, :keys
+            // Remove: # (headers), ` (backticks), * (bold/italic), [] (links), () (links)
             $content = preg_replace('/[#`*\[\]()]/', ' ', $content);
+
+            // Clean up whitespace
             $content = preg_replace('/\s+/', ' ', trim($content));
 
-            // Limit content length for search index
-            $content = substr($content, 0, 500);
+            // Combine code content with main content (code first for better matching)
+            $content = trim($codeContent . ' ' . $content);
+
+            // Increase content length for search index to capture more content
+            $content = substr($content, 0, 200);
 
             $result[] = [
                 'id' => 'doc_' . pathinfo($file, PATHINFO_FILENAME),
