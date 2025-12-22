@@ -1,13 +1,104 @@
 {% if page.ancestors %}
+    {% set ancestor_path = page.ancestors | reverse | first %}
+{% elif section.ancestors %}
+    {% set ancestor_path = section.ancestors | reverse | first %}
+{% endif %}
+
+{% if ancestor_path %}
 <div class="site-navigation-section">
     <h2 class="site-navigation__title">Contents</h2>
     <ol class="site-navigation">
-        {% set doc_section = get_section(path=page.ancestors | reverse | first) %}
-        {% for page in doc_section.pages %}
-            <li class="site-navigation__entry {% if current_path == page.path %}active{% endif %}">
-                <a href="{{ page.permalink }}">{{page.title}}</a>
-            </li>
-        {% endfor %}
+        {% set doc_section = get_section(path=ancestor_path) %}
+        {% set is_main_documentation = ancestor_path == "documentation/_index.md" %}
+        {% set is_documentation_subsection = ancestor_path is containing("documentation") and not is_main_documentation %}
+
+        {% if is_main_documentation or is_documentation_subsection %}
+            {% set main_doc_section = get_section(path="documentation/_index.md") %}
+            {% set_global rendered_subsections = [] %}
+
+            {% for doc_page in main_doc_section.pages %}
+                <li class="site-navigation__entry {% if current_path == doc_page.path %}active{% endif %}">
+                    <a href="{{ doc_page.permalink }}">{{ doc_page.title }}</a>
+                </li>
+
+                {% for subsection_path in main_doc_section.subsections %}
+                    {% if subsection_path not in rendered_subsections %}
+                        {% set subsection = get_section(path=subsection_path) %}
+                        {% if subsection.extra.insert_after and doc_page.title == subsection.extra.insert_after %}
+                            {% set is_section_active = current_path == subsection.path %}
+                            {% set_global has_active_child = false %}
+                            {% for subpage in subsection.pages %}
+                                {% if current_path == subpage.path %}
+                                    {% set_global has_active_child = true %}
+                                {% endif %}
+                            {% endfor %}
+                            <li class="site-navigation__entry sidebar-section {% if is_section_active or has_active_child %}active{% else %}collapsed{% endif %}">
+                                <div class="sidebar-section-header">
+                                    <a href="{{ subsection.permalink }}">{{ subsection.title }}</a>
+                                    {% if subsection.pages | length > 0 %}
+                                        <button class="subsection-toggle" aria-label="Toggle {{ subsection.title }} subsection" aria-expanded="{% if is_section_active or has_active_child %}true{% else %}false{% endif %}">
+                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                        </button>
+                                    {% endif %}
+                                </div>
+                                {% if subsection.pages | length > 0 %}
+                                    <ol class="sidebar-subsection">
+                                        {% for subpage in subsection.pages %}
+                                            <li class="{% if current_path == subpage.path %}active{% endif %}">
+                                                <a href="{{ subpage.permalink }}">{{ subpage.title }}</a>
+                                            </li>
+                                        {% endfor %}
+                                    </ol>
+                                {% endif %}
+                            </li>
+                            {% set_global rendered_subsections = rendered_subsections | concat(with=subsection_path) %}
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+
+            {% for subsection_path in main_doc_section.subsections %}
+                {% if subsection_path not in rendered_subsections %}
+                    {% set subsection = get_section(path=subsection_path) %}
+                    {% set is_section_active = current_path == subsection.path %}
+                    {% set_global has_active_child = false %}
+                    {% for subpage in subsection.pages %}
+                        {% if current_path == subpage.path %}
+                            {% set_global has_active_child = true %}
+                        {% endif %}
+                    {% endfor %}
+                    <li class="site-navigation__entry sidebar-section {% if is_section_active or has_active_child %}active{% else %}collapsed{% endif %}">
+                        <div class="sidebar-section-header">
+                            <a href="{{ subsection.permalink }}">{{ subsection.title }}</a>
+                            {% if subsection.pages | length > 0 %}
+                                <button class="subsection-toggle" aria-label="Toggle {{ subsection.title }} subsection" aria-expanded="{% if is_section_active or has_active_child %}true{% else %}false{% endif %}">
+                                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                </button>
+                            {% endif %}
+                        </div>
+                        {% if subsection.pages | length > 0 %}
+                            <ol class="sidebar-subsection">
+                                {% for subpage in subsection.pages %}
+                                    <li class="site-navigation__entry {% if current_path == subpage.path %}active{% endif %}">
+                                        <a href="{{ subpage.permalink }}">{{ subpage.title }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ol>
+                        {% endif %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% for doc_page in doc_section.pages %}
+                <li class="site-navigation__entry {% if current_path == doc_page.path %}active{% endif %}">
+                    <a href="{{ doc_page.permalink }}">{{ doc_page.title }}</a>
+                </li>
+            {% endfor %}
+        {% endif %}
     </ol>
 </div>
 {% endif %}
