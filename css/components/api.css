@@ -327,7 +327,7 @@
   color: var(--color-dark-text-accent);
 }
 
-.dark .site-navigation__entry.active a {
+.dark .site-navigation__entry.active > a {
   color: var(--color-dark-text-accent);
   background: var(--color-dark-surface-hover);
 }

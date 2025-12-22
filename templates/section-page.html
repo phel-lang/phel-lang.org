@@ -1,0 +1,44 @@
+{% extends "layouts/two-column-layout.html" %}
+
+{% block meta_content %}
+<title>{{ section.title }} | {{ config.title }}</title>
+<meta property="og:title" content="{{ section.title }} | {{ config.title }}"/>
+{% endblock meta_content %}
+
+{% block sidebar_extra %}
+{% if section.toc %}
+<div class="page-toc">
+    <h2>On this page</h2>
+    <ul>
+        {% for h2 in section.toc %}
+        <li>
+            <a href="{{ h2.permalink }}">{{ h2.title }}</a>
+            {% if h2.children %}
+            <ul>
+                {% for h3 in h2.children %}
+                <li><a href="{{ h3.permalink }}">{{ h3.title }}</a></li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endblock sidebar_extra %}
+
+{% block content %}
+<h1>{{ section.title }}</h1>
+<div class="flex-container">
+    <div class="page-content">
+        {{ section.content | safe }}
+    </div>
+</div>
+{% endblock content %}
+
+{% block editable %}
+<span class="found-a-typo">
+  {% set url = config.extra.repo_content_url ~ section.relative_path %}
+  <a href="{{ url }}" target="_blank" rel="noopener noreferrer">Edit me</a>
+</span>
+{% endblock editable %}
