@@ -17,6 +17,7 @@ Thumbs.db
 .phel-repl-history
 .phpunit.result.cache
 static/api_search.js
+static/api.json
 content/documentation/api.md
 /static/tailwind.css
 /static/api.json

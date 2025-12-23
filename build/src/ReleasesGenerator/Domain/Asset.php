@@ -10,7 +10,8 @@ final readonly class Asset
         public string $name,
         public string $downloadUrl,
         public int $size,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {

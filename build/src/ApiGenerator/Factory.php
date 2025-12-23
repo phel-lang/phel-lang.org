@@ -11,6 +11,7 @@ use PhelWeb\ApiGenerator\Application\ApiMarkdownGenerator;
 use PhelWeb\ApiGenerator\Application\ApiSearchGenerator;
 use PhelWeb\ApiGenerator\Infrastructure\ApiMarkdownFile;
 use PhelWeb\ApiGenerator\Infrastructure\ApiSearchFile;
+use PhelWeb\ApiGenerator\Infrastructure\ApiJsonFile;
 
 /**
  * @method Config getConfig()
@@ -44,6 +45,14 @@ final class Factory extends AbstractFactory
     {
         return new ApiSearchGenerator(
             $this->getPhelApiFacade(),
+        );
+    }
+
+    public function createApiJsonFile(): ApiJsonFile
+    {
+        return new ApiJsonFile(
+            $this->getPhelApiFacade(),
+            $this->getConfig()->getAppRootDir()
         );
     }
 

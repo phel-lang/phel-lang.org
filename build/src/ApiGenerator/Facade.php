@@ -24,4 +24,11 @@ final class Facade extends AbstractFacade
             ->createApiSearchFile()
             ->generate();
     }
+
+    public function generateApiJsonFile(): void
+    {
+        $this->getFactory()
+            ->createApiJsonFile()
+            ->generate();
+    }
 }

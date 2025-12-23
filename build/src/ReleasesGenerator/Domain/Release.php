@@ -16,7 +16,8 @@ final readonly class Release
         public string $publishedAt,
         public string $htmlUrl,
         public array $assets,
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {
