@@ -20,6 +20,7 @@ final readonly class ApiMarkdownGenerator
     public function generate(): array
     {
         $result = $this->buildZolaHeaders();
+        $result = array_merge($result, $this->buildJsonEndpointNotice());
         $phelFns = $this->apiFacade->getPhelFunctions();
         $groupedByNamespace = $this->groupFunctionsByNamespace($phelFns);
 
@@ -29,6 +30,18 @@ final readonly class ApiMarkdownGenerator
         }
 
         return array_merge($result, ...$namespaces);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function buildJsonEndpointNotice(): array
+    {
+        return [
+            '',
+            '> **Tip:** This documentation is also available in JSON format at [`/api.json`](/api.json).',
+            '',
+        ];
     }
 
     /**
