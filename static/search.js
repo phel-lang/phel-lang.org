@@ -534,7 +534,7 @@ function showResults(searchIndices) {
                     const cleanDoc = {};
                     if (doc.id !== undefined) cleanDoc.id = doc.id;
                     if (doc.name !== undefined) cleanDoc.name = highlightTerm(doc.name, term);
-                    if (doc.signature !== undefined) cleanDoc.signature = doc.signature;
+                    if (doc.signatures !== undefined) cleanDoc.signatures = doc.signatures;
                     if (doc.desc !== undefined) cleanDoc.desc = getSnippetAroundTerm(doc.desc, term);
                     if (doc.anchor !== undefined) cleanDoc.anchor = doc.anchor;
                     
@@ -636,7 +636,7 @@ function showResults(searchIndices) {
         if (sortedResults.length === 0) {
             let emptyResult = {
                 name: "No results found",
-                signature: "",
+                signatures: "",
                 desc: "Cannot find any matching content. Try something else",
                 anchor: "#",
                 type: "empty"
@@ -694,7 +694,7 @@ function formatSearchResultItem(item, filter) {
             + `<div class="search-results__header">`
             + `<div class="fn-info">`
             + `<span class="fn-name">${item.name || ''}</span> `
-            + `<small class="fn-signature">${item.signature || ''}</small>`
+            + `<small class="fn-signatures">${item.signatures || ''}</small>`
             + `</div>`
             + `</div>`
             + `<span class="desc">${item.desc || ''}</span>`
@@ -708,7 +708,7 @@ function formatSearchResultItem(item, filter) {
             + `<div class="search-results__header">`
             + `<div class="fn-info">`
             + `<span class="fn-name">${item.name || ''}</span> `
-            + `<small class="fn-signature">${item.signature || ''}</small>`
+            + `<small class="fn-signatures">${item.signatures || ''}</small>`
             + `</div>`
             + badge
             + `</div>`

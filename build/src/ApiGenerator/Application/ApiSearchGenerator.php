@@ -53,7 +53,7 @@ final readonly class ApiSearchGenerator
             $result[] = [
                 'id' => 'api_' . $fn->name,
                 'name' => $fn->nameWithNamespace(),
-                'signature' => $fn->signature,
+                'signatures' => $fn->signatures,
                 'desc' => $this->formatDescription($fn->description),
                 'anchor' => $anchor,
                 'type' => 'api',
