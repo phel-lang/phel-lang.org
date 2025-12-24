@@ -1,29 +1,39 @@
-.idea/
-.vscode/
+# IDE / Editor
 .cache/
 .claude/
+.idea/
+.vscode/
 
+# Dependencies
+node_modules/
 public/
 vendor/
-node_modules/
+
+# Logs
 npm-debug.log*
+phel-error.log
 yarn-debug.log*
 yarn-error.log*
-phel-error.log
 
+# OS files
 .DS_Store
 Thumbs.db
 
+# Artifacts
 .phel-repl-history
 .phpunit.result.cache
-static/api_search.js
-static/api.json
-content/documentation/api.md
-/static/tailwind.css
+
+# API / Search (generated)
 /static/api.json
+/static/api_search.js
+
+# CSS files (generated)
 /css/tailwind.entry.css
 /static/syntax-theme-dark.css
 /static/syntax-theme-light.css
+/static/tailwind.css
 
+# Content (generated)
+/content/documentation/api.md
 /content/releases/*
 !/content/releases/_index.md
