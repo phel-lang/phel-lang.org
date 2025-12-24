@@ -18,7 +18,7 @@ final class ApiSearchGeneratorTest extends TestCase
             ->willReturn([
                 PhelFunction::fromArray([
                     'name' => 'table?',
-                    'signature' => '(table? x)',
+                    'signatures' => ['(table? x)'],
                     'desc' => 'doc for table?',
                     'groupKey' => 'table'
                 ]),
@@ -31,9 +31,43 @@ final class ApiSearchGeneratorTest extends TestCase
             [
                 'id' => 'api_table?',
                 'name' => 'table?',
-                'signature' => '(table? x)',
+                'signatures' => ['(table? x)'],
                 'desc' => 'doc for table?',
                 'anchor' => 'table',
+                'type' => 'api',
+            ],
+        ];
+
+        // Filter out documentation items for this test
+        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
+        $apiItems = array_values($apiItems); // Re-index array
+
+        self::assertEquals($expected, $apiItems);
+    }
+
+    public function test_generate_search_index_one_item_and_multiple_signatures(): void
+    {
+        $apiFacade = $this->createStub(ApiFacadeInterface::class);
+        $apiFacade->method('getPhelFunctions')
+            ->willReturn([
+                PhelFunction::fromArray([
+                    'name' => 'memoize-lru',
+                    'signatures' => ['(memoize-lru f)', '(memoize-lru f max-size)'],
+                    'desc' => 'doc for memoize-lru',
+                    'groupKey' => 'memoize'
+                ]),
+            ]);
+
+        $generator = new ApiSearchGenerator($apiFacade);
+        $actual = $generator->generateSearchIndex();
+
+        $expected = [
+            [
+                'id' => 'api_memoize-lru',
+                'name' => 'memoize-lru',
+                'signatures' => ['(memoize-lru f)', '(memoize-lru f max-size)'],
+                'desc' => 'doc for memoize-lru',
+                'anchor' => 'memoize',
                 'type' => 'api',
             ],
         ];
@@ -52,13 +86,13 @@ final class ApiSearchGeneratorTest extends TestCase
             ->willReturn([
                 PhelFunction::fromArray([
                     'name' => 'table',
-                    'signature' => '(table & xs)',
+                    'signatures' => ['(table & xs)'],
                     'desc' => 'doc for table',
                     'groupKey' => 'table',
                 ]),
                 PhelFunction::fromArray([
                     'name' => 'not',
-                    'signature' => '(not x)',
+                    'signatures' => ['(not x)'],
                     'desc' => 'doc for not',
                     'groupKey' => 'not',
                 ]),
@@ -71,7 +105,7 @@ final class ApiSearchGeneratorTest extends TestCase
             [
                 'id' => 'api_table',
                 'name' => 'table',
-                'signature' => '(table & xs)',
+                'signatures' => ['(table & xs)'],
                 'desc' => 'doc for table',
                 'anchor' => 'table',
                 'type' => 'api',
@@ -79,7 +113,7 @@ final class ApiSearchGeneratorTest extends TestCase
             [
                 'id' => 'api_not',
                 'name' => 'not',
-                'signature' => '(not x)',
+                'signatures' => ['(not x)'],
                 'desc' => 'doc for not',
                 'anchor' => 'not',
                 'type' => 'api',
@@ -100,13 +134,13 @@ final class ApiSearchGeneratorTest extends TestCase
             ->willReturn([
                 PhelFunction::fromArray([
                     'name' => 'table',
-                    'signature' => '(table & xs)',
+                    'signatures' => ['(table & xs)'],
                     'desc' => 'doc for table',
                     'groupKey' => 'table',
                 ]),
                 PhelFunction::fromArray([
                     'name' => 'table?',
-                    'signature' => '(table? x)',
+                    'signatures' => ['(table? x)'],
                     'desc' => 'doc for table?',
                     'groupKey' => 'table',
                 ]),
@@ -119,7 +153,7 @@ final class ApiSearchGeneratorTest extends TestCase
             [
                 'id' => 'api_table',
                 'name' => 'table',
-                'signature' => '(table & xs)',
+                'signatures' => ['(table & xs)'],
                 'desc' => 'doc for table',
                 'anchor' => 'table',
                 'type' => 'api',
@@ -127,7 +161,7 @@ final class ApiSearchGeneratorTest extends TestCase
             [
                 'id' => 'api_table?',
                 'name' => 'table?',
-                'signature' => '(table? x)',
+                'signatures' => ['(table? x)'],
                 'desc' => 'doc for table?',
                 'anchor' => 'table-1',
                 'type' => 'api',
@@ -148,13 +182,13 @@ final class ApiSearchGeneratorTest extends TestCase
             ->willReturn([
                 PhelFunction::fromArray([
                     'name' => 'http/response',
-                    'signature' => '',
+                    'signatures' => [''],
                     'desc' => '',
                     'groupKey' => 'http-response',
                 ]),
                 PhelFunction::fromArray([
                     'name' => 'http/response?',
-                    'signature' => '',
+                    'signatures' => [''],
                     'desc' => '',
                     'groupKey' => 'http-response-1',
                 ]),
@@ -167,7 +201,7 @@ final class ApiSearchGeneratorTest extends TestCase
             [
                 'id' => 'api_http/response',
                 'name' => 'http/response',
-                'signature' => '',
+                'signatures' => [''],
                 'desc' => '',
                 'anchor' => 'http-response',
                 'type' => 'api',
@@ -175,7 +209,7 @@ final class ApiSearchGeneratorTest extends TestCase
             [
                 'id' => 'api_http/response?',
                 'name' => 'http/response?',
-                'signature' => '',
+                'signatures' => [''],
                 'desc' => '',
                 'anchor' => 'http-response-1',
                 'type' => 'api',
@@ -196,13 +230,13 @@ final class ApiSearchGeneratorTest extends TestCase
             ->willReturn([
                 PhelFunction::fromArray([
                     'name' => 'defn',
-                    'signature' => '',
+                    'signatures' => [''],
                     'desc' => '',
                     'groupKey' => 'defn',
                 ]),
                 PhelFunction::fromArray([
                     'name' => 'defn-',
-                    'signature' => '',
+                    'signatures' => [''],
                     'desc' => '',
                     'groupKey' => 'defn',
                 ]),
@@ -215,7 +249,7 @@ final class ApiSearchGeneratorTest extends TestCase
             [
                 'id' => 'api_defn',
                 'name' => 'defn',
-                'signature' => '',
+                'signatures' => [''],
                 'desc' => '',
                 'anchor' => 'defn',
                 'type' => 'api',
@@ -223,7 +257,7 @@ final class ApiSearchGeneratorTest extends TestCase
             [
                 'id' => 'api_defn-',
                 'name' => 'defn-',
-                'signature' => '',
+                'signatures' => [''],
                 'desc' => '',
                 'anchor' => 'defn-1',
                 'type' => 'api',
@@ -244,13 +278,13 @@ final class ApiSearchGeneratorTest extends TestCase
             ->willReturn([
                 PhelFunction::fromArray([
                     'name' => 'NAN',
-                    'signature' => '',
+                    'signatures' => [''],
                     'desc' => '',
                     'groupKey' => 'nan',
                 ]),
                 PhelFunction::fromArray([
                     'name' => 'nan?',
-                    'signature' => '',
+                    'signatures' => [''],
                     'desc' => '',
                     'groupKey' => 'nan',
                 ]),
@@ -263,7 +297,7 @@ final class ApiSearchGeneratorTest extends TestCase
             [
                 'id' => 'api_NAN',
                 'name' => 'NAN',
-                'signature' => '',
+                'signatures' => [''],
                 'desc' => '',
                 'anchor' => 'nan',
                 'type' => 'api',
@@ -271,7 +305,7 @@ final class ApiSearchGeneratorTest extends TestCase
             [
                 'id' => 'api_nan?',
                 'name' => 'nan?',
-                'signature' => '',
+                'signatures' => [''],
                 'desc' => '',
                 'anchor' => 'nan-1',
                 'type' => 'api',

@@ -19,6 +19,7 @@ Thumbs.db
 static/api_search.js
 content/documentation/api.md
 /static/tailwind.css
+/static/api.json
 /css/tailwind.entry.css
 /static/syntax-theme-dark.css
 /static/syntax-theme-light.css
