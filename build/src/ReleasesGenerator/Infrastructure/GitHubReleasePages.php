@@ -17,7 +17,8 @@ final readonly class GitHubReleasePages
     public function __construct(
         private GitHubReleasePagesGenerator $gitHubReleasePagesGenerator,
         private string $outputDir,
-    ) {}
+    ) {
+    }
 
     public function generate(): void
     {

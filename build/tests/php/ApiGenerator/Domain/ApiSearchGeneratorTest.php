@@ -318,4 +318,28 @@ final class ApiSearchGeneratorTest extends TestCase
 
         self::assertEquals($expected, $apiItems);
     }
+
+    public function test_multi_arity_signature_is_comma_separated(): void
+    {
+        $apiFacade = $this->createStub(ApiFacadeInterface::class);
+        $apiFacade->method('getPhelFunctions')
+            ->willReturn([
+                PhelFunction::fromArray([
+                    'name' => 'conj',
+                    'signatures' => ['(conj coll x)', '(conj coll x & xs)'],
+                    'desc' => 'Adds elements to a collection.',
+                    'groupKey' => 'conj',
+                ]),
+            ]);
+
+        $generator = new ApiSearchGenerator($apiFacade);
+        $actual = $generator->generateSearchIndex();
+
+        // Filter out documentation items for this test
+        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
+        $apiItems = array_values($apiItems);
+
+        self::assertCount(1, $apiItems);
+        self::assertEquals(['(conj coll x)', '(conj coll x & xs)'], $apiItems[0]['signatures']);
+    }
 }

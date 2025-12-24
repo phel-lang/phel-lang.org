@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhelWeb\ApiGenerator\Infrastructure;
 
 use PhelWeb\ApiGenerator\Application\ApiSearchGenerator;
+
 use function json_encode;
 
 final readonly class ApiSearchFile
