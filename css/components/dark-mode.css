@@ -114,7 +114,7 @@
 .dark th {
   background: var(--color-dark-bg-secondary);
   color: var(--color-dark-text-primary);
-  border-bottom-color: var(--color-dark-text-accent);
+  border-bottom-color: var(--color-dark-border);
 }
 
 .dark td {
