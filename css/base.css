@@ -360,18 +360,29 @@ button:focus-visible {
   border-radius: var(--radius-md);
 }
 
-/* Tables with modern styling */
 table {
   width: 100%;
-  max-width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   margin: 2em 0;
   border-radius: var(--radius-lg);
-  overflow: hidden;
   box-shadow: var(--shadow-sm);
-  display: block;
-  overflow-x: auto;
+}
+
+table th:not(:first-child),
+table td:not(:first-child) {
+  padding-left: 2em;
+}
+
+@media (max-width: 768px) {
+  table {
+    max-width: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    display: block;
+    overflow-x: auto;
+  }
+
 }
 
 th {
@@ -380,7 +391,7 @@ th {
   text-align: left;
   font-weight: 600;
   color: var(--color-light-text-primary);
-  border-bottom: 2px solid var(--color-light-link);
+  border-bottom: 2px solid var(--color-light-border);
 }
 
 td {
