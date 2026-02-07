@@ -1,31 +1,16 @@
 {% extends "layouts/two-column-layout.html" %}
+{% import "macros.html" as macros %}
 
 {% block meta_content %}
 <title>{{ section.title }} | {{ config.title }}</title>
 <meta property="og:title" content="{{ section.title }} | {{ config.title }}"/>
 {% endblock meta_content %}
 
-{% block sidebar_extra %}
-{% if section.toc %}
-<div class="page-toc">
-    <h2>On this page</h2>
-    <ul>
-        {% for h2 in section.toc %}
-        <li>
-            <a href="#{{ h2.id }}">{{ h2.title }}</a>
-            {% if h2.children %}
-            <ul>
-                {% for h3 in h2.children %}
-                <li><a href="#{{ h3.id }}">{{ h3.title }}</a></li>
-                {% endfor %}
-            </ul>
-            {% endif %}
-        </li>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
-{% endblock sidebar_extra %}
+{% block sidebar_extra %}{% endblock sidebar_extra %}
+
+{% block floating_toc %}
+{{ macros::floating_toc(items=section.toc) }}
+{% endblock floating_toc %}
 
 {% block content %}
 <h1>{{ section.title }}</h1>

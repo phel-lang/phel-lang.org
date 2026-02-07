@@ -1,0 +1,298 @@
+/* Floating Table of Contents — right-side panel with scroll spy */
+
+.floating-toc {
+  position: fixed;
+  top: calc(var(--header-height) + 2rem);
+  right: max(1rem, calc((100vw - 95rem) / 2 + 1rem));
+  z-index: var(--z-sticky);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* Toggle button */
+.floating-toc__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-lg);
+  background: var(--color-light-surface);
+  border: 1px solid var(--color-light-border);
+  color: var(--color-light-text-muted);
+  cursor: pointer;
+  box-shadow: var(--shadow-md);
+  transition: all var(--duration-fast) var(--ease-out);
+  padding: 0;
+}
+
+.floating-toc__toggle:hover {
+  color: var(--color-light-link);
+  border-color: var(--color-light-link);
+  box-shadow: var(--shadow-lg);
+}
+
+.floating-toc.open .floating-toc__toggle {
+  background: var(--color-light-link);
+  color: white;
+  border-color: var(--color-light-link);
+  box-shadow: 0 2px 8px rgba(81, 45, 168, 0.3);
+}
+
+/* Panel */
+.floating-toc__panel {
+  display: none;
+  width: 14rem;
+  max-height: calc(100vh - var(--header-height) - 6rem);
+  overflow-y: auto;
+  background: var(--color-light-surface);
+  border: 1px solid var(--color-light-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  padding: 1.25rem 1rem 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.floating-toc.open .floating-toc__panel {
+  display: block;
+  animation: floatingTocSlideIn var(--duration-fast) var(--ease-out);
+}
+
+@keyframes floatingTocSlideIn {
+  from { opacity: 0; transform: translateX(8px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Header */
+.floating-toc__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--color-light-border-subtle);
+}
+
+.floating-toc__header h2 {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-light-text-muted);
+  margin: 5px 0 0;
+}
+
+/* Links */
+.floating-toc__panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.floating-toc__panel li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.floating-toc__panel li::before {
+  display: none;
+}
+
+.floating-toc__panel > ul > li > a {
+  display: block;
+  padding: 0.25rem 0.5rem;
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--color-light-text-secondary);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  border-left: 2px solid transparent;
+  transition: all var(--duration-fast) var(--ease-out);
+  line-height: 1.4;
+}
+
+.floating-toc__panel > ul > li > a::after {
+  display: none;
+}
+
+.floating-toc__panel > ul > li > a:hover {
+  color: var(--color-light-link);
+  background: var(--color-light-surface-hover);
+}
+
+.floating-toc__panel > ul > li > a.active {
+  color: var(--color-light-link);
+  border-left-color: var(--color-light-link);
+  font-weight: 600;
+}
+
+/* Sub-links */
+.floating-toc__panel ul ul {
+  margin-left: 0.625rem;
+}
+
+.floating-toc__panel ul ul a {
+  display: block;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.68rem;
+  color: var(--color-light-text-muted);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  border-left: 2px solid transparent;
+  transition: all var(--duration-fast) var(--ease-out);
+  line-height: 1.4;
+}
+
+.floating-toc__panel ul ul a::after {
+  display: none;
+}
+
+.floating-toc__panel ul ul a:hover {
+  color: var(--color-light-link);
+}
+
+.floating-toc__panel ul ul a.active {
+  color: var(--color-light-link);
+  border-left-color: var(--color-light-link);
+}
+
+/* Scrollbar — hidden by default, visible on scroll */
+.floating-toc__panel {
+  scrollbar-width: none; /* Firefox */
+}
+
+.floating-toc__panel::-webkit-scrollbar {
+  width: 3px;
+}
+
+.floating-toc__panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.floating-toc__panel::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: var(--radius-full);
+  transition: background 0.3s;
+}
+
+.floating-toc__panel.scrolling {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--color-light-border) transparent;
+}
+
+.floating-toc__panel.scrolling::-webkit-scrollbar-thumb {
+  background: var(--color-light-border);
+}
+
+/* ----------------------------------------
+   Large screens — always visible, no toggle
+   Expand container to make room for TOC
+   ---------------------------------------- */
+@media (min-width: 1400px) {
+  .floating-toc__toggle {
+    display: none;
+  }
+
+  .floating-toc__panel {
+    display: block;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  .floating-toc__header {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  /* Widen the layout to accommodate the TOC column */
+  .layout-container:has(.floating-toc) .two-column-layout {
+    max-width: 95rem; /* 80rem content + 15rem TOC area */
+  }
+
+  .layout-container:has(.floating-toc) .two-column-layout__content {
+    padding-right: 15rem;
+  }
+}
+
+/* ----------------------------------------
+   DARK MODE
+   ---------------------------------------- */
+.dark .floating-toc__toggle {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+  color: var(--color-dark-text-muted);
+  box-shadow: var(--shadow-dark-md);
+}
+
+.dark .floating-toc__toggle:hover {
+  color: var(--color-dark-text-accent);
+  border-color: var(--color-dark-text-accent);
+}
+
+.dark .floating-toc.open .floating-toc__toggle {
+  background: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+  border-color: var(--color-dark-text-accent);
+  box-shadow: 0 2px 8px rgba(191, 164, 255, 0.3);
+}
+
+.dark .floating-toc__panel {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+  box-shadow: var(--shadow-dark-lg);
+}
+
+.dark .floating-toc__header {
+  border-bottom-color: var(--color-dark-border-subtle);
+}
+
+.dark .floating-toc__header h2 {
+  color: var(--color-dark-text-muted);
+}
+
+.dark .floating-toc__panel > ul > li > a {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .floating-toc__panel > ul > li > a:hover {
+  color: var(--color-dark-text-accent);
+  background: var(--color-dark-surface-hover);
+}
+
+.dark .floating-toc__panel > ul > li > a.active {
+  color: var(--color-dark-text-accent);
+  border-left-color: var(--color-dark-text-accent);
+}
+
+.dark .floating-toc__panel ul ul a {
+  color: var(--color-dark-text-muted);
+}
+
+.dark .floating-toc__panel ul ul a:hover {
+  color: var(--color-dark-text-accent);
+}
+
+.dark .floating-toc__panel ul ul a.active {
+  color: var(--color-dark-text-accent);
+  border-left-color: var(--color-dark-text-accent);
+}
+
+@media (min-width: 1400px) {
+  .dark .floating-toc__panel {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+}
+
+.dark .floating-toc__panel.scrolling {
+  scrollbar-color: var(--color-dark-border) transparent;
+}
+
+.dark .floating-toc__panel.scrolling::-webkit-scrollbar-thumb {
+  background: var(--color-dark-border);
+}

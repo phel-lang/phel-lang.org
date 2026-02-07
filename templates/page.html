@@ -1,13 +1,16 @@
 {% extends "layouts/two-column-layout.html" %}
+{% import "macros.html" as macros %}
 
 {% block meta_content %}
     <title>{{ page.title }} | {{ config.title }}</title>
     <meta property="og:title" content="{{ page.title }} | {{ config.title }}" />
 {% endblock meta_content %}
 
-{% block sidebar_extra %}
-    {% include "page/table-of-content.html" %}
-{% endblock sidebar_extra %}
+{% block sidebar_extra %}{% endblock sidebar_extra %}
+
+{% block floating_toc %}
+{{ macros::floating_toc(items=page.toc) }}
+{% endblock floating_toc %}
 
 {% block content %}
     <h1>{{page.title}}</h1>
