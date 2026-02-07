@@ -3,6 +3,8 @@ title = "Cheat Sheet"
 weight = 1
 +++
 
+A quick reference for Phel syntax and core functions. Press `/` to filter sections.
+
 ## Basic Syntax
 
 ```phel
@@ -20,6 +22,8 @@ true false              # booleans (only false and nil are falsy)
 my-var my-module/fn     # symbols
 ```
 
+See [Basic Types](/documentation/basic-types), [Truth and Boolean Operations](/documentation/truth-and-boolean-operations).
+
 ## Data Structures
 
 ```phel
@@ -32,6 +36,8 @@ my-var my-module/fn     # symbols
 '(1 2 3)                # quoted list (data, not a call)
 (list 1 2 3)            # same thing
 ```
+
+See [Data Structures](/documentation/data-structures).
 
 ## Accessing Data
 
@@ -63,6 +69,35 @@ my-var my-module/fn     # symbols
 (merge {:a 1} {:b 2 :a 3})        # => {:a 3 :b 2}
 ```
 
+See [Data Structures](/documentation/data-structures).
+
+## Destructuring
+
+```phel
+# Sequential destructuring
+(let [[a b c] [1 2 3]]
+  (+ a b c))                      # => 6
+
+(let [[a b & rest] [1 2 3 4 5]]
+  rest)                            # => (3 4 5)
+
+# Associative destructuring
+(let [{:name name :age age} {:name "Alice" :age 30}]
+  (str name " is " age))          # => "Alice is 30"
+
+# Default values
+(let [{:name name :role role :or {role "guest"}}
+      {:name "Bob"}]
+  role)                            # => "guest"
+
+# Works in defn, fn, loop too
+(defn greet [{:name name}]
+  (str "Hello, " name))
+(greet {:name "Alice"})            # => "Hello, Alice"
+```
+
+See [Destructuring](/documentation/destructuring).
+
 ## Defining Things
 
 ```phel
@@ -83,6 +118,8 @@ my-var my-module/fn     # symbols
       y (+ x 2)]
   (+ x y))                        # => 4
 ```
+
+See [Global and Local Bindings](/documentation/global-and-local-bindings).
 
 ## Functions
 
@@ -105,6 +142,8 @@ my-var my-module/fn     # symbols
 (identity 42)                      # => 42
 ```
 
+See [Functions and Recursion](/documentation/functions-and-recursion).
+
 ## Control Flow
 
 ```phel
@@ -122,6 +161,8 @@ my-var my-module/fn     # symbols
 
 (do (print "a") (print "b") 42)   # evaluate multiple exprs, return last
 ```
+
+See [Control Flow](/documentation/control-flow).
 
 ## Loops & Recursion
 
@@ -142,11 +183,13 @@ my-var my-module/fn     # symbols
 (dotimes [i 3] (print i))         # prints 0, 1, 2
 ```
 
+See [Functions and Recursion](/documentation/functions-and-recursion), [Control Flow](/documentation/control-flow).
+
 ## Collections
 
 ```phel
-(map inc [1 2 3])                  # => [2 3 4]
-(filter even? [1 2 3 4])          # => [2 4]
+(map inc [1 2 3])                  # => (2 3 4)
+(filter even? [1 2 3 4])          # => (2 4)
 (reduce + 0 [1 2 3])              # => 6
 (sort [3 1 2])                    # => [1 2 3]
 (sort-by :age [{:age 30} {:age 20}])  # sort by key
@@ -157,7 +200,45 @@ my-var my-module/fn     # symbols
 (contains? {:a 1} :a)             # => true
 (some even? [1 3 4])              # => true
 (every? pos? [1 2 3])             # => true
+(into #{} [1 2 1 3])              # => #{1 2 3}
+(distinct [1 2 1 3 2])            # => (1 2 3)
+(flatten [[1 2] [3 [4]]])         # => (1 2 3 4)
+(reverse [1 2 3])                  # => (3 2 1)
+(concat [1 2] [3 4])              # => (1 2 3 4)
 ```
+
+See [Data Structures](/documentation/data-structures).
+
+## Lazy Sequences
+
+```phel
+(take 5 (range))                   # => (0 1 2 3 4)
+(take 5 (iterate inc 0))          # => (0 1 2 3 4)
+(take 7 (cycle [1 2 3]))          # => (1 2 3 1 2 3 1)
+(take 4 (repeat :x))              # => (:x :x :x :x)
+(take 5 (repeatedly |(php/rand 1 100)))  # 5 random numbers
+
+(drop 3 (range 10))               # => (3 4 5 6 7 8 9)
+(take-while pos? [3 2 1 0 -1])   # => (3 2 1)
+(drop-while pos? [3 2 1 0 -1])   # => (0 -1)
+(partition 2 [1 2 3 4 5 6])       # => ((1 2) (3 4) (5 6))
+(interleave [:a :b :c] [1 2 3])  # => (:a 1 :b 2 :c 3)
+
+# Lazy filtering + transformation
+(->> (range)
+     (filter even?)
+     (take 5))                     # => (0 2 4 6 8)
+
+# Custom lazy sequence
+(defn fibs []
+  (lazy-seq (cons 0 (cons 1
+    (map + (fibs) (rest (fibs)))))))
+
+(doall (take 8 (fibs)))           # => (0 1 1 2 3 5 8 13)
+(realized? (lazy-seq [1 2 3]))    # => false
+```
+
+Lazy sequences were added in v0.25.0. `map`, `filter`, `take`, `drop`, `concat`, `mapcat`, `interleave`, and `partition` all return lazy sequences.
 
 ## Threading Macros
 
@@ -188,6 +269,66 @@ my-var my-module/fn     # symbols
 (php/explode "," "a,b,c")          # => PHP array ["a" "b" "c"]
 ```
 
+## Mutable State
+
+```phel
+(def counter (var 0))              # create a mutable variable
+(deref counter)                    # => 0
+(set! counter 42)                  # direct reset
+(deref counter)                    # => 42
+(swap! counter inc)                # apply function, counter is now 43
+(swap! counter + 10)               # counter is now 53
+
+# Vars are the only mutable primitive in Phel
+# (no atoms, agents, or refs)
+```
+
+See [Global and Local Bindings](/documentation/global-and-local-bindings).
+
+## Error Handling
+
+```phel
+(try
+  (/ 1 0)
+  (catch \DivisionByZeroError e
+    (str "Error: " (php/-> e (getMessage)))))
+
+(try
+  (do-risky-thing)
+  (catch \Exception e
+    (println (str "Failed: " (php/-> e (getMessage)))))
+  (finally
+    (cleanup)))
+
+(throw (php/new \InvalidArgumentException "bad input"))
+```
+
+See [PHP Interop](/documentation/php-interop).
+
+## Interfaces & Structs
+
+```phel
+(definterface Greetable
+  (greet [this]))
+
+(definterface HasArea
+  (area [this]))
+
+(defstruct circle [radius]
+  HasArea
+  (area [this] (* 3.14159 radius radius)))
+
+(defstruct person [name age]
+  Greetable
+  (greet [this] (str "Hello, I'm " name)))
+
+(greet (person "Alice" 30))        # => "Hello, I'm Alice"
+(area (circle 5))                  # => 78.53975
+(person? (person "Alice" 30))      # => true
+```
+
+See [Interfaces](/documentation/interfaces).
+
 ## PHP Interop
 
 ```phel
@@ -214,6 +355,8 @@ my-var my-module/fn     # symbols
 (php/apush arr "v")                # $arr[] = "v"
 ```
 
+See [PHP Interop](/documentation/php-interop).
+
 ## Namespaces
 
 ```phel
@@ -229,6 +372,8 @@ my-var my-module/fn     # symbols
 (login credentials)                  # use referred symbol
 (php/new DateTimeImmutable)          # use imported class
 ```
+
+See [Namespaces](/documentation/namespaces).
 
 ## Testing
 
@@ -256,3 +401,5 @@ my-var my-module/fn     # symbols
 ./vendor/bin/phel test tests/main.phel       # run specific file
 ./vendor/bin/phel test --filter my-test      # filter by name
 ```
+
+See [Testing](/documentation/testing).
