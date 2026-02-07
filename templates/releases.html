@@ -15,7 +15,7 @@
 <div class="post-list">
 {% for page in paginator.pages %}
     <div class="post-list__item">
-        <a class="post-card" href="{{ page.permalink | safe }}">
+        <a class="post-card" href="{{ page.path }}">
             {% if page.date %}
             <div class="post-card__meta">
                 <time class="post-card__date" datetime="{{ page.date }}">{{ page.date | date(format="%B %-d, %Y") }}</time>

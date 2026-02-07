@@ -18,7 +18,7 @@
 
             {% for doc_page in main_doc_section.pages %}
                 <li class="site-navigation__entry {% if current_path == doc_page.path %}active{% endif %}">
-                    <a href="{{ doc_page.permalink }}">{{ doc_page.title }}</a>
+                    <a href="{{ doc_page.path }}">{{ doc_page.title }}</a>
                 </li>
 
                 {% for subsection_path in main_doc_section.subsections %}
@@ -34,7 +34,7 @@
                             {% endfor %}
                             <li class="site-navigation__entry sidebar-section {% if is_section_active or has_active_child %}active{% else %}collapsed{% endif %}">
                                 <div class="sidebar-section-header">
-                                    <a href="{{ subsection.permalink }}">{{ subsection.title }}</a>
+                                    <a href="{{ subsection.path }}">{{ subsection.title }}</a>
                                     {% if subsection.pages | length > 0 %}
                                         <button class="subsection-toggle" aria-label="Toggle {{ subsection.title }} subsection" aria-expanded="{% if is_section_active or has_active_child %}true{% else %}false{% endif %}">
                                             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -47,7 +47,7 @@
                                     <ol class="sidebar-subsection">
                                         {% for subpage in subsection.pages %}
                                             <li class="{% if current_path == subpage.path %}active{% endif %}">
-                                                <a href="{{ subpage.permalink }}">{{ subpage.title }}</a>
+                                                <a href="{{ subpage.path }}">{{ subpage.title }}</a>
                                             </li>
                                         {% endfor %}
                                     </ol>
@@ -71,7 +71,7 @@
                     {% endfor %}
                     <li class="site-navigation__entry sidebar-section {% if is_section_active or has_active_child %}active{% else %}collapsed{% endif %}">
                         <div class="sidebar-section-header">
-                            <a href="{{ subsection.permalink }}">{{ subsection.title }}</a>
+                            <a href="{{ subsection.path }}">{{ subsection.title }}</a>
                             {% if subsection.pages | length > 0 %}
                                 <button class="subsection-toggle" aria-label="Toggle {{ subsection.title }} subsection" aria-expanded="{% if is_section_active or has_active_child %}true{% else %}false{% endif %}">
                                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -84,7 +84,7 @@
                             <ol class="sidebar-subsection">
                                 {% for subpage in subsection.pages %}
                                     <li class="site-navigation__entry {% if current_path == subpage.path %}active{% endif %}">
-                                        <a href="{{ subpage.permalink }}">{{ subpage.title }}</a>
+                                        <a href="{{ subpage.path }}">{{ subpage.title }}</a>
                                     </li>
                                 {% endfor %}
                             </ol>
@@ -95,7 +95,7 @@
         {% else %}
             {% for doc_page in doc_section.pages %}
                 <li class="site-navigation__entry {% if current_path == doc_page.path %}active{% endif %}">
-                    <a href="{{ doc_page.permalink }}">{{ doc_page.title }}</a>
+                    <a href="{{ doc_page.path }}">{{ doc_page.title }}</a>
                 </li>
             {% endfor %}
         {% endif %}

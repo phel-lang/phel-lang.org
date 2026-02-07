@@ -1,7 +1,9 @@
 +++
-title = "Basic syntax"
+title = "First Steps"
 weight = 1
 +++
+
+Your first encounter with Phel! These exercises will get you comfortable with prefix notation, basic expressions, and calling functions. Fire up the [REPL](/documentation/repl) and follow along.
 
 {% question() %}
 Compute `1 + 1`
@@ -10,15 +12,9 @@ Compute `1 + 1`
 ```phel
 (+ 1 1)
 ```
-{% end %}
+In Phel (like all Lisps), the operator comes first. This is called **prefix notation**.
 
-{% question() %}
-Call the function `get` with arguments `"hello"` and `1`
-{% end %}
-{% solution() %}
-```phel
-(get "hello" 1)
-```
+Learn more: [Arithmetic](/documentation/arithmetic)
 {% end %}
 
 {% question() %}
@@ -28,161 +24,100 @@ Compute `(3 + 4 / 5) * 6`
 ```phel
 (* (+ 3 (/ 4 5)) 6)
 ```
+Nested expressions are evaluated from the inside out. No operator precedence rules to memorize!
+
+Learn more: [Arithmetic](/documentation/arithmetic)
 {% end %}
 
 {% question() %}
-Define a vector with the elements `2`, `"nice"` and `true`
+Use the `str` function to join the strings `"hello"` and `" world"` together.
 {% end %}
 {% solution() %}
 ```phel
-[2 "nice" true]
-# or
-(vector 2 "nice" true)
+(str "hello" " world")
+# => "hello world"
 ```
+`str` concatenates any number of strings together.
+
+Learn more: [Basic Types](/documentation/basic-types)
 {% end %}
 
 {% question() %}
-Define a vector that contains the keywords `:key` and `:word`
+Call the function `get` with arguments `"hello"` and `1`. What does it return?
 {% end %}
 {% solution() %}
 ```phel
-[:key :word]
-# or
-(vector :key :word)
+(get "hello" 1)
+# => "e"
 ```
+Strings are indexable! `get` retrieves the character at position 1 (zero-based).
+
+Learn more: [Basic Types](/documentation/basic-types)
 {% end %}
 
 {% question() %}
-Define a map with the key `:name` associated with the value `"Frederick"`
+Check if two values are equal: is `(+ 2 3)` the same as `5`?
 {% end %}
 {% solution() %}
 ```phel
-{:name "Frederick"}
-# or
-(hash-map :name "Frederick")
+(= (+ 2 3) 5)
+# => true
 ```
+The `=` function compares values for equality. It works with any types.
+
+Learn more: [Truth and Boolean Operations](/documentation/truth-and-boolean-operations)
 {% end %}
 
 {% question() %}
-Use `def` to define a variable `my-map` that refers to the map `{:1 2}`.
-Use the `put` function to add a new key and value to `my-map`.
-- What does the `put` call return?
-- What is the value of `my-map` after the call?
+Try these predicates and guess the result before running them:
+```phel
+(string? "hello")
+(int? 42)
+(nil? nil)
+(nil? 0)
+```
 {% end %}
 {% solution() %}
 ```phel
-(def my-map {:1 2})
-(put my-map :3 4)
-(def my-new-map (put my-map :5 6))
+(string? "hello") # => true
+(int? 42)         # => true
+(nil? nil)        # => true
+(nil? 0)          # => false  (0 is not nil!)
 ```
+Predicates are functions that return `true` or `false`. By convention, their names end with `?`.
+
+Learn more: [Basic Types](/documentation/basic-types)
 {% end %}
 
 {% question() %}
-Use `push` to add a value to a vector
+Use `not`, `and`, and `or` to evaluate these expressions. Predict the result first!
+```phel
+(not true)
+(and true false)
+(or false true)
+(and (> 5 3) (< 10 20))
+```
 {% end %}
 {% solution() %}
 ```phel
-(def my-vector [1 2])
-(def new-vector (push my-vector 3))
+(not true)              # => false
+(and true false)        # => false
+(or false true)         # => true
+(and (> 5 3) (< 10 20)) # => true
 ```
+Boolean operators work as you'd expect. `and` returns the last truthy value or the first falsy one; `or` returns the first truthy value.
+
+Learn more: [Truth and Boolean Operations](/documentation/truth-and-boolean-operations)
 {% end %}
 
 {% question() %}
-Use the function `get` to get the second element from a vector
+What happens if you evaluate `(+ 1 "hello")`? Try it! What about `(type 42)` and `(type "hi")`?
 {% end %}
 {% solution() %}
 ```phel
-(def my-vector [1 2])
-(get my-vector 1)
+(+ 1 "hello") # => Error! You can't add a number and a string.
+(type 42)      # => "int"
+(type "hi")    # => "string"
 ```
-{% end %}
-
-{% question() %}
-Use the function `get` to get the value of a key from a map
-{% end %}
-{% solution() %}
-```phel
-(def my-map {:k1 "v1" :k2 "v2"})
-(get my-map :k2)
-```
-{% end %}
-
-{% question() %}
-Get the value of a key from a map using the map itself as a function
-{% end %}
-{% solution() %}
-```phel
-(def my-map {:k1 "v1" :k2 "v2"})
-(my-map :k2)
-```
-{% end %}
-
-{% question() %}
-Get the value of a key from a map using a keyword as a function
-{% end %}
-{% solution() %}
-```phel
-(def my-map {:k1 "v1" :k2 "v2"})
-(:k2 my-map)
-```
-{% end %}
-
-{% question() %}
-Use the function `get-in` to return the value `:treasure` from the map:
- ```phel
-(def my-map {:description "cave"
-             :crossroads [{:contents :monster}
-                          nil
-                          {:contents [:trinket :treasure]}]})
- ```
-{% end %}
-{% solution() %}
-```phel
-(get-in my-map [:crossroads 2 :contents 1])
-```
-{% end %}
-
-{% question() %}
-Use `defn` to define a function hello that works like this: 
-`(hello) ==> "hello!"`
-{% end %}
-{% solution() %}
-```phel
-(defn hello [] "hello!")
-```
-{% end %}
-
-{% question() %}
-Define a function double that works like this: `(double 5) ==> 10`
-{% end %}
-{% solution() %}
-```phel
-(defn double [n] (* n 2))
-```
-{% end %}
-
-{% question() %}
-Add a docstring to the function double. Then show it using `(doc double)`
-{% end %}
-{% solution() %}
-```phel
-(defn double
-  "It doubles the received number."
-  [n]
-  (* n 2))
-```
-{% end %}
-
-{% question() %}
-Implement a `factorial` function using recursion.
-{% end %}
-{% solution() %}
-```phel
-(defn factorial
-  "Calculate the factorial number for n." 
-  [n]
-  (if (<= n 1)
-    n
-    (* n (factorial (dec n)))))
-```
+Phel will tell you when types don't match. The `type` function helps you inspect any value.
 {% end %}

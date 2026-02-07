@@ -12,11 +12,11 @@
     <ul>
         {% for h2 in section.toc %}
         <li>
-            <a href="{{ h2.permalink }}">{{ h2.title }}</a>
+            <a href="#{{ h2.id }}">{{ h2.title }}</a>
             {% if h2.children %}
             <ul>
                 {% for h3 in h2.children %}
-                <li><a href="{{ h3.permalink }}">{{ h3.title }}</a></li>
+                <li><a href="#{{ h3.id }}">{{ h3.title }}</a></li>
                 {% endfor %}
             </ul>
             {% endif %}

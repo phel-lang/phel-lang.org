@@ -23,7 +23,7 @@
             <ul class="api-namespace__content">
             {% for fn in namespace.children %}
                 <li>
-                    <a href="{{ fn.permalink | safe }}">{{ fn.title }}</a>
+                    <a href="#{{ fn.id }}">{{ fn.title }}</a>
                 </li>
             {% endfor %}
             </ul>
