@@ -150,6 +150,14 @@ String concatenation and conversion using `str`:
 (str "The answer is " 42)  # => "The answer is 42"
 ```
 
+Strings are iterable — they work directly with sequence functions like `map`, `filter`, `count`, `frequencies`, and `foreach`. Full UTF-8 / multibyte support is included:
+
+```phel
+(count "hello")             # => 5
+(frequencies "abracadabra") # => {"a" 5 "b" 2 "r" 2 "c" 1 "d" 1}
+(seq "abc")                 # => ("a" "b" "c")
+```
+
 {% php_note() %}
 Phel strings are PHP strings internally, so you can use all PHP string functions:
 

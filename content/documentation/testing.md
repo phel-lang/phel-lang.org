@@ -167,3 +167,81 @@ If you want to run tests from Phel code, the `run-tests` function can be used. A
 ```phel
 (run-tests {} 'my\ns\a 'my\ns\b)
 ```
+
+## Mocking
+
+Phel provides a built-in mocking framework in the `phel\mock` module for replacing functions with test doubles.
+
+### Creating mocks
+
+```phel
+(ns my-app\tests
+  (:require phel\test :refer [deftest is])
+  (:require phel\mock :refer [mock mock-fn mock-returning mock-throwing
+                               calls call-count called? called-with?
+                               called-once? never-called? reset-mock!
+                               with-mocks]))
+
+# Fixed return value
+(def my-mock (mock :ok))
+(my-mock "any" "args")  # => :ok
+
+# Custom behavior
+(def double-mock (mock-fn |(* $ 2)))
+(double-mock 5)  # => 10
+
+# Consecutive return values
+(def seq-mock (mock-returning [1 2 3]))
+(seq-mock)  # => 1
+(seq-mock)  # => 2
+(seq-mock)  # => 3
+
+# Mock that throws
+(def err-mock (mock-throwing (php/new \RuntimeException "fail")))
+```
+
+### Inspecting calls
+
+```phel
+(def m (mock :result))
+(m "a" "b")
+(m "c")
+
+(calls m)          # => [["a" "b"] ["c"]]
+(call-count m)     # => 2
+(called? m)        # => true
+(called-with? m "a" "b")  # => true
+(called-once? m)   # => false
+(never-called? m)  # => false
+```
+
+### Replacing functions in tests
+
+Use `with-mocks` to temporarily replace functions with mocks using dynamic binding. Mocks are automatically reset after the block:
+
+```phel
+(defn fetch-user [id]
+  # ... makes HTTP call ...
+  )
+
+(deftest test-with-mock
+  (with-mocks [fetch-user (mock {:id 1 :name "Alice"})]
+    (is (= {:id 1 :name "Alice"} (fetch-user 42)))
+    (is (called-once? fetch-user))))
+```
+
+{% php_note() %}
+Phel's mocking is simpler than Mockery or PHPUnit mocks:
+
+```php
+// PHPUnit
+$mock = $this->createMock(UserService::class);
+$mock->method('find')->willReturn(['id' => 1]);
+
+// Phel
+(with-mocks [find-user (mock {:id 1})]
+  (find-user 42))
+```
+
+No class structure needed — mock any function directly.
+{% end %}

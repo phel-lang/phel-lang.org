@@ -5,6 +5,18 @@ weight = 19
 
 Phel comes with some configuration options. They are stored in the `phel-config.php` file in the root directory of every project.
 
+## Quick Start with `forProject()`
+
+For most projects, the `forProject()` factory method provides sensible defaults with minimal configuration:
+
+```php
+<?php
+// phel-config.php
+return \Phel\Config\PhelConfig::forProject('your-ns\main');
+```
+
+This configures the project with conventional directory layout (`src/phel/`, `tests/phel/`) and sets the main namespace for building. Override any setting by chaining setters after `forProject()`.
+
 ## Structure
 
 These are all Phel specific configuration options available, along with the values that are set by default.
@@ -22,6 +34,9 @@ return (new \Phel\Config\PhelConfig())
     ->setFormatDirs(['src', 'tests'])
     ->setKeepGeneratedTempFiles(false)
     ->setTempDir(sys_get_temp_dir().'/phel')
+    ->setCacheDir(sys_get_temp_dir().'/phel/cache')
+    ->setEnableNamespaceCache(true)
+    ->setEnableCompiledCodeCache(true)
     ->setBuildConfig((new \Phel\Config\PhelBuildConfig())
         ->setMainPhelNamespace('your-ns\index')
         ->setMainPhpPath('out/index.php'))
@@ -185,3 +200,39 @@ Currently, the export command requires three options:
 - `setFromDirectories`: Sets a list of directories in which the export command should search for export functions.
 - `setNamespacePrefix`: Sets a namespace prefix for all generated PHP classes.
 - `setTargetDirectory`: Sets the directory where the generated PHP classes are stored.
+
+### CacheDir
+
+Set the directory for namespace and compiled code caches. Defaults to a subdirectory of the temp directory.
+
+```php
+<?php
+return (new \Phel\Config\PhelConfig())
+    ->setCacheDir('/tmp/phel/cache')
+    # ...
+;
+```
+
+### EnableNamespaceCache
+
+Enable or disable the persistent namespace cache for faster warm runs. Default is `true`.
+
+```php
+<?php
+return (new \Phel\Config\PhelConfig())
+    ->setEnableNamespaceCache(true)
+    # ...
+;
+```
+
+### EnableCompiledCodeCache
+
+Enable or disable the compiled code cache for faster test execution and builds. Default is `true`.
+
+```php
+<?php
+return (new \Phel\Config\PhelConfig())
+    ->setEnableCompiledCodeCache(true)
+    # ...
+;
+```

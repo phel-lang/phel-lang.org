@@ -18,6 +18,15 @@ cd example-app
 composer repl
 ```
 
+Alternatively, initialize a project from scratch using `phel init`:
+
+```bash
+mkdir my-app && cd my-app
+composer require phel-lang/phel-lang
+vendor/bin/phel init my-app
+vendor/bin/phel repl
+```
+
 Inside the REPL try:
 
 ```phel

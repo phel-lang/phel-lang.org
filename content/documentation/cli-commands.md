@@ -10,6 +10,35 @@ Phel includes a series of commands out-of-the-box.
 vendor/bin/phel list
 ```
 
+## Initialize a new project
+
+Scaffold a new Phel project with minimal configuration:
+
+```bash
+vendor/bin/phel init
+# Usage:
+#   init [options] [--] [<project-name>]
+#
+# Arguments:
+#   project-name          The project/namespace name (default: "app")
+#
+# Options:
+#       --flat            Use flat layout (src/ and tests/ without subdirectory)
+#       --force           Overwrite existing files
+#       --dry-run         Show what would be created without writing anything
+#       --no-gitignore    Skip generating .gitignore
+```
+
+By default, `phel init` creates a conventional layout with `src/phel/` and `tests/phel/` subdirectories. Use `--flat` for a simpler `src/` and `tests/` layout.
+
+```bash
+# Create a project called "my-app" with flat layout
+vendor/bin/phel init my-app --flat
+
+# Preview what would be created
+vendor/bin/phel init my-app --dry-run
+```
+
 ## Build the project
 
 ```bash
@@ -142,3 +171,13 @@ Use the `filter` option to run only the tests that contain that filter.
 return (new PhelConfig())
     ->setTestDirs(['tests']);
 ```
+
+## Clear caches
+
+Clear the namespace and compiled code caches:
+
+```bash
+vendor/bin/phel cache:clear
+```
+
+This removes all cached data from the cache directory. Useful when the cache becomes stale or after upgrading Phel versions.

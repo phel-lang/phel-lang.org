@@ -140,6 +140,8 @@ See [Global and Local Bindings](/documentation/global-and-local-bindings).
 (partial + 10)                     # => fn that adds 10
 (comp inc inc)                     # => fn that increments twice
 (identity 42)                      # => 42
+(memoize expensive-fn)             # => cached version of fn
+(memoize-lru expensive-fn 100)     # => cached with max 100 entries
 ```
 
 See [Functions and Recursion](/documentation/functions-and-recursion).
@@ -205,6 +207,8 @@ See [Functions and Recursion](/documentation/functions-and-recursion), [Control 
 (flatten [[1 2] [3 [4]]])         # => (1 2 3 4)
 (reverse [1 2 3])                  # => (3 2 1)
 (concat [1 2] [3 4])              # => (1 2 3 4)
+(compact [1 nil 2 nil 3])         # => (1 2 3)
+(remove neg? [1 -2 3 -4])        # => (1 3)
 ```
 
 See [Data Structures](/documentation/data-structures).
@@ -236,6 +240,15 @@ See [Data Structures](/documentation/data-structures).
 
 (doall (take 8 (fibs)))           # => (0 1 1 2 3 5 8 13)
 (realized? (lazy-seq [1 2 3]))    # => false
+```
+
+Lazy file I/O:
+
+```phel
+(line-seq (php/fopen "file.txt" "r"))  # lazy line-by-line reading
+(file-seq "src/")                       # lazy recursive directory listing
+(csv-seq (php/fopen "data.csv" "r"))   # lazy CSV parsing
+(read-file-lazy "big.txt" 4096)        # lazy chunked reading
 ```
 
 Lazy sequences were added in v0.25.0. `map`, `filter`, `take`, `drop`, `concat`, `mapcat`, `interleave`, and `partition` all return lazy sequences.

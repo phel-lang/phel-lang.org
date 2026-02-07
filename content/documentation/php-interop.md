@@ -526,15 +526,15 @@ Before using the `export` command the required configuration options need to be 
 
 ```php
 <?php
-return (new PhelConfig())
-    ->setExport((new PhelExportConfig())
-        ->setDirectories(['src'])
+return (new \Phel\Config\PhelConfig())
+    ->setExportConfig((new \Phel\Config\PhelExportConfig())
+        ->setFromDirectories(['src'])
         ->setNamespacePrefix('PhelGenerated')
         ->setTargetDirectory('src/PhelGenerated'))
 ;
 ```
 
-A detailed description of the options can be found in the [Configuration](/documentation/configuration/#export) chapter.
+A detailed description of the options can be found in the [Configuration](/documentation/configuration/#exportconfig) chapter.
 
 To mark a function as exported the following metadata needs to be added to the function:
 
