@@ -18,6 +18,25 @@
     </div>
 {% endblock content %}
 
+{% block navigation %}
+{% if page.lower or page.higher %}
+<div class="page-navigation">
+  {% if page.lower %}
+  <a href="{{ page.lower.path }}" class="btn btn-secondary">
+    <span>&larr; Previous</span>
+    <span>{{ page.lower.title }}</span>
+  </a>
+  {% endif %}
+  {% if page.higher %}
+  <a href="{{ page.higher.path }}" class="btn btn-secondary">
+    <span>{{ page.higher.title }}</span>
+    <span>Next &rarr;</span>
+  </a>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock navigation %}
+
 {% block editable %}
 <div class="edit-page-link">
   {% set url = config.extra.repo_content_url ~ page.relative_path %}

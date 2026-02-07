@@ -38,3 +38,40 @@
   border-color: var(--color-dark-text-accent) !important;
 }
 
+/* ========================================
+   PAGE NAVIGATION (prev/next)
+   ======================================== */
+
+.page-navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: var(--space-xl);
+  gap: var(--space-md);
+}
+
+.page-navigation a.btn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-decoration: none;
+  max-width: 48%;
+}
+
+.page-navigation a.btn:last-child:first-child {
+  margin-left: auto;
+}
+
+/* ========================================
+   DARK MODE - PAGE NAVIGATION
+   ======================================== */
+
+.dark .page-navigation a.btn.btn-secondary {
+  color: var(--color-dark-text-accent);
+  border-color: var(--color-dark-text-accent);
+}
+
+.dark .page-navigation a.btn.btn-secondary:hover {
+  background: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+}
+
