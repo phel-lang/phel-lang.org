@@ -25,14 +25,19 @@ const parts = [
   'css/components/api.css',
   'css/components/exercises.css',
   'css/components/releases.css',
+  'css/components/rosetta-stone.css',
   
   // 4. Features
   'css/components/search.css',
   'css/components/code-block.css',
-  
+  'css/components/progress.css',
+  'css/components/animated-repl.css',
+  'css/components/easter-eggs.css',
+  'css/components/keyboard-shortcuts.css',
+
   // 5. Animations
   'css/components/animations.css',
-  
+
   // 6. Dark Mode (last to override)
   'css/components/dark-mode.css',
 ];

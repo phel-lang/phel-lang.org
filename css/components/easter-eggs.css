@@ -1,0 +1,66 @@
+/* Easter egg toast */
+.easter-egg-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(1rem);
+  background: #512da8;
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius-lg);
+  font-size: var(--font-size-base);
+  z-index: var(--z-tooltip);
+  opacity: 0;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  max-width: 90vw;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.easter-egg-toast.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Easter egg search result */
+.easter-egg-result {
+  background: linear-gradient(135deg, #512da8 0%, #7c4dff 100%);
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 0.5rem;
+  animation: eggPulse 0.5s ease;
+}
+
+.easter-egg-result small {
+  opacity: 0.85;
+}
+
+@keyframes eggPulse {
+  0% { transform: scale(0.95); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Parentheses counter */
+.paren-counter {
+  text-align: center;
+  padding: 0.75rem 1rem;
+  color: var(--color-light-text-muted);
+  font-size: var(--font-size-sm);
+  border-top: 1px solid var(--color-light-border);
+  margin-top: 2rem;
+}
+
+.dark .paren-counter {
+  color: var(--color-dark-text-muted);
+  border-top-color: var(--color-dark-border);
+}
+
+.paren-counter-icon {
+  font-family: 'Fira Code', monospace;
+  color: var(--color-light-primary);
+}
+
+.dark .paren-counter-icon {
+  color: var(--color-dark-primary);
+}

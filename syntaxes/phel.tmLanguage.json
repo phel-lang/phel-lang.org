@@ -1,0 +1,136 @@
+{
+  "name": "Phel",
+  "scopeName": "source.phel",
+  "fileTypes": ["phel"],
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#string" },
+    { "include": "#keyword" },
+    { "include": "#php-interop" },
+    { "include": "#keysym" },
+    { "include": "#literal" },
+    { "include": "#number" },
+    { "include": "#paren" },
+    { "include": "#bracket" },
+    { "include": "#brace" }
+  ],
+  "repository": {
+    "comment": {
+      "patterns": [
+        {
+          "name": "comment.block.phel",
+          "begin": "#\\|",
+          "end": "\\|#"
+        },
+        {
+          "name": "comment.line.phel",
+          "match": "(;|#(?!\\{)).*$"
+        }
+      ]
+    },
+    "string": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.phel",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.phel",
+              "match": "\\\\(x[0-9A-Fa-f]{1,2}|u\\{[0-9A-Fa-f]+\\}|[nrt\\\\\"$])"
+            }
+          ]
+        }
+      ]
+    },
+    "keyword": {
+      "patterns": [
+        {
+          "name": "keyword.control.phel",
+          "match": "(?<=\\()(defstruct|definterface|defmacro-|defmacro|defn-|defn|def-|def|recur|fn|throw|try|catch|finally|loop|ns|quote|dofor|do|if-not|if|when-not|when|apply|let|foreach|for|case|cond|list|vector|hash-map|set|println|print|str|map|filter|reduce|concat|conj|assoc|dissoc|get|get-in|put|push|first|second|rest|count|empty\\?|contains\\?|merge|sort|sort-by|group-by|frequencies|range|take|drop|reverse|partial|comp|identity|not|and|or|true\\?|false\\?|nil\\?|zero\\?|one\\?|even\\?|odd\\?|pos\\?|neg\\?|int\\?|float\\?|string\\?|keyword\\?|symbol\\?|vector\\?|map\\?|set\\?|list\\?|fn\\?|deftest|is|are|thrown\\?|->|->>|as->|some|every\\?|update|update-in|assoc-in|into|distinct|partition|interleave|map-indexed|keep|flat-map|reduce-kv)(?=[\\s\\)\\]\\}])"
+        }
+      ]
+    },
+    "php-interop": {
+      "patterns": [
+        {
+          "name": "support.function.phel",
+          "match": "(?<=\\(|\\s)(php\\/[^\\s#(){}\\[\\]'\"`,]+)(?=[\\s)\\]\\}])"
+        }
+      ]
+    },
+    "keysym": {
+      "patterns": [
+        {
+          "name": "constant.other.keyword.phel",
+          "match": ":[^\\s#(){}\\[\\]'\"`,]+"
+        }
+      ]
+    },
+    "literal": {
+      "patterns": [
+        {
+          "name": "constant.language.phel",
+          "match": "\\b(true|false|nil)\\b"
+        }
+      ]
+    },
+    "number": {
+      "patterns": [
+        {
+          "name": "constant.numeric.binary.phel",
+          "match": "[-+]?\\b0[bB][01]+(_[01]+)*\\b"
+        },
+        {
+          "name": "constant.numeric.hex.phel",
+          "match": "[-+]?\\b0[xX][0-9a-fA-F]+(_[0-9a-fA-F]+)*\\b"
+        },
+        {
+          "name": "constant.numeric.octal.phel",
+          "match": "[-+]?\\b0[0-7]+(_[0-7]+)*\\b"
+        },
+        {
+          "name": "constant.numeric.float.phel",
+          "match": "[-+]?(?:(?:\\b\\d+|\\.)?\\d+(?:[eE][+-]?\\d+)?\\b)"
+        },
+        {
+          "name": "constant.numeric.integer.phel",
+          "match": "[-+]?\\b\\d+\\b"
+        }
+      ]
+    },
+    "paren": {
+      "patterns": [
+        {
+          "begin": "@?\\(",
+          "end": "\\)",
+          "beginCaptures": { "0": { "name": "punctuation.paren.open.phel" } },
+          "endCaptures": { "0": { "name": "punctuation.paren.close.phel" } },
+          "patterns": [{ "include": "$self" }]
+        }
+      ]
+    },
+    "bracket": {
+      "patterns": [
+        {
+          "begin": "@?\\[",
+          "end": "\\]",
+          "beginCaptures": { "0": { "name": "punctuation.bracket.open.phel" } },
+          "endCaptures": { "0": { "name": "punctuation.bracket.close.phel" } },
+          "patterns": [{ "include": "$self" }]
+        }
+      ]
+    },
+    "brace": {
+      "patterns": [
+        {
+          "begin": "@?\\{",
+          "end": "\\}",
+          "beginCaptures": { "0": { "name": "punctuation.brace.open.phel" } },
+          "endCaptures": { "0": { "name": "punctuation.brace.close.phel" } },
+          "patterns": [{ "include": "$self" }]
+        }
+      ]
+    }
+  }
+}

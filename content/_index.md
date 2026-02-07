@@ -148,4 +148,10 @@ docker run -it --rm phellang/repl
 # docker pull phellang/repl
 ```
 
+<div id="animated-repl"></div>
+
+<noscript>
+
 ![Try Phel animation](/try-phel.gif "Try Phel Animation")
+
+</noscript>

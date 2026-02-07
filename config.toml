@@ -23,6 +23,7 @@ generate_feeds = false
 
 [markdown.highlighting]
 theme = "github-dark"
+extra_grammars = ["syntaxes/phel.tmLanguage.json"]
 
 [extra]
 # Put all your custom variables here

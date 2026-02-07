@@ -1,0 +1,109 @@
+/* Practice Progress Tracker */
+.progress-tracker {
+  margin-bottom: 2rem;
+  padding: 1rem 1.25rem;
+  background: var(--color-light-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-light-border);
+}
+
+.dark .progress-tracker {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+}
+
+.progress-tracker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.progress-tracker-label {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.progress-tracker-count {
+  font-size: var(--font-size-sm);
+  color: var(--color-light-text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.dark .progress-tracker-count {
+  color: var(--color-dark-text-muted);
+}
+
+.progress-tracker-bar {
+  height: 8px;
+  background: var(--color-light-border);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.dark .progress-tracker-bar {
+  background: var(--color-dark-border);
+}
+
+.progress-tracker-fill {
+  height: 100%;
+  background: var(--color-light-primary);
+  border-radius: var(--radius-full);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .progress-tracker-fill {
+  background: var(--color-dark-primary);
+}
+
+.progress-tracker.all-complete .progress-tracker-fill {
+  background: #22c55e;
+}
+
+.progress-tracker.all-complete .progress-tracker-label::after {
+  content: ' — All done!';
+  color: #22c55e;
+  font-weight: 400;
+}
+
+/* Exercise check marks */
+.exercise-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.5rem;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-light-border);
+  font-size: 0.75rem;
+  vertical-align: middle;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.dark .exercise-check {
+  border-color: var(--color-dark-border);
+}
+
+.exercise-check.completed {
+  background: #22c55e;
+  border-color: #22c55e;
+  color: white;
+}
+
+/* Complete button */
+.exercise-complete-btn {
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+.exercise-complete-btn.btn-completed {
+  background: #22c55e;
+  color: white;
+  border-color: #22c55e;
+}
+
+.exercise-complete-btn.btn-completed:hover {
+  background: #16a34a;
+  border-color: #16a34a;
+}

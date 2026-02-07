@@ -40,3 +40,7 @@ vendor/bin/phel run src/main.phel
 - Configure your editor: [Editor Support](/documentation/editor-support).
 - Learn the core language features: [Basic Types](/documentation/basic-types).
 - Coming from PHP? See [Phel for PHP Developers](/documentation/phel-for-php-developers).
+- Coming from Clojure? See [Coming from Clojure](/documentation/coming-from-clojure).
+- Quick reference: [Cheat Sheet](/documentation/cheat-sheet).
+- Side-by-side comparisons: [Rosetta Stone: PHP → Phel](/documentation/rosetta-stone).
+- Real-world examples: [Cookbook](/documentation/cookbook).
