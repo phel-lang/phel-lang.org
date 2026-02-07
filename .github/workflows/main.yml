@@ -36,10 +36,19 @@ jobs:
       - name: Build CSS for production
         run: npm run build-css-prod
 
-      - name: Build and deploy
-        uses: jenshaase/deploy-zola-via-lftp-action@main
-        with:
-          ftp_host: ${{ secrets.ftp_host }}
-          ftp_username: ${{ secrets.ftp_username }}
-          ftp_password: ${{ secrets.ftp_password }}
-          remote_target_dir: ${{ secrets.ftp_remote_target_dir }}
+      - name: Install Zola
+        run: |
+          ZOLA_VERSION="0.22.0"
+          curl -sL "https://github.com/getzola/zola/releases/download/v${ZOLA_VERSION}/zola-v${ZOLA_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xz -C /usr/local/bin
+
+      - name: Build site
+        run: zola build
+
+      - name: Deploy via LFTP
+        run: |
+          sudo apt-get update && sudo apt-get install -y lftp
+          lftp -c "
+            open -u ${{ secrets.ftp_username }},${{ secrets.ftp_password }} ${{ secrets.ftp_host }};
+            ls;
+            mirror --reverse --delete --depth-first --overwrite --verbose public/ ${{ secrets.ftp_remote_target_dir }};
+          "
