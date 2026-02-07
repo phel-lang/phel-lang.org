@@ -20,11 +20,11 @@ The most important part in this file is the `require` section. In here, you need
 
 ```json
 "require": {
-    "phel-lang/phel-lang": "^0.13"
+    "phel-lang/phel-lang": "^0.29"
 }
 ```
 
-For example, the above code specifies that the library supports Phel starting from version 0.7 and up to version 1.0 when released. You can be more specific here or less specific depending on what you want to do. See [Composer](https://getcomposer.org/doc/articles/versions.md) documentation for more info on version constraints.
+The `^` constraint means your library supports Phel from the specified version up to the next major release. Adjust this to match the Phel versions you've tested against. See [Composer](https://getcomposer.org/doc/articles/versions.md) documentation for more info on version constraints.
 
 
 ### phel-config.php
