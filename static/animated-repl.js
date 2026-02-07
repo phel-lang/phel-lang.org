@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     { type: 'result', text: '', delay: 0 },
     { type: 'prompt', text: '(greet "PHP developer")', delay: 50 },
     { type: 'result', text: '"Hi, PHP developer!"', delay: 0 },
-    { type: 'prompt', text: '(->> (range 1 6) (map |(* | |)) (reduce +))', delay: 35 },
+    { type: 'prompt', text: '(->> (range 1 6) (map (fn [x] (* x x))) (reduce +))', delay: 35 },
     { type: 'result', text: '55', delay: 0 },
   ];
 
