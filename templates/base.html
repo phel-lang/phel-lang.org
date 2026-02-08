@@ -15,7 +15,14 @@
       }
     })();
   </script>
-  
+
+  <!-- Cronitor RUM -->
+  <script async src="https://rum.cronitor.io/script.js"></script>
+  <script>
+    window.cronitor = window.cronitor || function() { (window.cronitor.q = window.cronitor.q || []).push(arguments); };
+    cronitor('config', { clientKey: 'e3d08bf21a6abf02b7da2e061554d399' });
+  </script>
+
   {% block meta_content %}
   <title>{{ config.title }}</title>
   <meta property="og:title" content="{{ config.title }}" />

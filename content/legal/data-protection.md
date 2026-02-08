@@ -24,3 +24,21 @@ You have the right at any time to obtain information about the origin, recipient
 This website is hosted by an external service provider (hoster). The personal data collected on this website is stored on the hoster's servers. These can primarily be IP addresses, contact requests, meta and communication data, contract data, contact details, names, website access and other data generated via a website.
 The host is used for the purpose of fulfilling the contract with our potential and existing customers and in the interest of a safe, fast and efficient provision of our online offer by a professional provider.
 Our hoster will only process your data to the extent necessary to fulfill its performance obligations and to follow our instructions in relation to this data.
+
+## Analytics and Performance Monitoring
+
+This website uses Cronitor RUM (Real User Monitoring) to collect anonymous performance metrics. This helps us understand how fast pages load and identify technical issues.
+
+**Data collected by Cronitor:**
+- Page URLs visited
+- Page load performance metrics
+- Browser type and version
+- Device type and screen resolution
+- Geographic location (country/region only, derived from IP address)
+
+**What is NOT collected:**
+- No personal data (names, emails, etc.)
+- No cookies are stored on your device
+- No tracking across other websites
+
+The data is processed by Cronitor Inc., a third-party service provider. For more information, see [Cronitor's Privacy Policy](https://cronitor.io/privacy).
