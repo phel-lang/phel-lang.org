@@ -10,6 +10,7 @@ This page contains a list of libraries and projects that use Phel. If you want t
 * [Chemaclass/phel-cli-gui](https://github.com/Chemaclass/phel-cli-gui): Functions to render in the CLI terminal.
 * [phel-lang/phel-pdo](https://github.com/phel-lang/phel-pdo): A wrapper around PDO.
 * [phel-lang/phel-schema](https://github.com/phel-lang/phel-schema): A schema validation library for phel – inspired by zod.
+* [smeghead/phel-getopt](https://github.com/smeghead/phel-getopt): A simple command-line argument parsing library for phel CLI programs.
 
 
 ## Projects
