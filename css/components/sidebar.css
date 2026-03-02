@@ -70,13 +70,29 @@
 .sidebar-section-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: var(--space-sm);
+  gap: var(--space-xs);
+  border-radius: var(--radius-md);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.sidebar-section-header:hover {
+  background: var(--color-light-surface-hover);
 }
 
 .sidebar-section-header > a {
   flex: 1;
   min-width: 0;
+  padding: 0;
+  background: none !important;
+  border-radius: 0;
+}
+
+.sidebar-section-header > a:hover {
+  background: none !important;
+}
+
+.sidebar-section.active > .sidebar-section-header {
+  background: var(--color-light-surface-hover);
 }
 
 /* Subsection toggle button */
@@ -86,23 +102,24 @@
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: none;
-  border-radius: 50%;
+  border: 1px solid var(--color-light-border);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   color: var(--color-light-text-secondary);
   transition: all var(--duration-fast) var(--ease-out);
-  padding: 10px;
+  padding: 0.3rem;
   margin: 0;
+  margin-right: var(--space-sm);
 }
 
 .subsection-toggle:hover {
-  background: var(--color-light-surface-hover);
+  border-color: var(--color-light-link);
   color: var(--color-light-link);
 }
 
 .subsection-toggle svg {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   transition: transform var(--duration-fast) var(--ease-out);
   transform: rotate(-90deg);
 }
@@ -269,13 +286,22 @@
    DARK MODE
    ======================================== */
 
+.dark .sidebar-section-header:hover {
+  background: var(--color-dark-surface-hover);
+}
+
+.dark .sidebar-section.active > .sidebar-section-header {
+  background: var(--color-dark-surface-hover);
+}
+
 .dark .subsection-toggle {
   color: var(--color-dark-text-secondary);
+  border-color: var(--color-dark-border);
 }
 
 .dark .subsection-toggle:hover {
-  background: var(--color-dark-surface-hover);
   color: var(--color-dark-text-accent);
+  border-color: var(--color-dark-text-accent);
 }
 
 .dark .site-navigation__title {

@@ -151,13 +151,14 @@
 /* Sidebar section with children */
 .sidebar-section-header a {
   display: block;
-  padding: var(--space-sm) var(--space-md);
+  padding: 0;
   color: var(--color-light-text-secondary);
   font-size: var(--text-sm);
   font-weight: 500;
-  border-radius: var(--radius-md);
+  border-radius: 0;
   text-decoration: none;
   transition: all var(--duration-fast) var(--ease-out);
+  background: none;
 }
 
 .sidebar-section-header a::after {
@@ -166,13 +167,13 @@
 
 .sidebar-section-header a:hover {
   color: var(--color-light-link);
-  background: var(--color-light-surface-hover);
+  background: none;
 }
 
 .sidebar-section.active .sidebar-section-header a {
   color: var(--color-light-link);
-  background: var(--color-light-surface-hover);
   font-weight: 600;
+  background: none;
 }
 
 /* Mobile sidebar toggle */
@@ -442,13 +443,13 @@ h6:hover .zola-anchor {
 }
 
 .dark .sidebar-section-header a:hover {
-  background: var(--color-dark-surface-hover);
   color: var(--color-dark-text-accent);
+  background: none;
 }
 
 .dark .sidebar-section.active .sidebar-section-header a {
   color: var(--color-dark-text-accent);
-  background: var(--color-dark-surface-hover);
+  background: none;
 }
 
 .dark .sidebar-subsection li a {
