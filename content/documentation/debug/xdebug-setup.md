@@ -266,11 +266,7 @@ The Phel VS Code extension provides a seamless debugging experience:
 
 2. **Source-level debugging**: Stack traces show Phel file names and line numbers, not the compiled PHP.
 
-3. **Phel-native variable display**: Variables are shown with Phel formatting:
-   - Vectors: `[3 items]`
-   - Maps: `{2 entries}`
-   - Keywords: `:status`
-   - Lists: `(5 items)`
+3. **Phel-native variable display**: Variables are shown with Phel formatting (e.g. vectors as `[3 items]`, maps as `{2 entries}`, keywords as `:status`, lists as `(5 items)`).
 
 4. **Skip internals**: By default, stepping skips Phel runtime code. Disable with `"skipPhelInternals": false` if debugging the Phel runtime itself.
 
