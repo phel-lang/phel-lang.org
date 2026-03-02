@@ -53,10 +53,6 @@
   color: var(--color-dark-text-accent);
 }
 
-.dark a:not([class])::after {
-  background: var(--color-dark-text-accent);
-}
-
 /* Dark lists */
 .dark ul li::before {
   background: var(--color-dark-text-accent);

@@ -76,33 +76,20 @@ a {
   text-decoration: none;
   transition: all var(--duration-fast) var(--ease-out);
   border-radius: var(--radius-sm);
-  position: relative;
 }
 
 a:hover {
   color: var(--color-light-link);
-  text-decoration: none;
+}
+
+.documentation__content a:hover,
+.two-column-layout__content a:hover {
+  text-decoration: underline;
 }
 
 a:focus-visible {
   outline: 2px solid var(--color-light-link);
   outline-offset: 3px;
-}
-
-/* Modern link underline effect */
-a:not([class])::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: var(--color-light-link);
-  transition: width var(--duration-normal) var(--ease-out);
-}
-
-a:not([class]):hover::after {
-  width: 100%;
 }
 
 /* Touch-friendly tap targets */
