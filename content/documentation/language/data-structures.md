@@ -9,11 +9,11 @@ Phel has four main data structures: **Lists**, **Vectors**, **Maps**, and **Sets
 All data structures are **persistent** (immutable). A persistent data structure preserves the previous version of itself when it is modified. Unlike naive immutable structures that copy everything, persistent data structures efficiently share unmodified values with their previous versions. When you "modify" a collection, you get a new version while the original remains unchanged.
 
 {% php_note() %}
-Think of this as "copy-on-write" for collections, similar to how PHP's copy-on-write works for variables. This prevents bugs from unexpected mutations—a common issue in PHP where passing arrays to functions can lead to surprising behavior.
+Think of this as "copy-on-write" for collections, similar to how PHP's copy-on-write works for variables. This prevents bugs from unexpected mutations-a common issue in PHP where passing arrays to functions can lead to surprising behavior.
 {% end %}
 
 {% clojure_note() %}
-Phel's data structures work exactly like Clojure's—they're built on the same persistent data structure algorithms (Bagwell's Hash Array Mapped Tries and similar structures).
+Phel's data structures work exactly like Clojure's-they're built on the same persistent data structure algorithms (Bagwell's Hash Array Mapped Tries and similar structures).
 {% end %}
 
 ## Lists
@@ -100,12 +100,12 @@ Vectors are like PHP's indexed arrays (`[0 => 'a', 1 => 'b']`), but immutable. U
 {% end %}
 
 {% clojure_note() %}
-Vectors work exactly like Clojure vectors—use them for indexed collections and when you need to append efficiently to the end.
+Vectors work exactly like Clojure vectors-use them for indexed collections and when you need to append efficiently to the end.
 {% end %}
 
 ## Maps
 
-A Map contains key-value-pairs in random order. Each possible key appears at most once in the collection. Any type that implements the `HashableInterface` and `EqualsInterface` can be used as a key—including vectors, lists, or even other maps.
+A Map contains key-value-pairs in random order. Each possible key appears at most once in the collection. Any type that implements the `HashableInterface` and `EqualsInterface` can be used as a key-including vectors, lists, or even other maps.
 
 To create a map, wrap the key and values in curly brackets or use the `hash-map` function.
 
@@ -165,7 +165,7 @@ Maps are like PHP's associative arrays, but with two key differences:
 {% end %}
 
 {% clojure_note() %}
-Maps work exactly like Clojure maps—use keywords for keys in most cases.
+Maps work exactly like Clojure maps-use keywords for keys in most cases.
 {% end %}
 
 ## Working with Collections

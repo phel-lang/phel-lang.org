@@ -60,7 +60,7 @@ $x = 10;  // Can reassign
 {% end %}
 
 {% clojure_note() %}
-`let` works exactly like Clojure's `let`—creates lexically scoped, immutable bindings.
+`let` works exactly like Clojure's `let`-creates lexically scoped, immutable bindings.
 {% end %}
 
 ## Binding
@@ -158,7 +158,7 @@ Binding is particularly useful for testing code that depends on global state or 
 {% end %}
 
 {% clojure_note() %}
-`binding` works exactly like Clojure's `binding`—it creates dynamic scope bindings that affect all code executed within the binding form.
+`binding` works exactly like Clojure's `binding`-it creates dynamic scope bindings that affect all code executed within the binding form.
 {% end %}
 
 ## Variables
@@ -208,5 +208,5 @@ Use Phel's immutable data structures when possible. Variables are mainly useful 
 {% end %}
 
 {% clojure_note() %}
-Phel variables work like Clojure atoms—they're thread-safe containers for mutable state. Use `deref` or `@` to read, `swap!` to update.
+Phel variables work like Clojure atoms-they're thread-safe containers for mutable state. Use `deref` or `@` to read, `swap!` to update.
 {% end %}

@@ -9,6 +9,6 @@ template = "section-page.html"
 insert_after = "Why Phel?"
 +++
 
-Phel is a functional Lisp that compiles to PHP. This section covers the core language features — from basic types and arithmetic through to macros and interfaces.
+Phel is a functional Lisp that compiles to PHP. This section covers the core language features - from basic types and arithmetic through to macros and interfaces.
 
 Work through these pages in order for a guided introduction, or jump to any topic as a reference.

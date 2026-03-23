@@ -111,11 +111,11 @@ switch ($value) {
   12 :big)
 ```
 
-No `break` needed—Phel's `case` doesn't fall through.
+No `break` needed-Phel's `case` doesn't fall through.
 {% end %}
 
 {% clojure_note() %}
-`case` works exactly like Clojure's `case`—evaluates to the matching value without fall-through.
+`case` works exactly like Clojure's `case`-evaluates to the matching value without fall-through.
 {% end %}
 
 ## Cond
@@ -197,7 +197,7 @@ More elegant for multiple conditions than nested `if` expressions. Use `:else` a
 {% end %}
 
 {% clojure_note() %}
-`cond` works exactly like Clojure's `cond`—evaluates predicates in order and returns first match.
+`cond` works exactly like Clojure's `cond`-evaluates predicates in order and returns first match.
 {% end %}
 
 ## Loop
@@ -277,7 +277,7 @@ This is critical for functional programming patterns in PHP.
 {% end %}
 
 {% clojure_note() %}
-`loop`/`recur` works exactly like Clojure—provides tail-call optimization by compiling to iterative loops.
+`loop`/`recur` works exactly like Clojure-provides tail-call optimization by compiling to iterative loops.
 {% end %}
 
 ## Foreach
@@ -390,11 +390,11 @@ foreach (range(1, 3) as $x) {
 (for [x :in [1 2 3]] (inc x))  # [2 3 4]
 ```
 
-Phel's `for` combines iteration, filtering (`:when`), early termination (`:while`), reduction (`:reduce`), and nested loops in one elegant expression—much more powerful than PHP's `for`/`foreach`.
+Phel's `for` combines iteration, filtering (`:when`), early termination (`:while`), reduction (`:reduce`), and nested loops in one elegant expression-much more powerful than PHP's `for`/`foreach`.
 {% end %}
 
 {% clojure_note() %}
-`for` works similarly to Clojure's `for`—list comprehensions with `:let`, `:when`, and nested bindings. The `:reduce` modifier is a Phel extension.
+`for` works similarly to Clojure's `for`-list comprehensions with `:let`, `:when`, and nested bindings. The `:reduce` modifier is a Phel extension.
 {% end %}
 
 # Do

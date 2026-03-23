@@ -6,7 +6,7 @@ aliases = ["/documentation/truth-and-boolean-operations"]
 
 ## Truthiness
 
-In Phel, only `false` and `nil` represent falsity. Everything else evaluates to true—including `0`, `""`, and `[]`.
+In Phel, only `false` and `nil` represent falsity. Everything else evaluates to true-including `0`, `""`, and `[]`.
 
 The function `truthy?` can be used to check if a value is truthy. To check for the values `true` and `false` specifically, the functions `true?` and `false?` can be used.
 
@@ -45,7 +45,7 @@ if ([]) { }       // false - won't execute
 {% end %}
 
 {% clojure_note() %}
-Truthiness works exactly like Clojure—only `false` and `nil` are falsy.
+Truthiness works exactly like Clojure-only `false` and `nil` are falsy.
 {% end %}
 
 ## Identity vs Equality

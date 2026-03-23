@@ -6,7 +6,7 @@ aliases = ["/documentation/repl"]
 
 ## Interactive prompt
 
-Phel comes with an interactive Read-Eval-Print Loop. The REPL lets you evaluate Phel expressions and see results immediately — invaluable for exploring the language, testing ideas, and debugging.
+Phel comes with an interactive Read-Eval-Print Loop. The REPL lets you evaluate Phel expressions and see results immediately - invaluable for exploring the language, testing ideas, and debugging.
 
 Start it with:
 
@@ -25,7 +25,7 @@ phel:2> (str "Hello, " "world!")
 "Hello, world!"
 ```
 
-Multiline expressions work automatically — the prompt changes to `....` until the expression is complete:
+Multiline expressions work automatically - the prompt changes to `....` until the expression is complete:
 
 ```bash
 phel:1> (defn greet [name]
@@ -80,7 +80,7 @@ phel:2> (php/-> (php/new DateTimeImmutable) (format "Y-m-d"))
 
 ## REPL-driven development workflow
 
-The REPL is most powerful when used as your primary development feedback loop — not just for one-off tests.
+The REPL is most powerful when used as your primary development feedback loop - not just for one-off tests.
 
 ### Explore data interactively
 
@@ -154,8 +154,8 @@ phel:6> (vals m)
 
 ## Tips
 
-- **Use `doc` liberally** — it's faster than switching to the browser to look up a function.
-- **Build up complex expressions incrementally** — start simple, verify, then compose.
-- **Copy working REPL expressions into your source files** — the REPL is a scratchpad for your final code.
-- **Use `require` to load your project modules** — test your own code interactively.
+- **Use `doc` liberally** - it's faster than switching to the browser to look up a function.
+- **Build up complex expressions incrementally** - start simple, verify, then compose.
+- **Copy working REPL expressions into your source files** - the REPL is a scratchpad for your final code.
+- **Use `require` to load your project modules** - test your own code interactively.
 - **`Ctrl-C` cancels the current input** if you get stuck in an incomplete expression.

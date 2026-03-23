@@ -3,7 +3,7 @@ title = "Control Flow"
 weight = 4
 +++
 
-Making decisions and repeating actions. Phel gives you several tools for control flow — each suited for different situations.
+Making decisions and repeating actions. Phel gives you several tools for control flow - each suited for different situations.
 
 {% question() %}
 Define a function `absolute` that returns the absolute value of a number using `if`.
@@ -110,7 +110,7 @@ Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
 {% question() %}
-The exercises in the [Conditionals & Structures](/practice/conditionals-and-structures) section of the old practice used a `message` function with `if`, `cond`, and `case`. Now that you know all three — when would you choose each one? Write a `describe-temp` function that uses the best fit:
+The exercises in the [Conditionals & Structures](/practice/conditionals-and-structures) section of the old practice used a `message` function with `if`, `cond`, and `case`. Now that you know all three - when would you choose each one? Write a `describe-temp` function that uses the best fit:
 ```phel
 (describe-temp 35)  # => "hot"
 (describe-temp 20)  # => "nice"

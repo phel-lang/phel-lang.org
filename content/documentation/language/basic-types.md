@@ -14,7 +14,7 @@ true
 false
 ```
 
-In Phel, only `false` and `nil` are falsy. Everything else is truthy—including `0`, `""`, and `[]`.
+In Phel, only `false` and `nil` are falsy. Everything else is truthy-including `0`, `""`, and `[]`.
 
 ```phel
 # Truthiness examples
@@ -35,7 +35,7 @@ This means `if (0)` in PHP is false, but `(if 0 ...)` in Phel is true!
 {% end %}
 
 {% clojure_note() %}
-Truthiness is the same as Clojure—only `false` and `nil` are falsy.
+Truthiness is the same as Clojure-only `false` and `nil` are falsy.
 {% end %}
 
 ## Symbol
@@ -87,7 +87,7 @@ Keywords are interned (only one instance exists in memory), making equality chec
 {% end %}
 
 {% clojure_note() %}
-Keywords work exactly like in Clojure—they're interned, fast for equality checks, and self-evaluate.
+Keywords work exactly like in Clojure-they're interned, fast for equality checks, and self-evaluate.
 {% end %}
 
 ## Numbers
@@ -151,7 +151,7 @@ String concatenation and conversion using `str`:
 (str "The answer is " 42)  # => "The answer is 42"
 ```
 
-Strings are iterable — they work directly with sequence functions like `map`, `filter`, `count`, `frequencies`, and `foreach`. Full UTF-8 / multibyte support is included:
+Strings are iterable - they work directly with sequence functions like `map`, `filter`, `count`, `frequencies`, and `foreach`. Full UTF-8 / multibyte support is included:
 
 ```phel
 (count "hello")             # => 5
@@ -216,7 +216,7 @@ A map is a sequence of whitespace-separated key/value pairs surrounded by curly 
 Unlike PHP associative arrays, Phel maps:
 - Can have **any type** as keys (not just strings/integers): vectors, lists, or even other maps
 - Are **immutable**: operations return new maps without modifying the original
-- Are **not** PHP arrays internally—they're their own data structure
+- Are **not** PHP arrays internally-they're their own data structure
 
 ```phel
 # PHP:

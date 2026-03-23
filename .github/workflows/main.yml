@@ -10,7 +10,7 @@ jobs:
     name: Deploy website to server
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup PHP with tools
         uses: shivammathur/setup-php@v2
@@ -25,7 +25,7 @@ jobs:
         run: composer build
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
           cache: 'npm'

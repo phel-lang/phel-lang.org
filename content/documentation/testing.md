@@ -25,7 +25,7 @@ Phel's approach is simpler for functional code and doesn't require class boilerp
 {% end %}
 
 {% clojure_note() %}
-Phel's testing framework is modeled after `clojure.test`—same `is` macro, same `deftest` structure.
+Phel's testing framework is modeled after `clojure.test`-same `is` macro, same `deftest` structure.
 {% end %}
 
 ## Assertions
@@ -243,5 +243,5 @@ $mock->method('find')->willReturn(['id' => 1]);
   (find-user 42))
 ```
 
-No class structure needed — mock any function directly.
+No class structure needed - mock any function directly.
 {% end %}
