@@ -17,6 +17,21 @@
 <div class="flex-container">
     <div class="page-content">
         {{ section.content | safe }}
+
+        {% if section.pages | length > 0 %}
+        <div class="section-page-list">
+            {% for page in section.pages %}
+            <a href="{{ page.path }}" class="section-page-card">
+                <h3 class="section-page-card__title">{{ page.title }}</h3>
+                {% if page.description %}
+                <p class="section-page-card__desc">{{ page.description }}</p>
+                {% else %}
+                <p class="section-page-card__desc">{{ page.content | striptags | truncate(length=120) }}</p>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock content %}

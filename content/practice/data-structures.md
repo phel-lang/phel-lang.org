@@ -16,7 +16,7 @@ Define a vector with the elements `2`, `"nice"`, and `true`.
 ```
 Vectors are ordered collections that can hold any mix of types. Square brackets `[]` are the most common way to create them.
 
-Learn more: [Data Structures](/documentation/data-structures)
+Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
 {% question() %}
@@ -28,7 +28,7 @@ Define a vector that contains the keywords `:hello` and `:world`.
 ```
 Keywords are lightweight identifiers that start with `:`. They're often used as map keys or as enum-like values.
 
-Learn more: [Basic Types](/documentation/basic-types)
+Learn more: [Basic Types](/documentation/language/basic-types)
 {% end %}
 
 {% question() %}
@@ -42,7 +42,7 @@ Create a map with keys `:name` and `:age`, with values `"Ada"` and `36`.
 ```
 Maps are key-value collections. Keyword keys are idiomatic in Phel.
 
-Learn more: [Data Structures](/documentation/data-structures)
+Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
 {% question() %}
@@ -58,7 +58,7 @@ Create a set containing the numbers `1`, `2`, `3`, and `2`. How many elements do
 ```
 Sets are unordered collections of unique values. Adding a duplicate has no effect.
 
-Learn more: [Data Structures](/documentation/data-structures)
+Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
 {% question() %}
@@ -71,7 +71,7 @@ Use the `get` function to retrieve the second element from the vector `[10 20 30
 ```
 Vector indices are zero-based, so index `1` is the second element.
 
-Learn more: [Data Structures](/documentation/data-structures)
+Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
 {% question() %}
@@ -95,7 +95,7 @@ Given this map, retrieve the value for `:name` in three different ways:
 ```
 All three are equivalent. Using keywords as functions (`:name person`) is the most idiomatic style.
 
-Learn more: [Data Structures](/documentation/data-structures)
+Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
 {% question() %}
@@ -114,7 +114,7 @@ Use `get-in` to retrieve the value `:treasure` from this nested structure:
 ```
 `get-in` navigates nested structures using a vector of keys/indices. It works through any combination of maps and vectors.
 
-Learn more: [Data Structures](/documentation/data-structures)
+Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
 {% question() %}
@@ -135,7 +135,7 @@ person
 ```
 Phel data structures are **immutable**. `put` returns a *new* map — it never modifies the original. This is a core principle that makes your code predictable and safe.
 
-Learn more: [Data Structures](/documentation/data-structures)
+Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
 {% question() %}
@@ -152,7 +152,7 @@ more-nums         # => [1 2 3 4]
 ```
 Again, `push` returns a new vector. The original is untouched.
 
-Learn more: [Data Structures](/documentation/data-structures)
+Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
 {% question() %}
@@ -167,7 +167,7 @@ Use `contains?` to check if the set `#{:apple :banana :cherry}` contains `:banan
 ```
 `contains?` is the natural way to check set membership.
 
-Learn more: [Data Structures](/documentation/data-structures)
+Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
 {% question() %}
@@ -180,5 +180,5 @@ Use `keys` and `values` on the map `{:a 1 :b 2 :c 3}`. What do you get?
 ```
 These are handy when you need to work with just the keys or just the values of a map.
 
-Learn more: [Data Structures](/documentation/data-structures)
+Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}

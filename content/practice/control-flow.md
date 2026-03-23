@@ -21,7 +21,7 @@ Define a function `absolute` that returns the absolute value of a number using `
 ```
 `if` takes a condition, a "then" branch, and an "else" branch. It always returns a value.
 
-Learn more: [Control Flow](/documentation/control-flow)
+Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
 {% question() %}
@@ -37,7 +37,7 @@ Define a function `small?` that returns `true` for numbers under 100.
 ```
 By convention, predicate functions (that return true/false) end with `?`.
 
-Learn more: [Control Flow](/documentation/control-flow)
+Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
 {% question() %}
@@ -59,7 +59,7 @@ Use `when` to print a warning only if a number is negative. What does `when` ret
 ```
 `when` is like `if` without an else branch. It returns `nil` when the condition is false. Use it when you only care about one case.
 
-Learn more: [Control Flow](/documentation/control-flow)
+Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
 {% question() %}
@@ -83,7 +83,7 @@ Use the `cond` structure (scores: A >= 90, B >= 80, C >= 70, F otherwise).
 ```
 `cond` tests conditions in order and returns the value for the first truthy one. The final standalone value acts as a default (like "else").
 
-Learn more: [Control Flow](/documentation/control-flow)
+Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
 {% question() %}
@@ -106,7 +106,7 @@ Use the `case` structure.
 ```
 `case` matches a value against exact cases. The last value without a match acts as the default. It's cleaner than `cond` when you're comparing against specific values.
 
-Learn more: [Control Flow](/documentation/control-flow)
+Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
 {% question() %}
@@ -129,7 +129,7 @@ The exercises in the [Conditionals & Structures](/practice/conditionals-and-stru
 ```
 `cond` is the right choice here because we're testing **ranges**, not exact values. Use `case` for exact matches, `if` for simple true/false, and `cond` for multiple conditions.
 
-Learn more: [Control Flow](/documentation/control-flow)
+Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
 {% question() %}
@@ -145,7 +145,7 @@ Use `loop` and `recur` to build a vector of numbers from `1` to `10`.
 ```
 `loop` defines initial bindings and `recur` jumps back to the loop with new values. This is Phel's way of doing iteration without mutable variables.
 
-Learn more: [Control Flow](/documentation/control-flow)
+Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
 {% question() %}
@@ -161,5 +161,5 @@ Use `loop` and `recur` to compute the sum of numbers from 1 to 100.
 ```
 The accumulator pattern: carry your result in a loop variable and return it when done. (Fun fact: the answer is the same one young Gauss famously computed in seconds!)
 
-Learn more: [Control Flow](/documentation/control-flow)
+Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}

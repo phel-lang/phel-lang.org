@@ -161,6 +161,7 @@
   border-color: var(--color-light-link);
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
+  text-decoration: none;
 }
 
 /* Collapsed State with Fade - ONLY for items with overflow */
@@ -418,6 +419,7 @@
   color: var(--color-dark-bg);
   border-color: var(--color-dark-text-accent);
   box-shadow: var(--shadow-dark-md);
+  text-decoration: none;
 }
 
 /* Disable hover effects on pills when collapsed - Dark Mode */

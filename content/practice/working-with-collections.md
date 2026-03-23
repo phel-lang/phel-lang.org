@@ -22,7 +22,7 @@ Increment all numbers in `[4 7 9 10]` by one. Use the `map` function.
 ```
 `map` applies a function to every element of a collection and returns a new collection. When a named function already does what you need (like `inc`), pass it directly.
 
-Learn more: [Functions and Recursion](/documentation/functions-and-recursion)
+Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
 {% question() %}
@@ -77,7 +77,7 @@ Rewrite the previous exercise using the threading macro `->>` so it reads top-to
 ```
 `->>` (thread-last) passes each result as the **last** argument to the next function. It turns nested calls into a readable pipeline.
 
-Learn more: [Functions and Recursion](/documentation/functions-and-recursion)
+Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
 {% question() %}
@@ -121,7 +121,7 @@ Expected result: `(10.3 20.06 30.1)`
 ```
 `for` is a list comprehension — it generates a new sequence by transforming each element.
 
-Learn more: [Control Flow](/documentation/control-flow)
+Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
 {% question() %}
@@ -155,7 +155,7 @@ Use `update-in` to change the balance from 3 to 4 in this nested structure:
 ```
 `update-in` navigates into a nested structure and applies a function to the value it finds. Here, `inc` transforms `3` into `4` — all while keeping the original data unchanged.
 
-Learn more: [Data Structures](/documentation/data-structures)
+Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
 {% question() %}
@@ -200,5 +200,5 @@ Create a function `combine` that merges a vector of maps into one:
 ```
 `apply` "spreads" the vector as individual arguments to `merge`. So `(apply merge [{:a 1} {:b 2}])` becomes `(merge {:a 1} {:b 2})`.
 
-Learn more: [Functions and Recursion](/documentation/functions-and-recursion)
+Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}

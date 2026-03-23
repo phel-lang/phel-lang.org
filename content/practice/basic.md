@@ -3,7 +3,7 @@ title = "First Steps"
 weight = 1
 +++
 
-Your first encounter with Phel! These exercises will get you comfortable with prefix notation, basic expressions, and calling functions. Fire up the [REPL](/documentation/repl) and follow along.
+Your first encounter with Phel! These exercises will get you comfortable with prefix notation, basic expressions, and calling functions. Fire up the [REPL](/documentation/tooling/repl) and follow along.
 
 {% question() %}
 Compute `1 + 1`
@@ -14,7 +14,7 @@ Compute `1 + 1`
 ```
 In Phel (like all Lisps), the operator comes first. This is called **prefix notation**.
 
-Learn more: [Arithmetic](/documentation/arithmetic)
+Learn more: [Arithmetic](/documentation/language/arithmetic)
 {% end %}
 
 {% question() %}
@@ -26,7 +26,7 @@ Compute `(3 + 4 / 5) * 6`
 ```
 Nested expressions are evaluated from the inside out. No operator precedence rules to memorize!
 
-Learn more: [Arithmetic](/documentation/arithmetic)
+Learn more: [Arithmetic](/documentation/language/arithmetic)
 {% end %}
 
 {% question() %}
@@ -39,7 +39,7 @@ Use the `str` function to join the strings `"hello"` and `" world"` together.
 ```
 `str` concatenates any number of strings together.
 
-Learn more: [Basic Types](/documentation/basic-types)
+Learn more: [Basic Types](/documentation/language/basic-types)
 {% end %}
 
 {% question() %}
@@ -52,7 +52,7 @@ Call the function `get` with arguments `"hello"` and `1`. What does it return?
 ```
 Strings are indexable! `get` retrieves the character at position 1 (zero-based).
 
-Learn more: [Basic Types](/documentation/basic-types)
+Learn more: [Basic Types](/documentation/language/basic-types)
 {% end %}
 
 {% question() %}
@@ -65,7 +65,7 @@ Check if two values are equal: is `(+ 2 3)` the same as `5`?
 ```
 The `=` function compares values for equality. It works with any types.
 
-Learn more: [Truth and Boolean Operations](/documentation/truth-and-boolean-operations)
+Learn more: [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations)
 {% end %}
 
 {% question() %}
@@ -86,7 +86,7 @@ Try these predicates and guess the result before running them:
 ```
 Predicates are functions that return `true` or `false`. By convention, their names end with `?`.
 
-Learn more: [Basic Types](/documentation/basic-types)
+Learn more: [Basic Types](/documentation/language/basic-types)
 {% end %}
 
 {% question() %}
@@ -107,7 +107,7 @@ Use `not`, `and`, and `or` to evaluate these expressions. Predict the result fir
 ```
 Boolean operators work as you'd expect. `and` returns the last truthy value or the first falsy one; `or` returns the first truthy value.
 
-Learn more: [Truth and Boolean Operations](/documentation/truth-and-boolean-operations)
+Learn more: [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations)
 {% end %}
 
 {% question() %}

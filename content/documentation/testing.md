@@ -1,6 +1,6 @@
 +++
 title = "Testing"
-weight = 17
+weight = 70
 +++
 
 Phel comes with an integrated unit testing framework.

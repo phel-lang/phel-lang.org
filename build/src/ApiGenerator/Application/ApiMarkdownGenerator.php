@@ -225,7 +225,7 @@ final readonly class ApiMarkdownGenerator
             'title = "API"',
             'weight = 110',
             'template = "page-api.html"',
-            'aliases = [ "/api" ]',
+            'aliases = ["/api", "/documentation/api"]',
             '+++',
         ];
     }

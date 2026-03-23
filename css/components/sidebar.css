@@ -79,7 +79,8 @@
   background: var(--color-light-surface-hover);
 }
 
-.sidebar-section-header > a {
+.sidebar-section-header > a,
+.sidebar-section-header > .sidebar-section-label {
   flex: 1;
   min-width: 0;
   padding: 0;
@@ -87,7 +88,16 @@
   border-radius: 0;
 }
 
-.sidebar-section-header > a:hover {
+.sidebar-section-label {
+  display: block;
+  color: var(--color-light-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  user-select: none;
+}
+
+.sidebar-section-header > a:hover,
+.sidebar-section-header > .sidebar-section-label:hover {
   background: none !important;
 }
 
@@ -124,8 +134,17 @@
   transform: rotate(-90deg);
 }
 
+.sidebar-subsection {
+  overflow: hidden;
+  max-height: 500px;
+  opacity: 1;
+  transition: max-height var(--duration-normal, 0.25s) var(--ease-out),
+              opacity var(--duration-fast, 0.15s) var(--ease-out);
+}
+
 .sidebar-section.collapsed .sidebar-subsection {
-  display: none;
+  max-height: 0;
+  opacity: 0;
 }
 
 .sidebar-section:not(.collapsed) .subsection-toggle svg {
@@ -182,15 +201,17 @@
   gap: var(--space-xs);
 }
 
-.site-navigation .sidebar-section-header a {
+.site-navigation .sidebar-section-header a,
+.site-navigation .sidebar-section-header .sidebar-section-label {
   flex: 1;
   display: block;
   padding: var(--space-sm) var(--space-md);
   color: var(--color-light-text-secondary);
   font-size: var(--text-sm);
-  font-weight: 500;
+  font-weight: 600;
   border-radius: var(--radius-md);
   text-decoration: none;
+  user-select: none;
   transition: all var(--duration-fast) var(--ease-out);
 }
 
@@ -198,12 +219,14 @@
   display: none;
 }
 
-.site-navigation .sidebar-section-header a:hover {
+.site-navigation .sidebar-section-header a:hover,
+.site-navigation .sidebar-section-header .sidebar-section-label:hover {
   color: var(--color-light-link);
   background: var(--color-light-surface-hover);
 }
 
-.site-navigation .sidebar-section.active .sidebar-section-header a {
+.site-navigation .sidebar-section.active .sidebar-section-header a,
+.site-navigation .sidebar-section.active .sidebar-section-header .sidebar-section-label {
   color: var(--color-light-link);
   background: var(--color-light-surface-hover);
   font-weight: 600;
@@ -322,16 +345,19 @@
   background: var(--color-dark-surface-hover);
 }
 
-.dark .site-navigation .sidebar-section-header a {
+.dark .site-navigation .sidebar-section-header a,
+.dark .site-navigation .sidebar-section-header .sidebar-section-label {
   color: var(--color-dark-text-secondary);
 }
 
-.dark .site-navigation .sidebar-section-header a:hover {
+.dark .site-navigation .sidebar-section-header a:hover,
+.dark .site-navigation .sidebar-section-header .sidebar-section-label:hover {
   background: var(--color-dark-surface-hover);
   color: var(--color-dark-text-accent);
 }
 
-.dark .site-navigation .sidebar-section.active .sidebar-section-header a {
+.dark .site-navigation .sidebar-section.active .sidebar-section-header a,
+.dark .site-navigation .sidebar-section.active .sidebar-section-header .sidebar-section-label {
   color: var(--color-dark-text-accent);
   background: var(--color-dark-surface-hover);
   font-weight: 600;

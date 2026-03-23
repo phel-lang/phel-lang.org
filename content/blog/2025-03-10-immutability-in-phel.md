@@ -10,7 +10,7 @@ If you're coming from PHP's mutable arrays and objects, that default can feel st
 
 ## Goodbye in-place updates
 
-[Vectors](/documentation/data-structures/#vectors), [maps](/documentation/data-structures/#maps), [sets](/documentation/data-structures/#sets), [lists](/documentation/data-structures/#lists), and [structs](/documentation/data-structures/#structs) in Phel never mutate. Helpers such as `push` and `put` hand you the updated collection while the original stays exactly the same.
+[Vectors](/documentation/language/data-structures/#vectors), [maps](/documentation/language/data-structures/#maps), [sets](/documentation/language/data-structures/#sets), [lists](/documentation/language/data-structures/#lists), and [structs](/documentation/language/data-structures/#structs) in Phel never mutate. Helpers such as `push` and `put` hand you the updated collection while the original stays exactly the same.
 
 ```phel
 (def groceries [:milk :bread])
