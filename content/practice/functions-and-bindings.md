@@ -16,7 +16,7 @@ greeting
 ```
 `def` creates a global binding — a name associated with a value.
 
-Learn more: [Global and Local Bindings](/documentation/global-and-local-bindings)
+Learn more: [Global and Local Bindings](/documentation/language/global-and-local-bindings)
 {% end %}
 
 {% question() %}
@@ -31,7 +31,7 @@ Use `defn` to define a function `hello` that takes no arguments and returns `"he
 ```
 `defn` is short for "define function". The `[]` is the parameter list (empty here), and the last expression is the return value.
 
-Learn more: [Functions and Recursion](/documentation/functions-and-recursion)
+Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
 {% question() %}
@@ -45,7 +45,7 @@ Define a function `double` that takes a number and returns it multiplied by 2.
 (defn double [n] (* n 2))
 ```
 
-Learn more: [Functions and Recursion](/documentation/functions-and-recursion)
+Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
 {% question() %}
@@ -62,7 +62,7 @@ Add a docstring to `double`. Then use `(doc double)` to see it.
 ```
 Docstrings are placed between the function name and the parameter list. They help other developers (and your future self!) understand what a function does.
 
-Learn more: [Functions and Recursion](/documentation/functions-and-recursion)
+Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
 {% question() %}
@@ -76,7 +76,7 @@ Use `let` to create a local binding `name` with value `"world"`, then return the
 ```
 `let` creates bindings that only exist within its body. This keeps your code clean and avoids polluting the global scope.
 
-Learn more: [Global and Local Bindings](/documentation/global-and-local-bindings)
+Learn more: [Global and Local Bindings](/documentation/language/global-and-local-bindings)
 {% end %}
 
 {% question() %}
@@ -91,7 +91,7 @@ Use `let` to bind multiple values and compute a result. Calculate the area of a 
 ```
 You can create multiple bindings in a single `let`. Later bindings can reference earlier ones.
 
-Learn more: [Global and Local Bindings](/documentation/global-and-local-bindings)
+Learn more: [Global and Local Bindings](/documentation/language/global-and-local-bindings)
 {% end %}
 
 {% question() %}
@@ -109,7 +109,7 @@ Create an anonymous function that adds 10 to a number. Test it by calling it wit
 ```
 Anonymous functions are useful when you need a quick one-off function (especially with `map`, `filter`, etc.). The `|` form uses `$` for the first argument, `$1` for the second, and so on.
 
-Learn more: [Functions and Recursion](/documentation/functions-and-recursion)
+Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
 {% question() %}
@@ -118,7 +118,7 @@ Define a function `greet` that takes a `name` and an optional `greeting` (defaul
 (greet "Ada")           # => "Hello, Ada!"
 (greet "Ada" "Welcome") # => "Welcome, Ada!"
 ```
-Hint: use a [rest parameter](/documentation/functions-and-recursion) or multiple arities.
+Hint: use a [rest parameter](/documentation/language/functions-and-recursion) or multiple arities.
 {% end %}
 {% solution() %}
 ```phel
@@ -129,7 +129,7 @@ Hint: use a [rest parameter](/documentation/functions-and-recursion) or multiple
 ```
 The `& [greeting]` captures extra arguments via destructuring. `or` provides the default value when `greeting` is `nil`.
 
-Learn more: [Functions and Recursion](/documentation/functions-and-recursion), [Destructuring](/documentation/destructuring)
+Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion), [Destructuring](/documentation/language/destructuring)
 {% end %}
 
 {% question() %}
@@ -147,5 +147,5 @@ Implement a `factorial` function using recursion.
 ```
 This is classic recursion: the function calls itself with a smaller input until it reaches the base case (`n <= 1`).
 
-Learn more: [Functions and Recursion](/documentation/functions-and-recursion)
+Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}

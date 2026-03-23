@@ -2,25 +2,34 @@
   'use strict';
 
   function initSubsectionToggles() {
-    const toggleButtons = document.querySelectorAll('.subsection-toggle');
-    
-    toggleButtons.forEach(button => {
-      button.addEventListener('click', function(e) {
+    const sectionHeaders = document.querySelectorAll('.sidebar-section-header');
+
+    sectionHeaders.forEach(header => {
+      // Make the entire header row toggle the subsection
+      header.addEventListener('click', function(e) {
+        // Don't interfere with child page links
+        if (e.target.closest('a')) return;
+
         e.preventDefault();
         e.stopPropagation();
-        
+
         const sectionItem = this.closest('.sidebar-section');
-        const isExpanded = this.getAttribute('aria-expanded') === 'true';
-        
-        // Toggle the collapsed state
+        const toggleButton = this.querySelector('.subsection-toggle');
+        if (!toggleButton) return;
+
+        const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+
         if (isExpanded) {
           sectionItem.classList.add('collapsed');
-          this.setAttribute('aria-expanded', 'false');
+          toggleButton.setAttribute('aria-expanded', 'false');
         } else {
           sectionItem.classList.remove('collapsed');
-          this.setAttribute('aria-expanded', 'true');
+          toggleButton.setAttribute('aria-expanded', 'true');
         }
       });
+
+      // Set cursor on the header
+      header.style.cursor = 'pointer';
     });
   }
 

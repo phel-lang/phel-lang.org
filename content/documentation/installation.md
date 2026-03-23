@@ -1,6 +1,6 @@
 +++
 title = "Installation"
-weight = 1
+weight = 2
 +++
 
 Phel requires PHP 8.3+. Choose the installation method that works best for you:

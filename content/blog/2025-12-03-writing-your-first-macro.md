@@ -187,7 +187,7 @@ Paste in your macro call, see what comes out. It takes the mystery out of debugg
 
 ## Go build something
 
-You now have the same metaprogramming tools that make Lisp so flexible. Start small: spot a pattern you repeat often and wrap it in a macro. Check the [macro documentation](/documentation/macros/) when you want to dig deeper.
+You now have the same metaprogramming tools that make Lisp so flexible. Start small: spot a pattern you repeat often and wrap it in a macro. Check the [macro documentation](/documentation/language/macros/) when you want to dig deeper.
 
 Once you get comfortable, explore Phel's core. Even `defn` is just a macro that expands to `def` plus `fn`. 
 

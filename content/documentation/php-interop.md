@@ -1,6 +1,6 @@
 +++
 title = "PHP Interop"
-weight = 14
+weight = 50
 +++
 
 ## Accessing global variables and named constants

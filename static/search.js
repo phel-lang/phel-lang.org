@@ -703,7 +703,7 @@ function formatSearchResultItem(item, filter) {
         const badge = showApiBadge 
             ? `<span class="search-results__badge search-results__badge--api">API</span>` 
             : '';
-        return `<a class="search-results__link" href="/documentation/api/#${item.anchor || ''}">`
+        return `<a class="search-results__link" href="/documentation/reference/api/#${item.anchor || ''}">`
             + `<div class="search-results__item">`
             + `<div class="search-results__header">`
             + `<div class="fn-info">`

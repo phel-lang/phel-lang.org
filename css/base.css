@@ -1,3 +1,11 @@
+@view-transition {
+  navigation: auto;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 /* Root & HTML Setup */
 :root {
   box-sizing: border-box;

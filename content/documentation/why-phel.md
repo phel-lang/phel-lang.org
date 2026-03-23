@@ -1,6 +1,6 @@
 +++
 title = "Why Phel?"
-weight = 5
+weight = 3
 +++
 
 You already know PHP. It pays the bills, it runs half the web, and PHP 8.x is genuinely good. So why would you bother learning a Lisp that compiles to the same runtime?
@@ -16,7 +16,7 @@ Modern PHP is great. Union types, match expressions, fibers, enums -- the langua
 - **Immutable data structures by default.** In Phel, data never changes in place. You transform it into new values. This eliminates entire categories of bugs (stale state, unexpected mutations, order-dependent side effects).
 - **A real macro system.** Phel macros operate on the code itself as data, letting you extend the language with new syntax. PHP attributes and code generation are not the same thing.
 - **Homoiconicity.** Phel code is Phel data. This means programs can inspect, generate, and transform other programs trivially.
-- **REPL-driven development.** Evaluate expressions interactively, test ideas instantly, build programs incrementally. See the [REPL guide](/documentation/repl).
+- **REPL-driven development.** Evaluate expressions interactively, test ideas instantly, build programs incrementally. See the [REPL guide](/documentation/tooling/repl).
 - **Functional-first design.** Phel is built around pure functions, pipelines, and data transformation. PHP can do functional programming, but its standard library, conventions, and tooling all push you toward OOP.
 
 None of this makes PHP bad. It means Phel and PHP optimize for different things, even though they share a runtime.
@@ -27,7 +27,7 @@ Phel compiles to PHP transparently. You run `vendor/bin/phel run` or use the REP
 
 This is no different from TypeScript compiling to JavaScript, or Sass compiling to CSS. Your deployment is still just PHP files running on your existing infrastructure.
 
-See [CLI Commands](/documentation/cli-commands) for the full list of available commands.
+See [CLI Commands](/documentation/tooling/cli-commands) for the full list of available commands.
 
 ## "Can I use existing PHP libraries?"
 
@@ -35,7 +35,7 @@ Yes, 100%. Phel has full PHP interop through the `php/` prefix:
 
 ```phel
 # Call any PHP function
-(php/strlen "hello")                  # => 5
+(php/strlen "hello")  # => 5
 (php/array_map |(* $ 2) (php/array 1 2 3))
 
 # Create objects
@@ -88,7 +88,7 @@ Honest answer: Phel is a growing project. The core language is stable and well-t
 
 The community is small but active. If you need battle-tested, enterprise-grade stability with long-term support guarantees, Phel is not there yet. If you want a productive, expressive language that runs anywhere PHP does and you are comfortable being an early adopter, Phel delivers.
 
-Check out [In the Wild](/documentation/in-the-wild) to see what people are building.
+Check out [In the Wild](/documentation/reference/in-the-wild) to see what people are building.
 
 ## "Do I need to know Lisp?"
 
@@ -108,7 +108,7 @@ You can read this Phel:
 
 The rule is simple: the first element inside the parentheses is the function, everything after it is an argument. That is the entire syntax. No operator precedence rules, no special cases, no ambiguity.
 
-The [Practice exercises](/practice/basic) will get you comfortable in an hour. If you already know PHP, [Phel for PHP Developers](/documentation/phel-for-php-developers) maps familiar patterns to their Phel equivalents.
+The [Practice exercises](/practice/basic) will get you comfortable in an hour. If you already know PHP, [Phel for PHP Developers](/documentation/guides/phel-for-php-developers) maps familiar patterns to their Phel equivalents.
 
 ## "What about IDE support?"
 
@@ -119,7 +119,7 @@ Editor support exists for the major editors:
 - **Emacs** -- Editing helpers and REPL integration.
 - **Vim** -- Syntax highlighting, filetype detection, and indentation.
 
-See [Editor Support](/documentation/editor-support) for installation links and details.
+See [Editor Support](/documentation/tooling/editor-support) for installation links and details.
 
 ## "Why Lisp syntax specifically?"
 
@@ -127,7 +127,7 @@ Three reasons:
 
 1. **Homoiconicity.** Because Phel code is Phel data (lists, vectors, maps), the macro system can manipulate code with the same functions you use to manipulate data. This is not possible with PHP's syntax.
 
-2. **The macro system.** Macros let you extend the language itself. You can create new control structures, DSLs, and abstractions that look and feel like built-in language features. See [Macros](/documentation/macros) for examples.
+2. **The macro system.** Macros let you extend the language itself. You can create new control structures, DSLs, and abstractions that look and feel like built-in language features. See [Macros](/documentation/language/macros) for examples.
 
 3. **Regularity.** There is one syntactic pattern: `(function arg1 arg2 ...)`. No operator precedence, no special forms for different constructs, no syntax to memorize beyond parentheses. Once you internalize the pattern, you can read any Phel code.
 

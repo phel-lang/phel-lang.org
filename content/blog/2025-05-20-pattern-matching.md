@@ -4,7 +4,7 @@ aliases = [ "/blog/pattern-matching" ]
 description = "Trade if/elseif chains for case and cond, with PHP-friendly examples that show when each match shines."
 +++
 
-Remember those giant `if/elseif/else` ladders we write in PHP? They start off harmless and suddenly fill half a file. Phel ships with friendlier tools so you can keep the logic flat and readable. We will look at the two big helpers - [`case`](/documentation/control-flow/#case) and [`cond`](/documentation/control-flow/#cond) - and how they feel when you are new to Lisp syntax.
+Remember those giant `if/elseif/else` ladders we write in PHP? They start off harmless and suddenly fill half a file. Phel ships with friendlier tools so you can keep the logic flat and readable. We will look at the two big helpers - [`case`](/documentation/language/control-flow/#case) and [`cond`](/documentation/language/control-flow/#cond) - and how they feel when you are new to Lisp syntax.
 
 ## When plain `if` gets messy
 
@@ -27,7 +27,7 @@ It works, but the intent hides in the nesting. Pattern matching lets us tell the
 
 ## `case`: think `switch`, but without fall-through
 
-When you compare one value against known constants, reach for [`case`](/documentation/control-flow/#case). It feels like PHP's `switch`, minus the accidental fall-through.
+When you compare one value against known constants, reach for [`case`](/documentation/language/control-flow/#case). It feels like PHP's `switch`, minus the accidental fall-through.
 
 ```phel
 (defn classify [event]
@@ -44,7 +44,7 @@ Every branch lives on a single level, and the final expression works as a defaul
 
 ## `cond`: guard clauses without the ladder
 
-Sometimes you check different conditions in order: heavy parcel, express flag, cancel flag, and so on. [`cond`](/documentation/control-flow/#cond) does exactly that. Give it pairs of condition and result; it returns the first match.
+Sometimes you check different conditions in order: heavy parcel, express flag, cancel flag, and so on. [`cond`](/documentation/language/control-flow/#cond) does exactly that. Give it pairs of condition and result; it returns the first match.
 
 ```phel
 (defn shipping-label [order]

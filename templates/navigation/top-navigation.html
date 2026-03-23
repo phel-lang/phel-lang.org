@@ -1,9 +1,9 @@
 <ul class=top-navigation>
-    <li class="top-navigation__item {% if current_path and current_path is starting_with('/documentation/') and not current_path is starting_with('/documentation/api/') %}active{% endif %}">
+    <li class="top-navigation__item {% if current_path and current_path is starting_with('/documentation/') and not current_path is starting_with('/documentation/reference/api/') %}active{% endif %}">
         <a href="/documentation/getting-started/">Documentation</a>
     </li>
-    <li class="top-navigation__item {% if current_path and current_path is starting_with('/documentation/api/') %}active{% endif %}">
-        <a href="/documentation/api/">API</a>
+    <li class="top-navigation__item {% if current_path and current_path is starting_with('/documentation/reference/api/') %}active{% endif %}">
+        <a href="/documentation/reference/api/">API</a>
     </li>
     <li class="top-navigation__item {% if current_path and current_path is starting_with('/practice/') %}active{% endif %}">
         <a href="/practice">Practice</a>

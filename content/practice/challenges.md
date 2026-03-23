@@ -29,7 +29,7 @@ Time to combine everything you've learned! These challenges are bigger exercises
 ```
 This combines `for` (list comprehension), `cond` (multi-branch conditionals), and modular arithmetic. Note that we check divisibility by 15 first — order matters in `cond`!
 
-Learn more: [Control Flow](/documentation/control-flow), [Arithmetic](/documentation/arithmetic)
+Learn more: [Control Flow](/documentation/language/control-flow), [Arithmetic](/documentation/language/arithmetic)
 {% end %}
 
 {% question() %}
@@ -51,7 +51,7 @@ Hint: use `loop`/`recur` to build up the vector.
 ```
 Each new number is the sum of the two before it. We use `loop`/`recur` with an accumulator vector, and `slice` at the end to handle edge cases.
 
-Learn more: [Control Flow](/documentation/control-flow), [Data Structures](/documentation/data-structures)
+Learn more: [Control Flow](/documentation/language/control-flow), [Data Structures](/documentation/language/data-structures)
 {% end %}
 
 {% question() %}
@@ -81,7 +81,7 @@ Only shift lowercase letters a-z. Leave other characters unchanged. Hint: use `p
 ```
 This combines: `map` over a string (treating it as a sequence of characters), anonymous functions, PHP interop for character codes, and modular arithmetic for wrapping around the alphabet.
 
-Learn more: [PHP Interop](/documentation/php-interop), [Functions and Recursion](/documentation/functions-and-recursion)
+Learn more: [PHP Interop](/documentation/php-interop), [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
 {% question() %}
@@ -122,7 +122,7 @@ Tips:
 ```
 This is a beautiful example of the `->>` threading macro in action. Each step is a clear transformation: lowercase, filter, count, sort, take. The pipeline reads like a recipe.
 
-Learn more: [PHP Interop](/documentation/php-interop), [Data Structures](/documentation/data-structures), [Functions and Recursion](/documentation/functions-and-recursion)
+Learn more: [PHP Interop](/documentation/php-interop), [Data Structures](/documentation/language/data-structures), [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
 {% question() %}
@@ -201,5 +201,5 @@ Hints:
 ```
 This exercise brings together: global definitions, destructuring, `cond`, `let`, `loop`/`recur`, PHP interop for user input, and data-driven design (using maps for game state).
 
-Learn more: [PHP Interop](/documentation/php-interop), [Control Flow](/documentation/control-flow), [Destructuring](/documentation/destructuring)
+Learn more: [PHP Interop](/documentation/php-interop), [Control Flow](/documentation/language/control-flow), [Destructuring](/documentation/language/destructuring)
 {% end %}

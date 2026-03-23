@@ -19,7 +19,7 @@ final readonly class ApiMarkdownFile
         $contentLines = $this->apiMarkdownGenerator->generate();
 
         file_put_contents(
-            $this->appRootDir . '/../content/documentation/api.md',
+            $this->appRootDir . '/../content/documentation/reference/api.md',
             implode(PHP_EOL, $contentLines)
         );
     }
