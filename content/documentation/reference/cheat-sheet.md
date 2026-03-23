@@ -4,7 +4,7 @@ weight = 1
 aliases = ["/documentation/cheat-sheet"]
 +++
 
-A quick reference for Phel syntax and core functions. Press `/` to filter sections.
+A quick reference for Phel syntax and core functions.
 
 ## Basic Syntax
 

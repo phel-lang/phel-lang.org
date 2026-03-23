@@ -1,5 +1,4 @@
 {% extends "layouts/two-column-layout.html" %}
-{% import "macros.html" as macros %}
 
 {% block meta_content %}
 <title>{{ section.title }} | {{ config.title }}</title>
@@ -7,10 +6,6 @@
 {% endblock meta_content %}
 
 {% block sidebar_extra %}{% endblock sidebar_extra %}
-
-{% block floating_toc %}
-{{ macros::floating_toc(items=section.toc) }}
-{% endblock floating_toc %}
 
 {% block content %}
 <h1>{{ section.title }}</h1>

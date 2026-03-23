@@ -43,8 +43,6 @@
   background: #1a1a2e;
   padding: 1rem 1.25rem;
   min-height: 280px;
-  max-height: 380px;
-  overflow-y: auto;
   line-height: 1.6;
 }
 

@@ -108,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
       run();
     });
     body.appendChild(replay);
+    body.scrollTop = body.scrollHeight;
     isRunning = false;
   }
 

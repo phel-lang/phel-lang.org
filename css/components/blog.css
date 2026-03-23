@@ -84,22 +84,9 @@
   transition: color var(--duration-fast) var(--ease-out);
 }
 
-.post-card__cta::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  bottom: -3px;
-  width: 100%;
-  height: 2px;
-  background: var(--color-light-link);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--duration-normal) var(--ease-out);
-}
-
-.post-card:hover .post-card__cta::after,
-.post-card:focus-visible .post-card__cta::after {
-  transform: scaleX(1);
+.post-card:hover .post-card__cta,
+.post-card:focus-visible .post-card__cta {
+  text-decoration: underline;
 }
 
 /* Pagination */
@@ -164,9 +151,6 @@
   color: var(--color-dark-text-accent);
 }
 
-.dark .post-card__cta::after {
-  background: var(--color-dark-text-accent);
-}
 
 /* Pagination dark mode - inherit from .btn-secondary, add link color */
 .dark .pagination .btn {
