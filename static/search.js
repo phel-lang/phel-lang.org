@@ -308,7 +308,6 @@ function initSearch() {
         this.addField("content");
         this.setRef("id");
         elasticlunr.stopWordFilter.stopWords = {};
-        elasticlunr.Pipeline.registerFunction(elasticlunr.trimmer, "trimmer");
         elasticlunr.tokenizer.seperator = /[\s~~]+/;
     });
 

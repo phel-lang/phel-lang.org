@@ -40,27 +40,3 @@
   0% { transform: scale(0.95); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
-
-/* Parentheses counter */
-.paren-counter {
-  text-align: center;
-  padding: 0.75rem 1rem;
-  color: var(--color-light-text-muted);
-  font-size: var(--font-size-sm);
-  border-top: 1px solid var(--color-light-border);
-  margin-top: 2rem;
-}
-
-.dark .paren-counter {
-  color: var(--color-dark-text-muted);
-  border-top-color: var(--color-dark-border);
-}
-
-.paren-counter-icon {
-  font-family: 'Fira Code', monospace;
-  color: var(--color-light-primary);
-}
-
-.dark .paren-counter-icon {
-  color: var(--color-dark-primary);
-}

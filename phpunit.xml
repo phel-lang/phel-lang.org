@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="vendor/autoload.php"
          backupGlobals="false"
-         backupStaticAttributes="false"
          colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
          executionOrder="random"
          processIsolation="false"
-         resolveDependencies="true"
          stopOnFailure="false"
-         verbose="true"
 >
     <php>
         <ini name="error_reporting" value="-1" />
@@ -22,9 +16,9 @@
         </testsuite>
     </testsuites>
 
-    <coverage>
+    <source>
         <include>
             <directory suffix=".php">build/src</directory>
         </include>
-    </coverage>
+    </source>
 </phpunit>
