@@ -51,7 +51,7 @@ Create a set containing the numbers `1`, `2`, `3`, and `2`. How many elements do
 {% solution() %}
 ```phel
 (set 1 2 3 2)
-# => (set 1 2 3) — duplicates are removed!
+# => (set 1 2 3) - duplicates are removed!
 
 (count (set 1 2 3 2))
 # => 3
@@ -131,9 +131,9 @@ Use `put` to add `:email "ada@example.com"` to the `person` map. What does `put`
 # => {:name "Ada" :age 36 :email "ada@example.com"}
 
 person
-# => {:name "Ada" :age 36}  — unchanged!
+# => {:name "Ada" :age 36}  - unchanged!
 ```
-Phel data structures are **immutable**. `put` returns a *new* map — it never modifies the original. This is a core principle that makes your code predictable and safe.
+Phel data structures are **immutable**. `put` returns a *new* map - it never modifies the original. This is a core principle that makes your code predictable and safe.
 
 Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}

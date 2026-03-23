@@ -37,7 +37,7 @@ This is more powerful and safer than PHP's `eval()` or code generation.
 {% end %}
 
 {% clojure_note() %}
-Macros work exactly like Clojure macros—they transform code at compile time using quote, unquote, and syntax-quote.
+Macros work exactly like Clojure macros-they transform code at compile time using quote, unquote, and syntax-quote.
 {% end %}
 
 ## Quote

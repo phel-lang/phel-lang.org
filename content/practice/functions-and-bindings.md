@@ -14,7 +14,7 @@ Use `def` to create a binding called `greeting` with the value `"Hello, Phel!"`.
 greeting
 # => "Hello, Phel!"
 ```
-`def` creates a global binding — a name associated with a value.
+`def` creates a global binding - a name associated with a value.
 
 Learn more: [Global and Local Bindings](/documentation/language/global-and-local-bindings)
 {% end %}

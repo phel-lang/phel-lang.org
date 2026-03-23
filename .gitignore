@@ -1,6 +1,7 @@
 # IDE / Editor
 .cache/
 .claude/
+.omc/
 .idea/
 .vscode/
 

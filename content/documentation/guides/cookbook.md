@@ -245,7 +245,7 @@ Use PHP's DateTime classes via Phel interop to create, format, and compare dates
 (println (php/-> now (format "l, F j, Y")))          # Sunday, March 10, 2024
 (println (php/-> specific-date (format "D, M j")))   # Sat, Jun 15
 
-# Date arithmetic — add and subtract intervals
+# Date arithmetic - add and subtract intervals
 (def tomorrow
   (php/-> now (modify "+1 day")))
 (def next-week

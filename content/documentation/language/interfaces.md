@@ -4,7 +4,7 @@ weight = 11
 aliases = ["/documentation/interfaces"]
 +++
 
-Interfaces define contracts — abstract sets of functions that structs must implement. They map directly to PHP interfaces, giving you interop with PHP's type system.
+Interfaces define contracts - abstract sets of functions that structs must implement. They map directly to PHP interfaces, giving you interop with PHP's type system.
 
 ## Defining interfaces
 
@@ -47,7 +47,7 @@ Add interface implementations after the field list in `defstruct`:
   (perimeter [this] (* 2 (+ width height))))
 ```
 
-Struct fields (`radius`, `width`, `height`) are directly accessible inside method bodies — no getter calls needed.
+Struct fields (`radius`, `width`, `height`) are directly accessible inside method bodies - no getter calls needed.
 
 ### Calling interface methods
 
@@ -92,7 +92,7 @@ Use `php/-> this` to call another method on the same struct:
   Describable
   (describe [this] (str name ": $" price))
   HasSummary
-  (summary [this] (str "Product — " (php/-> this (describe)))))
+  (summary [this] (str "Product - " (php/-> this (describe)))))
 ```
 
 ### Type checking

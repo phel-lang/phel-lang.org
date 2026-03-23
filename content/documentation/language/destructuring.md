@@ -62,7 +62,7 @@ Phel's destructuring works in more places (function params, let, loop) and suppo
 {% end %}
 
 {% clojure_note() %}
-Destructuring works exactly like Clojure's destructuring—same syntax and behavior.
+Destructuring works exactly like Clojure's destructuring-same syntax and behavior.
 {% end %}
 
 ## Associative destructuring

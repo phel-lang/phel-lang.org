@@ -32,7 +32,7 @@ open a `.phel` file to enable the mode.
 ## Vim
 
 [`phel.vim`](https://github.com/danirod/phel.vim) provides core editing
-support—syntax highlighting, filetype detection, and indentation. Install it
+support-syntax highlighting, filetype detection, and indentation. Install it
 through your plugin manager of choice:
 
 ```vim

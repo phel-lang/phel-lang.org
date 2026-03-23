@@ -20,7 +20,7 @@
   border-color: var(--color-dark-border);
 }
 
-/* Filter pill buttons — full reset to avoid browser defaults */
+/* Filter pill buttons - full reset to avoid browser defaults */
 .rosetta-filter {
   -webkit-appearance: none;
   -moz-appearance: none;

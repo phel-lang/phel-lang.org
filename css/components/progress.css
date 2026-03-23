@@ -61,7 +61,7 @@
 }
 
 .progress-tracker.all-complete .progress-tracker-label::after {
-  content: ' — All done!';
+  content: ' - All done!';
   color: #22c55e;
   font-weight: 400;
 }

@@ -28,7 +28,7 @@ This allows operators to accept any number of arguments and eliminates operator 
 {% end %}
 
 {% clojure_note() %}
-Arithmetic works exactly like Clojure—prefix notation with variadic support for most operators.
+Arithmetic works exactly like Clojure-prefix notation with variadic support for most operators.
 {% end %}
 
 Some operators support zero, one or multiple arguments.
@@ -164,5 +164,5 @@ Phel also provides additional bit manipulation functions not available in PHP: `
 {% end %}
 
 {% clojure_note() %}
-Bitwise operators work exactly like Clojure's—same function names and behavior for bit manipulation.
+Bitwise operators work exactly like Clojure's-same function names and behavior for bit manipulation.
 {% end %}

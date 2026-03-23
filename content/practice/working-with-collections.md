@@ -103,7 +103,7 @@ Use `reduce` to find the longest string in `["cat" "elephant" "dog" "hippopotamu
   ["cat" "elephant" "dog" "hippopotamus"])
 # => "hippopotamus"
 ```
-`reduce` is very flexible — any time you need to "collapse" a collection into a single value, it's your tool.
+`reduce` is very flexible - any time you need to "collapse" a collection into a single value, it's your tool.
 {% end %}
 
 {% question() %}
@@ -119,7 +119,7 @@ Expected result: `(10.3 20.06 30.1)`
 (for [m :in data] (:value m))
 # => (10.3 20.06 30.1)
 ```
-`for` is a list comprehension — it generates a new sequence by transforming each element.
+`for` is a list comprehension - it generates a new sequence by transforming each element.
 
 Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
@@ -153,7 +153,7 @@ Use `update-in` to change the balance from 3 to 4 in this nested structure:
 (update-in data [:customers 0 :account :balance] inc)
 # => {:shops [:shop-1] :customers [{:id "Bob" :account {:balance 4}}]}
 ```
-`update-in` navigates into a nested structure and applies a function to the value it finds. Here, `inc` transforms `3` into `4` — all while keeping the original data unchanged.
+`update-in` navigates into a nested structure and applies a function to the value it finds. Here, `inc` transforms `3` into `4` - all while keeping the original data unchanged.
 
 Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}

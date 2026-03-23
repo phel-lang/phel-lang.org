@@ -27,7 +27,7 @@ Time to combine everything you've learned! These challenges are bigger exercises
       (zero? (% i 5))  "Buzz"
       i)))
 ```
-This combines `for` (list comprehension), `cond` (multi-branch conditionals), and modular arithmetic. Note that we check divisibility by 15 first — order matters in `cond`!
+This combines `for` (list comprehension), `cond` (multi-branch conditionals), and modular arithmetic. Note that we check divisibility by 15 first - order matters in `cond`!
 
 Learn more: [Control Flow](/documentation/language/control-flow), [Arithmetic](/documentation/language/arithmetic)
 {% end %}

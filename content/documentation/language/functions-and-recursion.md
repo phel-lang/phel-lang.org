@@ -199,7 +199,7 @@ function factorial($n) {
 {% end %}
 
 {% clojure_note() %}
-`recur` works exactly like Clojure's `recur`—it provides tail-call optimization by compiling to a loop.
+`recur` works exactly like Clojure's `recur`-it provides tail-call optimization by compiling to a loop.
 {% end %}
 
 ## Apply functions

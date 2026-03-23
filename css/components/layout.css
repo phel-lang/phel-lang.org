@@ -155,7 +155,7 @@
     scrollbar-width: thin; /* Firefox: show on hover */
   }
 
-  /* Custom scrollbar for sidebar — hidden by default, visible on hover */
+  /* Custom scrollbar for sidebar - hidden by default, visible on hover */
   .two-column-layout__sidebar::-webkit-scrollbar {
     width: 8px;
   }

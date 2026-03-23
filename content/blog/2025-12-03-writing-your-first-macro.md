@@ -191,4 +191,4 @@ You now have the same metaprogramming tools that make Lisp so flexible. Start sm
 
 Once you get comfortable, explore Phel's core. Even `defn` is just a macro that expands to `def` plus `fn`. 
 
-The `->` and `->>` threading macros, `cond`, `case`, `for` — they are all built with the same primitives you just learned. That is the Lisp way, and now it runs on PHP.
+The `->` and `->>` threading macros, `cond`, `case`, `for` - they are all built with the same primitives you just learned. That is the Lisp way, and now it runs on PHP.

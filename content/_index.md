@@ -4,7 +4,7 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 
 <img src="/images/logo_phel.svg" width="380" alt="Phel language logo"/>
 
-**Phel** is a functional programming language that compiles to PHP — a modern Lisp dialect inspired by [Clojure](https://clojure.org/) and [Janet](https://janet-lang.org/), bringing functional elegance and expressive code to PHP development.
+**Phel** is a functional programming language that compiles to PHP - a modern Lisp dialect inspired by [Clojure](https://clojure.org/) and [Janet](https://janet-lang.org/), bringing functional elegance and expressive code to PHP development.
 
 <div class="homepage-cta">
   <a href="#try-phel-instantly-with-docker" class="btn btn-primary homepage-cta-button homepage-cta-primary">
