@@ -34,7 +34,6 @@ const parts = [
   'css/components/animated-repl.css',
   'css/components/easter-eggs.css',
   'css/components/keyboard-shortcuts.css',
-  'css/components/floating-toc.css',
 
   // 5. Animations
   'css/components/animations.css',
