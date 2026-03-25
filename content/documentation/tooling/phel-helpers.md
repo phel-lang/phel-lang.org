@@ -104,6 +104,77 @@ You can reset the tracing counters between runs with `reset-trace-state!` and co
 (set-trace-id-padding! 3)  # t000, t001, etc.
 ```
 
+## Global Tap System
+
+The `phel\debug` module provides a global tap handler system for routing debug values to one or more handlers. Unlike `tap` (which works inline in pipelines), the tap system is a global dispatch mechanism.
+
+### `tap>`
+
+Sends a value to all registered tap handlers. Returns `nil`.
+
+```phel
+(tap> {:event :user-login :user-id 42})
+```
+
+### `add-tap` / `remove-tap`
+
+Register or unregister a handler function:
+
+```phel
+(defn my-logger [value]
+  (println "TAP:" value))
+
+(add-tap my-logger)
+(tap> "hello")       # Prints: TAP: hello
+(remove-tap my-logger)
+```
+
+### `reset-taps!`
+
+Remove all registered tap handlers at once:
+
+```phel
+(reset-taps!)
+```
+
+**Use cases:**
+- Routing debug output to a log file or external tool
+- Collecting values during a test run for later inspection
+- Building custom debugging dashboards
+
+```phel
+# Collect tapped values during a test
+(def tapped (var []))
+(add-tap (fn [v] (swap! tapped conj v)))
+
+(tap> {:step 1 :result "ok"})
+(tap> {:step 2 :result "fail"})
+
+(deref tapped)
+# => [{:step 1 :result "ok"} {:step 2 :result "fail"}]
+
+(reset-taps!)
+```
+
+## Pretty Printing
+
+The `phel\pprint` module provides `pprint` and `pprint-str` for readable output of nested data structures.
+
+```phel
+(ns my-app
+  (:require phel\pprint :refer [pprint]))
+
+(pprint {:users [{:name "Alice" :roles [:admin :editor]}
+                  {:name "Bob" :roles [:viewer]}]
+          :count 2})
+# Prints:
+# {:users [{:name "Alice" :roles [:admin :editor]}
+#          {:name "Bob" :roles [:viewer]}]
+#  :count 2}
+```
+
+`pprint-str` returns the formatted string instead of printing it. Both accept an optional width parameter.
+
 ## Best Practices
 
 ### Use `dbg` for Quick Checks
@@ -188,4 +259,5 @@ Consider using a macro to conditionally enable debugging:
 
 - For deeper debugging, set up [XDebug](/documentation/tooling/xdebug-setup/)
 - Use [PHP native tools](/documentation/tooling/php-tools/) for familiar debugging
+- Use [`pprint`](/documentation/api/#pprint) for readable output of nested data structures
 - Check the [API documentation](/documentation/api/#debug) for more debug functions

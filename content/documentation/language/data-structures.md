@@ -59,11 +59,13 @@ To get the length of the list the `count` function can be used
 
 Vectors are an indexed, sequential data structure. They offer efficient random access (by index) and are very efficient in appending values at the end.
 
-To create a vector, wrap the white space separated values with brackets or use the `vector` function.
+To create a vector, wrap the white space separated values with brackets, use the `vector` function, or coerce any collection with `vec`.
 
 ```phel
-[1 2 3]      # Creates a new vector with three values
-(vector 1 2) # Creates a new vector with two values
+[1 2 3]       # Creates a new vector with three values
+(vector 1 2)  # Creates a new vector with two values
+(vec '(1 2 3)) # Coerce a list to a vector: [1 2 3]
+(vec #{1 2 3}) # Coerce a set to a vector
 ```
 
 To get a value by its index use the `get` function. Similar to list you can use the `first`, `second` and `peek` function to access the first, second and last values of the vector.
@@ -125,11 +127,12 @@ Use the `get` function to access a value by its key
 (get {:a 1 :b 2} :c) # Evaluates to nil
 ```
 
-To add or update a key-value pair in the map use the `assoc` function
+To add or update key-value pairs in the map use the `assoc` function. Multiple key-value pairs can be set in a single call.
 
 ```phel
-(assoc {} :a "hello")       # Evaluates to {:a "hello"}
-(assoc {:a "foo"} :a "bar") # Evaluates to {:a "bar"}
+(assoc {} :a "hello")           # Evaluates to {:a "hello"}
+(assoc {:a "foo"} :a "bar")     # Evaluates to {:a "bar"}
+(assoc {} :a 1 :b 2 :c 3)      # Evaluates to {:a 1 :b 2 :c 3}
 ```
 
 A value in a map can be removed with the `dissoc` function
@@ -324,12 +327,16 @@ Internally, Phel Structs are PHP classes where each key correspondence to an obj
 
 A Set contains unique values in random order. All types of values are allowed that implement the `HashableInterface` and the `EqualsInterface`.
 
-A new set can be created by using the `set` function or shortcut syntax `#{}`
+A new set can be created using the shortcut syntax `#{}`, the `hash-set` function (from individual arguments), or the `set` function (to coerce a collection).
 
 ```phel
-#{1 2 3}    # A new set using shortcut syntax
-(set 1 2 3) # A new set using the function
+#{1 2 3}         # A new set using shortcut syntax
+(hash-set 1 2 3) # A new set from individual arguments
+(set [1 2 3])    # Coerce a collection to a set
+(set '(1 2 3))   # Works with any collection type
 ```
+
+> **Breaking change (v0.30.0):** `set` now coerces a collection to a set (Clojure alignment). Use `hash-set` for creating sets from individual arguments.
 
 The `conj` function can be used to add a new value to the Set.
 
@@ -379,6 +386,15 @@ The symmetric difference of two sets or more is the set of elements which are in
 ```phel
 (symmetric-difference #{1 2} #{0 3})     # Evaluates to #{0 1 2 3}
 (symmetric-difference #{1 2} #{0 1 2 3}) # Evaluates to #{0 3}
+```
+
+The `subset?` predicate checks if a set is a subset of another set, and `superset?` checks the inverse.
+
+```phel
+(subset? (hash-set 1 2) (hash-set 1 2 3))   # Evaluates to true
+(subset? (hash-set 1 4) (hash-set 1 2 3))   # Evaluates to false
+(superset? (hash-set 1 2 3) (hash-set 1 2)) # Evaluates to true
+(superset? (hash-set 1 2 3) (hash-set 1 4)) # Evaluates to false
 ```
 
 ## Transients
@@ -512,4 +528,59 @@ Here's a real-world example combining multiple concepts:
 
 (merge defaults user-prefs)
 # => {:theme "dark" :lang "en" :debug false}
+```
+
+## Walking Data Structures
+
+The `phel\walk` module provides functions for recursively transforming nested data structures.
+
+### walk
+
+`walk` traverses a data structure, applying an `inner` function to each element and then an `outer` function to the result:
+
+```phel
+(ns my-app
+  (:require phel\walk :refer [walk postwalk prewalk
+                               postwalk-replace prewalk-replace
+                               keywordize-keys stringify-keys]))
+
+(walk inc identity [1 2 3])  # => [2 3 4]
+```
+
+### postwalk and prewalk
+
+`postwalk` applies a function to each node bottom-up (children first), while `prewalk` applies it top-down (parent first):
+
+```phel
+# Double every number in a nested structure
+(postwalk |(if (number? $) (* $ 2) $)
+          {:a 1 :b [2 3] :c {:d 4}})
+# => {:a 2 :b [4 6] :c {:d 8}}
+
+# prewalk visits parent before children
+(prewalk |(if (number? $) (* $ 2) $)
+         [1 [2 [3]]])
+# => [2 [4 [6]]]
+```
+
+### postwalk-replace and prewalk-replace
+
+Replace values by looking them up in a map:
+
+```phel
+(postwalk-replace {:a :alpha :b :beta}
+                  [:a {:b :c}])
+# => [:alpha {:beta :c}]
+```
+
+### keywordize-keys and stringify-keys
+
+Convert all map keys between keywords and strings — useful when working with PHP arrays or JSON data:
+
+```phel
+(keywordize-keys {"name" "Alice" "age" 30})
+# => {:name "Alice" :age 30}
+
+(stringify-keys {:name "Alice" :age 30})
+# => {"name" "Alice" "age" 30}
 ```

@@ -153,6 +153,7 @@ vendor/bin/phel test
 # 
 # Options:
 #   -f, --filter[=FILTER]  Filter by test names.
+#       --fail-fast        Stop on first failure or error.
 #       --testdox          Report test execution progress in TestDox format.
 
 ```
