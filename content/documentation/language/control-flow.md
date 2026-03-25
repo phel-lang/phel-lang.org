@@ -419,6 +419,53 @@ Evaluates the expressions in order and returns the value of the last expression.
 
 Iterating over collections for side-effects is also possible with `dofor` which has similar behavior to `for` otherwise but returns `nil` as `foreach` does.
 
+## Conditional Threading
+
+### cond->
+
+```phel
+(cond-> expr & clauses)
+```
+
+Takes an expression and a set of test/form pairs. Threads the expression through each form where the corresponding test is truthy (thread-first style). Forms where the test is falsy are skipped.
+
+```phel
+(cond-> 1
+  true inc
+  false (* 42)
+  true (* 3))  # => 6
+
+# Only applies inc (true) and (* 3) (true), skips (* 42) (false)
+# 1 -> (inc 1) -> 2 -> (* 2 3) -> 6
+
+(defn maybe-transform [data opts]
+  (cond-> data
+    (:uppercase opts) (str/upper-case)
+    (:trim opts)      (str/trim)
+    (:prefix opts)    (str (:prefix opts))))
+```
+
+### cond->>
+
+```phel
+(cond->> expr & clauses)
+```
+
+Like `cond->` but threads as the last argument (thread-last style).
+
+```phel
+(cond->> [1 2 3 4 5]
+  true (map inc)
+  false (filter odd?)
+  true (take 3))  # => (2 3 4)
+
+# Only applies (map inc) and (take 3), skips (filter odd?)
+```
+
+{% clojure_note() %}
+`cond->` and `cond->>` work exactly like their Clojure counterparts.
+{% end %}
+
 # Exceptions
 
 ```phel

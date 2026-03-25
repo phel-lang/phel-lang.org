@@ -33,7 +33,8 @@ See [Basic Types](/documentation/language/basic-types), [Truth and Boolean Opera
 {:a 1 :b 2}             # map (key-value pairs)
 (hash-map :a 1 :b 2)    # same thing
 #{1 2 3}                # set (unique values)
-(set 1 2 3)             # same thing
+(hash-set 1 2 3)        # set from arguments
+(set [1 2 3])           # coerce collection to set
 '(1 2 3)                # quoted list (data, not a call)
 (list 1 2 3)            # same thing
 ```
@@ -118,6 +119,10 @@ See [Destructuring](/documentation/language/destructuring).
 (let [x 1                         # local bindings
       y (+ x 2)]
   (+ x y))                        # => 4
+
+(defmulti area :shape)             # multimethod (dispatch on :shape)
+(defmethod area :circle [{:radius r}]
+  (* 3.14 r r))
 ```
 
 See [Global and Local Bindings](/documentation/language/global-and-local-bindings).
@@ -204,6 +209,9 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 (some even? [1 3 4])              # => true
 (every? pos? [1 2 3])             # => true
 (into #{} [1 2 1 3])              # => #{1 2 3}
+(vec '(1 2 3))                     # => [1 2 3] (coerce to vector)
+(subset? #{1 2} #{1 2 3})         # => true
+(superset? #{1 2 3} #{1 2})       # => true
 (distinct [1 2 1 3 2])            # => (1 2 3)
 (flatten [[1 2] [3 [4]]])         # => (1 2 3 4)
 (reverse [1 2 3])                  # => (3 2 1)
@@ -213,6 +221,18 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 ```
 
 See [Data Structures](/documentation/language/data-structures).
+
+## Walking Data Structures
+
+```phel
+(postwalk f nested)                # transform bottom-up
+(prewalk f nested)                 # transform top-down
+(postwalk-replace {:a :x} [:a :b]) # => [:x :b]
+(keywordize-keys {"name" "Alice"}) # => {:name "Alice"}
+(stringify-keys {:name "Alice"})   # => {"name" "Alice"}
+```
+
+See [Data Structures](/documentation/language/data-structures#walking-data-structures).
 
 ## Lazy Sequences
 
@@ -268,6 +288,14 @@ Lazy sequences were added in v0.25.0. `map`, `filter`, `take`, `drop`, `concat`,
 (as-> [1 2 3] v                    # thread with named binding
       (conj v 4)
       (count v))                   # => 4
+
+(cond-> 1                          # conditional thread-first
+        true inc
+        false (* 42))              # => 2
+
+(cond->> [1 2 3]                   # conditional thread-last
+         true (map inc)
+         false (filter odd?))      # => (2 3 4)
 ```
 
 ## Strings
@@ -414,6 +442,7 @@ See [Namespaces](/documentation/language/namespaces).
 ./vendor/bin/phel test                       # run all tests
 ./vendor/bin/phel test tests/main.phel       # run specific file
 ./vendor/bin/phel test --filter my-test      # filter by name
+./vendor/bin/phel test --fail-fast           # stop on first failure
 ```
 
 See [Testing](/documentation/testing).

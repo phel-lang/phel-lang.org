@@ -67,6 +67,46 @@ phel:2> (h/html [:span {:class "greeting"} "Hello"])
 <span class="greeting">Hello</span>
 ```
 
+### dir
+
+List all public definitions in a namespace:
+
+```bash
+phel:1> (dir phel\str)
+blank?
+capitalize
+ends-with?
+escape
+...
+```
+
+### apropos
+
+Search for symbols matching a pattern across all loaded namespaces:
+
+```bash
+phel:1> (apropos "map")
+phel\core/map
+phel\core/mapcat
+phel\core/hash-map
+phel\core/map-indexed
+phel\core/zipmap
+...
+```
+
+### search-doc
+
+Search docstrings for a keyword or phrase:
+
+```bash
+phel:1> (search-doc "lazy")
+phel\core/lazy-seq
+  Creates a lazy sequence from a thunk...
+phel\core/take
+  Returns a lazy sequence of the first n items...
+...
+```
+
 ### use
 
 Add an alias for a PHP class, same as the `:use` clause in `ns`:

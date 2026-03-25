@@ -365,7 +365,7 @@ Use Composer for dependency management. Your `composer.json` replaces `deps.edn`
 ```json
 {
   "require": {
-    "phel-lang/phel-lang": "^0.29"
+    "phel-lang/phel-lang": "^0.30"
   }
 }
 ```

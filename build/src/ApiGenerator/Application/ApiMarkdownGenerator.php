@@ -23,10 +23,11 @@ final readonly class ApiMarkdownGenerator
         $result = array_merge($result, $this->buildJsonEndpointNotice());
         $phelFns = $this->apiFacade->getPhelFunctions();
         $groupedByNamespace = $this->groupFunctionsByNamespace($phelFns);
+        $anchorMap = $this->buildAnchorMap($groupedByNamespace);
 
         $namespaces = [];
         foreach ($groupedByNamespace as $namespace => $functions) {
-            $namespaces[] = $this->buildNamespaceSection($namespace, $functions);
+            $namespaces[] = $this->buildNamespaceSection($namespace, $functions, $anchorMap);
         }
 
         return array_merge($result, ...$namespaces);
@@ -58,27 +59,78 @@ final readonly class ApiMarkdownGenerator
     }
 
     /**
+     * Build a map of function names to their Zola-generated anchor IDs.
+     *
+     * Processes headings in the same order they appear in the markdown to
+     * replicate Zola's collision handling (appending -1, -2, etc.).
+     * Keys by both short name and qualified name for flexible lookup.
+     *
+     * @param array<string, list<PhelFunction>> $groupedByNamespace
+     * @return array<string, string>
+     */
+    private function buildAnchorMap(array $groupedByNamespace): array
+    {
+        $usedSlugs = [];
+        $anchorMap = [];
+
+        foreach ($groupedByNamespace as $functions) {
+            foreach ($functions as $fn) {
+                $slug = $this->zolaSlugify($fn->nameWithNamespace());
+
+                if (isset($usedSlugs[$slug])) {
+                    $anchor = $slug . '-' . $usedSlugs[$slug];
+                    $usedSlugs[$slug]++;
+                } else {
+                    $anchor = $slug;
+                    $usedSlugs[$slug] = 1;
+                }
+
+                $anchorMap[$fn->name] = $anchor;
+                $anchorMap[$fn->nameWithNamespace()] = $anchor;
+            }
+        }
+
+        return $anchorMap;
+    }
+
+    /**
+     * Replicate Zola's heading slug generation.
+     *
+     * Zola lowercases, replaces non-alphanumeric (except hyphens) with hyphens,
+     * collapses consecutive hyphens, and trims leading/trailing hyphens.
+     */
+    private function zolaSlugify(string $text): string
+    {
+        $text = strtolower($text);
+        $text = preg_replace('/[^a-z0-9-]/', '-', $text);
+        $text = preg_replace('/-+/', '-', $text);
+        return trim($text, '-');
+    }
+
+    /**
      * @param list<PhelFunction> $functions
+     * @param array<string, string> $anchorMap
      * @return list<string>
      */
-    private function buildNamespaceSection(string $namespace, array $functions): array
+    private function buildNamespaceSection(string $namespace, array $functions, array $anchorMap): array
     {
         $elements = [];
         foreach ($functions as $fn) {
-            $elements[] = $this->buildFunctionSection($fn);
+            $elements[] = $this->buildFunctionSection($fn, $anchorMap);
         }
 
         return array_merge(['', '---', '', "## `{$namespace}`", ''], ...$elements);
     }
 
     /**
+     * @param array<string, string> $anchorMap
      * @return list<string>
      */
-    private function buildFunctionSection(PhelFunction $fn): array
+    private function buildFunctionSection(PhelFunction $fn, array $anchorMap): array
     {
         $lines = ["### `{$fn->nameWithNamespace()}`"];
 
-        if ($deprecation = $this->buildDeprecationNotice($fn)) {
+        if ($deprecation = $this->buildDeprecationNotice($fn, $anchorMap)) {
             $lines[] = $deprecation;
         }
 
@@ -95,7 +147,7 @@ final readonly class ApiMarkdownGenerator
             $lines = array_merge($lines, $example);
         }
 
-        if ($seeAlso = $this->buildSeeAlsoSection($fn)) {
+        if ($seeAlso = $this->buildSeeAlsoSection($fn, $anchorMap)) {
             $lines = array_merge($lines, $seeAlso);
         }
 
@@ -107,7 +159,10 @@ final readonly class ApiMarkdownGenerator
         return $lines;
     }
 
-    private function buildDeprecationNotice(PhelFunction $fn): ?string
+    /**
+     * @param array<string, string> $anchorMap
+     */
+    private function buildDeprecationNotice(PhelFunction $fn, array $anchorMap): ?string
     {
         if (!isset($fn->meta['deprecated'])) {
             return null;
@@ -120,7 +175,7 @@ final readonly class ApiMarkdownGenerator
 
         if (isset($fn->meta['superseded-by'])) {
             $supersededBy = $fn->meta['superseded-by'];
-            $anchor = $this->sanitizeAnchor($supersededBy);
+            $anchor = $anchorMap[$supersededBy] ?? $this->zolaSlugify($supersededBy);
             $message .= sprintf(
                 ' &mdash; Use [`%s`](#%s) instead',
                 $supersededBy,
@@ -151,16 +206,17 @@ final readonly class ApiMarkdownGenerator
     }
 
     /**
+     * @param array<string, string> $anchorMap
      * @return list<string>|null
      */
-    private function buildSeeAlsoSection(PhelFunction $fn): ?array
+    private function buildSeeAlsoSection(PhelFunction $fn, array $anchorMap): ?array
     {
         if (!isset($fn->meta['see-also'])) {
             return null;
         }
 
         $functionNames = $this->extractFunctionNames($fn->meta['see-also']);
-        $links = $this->buildFunctionLinks($functionNames);
+        $links = $this->buildFunctionLinks($functionNames, $anchorMap);
 
         return [
             '',
@@ -178,12 +234,16 @@ final readonly class ApiMarkdownGenerator
 
     /**
      * @param list<string> $functionNames
+     * @param array<string, string> $anchorMap
      * @return list<string>
      */
-    private function buildFunctionLinks(array $functionNames): array
+    private function buildFunctionLinks(array $functionNames, array $anchorMap): array
     {
         return array_map(
-            fn(string $func) => sprintf('[`%s`](#%s)', $func, $this->sanitizeAnchor($func)),
+            function (string $func) use ($anchorMap) {
+                $anchor = $anchorMap[$func] ?? $this->zolaSlugify($func);
+                return sprintf('[`%s`](#%s)', $func, $anchor);
+            },
             $functionNames,
         );
     }
@@ -199,20 +259,6 @@ final readonly class ApiMarkdownGenerator
         }
 
         return null;
-    }
-
-    /**
-     * Sanitize function name to match Zola's anchor generation.
-     * Removes special characters that Zola doesn't include in anchors.
-     *
-     * Examples:
-     *   "empty?" becomes "empty"
-     *   "set!" becomes "set"
-     *   "php-array-to-map" stays "php-array-to-map"
-     */
-    private function sanitizeAnchor(string $funcName): string
-    {
-        return preg_replace('/[^a-zA-Z0-9_-]/', '', $funcName);
     }
 
     /**

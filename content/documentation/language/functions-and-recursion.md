@@ -202,6 +202,51 @@ function factorial($n) {
 `recur` works exactly like Clojure's `recur`-it provides tail-call optimization by compiling to a loop.
 {% end %}
 
+## Multimethods
+
+Multimethods provide runtime polymorphism via dispatch functions. They decouple the dispatch mechanism from the method implementations, allowing open extension without modifying existing code.
+
+### Defining a multimethod
+
+Use `defmulti` to define a multimethod with a dispatch function, then `defmethod` to add implementations for specific dispatch values:
+
+```phel
+# Define a multimethod that dispatches on the :shape key
+(defmulti area :shape)
+
+# Implement for each shape type
+(defmethod area :circle [{:radius r}]
+  (* 3.14159 r r))
+
+(defmethod area :rectangle [{:width w :height h}]
+  (* w h))
+
+(defmethod area :triangle [{:base b :height h}]
+  (/ (* b h) 2))
+
+(area {:shape :circle :radius 5})       # => 78.53975
+(area {:shape :rectangle :width 4 :height 3}) # => 12
+(area {:shape :triangle :base 6 :height 4})   # => 12
+```
+
+### Custom dispatch functions
+
+The dispatch function can be any function, not just a keyword:
+
+```phel
+(defmulti greeting |(get $ :language))
+
+(defmethod greeting "en" [_] "Hello!")
+(defmethod greeting "es" [_] "Hola!")
+(defmethod greeting "de" [_] "Hallo!")
+
+(greeting {:language "es"})  # => "Hola!"
+```
+
+{% clojure_note() %}
+`defmulti`/`defmethod` works like Clojure's multimethods. Default methods (`:default`) follow the same pattern.
+{% end %}
+
 ## Apply functions
 
 ```phel

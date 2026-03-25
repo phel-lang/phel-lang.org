@@ -139,6 +139,12 @@ To filter tests that should run by name, `--filter` command line argument can be
 ./vendor/bin/phel test tests/utils.phel --filter my-test-function
 ```
 
+To stop on the first failure or error, use the `--fail-fast` flag:
+
+```bash
+./vendor/bin/phel test --fail-fast
+```
+
 Test report can be set to more verbose TestDox format showing individual test names with `--testdox` flag. Output can also be suppressed with `--quiet` flag to only include errors or silenced fully with `--silent` flag.
 
 See more options available by running `./vendor/bin/phel test --help`.
