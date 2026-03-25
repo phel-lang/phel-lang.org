@@ -553,7 +553,7 @@ Build a persistent key-value store backed by a JSON file, with functions for get
     (store-save path updated)
     updated))
 
-(store-put-many [["lang" "phel"] ["version" "0.29"] ["status" "awesome"]])
+(store-put-many [["lang" "phel"] ["version" "0.30"] ["status" "awesome"]])
 (println (str "All keys: " (store-keys)))
 ```
 
