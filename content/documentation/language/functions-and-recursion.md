@@ -48,27 +48,51 @@ There is a shorter form to define an anonymous function. This omits the paramete
 * `$&` is used for the remaining variadic parameters
 
 ```phel
-|(+ 6 $) # Same as (fn [x] (+ 6 x))
-|(+ $1 $2) # Same as (fn [a b] (+ a b))
-|(sum $&) # Same as (fn [& xs] (sum xs))
+|(+ 6 $) ; Same as (fn [x] (+ 6 x))
+|(+ $1 $2) ; Same as (fn [a b] (+ a b))
+|(sum $&) ; Same as (fn [& xs] (sum xs))
 ```
 
+### Clojure-style anonymous function shorthand
+
+Phel also supports the `#(...)` reader syntax, which uses `%` placeholders instead of `$`:
+
+- `%` or `%1` refers to the first argument
+- `%2`, `%3`, etc. refer to subsequent arguments
+- `%&` captures remaining variadic arguments
+
+```phel
+#(+ 6 %)       ; Same as (fn [x] (+ 6 x))
+#(+ %1 %2)     ; Same as (fn [a b] (+ a b))
+#(apply + %&)  ; Same as (fn [& xs] (apply + xs))
+
+; Using with higher-order functions
+(map #(* % 2) [1 2 3])        ; => [2 4 6]
+(filter #(> % 3) [1 5 2 8])   ; => [5 8]
+```
+
+Both `|` and `#()` forms are supported. The `#()` form aligns with Clojure syntax.
+
 {% php_note() %}
-The short-form anonymous function syntax `|` is similar to PHP's arrow functions:
+The short-form anonymous function syntax `|` and `#()` are similar to PHP's arrow functions:
 
 ```php
 // PHP
 $add = fn($x) => $x + 6;
 array_map(fn($x) => $x * 2, $array);
 
-// Phel
+// Phel (| form)
 (def add |(+ $ 6))
 (map |(* $ 2) array)
+
+// Phel (#() form)
+(def add #(+ % 6))
+(map #(* % 2) array)
 ```
 {% end %}
 
 {% clojure_note() %}
-The short-form `|` syntax is inspired by Clojure's `#()` reader macro, but uses different parameter names (`$` instead of `%`).
+The `#(...)` syntax with `%` placeholders is identical to Clojure's anonymous function reader macro. The `|` form with `$` placeholders is a Phel-specific alternative.
 {% end %}
 
 

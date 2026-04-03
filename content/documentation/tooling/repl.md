@@ -118,6 +118,104 @@ phel:2> (php/-> (php/new DateTimeImmutable) (format "Y-m-d"))
 "2026-02-07"
 ```
 
+## Introspection functions
+
+The REPL provides several functions for inspecting code, namespaces, and macros.
+
+### source
+
+Display the source code of a function or macro:
+
+```bash
+phel:1> (source filter)
+(defn filter [pred xs]
+  ...)
+```
+
+### find-fn
+
+Search for functions by example -- provide an input and expected output, and Phel will find matching functions:
+
+```bash
+phel:1> (find-fn [1 2 3] 3)
+phel\core/count
+phel\core/last
+...
+```
+
+### symbol-info
+
+Get detailed metadata about a symbol, including its type, namespace, and documentation:
+
+```bash
+phel:1> (symbol-info map)
+{:name "map" :ns "phel\\core" :type :function ...}
+```
+
+### Namespace introspection
+
+Inspect namespaces and their contents:
+
+```bash
+phel:1> (ns-publics 'phel\core)
+; Returns all public definitions in the namespace
+
+phel:2> (ns-aliases 'my\app)
+; Returns all namespace aliases
+
+phel:3> (ns-refers 'my\app)
+; Returns all referred symbols
+
+phel:4> (ns-list)
+; Returns all loaded namespaces
+```
+
+### Macro expansion
+
+Expand macros to see the code they generate:
+
+```bash
+phel:1> (macroexpand-1 '(defn foo [x] x))
+; Expands one level of macro
+
+phel:2> (macroexpand '(defn foo [x] x))
+; Fully expands all macros
+```
+
+### Evaluation functions
+
+Evaluate code from strings or files:
+
+```bash
+phel:1> (eval-str "(+ 1 2)")
+3
+
+phel:2> (load-file "src/my/app.phel")
+; Loads and evaluates an entire file
+```
+
+### Interactive testing
+
+Run tests for a namespace directly from the REPL:
+
+```bash
+phel:1> (require phel\test :refer [test-ns])
+phel:2> (test-ns 'my\app\tests)
+; Runs all tests in the namespace and prints results
+```
+
+See also [Testing](/documentation/testing/) for `reset-stats`, `get-stats`, and `restore-stats`.
+
+## Auto-injected utilities
+
+When you switch namespaces with `(in-ns ...)`, the REPL automatically injects the core utilities (`doc`, `require`, `use`) into the new namespace so they are always available without manual imports.
+
+```bash
+phel:1> (in-ns 'my\app)
+my\app:2> (doc map)
+; Works immediately -- no require needed
+```
+
 ## REPL-driven development workflow
 
 The REPL is most powerful when used as your primary development feedback loop - not just for one-off tests.
@@ -183,7 +281,7 @@ phel:1> (def m {:a 1 :b 2 :c 3})
 phel:2> (assoc m :d 4)
 {:a 1 :b 2 :c 3 :d 4}
 phel:3> m
-{:a 1 :b 2 :c 3}   # Original unchanged!
+{:a 1 :b 2 :c 3}   ; Original unchanged!
 
 phel:4> (type m)
 phel:5> (keys m)

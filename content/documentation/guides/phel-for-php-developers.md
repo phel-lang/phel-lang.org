@@ -415,6 +415,98 @@ For data modeling, Phel uses structs and maps instead of classes:
 
 See [PHP Interop](/documentation/php-interop) for the complete reference.
 
+## Protocols vs PHP Interfaces
+
+PHP interfaces define contracts that classes must implement at class definition time. Phel protocols are similar in purpose but more flexible -- you can extend a protocol to a type **after** it was defined, without touching the original code.
+
+```php
+// PHP -- interface must be declared at class definition
+interface Loggable {
+    public function toLogString(): string;
+}
+
+class Order implements Loggable {
+    public function __construct(
+        public int $id,
+        public float $total
+    ) {}
+
+    public function toLogString(): string {
+        return "Order#{$this->id} \${$this->total}";
+    }
+}
+
+// Cannot make a third-party class implement Loggable
+// without wrapping or extending it
+```
+
+```phel
+; Phel -- define a protocol
+(defprotocol Loggable
+  (to-log-string [this]))
+
+; Define a struct
+(defstruct order [id total])
+
+; Extend the struct to implement the protocol
+(extend-type order
+  Loggable
+  (to-log-string [this]
+    (str "Order#" (get this :id) " $" (get this :total))))
+
+(to-log-string (order 1 29.99))   ; => "Order#1 $29.99"
+
+; Extend ANY existing type after the fact
+(extend-protocol Loggable
+  :string (to-log-string [this] (str "String: " this))
+  :int    (to-log-string [this] (str "Int: " this)))
+
+(to-log-string "hello")           ; => "String: hello"
+(to-log-string 42)                ; => "Int: 42"
+
+; Check if a value supports the protocol
+(satisfies? Loggable (order 1 0)) ; => true
+```
+
+The key advantage: you can make **any** type satisfy a protocol at any time, even types from external libraries. In PHP, you would need a wrapper class, an adapter, or inheritance.
+
+## Regex: Literals vs preg_match
+
+PHP uses `preg_match` with pattern strings. Phel provides regex literals (`#"..."`) and dedicated matching functions.
+
+```php
+// PHP
+if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $input, $matches)) {
+    $year = $matches[1];
+    $month = $matches[2];
+    $day = $matches[3];
+}
+
+$isEmail = (bool) preg_match('/^.+@.+\..+$/', $email);
+
+// Find all matches
+preg_match_all('/\d+/', 'a1b2c3', $all);
+// $all[0] = ['1', '2', '3']
+```
+
+```phel
+; Phel -- regex literals and matching functions
+(let [m (re-matches #"(\d{4})-(\d{2})-(\d{2})" input)]
+  (when m
+    (let [year (get m 1)
+          month (get m 2)
+          day (get m 3)]
+      (str year "/" month "/" day))))
+
+(def email? #(not (nil? (re-matches #".+@.+\..+" %))))
+(email? "alice@example.com")       ; => true
+
+;; re-find returns the first match (does not require full string match)
+(re-find #"\d+" "abc123def")       ; => "123"
+```
+
+`re-matches` requires the entire string to match (like wrapping PHP's pattern with `^...$`). `re-find` returns the first match anywhere in the string (like `preg_match` without anchors).
+
 ## Error Handling
 
 ```php
@@ -433,7 +525,7 @@ throw new RuntimeException("Something went wrong");
 ```
 
 ```phel
-# Phel
+; Phel
 (def result
   (try
     (risky-operation)
@@ -448,6 +540,42 @@ throw new RuntimeException("Something went wrong");
 ```
 
 The structure is similar to PHP's try/catch but expressed as a single form. See the exceptions section in [Control Flow](/documentation/language/control-flow) for more details.
+
+### Structured exceptions with ex-info
+
+PHP exceptions carry a string message, an integer code, and an optional previous exception. Phel's `ex-info` adds a **data map**, making exceptions much more informative without creating custom exception classes.
+
+```php
+// PHP -- custom exception to carry context
+class UserNotFoundException extends RuntimeException {
+    public function __construct(
+        public readonly int $userId,
+        string $message = "User not found",
+        ?\Throwable $previous = null
+    ) {
+        parent::__construct($message, 0, $previous);
+    }
+}
+
+try {
+    throw new UserNotFoundException(userId: 42);
+} catch (UserNotFoundException $e) {
+    echo $e->getMessage();  // "User not found"
+    echo $e->userId;        // 42
+}
+```
+
+```phel
+; Phel -- no custom class needed
+(try
+  (throw (ex-info "User not found" {:user-id 42 :type :not-found}))
+  (catch \Exception e
+    (println (ex-message e))       ; => "User not found"
+    (println (ex-data e))          ; => {:user-id 42 :type :not-found}
+    (println (ex-cause e))))       ; => nil
+```
+
+With `ex-info` you get structured context attached to any exception without defining new classes. Use `ex-message`, `ex-data`, and `ex-cause` to inspect the exception.
 
 ## Common Patterns
 
@@ -552,6 +680,65 @@ $dbPort = $config['database']['port'] ?? 3306;
 (def db-host (or (php/aget-in config ["database" "host"]) "localhost"))
 (def db-port (or (php/aget-in config ["database" "port"]) 3306))
 ```
+
+## Transducers vs Array Pipelines
+
+PHP developers often chain `array_filter`, `array_map`, and `array_reduce` to process data. Each step creates a new intermediate array. Phel's transducers compose these operations into a single pass with no intermediate collections.
+
+```php
+// PHP -- each step creates a new array
+$numbers = range(1, 1000);
+
+$result = array_reduce(
+    array_map(
+        fn($x) => $x * $x,
+        array_filter($numbers, fn($x) => $x % 2 === 0)
+    ),
+    fn($carry, $x) => $carry + $x,
+    0
+);
+// Sum of squares of even numbers: 3 intermediate arrays created
+```
+
+```phel
+; Phel -- threading macros (creates intermediate lazy sequences)
+(def result
+  (->> (range 1 1001)
+       (filter even?)
+       (map #(* % %))
+       (reduce + 0)))
+
+; Phel -- transducers (single pass, no intermediate collections)
+(def result
+  (transduce
+    (comp (filter even?) (map #(* % %)))
+    + 0
+    (range 1 1001)))
+```
+
+### When to use transducers
+
+| Approach | When to use |
+|----------|-------------|
+| `->>` threading | Most of the time -- readable, uses lazy seqs, good enough for typical data |
+| `transduce` | Performance-critical paths, very large collections, or when you want to reuse a transformation |
+| `into` with xf | When you want the transducer result as a specific collection type |
+
+```phel
+; Reusable transducer: define once, apply to any data source
+(def process-events
+  (comp
+    (filter #(= :error (get % :level)))
+    (map :message)
+    (take 10)))
+
+; Apply to different collections
+(into [] process-events log-stream-a)
+(into [] process-events log-stream-b)
+(transduce process-events str "" log-stream-c)
+```
+
+Transducers are especially useful when the same transformation needs to be applied to different data sources (vectors, lazy sequences, channels, etc.) since they are decoupled from the input/output type.
 
 ## Key Mindset Shifts
 

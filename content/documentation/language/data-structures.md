@@ -527,8 +527,93 @@ Here's a real-world example combining multiple concepts:
 (def user-prefs {:theme "dark"})
 
 (merge defaults user-prefs)
-# => {:theme "dark" :lang "en" :debug false}
+; => {:theme "dark" :lang "en" :debug false}
 ```
+
+### Transforming Map Keys and Values
+
+Use `update-keys` and `update-vals` to apply a function to all keys or all values in a map:
+
+```phel
+; Transform all keys
+(update-keys {:a 1 :b 2 :c 3} name)
+; => {"a" 1 "b" 2 "c" 3}
+
+(update-keys {"name" "Alice" "age" "30"} keyword)
+; => {:name "Alice" :age "30"}
+
+; Transform all values
+(update-vals {:a 1 :b 2 :c 3} inc)
+; => {:a 2 :b 3 :c 4}
+
+(update-vals {:x "hello" :y "world"} str/upper-case)
+; => {:x "HELLO" :y "WORLD"}
+```
+
+### Building Collections with `into`
+
+The `into` function pours elements from one collection into another. With a third argument, it applies a transducer to transform elements as they are added:
+
+```phel
+; Two-argument form: pour elements into a collection
+(into [] '(1 2 3))          ; => [1 2 3]
+(into #{} [1 2 2 3 3])     ; => #{1 2 3}
+(into {} [[:a 1] [:b 2]])  ; => {:a 1 :b 2}
+
+; Three-argument form: apply a transducer during transfer
+(into [] (map inc) [1 2 3])           ; => [2 3 4]
+(into #{} (filter odd?) [1 2 3 4 5])  ; => #{1 3 5}
+(into {} (map (fn [[k v]] [k (* v 2)])) {:a 1 :b 2})
+; => {:a 2 :b 4}
+```
+
+### Transducers
+
+Transducers are composable transformations that are independent of the context they run in. Many collection functions like `map`, `filter`, `remove`, `take`, `drop`, `take-while`, `drop-while`, `take-nth`, `keep`, `keep-indexed`, `distinct`, `dedupe`, `mapcat`, and `interpose` support a transducer arity (called without a collection) that returns a transducer:
+
+```phel
+; Create a transducer by calling map/filter without a collection
+(def xf (comp (filter odd?) (map #(* % 10))))
+
+; Apply with transduce (reduces with a function)
+(transduce xf + 0 [1 2 3 4 5])       ; => 90 (10 + 30 + 50)
+
+; Apply with into (pours into a collection)
+(into [] xf [1 2 3 4 5])             ; => [10 30 50]
+
+; Apply with sequence (returns a lazy sequence)
+(sequence xf [1 2 3 4 5])            ; => (10 30 50)
+```
+
+Common transducer-producing functions:
+
+```phel
+(into [] (take 3) (range 10))                ; => [0 1 2]
+(into [] (drop 7) (range 10))                ; => [7 8 9]
+(into [] (take-while #(< % 5)) (range 10))   ; => [0 1 2 3 4]
+(into [] (drop-while #(< % 5)) (range 10))   ; => [5 6 7 8 9]
+(into [] (take-nth 3) (range 10))             ; => [0 3 6 9]
+(into [] (distinct) [1 2 1 3 2 4])            ; => [1 2 3 4]
+(into [] (dedupe) [1 1 2 2 3 1 1])            ; => [1 2 3 1]
+(into [] (interpose :sep) [1 2 3])            ; => [1 :sep 2 :sep 3]
+```
+
+Use `completing` to adapt a reducing function for use with `transduce`:
+
+```phel
+(def my-rf (completing conj count))
+(transduce (map inc) my-rf [1 2 3])  ; => 3
+```
+
+The `cat` transducer concatenates inner collections:
+
+```phel
+(into [] cat [[1 2] [3 4] [5 6]])  ; => [1 2 3 4 5 6]
+```
+
+{% clojure_note() %}
+Transducers work like Clojure's transducer system. The `transduce`, `into` (3-arg), `sequence`, `completing`, and `cat` functions follow the same semantics.
+{% end %}
 
 ## Walking Data Structures
 

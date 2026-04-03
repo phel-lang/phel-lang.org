@@ -311,6 +311,42 @@
   line-height: var(--leading-relaxed);
 }
 
+/* API Footer - Clean border-left design for See Also and Source links */
+.api-footer {
+  margin-top: var(--space-lg);
+  padding: var(--space-md) 0;
+  padding-left: var(--space-lg);
+  border-left: 3px solid var(--color-light-border);
+  background: var(--color-light-bg-secondary);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+}
+
+.api-footer > div {
+  margin: var(--space-xs) 0;
+  color: var(--color-light-text-secondary);
+}
+
+.api-footer strong {
+  color: var(--color-light-text-primary);
+  font-weight: 600;
+}
+
+.api-footer a {
+  color: var(--color-light-link);
+  text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.api-footer a:hover {
+  color: var(--color-light-link);
+  opacity: 0.8;
+}
+
+.api-footer a::after {
+  display: none;
+}
+
 /* ========================================
    DARK MODE
    ======================================== */
@@ -429,5 +465,28 @@
   border-color: var(--color-dark-border) !important;
   box-shadow: var(--shadow-dark-sm) !important;
   transform: none !important;
+}
+
+/* API Footer Dark Mode */
+.dark .api-footer {
+  border-left-color: var(--color-dark-border);
+  background: var(--color-dark-surface);
+}
+
+.dark .api-footer > div {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .api-footer strong {
+  color: var(--color-dark-text-primary);
+}
+
+.dark .api-footer a {
+  color: var(--color-dark-text-accent);
+}
+
+.dark .api-footer a:hover {
+  color: var(--color-dark-text-accent);
+  opacity: 0.8;
 }
 

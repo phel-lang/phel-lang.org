@@ -35,6 +35,6 @@ Thumbs.db
 /static/tailwind.css
 
 # Content (generated)
-/content/documentation/reference/api.md
+/content/documentation/api.md
 /content/releases/*
 !/content/releases/_index.md

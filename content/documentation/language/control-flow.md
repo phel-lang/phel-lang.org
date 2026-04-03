@@ -483,18 +483,75 @@ The _expr_ is evaluated and thrown, therefore _expr_ must return a value that im
 All expressions are evaluated and if no exception is thrown the value of the last expression is returned. If an exception occurs and a matching _catch-clause_ is provided, its expression is evaluated and the value is returned. If no matching _catch-clause_ can be found the exception is propagated out of the function. Before returning normally or abnormally the optionally _finally-clause_ is evaluated.
 
 ```phel
-(try) # Evaluates to nil
+(try) ; Evaluates to nil
 
 (try
   (throw (php/new \Exception))
-  (catch \Exception e "error")) # Evaluates to "error"
+  (catch \Exception e "error")) ; Evaluates to "error"
 
 (try
   (+ 1 1)
-  (finally (print "test"))) # Evaluates to 2 and prints "test"
+  (finally (print "test"))) ; Evaluates to 2 and prints "test"
 
 (try
   (throw (php/new \Exception))
   (catch \Exception e "error")
-  (finally (print "test"))) # Evaluates to "error" and prints "test"
+  (finally (print "test"))) ; Evaluates to "error" and prints "test"
 ```
+
+## Structured Exceptions
+
+Phel provides functions for creating and inspecting structured exceptions that carry data maps, inspired by Clojure's `ex-info` system. This is useful when you need to attach context to errors beyond just a message string.
+
+### Creating structured exceptions with `ex-info`
+
+```phel
+(ex-info message data)
+(ex-info message data cause)
+```
+
+Creates an exception with a message string, an associated data map, and an optional cause (a previous exception). The data map can contain any information relevant to the error:
+
+```phel
+(throw (ex-info "User not found" {:user-id 42 :status 404}))
+
+; With a cause (chaining exceptions)
+(try
+  (do-something-risky)
+  (catch \Exception e
+    (throw (ex-info "Operation failed" {:step "processing"} e))))
+```
+
+### Inspecting structured exceptions
+
+Use `ex-data`, `ex-message`, and `ex-cause` to extract information from structured exceptions:
+
+```phel
+(def err (ex-info "Validation failed" {:field :email :reason "invalid format"}))
+
+(ex-message err)  ; => "Validation failed"
+(ex-data err)     ; => {:field :email :reason "invalid format"}
+(ex-cause err)    ; => nil (no cause provided)
+```
+
+### Practical example: error handling with data
+
+```phel
+(defn find-user [id]
+  (let [user (db-lookup id)]
+    (if (nil? user)
+      (throw (ex-info "User not found" {:user-id id :status 404}))
+      user)))
+
+(try
+  (find-user 42)
+  (catch \Exception e
+    (let [data (ex-data e)]
+      (case (:status data)
+        404 (println "Not found:" (ex-message e))
+        403 (println "Forbidden:" (ex-message e))))))
+```
+
+{% clojure_note() %}
+`ex-info`, `ex-data`, `ex-message`, and `ex-cause` work exactly like their Clojure counterparts.
+{% end %}

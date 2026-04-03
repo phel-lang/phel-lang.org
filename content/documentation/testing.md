@@ -174,6 +174,39 @@ If you want to run tests from Phel code, the `run-tests` function can be used. A
 (run-tests {} 'my\ns\a 'my\ns\b)
 ```
 
+### Interactive testing with `test-ns`
+
+Since v0.31.0, you can run tests for a single namespace interactively from the REPL using `test-ns`:
+
+```phel
+(ns my-app\tests
+  (:require phel\test :refer [deftest is test-ns]))
+
+; Run all tests in a namespace
+(test-ns 'my-app\tests)
+```
+
+This is especially useful during REPL-driven development when you want quick feedback on a specific namespace without running the full test suite.
+
+### Test statistics management
+
+You can manage test statistics programmatically with these functions:
+
+```phel
+; Reset test counters to zero
+(reset-stats)
+
+; Get current test statistics (pass/fail/error counts)
+(get-stats)
+
+; Save and restore stats around a test run
+(def saved (get-stats))
+(test-ns 'my-app\tests)
+(restore-stats saved)
+```
+
+These are useful when running tests interactively in the REPL and you need to isolate results or reset state between runs.
+
 ## Mocking
 
 Phel provides a built-in mocking framework in the `phel\mock` module for replacing functions with test doubles.
