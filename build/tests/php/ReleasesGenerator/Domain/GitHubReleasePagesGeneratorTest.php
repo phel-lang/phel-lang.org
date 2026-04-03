@@ -82,6 +82,25 @@ final class GitHubReleasePagesGeneratorTest extends TestCase
         self::assertStringContainsString('title = "Release: Release: 0.14.0 - phel\\\\str library"', $result);
     }
 
+    public function test_format_pr_references_as_links(): void
+    {
+        $release = Release::fromArray([
+            'tag_name' => 'v0.31.0',
+            'name' => 'Release 0.31.0',
+            'body' => "## Added\n- Feature A (#1153)\n- Feature B (#1128, #1132, #1125)",
+            'published_at' => '2026-04-03T10:00:00Z',
+            'html_url' => 'https://github.com/phel-lang/phel-lang/releases/tag/v0.31.0',
+            'assets' => [],
+        ]);
+
+        $result = $this->generator->generateReleasePageContent($release);
+
+        self::assertStringContainsString('[#1153](https://github.com/phel-lang/phel-lang/pull/1153)', $result);
+        self::assertStringContainsString('[#1128](https://github.com/phel-lang/phel-lang/pull/1128)', $result);
+        self::assertStringContainsString('[#1132](https://github.com/phel-lang/phel-lang/pull/1132)', $result);
+        self::assertStringContainsString('[#1125](https://github.com/phel-lang/phel-lang/pull/1125)', $result);
+    }
+
     public function test_extract_description_truncates_long_text(): void
     {
         $longText = str_repeat('This is a very long description. ', 20);
