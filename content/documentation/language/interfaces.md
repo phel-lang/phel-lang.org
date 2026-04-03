@@ -143,3 +143,156 @@ Since Phel interfaces compile to PHP interfaces, structs can also implement any 
   \JsonSerializable
   (jsonSerialize [this] data))
 ```
+
+## Protocols
+
+Protocols provide a flexible way to define a set of functions that can be extended to existing types without modifying them. Unlike interfaces (which require upfront implementation in `defstruct`), protocols can be extended to any type after the fact.
+
+### Defining a protocol
+
+Use `defprotocol` to define a protocol with one or more method signatures:
+
+```phel
+(defprotocol Printable
+  (to-string [this] "Converts the value to a printable string."))
+```
+
+Each method must have at least one parameter (`this`). An optional doc string can follow the parameter list. A protocol can define multiple methods:
+
+```phel
+(defprotocol Measurable
+  (width [this] "Returns the width.")
+  (height [this] "Returns the height.")
+  (dimensions [this] "Returns [width height] as a vector."))
+```
+
+### Extending protocols to types
+
+Use `extend-type` to implement a protocol for a specific type:
+
+```phel
+(extend-type :string
+  Printable
+  (to-string [this] (str "\"" this "\"")))
+
+(extend-type :int
+  Printable
+  (to-string [this] (str "int:" this)))
+
+(to-string "hello")  ; => "\"hello\""
+(to-string 42)       ; => "int:42"
+```
+
+Use `extend-protocol` to implement a single protocol across multiple types at once:
+
+```phel
+(extend-protocol Printable
+  :float
+  (to-string [this] (str "float:" this))
+
+  :bool
+  (to-string [this] (if this "true" "false")))
+
+(to-string 3.14)   ; => "float:3.14"
+(to-string true)    ; => "true"
+```
+
+### Checking protocol support
+
+Use `satisfies?` to check if a value satisfies a protocol, and `extends?` to check if a type extends a protocol:
+
+```phel
+(satisfies? Printable "hello")  ; => true
+(satisfies? Printable 42)       ; => true
+
+(extends? Printable :string)    ; => true
+(extends? Printable :array)     ; => false
+```
+
+### When to use protocols vs interfaces
+
+- **Interfaces** are best when you control the type definition (structs) and want compile-time guarantees
+- **Protocols** are best when you need to add behavior to existing types or types you don't control
+
+{% clojure_note() %}
+Protocols work like Clojure's `defprotocol`, `extend-type`, `extend-protocol`, `satisfies?`, and `extends?`.
+{% end %}
+
+## Hierarchies
+
+Phel provides a hierarchy system for defining relationships between types or values. Hierarchies work with multimethods to enable inheritance-aware dispatch.
+
+### Deriving relationships
+
+Use `derive` to establish parent-child relationships between keywords:
+
+```phel
+(derive :circle :shape)
+(derive :rectangle :shape)
+(derive :square :rectangle)   ; A square is a rectangle
+```
+
+### Querying hierarchies
+
+Use `isa?`, `parents`, `ancestors`, and `descendants` to query the hierarchy:
+
+```phel
+(isa? :circle :shape)         ; => true
+(isa? :square :rectangle)     ; => true
+(isa? :square :shape)         ; => true (transitive)
+(isa? :shape :circle)         ; => false
+
+(parents :square)             ; => #{:rectangle}
+(ancestors :square)           ; => #{:rectangle :shape}
+(descendants :shape)          ; => #{:circle :rectangle :square}
+```
+
+### Removing relationships
+
+Use `underive` to remove a parent-child relationship:
+
+```phel
+(underive :square :rectangle)
+(isa? :square :rectangle)     ; => false
+```
+
+### Custom hierarchies
+
+By default, `derive` and friends use a global hierarchy. Use `make-hierarchy` to create an isolated hierarchy and pass it explicitly:
+
+```phel
+(def animal-h (make-hierarchy))
+(def animal-h (derive animal-h :dog :animal))
+(def animal-h (derive animal-h :cat :animal))
+(def animal-h (derive animal-h :poodle :dog))
+
+(isa? animal-h :poodle :animal)  ; => true
+(descendants animal-h :animal)   ; => #{:dog :cat :poodle}
+```
+
+### Hierarchy-aware multimethod dispatch
+
+Hierarchies integrate with multimethods. When a multimethod dispatches on a value, it checks the hierarchy for parent matches:
+
+```phel
+(derive :circle :shape)
+(derive :rectangle :shape)
+
+(defmulti draw :type)
+
+(defmethod draw :shape [s]
+  (str "Drawing a generic shape"))
+
+(defmethod draw :circle [s]
+  (str "Drawing a circle with radius " (:radius s)))
+
+(draw {:type :circle :radius 5})
+; => "Drawing a circle with radius 5"
+
+(draw {:type :rectangle :width 4 :height 3})
+; => "Drawing a generic shape" (falls back to :shape via hierarchy)
+```
+
+{% clojure_note() %}
+Hierarchies work like Clojure's `derive`, `underive`, `isa?`, `parents`, `ancestors`, `descendants`, and `make-hierarchy`, including integration with multimethods.
+{% end %}

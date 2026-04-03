@@ -6,6 +6,8 @@ aliases = ["/documentation/coming-from-clojure"]
 
 If you already know Clojure, you will feel right at home in Phel. Phel is a functional Lisp that compiles to PHP, directly inspired by Clojure (and Janet). It brings persistent data structures, immutability by default, and a functional-first philosophy to the PHP ecosystem. This guide highlights what transfers directly, what differs, and where Phel adds capabilities unique to its PHP target.
 
+> **v0.31.0 "Clojure Convergence"** brings Phel significantly closer to Clojure with protocols, transducers, reader conditionals (`#?()`), regex literals, anonymous function shorthand improvements, `ex-info`/`ex-data` for structured exceptions, and a hierarchy system with `derive`/`isa?`/`parents`/`ancestors`/`descendants`. Many items previously in the "What You Will Miss" section now have direct Phel equivalents.
+
 ## What Feels Familiar
 
 Most of your Clojure intuition carries over unchanged.
@@ -81,26 +83,26 @@ These are the conceptual differences that matter most day-to-day.
 
 Phel compiles to PHP and runs on the PHP interpreter. There is no JVM, no classpath, no JAR files. Your dependency manager is Composer, not deps.edn or Leiningen.
 
-### No protocols -- use interfaces instead
+### Protocols
 
-Phel does not have Clojure-style protocols or `defrecord`. Instead it provides `definterface` and `defstruct`. Structs can implement one or more interfaces:
+Since v0.31.0, Phel supports Clojure-style protocols with `defprotocol` and `extend-type`. You can also still use `definterface` and `defstruct` for simpler cases:
 
 ```phel
-(definterface Greetable
+(defprotocol Greetable
   (greet [this]))
 
 (defstruct person [name]
   Greetable
   (greet [this] (str "Hello, " name)))
 
-(greet (person "Alice")) # => "Hello, Alice"
+(greet (person "Alice")) ; => "Hello, Alice"
 ```
 
 See [Interfaces](/documentation/language/interfaces) for the full reference.
 
 ### No multimethods
 
-There is no `defmulti` / `defmethod`. Use `cond`, `case`, or interfaces to achieve dispatch.
+There is no `defmulti` / `defmethod`. Use `cond`, `case`, protocols, or interfaces to achieve dispatch. However, since v0.31.0 Phel includes a hierarchy system (`derive`, `isa?`, `parents`, `ancestors`, `descendants`) that can be used to build type-based dispatch patterns.
 
 ### No atoms/agents/refs -- use `var`
 
@@ -123,9 +125,17 @@ There is no built-in spec or schema system. Validate data with predicates and `c
 
 This is the same as Clojure -- only `false` and `nil` are falsy. `0`, `""`, and `[]` are all truthy. If you have been writing Clojure this is exactly what you expect, but it differs from PHP's truthiness rules. See [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations).
 
-### No reader macros
+### Reader conditionals (new in v0.31.0)
 
-Phel does not support custom reader macros. The short anonymous function syntax uses `|` instead of `#()`, and tagged literals are not available. The `#_` form for commenting out expressions is supported.
+Phel now supports reader conditionals with `#?()` and splicing reader conditionals with `#?@()`, using `:phel` and `:default` as platform keys. This enables writing cross-platform `.cljc` files:
+
+```phel
+(def host
+  #?(:phel "PHP"
+     :default "Unknown"))
+```
+
+Custom reader macros are not supported. The short anonymous function syntax uses `|` instead of `#()`, and tagged literals are not available. The `#_` form for commenting out expressions is supported.
 
 ## Syntax Differences
 
@@ -272,7 +282,7 @@ Use `println` for output with a newline, `print` without:
 
 ### Comments
 
-Phel uses `#` or `;` for line comments (both work). Block comments use `#| ... |#`:
+Phel uses `;` and `;;` for line comments (the standard since v0.31.0). `#` still works for backward compatibility but `;` is preferred. Block comments use `#| ... |#`:
 
 ```clojure
 ;; Clojure
@@ -281,9 +291,9 @@ Phel uses `#` or `;` for line comments (both work). Block comments use `#| ... |
 ```
 
 ```phel
-# Phel
-# line comment
-; also a line comment
+; Phel
+; line comment
+;; standalone comment
 #| block
    comment |#
 (comment (+ 1 2))
@@ -348,11 +358,11 @@ For the complete interop reference, see [PHP Interop](/documentation/php-interop
 
 ### Protocols
 
-Use `definterface` + `defstruct` instead of `defprotocol` + `defrecord`. The pattern is similar but interfaces must be implemented on structs, not extended to existing types after the fact. See [Interfaces](/documentation/language/interfaces).
+Since v0.31.0, Phel supports `defprotocol` and `extend-type`, bringing it close to Clojure's protocol system. You can also use `definterface` + `defstruct` for simpler patterns. See [Interfaces](/documentation/language/interfaces).
 
 ### CIDER / Calva / nREPL
 
-Editor tooling is simpler than the Clojure ecosystem. There are extensions for [VS Code, PhpStorm, Emacs, and Vim](/documentation/tooling/editor-support), with syntax highlighting and basic REPL integration. There is no nREPL protocol.
+Editor tooling is simpler than the Clojure ecosystem. There are extensions for [VS Code, PhpStorm, Emacs, and Vim](/documentation/tooling/editor-support), with syntax highlighting and basic REPL integration. As of v0.31.0, Phel includes structured stack frames in `EvalError` and stdout capture in `EvalResult` to support external tooling integrations, but a full nREPL protocol implementation is not yet available.
 
 ### ClojureScript
 
@@ -365,7 +375,7 @@ Use Composer for dependency management. Your `composer.json` replaces `deps.edn`
 ```json
 {
   "require": {
-    "phel-lang/phel-lang": "^0.30"
+    "phel-lang/phel-lang": "^0.31"
   }
 }
 ```
@@ -410,9 +420,12 @@ Many organizations already run PHP infrastructure. Phel lets you bring functiona
 | `(.method obj)` | `(php/-> obj (method))` | Instance method call |
 | `(Class/static)` | `(php/:: Class (static))` | Static method call |
 | `(new Class)` | `(php/new Class)` | Instantiation |
-| `(defprotocol P)` | `(definterface P)` | Interface instead of protocol |
+| `(defprotocol P)` | `(defprotocol P)` | Same -- available since v0.31 |
 | `(defrecord R)` | `(defstruct R)` | Struct instead of record |
 | `(lazy-seq ...)` | `(lazy-seq ...)` | Same -- available since v0.25 |
-| `;; comment` | `# comment` | `#` or `;` both work |
+| `#?(:clj x :default y)` | `#?(:phel x :default y)` | Reader conditionals -- since v0.31 |
+| `(ex-info msg data)` | `(ex-info msg data)` | Same -- available since v0.31 |
+| `(transduce xf f coll)` | `(transduce xf f coll)` | Same -- available since v0.31 |
+| `;; comment` | `; comment` | `;` is the standard (`;` or `#` both work) |
 
 Welcome to the PHP side of Lisp. The parentheses are the same -- the runtime just happens to be PHP.

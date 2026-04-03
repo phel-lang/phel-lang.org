@@ -21,7 +21,7 @@ The most important part in this file is the `require` section. In here, you need
 
 ```json
 "require": {
-    "phel-lang/phel-lang": "^0.30"
+    "phel-lang/phel-lang": "^0.31"
 }
 ```
 
@@ -83,6 +83,36 @@ Available macros:
 - [`def-`](/documentation/reference/api/#def) - Define a private value that will not be exported.
 - [`defn-`](/documentation/reference/api/#defn-1) - Define a private function that will not be exported.
 - [`defmacro-`](/documentation/reference/api/#defmacro-1) - Define a private macro that will not be exported.
+
+## Cross-platform code with reader conditionals
+
+Since v0.31.0, Phel supports `.cljc` files and reader conditionals, enabling code that can be shared across platforms.
+
+### `.cljc` file support
+
+Phel can load `.cljc` files alongside `.phel` files. This is useful when you want to write library code that could be shared with Clojure or other Lisp dialects that support the `.cljc` format.
+
+### Reader conditionals
+
+Use `#?()` to conditionally include code based on the platform:
+
+```clojure
+(def platform
+  #?(:phel "PHP"
+     :clj "JVM"
+     :default "Unknown"))
+```
+
+Use `#?@()` for splicing reader conditionals inside sequences:
+
+```clojure
+(def features
+  [:core
+   #?@(:phel [:php-interop :composer]
+       :clj [:java-interop :maven])])
+```
+
+The supported platform keys are `:phel` and `:default`. When Phel reads a `.cljc` file, it selects the `:phel` branch if present, otherwise the `:default` branch.
 
 ## Publishing
 

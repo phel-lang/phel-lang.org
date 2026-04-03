@@ -11,6 +11,8 @@ Phel includes a series of commands out-of-the-box.
 vendor/bin/phel list
 ```
 
+> **Note:** As of v0.31.0, `phel --help` now correctly shows all available commands (previously it only displayed REPL help).
+
 ## Initialize a new project
 
 Scaffold a new Phel project with minimal configuration:
@@ -138,6 +140,8 @@ return (new PhelConfig())
 ```
 
 Read more about [running the code](/documentation/getting-started/#running-the-code) in the getting started page.
+
+> **Note:** As of v0.31.0, `phel run` no longer produces duplicate output on first run.
 
 ## Test your phel logic
 

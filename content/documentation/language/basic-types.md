@@ -17,12 +17,12 @@ false
 In Phel, only `false` and `nil` are falsy. Everything else is truthy-including `0`, `""`, and `[]`.
 
 ```phel
-# Truthiness examples
-(if nil "yes" "no")   # => "no"  (nil is falsy)
-(if false "yes" "no") # => "no"  (false is falsy)
-(if 0 "yes" "no")     # => "yes" (0 is truthy!)
-(if "" "yes" "no")    # => "yes" (empty string is truthy!)
-(if [] "yes" "no")    # => "yes" (empty vector is truthy!)
+;; Truthiness examples
+(if nil "yes" "no")   ; => "no"  (nil is falsy)
+(if false "yes" "no") ; => "no"  (false is falsy)
+(if 0 "yes" "no")     ; => "yes" (0 is truthy!)
+(if "" "yes" "no")    ; => "yes" (empty string is truthy!)
+(if [] "yes" "no")    ; => "yes" (empty vector is truthy!)
 ```
 
 {% php_note() %}
@@ -64,22 +64,22 @@ A keyword is like a symbol that begins with a colon character. However, it is us
 Keywords are commonly used as map keys:
 
 ```phel
-# Map with keyword keys
+;; Map with keyword keys
 {:name "Alice" :email "alice@example.com"}
 
-# Accessing map values with keywords
-(get {:name "Alice" :age 30} :name)  # => "Alice"
-(:name {:name "Alice" :age 30})      # => "Alice" (keywords are functions!)
+; Accessing map values with keywords
+(get {:name "Alice" :age 30} :name)  ; => "Alice"
+(:name {:name "Alice" :age 30})      ; => "Alice" (keywords are functions!)
 ```
 
 {% php_note() %}
 Keywords are like string constants, but more efficient for map keys. Use keywords instead of strings for map keys:
 
 ```phel
-# Less idiomatic:
+; Less idiomatic:
 {"name" "Alice" "age" 30}
 
-# Idiomatic:
+; Idiomatic:
 {:name "Alice" :age 30}
 ```
 
@@ -95,30 +95,30 @@ Keywords work exactly like in Clojure-they're interned, fast for equality checks
 Phel supports integers and floating-point numbers. Both use the underlying PHP implementation. Integers can be specified in decimal (base 10), hexadecimal (base 16), octal (base 8) and binary (base 2) notations. Binary, octal and hexadecimal formats may contain underscores (`_`) between digits for better readability.
 
 ```phel
-1337 # integer
-+1337 # positive integer
--1337 # negative integer
+1337 ; integer
++1337 ; positive integer
+-1337 ; negative integer
 
-1.234 # float
-+1.234 # positive float
--1.234 # negative float
-1.2e3 # float
-7E-10 # float
+1.234 ; float
++1.234 ; positive float
+-1.234 ; negative float
+1.2e3 ; float
+7E-10 ; float
 
-0b10100111001 # binary number
-+0b10100111001 # positive binary number
--0b10100111001 # negative binary number
-0b101_0011_1001 # binary number with underscores for better readability
+0b10100111001 ; binary number
++0b10100111001 ; positive binary number
+-0b10100111001 ; negative binary number
+0b101_0011_1001 ; binary number with underscores for better readability
 
-0x539 # hexadecimal number
-+0x539 # positive hexadecimal number
--0x539 # negative hexadecimal number
--0x5_39 # hexadecimal number with underscores
+0x539 ; hexadecimal number
++0x539 ; positive hexadecimal number
+-0x539 ; negative hexadecimal number
+-0x5_39 ; hexadecimal number with underscores
 
-02471 # octal number
-+02471 # positive octal number
--02471 # negative octal number
-024_71 # octal number with underscores
+02471 ; octal number
++02471 ; positive octal number
+-02471 ; negative octal number
+024_71 ; octal number with underscores
 ```
 
 ## Strings
@@ -147,25 +147,25 @@ string."
 String concatenation and conversion using `str`:
 
 ```phel
-(str "Hello" " " "World")  # => "Hello World"
-(str "The answer is " 42)  # => "The answer is 42"
+(str "Hello" " " "World")  ; => "Hello World"
+(str "The answer is " 42)  ; => "The answer is 42"
 ```
 
 Strings are iterable - they work directly with sequence functions like `map`, `filter`, `count`, `frequencies`, and `foreach`. Full UTF-8 / multibyte support is included:
 
 ```phel
-(count "hello")             # => 5
-(frequencies "abracadabra") # => {"a" 5 "b" 2 "r" 2 "c" 1 "d" 1}
-(seq "abc")                 # => ("a" "b" "c")
+(count "hello")             ; => 5
+(frequencies "abracadabra") ; => {"a" 5 "b" 2 "r" 2 "c" 1 "d" 1}
+(seq "abc")                 ; => ("a" "b" "c")
 ```
 
 {% php_note() %}
 Phel strings are PHP strings internally, so you can use all PHP string functions:
 
 ```phel
-(php/strlen "hello")                 # => 5
-(php/strtoupper "hello")             # => "HELLO"
-(php/str_replace "o" "0" "hello")    # => "hell0"
+(php/strlen "hello")                 ; => 5
+(php/strtoupper "hello")             ; => "HELLO"
+(php/str_replace "o" "0" "hello")    ; => "hell0"
 ```
 
 Strings work almost the same as PHP double-quoted strings, with one difference: the dollar sign (`$`) doesn't need escaping.
@@ -190,7 +190,7 @@ A list will be interpreted as a function call, a macro call or a special form by
 A vector is a sequence of whitespace-separated values surrounded by brackets.
 
 ```phel
-[1 2 3] # same as (vector 1 2 3)
+[1 2 3] ; same as (vector 1 2 3)
 ```
 
 A vector in Phel is an indexed data structure. In contrast to PHP arrays, Phel vectors cannot be used as maps, hashtables or dictionaries.
@@ -200,15 +200,15 @@ A vector in Phel is an indexed data structure. In contrast to PHP arrays, Phel v
 A map is a sequence of whitespace-separated key/value pairs surrounded by curly braces. The sequence is defined as key1, value1, key2, value2, etc. There must be an even number of items.
 
 ```phel
-{} # same as (hash-map)
+{} ; same as (hash-map)
 {:key1 "value1" :key2 "value2"}
 
-# Any type can be a key
-{'(1 2 3) '(4 5 6)}  # Lists as keys
-{[] []}              # Vectors as keys
-{1 2 3 4 5 6}        # Numbers as keys
+; Any type can be a key
+{'(1 2 3) '(4 5 6)}  ; Lists as keys
+{[] []}              ; Vectors as keys
+{1 2 3 4 5 6}        ; Numbers as keys
 
-# Common pattern: keywords as keys
+; Common pattern: keywords as keys
 {:name "Alice" :age 30 :email "alice@example.com"}
 ```
 
@@ -219,14 +219,14 @@ Unlike PHP associative arrays, Phel maps:
 - Are **not** PHP arrays internally-they're their own data structure
 
 ```phel
-# PHP:
+; PHP:
 $map = ['name' => 'Alice'];
 $map['name'] = 'Bob';  // Mutates in place
 
-# Phel:
+; Phel:
 (def map {:name "Alice"})
-(def new-map (assoc map :name "Bob"))  # Returns new map
-# map is still {:name "Alice"}
+(def new-map (assoc map :name "Bob"))  ; Returns new map
+; map is still {:name "Alice"}
 ```
 {% end %}
 
@@ -239,34 +239,92 @@ Maps work exactly like Clojure maps, including support for any hashable type as 
 A set is a sequence of whitespace-separated values prefixed by the function `set` and the whole being surrounded by parentheses.
 
 ```phel
-#{1 2 3} # same as (set 1 2 3)
+#{1 2 3} ; same as (set 1 2 3)
+```
+
+## Regex Literals
+
+Phel supports regex literal syntax using `#"..."` as reader sugar for PCRE patterns. This is a convenient shorthand for creating regular expressions:
+
+```phel
+#"\d+"           ; Matches one or more digits
+#"[a-zA-Z]+"     ; Matches one or more letters
+#"hello\s+world" ; Matches "hello" followed by whitespace and "world"
+```
+
+Regex literals can be used with the `re-find` and `re-matches` functions:
+
+```phel
+(re-find #"\d+" "abc123def")     ; => "123"
+(re-find #"\d+" "no digits")     ; => nil
+
+(re-matches #"\d+" "123")        ; => "123" (full string must match)
+(re-matches #"\d+" "abc123")     ; => nil (not a full match)
+
+; Capture groups return vectors
+(re-find #"(\d+)-(\d+)" "date: 2026-04-03")
+; => ["2026-04" "2026" "04"]
+```
+
+{% clojure_note() %}
+Regex literals use the same `#"..."` syntax as Clojure. The underlying engine is PHP's PCRE rather than Java's regex, so some pattern details may differ.
+{% end %}
+
+## Anonymous Function Shorthand
+
+The `#(...)` reader syntax provides a compact way to define anonymous functions inline, using `%` placeholders for parameters:
+
+- `%` or `%1` refers to the first argument
+- `%2`, `%3`, etc. refer to subsequent arguments
+- `%&` captures remaining variadic arguments
+
+```phel
+#(+ 6 %)       ; Same as (fn [x] (+ 6 x))
+#(+ %1 %2)     ; Same as (fn [a b] (+ a b))
+#(apply + %&)  ; Same as (fn [& xs] (apply + xs))
+
+; Using with higher-order functions
+(map #(* % 2) [1 2 3])        ; => [2 4 6]
+(filter #(> % 3) [1 5 2 8])   ; => [5 8]
+(sort-by #(get % :age) users)  ; Sort users by age
+```
+
+> **Note:** The `|` short-form syntax with `$` placeholders is also supported. See [Functions and Recursion](/documentation/language/functions-and-recursion/) for details on both forms.
+
+{% clojure_note() %}
+The `#(...)` syntax with `%` placeholders matches Clojure's anonymous function reader macro exactly.
+{% end %}
+
+## Deref Shorthand
+
+The `@` reader syntax is shorthand for `(deref ...)`. It is used to dereference atoms and other reference types:
+
+```phel
+(def counter (atom 0))
+
+@counter              ; Same as (deref counter) => 0
+(swap! counter inc)
+@counter              ; => 1
 ```
 
 ## Comments
 
-A comment begins with a `#` or `;` character and continues until the end of the line.
+A comment begins with a `;` character and continues until the end of the line. Use `;;` for standalone comments and `;` for inline comments:
 
 ```phel
-# This is a comment
-; This is also a comment
+;; This is a standalone comment
+(+ 1 2) ; This is an inline comment
 ```
 
-Phel also supports multiline comments using the Common Lisp `#|` ... `|#` syntax. The comment spans everything between the opening and closing markers, including line breaks.
-
-```phel
-#|
-This whole block
-is a comment
-|#
-```
+> **Deprecation notice (v0.31.0):** The `#` line comment syntax and `#| ... |#` multiline comment syntax are deprecated. Use `;` and `;;` instead. The `#` prefix is now reserved for reader macros like `#()`, `#""`, and `#?()`.
 
 Phel also supports inline s-expression commenting with `#_` which comments out the next form. It can also be stacked to comment out two or more forms after it.
 
 ```phel
-[:one :two :three]     # results to [:one :two :three]
-[#_:one :two :three]   # results to [:two :three]
-[#_:one :two #_:three] # results to [:two]
-[#_#_:one :two :three] # results to [:three]
+[:one :two :three]     ; results to [:one :two :three]
+[#_:one :two :three]   ; results to [:two :three]
+[#_:one :two #_:three] ; results to [:two]
+[#_#_:one :two :three] ; results to [:three]
 ```
 
 See also the [comment](/documentation/reference/api/#comment) macro which ignores the forms inside and returns `nil` while still requiring the content to be valid Phel code.

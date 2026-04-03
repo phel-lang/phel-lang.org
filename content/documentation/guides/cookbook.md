@@ -558,3 +558,255 @@ Build a persistent key-value store backed by a JSON file, with functions for get
 ```
 
 **See also:** [Data Structures](/documentation/language/data-structures), [PHP Interop](/documentation/php-interop)
+
+## Defining and Using Protocols
+
+Protocols let you define polymorphic behavior that can be extended to any type -- even types you didn't create. This is similar to PHP interfaces but more flexible.
+
+```phel
+(ns cookbook\protocols)
+
+;; Define a protocol for rendering things as HTML
+(defprotocol Renderable
+  (render-html [this]))
+
+;; Define some structs
+(defstruct paragraph [text])
+(defstruct heading [level text])
+(defstruct link [url label])
+
+;; Extend each struct to implement Renderable
+(extend-type paragraph
+  Renderable
+  (render-html [this]
+    (str "<p>" (get this :text) "</p>")))
+
+(extend-type heading
+  Renderable
+  (render-html [this]
+    (let [lvl (get this :level)]
+      (str "<h" lvl ">" (get this :text) "</h" lvl ">"))))
+
+(extend-type link
+  Renderable
+  (render-html [this]
+    (str "<a href=\"" (get this :url) "\">" (get this :label) "</a>")))
+
+;; Render a collection of mixed elements
+(def page-elements
+  [(heading 1 "Welcome")
+   (paragraph "This is a Phel-powered page.")
+   (link "https://phel-lang.org" "Learn Phel")
+   (paragraph "Protocols make this extensible.")])
+
+(def html-output
+  (->> page-elements
+       (map render-html)
+       (apply str)))
+
+(println html-output)
+;; => <h1>Welcome</h1><p>This is a Phel-powered page.</p>...
+
+;; Check if a value supports the protocol
+(satisfies? Renderable (paragraph "hi"))  ; => true
+(satisfies? Renderable "plain string")    ; => false
+```
+
+**See also:** [Cheat Sheet -- Protocols](/documentation/reference/cheat-sheet#protocols)
+
+## Data Processing with Transducers
+
+Transducers let you compose data transformation pipelines without creating intermediate collections. They are faster and more memory-efficient than chaining `map`, `filter`, etc.
+
+```phel
+(ns cookbook\transducers)
+
+;; Sample data: a log of events
+(def events
+  [{:type :page-view  :path "/"         :ms 12}
+   {:type :api-call   :path "/api/users" :ms 230}
+   {:type :page-view  :path "/about"    :ms 8}
+   {:type :api-call   :path "/api/users" :ms 180}
+   {:type :page-view  :path "/"         :ms 15}
+   {:type :api-call   :path "/api/posts" :ms 340}
+   {:type :page-view  :path "/about"    :ms 9}
+   {:type :api-call   :path "/api/users" :ms 200}])
+
+;; Build a transducer pipeline: keep only slow API calls, extract paths
+(def slow-api-paths
+  (comp
+    (filter #(= :api-call (get % :type)))   ; only API calls
+    (filter #(> (get % :ms) 150))            ; slower than 150ms
+    (map :path)))                            ; extract the path
+
+;; Apply with transduce to count slow calls
+(def slow-count
+  (transduce slow-api-paths
+    (completing (fn [acc _] (inc acc)))
+    0
+    events))
+(println (str "Slow API calls: " slow-count))  ; => 4
+
+;; Apply with into to collect results
+(def slow-paths
+  (into [] slow-api-paths events))
+(println (str "Paths: " slow-paths))
+;; => ["/api/users" "/api/users" "/api/posts" "/api/users"]
+
+;; Get unique slow paths using a set
+(def unique-slow-paths
+  (into #{} slow-api-paths events))
+(println (str "Unique: " unique-slow-paths))
+;; => #{"/api/users" "/api/posts"}
+
+;; Compute average response time of API calls using transduce
+(defn avg-transducer [xf coll]
+  (let [result (transduce xf
+                 (completing
+                   (fn [[sum cnt] ms] [(+ sum ms) (inc cnt)])
+                   (fn [[sum cnt]] (/ sum cnt)))
+                 [0 0]
+                 coll)]
+    result))
+
+(def avg-api-ms
+  (avg-transducer
+    (comp (filter #(= :api-call (get % :type)))
+          (map :ms))
+    events))
+(println (str "Avg API response: " avg-api-ms "ms"))
+
+;; Use cat to flatten nested collections
+(def nested [[1 2 3] [4 5] [6]])
+(into [] cat nested)               ; => [1 2 3 4 5 6]
+```
+
+**See also:** [Cheat Sheet -- Transducers](/documentation/reference/cheat-sheet#transducers)
+
+## Reader Conditionals for Cross-Platform Code
+
+Reader conditionals allow you to write `.cljc` files that can target different platforms. Use `:phel` for Phel-specific code and `:default` as a fallback.
+
+```phel
+(ns cookbook\conditionals)
+
+;; Reader conditional: select platform-specific expression
+;; In a .cljc file, this compiles only the :phel branch:
+(def platform
+  #?(:phel "Phel on PHP"
+     :default "Unknown platform"))
+
+(println platform)  ; => "Phel on PHP"
+
+;; Practical use: platform-specific implementations
+(defn now-timestamp []
+  #?(:phel (php/time)
+     :default 0))
+
+;; Splicing reader conditional inserts multiple elements
+;; into the surrounding form:
+(def features
+  [:core
+   :macros
+   #?@(:phel [:php-interop :composer]
+       :default [:generic])])
+;; On Phel: => [:core :macros :php-interop :composer]
+```
+
+## Regex Matching and Validation
+
+Phel v0.31.0 introduces regex literals (`#"..."`) and matching functions for working with PCRE patterns.
+
+```phel
+(ns cookbook\regex)
+
+;; Basic matching with re-find (returns first match)
+(re-find #"\d+" "Order #12345 confirmed")
+;; => "12345"
+
+;; Capture groups return a vector: [full-match group1 group2 ...]
+(re-find #"(\d{4})-(\d{2})-(\d{2})" "Date: 2026-04-03")
+;; => ["2026-04-03" "2026" "04" "03"]
+
+;; re-matches requires the pattern to match the entire string
+(re-matches #"\d+" "123")          ; => "123"
+(re-matches #"\d+" "abc123")       ; => nil
+
+;; Validate an input format
+(defn parse-color [s]
+  (let [m (re-matches #"#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})" s)]
+    (when m
+      {:hex s
+       :r (php/hexdec (get m 1))
+       :g (php/hexdec (get m 2))
+       :b (php/hexdec (get m 3))})))
+
+(parse-color "#FF8800")
+;; => {:hex "#FF8800" :r 255 :g 136 :b 0}
+
+(parse-color "not-a-color")
+;; => nil
+
+;; Extract all matches from a string using PHP interop
+(defn re-find-all [pattern s]
+  (let [matches (php/array)]
+    (php/preg_match_all (str pattern) s matches)
+    (for [i :range [0 (php/count (php/aget matches 0))]]
+      (php/aget (php/aget matches 0) i))))
+
+(re-find-all #"\b[A-Z][a-z]+" "Alice met Bob and Charlie")
+;; => ["Alice" "Bob" "Charlie"]
+```
+
+**See also:** [Cheat Sheet -- Regular Expressions](/documentation/reference/cheat-sheet#regular-expressions)
+
+## Structured Exceptions with ex-info
+
+Use `ex-info` to create exceptions that carry structured data, making error handling more informative than plain string messages.
+
+```phel
+(ns cookbook\exceptions)
+
+;; Throw a structured exception
+(defn find-user [id]
+  (let [user (lookup-user-by-id id)]
+    (when (nil? user)
+      (throw (ex-info "User not found"
+                      {:user-id id :type :not-found})))
+    user))
+
+;; Catch and inspect structured exceptions
+(defn handle-request [user-id]
+  (try
+    (let [user (find-user user-id)]
+      {:status 200 :body user})
+    (catch \Exception e
+      (let [data (ex-data e)]
+        (case (get data :type)
+          :not-found   {:status 404 :body (ex-message e)}
+          :forbidden   {:status 403 :body (ex-message e)}
+          {:status 500 :body "Internal error"})))))
+
+;; Chain exceptions with a cause
+(defn load-config [path]
+  (try
+    (let [raw (php/file_get_contents path)]
+      (when (= false raw)
+        (throw (ex-info "File not readable" {:path path})))
+      (php/json_decode raw true))
+    (catch \Exception e
+      (throw (ex-info "Config load failed"
+                      {:path path :step :read}
+                      e)))))
+
+;; Later, inspect the chain
+(try
+  (load-config "missing.json")
+  (catch \Exception e
+    (println (str "Error: " (ex-message e)))
+    (println (str "Data: " (ex-data e)))
+    (when (ex-cause e)
+      (println (str "Caused by: " (ex-message (ex-cause e)))))))
+```
+
+**See also:** [Cheat Sheet -- Error Handling](/documentation/reference/cheat-sheet#error-handling)

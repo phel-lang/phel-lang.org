@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5607ed83744298ffb57e0168ff753da0",
+    "content-hash": "a371b5f6ff319814b3d76e8a39ab369f",
     "packages": [
         {
             "name": "gacela-project/container",
@@ -160,16 +160,16 @@
         },
         {
             "name": "phel-lang/phel-lang",
-            "version": "v0.30.0",
+            "version": "v0.31.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "c58dab5693836c3a4b2c85790b68c50f7052c6cd"
+                "reference": "072d143e55441d31d39ed1bf3539aa7abbda20cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/c58dab5693836c3a4b2c85790b68c50f7052c6cd",
-                "reference": "c58dab5693836c3a4b2c85790b68c50f7052c6cd",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/072d143e55441d31d39ed1bf3539aa7abbda20cf",
+                "reference": "072d143e55441d31d39ed1bf3539aa7abbda20cf",
                 "shasum": ""
             },
             "require": {
@@ -227,7 +227,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phel-lang/phel-lang/issues",
-                "source": "https://github.com/phel-lang/phel-lang/tree/v0.30.0"
+                "source": "https://github.com/phel-lang/phel-lang/tree/v0.31.0"
             },
             "funding": [
                 {
@@ -235,7 +235,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-03-25T14:29:13+00:00"
+            "time": "2026-04-03T12:17:54+00:00"
         },
         {
             "name": "phpunit/php-timer",
@@ -3787,5 +3787,5 @@
     "platform-overrides": {
         "php": "8.3"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }
