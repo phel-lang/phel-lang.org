@@ -34,6 +34,6 @@ Thumbs.db
 /static/giallo.css
 
 # Content (generated)
-/content/documentation/api.md
+/content/documentation/reference/api.md
 /content/releases/*
 !/content/releases/_index.md
