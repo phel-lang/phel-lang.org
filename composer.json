@@ -17,7 +17,7 @@
     "require-dev": {
         "roave/security-advisories": "dev-latest",
         "phpunit/phpunit": "^10.5",
-        "symfony/var-dumper": "^7.3"
+        "symfony/var-dumper": "^7.4"
     },
     "autoload": {
         "psr-4": {

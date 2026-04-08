@@ -48,4 +48,22 @@ And more here
 TXT;
         self::assertSame($expected, $content);
     }
+
+    public function test_update_phel_version_strips_suffix(): void
+    {
+        $consoleFacade = self::createStub(ConsoleFacadeInterface::class);
+        $consoleFacade->method('getVersion')->willReturn('v1.0.0-beta#1c0383b');
+
+        $path = stream_get_meta_data($this->file)['uri'];
+        $phelVersionUpdater = new PhelVersionUpdater($consoleFacade, $path);
+        $phelVersionUpdater->update();
+
+        $content = file_get_contents($path);
+        $expected = <<<TXT
+Some random directives
+phel_version = "v1.0.0"
+And more here
+TXT;
+        self::assertSame($expected, $content);
+    }
 }

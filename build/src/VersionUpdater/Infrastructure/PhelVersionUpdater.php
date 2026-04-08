@@ -20,7 +20,8 @@ final readonly class PhelVersionUpdater
     {
         $configContent = file_get_contents($this->configFile);
 
-        $phelVersion = $this->consoleFacade->getVersion();
+        $fullVersion = $this->consoleFacade->getVersion();
+        $phelVersion = preg_replace('/-.*$/', '', $fullVersion);
         $updatedContent = preg_replace(
             self::REGEX_PHEL_VERSION_FINDER,
             'phel_version = "' . $phelVersion . '"',
