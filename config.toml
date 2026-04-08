@@ -22,7 +22,8 @@ truncate_content_length = 5000
 generate_feeds = false
 
 [markdown.highlighting]
-theme = "github-dark"
+style = "class"
+theme = "github-light"
 extra_grammars = ["syntaxes/phel.tmLanguage.json"]
 
 [extra]

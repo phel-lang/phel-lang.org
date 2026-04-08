@@ -30,9 +30,8 @@ Thumbs.db
 
 # CSS files (generated)
 /css/tailwind.entry.css
-/static/syntax-theme-dark.css
-/static/syntax-theme-light.css
 /static/tailwind.css
+/static/giallo.css
 
 # Content (generated)
 /content/documentation/api.md
