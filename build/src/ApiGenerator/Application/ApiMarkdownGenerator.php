@@ -216,7 +216,7 @@ final readonly class ApiMarkdownGenerator
     {
         return array_map(
             function (string $func) {
-                return sprintf('[`%s`](#%s)', $func, $this->sanitizeAnchor($func));
+                return sprintf('<a href="#%s"><code>%s</code></a>', $this->sanitizeAnchor($func), htmlspecialchars($func));
             },
             $functionNames,
         );

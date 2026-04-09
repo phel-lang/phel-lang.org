@@ -210,7 +210,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
             'The doc from function 1',
             '',
             '<div class="api-footer">',
-            '<div><strong>See also:</strong> [`function-2`](#function-2)</div>',
+            '<div><strong>See also:</strong> <a href="#function-2"><code>function-2</code></a></div>',
             '<div><a href="https://github.com/phel-lang/phel-lang/blob/main/src/phel/core.phel#L100">View source</a></div>',
             '</div>',
             '',
@@ -274,12 +274,9 @@ final class ApiMarkdownGeneratorTest extends TestCase
         $seeAlsoLine = array_values(array_filter($output, fn($line) => str_starts_with($line, '<div><strong>See also:</strong>')))[0];
 
         // The see-also section should NOT include individual source links
-        self::assertStringContainsString('[`get-in`](#get-in)', $seeAlsoLine);
-        self::assertStringContainsString('[`update-in`](#update-in)', $seeAlsoLine);
-        self::assertStringContainsString('[`dissoc-in`](#dissoc-in)', $seeAlsoLine);
-
-        // Make sure there are no individual source links in the see-also line
-        self::assertStringNotContainsString('href=', $seeAlsoLine);
+        self::assertStringContainsString('<a href="#get-in"><code>get-in</code></a>', $seeAlsoLine);
+        self::assertStringContainsString('<a href="#update-in"><code>update-in</code></a>', $seeAlsoLine);
+        self::assertStringContainsString('<a href="#dissoc-in"><code>dissoc-in</code></a>', $seeAlsoLine);
     }
 
     public function test_generate_page_with_source_link_only_in_footer(): void
