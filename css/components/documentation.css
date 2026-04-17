@@ -384,6 +384,28 @@
   color: var(--color-dark-bg);
 }
 
+/* Anchor Flash */
+@keyframes anchorFlash {
+  0%   { background-color: rgba(29, 78, 216, 0.18); box-shadow: 0 0 0 6px rgba(29, 78, 216, 0.15); }
+  60%  { background-color: rgba(29, 78, 216, 0.10); box-shadow: 0 0 0 6px rgba(29, 78, 216, 0.05); }
+  100% { background-color: transparent; box-shadow: 0 0 0 6px transparent; }
+}
+
+.anchor-flash {
+  border-radius: var(--radius-sm);
+  animation: anchorFlash 1.5s var(--ease-out);
+}
+
+.dark .anchor-flash {
+  animation: anchorFlashDark 1.5s var(--ease-out);
+}
+
+@keyframes anchorFlashDark {
+  0%   { background-color: rgba(191, 164, 255, 0.18); box-shadow: 0 0 0 6px rgba(191, 164, 255, 0.15); }
+  60%  { background-color: rgba(191, 164, 255, 0.08); box-shadow: 0 0 0 6px rgba(191, 164, 255, 0.04); }
+  100% { background-color: transparent; box-shadow: 0 0 0 6px transparent; }
+}
+
 h1:hover .zola-anchor,
 h2:hover .zola-anchor,
 h3:hover .zola-anchor,
