@@ -39,9 +39,20 @@
     const overallPct = overallTotal > 0 ? Math.round((overallCompleted / overallTotal) * 100) : 0;
     if (fillEl) fillEl.style.width = `${overallPct}%`;
     overview.classList.toggle('all-complete', overallTotal > 0 && overallCompleted === overallTotal);
+    const resetBtn = overview.querySelector('[data-progress-reset]');
+    if (resetBtn) resetBtn.hidden = overallCompleted === 0;
   }
 
-  document.addEventListener('DOMContentLoaded', hydrate);
+  function wireReset() {
+    const resetBtn = document.querySelector('[data-progress-reset]');
+    if (!resetBtn) return;
+    resetBtn.addEventListener('click', () => {
+      localStorage.removeItem(STORAGE_KEY);
+      hydrate();
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => { hydrate(); wireReset(); });
   window.addEventListener('pageshow', hydrate);
   window.addEventListener('storage', (e) => { if (e.key === STORAGE_KEY) hydrate(); });
 })();

@@ -16,7 +16,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
   margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.progress-tracker-header > * {
+  display: inline-flex;
+  align-items: center;
 }
 
 .progress-tracker-label {
@@ -28,6 +35,72 @@
   font-size: var(--font-size-sm);
   color: var(--color-light-text-muted);
   font-variant-numeric: tabular-nums;
+}
+
+.progress-tracker-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  line-height: 1;
+}
+
+.progress-tracker-meta > * {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.progress-tracker-reset {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 0;
+  background: transparent;
+  color: var(--color-light-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  padding: 0;
+  margin: 0;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  line-height: 1;
+  transition: color var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+
+.progress-tracker-reset svg {
+  flex-shrink: 0;
+  transition: transform 0.4s ease;
+}
+
+.progress-tracker-reset:hover {
+  color: #dc2626;
+}
+
+.progress-tracker-reset:hover svg {
+  transform: rotate(-180deg);
+}
+
+.progress-tracker-reset:active {
+  transform: scale(0.96);
+}
+
+.progress-tracker-reset:focus-visible {
+  outline: 2px solid rgb(239 68 68 / 0.5);
+  outline-offset: 2px;
+}
+
+.progress-tracker-reset[hidden] {
+  display: none;
+}
+
+.dark .progress-tracker-reset {
+  color: var(--color-dark-text-muted);
+}
+
+.dark .progress-tracker-reset:hover {
+  color: #f87171;
 }
 
 .dark .progress-tracker-count {
@@ -137,7 +210,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
   margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.practice-overview-header > * {
+  display: inline-flex;
+  align-items: center;
 }
 
 .practice-overview.all-complete .progress-tracker-fill {

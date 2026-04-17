@@ -42,8 +42,10 @@
       const pct = Math.round((completed / total) * 100);
       const fill = progressBar.querySelector('.progress-tracker-fill');
       const countEl = progressBar.querySelector('.progress-completed');
+      const resetBtn = progressBar.querySelector('[data-progress-reset]');
       if (fill) fill.style.width = `${pct}%`;
       if (countEl) countEl.textContent = completed;
+      if (resetBtn) resetBtn.hidden = completed === 0;
       progressBar.classList.toggle('all-complete', completed === total);
     }
 
@@ -64,6 +66,14 @@
         updateBar();
       });
     });
+
+    const resetBtn = document.querySelector('[data-progress-reset]');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', () => {
+        localStorage.removeItem(STORAGE_KEY);
+        hydrate();
+      });
+    }
 
     hydrate();
     window.addEventListener('pageshow', hydrate);
