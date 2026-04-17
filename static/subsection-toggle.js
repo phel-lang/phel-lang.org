@@ -24,11 +24,17 @@
   }
 
   function applyState(state) {
+    const hasActive = document.querySelector('.sidebar-section.active') !== null;
     document.querySelectorAll('.sidebar-section').forEach((sectionItem) => {
       if (sectionItem.classList.contains('active')) return;
+      const button = sectionItem.querySelector('.subsection-toggle');
+      if (hasActive) {
+        sectionItem.classList.add('collapsed');
+        if (button) button.setAttribute('aria-expanded', 'false');
+        return;
+      }
       const key = sectionKey(sectionItem);
       if (!key || !(key in state)) return;
-      const button = sectionItem.querySelector('.subsection-toggle');
       const collapsed = state[key] === true;
       if (collapsed) {
         sectionItem.classList.add('collapsed');
