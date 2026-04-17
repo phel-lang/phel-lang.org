@@ -1,9 +1,48 @@
 {% extends "layouts/one-column-layout.html" %}
 
-{% block meta_content %}
-    <title>{{ page.title }} | {{ config.title }}</title>
-    <meta property="og:title" content="{{ page.title }} | {{ config.title }}" />
-{% endblock meta_content %}
+{% block og_type %}{% set og_type = "article" %}{% endblock og_type %}
+
+{% block article_meta %}
+  {% if page.date %}<meta property="article:published_time" content="{{ page.date }}">{% endif %}
+  {% if page.updated %}<meta property="article:modified_time" content="{{ page.updated }}">{% endif %}
+  {% set author = page.extra.author | default(value="Phel Team") %}
+  <meta property="article:author" content="{{ author }}">
+  <meta property="article:section" content="Blog">
+  {% if page.taxonomies and page.taxonomies.tags %}
+    {% for tag in page.taxonomies.tags %}
+    <meta property="article:tag" content="{{ tag }}">
+    {% endfor %}
+  {% endif %}
+{% endblock article_meta %}
+
+{% block structured_data %}
+{% set post_desc = page.description | default(value=page.summary | default(value=config.description) | striptags) %}
+{% set post_image = page.extra.og_image | default(value=config.base_url ~ "/favicon-512.png") %}
+{% set author_name = page.extra.author | default(value="Phel Team") %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": {{ page.title | json_encode | safe }},
+  "description": {{ post_desc | json_encode | safe }},
+  "url": {{ page.permalink | json_encode | safe }},
+  "mainEntityOfPage": {{ page.permalink | json_encode | safe }},
+  "image": {{ post_image | json_encode | safe }},
+  {% if page.date %}"datePublished": {{ page.date | json_encode | safe }},{% endif %}
+  {% if page.updated %}"dateModified": {{ page.updated | json_encode | safe }},{% else %}{% if page.date %}"dateModified": {{ page.date | json_encode | safe }},{% endif %}{% endif %}
+  "author": {
+    "@type": "Person",
+    "name": {{ author_name | json_encode | safe }}
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": {{ config.title | json_encode | safe }},
+    "url": {{ config.base_url | json_encode | safe }}
+  }
+}
+</script>
+{% endblock structured_data %}
+
 {% block content %}
   <div class="blog-entry">
     <h1>{{page.title}}</h1>

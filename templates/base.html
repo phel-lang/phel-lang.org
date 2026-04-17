@@ -3,13 +3,27 @@
 
 <head>
   <meta charset="utf-8">
-  
+
+  {# ---------- Resolved metadata ---------- #}
+  {% set site_name = config.title %}
+  {% set page_title = page.title | default(value=section.title | default(value=config.title)) %}
+  {% set full_title = page.title | default(value=section.title | default(value="")) %}
+  {% if full_title and full_title != config.title %}
+    {% set full_title = full_title ~ " | " ~ config.title %}
+  {% else %}
+    {% set full_title = config.title %}
+  {% endif %}
+  {% set page_desc = page.description | default(value=section.description | default(value=config.description)) %}
+  {% set page_url = current_url | default(value=config.base_url ~ "/") %}
+  {% set og_image = page.extra.og_image | default(value=section.extra.og_image | default(value=config.base_url ~ "/favicon-512.png")) %}
+  {% block og_type %}{% set og_type = "website" %}{% endblock og_type %}
+
   <!-- Prevent flash of light mode - must run before any rendering -->
   <script>
     (function() {
       const savedTheme = localStorage.getItem('theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      
+
       if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
         document.documentElement.classList.add('dark');
       }
@@ -23,25 +37,58 @@
     cronitor('config', { clientKey: 'e3d08bf21a6abf02b7da2e061554d399' });
   </script>
 
-  {% block meta_content %}
-  <title>{{ config.title }}</title>
-  <meta property="og:title" content="{{ config.title }}" />
-  {% endblock meta_content %}
-
+  {# ---------- Primary meta ---------- #}
+  <title>{{ full_title }}</title>
+  <meta name="description" content="{{ page_desc }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="{{ config.description }}">
+  <meta name="theme-color" content="#1d4ed8">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <link rel="canonical" href="{{ page_url | safe }}">
 
+  {# ---------- Open Graph ---------- #}
+  <meta property="og:site_name" content="{{ site_name }}">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:type" content="{{ og_type }}">
+  <meta property="og:title" content="{{ page_title }}">
+  <meta property="og:description" content="{{ page_desc }}">
+  <meta property="og:url" content="{{ page_url | safe }}">
+  <meta property="og:image" content="{{ og_image | safe }}">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta property="og:image:alt" content="{{ page_title }}">
+
+  {# ---------- Twitter ---------- #}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page_title }}">
+  <meta name="twitter:description" content="{{ page_desc }}">
+  <meta name="twitter:image" content="{{ og_image | safe }}">
+  <meta name="twitter:image:alt" content="{{ page_title }}">
+
+  {# ---------- Article-specific meta (filled by blog-entry) ---------- #}
+  {% block article_meta %}{% endblock article_meta %}
+
+  {# ---------- Feed ---------- #}
+  <link rel="alternate" type="application/atom+xml" title="{{ config.title }} Blog" href="{{ config.base_url | safe }}/blog/atom.xml">
+
+  {# ---------- Styles & icons ---------- #}
   <link rel="stylesheet" href="/tailwind.css"/>
   <link rel="stylesheet" href="/syntax-theme-light.css" media="(prefers-color-scheme: light)" />
   <link rel="stylesheet" href="/syntax-theme-dark.css" media="(prefers-color-scheme: dark)" />
   <link rel="alternate icon" type="image/png" href="/favicon-32.png">
+  <link rel="icon" type="image/png" href="/favicon-512.png">
 
-  <meta property="og:description" content="{{ config.description }}" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://phel-lang.org/" />
-  <meta property="og:image" content="https://phel-lang.org/favicon-512.png" />
-  <meta property="og:image:width" content="512" />
-  <meta property="og:image:height" content="512" />
+  {# ---------- Structured data ---------- #}
+  {% block structured_data %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": {{ config.title | json_encode | safe }},
+    "url": {{ config.base_url | json_encode | safe }},
+    "description": {{ config.description | json_encode | safe }}
+  }
+  </script>
+  {% endblock structured_data %}
 </head>
 
 <body>

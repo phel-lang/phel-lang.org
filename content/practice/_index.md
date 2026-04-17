@@ -1,4 +1,6 @@
 +++
+title = "Practice"
+description = "A guided journey from your first parenthesis to real Phel programs: interactive exercises on data, functions, control flow, and the functional toolbox."
 sort_by = "weight"
 insert_anchor_links = "right"
 template = "practice-section.html"

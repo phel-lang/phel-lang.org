@@ -1,9 +1,12 @@
 {% extends "layouts/one-column-layout.html" %}
 
-{% block meta_content %}
-    <title>{{ page.title }} | {{ config.title }}</title>
-    <meta property="og:title" content="{{ page.title }} | {{ config.title }}" />
-{% endblock meta_content %}
+{% block og_type %}{% set og_type = "article" %}{% endblock og_type %}
+
+{% block article_meta %}
+  {% if page.date %}<meta property="article:published_time" content="{{ page.date }}">{% endif %}
+  <meta property="article:section" content="Releases">
+{% endblock article_meta %}
+
 {% block content %}
   <div class="release-entry">
     <h1>{{page.title}}</h1>

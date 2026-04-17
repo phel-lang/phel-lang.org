@@ -1,9 +1,5 @@
 {% extends "layouts/one-column-layout.html" %}
 
-{% block meta_content %}
-    <title>{{ section.title }}</title>
-    <meta property="og:title" content="{{ section.title }}" />
-{% endblock meta_content %}
 {% block content %}
     <div class="homepage-content">
         {{ section.content | safe }}

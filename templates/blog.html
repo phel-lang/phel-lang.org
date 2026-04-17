@@ -1,9 +1,25 @@
 {% extends "layouts/one-column-layout.html" %}
 
-{% block meta_content %}
-    <title>{{ section.title }}</title>
-    <meta property="og:title" content="{{ section.title }}" />
-{% endblock meta_content %}
+{% block structured_data %}
+{% set blog_name = config.title ~ " Blog" %}
+{% set blog_url = config.base_url ~ "/blog/" %}
+{% set blog_desc = section.description | default(value=config.description) %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": {{ blog_name | json_encode | safe }},
+  "url": {{ blog_url | json_encode | safe }},
+  "description": {{ blog_desc | json_encode | safe }},
+  "publisher": {
+    "@type": "Organization",
+    "name": {{ config.title | json_encode | safe }},
+    "url": {{ config.base_url | json_encode | safe }}
+  }
+}
+</script>
+{% endblock structured_data %}
+
 {% block content %}
 <h1>Blog</h1>
 <p class="blog-intro">Find the newest information about Phel in our Blog.</p>

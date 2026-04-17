@@ -1,11 +1,5 @@
 {% extends "layouts/one-column-layout.html" %}
 
-{% block meta_content %}
-<title>{{ section.title }} | {{ config.title }}</title>
-<meta property="og:title" content="{{ section.title }} | {{ config.title }}"/>
-<meta property="og:description" content="Complete list of Phel releases, automatically generated from the Phel GitHub releases."/>
-{% endblock meta_content %}
-
 {% block content %}
 {% if paginator.current_index == 1 %}
 <h1>Releases</h1>

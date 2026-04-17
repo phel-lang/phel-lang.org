@@ -19,7 +19,8 @@ include_content = true
 # Include more content to make search more comprehensive
 truncate_content_length = 5000
 
-generate_feeds = false
+generate_feeds = true
+feed_filenames = ["atom.xml"]
 
 [markdown.highlighting]
 style = "class"

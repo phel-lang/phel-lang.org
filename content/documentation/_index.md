@@ -1,4 +1,6 @@
 +++
+title = "Documentation"
+description = "Comprehensive guides and references for Phel: installation, language features, tooling, web development, and more."
 sort_by = "weight"
 insert_anchor_links = "right"
 paginate_by = 5
