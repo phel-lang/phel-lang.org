@@ -16,32 +16,32 @@ Let's see them in action:
 The map function takes two arguments. The first argument is a one-argument function that transforms a single value. The second argument is the sequence that should be transformed.
 
 ```phel
-# Increment by 1
-(map inc [1 2 3]) # evaluates to [2 3 4]
-# Multiply by 2 using fn syntax
-(map (fn [x] (* 2 x)) [1 2 3]) # evaluates to [2 4 6]
-# Multiply by 2 using fn shorthand syntax
-(map |(* 2 $) [1 2 3]) # evaluates to [2 4 6]
+;; Increment by 1
+(map inc [1 2 3]) ; => [2 3 4]
+;; Multiply by 2 using fn syntax
+(map (fn [x] (* 2 x)) [1 2 3]) ; => [2 4 6]
+;; Multiply by 2 using fn shorthand syntax
+(map |(* 2 $) [1 2 3]) ; => [2 4 6]
 ```
 
 The filter function takes two arguments. The first argument is a one-argument function that returns true if it should keep the value in the list. The second argument is the sequence that should be filtered.
 
 ```phel
-# keep even numbers
-(filter even? [1 2 3]) # evaluates to [2]
-# keep odd numbers
-(filter odd? [1 2 3]) # evaluates to [1 3]
-# keep number bigger 2
-(filter |(> $ 2) [1 2 3]) # evaluates to [3]
+;; keep even numbers
+(filter even? [1 2 3]) ; => [2]
+;; keep odd numbers
+(filter odd? [1 2 3]) ; => [1 3]
+;; keep numbers bigger than 2
+(filter |(> $ 2) [1 2 3]) ; => [3]
 ```
 
 The reduce function takes three arguments. The first argument is a two-argument function (accumulated value and sequence value) that return a new accumulated value. The second argument is the initial accumulated value and the third argument is the sequence that should be reduced.
 
 ```phel
-# sum all value starting by 0
-(reduce + 0 [1 2 3]) # evaluates to 6
-# sum all values use first value as starting point
-(reduce (fn [acc x] (* acc x)) 1 [2 3 4]) # evaluates to 24
-# concat all numbers to a string
-(reduce str "" [1 2 3]) # evaluates to "123"
+;; sum all values starting from 0
+(reduce + 0 [1 2 3]) ; => 6
+;; multiply all values starting from 1
+(reduce (fn [acc x] (* acc x)) 1 [2 3 4]) ; => 24
+;; concat all numbers to a string
+(reduce str "" [1 2 3]) ; => "123"
 ```

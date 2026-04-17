@@ -18,7 +18,7 @@ Phel's `loop` allows you to write repetitive processing just like a recursive fu
   (if (= cnt 0)
     sum
     (recur (+ cnt sum) (dec cnt))))
-=> 55
+;; => 55
 ```
 
 When the same function is written as a recursive function, it looks like this:
@@ -29,7 +29,7 @@ When the same function is written as a recursive function, it looks like this:
     sum
     (my-sum-to-n (+ cnt sum) (dec cnt))))
 (my-sum-to-n 0 10)
-=> 55
+;; => 55
 ```
 
 There are some differences between the `loop` format and the recursive function format.

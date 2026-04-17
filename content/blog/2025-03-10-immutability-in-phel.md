@@ -10,30 +10,30 @@ If you're coming from PHP's mutable arrays and objects, that default can feel st
 
 ## Goodbye in-place updates
 
-[Vectors](/documentation/language/data-structures/#vectors), [maps](/documentation/language/data-structures/#maps), [sets](/documentation/language/data-structures/#sets), [lists](/documentation/language/data-structures/#lists), and [structs](/documentation/language/data-structures/#structs) in Phel never mutate. Helpers such as `push` and `put` hand you the updated collection while the original stays exactly the same.
+[Vectors](/documentation/language/data-structures/#vectors), [maps](/documentation/language/data-structures/#maps), [sets](/documentation/language/data-structures/#sets), [lists](/documentation/language/data-structures/#lists), and [structs](/documentation/language/data-structures/#structs) in Phel never mutate. Helpers such as `conj` and `assoc` hand you the updated collection while the original stays exactly the same.
 
 ```phel
 (def groceries [:milk :bread])
-(def extended (push groceries :apples))
+(def extended (conj groceries :apples))
 
 groceries
-=> [:milk :bread]
+;; => [:milk :bread]
 
 extended
-=> [:milk :bread :apples]
+;; => [:milk :bread :apples]
 ```
 
 Because `groceries` never changes, any function that already received it can keep using it without worrying about sneaky side effects. Maps behave the same way:
 
 ```phel
 (def customer {:id 42 :name "Ada"})
-(let [with-email (put customer :email "ada@example.com")]
+(let [with-email (assoc customer :email "ada@example.com")]
   [customer with-email])
-=> [{:id 42 :name "Ada"}
-    {:id 42 :name "Ada" :email "ada@example.com"}]
+;; => [{:id 42 :name "Ada"}
+;;     {:id 42 :name "Ada" :email "ada@example.com"}]
 ```
 
-`put` returns a new map that shares everything it can with the original. The copy is cheap thanks to structural sharing, Phel only allocates the path that actually changed.
+`assoc` returns a new map that shares everything it can with the original. The copy is cheap thanks to structural sharing, Phel only allocates the path that actually changed.
 
 ## Benefits of data that never changes
 
@@ -53,10 +53,10 @@ Immutability pairs nicely with Phel's pipeline-friendly tools. Each step receive
      (filter |(>= $ 15))
      (map |(- $ 10))
      (reduce + 0))
-=> 19
+;; => 19
 
 scores
-=> [10 18 21 7]
+;; => [10 18 21 7]
 ```
 
 The vector `scores` is still the same after the reduction, ready to reuse later. That makes it trivial to layer different views over the same base data.
@@ -65,6 +65,6 @@ The vector `scores` is still the same after the reduction, ready to reuse later.
 
 Real programs still need to talk to the outside world; databases, APIs, the filesystem. Immutability doesn’t stop that; it just asks you to keep those side effects in their own little corner.
 
-Do your updates at clear entry points, turn any external data into immutable Phel values, and let the rest of your code run safely on pure data. When you need a new version, use helpers like `put-in`, `unset`, or `push`, and pass the new value forward instead of mutating it.
+Do your updates at clear entry points, turn any external data into immutable Phel values, and let the rest of your code run safely on pure data. When you need a new version, use helpers like `assoc-in`, `dissoc`, or `conj`, and pass the new value forward instead of mutating it.
 
 Once you stop changing data in place, life gets simpler: there’s the value you got, and the value you return. **That's it**. Everything else becomes easier to trust, and that’s why, in Phel, your data never changes.

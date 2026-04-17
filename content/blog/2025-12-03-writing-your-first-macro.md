@@ -40,14 +40,14 @@ Two concepts make macros tick: **quote** and **unquote**.
 **Quote** (the `'` character) stops evaluation. It hands you raw code instead of running it:
 
 ```phel
-(+ 1 2)    # => 3
-'(+ 1 2)   # => (+ 1 2), just a list
+(+ 1 2)    ; => 3
+'(+ 1 2)   ; => (+ 1 2), just a list
 ```
 
 **Quasiquote** (the backtick `` ` ``) works like quote, but you can poke holes with **unquote** (`,`) to let specific pieces evaluate:
 
 ```phel
-`(1 2 ,(+ 1 2))   # => (1 2 3)
+`(1 2 ,(+ 1 2))   ; => (1 2 3)
 ```
 
 Think of quasiquote as a template. Most of it stays literal; the `,` parts get filled in. If you have written Clojure, this is exactly what you know.
@@ -99,7 +99,7 @@ Here is something you cannot do with a plain function. Say you want to measure h
      ret$))
 
 (time (slow-operation))
-# Prints: Elapsed time: 142.3 msecs
+;; Prints: Elapsed time: 142.3 msecs
 ```
 
 The `$` suffix is a convention for local bindings inside macros. It helps avoid name collisions with user code. The body runs between the two `microtime` calls, and you get the elapsed time printed for free.
@@ -127,7 +127,7 @@ Here is how Phel's core implements `with-output-buffer`:
 (with-output-buffer
   (print "Hello ")
   (print "World"))
-# => "Hello World"
+;; => "Hello World"
 ```
 
 We call `gensym` outside the quasiquote to get a unique symbol, then unquote it with `,res` wherever we need it. No matter how many times you nest `with-output-buffer`, each expansion gets its own symbol.
@@ -180,7 +180,7 @@ When a macro misbehaves, `macroexpand` shows you the generated code without runn
 
 ```phel
 (macroexpand '(unless (> x 10) (print "small")))
-# => (if (> x 10) nil (do (print "small")))
+;; => (if (> x 10) nil (do (print "small")))
 ```
 
 Paste in your macro call, see what comes out. It takes the mystery out of debugging.

@@ -14,9 +14,9 @@ Use `->` when the function you call expects the data as its first argument.
 
 ```phel
 (-> 5
-    (+ 3)   # becomes (+ 5 3)
-    (* 2))  # becomes (* 8 2)
-=> 16
+    (+ 3)   ; becomes (+ 5 3)
+    (* 2))  ; becomes (* 8 2)
+;; => 16
 ```
 
 ## Thread-last `->>`
@@ -25,10 +25,10 @@ Use `->>` when the function expects the data as its last argument. This is commo
 
 ```phel
 (->> [1 2 3 4]
-     (map inc)      # becomes (map inc [1 2 3 4])
-     (filter odd?)  # becomes (filter odd? [2 3 4 5])
-     (reduce +))    # becomes (reduce + [3 5])
-=> 8
+     (map inc)      ; becomes (map inc [1 2 3 4])
+     (filter odd?)  ; becomes (filter odd? [2 3 4 5])
+     (reduce +))    ; becomes (reduce + [3 5])
+;; => 8
 ```
 
 ## When to choose which
