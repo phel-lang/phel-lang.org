@@ -57,6 +57,7 @@ final readonly class ApiSearchGenerator
                 'desc' => $this->formatDescription($fn->description),
                 'anchor' => $anchor,
                 'type' => 'api',
+                'kind' => !empty($fn->meta['macro']) ? 'macro' : 'function',
             ];
         }
 

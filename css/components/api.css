@@ -1,3 +1,83 @@
+/* API Filters */
+.api-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: var(--space-lg) 0 var(--space-xl);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-light-bg-secondary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-light-border);
+}
+
+.api-filters__label {
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-light-text-secondary);
+  margin-right: var(--space-sm);
+}
+
+.api-filters__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  padding: var(--space-xs) var(--space-sm);
+  font-size: var(--text-sm);
+  color: var(--color-light-text-primary);
+  background: var(--color-light-bg);
+  border: 1px solid var(--color-light-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  user-select: none;
+  transition: background var(--duration-fast) var(--ease-out);
+}
+
+.api-filters__chip:hover {
+  background: var(--color-light-bg-secondary);
+}
+
+.api-filters__chip input {
+  accent-color: var(--color-light-link);
+  cursor: pointer;
+}
+
+.api-filters__count {
+  font-size: var(--text-xs);
+  color: var(--color-light-text-secondary);
+  padding: 0 var(--space-xs);
+  background: var(--color-light-bg-secondary);
+  border-radius: var(--radius-sm);
+  min-width: 1.5rem;
+  text-align: center;
+}
+
+.dark .api-filters {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+}
+
+.dark .api-filters__label,
+.dark .api-filters__count {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .api-filters__chip {
+  background: var(--color-dark-bg);
+  border-color: var(--color-dark-border);
+  color: var(--color-dark-text-primary);
+}
+
+.dark .api-filters__chip:hover {
+  background: var(--color-dark-surface-hover);
+}
+
+.dark .api-filters__count {
+  background: var(--color-dark-surface-hover);
+}
+
 /* API Namespace Rail */
 .api-ns-rail {
   margin-bottom: var(--space-xl);
