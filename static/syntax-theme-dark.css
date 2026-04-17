@@ -45,6 +45,9 @@
 .z-support.z-function {
  color: #96b5b4;
 }
+.z-support {
+ color: #8fa1b3;
+}
 .z-string, .z-constant.z-other.z-symbol, .z-entity.z-other.z-inherited-class {
  color: #a3be8c;
 }
