@@ -137,6 +137,29 @@
     input.addEventListener('focus', () => {
       if (matches.length > 0) results.hidden = false;
     });
+
+    document.addEventListener(
+      'keydown',
+      (e) => {
+        if (e.key !== '/') return;
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+        const ae = document.activeElement;
+        if (
+          ae &&
+          (ae.tagName === 'INPUT' ||
+            ae.tagName === 'TEXTAREA' ||
+            ae.tagName === 'SELECT' ||
+            ae.isContentEditable)
+        ) {
+          return;
+        }
+        e.preventDefault();
+        e.stopPropagation();
+        input.focus();
+        input.select();
+      },
+      true
+    );
   }
 
   if (document.readyState === 'loading') {
