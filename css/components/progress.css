@@ -246,6 +246,13 @@
               box-shadow var(--duration-fast) var(--ease-out);
 }
 
+.practice-card,
+.practice-card:hover,
+.two-column-layout__content .practice-card:hover,
+.practice-card:hover * {
+  text-decoration: none;
+}
+
 .practice-card:hover {
   transform: translateY(-2px);
   border-color: var(--color-light-link);
