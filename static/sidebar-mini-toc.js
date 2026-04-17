@@ -7,20 +7,23 @@
     );
     if (!activeLink) return;
 
+    if (document.querySelector('.api-ns-rail')) return;
+
     const content =
       document.querySelector('.two-column-layout__content') ||
       document.querySelector('.documentation__content') ||
       document.querySelector('main');
     if (!content) return;
 
-    const headings = Array.from(content.querySelectorAll('h2[id], h3[id]'));
+    const headings = Array.from(content.querySelectorAll('h2[id]'));
     if (headings.length < 2) return;
+    if (headings.length > 25) return;
 
     const ul = document.createElement('ul');
     ul.className = 'sidebar-mini-toc';
     headings.forEach((h) => {
       const li = document.createElement('li');
-      li.className = 'sidebar-mini-toc__item sidebar-mini-toc__item--' + h.tagName.toLowerCase();
+      li.className = 'sidebar-mini-toc__item';
       const a = document.createElement('a');
       a.href = '#' + encodeURIComponent(h.id);
       a.textContent = (h.textContent || '').replace(/#+\s*$/, '').trim();
