@@ -7,6 +7,9 @@
 {% if ancestor_path %}
 <div class="site-navigation-section">
     <h2 class="site-navigation__title">Contents</h2>
+    <div class="site-navigation-filter">
+        <input type="search" class="site-navigation-filter__input" placeholder="Filter…" aria-label="Filter navigation" autocomplete="off" spellcheck="false"/>
+    </div>
     <ol class="site-navigation">
         {% set doc_section = get_section(path=ancestor_path) %}
         {% set is_main_documentation = ancestor_path == "documentation/_index.md" %}
