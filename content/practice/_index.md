@@ -1,6 +1,8 @@
 +++
 sort_by = "weight"
 insert_anchor_links = "right"
+template = "practice-section.html"
+page_template = "practice-page.html"
 +++
 
 # Practice

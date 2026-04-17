@@ -5,7 +5,7 @@ weight = 6
 
 Time to combine everything you've learned! These challenges are bigger exercises that draw on multiple concepts. Take your time, break them into smaller pieces, and have fun.
 
-{% question() %}
+{% question(difficulty="hard") %}
 **FizzBuzz**: Write a function that takes a number `n` and returns a vector where each number from 1 to `n` is replaced by:
 - `"Fizz"` if divisible by 3
 - `"Buzz"` if divisible by 5
@@ -32,7 +32,7 @@ This combines `for` (list comprehension), `cond` (multi-branch conditionals), an
 Learn more: [Control Flow](/documentation/language/control-flow), [Arithmetic](/documentation/language/arithmetic)
 {% end %}
 
-{% question() %}
+{% question(difficulty="hard") %}
 **Fibonacci**: Implement a function that returns the first `n` Fibonacci numbers.
 ```phel
 (fib 8) # => [0 1 1 2 3 5 8 13]
@@ -54,7 +54,7 @@ Each new number is the sum of the two before it. We use `loop`/`recur` with an a
 Learn more: [Control Flow](/documentation/language/control-flow), [Data Structures](/documentation/language/data-structures)
 {% end %}
 
-{% question() %}
+{% question(difficulty="hard") %}
 **Caesar cipher**: Write `encode` and `decode` functions that shift letters by a given number of positions.
 ```phel
 (encode "hello" 3)  # => "khoor"
@@ -84,7 +84,7 @@ This combines: `map` over a string (treating it as a sequence of characters), an
 Learn more: [PHP Interop](/documentation/php-interop), [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
-{% question() %}
+{% question(difficulty="hard") %}
 **Word frequency analyzer**: Find the five most used words from a book, ignoring common stop words.
 
 Tips:
@@ -125,7 +125,7 @@ This is a beautiful example of the `->>` threading macro in action. Each step is
 Learn more: [PHP Interop](/documentation/php-interop), [Data Structures](/documentation/language/data-structures), [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
-{% question() %}
+{% question(difficulty="hard") %}
 **Rock, Paper, Scissors**: Create an interactive CLI game where the computer picks randomly and you type your choice.
 
 Requirements:

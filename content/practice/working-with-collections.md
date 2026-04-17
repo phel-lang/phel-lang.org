@@ -5,7 +5,7 @@ weight = 5
 
 This is where Phel really shines. Transforming data with `map`, `filter`, `reduce`, and the threading macro is at the heart of functional programming.
 
-{% question() %}
+{% question(difficulty="medium") %}
 Increment all numbers in `[4 7 9 10]` by one. Use the `map` function.
 {% end %}
 {% solution() %}
@@ -25,7 +25,7 @@ Increment all numbers in `[4 7 9 10]` by one. Use the `map` function.
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Given a list of names, return them all in uppercase:
 ```phel
 ["ada" "grace" "alan"]
@@ -43,7 +43,7 @@ You can use PHP functions directly in Phel with the `php/` prefix. This gives yo
 Learn more: [PHP Interop](/documentation/php-interop)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Filter the even numbers from `[1 2 3 4 5 6 7 8 9 10]`.
 {% end %}
 {% solution() %}
@@ -54,7 +54,7 @@ Filter the even numbers from `[1 2 3 4 5 6 7 8 9 10]`.
 `filter` keeps only the elements for which the predicate returns `true`.
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 From the vector `[1 2 3 4 5 6 7 8 9 10]`, get only the even numbers and then double each one.
 {% end %}
 {% solution() %}
@@ -65,7 +65,7 @@ From the vector `[1 2 3 4 5 6 7 8 9 10]`, get only the even numbers and then dou
 Composing `filter` and `map` is a common pattern. Read it inside-out: first filter, then map.
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Rewrite the previous exercise using the threading macro `->>` so it reads top-to-bottom instead of inside-out.
 {% end %}
 {% solution() %}
@@ -80,7 +80,7 @@ Rewrite the previous exercise using the threading macro `->>` so it reads top-to
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Use `reduce` to compute the sum of `[1 2 3 4 5]`.
 {% end %}
 {% solution() %}
@@ -91,7 +91,7 @@ Use `reduce` to compute the sum of `[1 2 3 4 5]`.
 `reduce` combines all elements of a collection into a single value. It takes: a function, an initial value, and a collection. Here, it computes `(+ (+ (+ (+ (+ 0 1) 2) 3) 4) 5)`.
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Use `reduce` to find the longest string in `["cat" "elephant" "dog" "hippopotamus"]`.
 {% end %}
 {% solution() %}
@@ -106,7 +106,7 @@ Use `reduce` to find the longest string in `["cat" "elephant" "dog" "hippopotamu
 `reduce` is very flexible - any time you need to "collapse" a collection into a single value, it's your tool.
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Use the `for` structure to extract all `:value` entries from this vector of maps:
 ```phel
 (def data [{:id 1 :value 10.3} {:id 2 :value 20.06} {:id 7 :value 30.1}])
@@ -124,7 +124,7 @@ Expected result: `(10.3 20.06 30.1)`
 Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Sort a list of people by age:
 ```phel
 (def people [{:name "Charlie" :age 30}
@@ -140,7 +140,7 @@ Sort a list of people by age:
 `sort-by` takes a key function and a collection. Since keywords are functions, `:age` extracts the value to sort on.
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Use `update-in` to change the balance from 3 to 4 in this nested structure:
 ```phel
 (def data {:shops [:shop-1]
@@ -158,7 +158,7 @@ Use `update-in` to change the balance from 3 to 4 in this nested structure:
 Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Use `frequencies` to count how many times each fruit appears:
 ```phel
 ["apple" "banana" "apple" "cherry" "banana" "apple"]
@@ -172,7 +172,7 @@ Use `frequencies` to count how many times each fruit appears:
 `frequencies` returns a map from each distinct element to the number of times it appears. Very useful for counting and analysis.
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Use `group-by` to split numbers into even and odd groups:
 ```phel
 [1 2 3 4 5 6 7 8]
@@ -186,7 +186,7 @@ Use `group-by` to split numbers into even and odd groups:
 `group-by` applies a function to each element and groups them by the result.
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Create a function `combine` that merges a vector of maps into one:
 ```phel
 (combine [{:a 1 :b 2} {:c 3} {:d 4 :e 5}])

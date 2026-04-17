@@ -5,7 +5,7 @@ weight = 4
 
 Making decisions and repeating actions. Phel gives you several tools for control flow - each suited for different situations.
 
-{% question() %}
+{% question(difficulty="medium") %}
 Define a function `absolute` that returns the absolute value of a number using `if`.
 ```phel
 (absolute -5)  # => 5
@@ -24,7 +24,7 @@ Define a function `absolute` that returns the absolute value of a number using `
 Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Define a function `small?` that returns `true` for numbers under 100.
 ```phel
 (small? 99)  # => true
@@ -40,7 +40,7 @@ By convention, predicate functions (that return true/false) end with `?`.
 Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Use `when` to print a warning only if a number is negative. What does `when` return when the condition is false?
 ```phel
 (defn warn-if-negative [n] ...)
@@ -62,7 +62,7 @@ Use `when` to print a warning only if a number is negative. What does `when` ret
 Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Define a function `grade` that converts a score to a letter grade:
 ```phel
 (grade 95) # => "A"
@@ -86,7 +86,7 @@ Use the `cond` structure (scores: A >= 90, B >= 80, C >= 70, F otherwise).
 Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Define a function `day-type` that classifies days of the week:
 ```phel
 (day-type :monday)   # => "weekday"
@@ -109,7 +109,7 @@ Use the `case` structure.
 Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 The exercises in the [Conditionals & Structures](/practice/conditionals-and-structures) section of the old practice used a `message` function with `if`, `cond`, and `case`. Now that you know all three - when would you choose each one? Write a `describe-temp` function that uses the best fit:
 ```phel
 (describe-temp 35)  # => "hot"
@@ -132,7 +132,7 @@ The exercises in the [Conditionals & Structures](/practice/conditionals-and-stru
 Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Use `loop` and `recur` to build a vector of numbers from `1` to `10`.
 {% end %}
 {% solution() %}
@@ -148,7 +148,7 @@ Use `loop` and `recur` to build a vector of numbers from `1` to `10`.
 Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Use `loop` and `recur` to compute the sum of numbers from 1 to 100.
 {% end %}
 {% solution() %}

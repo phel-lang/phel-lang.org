@@ -1,0 +1,74 @@
+{% extends "layouts/two-column-layout.html" %}
+
+{% block meta_content %}
+<title>{{ section.title }} | {{ config.title }}</title>
+<meta property="og:title" content="{{ section.title }} | {{ config.title }}"/>
+{% endblock meta_content %}
+
+{% block sidebar_extra %}{% endblock sidebar_extra %}
+
+{% block content %}
+<h1>{{ section.title }}</h1>
+<div class="flex-container">
+    <div class="page-content">
+        {{ section.content | safe }}
+
+        {% if section.pages | length > 0 %}
+        {% set_global total_exercises = 0 %}
+        {% for page in section.pages %}
+            {% set parts = page.content | split(pat="question-block") %}
+            {% set parts_len = parts | length %}
+            {% set_global total_exercises = total_exercises + parts_len - 1 %}
+        {% endfor %}
+        <div class="practice-overview" data-practice-overview>
+            <div class="practice-overview-header">
+                <span class="progress-tracker-label">Overall progress</span>
+                <span class="progress-tracker-count"><span data-overall-completed>0</span>/<span data-overall-total>{{ total_exercises }}</span></span>
+            </div>
+            <div class="progress-tracker-bar">
+                <div class="progress-tracker-fill" data-overall-fill style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="practice-card-grid">
+            {% for page in section.pages %}
+            {% set slug = page.path | trim_end_matches(pat="/") | split(pat="/") | last %}
+            {% set parts = page.content | split(pat="question-block") %}
+            {% set exercise_count = parts | length - 1 %}
+            <a href="{{ page.path }}" class="practice-card" data-slug="{{ slug }}" data-total="{{ exercise_count }}">
+                <div class="practice-card__head">
+                    <span class="practice-card__step">{{ loop.index }}</span>
+                    <h3 class="practice-card__title">{{ page.title }}</h3>
+                </div>
+                {% if page.description %}
+                <p class="practice-card__desc">{{ page.description }}</p>
+                {% else %}
+                <p class="practice-card__desc">{{ page.content | striptags | truncate(length=140) }}</p>
+                {% endif %}
+                <div class="practice-card__meta">
+                    <span class="practice-card__count">{{ exercise_count }} exercise{% if exercise_count != 1 %}s{% endif %}</span>
+                    <span class="practice-card__progress" data-card-progress>0/{{ exercise_count }}</span>
+                </div>
+                <div class="progress-tracker-bar practice-card__bar">
+                    <div class="progress-tracker-fill" data-card-fill style="width: 0%"></div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
+
+{% block editable %}
+<div class="edit-page-link">
+  {% set url = config.extra.repo_content_url ~ section.relative_path %}
+  <a href="{{ url }}" target="_blank" rel="noopener noreferrer">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+    </svg>
+    Found a typo? Edit this page
+  </a>
+</div>
+{% endblock editable %}

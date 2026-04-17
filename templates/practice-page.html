@@ -1,0 +1,62 @@
+{% extends "layouts/two-column-layout.html" %}
+
+{% block meta_content %}
+    <title>{{ page.title }} | {{ config.title }}</title>
+    <meta property="og:title" content="{{ page.title }} | {{ config.title }}" />
+{% endblock meta_content %}
+
+{% block sidebar_extra %}{% endblock sidebar_extra %}
+
+{% block content %}
+    <h1>{{page.title}}</h1>
+    <div class="flex-container">
+        <div class="page-content">
+            {% set parts = page.content | split(pat="question-block") %}
+            {% set exercise_count = parts | length - 1 %}
+            {% if exercise_count > 0 %}
+            <div class="progress-tracker" data-progress-tracker data-total="{{ exercise_count }}">
+                <div class="progress-tracker-header">
+                    <span class="progress-tracker-label">Progress</span>
+                    <span class="progress-tracker-count"><span class="progress-completed">0</span>/{{ exercise_count }}</span>
+                </div>
+                <div class="progress-tracker-bar">
+                    <div class="progress-tracker-fill" style="width: 0%"></div>
+                </div>
+            </div>
+            {% endif %}
+            {{page.content | safe}}
+        </div>
+    </div>
+{% endblock content %}
+
+{% block navigation %}
+{% if page.lower or page.higher %}
+<div class="page-navigation">
+  {% if page.lower %}
+  <a href="{{ page.lower.path }}" class="btn btn-secondary">
+    <span>&larr; Previous</span>
+    <span>{{ page.lower.title }}</span>
+  </a>
+  {% endif %}
+  {% if page.higher %}
+  <a href="{{ page.higher.path }}" class="btn btn-secondary">
+    <span>{{ page.higher.title }}</span>
+    <span>Next &rarr;</span>
+  </a>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock navigation %}
+
+{% block editable %}
+<div class="edit-page-link">
+  {% set url = config.extra.repo_content_url ~ page.relative_path %}
+  <a href="{{url}}" target="_blank" rel="noopener noreferrer">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+    </svg>
+    Found a typo? Edit this page
+  </a>
+</div>
+{% endblock editable %}

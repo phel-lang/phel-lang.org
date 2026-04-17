@@ -5,7 +5,7 @@ weight = 3
 
 Functions are the building blocks of any Phel program. Here you'll learn how to define them, name things, and scope your variables.
 
-{% question() %}
+{% question(difficulty="medium") %}
 Use `def` to create a binding called `greeting` with the value `"Hello, Phel!"`. Then evaluate `greeting`.
 {% end %}
 {% solution() %}
@@ -19,7 +19,7 @@ greeting
 Learn more: [Global and Local Bindings](/documentation/language/global-and-local-bindings)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Use `defn` to define a function `hello` that takes no arguments and returns `"hello!"`.
 ```phel
 (hello) # => "hello!"
@@ -34,7 +34,7 @@ Use `defn` to define a function `hello` that takes no arguments and returns `"he
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Define a function `double` that takes a number and returns it multiplied by 2.
 ```phel
 (double 5) # => 10
@@ -48,7 +48,7 @@ Define a function `double` that takes a number and returns it multiplied by 2.
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Add a docstring to `double`. Then use `(doc double)` to see it.
 {% end %}
 {% solution() %}
@@ -65,7 +65,7 @@ Docstrings are placed between the function name and the parameter list. They hel
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Use `let` to create a local binding `name` with value `"world"`, then return the string `"Hello, world!"` using `str`.
 {% end %}
 {% solution() %}
@@ -79,7 +79,7 @@ Use `let` to create a local binding `name` with value `"world"`, then return the
 Learn more: [Global and Local Bindings](/documentation/language/global-and-local-bindings)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Use `let` to bind multiple values and compute a result. Calculate the area of a rectangle with `width` 5 and `height` 3.
 {% end %}
 {% solution() %}
@@ -94,7 +94,7 @@ You can create multiple bindings in a single `let`. Later bindings can reference
 Learn more: [Global and Local Bindings](/documentation/language/global-and-local-bindings)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Create an anonymous function that adds 10 to a number. Test it by calling it with `5`. Try both the `fn` form and the short `|` form.
 {% end %}
 {% solution() %}
@@ -112,7 +112,7 @@ Anonymous functions are useful when you need a quick one-off function (especiall
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Define a function `greet` that takes a `name` and an optional `greeting` (defaulting to `"Hello"`):
 ```phel
 (greet "Ada")           # => "Hello, Ada!"
@@ -132,7 +132,7 @@ The `& [greeting]` captures extra arguments via destructuring. `or` provides the
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion), [Destructuring](/documentation/language/destructuring)
 {% end %}
 
-{% question() %}
+{% question(difficulty="medium") %}
 Implement a `factorial` function using recursion.
 ```phel
 (factorial 5) # => 120

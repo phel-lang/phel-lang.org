@@ -47,13 +47,13 @@
 
 .progress-tracker-fill {
   height: 100%;
-  background: var(--color-light-primary);
+  background: var(--color-light-link);
   border-radius: var(--radius-full);
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .progress-tracker-fill {
-  background: var(--color-dark-primary);
+  background: var(--color-dark-text-accent);
 }
 
 .progress-tracker.all-complete .progress-tracker-fill {
@@ -66,19 +66,39 @@
   font-weight: 400;
 }
 
-/* Exercise check marks */
+/* Exercise check marks (clickable toggle) */
 .exercise-check {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: 1.4rem;
+  height: 1.4rem;
+  padding: 0;
   margin-right: 0.5rem;
   border-radius: var(--radius-full);
   border: 2px solid var(--color-light-border);
-  font-size: 0.75rem;
+  background: transparent;
+  color: transparent;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
   vertical-align: middle;
-  transition: all var(--duration-fast) var(--ease-out);
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              color var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
+}
+
+.exercise-check:hover {
+  border-color: #22c55e;
+  background: rgb(34 197 94 / 0.1);
+  transform: scale(1.08);
+}
+
+.exercise-check:focus-visible {
+  outline: 2px solid #22c55e;
+  outline-offset: 2px;
 }
 
 .dark .exercise-check {
@@ -91,19 +111,144 @@
   color: white;
 }
 
-/* Complete button */
-.exercise-complete-btn {
-  margin-top: 1rem;
-  cursor: pointer;
+.exercise-check.completed:hover {
+  background: #16a34a;
+  border-color: #16a34a;
 }
 
-.exercise-complete-btn.btn-completed {
+/* ========================================
+   PRACTICE INDEX — OVERVIEW + CARDS
+   ======================================== */
+
+.practice-overview {
+  margin: var(--space-lg) 0;
+  padding: 1rem 1.25rem;
+  background: var(--color-light-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-light-border);
+}
+
+.dark .practice-overview {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+}
+
+.practice-overview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.practice-overview.all-complete .progress-tracker-fill {
   background: #22c55e;
+}
+
+.practice-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-md);
+  margin: var(--space-lg) 0;
+}
+
+.practice-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.1rem 1.25rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-light-border);
+  background: var(--color-light-surface);
+  color: inherit;
+  text-decoration: none;
+  transition: transform var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.practice-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-light-link);
+  box-shadow: 0 6px 18px -10px rgb(0 0 0 / 0.25);
+}
+
+.dark .practice-card {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+}
+
+.dark .practice-card:hover {
+  border-color: var(--color-dark-text-accent);
+  box-shadow: 0 6px 18px -10px rgb(0 0 0 / 0.6);
+}
+
+.practice-card__head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.practice-card__step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-full);
+  background: var(--color-light-link);
   color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.dark .practice-card__step {
+  background: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+}
+
+.practice-card__title {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.practice-card__desc {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-light-text-muted);
+  line-height: 1.45;
+}
+
+.dark .practice-card__desc {
+  color: var(--color-dark-text-muted);
+}
+
+.practice-card__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--color-light-text-muted);
+  margin-top: auto;
+}
+
+.dark .practice-card__meta {
+  color: var(--color-dark-text-muted);
+}
+
+.practice-card__progress {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.practice-card__bar {
+  height: 6px;
+}
+
+.practice-card.is-complete {
   border-color: #22c55e;
 }
 
-.exercise-complete-btn.btn-completed:hover {
-  background: #16a34a;
-  border-color: #16a34a;
+.practice-card.is-complete .progress-tracker-fill {
+  background: #22c55e;
 }

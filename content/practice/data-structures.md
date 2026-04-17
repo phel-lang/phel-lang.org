@@ -5,7 +5,7 @@ weight = 2
 
 Phel has powerful built-in data structures: vectors, maps, sets, and keywords. Let's explore how to create them, access their contents, and discover that they're all **immutable**.
 
-{% question() %}
+{% question(difficulty="easy") %}
 Define a vector with the elements `2`, `"nice"`, and `true`.
 {% end %}
 {% solution() %}
@@ -19,7 +19,7 @@ Vectors are ordered collections that can hold any mix of types. Square brackets 
 Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
-{% question() %}
+{% question(difficulty="easy") %}
 Define a vector that contains the keywords `:hello` and `:world`.
 {% end %}
 {% solution() %}
@@ -31,7 +31,7 @@ Keywords are lightweight identifiers that start with `:`. They're often used as 
 Learn more: [Basic Types](/documentation/language/basic-types)
 {% end %}
 
-{% question() %}
+{% question(difficulty="easy") %}
 Create a map with keys `:name` and `:age`, with values `"Ada"` and `36`.
 {% end %}
 {% solution() %}
@@ -45,7 +45,7 @@ Maps are key-value collections. Keyword keys are idiomatic in Phel.
 Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
-{% question() %}
+{% question(difficulty="easy") %}
 Create a set containing the numbers `1`, `2`, `3`, and `2`. How many elements does it have?
 {% end %}
 {% solution() %}
@@ -61,7 +61,7 @@ Sets are unordered collections of unique values. Adding a duplicate has no effec
 Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
-{% question() %}
+{% question(difficulty="easy") %}
 Use the `get` function to retrieve the second element from the vector `[10 20 30]`.
 {% end %}
 {% solution() %}
@@ -74,7 +74,7 @@ Vector indices are zero-based, so index `1` is the second element.
 Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
-{% question() %}
+{% question(difficulty="easy") %}
 Given this map, retrieve the value for `:name` in three different ways:
 ```phel
 (def person {:name "Ada" :age 36})
@@ -98,7 +98,7 @@ All three are equivalent. Using keywords as functions (`:name person`) is the mo
 Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
-{% question() %}
+{% question(difficulty="easy") %}
 Use `get-in` to retrieve the value `:treasure` from this nested structure:
 ```phel
 (def dungeon {:description "dark cave"
@@ -117,7 +117,7 @@ Use `get-in` to retrieve the value `:treasure` from this nested structure:
 Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
-{% question() %}
+{% question(difficulty="easy") %}
 Use `put` to add `:email "ada@example.com"` to the `person` map. What does `put` return? What is `person` after the call?
 ```phel
 (def person {:name "Ada" :age 36})
@@ -138,7 +138,7 @@ Phel data structures are **immutable**. `put` returns a *new* map - it never mod
 Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
-{% question() %}
+{% question(difficulty="easy") %}
 Use `push` to add the number `4` to the vector `[1 2 3]`. Then use `count` to verify the length of both the original and the new vector.
 {% end %}
 {% solution() %}
@@ -155,7 +155,7 @@ Again, `push` returns a new vector. The original is untouched.
 Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
-{% question() %}
+{% question(difficulty="easy") %}
 Use `contains?` to check if the set `#{:apple :banana :cherry}` contains `:banana`. Then check for `:grape`.
 {% end %}
 {% solution() %}
@@ -170,7 +170,7 @@ Use `contains?` to check if the set `#{:apple :banana :cherry}` contains `:banan
 Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
-{% question() %}
+{% question(difficulty="easy") %}
 Use `keys` and `values` on the map `{:a 1 :b 2 :c 3}`. What do you get?
 {% end %}
 {% solution() %}
