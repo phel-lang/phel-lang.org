@@ -2,6 +2,9 @@
 title = "Destructuring Deep Dive in Phel"
 aliases = [ "/blog/destructuring-deep-dive" ]
 description = "Pull apart nested vectors and maps, use :keys, :or, :as, & rest, and destructure JSON payloads the way Clojure developers do."
+
+[extra]
+og_image = "https://phel-lang.org/images/og-destructuring-deep-dive.png"
 +++
 
 If you have read the [immutability post](/blog/immutability-in-phel) you already know Phel's collections are persistent and nested. What you probably spend half your time doing is pulling pieces *out* of them. Destructuring is how you stop writing that glue.

@@ -17,7 +17,7 @@
 
 {% block structured_data %}
 {% set post_desc = page.description | default(value=page.summary | default(value=config.description) | striptags) %}
-{% set post_image = page.extra.og_image | default(value=config.base_url ~ "/favicon-512.png") %}
+{% set post_image = page.extra.og_image | default(value=config.base_url ~ "/images/og-default.png") %}
 {% set author_name = page.extra.author | default(value="Phel Team") %}
 <script type="application/ld+json">
 {
