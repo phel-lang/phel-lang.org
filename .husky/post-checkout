@@ -1,0 +1,2 @@
+[ "$3" = "1" ] || exit 0
+npm run build-css-prod
