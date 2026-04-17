@@ -37,7 +37,6 @@
                             {% endfor %}
                             <li class="site-navigation__entry sidebar-section sidebar-section--{{ subsection.title | slugify }} {% if is_section_active or has_active_child %}active{% else %}collapsed{% endif %}">
                                 <div class="sidebar-section-header">
-                                    <span class="sidebar-section-icon" aria-hidden="true"></span>
                                     <span class="sidebar-section-label">{{ subsection.title }}</span>
                                     {% if subsection.pages | length > 0 %}
                                         <button class="subsection-toggle" aria-label="Toggle {{ subsection.title }} subsection" aria-expanded="{% if is_section_active or has_active_child %}true{% else %}false{% endif %}">
