@@ -8,7 +8,10 @@
   <div class="blog-entry">
     <h1>{{page.title}}</h1>
     {% if page.date %}
-      <div class="meta">Published <time datetime="{{page.date}}">{{ page.date | date(format="%b, %e %Y") }}</time></div>
+      <div class="meta">
+        Published <time datetime="{{page.date}}">{{ page.date | date(format="%b, %e %Y") }}</time>
+        {% if page.reading_time %} · {{ page.reading_time }} min read{% endif %}
+      </div>
     {% endif %}
     {{page.content | safe}}
 

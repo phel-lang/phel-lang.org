@@ -13,6 +13,7 @@
         <a class="post-card" href="{{ page.path }}">
             <div class="post-card__meta">
                 <time class="post-card__date" datetime="{{ page.date }}">{{ page.date | date(format="%B %e, %Y") }}</time>
+                {% if page.reading_time %}<span class="post-card__reading-time">· {{ page.reading_time }} min read</span>{% endif %}
             </div>
             <h2 class="post-card__title">{{ page.title }}</h2>
             {% if page.description %}
