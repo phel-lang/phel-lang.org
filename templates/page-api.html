@@ -1,5 +1,21 @@
 {% extends "layouts/two-column-layout.html" %}
 
+{% block sidebar_extra %}
+<nav class="api-ns-rail" aria-label="API namespaces">
+    <h2 class="api-ns-rail__title">Namespaces</h2>
+    <ol class="api-ns-rail__list">
+    {% for namespace in page.toc %}
+        <li class="api-ns-rail__item">
+            <a href="#{{ namespace.id }}">
+                <span class="api-ns-rail__name">{{ namespace.title }}</span>
+                <span class="api-ns-rail__count">{{ namespace.children | length }}</span>
+            </a>
+        </li>
+    {% endfor %}
+    </ol>
+</nav>
+{% endblock sidebar_extra %}
+
 {% block content %}
     <h1>{{page.title}}</h1>
 
