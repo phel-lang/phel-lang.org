@@ -1,55 +1,7 @@
 (function() {
   'use strict';
 
-  const STORAGE_KEY = 'phel.sidebarCollapsed';
-
-  function loadState() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) || {} : {};
-    } catch (_) {
-      return {};
-    }
-  }
-
-  function saveState(state) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch (_) {}
-  }
-
-  function sectionKey(sectionItem) {
-    const label = sectionItem.querySelector('.sidebar-section-label');
-    return label ? (label.textContent || '').trim() : '';
-  }
-
-  function applyState(state) {
-    const hasActive = document.querySelector('.sidebar-section.active') !== null;
-    document.querySelectorAll('.sidebar-section').forEach((sectionItem) => {
-      if (sectionItem.classList.contains('active')) return;
-      const button = sectionItem.querySelector('.subsection-toggle');
-      if (hasActive) {
-        sectionItem.classList.add('collapsed');
-        if (button) button.setAttribute('aria-expanded', 'false');
-        return;
-      }
-      const key = sectionKey(sectionItem);
-      if (!key || !(key in state)) return;
-      const collapsed = state[key] === true;
-      if (collapsed) {
-        sectionItem.classList.add('collapsed');
-        if (button) button.setAttribute('aria-expanded', 'false');
-      } else {
-        sectionItem.classList.remove('collapsed');
-        if (button) button.setAttribute('aria-expanded', 'true');
-      }
-    });
-  }
-
   function initSubsectionToggles() {
-    const state = loadState();
-    applyState(state);
-
     const sectionHeaders = document.querySelectorAll('.sidebar-section-header');
 
     sectionHeaders.forEach(header => {
@@ -64,22 +16,13 @@
         if (!toggleButton) return;
 
         const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
-        const key = sectionKey(sectionItem);
 
         if (isExpanded) {
           sectionItem.classList.add('collapsed');
           toggleButton.setAttribute('aria-expanded', 'false');
-          if (key) {
-            state[key] = true;
-            saveState(state);
-          }
         } else {
           sectionItem.classList.remove('collapsed');
           toggleButton.setAttribute('aria-expanded', 'true');
-          if (key) {
-            state[key] = false;
-            saveState(state);
-          }
         }
       });
 
