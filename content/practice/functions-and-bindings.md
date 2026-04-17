@@ -3,42 +3,39 @@ title = "Functions & Bindings"
 weight = 3
 +++
 
-Functions are the building blocks of any Phel program. Here you'll learn how to define them, name things, and scope your variables.
+Functions and names are the bread and butter of any Phel program. You'll learn to bind values, define functions, scope locals, destructure inputs, and build closures that remember.
 
-{% question(difficulty="medium") %}
-Use `def` to create a binding called `greeting` with the value `"Hello, Phel!"`. Then evaluate `greeting`.
+{% question(difficulty="easy") %}
+Use `def` to bind the name `greeting` to `"Hello, Phel!"`. Then evaluate `greeting`.
 {% end %}
 {% solution() %}
 ```phel
 (def greeting "Hello, Phel!")
 greeting
-# => "Hello, Phel!"
+; => "Hello, Phel!"
 ```
-`def` creates a global binding - a name associated with a value.
+`def` creates a global binding - a name pointing at a value.
 
 Learn more: [Global and Local Bindings](/documentation/language/global-and-local-bindings)
 {% end %}
 
-{% question(difficulty="medium") %}
+{% question(difficulty="easy") %}
 Use `defn` to define a function `hello` that takes no arguments and returns `"hello!"`.
 ```phel
-(hello) # => "hello!"
+(hello) ; => "hello!"
 ```
 {% end %}
 {% solution() %}
 ```phel
 (defn hello [] "hello!")
 ```
-`defn` is short for "define function". The `[]` is the parameter list (empty here), and the last expression is the return value.
+`defn` is short for "define function". The empty `[]` is the parameter list; the last expression in the body is the return value.
 
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
-{% question(difficulty="medium") %}
-Define a function `double` that takes a number and returns it multiplied by 2.
-```phel
-(double 5) # => 10
-```
+{% question(difficulty="easy") %}
+Define `double` so that `(double 5)` returns `10`.
 {% end %}
 {% solution() %}
 ```phel
@@ -48,8 +45,8 @@ Define a function `double` that takes a number and returns it multiplied by 2.
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
-{% question(difficulty="medium") %}
-Add a docstring to `double`. Then use `(doc double)` to see it.
+{% question(difficulty="easy") %}
+Add a docstring to `double`. Then look it up with `(doc double)`.
 {% end %}
 {% solution() %}
 ```phel
@@ -60,65 +57,81 @@ Add a docstring to `double`. Then use `(doc double)` to see it.
 
 (doc double)
 ```
-Docstrings are placed between the function name and the parameter list. They help other developers (and your future self!) understand what a function does.
+Docstrings sit between the name and the parameter list. `doc` reads them back at the REPL - your future self will thank you.
 
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
-{% question(difficulty="medium") %}
-Use `let` to create a local binding `name` with value `"world"`, then return the string `"Hello, world!"` using `str`.
+{% question(difficulty="easy") %}
+Use `let` to bind `name` to `"world"`, then return `"Hello, world!"` via `str`.
 {% end %}
 {% solution() %}
 ```phel
 (let [name "world"]
   (str "Hello, " name "!"))
-# => "Hello, world!"
+; => "Hello, world!"
 ```
-`let` creates bindings that only exist within its body. This keeps your code clean and avoids polluting the global scope.
+`let` creates locals that exist only inside its body. Use it to keep your scope tight and your global namespace clean.
 
 Learn more: [Global and Local Bindings](/documentation/language/global-and-local-bindings)
 {% end %}
 
 {% question(difficulty="medium") %}
-Use `let` to bind multiple values and compute a result. Calculate the area of a rectangle with `width` 5 and `height` 3.
+Use `let` with multiple bindings to compute the area of a rectangle (width 5, height 3).
 {% end %}
 {% solution() %}
 ```phel
 (let [width 5
       height 3]
   (* width height))
-# => 15
+; => 15
 ```
-You can create multiple bindings in a single `let`. Later bindings can reference earlier ones.
+You can stack as many bindings as you need. Later bindings can refer to earlier ones.
 
 Learn more: [Global and Local Bindings](/documentation/language/global-and-local-bindings)
 {% end %}
 
 {% question(difficulty="medium") %}
-Create an anonymous function that adds 10 to a number. Test it by calling it with `5`. Try both the `fn` form and the short `|` form.
+Pull `x` and `y` out of the vector `[10 20]` in a single `let`, then return their sum.
 {% end %}
 {% solution() %}
 ```phel
-# Using fn
-((fn [x] (+ x 10)) 5)
-# => 15
-
-# Using the short form
-(|(+ $ 10) 5)
-# => 15
+(let [[x y] [10 20]]
+  (+ x y))
+; => 30
 ```
-Anonymous functions are useful when you need a quick one-off function (especially with `map`, `filter`, etc.). The `|` form uses `$` for the first argument, `$1` for the second, and so on.
+This is **destructuring**: the binding form mirrors the shape of the value. It also works with maps:
+```phel
+(let [{:keys [name age]} {:name "Ada" :age 36}]
+  (str name " is " age))
+; => "Ada is 36"
+```
+
+Learn more: [Destructuring](/documentation/language/destructuring)
+{% end %}
+
+{% question(difficulty="medium") %}
+Create an anonymous function that adds 10 to a number. Call it with `5`. Try both the `fn` form and the short `|` form.
+{% end %}
+{% solution() %}
+```phel
+((fn [x] (+ x 10)) 5)
+; => 15
+
+(|(+ $ 10) 5)
+; => 15
+```
+Anonymous functions shine when you need a one-off (think `map`, `filter`). The `|` shortcut uses `$` for the first argument, `$1` for the second, and so on.
 
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
 {% question(difficulty="medium") %}
-Define a function `greet` that takes a `name` and an optional `greeting` (defaulting to `"Hello"`):
+Define `greet` with an optional second argument that defaults to `"Hello"`:
 ```phel
-(greet "Ada")           # => "Hello, Ada!"
-(greet "Ada" "Welcome") # => "Welcome, Ada!"
+(greet "Ada")           ; => "Hello, Ada!"
+(greet "Ada" "Welcome") ; => "Welcome, Ada!"
 ```
-Hint: use a [rest parameter](/documentation/language/functions-and-recursion) or multiple arities.
 {% end %}
 {% solution() %}
 ```phel
@@ -127,15 +140,36 @@ Hint: use a [rest parameter](/documentation/language/functions-and-recursion) or
   (let [g (or greeting "Hello")]
     (str g ", " name "!")))
 ```
-The `& [greeting]` captures extra arguments via destructuring. `or` provides the default value when `greeting` is `nil`.
+The `& [greeting]` destructures any extra arguments. `or` substitutes a default when `greeting` is `nil`.
 
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion), [Destructuring](/documentation/language/destructuring)
 {% end %}
 
 {% question(difficulty="medium") %}
-Implement a `factorial` function using recursion.
+Build `make-adder` so that `(make-adder n)` returns a function that adds `n` to its argument:
 ```phel
-(factorial 5) # => 120
+(def add5 (make-adder 5))
+(add5 10) ; => 15
+(add5 20) ; => 25
+```
+{% end %}
+{% solution() %}
+```phel
+(defn make-adder [n]
+  (fn [x] (+ x n)))
+
+(def add5 (make-adder 5))
+(add5 10) ; => 15
+```
+`make-adder` returns a fresh function that **closes over** `n` - this is a closure. The captured `n` lives on inside the returned function for as long as you keep it.
+
+Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
+{% end %}
+
+{% question(difficulty="medium") %}
+Implement `factorial` using recursion.
+```phel
+(factorial 5) ; => 120
 ```
 {% end %}
 {% solution() %}
@@ -145,7 +179,7 @@ Implement a `factorial` function using recursion.
     1
     (* n (factorial (dec n)))))
 ```
-This is classic recursion: the function calls itself with a smaller input until it reaches the base case (`n <= 1`).
+Classic recursion: shrink the problem on every call until you hit the base case (`n <= 1`). For huge `n` you'd reach for `loop`/`recur` (next section) to avoid blowing the stack.
 
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}

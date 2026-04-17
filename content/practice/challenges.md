@@ -1,20 +1,45 @@
 +++
-title = "Putting It All Together"
+title = "Real Programs"
 weight = 6
 +++
 
-Time to combine everything you've learned! These challenges are bigger exercises that draw on multiple concepts. Take your time, break them into smaller pieces, and have fun.
+Time to put everything together. These challenges grow from gentle warm-ups into bigger programs that combine data, control flow, and the functional toolbox. Take your time, break problems into pieces, and have fun.
 
 {% question(difficulty="hard") %}
-**FizzBuzz**: Write a function that takes a number `n` and returns a vector where each number from 1 to `n` is replaced by:
+**Temperature converter**: write `c->f` and `f->c` to convert between Celsius and Fahrenheit. Then build `convert` so that `(convert 100 :c->f)` returns `212.0`.
+```phel
+(c->f 100)            ;; => 212.0
+(f->c 32)             ;; => 0.0
+(convert 100 :c->f)   ;; => 212.0
+(convert 32 :f->c)    ;; => 0.0
+```
+{% end %}
+{% solution() %}
+```phel
+(defn c->f [c] (+ (* c 1.8) 32))
+(defn f->c [f] (/ (- f 32) 1.8))
+
+(defn convert [degrees direction]
+  (case direction
+    :c->f (c->f degrees)
+    :f->c (f->c degrees)
+    (throw (php/new \Exception (str "Unknown direction: " direction)))))
+```
+A friendly warm-up: small functions, `case` to dispatch on a keyword, and a defensive default. Once you have the building blocks, `convert` is just a router.
+
+Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion), [Control Flow](/documentation/language/control-flow)
+{% end %}
+
+{% question(difficulty="hard") %}
+**FizzBuzz**: return a vector where each number from 1 to `n` is replaced by:
 - `"Fizz"` if divisible by 3
 - `"Buzz"` if divisible by 5
 - `"FizzBuzz"` if divisible by both
-- The number itself otherwise
+- the number itself otherwise
 
 ```phel
 (fizzbuzz 15)
-# => [1 2 "Fizz" 4 "Buzz" "Fizz" 7 8 "Fizz" "Buzz" 11 "Fizz" 13 14 "FizzBuzz"]
+;; => [1 2 "Fizz" 4 "Buzz" "Fizz" 7 8 "Fizz" "Buzz" 11 "Fizz" 13 14 "FizzBuzz"]
 ```
 {% end %}
 {% solution() %}
@@ -27,17 +52,17 @@ Time to combine everything you've learned! These challenges are bigger exercises
       (zero? (% i 5))  "Buzz"
       i)))
 ```
-This combines `for` (list comprehension), `cond` (multi-branch conditionals), and modular arithmetic. Note that we check divisibility by 15 first - order matters in `cond`!
+A `for` comprehension over `range`, with `cond` doing the dispatch. Notice we test divisibility by 15 first - in `cond`, order matters.
 
 Learn more: [Control Flow](/documentation/language/control-flow), [Arithmetic](/documentation/language/arithmetic)
 {% end %}
 
 {% question(difficulty="hard") %}
-**Fibonacci**: Implement a function that returns the first `n` Fibonacci numbers.
+**Fibonacci**: return the first `n` Fibonacci numbers.
 ```phel
-(fib 8) # => [0 1 1 2 3 5 8 13]
+(fib 8) ;; => [0 1 1 2 3 5 8 13]
 ```
-Hint: use `loop`/`recur` to build up the vector.
+Hint: `loop`/`recur` with an accumulator.
 {% end %}
 {% solution() %}
 ```phel
@@ -49,18 +74,18 @@ Hint: use `loop`/`recur` to build up the vector.
             b (get nums (- (count nums) 1))]
         (recur (push nums (+ a b)))))))
 ```
-Each new number is the sum of the two before it. We use `loop`/`recur` with an accumulator vector, and `slice` at the end to handle edge cases.
+Each new number is the sum of the two before it. We grow a vector with `loop`/`recur` and `slice` at the end so `(fib 1)` and `(fib 0)` behave.
 
 Learn more: [Control Flow](/documentation/language/control-flow), [Data Structures](/documentation/language/data-structures)
 {% end %}
 
 {% question(difficulty="hard") %}
-**Caesar cipher**: Write `encode` and `decode` functions that shift letters by a given number of positions.
+**Caesar cipher**: write `encode` and `decode` that shift lowercase letters by `n` positions. Leave other characters alone.
 ```phel
-(encode "hello" 3)  # => "khoor"
-(decode "khoor" 3)  # => "hello"
+(encode "hello" 3)  ;; => "khoor"
+(decode "khoor" 3)  ;; => "hello"
 ```
-Only shift lowercase letters a-z. Leave other characters unchanged. Hint: use `php/ord` and `php/chr` for character codes.
+Hint: `php/ord` and `php/chr` give you character codes.
 {% end %}
 {% solution() %}
 ```phel
@@ -76,22 +101,22 @@ Only shift lowercase letters a-z. Leave other characters unchanged. Hint: use `p
 (defn decode [text n]
   (encode text (- 26 n)))
 
-(encode "hello" 3)  # => "khoor"
-(decode "khoor" 3)  # => "hello"
+(encode "hello" 3)  ;; => "khoor"
+(decode "khoor" 3)  ;; => "hello"
 ```
-This combines: `map` over a string (treating it as a sequence of characters), anonymous functions, PHP interop for character codes, and modular arithmetic for wrapping around the alphabet.
+This combines `map` over a string (treated as a sequence of characters), the short anonymous `|` form, PHP interop for character codes, and modular arithmetic for the wrap-around.
 
 Learn more: [PHP Interop](/documentation/php-interop), [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
 {% question(difficulty="hard") %}
-**Word frequency analyzer**: Find the five most used words from a book, ignoring common stop words.
+**Word frequency analyzer**: find the five most-used words in a book, ignoring stop words.
 
 Tips:
-1. Load the book content into a variable
-2. Split it into words
+1. Load the book content
+2. Split into words
 3. Filter out stop words
-4. Count word frequencies
+4. Count frequencies
 5. Sort and take the top 5
 
 ```phel
@@ -117,21 +142,46 @@ Tips:
      (reverse)
      (apply println))
 
-# Output:
-# [whale 566] [like 323] [then 302] [upon 298] [ye 288]
+;; Output:
+;; [whale 566] [like 323] [then 302] [upon 298] [ye 288]
 ```
-This is a beautiful example of the `->>` threading macro in action. Each step is a clear transformation: lowercase, filter, count, sort, take. The pipeline reads like a recipe.
+A textbook `->>` pipeline. Each step reads as a sentence: lowercase, drop stop words, count, sort, take. This is the shape a lot of real Phel data work takes.
 
 Learn more: [PHP Interop](/documentation/php-interop), [Data Structures](/documentation/language/data-structures), [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
 {% question(difficulty="hard") %}
-**Rock, Paper, Scissors**: Create an interactive CLI game where the computer picks randomly and you type your choice.
+**Counter with mutable state**: build a tiny counter using `var` and `swap!`.
+```phel
+(reset-counter!)
+(tick!) (tick!) (tick!)
+(current) ;; => 3
+```
+{% end %}
+{% solution() %}
+```phel
+(def counter (var 0))
+
+(defn current [] @counter)
+(defn tick! [] (swap! counter inc))
+(defn reset-counter! [] (swap! counter (fn [_] 0)))
+
+(reset-counter!)
+(tick!) (tick!) (tick!)
+(current) ;; => 3
+```
+Most Phel data is immutable, but sometimes you need a single mutable cell - a request counter, a cached result, an in-memory app state. `var` gives you exactly that, `swap!` updates it with a function, and `@` (or `deref`) reads the current value. By convention, functions that mutate end with `!`.
+
+Learn more: [Global and Local Bindings](/documentation/language/global-and-local-bindings)
+{% end %}
+
+{% question(difficulty="hard") %}
+**Rock, Paper, Scissors**: build an interactive CLI game where the computer picks randomly and you type your choice.
 
 Requirements:
-- The computer generates a random guess
-- The player enters "r", "p", or "s"
-- Determine the winner and print the result
+- Computer generates a random guess
+- Player enters `"r"`, `"p"`, or `"s"`
+- Print the result
 - Loop until the user stops the program (Ctrl+C)
 
 Hints:
@@ -162,20 +212,20 @@ Hints:
 
 (defn read-player-guess []
   (println "Play your hand: (r)ock, (p)aper, (s)cissors")
-  (print "# ")
+  (print "; ")
   (let [guess (sanitize-input (php/readline))]
     (if (php/in_array guess (to-php-array possible-guesses)) guess)))
 
 (defn calculate-winner [{:computer cg :player pg}]
   (let [guesses [cg pg]]
     (cond
-      (= cg pg)                   tie
-      (= guesses [paper rock])    computer-wins
+      (= cg pg)                    tie
+      (= guesses [paper rock])     computer-wins
       (= guesses [scissors paper]) computer-wins
-      (= guesses [rock scissors]) computer-wins
-      (= guesses [rock paper])    player-wins
+      (= guesses [rock scissors])  computer-wins
+      (= guesses [rock paper])     player-wins
       (= guesses [paper scissors]) player-wins
-      (= guesses [scissors rock]) player-wins)))
+      (= guesses [scissors rock])  player-wins)))
 
 (defn winner-text [winner]
   (cond
@@ -193,13 +243,13 @@ Hints:
       (println "> Invalid input, try again!")
       (println ">" (winner-text winner)))))
 
-# Game loop
+;; Game loop
 (loop []
   (play-hand)
   (println)
   (recur))
 ```
-This exercise brings together: global definitions, destructuring, `cond`, `let`, `loop`/`recur`, PHP interop for user input, and data-driven design (using maps for game state).
+The boss fight: global definitions, map destructuring in parameters, `cond`, `let`, `loop`/`recur`, PHP interop for input, and data-driven design with maps. Once you've finished this, you've used most of Phel's core toolkit.
 
 Learn more: [PHP Interop](/documentation/php-interop), [Control Flow](/documentation/language/control-flow), [Destructuring](/documentation/language/destructuring)
 {% end %}
