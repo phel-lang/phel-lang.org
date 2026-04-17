@@ -56,61 +56,6 @@
   color: var(--color-dark-text-accent);
 }
 
-/* Sidebar Filter */
-.site-navigation-filter {
-  margin: 0 0 var(--space-md);
-  position: relative;
-}
-
-.site-navigation-filter::before {
-  content: '';
-  position: absolute;
-  left: var(--space-sm);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 14px;
-  height: 14px;
-  opacity: 0.5;
-  background-color: currentColor;
-  -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='M20 20l-3.5-3.5'/></svg>") no-repeat center / contain;
-  mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='7'/><path d='M20 20l-3.5-3.5'/></svg>") no-repeat center / contain;
-  pointer-events: none;
-}
-
-.site-navigation-filter__input {
-  width: 100%;
-  padding: var(--space-xs) var(--space-sm) var(--space-xs) calc(var(--space-sm) + 18px);
-  font-size: var(--text-sm);
-  color: var(--color-light-text-primary);
-  background: var(--color-light-bg);
-  border: 1px solid var(--color-light-border);
-  border-radius: var(--radius-md);
-  outline: none;
-  transition: border-color var(--duration-fast) var(--ease-out),
-              box-shadow var(--duration-fast) var(--ease-out);
-}
-
-.site-navigation-filter__input::placeholder {
-  color: var(--color-light-text-secondary);
-  opacity: 0.8;
-}
-
-.site-navigation-filter__input:focus {
-  border-color: var(--color-light-link);
-  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
-}
-
-.dark .site-navigation-filter__input {
-  color: var(--color-dark-text-primary);
-  background: var(--color-dark-surface);
-  border-color: var(--color-dark-border);
-}
-
-.dark .site-navigation-filter__input:focus {
-  border-color: var(--color-dark-text-accent);
-  box-shadow: 0 0 0 3px rgba(191, 164, 255, 0.15);
-}
-
 /* Sidebar Title */
 .site-navigation__title {
   font-size: var(--text-sm);
