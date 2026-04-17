@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="kbd-row"><kbd>j</kbd> / <kbd>k</kbd><span>Scroll down / up</span></div>
           <div class="kbd-row"><kbd>n</kbd><span>Next page</span></div>
           <div class="kbd-row"><kbd>p</kbd><span>Previous page</span></div>
+          <div class="kbd-row"><kbd>]</kbd> / <kbd>[</kbd><span>Next / previous doc in sidebar</span></div>
           <div class="kbd-row"><kbd>g</kbd> <kbd>h</kbd><span>Go to homepage</span></div>
           <div class="kbd-row"><kbd>g</kbd> <kbd>d</kbd><span>Go to documentation</span></div>
           <div class="kbd-row"><kbd>g</kbd> <kbd>p</kbd><span>Go to practice</span></div>
