@@ -61,27 +61,23 @@
   margin-right: 0;
 }
 
-/* Phel Terminal (homepage REPL showcase) */
+/* Phel Terminal (homepage REPL showcase) — styling mirrors animated-repl.css */
 .phel-terminal {
   margin: var(--space-2xl) auto;
-  max-width: 56rem;
-  background: #262a3b;
-  color: #e5e7eb;
-  border: 1px solid rgba(191, 164, 255, 0.18);
+  max-width: 680px;
   border-radius: var(--radius-lg);
-  box-shadow: 0 20px 45px -20px rgba(0, 0, 0, 0.45),
-              0 0 0 1px rgba(108, 61, 197, 0.1);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
-  font-family: var(--font-mono);
+  font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', monospace;
+  font-size: 14px;
 }
 
 .phel-terminal-chrome {
   display: flex;
   align-items: center;
   gap: var(--space-md);
-  padding: var(--space-sm) var(--space-md);
-  background: linear-gradient(180deg, #353a50 0%, #2c3043 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.625rem 1rem;
+  background: #2d2d2d;
 }
 
 .phel-terminal-dots {
@@ -93,19 +89,20 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
+  background: #555;
   display: block;
 }
 
 .phel-terminal-dot--red    { background: #ff5f57; }
-.phel-terminal-dot--yellow { background: #febc2e; }
+.phel-terminal-dot--yellow { background: #ffbd2e; }
 .phel-terminal-dot--green  { background: #28c840; }
 
 .phel-terminal-title {
   flex: 1;
   text-align: center;
-  font-size: var(--text-xs);
-  color: rgba(229, 231, 235, 0.55);
-  letter-spacing: 0.02em;
+  font-size: 13px;
+  font-weight: 500;
+  color: #999;
   user-select: none;
 }
 
@@ -116,10 +113,10 @@
 .phel-terminal-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 2px;
-  padding: 0 var(--space-md);
-  background: #2d3143;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 0;
+  padding: 0 0.5rem;
+  background: #242438;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   overflow-x: auto;
 }
 
@@ -131,51 +128,50 @@
   border: none;
   border-top: 2px solid transparent;
   margin: 0;
-  padding: var(--space-sm) var(--space-md);
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
+  padding: 0.5rem 0.875rem;
+  font-family: inherit;
+  font-size: 13px;
   font-weight: 500;
   line-height: 1.4;
-  color: rgba(229, 231, 235, 0.55);
+  color: #999;
   cursor: pointer;
   white-space: nowrap;
-  transition: color var(--duration-fast) var(--ease-out),
-              border-color var(--duration-fast) var(--ease-out),
-              background var(--duration-fast) var(--ease-out);
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
 }
 
 .phel-terminal-tab:hover {
-  color: #e5e7eb;
-  background: rgba(191, 164, 255, 0.06);
+  color: #e0e0e0;
+  background: rgba(126, 200, 227, 0.06);
 }
 
 .phel-terminal-tab.is-active {
-  color: #ffffff;
-  background: #262a3b;
-  border-top-color: var(--color-dark-text-accent, #bfa4ff);
+  color: #e0e0e0;
+  background: #1a1a2e;
+  border-top-color: #ffbd2e;
 }
 
 .phel-terminal-tab:focus-visible {
-  outline: 2px solid var(--color-dark-text-accent, #bfa4ff);
+  outline: 2px solid #ffbd2e;
   outline-offset: -2px;
 }
 
 .phel-terminal-body {
   position: relative;
+  background: #1a1a2e;
 }
 
 .phel-terminal-session {
   display: none;
   margin: 0;
-  padding: var(--space-lg) var(--space-xl);
+  padding: 1rem 1.25rem;
   background: transparent;
   border: none;
   border-radius: 0;
   box-shadow: none;
-  color: #e5e7eb;
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  line-height: 1.65;
+  color: #e0e0e0;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
   overflow-x: auto;
   white-space: pre;
   max-width: none;
@@ -198,35 +194,50 @@
 }
 
 .phel-terminal-body .copy-code-button {
-  color: rgba(229, 231, 235, 0.6);
+  color: #999;
+  background: rgba(45, 45, 45, 0.9);
+  border-color: #555;
 }
 
 .phel-terminal-body .copy-code-button:hover {
-  color: #e5e7eb;
+  color: #7ec8e3;
+  border-color: #7ec8e3;
 }
 
 .phel-terminal-session .t-cmt {
-  color: rgba(229, 231, 235, 0.4);
-  font-style: italic;
+  color: #888;
 }
 
 .phel-terminal-session .t-p {
-  color: var(--color-dark-text-accent, #bfa4ff);
-  font-weight: 700;
+  color: #ffbd2e;
+  font-weight: 500;
   user-select: none;
 }
 
 .phel-terminal-session .t-c {
-  color: rgba(191, 164, 255, 0.4);
+  color: rgba(255, 189, 46, 0.45);
   user-select: none;
 }
 
 .phel-terminal-session .t-in {
-  color: #e5e7eb;
+  color: #e0e0e0;
 }
 
 .phel-terminal-session .t-out {
-  color: #86efac;
+  color: #7ec8e3;
+}
+
+.phel-terminal-session::-webkit-scrollbar {
+  height: 6px;
+}
+
+.phel-terminal-session::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.phel-terminal-session::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 3px;
 }
 
 
