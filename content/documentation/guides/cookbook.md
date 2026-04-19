@@ -43,12 +43,12 @@ Read a CSV file and parse it into a vector of maps, where each map represents a 
 # => [{:name "Alice" :email "alice@example.com" :role "admin"}
 #     {:name "Bob" :email "bob@example.com" :role "editor"}]
 
-# Process the parsed data
+;; Process the parsed data
 (def admin-emails
   (->> users
-       (filter |(= "admin" (get $ :role)))
+       (filter #(= "admin" (get % :role)))
        (map :email)))
-# => ["alice@example.com"]
+;; => ["alice@example.com"]
 ```
 
 **See also:** [PHP Interop](/documentation/php-interop), [Data Structures](/documentation/language/data-structures)
@@ -409,10 +409,10 @@ Take raw data, filter it, transform it, and group it using Phel's threading macr
 # Pipeline: get active users, uppercase names, sort by age, group by role
 (def result
   (->> users
-       (filter :active)                              # keep only active users
-       (map |(assoc $ :name (php/strtoupper (get $ :name))))  # uppercase names
-       (sort-by :age)                                # sort by age ascending
-       (group-by :role)))                            # group into a map by role
+       (filter :active)                              ;; keep only active users
+       (map #(assoc % :name (php/strtoupper (get % :name))))  ;; uppercase names
+       (sort-by :age)                                ;; sort by age ascending
+       (group-by :role)))                            ;; group into a map by role
 
 # result =>
 # {"engineer" [{:name "ALICE"   :age 32 ...}
@@ -436,18 +436,18 @@ Take raw data, filter it, transform it, and group it using Phel's threading macr
     (/ total-age (count active))))
 (println (str "Average age of active users: " avg-age))
 
-# Find the oldest user per role
+;; Find the oldest user per role
 (def oldest-per-role
   (->> users
        (group-by :role)
        (map (fn [[role members]]
               [role (get (last (sort-by :age members)) :name)]))
-       (apply hash-map (flatten $&))))
+       (into {})))
 
-# Count users by status
+;; Count users by status
 (def status-counts
   {:active (count (filter :active users))
-   :inactive (count (filter |(not (get $ :active)) users))})
+   :inactive (count (filter #(not (get % :active)) users))})
 (println (str "Active: " (get status-counts :active)
               ", Inactive: " (get status-counts :inactive)))
 

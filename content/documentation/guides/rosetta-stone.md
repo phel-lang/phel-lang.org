@@ -237,11 +237,11 @@ echo $double(5); // 10
 **Phel**
 
 ```phel
-(def double |(* $ 2))
+(def double #(* % 2))
 
 (def add (fn [a b] (+ a b)))
 
-(println (double 5)) # 10
+(println (double 5)) ;; 10
 ```
 
 </div>
@@ -411,8 +411,8 @@ $filtered = array_filter($items, fn($x) => $x !== 2);
 # {:name "Alice"}
 
 (def items [1 2 3])
-(filter |(not= $ 2) items)
-# [1 3]
+(filter #(not= % 2) items)
+;; [1 3]
 ```
 
 </div>
@@ -960,8 +960,8 @@ $doubled = array_map(
 **Phel**
 
 ```phel
-(map |(* $ 2) [1 2 3 4])
-# [2 4 6 8]
+(map #(* % 2) [1 2 3 4])
+;; [2 4 6 8]
 ```
 
 </div>
@@ -1059,10 +1059,10 @@ $result = implode(", ",
 **Phel**
 
 ```phel
-# Thread-last (top-down, reads naturally)
+;; Thread-last (top-down, reads naturally)
 (def result
   (->> names
-       (filter |(> (php/strlen $) 3))
+       (filter #(> (php/strlen %) 3))
        (map php/strtoupper)
        (php/implode ", ")))
 ```

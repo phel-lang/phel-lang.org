@@ -72,7 +72,7 @@ phel:2> (h/html [:span {:class "greeting"} "Hello"])
 List all public definitions in a namespace:
 
 ```bash
-phel:1> (dir phel\str)
+phel:1> (dir phel\string)
 blank?
 capitalize
 ends-with?
@@ -229,7 +229,7 @@ phel:1> (def users [{:name "Alice" :role :admin}
 ....:2>             {:name "Bob" :role :user}
 ....:3>             {:name "Carol" :role :admin}])
 
-phel:4> (filter |(= :admin (:role $)) users)
+phel:4> (filter #(= :admin (:role %)) users)
 ({:name "Alice" :role :admin} {:name "Carol" :role :admin})
 
 phel:5> (map :name *1)

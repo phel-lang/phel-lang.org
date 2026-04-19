@@ -221,21 +221,21 @@ Phel provides a built-in mocking framework in the `phel\mock` module for replaci
                                called-once? never-called? reset-mock!
                                with-mocks]))
 
-# Fixed return value
+;; Fixed return value
 (def my-mock (mock :ok))
-(my-mock "any" "args")  # => :ok
+(my-mock "any" "args")  ;; => :ok
 
-# Custom behavior
-(def double-mock (mock-fn |(* $ 2)))
-(double-mock 5)  # => 10
+;; Custom behavior
+(def double-mock (mock-fn #(* % 2)))
+(double-mock 5)  ;; => 10
 
-# Consecutive return values
+;; Consecutive return values
 (def seq-mock (mock-returning [1 2 3]))
-(seq-mock)  # => 1
-(seq-mock)  # => 2
-(seq-mock)  # => 3
+(seq-mock)  ;; => 1
+(seq-mock)  ;; => 2
+(seq-mock)  ;; => 3
 
-# Mock that throws
+;; Mock that throws
 (def err-mock (mock-throwing (php/new \RuntimeException "fail")))
 ```
 
@@ -246,12 +246,12 @@ Phel provides a built-in mocking framework in the `phel\mock` module for replaci
 (m "a" "b")
 (m "c")
 
-(calls m)          # => [["a" "b"] ["c"]]
-(call-count m)     # => 2
-(called? m)        # => true
-(called-with? m "a" "b")  # => true
-(called-once? m)   # => false
-(never-called? m)  # => false
+(calls m)          ;; => [["a" "b"] ["c"]]
+(call-count m)     ;; => 2
+(called? m)        ;; => true
+(called-with? m "a" "b")  ;; => true
+(called-once? m)   ;; => false
+(never-called? m)  ;; => false
 ```
 
 ### Replacing functions in tests
@@ -260,7 +260,7 @@ Use `with-mocks` to temporarily replace functions with mocks using dynamic bindi
 
 ```phel
 (defn fetch-user [id]
-  # ... makes HTTP call ...
+  ;; ... makes HTTP call ...
   )
 
 (deftest test-with-mock

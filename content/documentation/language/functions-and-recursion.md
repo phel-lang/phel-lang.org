@@ -43,23 +43,9 @@ Function can also be defined as variadic function with an infinite amount of arg
 
 There is a shorter form to define an anonymous function. This omits the parameter list and names parameters based on their position.
 
-* `$` is used for a single parameter
-* `$1`, `$2`, `$3`, etc are used for multiple parameters
-* `$&` is used for the remaining variadic parameters
-
-```phel
-|(+ 6 $) ; Same as (fn [x] (+ 6 x))
-|(+ $1 $2) ; Same as (fn [a b] (+ a b))
-|(sum $&) ; Same as (fn [& xs] (sum xs))
-```
-
-### Clojure-style anonymous function shorthand
-
-Phel also supports the `#(...)` reader syntax, which uses `%` placeholders instead of `$`:
-
-- `%` or `%1` refers to the first argument
-- `%2`, `%3`, etc. refer to subsequent arguments
-- `%&` captures remaining variadic arguments
+* `%` or `%1` refers to the first argument
+* `%2`, `%3`, etc. refer to subsequent arguments
+* `%&` captures remaining variadic arguments
 
 ```phel
 #(+ 6 %)       ; Same as (fn [x] (+ 6 x))
@@ -71,28 +57,24 @@ Phel also supports the `#(...)` reader syntax, which uses `%` placeholders inste
 (filter #(> % 3) [1 5 2 8])   ; => [5 8]
 ```
 
-Both `|` and `#()` forms are supported. The `#()` form aligns with Clojure syntax.
+> **Legacy syntax:** Phel also accepts `|(...)` with `$` / `$1` / `$&` placeholders. It still reads, but `#(...)` with `%` placeholders is preferred and matches Clojure.
 
 {% php_note() %}
-The short-form anonymous function syntax `|` and `#()` are similar to PHP's arrow functions:
+The short-form anonymous function syntax `#()` is similar to PHP's arrow functions:
 
 ```php
 // PHP
 $add = fn($x) => $x + 6;
 array_map(fn($x) => $x * 2, $array);
 
-// Phel (| form)
-(def add |(+ $ 6))
-(map |(* $ 2) array)
-
-// Phel (#() form)
+// Phel
 (def add #(+ % 6))
 (map #(* % 2) array)
 ```
 {% end %}
 
 {% clojure_note() %}
-The `#(...)` syntax with `%` placeholders is identical to Clojure's anonymous function reader macro. The `|` form with `$` placeholders is a Phel-specific alternative.
+The `#(...)` syntax with `%` placeholders is identical to Clojure's anonymous function reader macro.
 {% end %}
 
 
@@ -258,7 +240,7 @@ Use `defmulti` to define a multimethod with a dispatch function, then `defmethod
 The dispatch function can be any function, not just a keyword:
 
 ```phel
-(defmulti greeting |(get $ :language))
+(defmulti greeting #(get % :language))
 
 (defmethod greeting "en" [_] "Hello!")
 (defmethod greeting "es" [_] "Hola!")

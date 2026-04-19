@@ -50,18 +50,20 @@ Truthiness works exactly like Clojure-only `false` and `nil` are falsy.
 
 ## Identity vs Equality
 
-The function `id` returns `true` if two values are identical. Identity is stricter than equality. It first checks if both types are identical and then compares their values. Phel keywords and symbols with the same names are always identical. Lists, vectors, maps and sets are only identical if they point to the same references.
+The function `identical?` returns `true` if two values are identical. Identity is stricter than equality. It first checks if both types are identical and then compares their values. Phel keywords and symbols with the same names are always identical. Lists, vectors, maps and sets are only identical if they point to the same references.
 
 ```phel
-(id true true) # Evaluates to true
-(id true false) # Evaluates to false
-(id 5 "5") # Evaluates to false
-(id :test :test) # Evaluates to true
-(id 'sym 'sym) # Evaluates to true
-(id '() '()) # Evaluates to false
-(id [] []) # Evaluates to false
-(id {} {}) # Evaluates to false
+(identical? true true)   # Evaluates to true
+(identical? true false)  # Evaluates to false
+(identical? 5 "5")       # Evaluates to false
+(identical? :test :test) # Evaluates to true
+(identical? 'sym 'sym)   # Evaluates to true
+(identical? '() '())     # Evaluates to false
+(identical? [] [])       # Evaluates to false
+(identical? {} {})       # Evaluates to false
 ```
+
+> **Note:** `id` is still accepted as a deprecated alias for `identical?`.
 
 To check if two values are equal, the equal function (`=`) can be used. Two values are equal if they have the same type and value. Lists, vectors, maps and sets are equal if they have same values, but they must not point to the same references.
 
@@ -83,21 +85,21 @@ To check if two values are unequal, the `not=` function can be used.
 {% php_note() %}
 **Comparison with PHP operators:**
 
-- `id` is like PHP's `===` (identity/strict equality) with support for Phel types
+- `identical?` is like PHP's `===` (identity/strict equality) with support for Phel types
 - `=` is **not** like PHP's `==` (loose equality)
 - `=` compares Phel values structurally with type checking
 
 If you need PHP's loose equality, use `php/==`:
 
 ```phel
-(php/== 5 "5")  # => true (PHP loose equality)
-(= 5 "5")       # => false (Phel structural equality)
-(id 5 5)        # => true (Phel identity)
+(php/== 5 "5")      # => true (PHP loose equality)
+(= 5 "5")           # => false (Phel structural equality)
+(identical? 5 5)    # => true (Phel identity)
 ```
 {% end %}
 
 {% clojure_note() %}
-`id` is like Clojure's `identical?`, and `=` is like Clojure's `=`.
+`identical?` works like Clojure's `identical?`, and `=` is like Clojure's `=`.
 {% end %}
 
 ## Comparison Operations

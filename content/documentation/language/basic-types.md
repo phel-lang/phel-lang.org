@@ -236,10 +236,12 @@ Maps work exactly like Clojure maps, including support for any hashable type as 
 
 ## Sets
 
-A set is a sequence of whitespace-separated values prefixed by the function `set` and the whole being surrounded by parentheses.
+A set is a sequence of whitespace-separated values prefixed by `#` and surrounded by curly braces, or built from individual arguments with `hash-set`:
 
 ```phel
-#{1 2 3} ; same as (set 1 2 3)
+#{1 2 3}         ; set literal
+(hash-set 1 2 3) ; same result
+(set [1 2 3])    ; coerce a collection to a set
 ```
 
 ## Regex Literals
@@ -289,7 +291,7 @@ The `#(...)` reader syntax provides a compact way to define anonymous functions 
 (sort-by #(get % :age) users)  ; Sort users by age
 ```
 
-> **Note:** The `|` short-form syntax with `$` placeholders is also supported. See [Functions and Recursion](/documentation/language/functions-and-recursion/) for details on both forms.
+> **Note:** The older `|(...)` short-form syntax with `$` placeholders is also accepted but deprecated. See [Functions and Recursion](/documentation/language/functions-and-recursion/) for details.
 
 {% clojure_note() %}
 The `#(...)` syntax with `%` placeholders matches Clojure's anonymous function reader macro exactly.

@@ -20,7 +20,7 @@ Multiplies all numbers from 1 to 10 using `reduce`.
 Sum of squares from 1 to 100:
 
 ```phel
-(->> (range 1 101) (map |(* $ $)) (reduce + 0))
+(->> (range 1 101) (map #(* % %)) (reduce + 0))
 # => 338350
 ```
 
@@ -43,7 +43,7 @@ Check if a number is prime:
 ```phel
 (let [n 17]
   (and (> n 1)
-       (every? |(not= 0 (% n $))
+       (every? #(not= 0 (% n %))
                (range 2 (php/intval (+ 1 (php/sqrt n)))))))
 # => true
 ```
@@ -93,9 +93,9 @@ Count vowels in a string:
 
 ```phel
 (->> (seq "functional programming")
-     (filter |(contains? (set "a" "e" "i" "o" "u") $))
+     (filter #(contains? #{"a" "e" "i" "o" "u"} %))
      count)
-# => 6
+;; => 6
 ```
 
 Converts the string to a sequence of characters, filters vowels, and counts them.
@@ -132,7 +132,7 @@ Shifts each letter by 13 positions, wrapping around the alphabet.
 Repeat string pattern:
 
 ```phel
-(str/join "" (map |(if (even? $) "*" "-") (range 0 10)))
+(str/join "" (map #(if (even? %) "*" "-") (range 0 10)))
 # => "*-*-*-*-*-"
 ```
 
@@ -338,9 +338,9 @@ Diamond pattern (width 5):
 
 ```phel
 (->> (concat (range 1 6 2) (range 3 0 -2))
-     (map |(str/join ""
-             [(str/repeat " " (/ (- 5 $) 2))
-              (str/repeat "*" $)]))
+     (map #(str/join ""
+             [(str/repeat " " (/ (- 5 %) 2))
+              (str/repeat "*" %)]))
      (str/join "\n"))
 # => "  *\n ***\n*****\n ***\n  *"
 ```

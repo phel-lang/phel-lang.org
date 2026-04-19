@@ -38,7 +38,7 @@ See [Basic Types](/documentation/language/basic-types), [Truth and Boolean Opera
 #?@(:phel [a b] :default [c])  ; splicing reader conditional
 ```
 
-The `#(...)` anonymous function shorthand is equivalent to `|(...)` but follows Clojure convention. Use `%` or `%1` for the first argument, `%2` for the second, and `%&` for variadic rest args.
+The `#(...)` anonymous function shorthand is the preferred form. Use `%` or `%1` for the first argument, `%2` for the second, and `%&` for variadic rest args. The legacy `|(...)` form with `$` placeholders is still accepted but deprecated.
 
 Reader conditionals (`#?()` and `#?@()`) allow code to be shared across `.cljc` files with platform-specific branches using `:phel` and `:default` keys.
 
@@ -150,12 +150,10 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 
 ```phel
 (fn [x] (* x 2))                  ; anonymous function
-|(* $ 2)                           ; short form (single param)
-|(+ $1 $2)                         ; short form (multiple params)
-|(sum $&)                          ; short form (variadic)
-#(* % 2)                           ; anonymous shorthand (single param)
-#(+ %1 %2)                        ; anonymous shorthand (multiple params)
-#(apply + %&)                     ; anonymous shorthand (variadic)
+#(* % 2)                           ; short form (single param)
+#(+ %1 %2)                        ; short form (multiple params)
+#(apply + %&)                     ; short form (variadic)
+|(* $ 2)                           ; legacy short form (deprecated)
 
 (defn greet                        ; multi-arity
   ([] "Hi")
@@ -263,7 +261,7 @@ See [Data Structures](/documentation/language/data-structures#walking-data-struc
 (take 5 (iterate inc 0))          ; => (0 1 2 3 4)
 (take 7 (cycle [1 2 3]))          ; => (1 2 3 1 2 3 1)
 (take 4 (repeat :x))              ; => (:x :x :x :x)
-(take 5 (repeatedly |(php/rand 1 100)))  ; 5 random numbers
+(take 5 (repeatedly #(php/rand 1 100)))  ; 5 random numbers
 
 (drop 3 (range 10))               ; => (3 4 5 6 7 8 9)
 (take-while pos? [3 2 1 0 -1])   ; => (3 2 1)
@@ -354,11 +352,11 @@ Lazy sequences were added in v0.25.0. `map`, `filter`, `take`, `drop`, `concat`,
 ## Mutable State
 
 ```phel
-(def counter (var 0))              ; create a mutable variable
+(def counter (atom 0))             ; create an atom (mutable container)
 (deref counter)                    ; => 0
 @counter                           ; => 0 (shorthand for deref)
-(set! counter 42)                  ; direct reset
-(deref counter)                    ; => 42
+(reset! counter 42)                ; direct reset
+@counter                           ; => 42
 (swap! counter inc)                ; apply function, counter is now 43
 (swap! counter + 10)               ; counter is now 53
 

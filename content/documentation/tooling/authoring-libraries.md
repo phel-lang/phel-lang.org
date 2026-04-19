@@ -21,7 +21,7 @@ The most important part in this file is the `require` section. In here, you need
 
 ```json
 "require": {
-    "phel-lang/phel-lang": "^0.31"
+    "phel-lang/phel-lang": "^0.33"
 }
 ```
 
@@ -38,13 +38,13 @@ Here is an example config:
 <?php
 declare(strict_types=1);
 
+use Phel\Config\PhelBuildConfig;
 use Phel\Config\PhelConfig;
-use Phel\Config\PhelOutConfig;
 
 return (new PhelConfig())
     ->setSrcDirs(['src'])
     ->setTestDirs(['tests'])
-    ->setOut((new PhelOutConfig())
+    ->setBuildConfig((new PhelBuildConfig())
         ->setMainPhelNamespace('your-ns\main')
         ->setMainPhpPath('out/main.php'))
     ->setFormatDirs(['src', 'tests'])

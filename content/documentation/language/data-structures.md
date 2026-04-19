@@ -637,15 +637,15 @@ The `phel\walk` module provides functions for recursively transforming nested da
 `postwalk` applies a function to each node bottom-up (children first), while `prewalk` applies it top-down (parent first):
 
 ```phel
-# Double every number in a nested structure
-(postwalk |(if (number? $) (* $ 2) $)
+;; Double every number in a nested structure
+(postwalk #(if (number? %) (* % 2) %)
           {:a 1 :b [2 3] :c {:d 4}})
-# => {:a 2 :b [4 6] :c {:d 8}}
+;; => {:a 2 :b [4 6] :c {:d 8}}
 
-# prewalk visits parent before children
-(prewalk |(if (number? $) (* $ 2) $)
+;; prewalk visits parent before children
+(prewalk #(if (number? %) (* % 2) %)
          [1 [2 [3]]])
-# => [2 [4 [6]]]
+;; => [2 [4 [6]]]
 ```
 
 ### postwalk-replace and prewalk-replace

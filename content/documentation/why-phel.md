@@ -34,17 +34,17 @@ See [CLI Commands](/documentation/tooling/cli-commands) for the full list of ava
 Yes, 100%. Phel has full PHP interop through the `php/` prefix:
 
 ```phel
-# Call any PHP function
-(php/strlen "hello")  # => 5
-(php/array_map |(* $ 2) (php/array 1 2 3))
+;; Call any PHP function
+(php/strlen "hello")  ;; => 5
+(php/array_map #(* % 2) (php/array 1 2 3))
 
-# Create objects
+;; Create objects
 (php/new \DateTimeImmutable "2024-01-15")
 
-# Call methods
+;; Call methods
 (php/-> date (format "Y-m-d"))
 
-# Access static methods and constants
+;; Access static methods and constants
 (php/:: \DateTimeImmutable ATOM)
 ```
 
@@ -70,11 +70,11 @@ You can call Phel functions from PHP and PHP functions from Phel. This means you
 
 Phel compiles to PHP, so PHP's debugging ecosystem works:
 
-- **Phel's built-in helpers** -- `dbg`, `trace`, and friends for quick inspection during development.
+- **Phel's built-in helpers** -- `tap>`, `add-tap`, and `pprint` for quick inspection during development.
 - **PHP native tools** -- `var_dump`, `print_r`, and Symfony's `dump()` all work since Phel values are PHP objects under the hood.
 - **XDebug** -- Full step-through debugging with breakpoints, call stacks, and variable inspection. Works in PhpStorm and VS Code.
 
-See the [Debug guide](/documentation/debug) for setup instructions and examples.
+See the [Debug helpers](/documentation/tooling/phel-helpers/) and [XDebug setup](/documentation/tooling/xdebug-setup/) guides for examples.
 
 ## "Is Phel production-ready?"
 

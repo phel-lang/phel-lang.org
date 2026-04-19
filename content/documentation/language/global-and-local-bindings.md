@@ -101,11 +101,11 @@ While `let` creates a new lexical context, `binding` temporarily redefines exist
 (greet-user-by-architecture)  # => "Hello x86_64 user!" (or your system arch)
 
 # With let - doesn't work! Function still calls original
-(let [get-system-architecture |(str "i386")]
+(let [get-system-architecture #(str "i386")]
   (greet-user-by-architecture))  # => "Hello x86_64 user!" (original still used!)
 
 # With binding - successfully mocks the function
-(binding [get-system-architecture |(str "i386")]
+(binding [get-system-architecture #(str "i386")]
   (greet-user-by-architecture))  # => "Hello i386 user!" (mocked!)
 
 # Example 3: Testing with binding
@@ -113,7 +113,7 @@ While `let` creates a new lexical context, `binding` temporarily redefines exist
   (:require phel\test :refer [deftest is]))
 
 (deftest greeting-test-binding
-  (binding [get-system-architecture |(str "i386")]
+  (binding [get-system-architecture #(str "i386")]
     (is (= "Hello i386 user!" (greet-user-by-architecture))
         "i386 system user is greeted accordingly")))
 # ✔ greeting-test-binding: i386 system user is greeted accordingly
@@ -161,52 +161,50 @@ Binding is particularly useful for testing code that depends on global state or 
 `binding` works exactly like Clojure's `binding`-it creates dynamic scope bindings that affect all code executed within the binding form.
 {% end %}
 
-## Variables
+## Atoms
 
 ```phel
-(var value)
+(atom value)
 ```
 
-Variables provide a way to manage mutable state. Each variable contains a single value. To create a variable use the `var` function.
+Atoms provide a way to manage mutable state. Each atom contains a single value. Create one with the `atom` function:
 
 ```phel
-(def foo (var 10)) # Define a variable with value 10
+(def foo (atom 10)) ;; Define an atom with value 10
 ```
 
-The `deref` function can be used to extract the value from the variable. The `set!` function is use to set a new value to the variable.
+The `deref` function (or the `@` reader shorthand) extracts the value. `reset!` replaces the value, and `swap!` updates it by applying a function:
 
 ```phel
-(def foo (var 10))
+(def foo (atom 10))
 
-(deref foo) # Evaluates to 10
-(set! foo 20) # Set foo to 20
-(deref foo) # Evaluates to 20
+(deref foo)        ;; Evaluates to 10
+@foo               ;; Same as (deref foo)
+(reset! foo 20)    ;; Set foo to 20
+@foo               ;; Evaluates to 20
+
+(swap! foo + 2)    ;; Evaluates to 22
+@foo               ;; Evaluates to 22
 ```
 
-To update a variable with a function the `swap!` function can be used.
-
-```phel
-(def foo (var 10))
-(swap! foo + 2) # Evaluates to 12
-(deref foo) # Evaluates to 12
-```
+> **Note:** The original Phel names `var`, `set!`, `var?`, and `function?` still work as deprecated aliases for `atom`, `reset!`, `atom?`, and `fn?`. New code should use the Clojure-compatible names.
 
 {% php_note() %}
-Variables provide mutable state similar to PHP variables, but are explicit and contained:
+Atoms provide mutable state similar to PHP variables, but are explicit and contained:
 
 ```php
 // PHP - everything is mutable by default
 $count = 0;
 $count++;
 
-// Phel - explicit mutability with variables
-(def count (var 0))
+// Phel - explicit mutability with atoms
+(def count (atom 0))
 (swap! count inc)
 ```
 
-Use Phel's immutable data structures when possible. Variables are mainly useful for interop with PHP code or managing application state.
+Use Phel's immutable data structures when possible. Atoms are mainly useful for interop with PHP code or managing application state.
 {% end %}
 
 {% clojure_note() %}
-Phel variables work like Clojure atoms-they're thread-safe containers for mutable state. Use `deref` or `@` to read, `swap!` to update.
+Phel atoms work like Clojure atoms-they're containers for mutable state. Use `deref` or `@` to read, `swap!` or `reset!` to update.
 {% end %}

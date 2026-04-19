@@ -61,7 +61,7 @@ Most of your Clojure intuition carries over unchanged.
 ```phel
 (take 5 (iterate inc 0))       # => (0 1 2 3 4)
 (take 7 (cycle [1 2 3]))       # => (1 2 3 1 2 3 1)
-(take 5 (repeatedly |(php/rand 1 100)))
+(take 5 (repeatedly #(php/rand 1 100)))
 (->> (range) (filter even?) (take 5)) # => (0 2 4 6 8)
 ```
 
@@ -100,19 +100,26 @@ Since v0.31.0, Phel supports Clojure-style protocols with `defprotocol` and `ext
 
 See [Interfaces](/documentation/language/interfaces) for the full reference.
 
-### No multimethods
+### Multimethods
 
-There is no `defmulti` / `defmethod`. Use `cond`, `case`, protocols, or interfaces to achieve dispatch. However, since v0.31.0 Phel includes a hierarchy system (`derive`, `isa?`, `parents`, `ancestors`, `descendants`) that can be used to build type-based dispatch patterns.
-
-### No atoms/agents/refs -- use `var`
-
-Phel provides a single mutable state primitive: `var`. It works similarly to a Clojure atom:
+Phel supports Clojure-style `defmulti` / `defmethod` with hierarchy-aware dispatch through the `derive` / `isa?` system (since v0.31.0):
 
 ```phel
-(def counter (var 0))
-(swap! counter inc)   # counter is now 1
-(deref counter)       # => 1
-(set! counter 42)     # direct reset
+(defmulti area :shape)
+(defmethod area :circle [{:radius r}] (* 3.14159 r r))
+(defmethod area :rectangle [{:width w :height h}] (* w h))
+```
+
+### Atoms -- no agents, refs, or STM
+
+Phel provides a single mutable state primitive: `atom`. It works like a Clojure atom:
+
+```phel
+(def counter (atom 0))
+(swap! counter inc)   ;; counter is now 1
+(deref counter)       ;; => 1
+@counter              ;; => 1 (shorthand)
+(reset! counter 42)   ;; direct reset
 ```
 
 There are no agents, refs, or STM. See [Global and Local Bindings](/documentation/language/global-and-local-bindings) for details.
@@ -135,7 +142,7 @@ Phel now supports reader conditionals with `#?()` and splicing reader conditiona
      :default "Unknown"))
 ```
 
-Custom reader macros are not supported. The short anonymous function syntax uses `|` instead of `#()`, and tagged literals are not available. The `#_` form for commenting out expressions is supported.
+Custom reader macros are not supported, but generic tagged literals (`#uuid`, `#inst`, `#cpp`, ...) are read as tagged-literal nodes. The Clojure-style `#(...)` anonymous function shorthand with `%` / `%1` / `%&` placeholders works as expected; the Phel-only `|(...)` with `$` placeholders is also accepted but deprecated. The `#_` form for commenting out expressions is supported.
 
 ## Syntax Differences
 
@@ -204,7 +211,7 @@ Phel uses `str` for concatenation (same as Clojure) and `format` for sprintf-sty
 
 ### Anonymous functions
 
-The full `fn` form works identically. The short form uses `|` with `$` parameters instead of `#()` with `%` parameters:
+The full `fn` form works identically. The Clojure `#(...)` shorthand with `%` placeholders works the same way in Phel:
 
 ```clojure
 ;; Clojure
@@ -214,11 +221,13 @@ The full `fn` form works identically. The short form uses `|` with `$` parameter
 ```
 
 ```phel
-# Phel
+;; Phel
 (fn [x] (* x 2))
-|(* $ 2)
-|(+ $1 $2)
+#(* % 2)
+#(+ %1 %2)
 ```
+
+Phel also accepts `|(...)` with `$` placeholders as a legacy shorthand, but `#(...)` is preferred.
 
 See [Functions and Recursion](/documentation/language/functions-and-recursion) for multi-arity functions, variadic parameters, and `recur`.
 
@@ -282,7 +291,7 @@ Use `println` for output with a newline, `print` without:
 
 ### Comments
 
-Phel uses `;` and `;;` for line comments (the standard since v0.31.0). `#` still works for backward compatibility but `;` is preferred. Block comments use `#| ... |#`:
+Phel uses `;` and `;;` for line comments (the standard since v0.31.0). The legacy `#` line comment and `#| ... |#` block comment syntax still read but are deprecated. Use `#_` to skip a single form:
 
 ```clojure
 ;; Clojure
@@ -291,11 +300,10 @@ Phel uses `;` and `;;` for line comments (the standard since v0.31.0). `#` still
 ```
 
 ```phel
-; Phel
+;; Phel
 ; line comment
 ;; standalone comment
-#| block
-   comment |#
+#_(comment (+ 1 2))  ;; skip the next form
 (comment (+ 1 2))
 ```
 
@@ -411,21 +419,21 @@ Many organizations already run PHP infrastructure. Phel lets you bring functiona
 | Clojure | Phel | Notes |
 |---------|------|-------|
 | `(ns foo.bar)` | `(ns foo\bar)` | `\` separator instead of `.` |
-| `(:require [foo.bar :as b])` | `(:require foo\bar :as b)` | No vector wrapping |
-| `#(* % 2)` | `\|(* $ 2)` | `\|` short fn, `$` instead of `%` |
-| `(atom 0)` | `(var 0)` | Single mutable state primitive |
-| `@my-atom` | `(deref my-var)` | Dereference |
-| `(reset! a v)` | `(set! a v)` | Direct set |
+| `(:require [foo.bar :as b])` | `(:require foo\bar :as b)` | No vector wrapping required |
+| `#(* % 2)` | `#(* % 2)` | Same -- `|(* $ 2)` also works (legacy) |
+| `(atom 0)` | `(atom 0)` | Same -- `(var 0)` is the deprecated alias |
+| `@my-atom` | `@my-atom` | Same |
+| `(reset! a v)` | `(reset! a v)` | Same -- `(set! a v)` is the deprecated alias |
 | `(swap! a f)` | `(swap! a f)` | Same |
 | `(.method obj)` | `(php/-> obj (method))` | Instance method call |
 | `(Class/static)` | `(php/:: Class (static))` | Static method call |
 | `(new Class)` | `(php/new Class)` | Instantiation |
 | `(defprotocol P)` | `(defprotocol P)` | Same -- available since v0.31 |
-| `(defrecord R)` | `(defstruct R)` | Struct instead of record |
+| `(defrecord R)` | `(defrecord R)` or `(defstruct R)` | `defrecord` available since v0.32 |
 | `(lazy-seq ...)` | `(lazy-seq ...)` | Same -- available since v0.25 |
 | `#?(:clj x :default y)` | `#?(:phel x :default y)` | Reader conditionals -- since v0.31 |
 | `(ex-info msg data)` | `(ex-info msg data)` | Same -- available since v0.31 |
 | `(transduce xf f coll)` | `(transduce xf f coll)` | Same -- available since v0.31 |
-| `;; comment` | `; comment` | `;` is the standard (`;` or `#` both work) |
+| `;; comment` | `;; comment` | `;` and `;;` are the standard |
 
 Welcome to the PHP side of Lisp. The parentheses are the same -- the runtime just happens to be PHP.

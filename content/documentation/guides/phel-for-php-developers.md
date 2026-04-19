@@ -43,9 +43,9 @@ Key difference: `def` and `let` bindings are immutable. You don't modify a value
 If you need mutable state, Phel provides explicit variables:
 
 ```phel
-(def counter (var 0))
-(swap! counter inc)    # counter is now 1
-(deref counter)        # Evaluates to 1
+(def counter (atom 0))
+(swap! counter inc)    ;; counter is now 1
+(deref counter)        ;; Evaluates to 1
 ```
 
 ## Functions
@@ -74,7 +74,7 @@ function sum(...$numbers): int {
 (defn add [a b]
   (+ a b))
 
-(def double |(* $ 2))       # Short anonymous function
+(def double #(* % 2))       ;; Short anonymous function
 
 # Multi-arity for default parameters
 (defn greet
@@ -91,11 +91,11 @@ function sum(...$numbers): int {
 (sum 1 2 3 4)    # => 10
 ```
 
-The short anonymous function syntax `|` replaces PHP's arrow functions. Use `$` for a single parameter, or `$1`, `$2`, etc. for multiple parameters:
+The short anonymous function syntax `#(...)` replaces PHP's arrow functions. Use `%` for a single parameter, or `%1`, `%2`, etc. for multiple parameters:
 
 ```phel
-|(+ $1 $2)          # Same as fn($a, $b) => $a + $b
-|(str "Hi " $)      # Same as fn($x) => "Hi " . $x
+#(+ %1 %2)          ;; Same as fn($a, $b) => $a + $b
+#(str "Hi " %)      ;; Same as fn($x) => "Hi " . $x
 ```
 
 See [Functions and Recursion](/documentation/language/functions-and-recursion) for the full reference.
@@ -149,7 +149,7 @@ unset($user['age']);                     // Remove key
 | `$arr['k']` | `(get map :k)` or `(:k map)` | |
 | `unset($arr['k'])` | `(dissoc map :k)` | Returns new map |
 | `count($arr)` | `(count coll)` | Works on all collections |
-| `in_array($v, $arr)` | `(some |(= $ v) coll)` | |
+| `in_array($v, $arr)` | `(some #(= % v) coll)` | |
 | `array_key_exists` | `(contains? map :k)` | |
 
 The critical difference: all operations return **new** collections. The original is never modified. See [Data Structures](/documentation/language/data-structures) for the full reference.
@@ -310,8 +310,8 @@ $sum = array_reduce($numbers, fn($carry, $x) => $carry + $x, 0);
 ```
 
 ```phel
-# Phel
-(def doubled (map |(* $ 2) numbers))
+;; Phel
+(def doubled (map #(* % 2) numbers))
 (def evens (filter even? numbers))
 (def sum (reduce + 0 numbers))
 ```
