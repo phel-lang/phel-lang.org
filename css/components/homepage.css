@@ -158,7 +158,6 @@
 .phel-terminal-body {
   position: relative;
   background: #1a1a2e;
-  min-height: 280px;
 }
 
 .phel-terminal-session {

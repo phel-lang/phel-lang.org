@@ -30,7 +30,7 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
       <span class="phel-terminal-dot phel-terminal-dot--yellow"></span>
       <span class="phel-terminal-dot phel-terminal-dot--green"></span>
     </div>
-    <div class="phel-terminal-title">~/phel-example — phel repl</div>
+    <div class="phel-terminal-title">phel repl</div>
     <div class="phel-terminal-chrome-spacer"></div>
   </div>
   <div class="phel-terminal-tabs" role="tablist" aria-label="Phel feature examples">
