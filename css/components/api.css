@@ -561,7 +561,6 @@ ul.api-recent__list > li:before {
   color: white;
   border-color: var(--color-light-link);
   box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
   text-decoration: none;
 }
 

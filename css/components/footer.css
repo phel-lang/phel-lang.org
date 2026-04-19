@@ -87,7 +87,6 @@
   background: var(--color-light-link);
   border-color: var(--color-light-link);
   color: white;
-  transform: translateY(-2px);
 }
 
 .footer-social svg {
