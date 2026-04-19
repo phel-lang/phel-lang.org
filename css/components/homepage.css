@@ -65,12 +65,12 @@
 .phel-terminal {
   margin: var(--space-2xl) auto;
   max-width: 56rem;
-  background: #0b0d18;
+  background: #262a3b;
   color: #e5e7eb;
-  border: 1px solid rgba(191, 164, 255, 0.2);
+  border: 1px solid rgba(191, 164, 255, 0.18);
   border-radius: var(--radius-lg);
-  box-shadow: 0 20px 45px -20px rgba(0, 0, 0, 0.55),
-              0 0 0 1px rgba(108, 61, 197, 0.15);
+  box-shadow: 0 20px 45px -20px rgba(0, 0, 0, 0.45),
+              0 0 0 1px rgba(108, 61, 197, 0.1);
   overflow: hidden;
   font-family: var(--font-mono);
 }
@@ -80,8 +80,8 @@
   align-items: center;
   gap: var(--space-md);
   padding: var(--space-sm) var(--space-md);
-  background: linear-gradient(180deg, #1a1d2e 0%, #141627 100%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: linear-gradient(180deg, #353a50 0%, #2c3043 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .phel-terminal-dots {
@@ -118,8 +118,8 @@
   flex-wrap: wrap;
   gap: 2px;
   padding: 0 var(--space-md);
-  background: #12142a;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: #2d3143;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   overflow-x: auto;
 }
 
@@ -151,7 +151,7 @@
 
 .phel-terminal-tab.is-active {
   color: #ffffff;
-  background: #0b0d18;
+  background: #262a3b;
   border-top-color: var(--color-dark-text-accent, #bfa4ff);
 }
 
