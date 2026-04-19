@@ -24,10 +24,6 @@ class MyTest extends TestCase {
 Phel's approach is simpler for functional code and doesn't require class boilerplate.
 {% end %}
 
-{% clojure_note() %}
-Phel's testing framework is modeled after `clojure.test`-same `is` macro, same `deftest` structure.
-{% end %}
-
 ## Assertions
 
 The core of the library is the `is` macro, which can be used to defined assertions.

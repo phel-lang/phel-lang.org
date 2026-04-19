@@ -27,10 +27,6 @@ Phel uses prefix notation (operator comes first) instead of PHP's infix notation
 This allows operators to accept any number of arguments and eliminates operator precedence concerns.
 {% end %}
 
-{% clojure_note() %}
-Arithmetic works exactly like Clojure-prefix notation with variadic support for most operators.
-{% end %}
-
 Some operators support zero, one or multiple arguments.
 
 ```phel
@@ -163,6 +159,3 @@ Phel provides named functions for bitwise operations instead of PHP's operators:
 Phel also provides additional bit manipulation functions not available in PHP: `bit-set`, `bit-clear`, `bit-flip`, and `bit-test`.
 {% end %}
 
-{% clojure_note() %}
-Bitwise operators work exactly like Clojure's-same function names and behavior for bit manipulation.
-{% end %}

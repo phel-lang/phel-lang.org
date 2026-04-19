@@ -12,10 +12,6 @@ All data structures are **persistent** (immutable). A persistent data structure 
 Think of this as "copy-on-write" for collections, similar to how PHP's copy-on-write works for variables. This prevents bugs from unexpected mutations-a common issue in PHP where passing arrays to functions can lead to surprising behavior.
 {% end %}
 
-{% clojure_note() %}
-Phel's data structures work exactly like Clojure's-they're built on the same persistent data structure algorithms (Bagwell's Hash Array Mapped Tries and similar structures).
-{% end %}
-
 ## Lists
 
 A persistent list is simple a linked list. Access or modifications on the first element is efficient, random access is not. In Phel, a list has a special meaning. They are interpreted as function calls, macro calls or special forms by the compiler.
@@ -101,10 +97,6 @@ A vector can be counted using the `count` function.
 Vectors are like PHP's indexed arrays (`[0 => 'a', 1 => 'b']`), but immutable. Use vectors when you need indexed access.
 {% end %}
 
-{% clojure_note() %}
-Vectors work exactly like Clojure vectors-use them for indexed collections and when you need to append efficiently to the end.
-{% end %}
-
 ## Maps
 
 A Map contains key-value-pairs in random order. Each possible key appears at most once in the collection. Any type that implements the `HashableInterface` and `EqualsInterface` can be used as a key-including vectors, lists, or even other maps.
@@ -165,10 +157,6 @@ Maps are like PHP's associative arrays, but with two key differences:
 # => {:name "Alice" :age 31}
 # Original map is unchanged!
 ```
-{% end %}
-
-{% clojure_note() %}
-Maps work exactly like Clojure maps-use keywords for keys in most cases.
 {% end %}
 
 ## Working with Collections
@@ -610,10 +598,6 @@ The `cat` transducer concatenates inner collections:
 ```phel
 (into [] cat [[1 2] [3 4] [5 6]])  ; => [1 2 3 4 5 6]
 ```
-
-{% clojure_note() %}
-Transducers work like Clojure's transducer system. The `transduce`, `into` (3-arg), `sequence`, `completing`, and `cat` functions follow the same semantics.
-{% end %}
 
 ## Walking Data Structures
 

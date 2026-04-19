@@ -214,10 +214,6 @@ Use `satisfies?` to check if a value satisfies a protocol, and `extends?` to che
 - **Interfaces** are best when you control the type definition (structs) and want compile-time guarantees
 - **Protocols** are best when you need to add behavior to existing types or types you don't control
 
-{% clojure_note() %}
-Protocols work like Clojure's `defprotocol`, `extend-type`, `extend-protocol`, `satisfies?`, and `extends?`.
-{% end %}
-
 ## Hierarchies
 
 Phel provides a hierarchy system for defining relationships between types or values. Hierarchies work with multimethods to enable inheritance-aware dispatch.
@@ -292,7 +288,3 @@ Hierarchies integrate with multimethods. When a multimethod dispatches on a valu
 (draw {:type :rectangle :width 4 :height 3})
 ; => "Drawing a generic shape" (falls back to :shape via hierarchy)
 ```
-
-{% clojure_note() %}
-Hierarchies work like Clojure's `derive`, `underive`, `isa?`, `parents`, `ancestors`, `descendants`, and `make-hierarchy`, including integration with multimethods.
-{% end %}

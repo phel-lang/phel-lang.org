@@ -44,10 +44,6 @@ if ([]) { }       // false - won't execute
 ```
 {% end %}
 
-{% clojure_note() %}
-Truthiness works exactly like Clojure-only `false` and `nil` are falsy.
-{% end %}
-
 ## Identity vs Equality
 
 The function `identical?` returns `true` if two values are identical. Identity is stricter than equality. It first checks if both types are identical and then compares their values. Phel keywords and symbols with the same names are always identical. Lists, vectors, maps and sets are only identical if they point to the same references.
@@ -96,10 +92,6 @@ If you need PHP's loose equality, use `php/==`:
 (= 5 "5")           # => false (Phel structural equality)
 (identical? 5 5)    # => true (Phel identity)
 ```
-{% end %}
-
-{% clojure_note() %}
-`identical?` works like Clojure's `identical?`, and `=` is like Clojure's `=`.
 {% end %}
 
 ## Comparison Operations

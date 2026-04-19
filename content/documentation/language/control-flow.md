@@ -114,10 +114,6 @@ switch ($value) {
 No `break` needed-Phel's `case` doesn't fall through.
 {% end %}
 
-{% clojure_note() %}
-`case` works exactly like Clojure's `case`-evaluates to the matching value without fall-through.
-{% end %}
-
 ## Cond
 
 ```phel
@@ -196,10 +192,6 @@ if ($value < 0) {
 More elegant for multiple conditions than nested `if` expressions. Use `:else` as the last condition for a default case.
 {% end %}
 
-{% clojure_note() %}
-`cond` works exactly like Clojure's `cond`-evaluates predicates in order and returns first match.
-{% end %}
-
 ## Loop
 
 ```phel
@@ -274,10 +266,6 @@ function countdown($n) {
 ```
 
 This is critical for functional programming patterns in PHP.
-{% end %}
-
-{% clojure_note() %}
-`loop`/`recur` works exactly like Clojure-provides tail-call optimization by compiling to iterative loops.
 {% end %}
 
 ## Foreach
@@ -462,10 +450,6 @@ Like `cond->` but threads as the last argument (thread-last style).
 # Only applies (map inc) and (take 3), skips (filter odd?)
 ```
 
-{% clojure_note() %}
-`cond->` and `cond->>` work exactly like their Clojure counterparts.
-{% end %}
-
 # Exceptions
 
 ```phel
@@ -552,6 +536,3 @@ Use `ex-data`, `ex-message`, and `ex-cause` to extract information from structur
         403 (println "Forbidden:" (ex-message e))))))
 ```
 
-{% clojure_note() %}
-`ex-info`, `ex-data`, `ex-message`, and `ex-cause` work exactly like their Clojure counterparts.
-{% end %}

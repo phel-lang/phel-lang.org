@@ -36,10 +36,6 @@ Macros are **not** like PHP functions. They run at compile-time and transform co
 This is more powerful and safer than PHP's `eval()` or code generation.
 {% end %}
 
-{% clojure_note() %}
-Macros work exactly like Clojure macros-they transform code at compile time using quote, unquote, and syntax-quote.
-{% end %}
-
 ## Quote
 
 The quote operator is a special form, it returns its argument without evaluating it. Its purpose is to prevent any evaluation. Preceding a form with a single quote is a shorthand for `(quote form)`.

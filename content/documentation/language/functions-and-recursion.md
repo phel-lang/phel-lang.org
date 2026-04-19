@@ -73,10 +73,6 @@ array_map(fn($x) => $x * 2, $array);
 ```
 {% end %}
 
-{% clojure_note() %}
-The `#(...)` syntax with `%` placeholders is identical to Clojure's anonymous function reader macro.
-{% end %}
-
 
 ## Global functions
 
@@ -204,10 +200,6 @@ function factorial($n) {
 **Key difference:** Regular recursion builds up a call stack, while `recur` reuses the same stack frame (tail-call optimization).
 {% end %}
 
-{% clojure_note() %}
-`recur` works exactly like Clojure's `recur`-it provides tail-call optimization by compiling to a loop.
-{% end %}
-
 ## Multimethods
 
 Multimethods provide runtime polymorphism via dispatch functions. They decouple the dispatch mechanism from the method implementations, allowing open extension without modifying existing code.
@@ -248,10 +240,6 @@ The dispatch function can be any function, not just a keyword:
 
 (greeting {:language "es"})  # => "Hola!"
 ```
-
-{% clojure_note() %}
-`defmulti`/`defmethod` works like Clojure's multimethods. Default methods (`:default`) follow the same pattern.
-{% end %}
 
 ## Apply functions
 

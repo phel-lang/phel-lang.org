@@ -59,10 +59,6 @@ $x = 10;  // Can reassign
 ```
 {% end %}
 
-{% clojure_note() %}
-`let` works exactly like Clojure's `let`-creates lexically scoped, immutable bindings.
-{% end %}
-
 ## Binding
 
 While `let` creates a new lexical context, `binding` temporarily redefines existing definitions while executing the body. This can be useful when writing tests on functions depending on external state as `binding` allows to remap existing functions or values with mocks.
@@ -157,10 +153,6 @@ $service = new UserService($mockDb);
 Binding is particularly useful for testing code that depends on global state or external systems.
 {% end %}
 
-{% clojure_note() %}
-`binding` works exactly like Clojure's `binding`-it creates dynamic scope bindings that affect all code executed within the binding form.
-{% end %}
-
 ## Atoms
 
 ```phel
@@ -205,6 +197,3 @@ $count++;
 Use Phel's immutable data structures when possible. Atoms are mainly useful for interop with PHP code or managing application state.
 {% end %}
 
-{% clojure_note() %}
-Phel atoms work like Clojure atoms-they're containers for mutable state. Use `deref` or `@` to read, `swap!` or `reset!` to update.
-{% end %}

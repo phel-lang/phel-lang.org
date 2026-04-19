@@ -104,10 +104,6 @@ Additionally, it is possible to refer symbols of other modules in the current na
 
 Both, `:refer` and `:as` can be combined in any order.
 
-{% clojure_note() %}
-`:refer` works exactly like Clojure's `:refer`-imports specific symbols into the current namespace.
-{% end %}
-
 ### Import a PHP class
 
 PHP classes are imported with the keyword `:use`.

@@ -61,10 +61,6 @@ Destructuring is more powerful than PHP's list() or array unpacking:
 Phel's destructuring works in more places (function params, let, loop) and supports more patterns.
 {% end %}
 
-{% clojure_note() %}
-Destructuring works exactly like Clojure's destructuring-same syntax and behavior.
-{% end %}
-
 ## Associative destructuring
 
 Extract values from maps by key using map syntax:

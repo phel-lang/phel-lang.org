@@ -34,10 +34,6 @@ In PHP, `nil` is the same as `null`, and `true`/`false` are the same. However, t
 This means `if (0)` in PHP is false, but `(if 0 ...)` in Phel is true!
 {% end %}
 
-{% clojure_note() %}
-Truthiness is the same as Clojure-only `false` and `nil` are falsy.
-{% end %}
-
 ## Symbol
 
 Symbols are used to name functions and variables in Phel.
@@ -84,10 +80,6 @@ Keywords are like string constants, but more efficient for map keys. Use keyword
 ```
 
 Keywords are interned (only one instance exists in memory), making equality checks very fast.
-{% end %}
-
-{% clojure_note() %}
-Keywords work exactly like in Clojure-they're interned, fast for equality checks, and self-evaluate.
 {% end %}
 
 ## Numbers
@@ -230,10 +222,6 @@ $map['name'] = 'Bob';  // Mutates in place
 ```
 {% end %}
 
-{% clojure_note() %}
-Maps work exactly like Clojure maps, including support for any hashable type as keys.
-{% end %}
-
 ## Sets
 
 A set is a sequence of whitespace-separated values prefixed by `#` and surrounded by curly braces, or built from individual arguments with `hash-set`:
@@ -292,10 +280,6 @@ The `#(...)` reader syntax provides a compact way to define anonymous functions 
 ```
 
 > **Note:** The older `|(...)` short-form syntax with `$` placeholders is also accepted but deprecated. See [Functions and Recursion](/documentation/language/functions-and-recursion/) for details.
-
-{% clojure_note() %}
-The `#(...)` syntax with `%` placeholders matches Clojure's anonymous function reader macro exactly.
-{% end %}
 
 ## Deref Shorthand
 
