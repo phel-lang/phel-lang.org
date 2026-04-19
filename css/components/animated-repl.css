@@ -1,5 +1,19 @@
 /* Animated Terminal REPL */
 .terminal {
+  --t-header-bg: #e5e7eb;
+  --t-header-border: rgba(0, 0, 0, 0.06);
+  --t-title: #6b7280;
+  --t-body-bg: #ffffff;
+  --t-input: #1f2937;
+  --t-output: #6b7280;
+  --t-result: #0369a1;
+  --t-shell: #047857;
+  --t-prompt: #b45309;
+  --t-replay-border: #d1d5db;
+  --t-replay-text: #6b7280;
+  --t-replay-hover: #0369a1;
+  --t-scrollbar: #d1d5db;
+
   border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: var(--shadow-lg);
@@ -7,10 +21,27 @@
   font-size: 14px;
   max-width: 680px;
   margin: 2rem auto;
+  border: 1px solid var(--t-header-border);
+}
+
+.dark .terminal {
+  --t-header-bg: #2d2d2d;
+  --t-header-border: rgba(255, 255, 255, 0.05);
+  --t-title: #999;
+  --t-body-bg: #1a1a2e;
+  --t-input: #e0e0e0;
+  --t-output: #888;
+  --t-result: #7ec8e3;
+  --t-shell: #28c840;
+  --t-prompt: #ffbd2e;
+  --t-replay-border: #555;
+  --t-replay-text: #999;
+  --t-replay-hover: #7ec8e3;
+  --t-scrollbar: #444;
 }
 
 .terminal-header {
-  background: #2d2d2d;
+  background: var(--t-header-bg);
   padding: 0.625rem 1rem;
   display: flex;
   align-items: center;
@@ -34,13 +65,13 @@
 .terminal-dot-green { background: #28c840; }
 
 .terminal-title {
-  color: #999;
+  color: var(--t-title);
   font-size: 13px;
   font-weight: 500;
 }
 
 .terminal-body {
-  background: #1a1a2e;
+  background: var(--t-body-bg);
   padding: 1rem 1.25rem;
   min-height: 280px;
   line-height: 1.6;
@@ -52,25 +83,25 @@
 }
 
 .terminal-input {
-  color: #e0e0e0;
+  color: var(--t-input);
 }
 
 .terminal-output {
-  color: #888;
+  color: var(--t-output);
 }
 
 .terminal-result {
-  color: #7ec8e3;
+  color: var(--t-result);
   margin-bottom: 0.25rem;
 }
 
 .terminal-shell {
-  color: #28c840;
+  color: var(--t-shell);
   user-select: none;
 }
 
 .terminal-prompt {
-  color: #ffbd2e;
+  color: var(--t-prompt);
   user-select: none;
 }
 
@@ -81,8 +112,8 @@
 
 .terminal-replay-btn {
   background: transparent;
-  border: 1px solid #555;
-  color: #999;
+  border: 1px solid var(--t-replay-border);
+  color: var(--t-replay-text);
   padding: 0.25rem 0.75rem;
   border-radius: var(--radius-md);
   cursor: pointer;
@@ -92,8 +123,8 @@
 }
 
 .terminal-replay-btn:hover {
-  border-color: #7ec8e3;
-  color: #7ec8e3;
+  border-color: var(--t-replay-hover);
+  color: var(--t-replay-hover);
 }
 
 /* Scrollbar styling for terminal */
@@ -106,6 +137,6 @@
 }
 
 .terminal-body::-webkit-scrollbar-thumb {
-  background: #444;
+  background: var(--t-scrollbar);
   border-radius: 3px;
 }
