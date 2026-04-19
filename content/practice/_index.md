@@ -7,8 +7,6 @@ template = "practice-section.html"
 page_template = "practice-page.html"
 +++
 
-# Practice
-
 A guided journey from your first parenthesis to building real programs. Each section ramps up from the last - data first, then functions, then control flow, then the functional toolbox, and finally a handful of small programs that combine everything.
 
 **How to use the journey:**
