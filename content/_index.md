@@ -56,7 +56,7 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 <span class="t-out">#'user/users</span>
 <span class="t-cmt">;; Keywords act as functions that look themselves up.</span>
 <span class="t-p">user:4&gt;</span> <span class="t-in">(map :name users)</span>
-<span class="t-out">("Ada" "Alan" "Lin")</span>
+<span class="t-out">@["Ada" "Alan" "Lin"]</span>
 <span class="t-cmt">;; Destructuring pulls fields straight out of collections.</span>
 <span class="t-p">user:5&gt;</span> <span class="t-in">(let [[{:keys [name age]} &amp; rest] users]</span>
 <span class="t-c">....:6&gt;</span> <span class="t-in">  (println name "is" age "-" (count rest) "more"))</span>
