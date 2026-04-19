@@ -5,15 +5,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const lines = [
     { type: 'shell', text: 'docker run -it --rm phellang/repl', delay: 40 },
     { type: 'output', text: 'Welcome to the Phel Repl', delay: 0 },
-    { type: 'output', text: '------------------------------', delay: 0 },
+    { type: 'output', text: 'Type "exit" or press Ctrl-D to exit.', delay: 0 },
     { type: 'prompt', text: '(+ 1 2 3)', delay: 60 },
     { type: 'result', text: '6', delay: 0 },
     { type: 'prompt', text: '(def name "World")', delay: 50 },
-    { type: 'result', text: 'World', delay: 0 },
+    { type: 'result', text: "#'user/name", delay: 0 },
     { type: 'prompt', text: '(str "Hello, " name "!")', delay: 45 },
     { type: 'result', text: '"Hello, World!"', delay: 0 },
     { type: 'prompt', text: '(defn greet [who] (str "Hi, " who "!"))', delay: 40 },
-    { type: 'result', text: '', delay: 0 },
+    { type: 'result', text: "#'user/greet", delay: 0 },
     { type: 'prompt', text: '(greet "PHP developer")', delay: 50 },
     { type: 'result', text: '"Hi, PHP developer!"', delay: 0 },
     { type: 'prompt', text: '(->> (range 1 6) (map (fn [x] (* x x))) (reduce +))', delay: 35 },
@@ -44,9 +44,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const body = terminal.querySelector('#terminal-body');
   let isRunning = false;
 
+  let promptCounter = 0;
+
   function getPrefix(type) {
     if (type === 'shell') return '<span class="terminal-shell">$ </span>';
-    if (type === 'prompt') return '<span class="terminal-prompt">>>> </span>';
+    if (type === 'prompt') {
+      promptCounter += 1;
+      return `<span class="terminal-prompt">user:${promptCounter}&gt; </span>`;
+    }
     return '';
   }
 
@@ -71,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isRunning) return;
     isRunning = true;
     body.innerHTML = '';
+    promptCounter = 0;
 
     for (const line of lines) {
       const div = document.createElement('div');

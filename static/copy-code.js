@@ -27,8 +27,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle copy
     copyButton.addEventListener('click', async () => {
-      const code = pre.querySelector('code');
-      const text = code ? code.textContent : pre.textContent;
+      let text;
+      if (pre.classList.contains('phel-terminal-session')) {
+        const inputs = pre.querySelectorAll('.t-in');
+        text = Array.from(inputs).map(el => el.textContent).join('\n');
+      } else {
+        const code = pre.querySelector('code');
+        text = code ? code.textContent : pre.textContent;
+      }
 
       try {
         await navigator.clipboard.writeText(text);

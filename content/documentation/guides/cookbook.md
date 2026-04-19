@@ -13,8 +13,8 @@ Read a CSV file and parse it into a vector of maps, where each map represents a 
 ```phel
 (ns cookbook\csv-reader)
 
-# Read a CSV file and return a vector of maps
-# Each row becomes a map with header names as keys
+;; Read a CSV file and return a vector of maps
+;; Each row becomes a map with header names as keys
 (defn read-csv [filepath]
   (let [handle (php/fopen filepath "r")]
     (if (not handle)
@@ -31,23 +31,24 @@ Read a CSV file and parse it into a vector of maps, where each map represents a 
                 rows)
               (let [row (for [[i k] :pairs header-keys]
                           [k (php/aget line i)])]
-                (recur (conj rows (apply hash-map (flatten row))))))))))))
+                (recur (conj rows (into {} row)))))))))))
 
-# Example usage:
-# Given a file "users.csv" with contents:
-#   name,email,role
-#   Alice,alice@example.com,admin
-#   Bob,bob@example.com,editor
+;; Example usage:
+;; Given a file "users.csv" with contents:
+;;   name,email,role
+;;   Alice,alice@example.com,admin
+;;   Bob,bob@example.com,editor
 
 (def users (read-csv "users.csv"))
-# => [{:name "Alice" :email "alice@example.com" :role "admin"}
-#     {:name "Bob" :email "bob@example.com" :role "editor"}]
+;; => [{:name "Alice" :email "alice@example.com" :role "admin"}
+;;     {:name "Bob" :email "bob@example.com" :role "editor"}]
 
 ;; Process the parsed data
 (def admin-emails
   (->> users
        (filter #(= "admin" (get % :role)))
-       (map :email)))
+       (map :email)
+       (into [])))
 ;; => ["alice@example.com"]
 ```
 
@@ -60,96 +61,92 @@ A command-line script that reads arguments, parses simple flags, and produces ou
 ```phel
 (ns cookbook\cli-tool)
 
-# Access command-line arguments via PHP's $argv
-# When running: vendor/bin/phel run src/cli-tool.phel --name Alice --greeting Hi
+;; Access command-line arguments via PHP's $argv
+;; When running: vendor/bin/phel run src/cli-tool.phel --name Alice --greeting Hi
 (def args (let [argv (php/aget php/$_SERVER "argv")]
-            # Skip the first two args (phel binary and script path)
+            ;; Skip the first two args (phel binary and script path)
             (for [i :range [2 (php/count argv)]]
               (php/aget argv i))))
 
-# Parse flags into a map of --key value pairs
-(defn parse-flags [args]
-  (loop [remaining args
+;; Parse flags into a map of --key value pairs
+(defn parse-flags [flag-args]
+  (loop [remaining flag-args
          flags {}]
     (if (empty? remaining)
       flags
       (let [current (first remaining)
             rest-args (rest remaining)]
         (if (php/str_starts_with current "--")
-          (let [key (keyword (php/substr current 2))
-                value (first rest-args)]
-            (recur (rest rest-args) (assoc flags key value)))
+          (let [k (keyword (php/substr current 2))
+                v (first rest-args)]
+            (recur (rest rest-args) (assoc flags k v)))
           (recur rest-args flags))))))
 
-# Build the tool
+;; Build the tool
 (defn run []
   (let [flags (parse-flags args)
-        name (get flags :name "World")
+        who (get flags :name "World")
         greeting (get flags :greeting "Hello")
         repeat-count (php/intval (get flags :repeat "1"))]
     (dotimes [_ repeat-count]
-      (println (str greeting ", " name "!")))))
+      (println (str greeting ", " who "!")))))
 
 (run)
-# Running: vendor/bin/phel run src/cli-tool.phel --name Alice --repeat 3
-# Output:
-#   Hello, Alice!
-#   Hello, Alice!
-#   Hello, Alice!
+;; Running: vendor/bin/phel run src/cli-tool.phel --name Alice --repeat 3
+;; Output:
+;;   Hello, Alice!
+;;   Hello, Alice!
+;;   Hello, Alice!
 ```
 
 **See also:** [PHP Interop](/documentation/php-interop), [Control Flow](/documentation/language/control-flow)
 
 ## HTTP Request with cURL
 
-Make an HTTP GET request using PHP's cURL functions and parse a JSON response.
+Make an HTTP GET request using the built-in `phel\http-client` module and parse a JSON response with `phel\json`.
 
 ```phel
-(ns cookbook\http-client)
+(ns cookbook\http-client
+  (:require phel\http-client :as http)
+  (:require phel\json :as json))
 
-# Perform an HTTP GET request and return the response body as a string
+;; Perform an HTTP GET request. `http/get` returns an http/response struct
+;; with :status, :headers, :body, :version, and :reason keys.
 (defn http-get [url]
-  (let [ch (php/curl_init)]
-    (php/curl_setopt ch php/CURLOPT_URL url)
-    (php/curl_setopt ch php/CURLOPT_RETURNTRANSFER true)
-    (php/curl_setopt ch php/CURLOPT_FOLLOWLOCATION true)
-    (php/curl_setopt ch php/CURLOPT_TIMEOUT 30)
-    (let [response (php/curl_exec ch)
-          error (php/curl_error ch)
-          status (php/curl_getinfo ch php/CURLINFO_HTTP_CODE)]
-      (php/curl_close ch)
-      (if (= false response)
-        {:error error :status 0}
-        {:body response :status status}))))
+  (let [resp (http/get url {:timeout 30.0 :follow-redirects true})]
+    (if (and (>= (get resp :status) 200) (< (get resp :status) 300))
+      {:body (get resp :body) :status (get resp :status)}
+      {:error (get resp :reason) :status (get resp :status)})))
 
-# Parse a JSON string into a Phel map
+;; Parse a JSON string into a Phel map using phel\json
 (defn parse-json [json-string]
-  (let [decoded (php/json_decode json-string true)]
-    (if (nil? decoded)
-      {:error (php/json_last_error_msg)}
-      decoded)))
+  (try
+    (json/decode json-string)
+    (catch \JsonException e
+      {:error (php/-> e (getMessage))})))
 
-# Fetch data from a JSON API
+;; Fetch data from a JSON API
 (defn fetch-json [url]
   (let [result (http-get url)]
     (if (get result :error)
       result
       (parse-json (get result :body)))))
 
-# Example: fetch a list of todos from a public API
+;; Example: fetch a list of todos from a public API
 (def response (fetch-json "https://jsonplaceholder.typicode.com/todos/1"))
-# response is a PHP associative array, access with php/aget
-(println (str "Title: " (php/aget response "title")))
-(println (str "Completed: " (if (php/aget response "completed") "yes" "no")))
+;; response is a Phel map (phel\json converts keys to keywords)
+(println (str "Title: " (get response :title)))
+(println (str "Completed: " (if (get response :completed) "yes" "no")))
 
-# Example: fetch multiple items and process them
+;; Example: fetch multiple items and process them
 (defn fetch-todos [limit]
   (let [data (fetch-json (str "https://jsonplaceholder.typicode.com/todos?_limit=" limit))]
-    (for [i :range [0 (php/count data)]]
-      (let [todo (php/aget data i)]
-        {:id (php/aget todo "id")
-         :title (php/aget todo "title")
-         :completed (php/aget todo "completed")}))))
+    (->> data
+         (map (fn [todo]
+                {:id (get todo :id)
+                 :title (get todo :title)
+                 :completed (get todo :completed)}))
+         (into []))))
 
 (def todos (fetch-todos 5))
 (def completed-count (count (filter :completed todos)))
@@ -166,7 +163,7 @@ Use Phel's `html` module to generate HTML markup with nested elements, attribute
 (ns cookbook\html-generator
   (:require phel\html :refer [html doctype raw-string]))
 
-# Generate a simple page layout
+;; Generate a simple page layout
 (defn page [title & body]
   (html
     (doctype :html5)
@@ -186,7 +183,7 @@ Use Phel's `html` module to generate HTML markup with nested elements, attribute
         [:h1 title]
         body]]))
 
-# Generate a user card component
+;; Generate a user card component
 (defn user-card [user]
   [:div {:class "card"}
     [:h3 (get user :name)]
@@ -194,14 +191,14 @@ Use Phel's `html` module to generate HTML markup with nested elements, attribute
     [:span {:class [:badge (if (get user :active) "active" "inactive")]}
       (if (get user :active) "Active" "Inactive")]])
 
-# Generate a navigation bar
+;; Generate a navigation bar
 (defn nav [links]
   [:nav
     [:ul {:style {:list-style "none" :display "flex" :gap "1rem" :padding "0"}}
       (for [link :in links]
         [:li [:a {:href (get link :url)} (get link :label)]])]])
 
-# Build a complete page with dynamic content
+;; Build a complete page with dynamic content
 (def users
   [{:name "Alice" :email "alice@example.com" :active true}
    {:name "Bob" :email "bob@example.com" :active false}
@@ -230,62 +227,63 @@ Use PHP's DateTime classes via Phel interop to create, format, and compare dates
 
 ```phel
 (ns cookbook\dates
-  (:use \DateTimeImmutable)
-  (:use \DateInterval)
-  (:use \DateTimeZone))
+  (:use DateTimeImmutable)
+  (:use DateInterval)
+  (:use DateTimeZone))
 
-# Create dates
-(def now (php/new DateTimeImmutable))
-(def specific-date (php/new DateTimeImmutable "2024-06-15"))
+;; Create dates -- `(ClassName. args)` is 0.33 shorthand for `(php/new ClassName args)`
+(def now (DateTimeImmutable.))
+(def specific-date (DateTimeImmutable. "2024-06-15"))
 (def from-format
   (php/:: DateTimeImmutable (createFromFormat "d/m/Y" "25/12/2024")))
 
-# Format dates
-(println (php/-> now (format "Y-m-d H:i:s")))       # 2024-03-10 14:30:00
-(println (php/-> now (format "l, F j, Y")))          # Sunday, March 10, 2024
-(println (php/-> specific-date (format "D, M j")))   # Sat, Jun 15
+;; Format dates
+(println (php/-> now (format "Y-m-d H:i:s")))       ; 2024-03-10 14:30:00
+(println (php/-> now (format "l, F j, Y")))         ; Sunday, March 10, 2024
+(println (php/-> specific-date (format "D, M j")))  ; Sat, Jun 15
 
-# Date arithmetic - add and subtract intervals
+;; Date arithmetic -- add and subtract intervals
 (def tomorrow
   (php/-> now (modify "+1 day")))
 (def next-week
   (php/-> now (modify "+7 days")))
 (def three-months-later
-  (php/-> now (add (php/new DateInterval "P3M"))))
+  (php/-> now (add (DateInterval. "P3M"))))
 
 (println (str "Tomorrow: " (php/-> tomorrow (format "Y-m-d"))))
 (println (str "Next week: " (php/-> next-week (format "Y-m-d"))))
 (println (str "In 3 months: " (php/-> three-months-later (format "Y-m-d"))))
 
-# Compare dates
+;; Compare dates
 (defn date-before? [a b]
   (< (php/-> a (getTimestamp)) (php/-> b (getTimestamp))))
 
 (defn date-after? [a b]
   (> (php/-> a (getTimestamp)) (php/-> b (getTimestamp))))
 
-(println (str "Tomorrow is after today: " (date-after? tomorrow now)))  # true
+(println (str "Tomorrow is after today: " (date-after? tomorrow now)))  ; true
 
-# Calculate the difference between two dates
+;; Calculate the difference between two dates.
+;; `(php/-> obj -prop)` reads a PHP public property (note the leading dash).
 (defn days-between [date1 date2]
   (let [interval (php/-> date1 (diff date2))]
-    (php/-> interval days)))
+    (php/-> interval -days)))
 
-(def start (php/new DateTimeImmutable "2024-01-01"))
-(def end (php/new DateTimeImmutable "2024-12-31"))
-(println (str "Days in 2024: " (days-between start end)))  # 365
+(def start (DateTimeImmutable. "2024-01-01"))
+(def end (DateTimeImmutable. "2024-12-31"))
+(println (str "Days in 2024: " (days-between start end)))  ; 365
 
-# Work with time zones
-(def utc-now (php/new DateTimeImmutable "now" (php/new DateTimeZone "UTC")))
+;; Work with time zones
+(def utc-now (DateTimeImmutable. "now" (DateTimeZone. "UTC")))
 (def tokyo-now
-  (php/-> utc-now (setTimezone (php/new DateTimeZone "Asia/Tokyo"))))
+  (php/-> utc-now (setTimezone (DateTimeZone. "Asia/Tokyo"))))
 
 (println (str "UTC:   " (php/-> utc-now (format "H:i:s"))))
 (println (str "Tokyo: " (php/-> tokyo-now (format "H:i:s"))))
 
-# Utility: human-readable relative time
+;; Utility: human-readable relative time
 (defn time-ago [date]
-  (let [seconds (- (php/-> (php/new DateTimeImmutable) (getTimestamp))
+  (let [seconds (- (php/-> (DateTimeImmutable.) (getTimestamp))
                    (php/-> date (getTimestamp)))]
     (cond
       (< seconds 60) "just now"
@@ -303,28 +301,28 @@ Read files, write files, list directories, and check file existence using PHP in
 ```phel
 (ns cookbook\filesystem)
 
-# Read entire file contents
+;; Read entire file contents
 (defn read-file [path]
   (let [contents (php/file_get_contents path)]
     (if (= false contents)
       nil
       contents)))
 
-# Write content to a file (creates or overwrites)
+;; Write content to a file (creates or overwrites)
 (defn write-file [path content]
   (let [result (php/file_put_contents path content)]
     (if (= false result)
       (do (println (str "Error: could not write to " path)) false)
       true)))
 
-# Append content to a file
+;; Append content to a file
 (defn append-file [path content]
   (let [result (php/file_put_contents path content php/FILE_APPEND)]
     (if (= false result)
       (do (println (str "Error: could not append to " path)) false)
       true)))
 
-# Check if a file or directory exists
+;; Check if a file or directory exists
 (defn exists? [path]
   (php/file_exists path))
 
@@ -334,7 +332,7 @@ Read files, write files, list directories, and check file existence using PHP in
 (defn directory? [path]
   (php/is_dir path))
 
-# List directory contents, excluding . and ..
+;; List directory contents, excluding . and ..
 (defn list-dir [path]
   (if (not (directory? path))
     []
@@ -344,7 +342,7 @@ Read files, write files, list directories, and check file existence using PHP in
             :when (and (not= entry ".") (not= entry ".."))]
         entry))))
 
-# List files matching a pattern
+;; List files matching a pattern
 (defn glob-files [pattern]
   (let [matches (php/glob pattern)]
     (if (= false matches)
@@ -352,7 +350,7 @@ Read files, write files, list directories, and check file existence using PHP in
       (for [i :range [0 (php/count matches)]]
         (php/aget matches i)))))
 
-# Get file info
+;; Get file info
 (defn file-info [path]
   (if (not (exists? path))
     nil
@@ -362,29 +360,31 @@ Read files, write files, list directories, and check file existence using PHP in
      :readable (php/is_readable path)
      :writable (php/is_writable path)}))
 
-# Create directory recursively
+;; Create directory recursively
 (defn mkdir [path]
   (when (not (exists? path))
     (php/mkdir path 0755 true)))
 
-# Example usage
+;; Example usage
 (write-file "output/example.txt" "Hello from Phel!\n")
 (append-file "output/example.txt" "Another line.\n")
 
 (when (exists? "output/example.txt")
   (println (read-file "output/example.txt")))
 
-# List all .phel files in a directory
+;; List all .phel files in a directory
 (def phel-files (glob-files "src/**/*.phel"))
 (foreach [f phel-files]
   (println (str "Found: " f)))
 
-# Get info about each file
+;; Get info about each file. `map` / `filter` are lazy -- finish the pipeline
+;; with `into` (or `vec` / `doall`) to realise the result.
 (def file-report
   (->> phel-files
        (map file-info)
        (sort-by :size)
-       (reverse)))
+       (reverse)
+       (into [])))
 ```
 
 **See also:** [PHP Interop](/documentation/php-interop)
@@ -396,7 +396,7 @@ Take raw data, filter it, transform it, and group it using Phel's threading macr
 ```phel
 (ns cookbook\data-pipeline)
 
-# Sample dataset: a vector of user maps
+;; Sample dataset: a vector of user maps
 (def users
   [{:name "Alice"   :age 32 :role "engineer" :active true}
    {:name "Bob"     :age 28 :role "designer" :active false}
@@ -406,30 +406,30 @@ Take raw data, filter it, transform it, and group it using Phel's threading macr
    {:name "Frank"   :age 52 :role "manager"  :active false}
    {:name "Grace"   :age 38 :role "engineer" :active true}])
 
-# Pipeline: get active users, uppercase names, sort by age, group by role
+;; Pipeline: get active users, uppercase names, sort by age, group by role
 (def result
   (->> users
-       (filter :active)                              ;; keep only active users
-       (map #(assoc % :name (php/strtoupper (get % :name))))  ;; uppercase names
-       (sort-by :age)                                ;; sort by age ascending
-       (group-by :role)))                            ;; group into a map by role
+       (filter :active)                                       ; keep only active users
+       (map #(assoc % :name (php/strtoupper (get % :name))))  ; uppercase names
+       (sort-by :age)                                         ; sort by age ascending
+       (group-by :role)))                                     ; group into a map by role
 
-# result =>
-# {"engineer" [{:name "ALICE"   :age 32 ...}
-#              {:name "GRACE"   :age 38 ...}
-#              {:name "CHARLIE" :age 45 ...}]
-#  "manager"  [{:name "DIANA"   :age 35 ...}]
-#  "designer" [{:name "EVE"     :age 29 ...}]}
+;; result =>
+;; {"engineer" [{:name "ALICE"   :age 32 ...}
+;;              {:name "GRACE"   :age 38 ...}
+;;              {:name "CHARLIE" :age 45 ...}]
+;;  "manager"  [{:name "DIANA"   :age 35 ...}]
+;;  "designer" [{:name "EVE"     :age 29 ...}]}
 
-# Print a summary report
+;; Print a summary report. A 3-element `foreach` binds key and value of a map.
 (foreach [role members result]
   (println (str "== " (php/strtoupper role) " (" (count members) ") =="))
   (foreach [m members]
     (println (str "  " (get m :name) " (age " (get m :age) ")"))))
 
-# More pipeline examples:
+;; More pipeline examples:
 
-# Average age of active users
+;; Average age of active users
 (def avg-age
   (let [active (filter :active users)
         total-age (reduce + 0 (map :age active))]
@@ -451,7 +451,7 @@ Take raw data, filter it, transform it, and group it using Phel's threading macr
 (println (str "Active: " (get status-counts :active)
               ", Inactive: " (get status-counts :inactive)))
 
-# Extract unique roles
+;; Extract unique roles
 (def roles
   (->> users
        (map :role)
@@ -466,86 +466,80 @@ Take raw data, filter it, transform it, and group it using Phel's threading macr
 Build a persistent key-value store backed by a JSON file, with functions for get, put, delete, and listing keys.
 
 ```phel
-(ns cookbook\kv-store)
+(ns cookbook\kv-store
+  (:require phel\json :as json))
 
-# Path to the JSON storage file
+;; Path to the JSON storage file
 (def default-store-path "data/store.json")
 
-# Load the store from disk, returning a Phel map
+;; Load the store from disk, returning a Phel map
 (defn store-load [path]
   (if (not (php/file_exists path))
     {}
     (let [contents (php/file_get_contents path)]
       (if (or (= false contents) (= "" contents))
         {}
-        (let [decoded (php/json_decode contents true)]
-          (if (nil? decoded)
-            {}
-            # Convert PHP associative array to Phel map
-            (for [[k v] :pairs decoded :reduce [m {}]]
-              (assoc m k v))))))))
+        (try
+          (json/decode contents)
+          (catch \JsonException _ {}))))))
 
-# Save the store to disk as JSON
+;; Save the store to disk as pretty-printed JSON
 (defn store-save [path data]
   (let [dir (php/dirname path)]
     (when (not (php/is_dir dir))
       (php/mkdir dir 0755 true))
-    # Convert Phel map to PHP array for json_encode
-    (let [php-arr (php/array)]
-      (foreach [k v data]
-        (php/aset php-arr k v))
-      (php/file_put_contents
-        path
-        (php/json_encode php-arr php/JSON_PRETTY_PRINT)))))
+    (php/file_put_contents
+      path
+      (json/encode data {:flags php/JSON_PRETTY_PRINT}))))
 
-# Get a value by key, with an optional default
+;; Get a value by key, with an optional default
 (defn store-get
-  ([key] (store-get default-store-path key nil))
-  ([key default] (store-get default-store-path key default))
-  ([path key default]
-    (get (store-load path) key default)))
+  ([k] (store-get default-store-path k nil))
+  ([k default] (store-get default-store-path k default))
+  ([path k default]
+    (get (store-load path) k default)))
 
-# Put a key-value pair into the store
+;; Put a key-value pair into the store
 (defn store-put
-  ([key value] (store-put default-store-path key value))
-  ([path key value]
+  ([k v] (store-put default-store-path k v))
+  ([path k v]
     (let [data (store-load path)
-          updated (assoc data key value)]
+          updated (assoc data k v)]
       (store-save path updated)
       updated)))
 
-# Delete a key from the store
+;; Delete a key from the store
 (defn store-delete
-  ([key] (store-delete default-store-path key))
-  ([path key]
+  ([k] (store-delete default-store-path k))
+  ([path k]
     (let [data (store-load path)
-          updated (dissoc data key)]
+          updated (dissoc data k)]
       (store-save path updated)
       updated)))
 
-# List all keys in the store
+;; List all keys in the store
 (defn store-keys
   ([] (store-keys default-store-path))
   ([path] (keys (store-load path))))
 
-# Check if a key exists
+;; Check if a key exists
 (defn store-has?
-  ([key] (store-has? default-store-path key))
-  ([path key] (contains? (store-load path) key)))
+  ([k] (store-has? default-store-path k))
+  ([path k] (contains? (store-load path) k)))
 
-# Example usage
-(store-put "user:1" "Alice")
-(store-put "user:2" "Bob")
-(store-put "config:theme" "dark")
+;; Example usage
+(store-put :user-1 "Alice")
+(store-put :user-2 "Bob")
+(store-put :config-theme "dark")
 
-(println (str "User 1: " (store-get "user:1")))           # Alice
-(println (str "User 3: " (store-get "user:3" "unknown"))) # unknown
-(println (str "Keys: " (store-keys)))                      # ("user:1" "user:2" "config:theme")
+(println (str "User 1: " (store-get :user-1)))             ; Alice
+(println (str "User 3: " (store-get :user-3 "unknown")))   ; unknown
+(println (str "Keys: " (store-keys)))                       ; (:user-1 :user-2 :config-theme)
 
-(store-delete "user:2")
-(println (str "Has user:2? " (store-has? "user:2")))       # false
+(store-delete :user-2)
+(println (str "Has :user-2? " (store-has? :user-2)))       ; false
 
-# Bulk operations using Phel's functional tools
+;; Bulk operations using Phel's functional tools
 (defn store-put-many [pairs]
   (let [path default-store-path
         data (store-load path)
@@ -553,7 +547,7 @@ Build a persistent key-value store backed by a JSON file, with functions for get
     (store-save path updated)
     updated))
 
-(store-put-many [["lang" "phel"] ["version" "0.30"] ["status" "awesome"]])
+(store-put-many [[:lang "phel"] [:version "0.33"] [:status "awesome"]])
 (println (str "All keys: " (store-keys)))
 ```
 
@@ -747,15 +741,9 @@ Phel v0.31.0 introduces regex literals (`#"..."`) and matching functions for wor
 (parse-color "not-a-color")
 ;; => nil
 
-;; Extract all matches from a string using PHP interop
-(defn re-find-all [pattern s]
-  (let [matches (php/array)]
-    (php/preg_match_all (str pattern) s matches)
-    (for [i :range [0 (php/count (php/aget matches 0))]]
-      (php/aget (php/aget matches 0) i))))
-
-(re-find-all #"\b[A-Z][a-z]+" "Alice met Bob and Charlie")
-;; => ["Alice" "Bob" "Charlie"]
+;; Extract all successive matches with `re-seq` (lazy sequence of matches).
+(re-seq #"\b[A-Z][a-z]+" "Alice met Bob and Charlie")
+;; => ("Alice" "Bob" "Charlie")
 ```
 
 **See also:** [Cheat Sheet -- Regular Expressions](/documentation/reference/cheat-sheet#regular-expressions)
@@ -765,7 +753,15 @@ Phel v0.31.0 introduces regex literals (`#"..."`) and matching functions for wor
 Use `ex-info` to create exceptions that carry structured data, making error handling more informative than plain string messages.
 
 ```phel
-(ns cookbook\exceptions)
+(ns cookbook\exceptions
+  (:require phel\json :as json))
+
+;; Stub user lookup -- replace with real datasource
+(def users {1 {:id 1 :name "Alice"}
+            2 {:id 2 :name "Bob"}})
+
+(defn lookup-user-by-id [id]
+  (get users id))
 
 ;; Throw a structured exception
 (defn find-user [id]
@@ -793,7 +789,7 @@ Use `ex-info` to create exceptions that carry structured data, making error hand
     (let [raw (php/file_get_contents path)]
       (when (= false raw)
         (throw (ex-info "File not readable" {:path path})))
-      (php/json_decode raw true))
+      (json/decode raw))
     (catch \Exception e
       (throw (ex-info "Config load failed"
                       {:path path :step :read}

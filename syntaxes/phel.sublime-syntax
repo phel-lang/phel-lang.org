@@ -6,19 +6,26 @@ scope: source.phel
 
 contexts:
   main:
+    - include: reader-skip
+    - include: regex-literal
+    - include: tagged-literal
     - include: comment
     - include: string
-    - include: paren
-    - include: bracket
-    - include: brace
     - include: keysym
     - include: literal
     - include: number
     - include: corelib
+    - include: anon-fn-paren
+    - include: set-brace
+    - include: paren
+    - include: bracket
+    - include: brace
+    - include: anon-fn-arg
+    - include: unquote
     #- include: symbol
 
   comment:
-    # Multiline block comments: start with #| and end with |#
+    # Multiline block comments: start with #| and end with |#  (deprecated, still supported)
     - match: '#\|'
       scope: punctuation.definition.comment.begin.phel
       push:
@@ -27,11 +34,35 @@ contexts:
           scope: punctuation.definition.comment.end.phel
           pop: true
 
-    # Single-line comments: ; ... or # ... (but not "#{")
-    - match: (;|#(?!\{)).*$
+    # Single-line comments: ; ... or (deprecated) bare # ...
+    # The `#` form must NOT swallow reader macros: #_  #{  #|  #(  #"  #?  ##  #A..#z  #'
+    - match: (;|#(?![_{\|(\"?#A-Za-z'])).*$
       scope: comment.line.hash-or-semicolon.phel
       captures:
         1: punctuation.definition.comment.phel
+
+  reader-skip:
+    # #_ reader-skip prefix (form-level comment). The following form is still
+    # tokenized normally; only the #_ prefix is muted.
+    - match: '#_'
+      scope: comment.line.reader-skip.phel
+
+  regex-literal:
+    # #"..."  regex literal -- highlight like a string, do NOT treat # as comment
+    - match: '#"'
+      scope: punctuation.definition.string.begin.phel
+      push:
+        - meta_scope: string.regexp.phel
+        - match: '"'
+          scope: punctuation.definition.string.end.phel
+          pop: true
+        - match: '\\.'
+          scope: constant.character.escape.phel
+
+  tagged-literal:
+    # #uuid, #inst, #cpp, ... tagged literal prefixes
+    - match: '#[A-Za-z][A-Za-z0-9_\-]*'
+      scope: storage.type.tagged-literal.phel
 
   string:
     - match: '"'
@@ -55,6 +86,28 @@ contexts:
       scope: constant.character.escape.unicodepoint.php
     - match: '\\[nrt\\\"]'
       scope: constant.character.escape.php
+
+  anon-fn-paren:
+    # #(...)  anonymous function literal -- NOT a comment
+    - match: '#\('
+      scope: punctuation.definition.group.begin.phel
+      push:
+        - meta_scope: meta.anon-fn.phel
+        - match: '\)'
+          scope: punctuation.definition.group.end.phel
+          pop: true
+        - include: main
+
+  set-brace:
+    # #{...}  set literal reader macro
+    - match: '#\{'
+      scope: punctuation.definition.group.begin.phel
+      push:
+        - meta_scope: meta.set.phel
+        - match: '\}'
+          scope: punctuation.definition.group.end.phel
+          pop: true
+        - include: main
 
   paren:
     - match: '@?\('
@@ -116,6 +169,9 @@ contexts:
         1: punctuation.definition.numeric.hexadecimal.phel
     - match: '[-+]?\b0[0-7]+(_[0-7]+)*\b'
       scope: constant.numeric.integer.octal.phel
+    # Ratio literals like 1/2, 22/7
+    - match: '[-+]?\b\d+/\d+\b'
+      scope: constant.numeric.ratio.phel
     - match: |-
         [-+]?(?x:
           (?:(\b\d+|\B)\.\d+|\b\d+\.\d*)(?:[eE][+-]?\d+)?\b
@@ -131,6 +187,18 @@ contexts:
       scope: keyword.control.phel
     - match: "(?<=\\(|\\{|\\[|\\s)(php\\/[^\\s\\#\\(\\)\\{\\}\\[\\]\\'\\\"\\,\\`]+)(?=\\s|\\)|\\]|\\})"
       scope: keyword.other.phel
+
+  anon-fn-arg:
+    # %, %1, %2, %& inside #(...)
+    - match: '%(&|\d+)?(?=\s|\)|\]|\})'
+      scope: variable.parameter.anon-fn.phel
+
+  unquote:
+    # ~@ / ,@ unquote-splicing, ~ / , unquote (, is deprecated but still supported)
+    - match: '~@|,@'
+      scope: keyword.operator.unquote-splicing.phel
+    - match: '~'
+      scope: keyword.operator.unquote.phel
 
   symbol:
     - match: "[^\\s\\#\\(\\)\\{\\}\\[\\]\\'\\\"\\,\\`]+"
