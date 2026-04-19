@@ -63,6 +63,28 @@
 
 /* Phel Terminal (homepage REPL showcase) — styling mirrors animated-repl.css */
 .phel-terminal {
+  --t-chrome-bg: #e5e7eb;
+  --t-chrome-border: rgba(0, 0, 0, 0.06);
+  --t-title: #6b7280;
+  --t-tabs-bg: #e5e7eb;
+  --t-tab-text: #6b7280;
+  --t-tab-hover-bg: rgba(0, 0, 0, 0.04);
+  --t-tab-active-text: #111827;
+  --t-tab-active-bg: #ffffff;
+  --t-tab-active-border: #b45309;
+  --t-body-bg: #ffffff;
+  --t-comment: #6b7280;
+  --t-prompt: #b45309;
+  --t-prompt-cont: rgba(180, 83, 9, 0.4);
+  --t-input: #1f2937;
+  --t-output: #0369a1;
+  --t-focus: #b45309;
+  --t-copy-bg: rgba(255, 255, 255, 0.95);
+  --t-copy-border: #d1d5db;
+  --t-copy-text: #6b7280;
+  --t-copy-hover: #0369a1;
+  --t-scrollbar: #d1d5db;
+
   margin: var(--space-2xl) auto;
   max-width: 680px;
   border-radius: var(--radius-lg);
@@ -70,6 +92,31 @@
   overflow: hidden;
   font-family: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', monospace;
   font-size: 14px;
+  border: 1px solid var(--t-chrome-border);
+}
+
+.dark .phel-terminal {
+  --t-chrome-bg: #2d2d2d;
+  --t-chrome-border: rgba(255, 255, 255, 0.05);
+  --t-title: #999;
+  --t-tabs-bg: #2d2d2d;
+  --t-tab-text: #999;
+  --t-tab-hover-bg: rgba(126, 200, 227, 0.06);
+  --t-tab-active-text: #e0e0e0;
+  --t-tab-active-bg: #1a1a2e;
+  --t-tab-active-border: #ffbd2e;
+  --t-body-bg: #1a1a2e;
+  --t-comment: #888;
+  --t-prompt: #ffbd2e;
+  --t-prompt-cont: rgba(255, 189, 46, 0.45);
+  --t-input: #e0e0e0;
+  --t-output: #7ec8e3;
+  --t-focus: #ffbd2e;
+  --t-copy-bg: rgba(45, 45, 45, 0.9);
+  --t-copy-border: #555;
+  --t-copy-text: #999;
+  --t-copy-hover: #7ec8e3;
+  --t-scrollbar: #444;
 }
 
 .phel-terminal-chrome {
@@ -77,7 +124,7 @@
   align-items: center;
   gap: var(--space-md);
   padding: 0.625rem 1rem;
-  background: #2d2d2d;
+  background: var(--t-chrome-bg);
 }
 
 .phel-terminal-dots {
@@ -102,7 +149,7 @@
   text-align: center;
   font-size: 13px;
   font-weight: 500;
-  color: #999;
+  color: var(--t-title);
   user-select: none;
 }
 
@@ -115,8 +162,8 @@
   flex-wrap: wrap;
   gap: 0;
   padding: 0 0.5rem;
-  background: #2d2d2d;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--t-tabs-bg);
+  border-top: 1px solid var(--t-chrome-border);
   overflow-x: auto;
 }
 
@@ -133,31 +180,31 @@
   font-size: 13px;
   font-weight: 500;
   line-height: 1.4;
-  color: #999;
+  color: var(--t-tab-text);
   cursor: pointer;
   white-space: nowrap;
   transition: color 0.2s, border-color 0.2s, background 0.2s;
 }
 
 .phel-terminal-tab:hover {
-  color: #e0e0e0;
-  background: rgba(126, 200, 227, 0.06);
+  color: var(--t-tab-active-text);
+  background: var(--t-tab-hover-bg);
 }
 
 .phel-terminal-tab.is-active {
-  color: #e0e0e0;
-  background: #1a1a2e;
-  border-top-color: #ffbd2e;
+  color: var(--t-tab-active-text);
+  background: var(--t-tab-active-bg);
+  border-top-color: var(--t-tab-active-border);
 }
 
 .phel-terminal-tab:focus-visible {
-  outline: 2px solid #ffbd2e;
+  outline: 2px solid var(--t-focus);
   outline-offset: -2px;
 }
 
 .phel-terminal-body {
   position: relative;
-  background: #1a1a2e;
+  background: var(--t-body-bg);
 }
 
 .phel-terminal-session {
@@ -168,7 +215,7 @@
   border: none;
   border-radius: 0;
   box-shadow: none;
-  color: #e0e0e0;
+  color: var(--t-input);
   font-family: inherit;
   font-size: 14px;
   line-height: 1.6;
@@ -194,37 +241,37 @@
 }
 
 .phel-terminal-body .copy-code-button {
-  color: #999;
-  background: rgba(45, 45, 45, 0.9);
-  border-color: #555;
+  color: var(--t-copy-text);
+  background: var(--t-copy-bg);
+  border-color: var(--t-copy-border);
 }
 
 .phel-terminal-body .copy-code-button:hover {
-  color: #7ec8e3;
-  border-color: #7ec8e3;
+  color: var(--t-copy-hover);
+  border-color: var(--t-copy-hover);
 }
 
 .phel-terminal-session .t-cmt {
-  color: #888;
+  color: var(--t-comment);
 }
 
 .phel-terminal-session .t-p {
-  color: #ffbd2e;
+  color: var(--t-prompt);
   font-weight: 500;
   user-select: none;
 }
 
 .phel-terminal-session .t-c {
-  color: rgba(255, 189, 46, 0.45);
+  color: var(--t-prompt-cont);
   user-select: none;
 }
 
 .phel-terminal-session .t-in {
-  color: #e0e0e0;
+  color: var(--t-input);
 }
 
 .phel-terminal-session .t-out {
-  color: #7ec8e3;
+  color: var(--t-output);
 }
 
 .phel-terminal-session::-webkit-scrollbar {
@@ -236,7 +283,7 @@
 }
 
 .phel-terminal-session::-webkit-scrollbar-thumb {
-  background: #444;
+  background: var(--t-scrollbar);
   border-radius: 3px;
 }
 
