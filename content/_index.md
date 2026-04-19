@@ -21,8 +21,6 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
   </a>
 </div>
 
-<div class="homepage-code-section">
-
 ## See Phel in Action
 
 <div class="phel-terminal" data-homepage-tabs>
@@ -94,8 +92,6 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 <span class="t-p">phel:10&gt;</span> <span class="t-in">#uuid "550e8400-e29b-41d4-a716-446655440000"</span>
 <span class="t-out">#uuid "550e8400-e29b-41d4-a716-446655440000"</span></pre>
   </div>
-</div>
-
 </div>
 
 ## Key Features of Phel
