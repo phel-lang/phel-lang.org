@@ -48,8 +48,11 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
   (println "Hello," name))
 
 ;; Call the function by putting it first inside parentheses
-(greet my-name) ; => Hello, world
+(greet my-name)
 ```
+
+<pre class="homepage-repl" aria-label="REPL session"><span class="homepage-repl-prompt">phel:1&gt;</span> <span class="homepage-repl-input">(greet my-name)</span>
+<span class="homepage-repl-out">Hello, world</span></pre>
 
   </div>
 
@@ -63,13 +66,14 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 
 ;; Keywords act as functions that look themselves up
 (map :name users)
-;; => ("Ada" "Alan" "Lin")
 
 ;; Destructuring pulls fields out directly
 (let [[{:keys [name age]} & rest] users]
   (println name "is" age "-" (count rest) "more"))
-;; => Ada is 36 - 2 more
 ```
+
+<pre class="homepage-repl" aria-label="REPL session"><span class="homepage-repl-prompt">phel:1&gt;</span> <span class="homepage-repl-input">(map :name users)</span>
+<span class="homepage-repl-out">("Ada" "Alan" "Lin")</span></pre>
 
   </div>
 
@@ -81,12 +85,16 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
      (filter odd?)
      (map #(* % %))
      (reduce +))
-;; => 165
 
 ;; Same pipeline with transducers: one pass, no intermediate seqs
 (transduce (comp (filter odd?) (map #(* % %))) + 0 (range 1 11))
-;; => 165
 ```
+
+<pre class="homepage-repl" aria-label="REPL session"><span class="homepage-repl-prompt">phel:1&gt;</span> <span class="homepage-repl-input">(-&gt;&gt; (range 1 11)</span>
+<span class="homepage-repl-cont">....:2&gt;</span> <span class="homepage-repl-input">     (filter odd?)</span>
+<span class="homepage-repl-cont">....:3&gt;</span> <span class="homepage-repl-input">     (map #(* % %))</span>
+<span class="homepage-repl-cont">....:4&gt;</span> <span class="homepage-repl-input">     (reduce +))</span>
+<span class="homepage-repl-out">165</span></pre>
 
   </div>
 
@@ -99,10 +107,13 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 
 (unless (empty? [1 2 3])
   (println "List has items"))
-;; => List has items
 
 ;; Expands at compile time to: (if (not (empty? [1 2 3])) (do (println ...)))
 ```
+
+<pre class="homepage-repl" aria-label="REPL session"><span class="homepage-repl-prompt">phel:1&gt;</span> <span class="homepage-repl-input">(unless (empty? [1 2 3])</span>
+<span class="homepage-repl-cont">....:2&gt;</span> <span class="homepage-repl-input">  (println "List has items"))</span>
+<span class="homepage-repl-out">List has items</span></pre>
 
   </div>
 
@@ -115,18 +126,21 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
      (map #(* % %))
      (reduce +)
      (php/number_format 0 "." ","))
-;; => "166,650"
 
 ;; Drive real PHP classes without leaving Phel
 (php/-> (php/new \DateTimeImmutable "2026-04-19")
         (modify "+30 days")
         (format "l, F jS"))
-;; => "Tuesday, May 19th"
 
 ;; Exact rational math + tagged literals, read into native PHP values
-(+ 1/2 1/3 1/6)           ; => 1
+(+ 1/2 1/3 1/6)
 #uuid "550e8400-e29b-41d4-a716-446655440000"
 ```
+
+<pre class="homepage-repl" aria-label="REPL session"><span class="homepage-repl-prompt">phel:1&gt;</span> <span class="homepage-repl-input">(php/-&gt; (php/new \DateTimeImmutable "2026-04-19")</span>
+<span class="homepage-repl-cont">....:2&gt;</span> <span class="homepage-repl-input">        (modify "+30 days")</span>
+<span class="homepage-repl-cont">....:3&gt;</span> <span class="homepage-repl-input">        (format "l, F jS"))</span>
+<span class="homepage-repl-out">"Tuesday, May 19th"</span></pre>
 
   </div>
 </div>
