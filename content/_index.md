@@ -124,7 +124,7 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 ;; => "Tuesday, May 19th"
 
 ;; Exact rational math + tagged literals, read into native PHP values
-(+ 1/2 1/3 1/6)           ;; => 1
+(+ 1/2 1/3 1/6)           ; => 1
 #uuid "550e8400-e29b-41d4-a716-446655440000"
 ```
 
