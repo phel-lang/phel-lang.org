@@ -61,6 +61,91 @@
   margin-right: 0;
 }
 
+/* Homepage Tabs */
+.homepage-tabs {
+  margin-top: var(--space-2xl);
+  margin-bottom: var(--space-2xl);
+}
+
+.homepage-tabs-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+  border-bottom: 1px solid var(--color-light-border);
+  margin-bottom: var(--space-md);
+}
+
+.homepage-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--color-light-text-secondary);
+  cursor: pointer;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  transition: color var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              background var(--duration-fast) var(--ease-out);
+}
+
+.homepage-tab-btn:hover {
+  color: var(--color-light-link);
+  background: rgba(108, 61, 197, 0.05);
+}
+
+.homepage-tab-btn.is-active {
+  color: var(--color-light-link);
+  border-bottom-color: var(--color-light-link);
+}
+
+.homepage-tab-btn:focus-visible {
+  outline: 2px solid var(--color-light-link);
+  outline-offset: 2px;
+}
+
+.homepage-tab-panel {
+  display: none;
+}
+
+.homepage-tab-panel.is-active {
+  display: block;
+}
+
+.homepage-tab-panel .code-block-wrapper,
+.homepage-tab-panel pre {
+  margin-top: 0;
+}
+
+.dark .homepage-tabs-nav {
+  border-bottom-color: var(--color-dark-border);
+}
+
+.dark .homepage-tab-btn {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .homepage-tab-btn:hover {
+  color: var(--color-dark-text-accent);
+  background: rgba(191, 164, 255, 0.08);
+}
+
+.dark .homepage-tab-btn.is-active {
+  color: var(--color-dark-text-accent);
+  border-bottom-color: var(--color-dark-text-accent);
+}
+
+.dark .homepage-tab-btn:focus-visible {
+  outline-color: var(--color-dark-text-accent);
+}
+
 /* Homepage Why Section */
 .homepage-why-section h2 {
   text-align: center;

@@ -4,7 +4,7 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 
 <img src="/images/logo_phel.svg" width="380" alt="Phel language logo"/>
 
-**Phel** is a functional programming language that compiles to PHP - a modern Lisp dialect inspired by [Clojure](https://clojure.org/) and [Janet](https://janet-lang.org/), bringing functional elegance and expressive code to PHP development.
+**Phel** is a functional, Lisp-inspired language that compiles to PHP. Inspired by [Clojure](https://clojure.org/), Phel brings macros, persistent data structures, and expressive functional idioms to the PHP ecosystem.
 
 <div class="homepage-cta">
   <a href="#try-phel-instantly-with-docker" class="btn btn-primary homepage-cta-button homepage-cta-primary">
@@ -25,20 +25,111 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 
 ## See Phel in Action
 
+<div class="homepage-tabs" data-homepage-tabs>
+  <div class="homepage-tabs-nav" role="tablist" aria-label="Phel feature examples">
+    <button type="button" class="homepage-tab-btn is-active" data-tab="hello" role="tab" aria-selected="true" aria-controls="tab-hello">Hello World</button>
+    <button type="button" class="homepage-tab-btn" data-tab="data" role="tab" aria-selected="false" aria-controls="tab-data">Data Structures</button>
+    <button type="button" class="homepage-tab-btn" data-tab="pipeline" role="tab" aria-selected="false" aria-controls="tab-pipeline">Functional Pipeline</button>
+    <button type="button" class="homepage-tab-btn" data-tab="macros" role="tab" aria-selected="false" aria-controls="tab-macros">Macros</button>
+    <button type="button" class="homepage-tab-btn" data-tab="interop" role="tab" aria-selected="false" aria-controls="tab-interop">PHP Interop</button>
+  </div>
+
+  <div class="homepage-tab-panel is-active" id="tab-hello" data-panel="hello" role="tabpanel">
+
 ```phel
-# Define a namespace
+;; Every Phel file starts by declaring its namespace
 (ns my\example)
 
-# Create a variable
+;; `def` binds a name to a value (think `const` in JS)
 (def my-name "world")
 
-# Define a function
-(defn print-name [your-name]
-  (print "hello" your-name))
+;; `defn` defines a function. Square brackets list the parameters.
+(defn greet [name]
+  (println "Hello," name))
 
-# Call the function
-(print-name my-name)
+;; Call the function by putting it first inside parentheses
+(greet my-name) ; => Hello, world
 ```
+
+  </div>
+
+  <div class="homepage-tab-panel" id="tab-data" data-panel="data" role="tabpanel" hidden>
+
+```phel
+;; Persistent vectors, maps, and keywords
+(def users [{:name "Ada"  :age 36}
+            {:name "Alan" :age 41}
+            {:name "Lin"  :age 28}])
+
+;; Keywords act as functions that look themselves up
+(map :name users)
+;; => ("Ada" "Alan" "Lin")
+
+;; Destructuring pulls fields out directly
+(let [[{:keys [name age]} & rest] users]
+  (println name "is" age "-" (count rest) "more"))
+;; => Ada is 36 - 2 more
+```
+
+  </div>
+
+  <div class="homepage-tab-panel" id="tab-pipeline" data-panel="pipeline" role="tabpanel" hidden>
+
+```phel
+;; Thread a collection through a pipeline of transforms
+(->> (range 1 11)
+     (filter odd?)
+     (map #(* % %))
+     (reduce +))
+;; => 165
+
+;; Same pipeline with transducers: one pass, no intermediate seqs
+(transduce (comp (filter odd?) (map #(* % %))) + 0 (range 1 11))
+;; => 165
+```
+
+  </div>
+
+  <div class="homepage-tab-panel" id="tab-macros" data-panel="macros" role="tabpanel" hidden>
+
+```phel
+;; Macros extend the language itself at compile time
+(defmacro unless [test & body]
+  `(if (not ,test) (do ,@body)))
+
+(unless (empty? [1 2 3])
+  (println "List has items"))
+;; => List has items
+
+;; Expands at compile time to: (if (not (empty? [1 2 3])) (do (println ...)))
+```
+
+  </div>
+
+  <div class="homepage-tab-panel" id="tab-interop" data-panel="interop" role="tabpanel" hidden>
+
+```phel
+;; PHP and Phel interleave freely in one expression
+(->> (php/range 1 100)
+     (filter odd?)
+     (map #(* % %))
+     (reduce +)
+     (php/number_format 0 "." ","))
+;; => "166,650"
+
+;; Drive real PHP classes without leaving Phel
+(php/-> (php/new \DateTimeImmutable "2026-04-19")
+        (modify "+30 days")
+        (format "l, F jS"))
+;; => "Tuesday, May 19th"
+
+;; Exact rational math + tagged literals, read into native PHP values
+(+ 1/2 1/3 1/6)           ;; => 1
+#uuid "550e8400-e29b-41d4-a716-446655440000"
+```
+
+  </div>
+</div>
 
 </div>
 
