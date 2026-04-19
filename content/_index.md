@@ -25,123 +25,74 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 
 ## See Phel in Action
 
-<div class="homepage-tabs" data-homepage-tabs>
-  <div class="homepage-tabs-nav" role="tablist" aria-label="Phel feature examples">
-    <button type="button" class="homepage-tab-btn is-active" data-tab="hello" role="tab" aria-selected="true" aria-controls="tab-hello">Hello World</button>
-    <button type="button" class="homepage-tab-btn" data-tab="data" role="tab" aria-selected="false" aria-controls="tab-data">Data Structures</button>
-    <button type="button" class="homepage-tab-btn" data-tab="pipeline" role="tab" aria-selected="false" aria-controls="tab-pipeline">Functional Pipeline</button>
-    <button type="button" class="homepage-tab-btn" data-tab="macros" role="tab" aria-selected="false" aria-controls="tab-macros">Macros</button>
-    <button type="button" class="homepage-tab-btn" data-tab="interop" role="tab" aria-selected="false" aria-controls="tab-interop">PHP Interop</button>
+<div class="phel-terminal" data-homepage-tabs>
+  <div class="phel-terminal-chrome" aria-hidden="true">
+    <div class="phel-terminal-dots">
+      <span class="phel-terminal-dot phel-terminal-dot--red"></span>
+      <span class="phel-terminal-dot phel-terminal-dot--yellow"></span>
+      <span class="phel-terminal-dot phel-terminal-dot--green"></span>
+    </div>
+    <div class="phel-terminal-title">~/phel-example — phel repl</div>
+    <div class="phel-terminal-chrome-spacer"></div>
   </div>
-
-  <div class="homepage-tab-panel is-active" id="tab-hello" data-panel="hello" role="tabpanel">
-
-```phel
-;; Every Phel file starts by declaring its namespace
-(ns my\example)
-
-;; `def` binds a name to a value (think `const` in JS)
-(def my-name "world")
-
-;; `defn` defines a function. Square brackets list the parameters.
-(defn greet [name]
-  (println "Hello," name))
-
-;; Call the function by putting it first inside parentheses
-(greet my-name)
-```
-
-<pre class="homepage-repl" aria-label="REPL session"><span class="homepage-repl-prompt">phel:1&gt;</span> <span class="homepage-repl-input">(greet my-name)</span>
-<span class="homepage-repl-out">Hello, world</span></pre>
-
+  <div class="phel-terminal-tabs" role="tablist" aria-label="Phel feature examples">
+    <button type="button" class="phel-terminal-tab is-active" data-tab="hello" role="tab" aria-selected="true" aria-controls="tab-hello">Hello World</button>
+    <button type="button" class="phel-terminal-tab" data-tab="data" role="tab" aria-selected="false" aria-controls="tab-data">Data Structures</button>
+    <button type="button" class="phel-terminal-tab" data-tab="pipeline" role="tab" aria-selected="false" aria-controls="tab-pipeline">Functional Pipeline</button>
+    <button type="button" class="phel-terminal-tab" data-tab="macros" role="tab" aria-selected="false" aria-controls="tab-macros">Macros</button>
+    <button type="button" class="phel-terminal-tab" data-tab="interop" role="tab" aria-selected="false" aria-controls="tab-interop">PHP Interop</button>
   </div>
-
-  <div class="homepage-tab-panel" id="tab-data" data-panel="data" role="tabpanel" hidden>
-
-```phel
-;; Persistent vectors, maps, and keywords
-(def users [{:name "Ada"  :age 36}
-            {:name "Alan" :age 41}
-            {:name "Lin"  :age 28}])
-
-;; Keywords act as functions that look themselves up
-(map :name users)
-
-;; Destructuring pulls fields out directly
-(let [[{:keys [name age]} & rest] users]
-  (println name "is" age "-" (count rest) "more"))
-```
-
-<pre class="homepage-repl" aria-label="REPL session"><span class="homepage-repl-prompt">phel:1&gt;</span> <span class="homepage-repl-input">(map :name users)</span>
-<span class="homepage-repl-out">("Ada" "Alan" "Lin")</span></pre>
-
-  </div>
-
-  <div class="homepage-tab-panel" id="tab-pipeline" data-panel="pipeline" role="tabpanel" hidden>
-
-```phel
-;; Thread a collection through a pipeline of transforms
-(->> (range 1 11)
-     (filter odd?)
-     (map #(* % %))
-     (reduce +))
-
-;; Same pipeline with transducers: one pass, no intermediate seqs
-(transduce (comp (filter odd?) (map #(* % %))) + 0 (range 1 11))
-```
-
-<pre class="homepage-repl" aria-label="REPL session"><span class="homepage-repl-prompt">phel:1&gt;</span> <span class="homepage-repl-input">(-&gt;&gt; (range 1 11)</span>
-<span class="homepage-repl-cont">....:2&gt;</span> <span class="homepage-repl-input">     (filter odd?)</span>
-<span class="homepage-repl-cont">....:3&gt;</span> <span class="homepage-repl-input">     (map #(* % %))</span>
-<span class="homepage-repl-cont">....:4&gt;</span> <span class="homepage-repl-input">     (reduce +))</span>
-<span class="homepage-repl-out">165</span></pre>
-
-  </div>
-
-  <div class="homepage-tab-panel" id="tab-macros" data-panel="macros" role="tabpanel" hidden>
-
-```phel
-;; Macros extend the language itself at compile time
-(defmacro unless [test & body]
-  `(if (not ,test) (do ,@body)))
-
-(unless (empty? [1 2 3])
-  (println "List has items"))
-
-;; Expands at compile time to: (if (not (empty? [1 2 3])) (do (println ...)))
-```
-
-<pre class="homepage-repl" aria-label="REPL session"><span class="homepage-repl-prompt">phel:1&gt;</span> <span class="homepage-repl-input">(unless (empty? [1 2 3])</span>
-<span class="homepage-repl-cont">....:2&gt;</span> <span class="homepage-repl-input">  (println "List has items"))</span>
-<span class="homepage-repl-out">List has items</span></pre>
-
-  </div>
-
-  <div class="homepage-tab-panel" id="tab-interop" data-panel="interop" role="tabpanel" hidden>
-
-```phel
-;; PHP and Phel interleave freely in one expression
-(->> (php/range 1 100)
-     (filter odd?)
-     (map #(* % %))
-     (reduce +)
-     (php/number_format 0 "." ","))
-
-;; Drive real PHP classes without leaving Phel
-(php/-> (php/new \DateTimeImmutable "2026-04-19")
-        (modify "+30 days")
-        (format "l, F jS"))
-
-;; Exact rational math + tagged literals, read into native PHP values
-(+ 1/2 1/3 1/6)
-#uuid "550e8400-e29b-41d4-a716-446655440000"
-```
-
-<pre class="homepage-repl" aria-label="REPL session"><span class="homepage-repl-prompt">phel:1&gt;</span> <span class="homepage-repl-input">(php/-&gt; (php/new \DateTimeImmutable "2026-04-19")</span>
-<span class="homepage-repl-cont">....:2&gt;</span> <span class="homepage-repl-input">        (modify "+30 days")</span>
-<span class="homepage-repl-cont">....:3&gt;</span> <span class="homepage-repl-input">        (format "l, F jS"))</span>
-<span class="homepage-repl-out">"Tuesday, May 19th"</span></pre>
-
+  <div class="phel-terminal-body">
+<pre class="phel-terminal-session is-active" id="tab-hello" data-panel="hello" role="tabpanel"><span class="t-cmt">;; Welcome to Phel. `phel:N&gt;` is the prompt, `....:N&gt;` continues a form.</span>
+<span class="t-p">phel:1&gt;</span> <span class="t-in">(def my-name "world")</span>
+<span class="t-p">phel:2&gt;</span> <span class="t-in">(defn greet [name]</span>
+<span class="t-c">....:3&gt;</span> <span class="t-in">  (println "Hello," name))</span>
+<span class="t-p">phel:4&gt;</span> <span class="t-in">(greet my-name)</span>
+<span class="t-out">Hello, world</span></pre>
+<pre class="phel-terminal-session" id="tab-data" data-panel="data" role="tabpanel" hidden><span class="t-cmt">;; Persistent vectors, maps, and keywords are built in.</span>
+<span class="t-p">phel:1&gt;</span> <span class="t-in">(def users [{:name "Ada"  :age 36}</span>
+<span class="t-c">....:2&gt;</span> <span class="t-in">            {:name "Alan" :age 41}</span>
+<span class="t-c">....:3&gt;</span> <span class="t-in">            {:name "Lin"  :age 28}])</span>
+<span class="t-cmt">;; Keywords act as functions that look themselves up.</span>
+<span class="t-p">phel:4&gt;</span> <span class="t-in">(map :name users)</span>
+<span class="t-out">("Ada" "Alan" "Lin")</span>
+<span class="t-cmt">;; Destructuring pulls fields straight out of collections.</span>
+<span class="t-p">phel:5&gt;</span> <span class="t-in">(let [[{:keys [name age]} &amp; rest] users]</span>
+<span class="t-c">....:6&gt;</span> <span class="t-in">  (println name "is" age "-" (count rest) "more"))</span>
+<span class="t-out">Ada is 36 - 2 more</span></pre>
+<pre class="phel-terminal-session" id="tab-pipeline" data-panel="pipeline" role="tabpanel" hidden><span class="t-cmt">;; Thread a collection through a pipeline of transforms.</span>
+<span class="t-p">phel:1&gt;</span> <span class="t-in">(-&gt;&gt; (range 1 11)</span>
+<span class="t-c">....:2&gt;</span> <span class="t-in">     (filter odd?)</span>
+<span class="t-c">....:3&gt;</span> <span class="t-in">     (map #(* % %))</span>
+<span class="t-c">....:4&gt;</span> <span class="t-in">     (reduce +))</span>
+<span class="t-out">165</span>
+<span class="t-cmt">;; Same pipeline fused into one pass with transducers.</span>
+<span class="t-p">phel:5&gt;</span> <span class="t-in">(transduce (comp (filter odd?) (map #(* % %))) + 0 (range 1 11))</span>
+<span class="t-out">165</span></pre>
+<pre class="phel-terminal-session" id="tab-macros" data-panel="macros" role="tabpanel" hidden><span class="t-cmt">;; Macros extend the language itself at compile time.</span>
+<span class="t-p">phel:1&gt;</span> <span class="t-in">(defmacro unless [test &amp; body]</span>
+<span class="t-c">....:2&gt;</span> <span class="t-in">  `(if (not ,test) (do ,@body)))</span>
+<span class="t-p">phel:3&gt;</span> <span class="t-in">(unless (empty? [1 2 3])</span>
+<span class="t-c">....:4&gt;</span> <span class="t-in">  (println "List has items"))</span>
+<span class="t-out">List has items</span>
+<span class="t-cmt">;; Expands to: (if (not (empty? [1 2 3])) (do (println ...)))</span></pre>
+<pre class="phel-terminal-session" id="tab-interop" data-panel="interop" role="tabpanel" hidden><span class="t-cmt">;; PHP and Phel interleave freely in one expression.</span>
+<span class="t-p">phel:1&gt;</span> <span class="t-in">(-&gt;&gt; (php/range 1 100)</span>
+<span class="t-c">....:2&gt;</span> <span class="t-in">     (filter odd?)</span>
+<span class="t-c">....:3&gt;</span> <span class="t-in">     (map #(* % %))</span>
+<span class="t-c">....:4&gt;</span> <span class="t-in">     (reduce +)</span>
+<span class="t-c">....:5&gt;</span> <span class="t-in">     (php/number_format 0 "." ","))</span>
+<span class="t-out">"166,650"</span>
+<span class="t-cmt">;; Drive real PHP classes without leaving Phel.</span>
+<span class="t-p">phel:6&gt;</span> <span class="t-in">(php/-&gt; (php/new \DateTimeImmutable "2026-04-19")</span>
+<span class="t-c">....:7&gt;</span> <span class="t-in">        (modify "+30 days")</span>
+<span class="t-c">....:8&gt;</span> <span class="t-in">        (format "l, F jS"))</span>
+<span class="t-out">"Tuesday, May 19th"</span>
+<span class="t-cmt">;; Rational math and tagged literals read into native values.</span>
+<span class="t-p">phel:9&gt;</span>  <span class="t-in">(+ 1/2 1/3 1/6)</span>
+<span class="t-out">1</span>
+<span class="t-p">phel:10&gt;</span> <span class="t-in">#uuid "550e8400-e29b-41d4-a716-446655440000"</span>
+<span class="t-out">#uuid "550e8400-e29b-41d4-a716-446655440000"</span></pre>
   </div>
 </div>
 

@@ -2,8 +2,8 @@
   'use strict';
 
   function initTabs(container) {
-    var buttons = container.querySelectorAll('.homepage-tab-btn');
-    var panels = container.querySelectorAll('.homepage-tab-panel');
+    var buttons = container.querySelectorAll('.phel-terminal-tab, .homepage-tab-btn');
+    var panels = container.querySelectorAll('.phel-terminal-session, .homepage-tab-panel');
     if (!buttons.length || !panels.length) return;
 
     var tabIds = Array.prototype.map.call(buttons, function (b) {
