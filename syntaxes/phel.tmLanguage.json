@@ -3,6 +3,9 @@
   "scopeName": "source.phel",
   "fileTypes": ["phel"],
   "patterns": [
+    { "include": "#reader-skip" },
+    { "include": "#regex-literal" },
+    { "include": "#tagged-literal" },
     { "include": "#comment" },
     { "include": "#string" },
     { "include": "#keyword" },
@@ -10,9 +13,13 @@
     { "include": "#keysym" },
     { "include": "#literal" },
     { "include": "#number" },
+    { "include": "#anon-fn-paren" },
+    { "include": "#set-brace" },
     { "include": "#paren" },
     { "include": "#bracket" },
-    { "include": "#brace" }
+    { "include": "#brace" },
+    { "include": "#anon-fn-arg" },
+    { "include": "#unquote" }
   ],
   "repository": {
     "comment": {
@@ -24,7 +31,40 @@
         },
         {
           "name": "comment.line.phel",
-          "match": "(;|#(?!\\{)).*$"
+          "match": "(?:;|#(?![_{\\|(\"?#A-Za-z']))[^\\n]*$"
+        }
+      ]
+    },
+    "reader-skip": {
+      "patterns": [
+        {
+          "name": "comment.line.reader-skip.phel",
+          "match": "#_"
+        }
+      ]
+    },
+    "regex-literal": {
+      "patterns": [
+        {
+          "name": "string.regexp.phel",
+          "begin": "#\"",
+          "end": "\"",
+          "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.phel" } },
+          "endCaptures": { "0": { "name": "punctuation.definition.string.end.phel" } },
+          "patterns": [
+            {
+              "name": "constant.character.escape.phel",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "tagged-literal": {
+      "patterns": [
+        {
+          "name": "storage.type.tagged-literal.phel",
+          "match": "#[A-Za-z][A-Za-z0-9_\\-]*"
         }
       ]
     },
@@ -55,7 +95,7 @@
       "patterns": [
         {
           "name": "support.function.phel",
-          "match": "(?<=\\(|\\s)(php\\/[^\\s#(){}\\[\\]'\"`,]+)(?=[\\s)\\]\\}])"
+          "match": "(?<=\\(|\\s)php\\/[^\\s#(){}\\[\\]'\"`,]+"
         }
       ]
     },
@@ -90,12 +130,38 @@
           "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?0[0-7]+(_[0-7]+)*(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
         },
         {
+          "name": "constant.numeric.ratio.phel",
+          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?\\d+/\\d+(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+        },
+        {
           "name": "constant.numeric.float.phel",
           "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?(?:\\d+\\.\\d+|\\.\\d+)(?:[eE][+-]?\\d+)?(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
         },
         {
           "name": "constant.numeric.integer.phel",
           "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?\\d+(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+        }
+      ]
+    },
+    "anon-fn-paren": {
+      "patterns": [
+        {
+          "begin": "#\\(",
+          "end": "\\)",
+          "beginCaptures": { "0": { "name": "punctuation.section.anon-fn.begin.phel" } },
+          "endCaptures": { "0": { "name": "punctuation.section.anon-fn.end.phel" } },
+          "patterns": [{ "include": "$self" }]
+        }
+      ]
+    },
+    "set-brace": {
+      "patterns": [
+        {
+          "begin": "#\\{",
+          "end": "\\}",
+          "beginCaptures": { "0": { "name": "punctuation.section.set.begin.phel" } },
+          "endCaptures": { "0": { "name": "punctuation.section.set.end.phel" } },
+          "patterns": [{ "include": "$self" }]
         }
       ]
     },
@@ -129,6 +195,26 @@
           "beginCaptures": { "0": { "name": "punctuation.brace.open.phel" } },
           "endCaptures": { "0": { "name": "punctuation.brace.close.phel" } },
           "patterns": [{ "include": "$self" }]
+        }
+      ]
+    },
+    "anon-fn-arg": {
+      "patterns": [
+        {
+          "name": "variable.parameter.anon-fn.phel",
+          "match": "%(?:&|\\d+)?(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+        }
+      ]
+    },
+    "unquote": {
+      "patterns": [
+        {
+          "name": "keyword.operator.unquote-splicing.phel",
+          "match": "~@|,@"
+        },
+        {
+          "name": "keyword.operator.unquote.phel",
+          "match": "~|,(?![A-Za-z0-9_])"
         }
       ]
     }
