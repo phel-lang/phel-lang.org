@@ -19,19 +19,6 @@
 {% block content %}
     <h1>{{page.title}}</h1>
 
-    <div class="api-page-search" role="search">
-        <div class="api-page-search__field">
-            <svg class="api-page-search__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/>
-                <path d="M20 20L16.5 16.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            <input type="search" class="api-page-search__input" placeholder="Search API…  ( / )" autocomplete="off" spellcheck="false" aria-label="Search API"/>
-            <kbd class="api-page-search__kbd">/</kbd>
-        </div>
-        <span class="api-page-search__hint" aria-live="polite"></span>
-        <ul class="api-page-search__results" hidden></ul>
-    </div>
-
     <ul class="api-index">
     {% for namespace in page.toc %}
         <li class="api-index__entry">
