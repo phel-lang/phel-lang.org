@@ -23,7 +23,7 @@
         </a>
         {% set versions = page.extra.versions | default(value=[]) %}
         {% if versions | length > 1 %}
-        <div class="post-card__patches" aria-label="Versions in this release">
+        <div class="post-card__patches" aria-label="Versions included">
             <span class="post-card__patches-label">Includes:</span>
             {% for v in versions %}
             {% set v_dash = v | replace(from=".", to="-") %}
