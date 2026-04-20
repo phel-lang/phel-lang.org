@@ -10,7 +10,7 @@ A quick reference for Phel syntax and core functions.
 
 ```phel
 ; This is a comment
-;; Convention: use ;; for line comments
+;; Convention: use ; for line comments
 
 nil                     ; null value
 true false              ; booleans (only false and nil are falsy)
@@ -22,7 +22,7 @@ my-var my-module/fn     ; symbols
 #"[a-z]+"               ; regex literal (PCRE pattern)
 ```
 
-> **Note:** The `#` line comment and `#| |#` multiline comment syntax are deprecated since v0.31.0. Use `;` for comments instead.
+> **Note:** The `#` line comment and `#| |#` multiline comment syntax are deprecated. Use `;` for comments instead.
 
 See [Basic Types](/documentation/language/basic-types), [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations).
 
@@ -292,7 +292,7 @@ Lazy file I/O:
 (read-file-lazy "big.txt" 4096)        ; lazy chunked reading
 ```
 
-Lazy sequences were added in v0.25.0. `map`, `filter`, `take`, `drop`, `concat`, `mapcat`, `interleave`, and `partition` all return lazy sequences.
+`map`, `filter`, `take`, `drop`, `concat`, `mapcat`, `interleave`, and `partition` all return lazy sequences.
 
 ## Threading Macros
 
@@ -390,7 +390,7 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 
 (throw (php/new \InvalidArgumentException "bad input"))
 
-;; Structured exceptions with ex-info (v0.31.0+)
+;; Structured exceptions with ex-info
 (throw (ex-info "User not found" {:id 42 :type :not-found}))
 
 (try
@@ -516,15 +516,20 @@ Transducers are composable transformations that work independently of the data s
 
 ;; Instantiation
 (php/new \DateTime "now")          ; new DateTime("now")
+(new \DateTime "now")              ; shorthand
 
 ;; Instance methods & properties
 (php/-> obj (method arg))          ; $obj->method($arg)
 (php/-> obj property)              ; $obj->property
 (php/-> obj (a) (b) (c))           ; chained: $obj->a()->b()->c()
+(.method obj arg)                  ; shorthand
+(.-property obj)                   ; property shorthand
 
 ;; Static methods & properties
 (php/:: MyClass CONST)             ; MyClass::CONST
 (php/:: MyClass (create "x"))      ; MyClass::create("x")
+(MyClass/create "x")               ; static shorthand
+\Ns\MyClass/CONST                  ; static member shorthand
 
 ;; PHP arrays
 (php/aget arr 0)                   ; $arr[0] ?? null

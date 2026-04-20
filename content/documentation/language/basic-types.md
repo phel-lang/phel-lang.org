@@ -232,6 +232,47 @@ A set is a sequence of whitespace-separated values prefixed by `#` and surrounde
 (set [1 2 3])    ; coerce a collection to a set
 ```
 
+## Tagged literals
+
+Phel supports reader tags for common values:
+
+```phel
+#inst "2026-04-20T12:00:00Z"      ; => \DateTimeImmutable
+#regex "\\d+"                      ; => PCRE pattern string (delimited)
+#uuid "550e8400-e29b-41d4-a716-446655440000"
+```
+
+### Custom tags
+
+Register user tags in Phel with `register-tag`:
+
+```phel
+(ns my-app\readers
+  (:require phel\reader :refer [register-tag]))
+
+(register-tag "money" (fn [[amount currency]]
+                        {:amount amount :currency currency}))
+```
+
+Then in any source file:
+
+```phel
+#money [100 "EUR"]   ; => {:amount 100 :currency "EUR"}
+```
+
+A `data-readers.phel` file at any source root is auto-loaded, so you can ship tag definitions with your library.
+
+## PHP reader literals
+
+Produce native PHP arrays inline without calling `php/array`:
+
+```phel
+#php [1 2 3]          ; expands to (php-indexed-array 1 2 3)
+#php {"a" 1 "b" 2}    ; expands to (php-associative-array "a" 1 "b" 2)
+```
+
+Expansion is non-recursive — nested Phel forms stay Phel data.
+
 ## Regex Literals
 
 Phel supports regex literal syntax using `#"..."` as reader sugar for PCRE patterns. This is a convenient shorthand for creating regular expressions:
@@ -302,7 +343,7 @@ A comment begins with a `;` character and continues until the end of the line. U
 (+ 1 2) ; This is an inline comment
 ```
 
-> **Deprecation notice (v0.31.0):** The `#` line comment syntax and `#| ... |#` multiline comment syntax are deprecated. Use `;` and `;;` instead. The `#` prefix is now reserved for reader macros like `#()`, `#""`, and `#?()`.
+> **Deprecation notice:** The `#` line comment syntax and `#| ... |#` multiline comment syntax are deprecated. Use `;` and `;;` instead. The `#` prefix is now reserved for reader macros like `#()`, `#""`, and `#?()`.
 
 Phel also supports inline s-expression commenting with `#_` which comments out the next form. It can also be stacked to comment out two or more forms after it.
 

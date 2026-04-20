@@ -54,11 +54,11 @@ Struct fields (`radius`, `width`, `height`) are directly accessible inside metho
 Interface methods are called like regular functions, with the struct as the first argument:
 
 ```phel
-(area (circle 5))           # => 78.53975
-(perimeter (circle 5))      # => 31.4159
+(area (circle 5))           ; => 78.53975
+(perimeter (circle 5))      ; => 31.4159
 
-(area (rectangle 4 6))      # => 24
-(perimeter (rectangle 4 6)) # => 20
+(area (rectangle 4 6))      ; => 24
+(perimeter (rectangle 4 6)) ; => 20
 ```
 
 ### Multiple interfaces
@@ -77,7 +77,7 @@ A struct can implement multiple interfaces. List each interface followed by its 
   (describe [this]
     (str "Circle with radius " radius)))
 
-(describe (circle 5))  # => "Circle with radius 5"
+(describe (circle 5))  ; => "Circle with radius 5"
 ```
 
 ### Calling other methods from within a struct
@@ -100,8 +100,8 @@ Use `php/-> this` to call another method on the same struct:
 Each struct gets an auto-generated predicate:
 
 ```phel
-(circle? (circle 5))       # => true
-(circle? (rectangle 4 6))  # => false
+(circle? (circle 5))       ; => true
+(circle? (rectangle 4 6))  ; => false
 ```
 
 ## Practical example: a renderer
@@ -124,14 +124,14 @@ Interfaces shine when you have different types that share behavior:
   Renderable
   (render [this] (str "<img src=\"" src "\" alt=\"" alt "\">")))
 
-# Render a page from mixed elements
+;; Render a page from mixed elements
 (let [elements [(heading 1 "Welcome")
                 (paragraph "Hello from Phel!")
                 (image "/logo.png" "Phel logo")]]
   (->> elements
        (map render)
        (str/join "\n")))
-# => "<h1>Welcome</h1>\n<p>Hello from Phel!</p>\n<img src=\"/logo.png\" alt=\"Phel logo\">"
+;; => "<h1>Welcome</h1>\n<p>Hello from Phel!</p>\n<img src=\"/logo.png\" alt=\"Phel logo\">"
 ```
 
 ## Implementing PHP interfaces

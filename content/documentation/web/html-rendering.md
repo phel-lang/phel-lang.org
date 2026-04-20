@@ -15,7 +15,7 @@ The `html` function in the module `phel\html` is the main function to generate H
   (:require phel\html :refer [html]))
 
 (html [:span {:class "foo"} "bar"])
-# Evaluates to <span class="foo">bar</span>
+;; Evaluates to <span class="foo">bar</span>
 ```
 
 The data structure that is accepted by `html` takes one of the following forms:
@@ -28,11 +28,11 @@ The data structure that is accepted by `html` takes one of the following forms:
 The first item in the vector is a mandatory tag name. It can be either a keyword or a string. The second item is an optional map of attributes. All subsequent items in the vector are treated as the element body. This can include strings, nested vectors or lists.
 
 ```phel
-(html [:div]) # Evaluates to "<div></div>"
-(html ["div"]) # Evaluates to "<div></div>"
-(html [:text "Lorem Ipsum"]) # Evaluates to "<text>Lorem Ipsum</text>"
-(html [:body [:p] [:br]]) # Evaluates to "<body><p></p><br /></body>"
-(html [:div {:id "foo"}]) # Evaluates to "<div id=\"foo\"></div>"
+(html [:div]) ; Evaluates to "<div></div>"
+(html ["div"]) ; Evaluates to "<div></div>"
+(html [:text "Lorem Ipsum"]) ; Evaluates to "<text>Lorem Ipsum</text>"
+(html [:body [:p] [:br]]) ; Evaluates to "<body><p></p><br /></body>"
+(html [:div {:id "foo"}]) ; Evaluates to "<div id=\"foo\"></div>"
 ```
 
 ## Classes and Styles
@@ -44,17 +44,17 @@ Instead of concatenating an inline style string, a map can be used. The next two
 ```phel
 (html [:div {:style "background:green;color:red;"} "bar"])
 (html [:div {:style {:background "green" :color "red"}} "bar"])
-# Both evaluate to
-# "<div style=\"background:green;color:red;\">bar</div>"
+;; Both evaluate to
+;; "<div style=\"background:green;color:red;\">bar</div>"
 ```
 
 Class lists can be built by vectors or maps. If a map is provided, the keys of the map are the class names, and the values are evaluated to true or false. Only keys with true values are added to the final class list.
 
 ```phel
-(html [:div {:class [:a]}]) # <div class=\"a\"></div>
-(html [:div {:class [:a "b"]}]) # <div class=\"a b\"></div>
-(html [:div {:class [:a :b]}]) # <div class=\"a b\"></div>
-(html [:div {:class {:a true :b false}}]) # <div class=\"a\"></div>
+(html [:div {:class [:a]}]) ; <div class=\"a\"></div>
+(html [:div {:class [:a "b"]}]) ; <div class=\"a b\"></div>
+(html [:div {:class [:a :b]}]) ; <div class=\"a b\"></div>
+(html [:div {:class {:a true :b false}}]) ; <div class=\"a\"></div>
 ```
 
 ## Conditional rendering
@@ -63,9 +63,9 @@ To conditionally render parts of the HTML, the `if` expression can be used.
 
 ```phel
 (html [:div [:p "a"] (if true [:p "b"] [:p "c"])])
-# Evaluates to "<div><p>a</p><p>b</p></div>"
+;; Evaluates to "<div><p>a</p><p>b</p></div>"
 (html [:div [:p "a"] (if false [:p "b"] [:p "c"])])
-# Evaluates to "<div><p>a</p><p>c</p></div>"
+;; Evaluates to "<div><p>a</p><p>c</p></div>"
 ```
 
 ## Rendering sequential data structures
@@ -74,10 +74,10 @@ Similar to conditional rendering, the `for` expression can be used to render ite
 
 ```phel
 (html [:ul (for [i :range [0 3]] [:li i])])
-# Evaluates to "<ul><li>0</li><li>1</li><li>2</li></ul>"
+;; Evaluates to "<ul><li>0</li><li>1</li><li>2</li></ul>"
 
 (html [:ul (for [i :in [3 4 5]] [:li i])])
-# Evaluates to "<ul><li>3</li><li>4</li><li>5</li></ul>"
+;; Evaluates to "<ul><li>3</li><li>4</li><li>5</li></ul>"
 ```
 
 ## Raw Html
@@ -86,7 +86,7 @@ By default, all values are automatically escaped to provide better defense again
 
 ```phel
 (html [:span (raw-string "<a></a>")])
-# Evaluates to "<span><a></a></span>"
+;; Evaluates to "<span><a></a></span>"
 ```
 
 ## Doctypes
@@ -95,7 +95,7 @@ To add a doctype at the beginning of each element document, the `doctype` functi
 
 ```phel
 (html (doctype :html5) [:div])
-# Evaluates to "<!DOCTYPE html>\n<div></div>"
+;; Evaluates to "<!DOCTYPE html>\n<div></div>"
 ```
 
 The `doctype` function supports the following values: `:html5`, `:xhtml-transitional`, `:xhtml-strict` and `:html4`.

@@ -8,15 +8,15 @@ weight = 50
 Use the `php/` prefix to access the global variables (superglobals) in combination with `get`.
 
 ```phel
-(get php/$_SERVER "key") # Similar to $_SERVER['key']
-(get php/$GLOBALS "argv") # Similar to $GLOBALS['argv']
+(get php/$_SERVER "key") ; Similar to $_SERVER['key']
+(get php/$GLOBALS "argv") ; Similar to $GLOBALS['argv']
 ```
 
 Named constants set with PHP [`define`](https://www.php.net/manual/en/function.define.php) can be accessed in Phel via `php/CONSTANT_NAME`.
 
 ```phel
-(php/define "MY_SETTING" "My value") # Calls PHP define('MY_SETTING', 'My value");
-php/MY_SETTING # Returns "My value"
+(php/define "MY_SETTING" "My value") ; Calls PHP define('MY_SETTING', 'My value");
+php/MY_SETTING ; Returns "My value"
 ```
 
 {% php_note() %}
@@ -42,8 +42,8 @@ php/MY_SETTING
 PHP comes with huge set of functions that can be called from Phel by just adding a `php/` prefix to the function name.
 
 ```phel
-(php/strlen "test") # Calls PHP's strlen function and evaluates to 4
-(php/date "l") # Evaluates to something like "Monday"
+(php/strlen "test") ; Calls PHP's strlen function and evaluates to 4
+(php/date "l") ; Evaluates to something like "Monday"
 ```
 
 {% php_note() %}
@@ -64,6 +64,44 @@ array_map($fn, $array);
 However, Phel provides functional equivalents for many operations. For example, use `(count "test")` instead of `(php/strlen "test")` when working with Phel data structures.
 {% end %}
 
+Namespaced PHP functions are called with their full path after `php/`:
+
+```phel
+(php/Amp\trapSignal [(php/:: SIGINT) (php/:: SIGTERM)])
+```
+
+You can also capture a namespaced function into a Phel alias:
+
+```phel
+(def trap-signal php/\Amp\trapSignal)
+(trap-signal [2 15])
+```
+
+## PHP interop shorthands
+
+Terse shorthands that expand to the verbose `php/*` forms below. Use whichever form reads better in context.
+
+| Shorthand                       | Expands to                          |
+|---------------------------------|-------------------------------------|
+| `(new ClassName args)`          | `(php/new ClassName args)`          |
+| `(.method obj args)`            | `(php/-> obj (method args))`        |
+| `(.-field obj)`                 | `(php/-> obj field)`                |
+| `(ClassName/method args)`       | `(php/:: ClassName (method args))`  |
+| `\Ns\Class/MEMBER`              | `(php/:: \Ns\Class MEMBER)`         |
+
+```phel
+(ns my\module
+  (:use \DateTimeImmutable))
+
+(new DateTimeImmutable "2026-04-20")           ; constructor
+(.format (new DateTimeImmutable) "Y-m-d")       ; instance method
+(.-s (new \DateInterval "PT30S"))               ; property
+(DateTimeImmutable/createFromFormat "Y-m-d" "2026-04-20") ; static method
+\DateTimeImmutable/ATOM                         ; static constant
+```
+
+`(ClassName. args)` constructor shorthand also works.
+
 ## PHP class instantiation
 
 ```phel
@@ -76,10 +114,10 @@ Evaluates `expr` and creates a new PHP class using the arguments. The instance o
 (ns my\module
   (:use \DateTime))
 
-(php/new DateTime) # Returns a new instance of the DateTime class
-(php/new DateTime "now") # Returns a new instance of the DateTime class
+(php/new DateTime) ; Returns a new instance of the DateTime class
+(php/new DateTime "now") ; Returns a new instance of the DateTime class
 
-(php/new "\\DateTimeImmutable") # instantiate a new PHP class from string
+(php/new "\\DateTimeImmutable") ; instantiate a new PHP class from string
 ```
 
 {% php_note() %}
@@ -116,24 +154,24 @@ You can chain multiple method calls or property accesses in one `php/->` express
 
 (def di (php/new \DateInterval "PT30S"))
 
-(php/-> di (format "%s seconds")) # Evaluates to "30 seconds"
-(php/-> di s) # Evaluates to 30
+(php/-> di (format "%s seconds")) ; Evaluates to "30 seconds"
+(php/-> di s) ; Evaluates to 30
 
-# Chain multiple calls:
-# (new DateTimeImmutable("2024-03-10"))->modify("+1 day")->format("Y-m-d")
+;; Chain multiple calls:
+;; (new DateTimeImmutable("2024-03-10"))->modify("+1 day")->format("Y-m-d")
 (php/-> (php/new \DateTimeImmutable "2024-03-10")
         (modify "+1 day")
         (format "Y-m-d"))
 
-# Mix methods and properties: $user->profile->getDisplayName()
+;; Mix methods and properties: $user->profile->getDisplayName()
 (php/-> user profile (getDisplayName))
 
-# Other example using nested properties:
+;; Other example using nested properties:
 (def address (php/new \stdClass))
 (def user (php/new \stdClass))
 (php/oset (php/-> address city) "Berlin")
 (php/oset (php/-> user address) address)
-(php/-> user address city) # Evaluates to "Berlin"
+(php/-> user address city) ; Evaluates to "Berlin"
 ```
 
 {% php_note() %}
@@ -175,9 +213,9 @@ Same as above, but for static calls on PHP classes.
 (ns my\module
   (:use \DateTimeImmutable))
 
-(php/:: DateTimeImmutable ATOM) # Evaluates to "Y-m-d\TH:i:sP"
+(php/:: DateTimeImmutable ATOM) ; Evaluates to "Y-m-d\TH:i:sP"
 
-# Evaluates to a new instance of DateTimeImmutable
+;; Evaluates to a new instance of DateTimeImmutable
 (php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2020-03-22"))
 ```
 
@@ -234,9 +272,9 @@ $x->name = "foo";
 Equivalent to PHP's `arr[index] ?? null`.
 
 ```phel
-(php/aget ["a" "b" "c"] 0) # Evaluates to "a"
-(php/aget (php/array "a" "b" "c") 1) # Evaluates to "b"
-(php/aget (php/array "a" "b" "c") 5) # Evaluates to nil
+(php/aget ["a" "b" "c"] 0) ; Evaluates to "a"
+(php/aget (php/array "a" "b" "c") 1) ; Evaluates to "b"
+(php/aget (php/array "a" "b" "c") 5) ; Evaluates to nil
 ```
 
 {% php_note() %}
@@ -277,15 +315,15 @@ path is missing, `nil` is returned.
       (php/array "name" "Alice")
       (php/array "name" "Bob"))))
 
-(php/aget-in users ["users" 1 "name"]) # Evaluates to "Bob"
+(php/aget-in users ["users" 1 "name"]) ; Evaluates to "Bob"
 
 (php/aget-in
     (php/array "meta" (php/array "status" "ok"))
-    ["meta" "status"]) # Evaluates to "ok"
+    ["meta" "status"]) ; Evaluates to "ok"
 
 (php/aget-in
     (php/array "meta" (php/array "status" "ok"))
-    ["meta" "missing"]) # Evaluates to nil
+    ["meta" "missing"]) ; Evaluates to nil
 ```
 
 {% php_note() %}
@@ -340,8 +378,8 @@ created as needed to ensure the path exists before writing the value.
 ```phel
 (def data (php/array))
 (php/aset-in data ["user" "profile" "name"] "Charlie")
-(php/aget-in data ["user" "profile" "name"]) # Evaluates to "Charlie"
-# Equivalent to $data['user']['profile']['name'] = 'Charlie';
+(php/aget-in data ["user" "profile" "name"]) ; Evaluates to "Charlie"
+;; Equivalent to $data['user']['profile']['name'] = 'Charlie';
 ```
 
 {% php_note() %}
@@ -416,8 +454,8 @@ remain untouched even if they become empty.
 ```phel
 (def data (php/array "user" (php/array "profile" (php/array "name" "Dora"))))
 (php/aunset-in data ["user" "profile" "name"])
-(php/aget-in data ["user" "profile" "name"]) # Evaluates to nil
-# Equivalent to unset($data['user']['profile']['name']);
+(php/aget-in data ["user" "profile" "name"]) ; Evaluates to nil
+;; Equivalent to unset($data['user']['profile']['name']);
 ```
 
 {% php_note() %}
@@ -447,11 +485,11 @@ current Phel file. Combine it with `php/dirname` if you need the source
 directory.
 
 ```phel
-(println __DIR__)  # Directory name of the generated PHP file
-(println __FILE__) # Filename of the generated PHP file
+(println __DIR__)  ; Directory name of the generated PHP file
+(println __FILE__) ; Filename of the generated PHP file
 
-(println (php/dirname *file*)) # Directory of the original Phel file
-(println *file*)               # Absolute path of the original file
+(println (php/dirname *file*)) ; Directory of the original Phel file
+(println *file*)               ; Absolute path of the original file
 ```
 
 {% php_note() %}

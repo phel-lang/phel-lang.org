@@ -90,7 +90,7 @@ When names collide, names from different namespaces remain available by prefixin
 (defn get [uri]
   {:status 200 :body "Hello World" :headers {}})
 
-(phel\core/get (get "https://example.com") :status) # Evaluates to 200
+(phel\core/get (get "https://example.com") :status) ; Evaluates to 200
 ```
 
 Additionally, it is possible to refer symbols of other modules in the current namespace by using `:refer` keyword.
@@ -150,14 +150,14 @@ If code or data is shared to the outside world simple keywords can lead to colli
 There are multiple options to define namespaced keywords. The most simple one is to define a fully qualified keyword with the full namespace followed by a `/` and the keyword name.
 
 ```phel
-:my\namespace/foo # a absolute namespaced keyword
+:my\namespace/foo ; a absolute namespaced keyword
 ```
 
 The `::` shortcut can be used to assign the current namespace to the keyword
 
 ```phel
 (ns bar)
-::foo # Evaluates to :bar/foo
+::foo ; Evaluates to :bar/foo
 ```
 
 Aliases defined in the `ns` expression can also be used
@@ -165,5 +165,5 @@ Aliases defined in the `ns` expression can also be used
 ```phel
 (ns foobar
   (:require abc\xyz :as bar))
-  ::bar/foo # evaluates to :abc\xyz/bar
+  ::bar/foo ; evaluates to :abc\xyz/bar
 ```

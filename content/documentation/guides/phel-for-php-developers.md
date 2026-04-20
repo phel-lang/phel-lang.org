@@ -25,17 +25,17 @@ function example() {
 ```
 
 ```phel
-# Phel
-(def x 42)            # Global binding, cannot be redefined
+;; Phel
+(def x 42)            ; Global binding, cannot be redefined
 
-(def tax-rate 0.21)   # Constants are just defs
+(def tax-rate 0.21)   ; Constants are just defs
 (def app-name "MyApp")
 
-# Local bindings with let
+;; Local bindings with let
 (let [local 10
       other (+ local 5)]
-  (+ local other))    # Evaluates to 25
-# local and other do not exist outside the let block
+  (+ local other))    ; Evaluates to 25
+;; local and other do not exist outside the let block
 ```
 
 Key difference: `def` and `let` bindings are immutable. You don't modify a value -- you create a new one. See [Global and Local Bindings](/documentation/language/global-and-local-bindings) for more details.
@@ -44,8 +44,8 @@ If you need mutable state, Phel provides explicit variables:
 
 ```phel
 (def counter (atom 0))
-(swap! counter inc)    ;; counter is now 1
-(deref counter)        ;; Evaluates to 1
+(swap! counter inc)    ; counter is now 1
+(deref counter)        ; Evaluates to 1
 ```
 
 ## Functions
@@ -70,32 +70,32 @@ function sum(...$numbers): int {
 ```
 
 ```phel
-# Phel
+;; Phel
 (defn add [a b]
   (+ a b))
 
-(def double #(* % 2))       ;; Short anonymous function
+(def double #(* % 2))       ; Short anonymous function
 
-# Multi-arity for default parameters
+;; Multi-arity for default parameters
 (defn greet
   ([] (greet "World"))
   ([name] (str "Hello, " name "!")))
 
-(greet)          # => "Hello, World!"
-(greet "Phel")   # => "Hello, Phel!"
+(greet)          ; => "Hello, World!"
+(greet "Phel")   ; => "Hello, Phel!"
 
-# Variadic functions with &
+;; Variadic functions with &
 (defn sum [& numbers]
   (reduce + 0 numbers))
 
-(sum 1 2 3 4)    # => 10
+(sum 1 2 3 4)    ; => 10
 ```
 
 The short anonymous function syntax `#(...)` replaces PHP's arrow functions. Use `%` for a single parameter, or `%1`, `%2`, etc. for multiple parameters:
 
 ```phel
-#(+ %1 %2)          ;; Same as fn($a, $b) => $a + $b
-#(str "Hi " %)      ;; Same as fn($x) => "Hi " . $x
+#(+ %1 %2)          ; Same as fn($a, $b) => $a + $b
+#(str "Hi " %)      ; Same as fn($x) => "Hi " . $x
 ```
 
 See [Functions and Recursion](/documentation/language/functions-and-recursion) for the full reference.
@@ -114,11 +114,11 @@ $first = $numbers[0];         // Access by index
 ```
 
 ```phel
-# Phel
+;; Phel
 (def numbers [1 2 3])
-(def updated (conj numbers 4))  # => [1 2 3 4], numbers is unchanged
-(get numbers 0)                 # => 1
-(first numbers)                 # => 1
+(def updated (conj numbers 4))  ; => [1 2 3 4], numbers is unchanged
+(get numbers 0)                 ; => 1
+(first numbers)                 ; => 1
 ```
 
 ### Associative arrays become maps
@@ -132,12 +132,12 @@ unset($user['age']);                     // Remove key
 ```
 
 ```phel
-# Phel
+;; Phel
 (def user {:name "Alice" :age 30})
 (def with-email (assoc user :email "alice@example.com"))
-(get user :name)           # => "Alice"
-(:name user)               # => "Alice" (keywords are functions!)
-(dissoc user :age)         # => {:name "Alice"}
+(get user :name)           ; => "Alice"
+(:name user)               ; => "Alice" (keywords are functions!)
+(dissoc user :age)         ; => {:name "Alice"}
 ```
 
 ### Quick reference
@@ -168,7 +168,7 @@ if ($age >= 18) {
 ```
 
 ```phel
-# Phel
+;; Phel
 (def status (if (>= age 18) "adult" "minor"))
 ```
 
@@ -183,7 +183,7 @@ if ($debug) {
 ```
 
 ```phel
-# Phel
+;; Phel
 (when debug
   (println "Debug mode on")
   (log "enabled"))
@@ -203,11 +203,11 @@ switch ($code) {
 ```
 
 ```phel
-# Phel
+;; Phel
 (def msg
   (case code
     200 "OK"
-    404 "Not Found"))  # Returns nil if no match
+    404 "Not Found"))  ; Returns nil if no match
 ```
 
 ### match becomes cond
@@ -223,7 +223,7 @@ $label = match(true) {
 ```
 
 ```phel
-# Phel
+;; Phel
 (def label
   (cond
     (<= temp 0)  "freezing"
@@ -244,10 +244,10 @@ if ([]) { /* NOT reached */ }
 ```
 
 ```phel
-# Phel: ONLY false and nil are falsy
-(if 0 "truthy" "falsy")    # => "truthy"
-(if "" "truthy" "falsy")   # => "truthy"
-(if [] "truthy" "falsy")   # => "truthy"
+;; Phel: ONLY false and nil are falsy
+(if 0 "truthy" "falsy")    ; => "truthy"
+(if "" "truthy" "falsy")   ; => "truthy"
+(if [] "truthy" "falsy")   ; => "truthy"
 ```
 
 See [Control Flow](/documentation/language/control-flow) and [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations) for more.
@@ -269,14 +269,14 @@ foreach ($map as $key => $value) {
 ```
 
 ```phel
-# Phel - side-effects only (returns nil)
+;; Phel - side-effects only (returns nil)
 (foreach [item items]
   (println item))
 
 (foreach [k v my-map]
   (println (str k ": " v)))
 
-# Phel - building a new collection (prefer this)
+;; Phel - building a new collection (prefer this)
 (for [item :in items] (process item))
 ```
 
@@ -290,14 +290,14 @@ for ($i = 0; $i < 10; $i++) {
 ```
 
 ```phel
-# Phel - using loop/recur
+;; Phel - using loop/recur
 (loop [i 0]
   (when (< i 10)
     (println i)
     (recur (inc i))))
 
-# Phel - using for comprehension (when building a collection)
-(for [i :range [0 10]] i)  # => [0 1 2 3 4 5 6 7 8 9]
+;; Phel - using for comprehension (when building a collection)
+(for [i :range [0 10]] i)  ; => [0 1 2 3 4 5 6 7 8 9]
 ```
 
 ### array_map, array_filter, array_reduce
@@ -330,7 +330,7 @@ $contains = str_contains($haystack, $needle);
 ```
 
 ```phel
-# Phel
+;; Phel
 (def full (str first " " last))
 (def len (php/strlen greeting))
 (def formatted (format "Hello, %s! You are %d." name age))
@@ -353,7 +353,7 @@ $date = new DateTimeImmutable('2024-01-15');
 ```
 
 ```phel
-# Phel
+;; Phel
 (ns my\module
   (:use \DateTime)
   (:use \DateTimeImmutable))
@@ -377,12 +377,12 @@ $result = (new DateTimeImmutable('2024-01-15'))
 ```
 
 ```phel
-# Phel
+;; Phel
 (def formatted (php/-> date (format "Y-m-d")))
 (def timestamp (php/-> date (getTimestamp)))
 (php/-> obj name)
 
-# Chaining
+;; Chaining
 (def result
   (php/-> (php/new DateTimeImmutable "2024-01-15")
           (modify "+1 month")
@@ -398,7 +398,7 @@ $parsed = DateTimeImmutable::createFromFormat('Y-m-d', '2024-03-22');
 ```
 
 ```phel
-# Phel
+;; Phel
 (def atom (php/:: DateTimeImmutable ATOM))
 (def parsed (php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2024-03-22")))
 ```
@@ -409,8 +409,8 @@ For data modeling, Phel uses structs and maps instead of classes:
 (defstruct user [name email role])
 
 (def alice (user "Alice" "alice@example.com" :admin))
-(get alice :name)            # => "Alice"
-(assoc alice :role :editor)  # => new struct with role changed
+(get alice :name)            ; => "Alice"
+(assoc alice :role :editor)  ; => new struct with role changed
 ```
 
 See [PHP Interop](/documentation/php-interop) for the complete reference.
@@ -599,7 +599,7 @@ $activeNames = array_map(
 ```
 
 ```phel
-# Phel
+;; Phel
 (def users
   [{:name "Alice"   :active true  :age 30}
    {:name "Bob"     :active false :age 25}
@@ -609,7 +609,7 @@ $activeNames = array_map(
   (->> users
        (filter :active)
        (map :name)))
-# => ["Alice" "Charlie"]
+;; => ["Alice" "Charlie"]
 ```
 
 ### Building an API response
@@ -628,7 +628,7 @@ $response = jsonResponse(['user' => 'Alice', 'role' => 'admin']);
 ```
 
 ```phel
-# Phel
+;; Phel
 (defn json-response
   ([data] (json-response data 200))
   ([data status]
@@ -650,7 +650,7 @@ $isWeekend = in_array($now->format('N'), ['6', '7']);
 ```
 
 ```phel
-# Phel
+;; Phel
 (ns my\dates
   (:use \DateTimeImmutable))
 
@@ -672,7 +672,7 @@ $dbPort = $config['database']['port'] ?? 3306;
 ```
 
 ```phel
-# Phel
+;; Phel
 (def config
   (let [raw (php/file_get_contents "config.json")]
     (php/json_decode raw true)))

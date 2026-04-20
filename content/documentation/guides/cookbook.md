@@ -231,11 +231,14 @@ Use PHP's DateTime classes via Phel interop to create, format, and compare dates
   (:use DateInterval)
   (:use DateTimeZone))
 
-;; Create dates -- `(ClassName. args)` is 0.33 shorthand for `(php/new ClassName args)`
-(def now (DateTimeImmutable.))
-(def specific-date (DateTimeImmutable. "2024-06-15"))
+;; Create dates -- `(new ClassName args)` shorthand for `(php/new ClassName args)`
+(def now (new DateTimeImmutable))
+(def specific-date (new DateTimeImmutable "2024-06-15"))
 (def from-format
-  (php/:: DateTimeImmutable (createFromFormat "d/m/Y" "25/12/2024")))
+  (DateTimeImmutable/createFromFormat "d/m/Y" "25/12/2024"))
+
+;; Tagged literal form
+(def tagged #inst "2024-06-15T00:00:00Z")
 
 ;; Format dates
 (println (php/-> now (format "Y-m-d H:i:s")))       ; 2024-03-10 14:30:00
@@ -547,7 +550,7 @@ Build a persistent key-value store backed by a JSON file, with functions for get
     (store-save path updated)
     updated))
 
-(store-put-many [[:lang "phel"] [:version "0.33"] [:status "awesome"]])
+(store-put-many [[:lang "phel"] [:version "0.34"] [:status "awesome"]])
 (println (str "All keys: " (store-keys)))
 ```
 
@@ -709,7 +712,7 @@ Reader conditionals allow you to write `.cljc` files that can target different p
 
 ## Regex Matching and Validation
 
-Phel v0.31.0 introduces regex literals (`#"..."`) and matching functions for working with PCRE patterns.
+Phel provides regex literals (`#"..."`) and matching functions for working with PCRE patterns.
 
 ```phel
 (ns cookbook\regex)
@@ -806,3 +809,105 @@ Use `ex-info` to create exceptions that carry structured data, making error hand
 ```
 
 **See also:** [Cheat Sheet -- Error Handling](/documentation/reference/cheat-sheet#error-handling)
+
+## Pattern Matching with `phel\match`
+
+The `phel\match` module provides a `match` macro with literal, vector, map, wildcard, `:as`, `:guard`, `:or`, and rest-binding patterns.
+
+```phel
+(ns cookbook\match
+  (:require phel\match :refer [match]))
+
+(defn describe [x]
+  (match x
+    0              "zero"
+    [_ _]          "pair"
+    [_ _ & rest]   (str "tuple+" (count rest))
+    {:type :error :msg m} (str "error: " m)
+    (:or "hi" "hello")    "greeting"
+    (:guard n #(php/is_int %)) (str "int " n)
+    _              "other"))
+
+(describe 0)                        ; => "zero"
+(describe [1 2])                    ; => "pair"
+(describe [1 2 3 4])                ; => "tuple+2"
+(describe {:type :error :msg "x"}) ; => "error: x"
+```
+
+## Schemas with `phel\schema`
+
+Validate, coerce, and generate data from declarative schemas. Kinds include `:vector`, `:set`, `:map`, `:map-of`, `:tuple`, `:enum`, `:and`, `:or`, `:maybe`, `:re`, `:fn`, `:ref`, and function schemas `[:=> args ret]`.
+
+```phel
+(ns cookbook\schema
+  (:require phel\schema :as s))
+
+(def User
+  [:map
+   [:id    :int]
+   [:name  :string]
+   [:role  [:enum :admin :user]]
+   [:tags  [:set :keyword]]])
+
+(s/validate User {:id 1 :name "Alice" :role :admin :tags #{:beta}})
+; => true
+
+(s/explain User {:id "bad" :name 1 :role :guest :tags []})
+; => {:errors [...]}
+
+(s/coerce User {:id "42" :name "Bob" :role "user" :tags ["a"]})
+; => {:id 42 :name "Bob" :role :user :tags #{:a}}
+```
+
+Instrument a function to check args/return at call sites:
+
+```phel
+(defn greet [u] (str "Hi " (:name u)))
+(s/instrument! `greet [:=> [User] :string])
+```
+
+## Async with `phel\async`
+
+Fiber-backed promises and futures:
+
+```phel
+(ns cookbook\async
+  (:require phel\async :refer [promise deliver future-call future? deref]))
+
+(def p (promise))
+(future-call (fn [] (deliver p 42)))
+
+(deref p)          ; blocks
+(deref p 1000 :timeout)  ; 3-arg: wait ms, default on timeout
+
+(def f (future-call (fn [] (+ 1 2))))
+(future? f)        ; => true
+@f                 ; => 3
+```
+
+## File Watching
+
+Reload namespaces on file change:
+
+```phel
+(ns cookbook\watcher
+  (:require phel\watch :refer [watch!]))
+
+(watch! ["src/" "tests/"])
+```
+
+Or from the shell: `vendor/bin/phel watch src/`.
+
+## Property Tests with `phel\test\gen`
+
+```phel
+(ns cookbook\gen-tests
+  (:require phel\test :refer [deftest is defspec])
+  (:require phel\test\gen :as gen))
+
+(defspec addition-commutes
+  [a (gen/int) b (gen/int)]
+  (is (= (+ a b) (+ b a))))
+```
+
+Failing cases shrink automatically; the reported seed makes them reproducible.

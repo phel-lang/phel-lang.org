@@ -36,6 +36,28 @@ phel:3> (greet "Phel")
 
 Press `Ctrl-D` or type `exit` to end the session.
 
+The prompt shows the current namespace and tracks `(ns ...)` switches. `def` returns a printable var ref (e.g. `#'user/my-var`).
+
+## History variables
+
+The REPL tracks recent evaluations and the last exception:
+
+- `*1` — result of the last expression
+- `*2` — result of the previous one
+- `*3` — two before that
+- `*e` — last exception thrown at the prompt
+
+```bash
+user:1> (+ 1 2)
+3
+user:2> (* *1 10)
+30
+user:3> (/ 1 0)
+; => exception
+user:4> (php/-> *e (getMessage))
+"Division by zero"
+```
+
 ## Built-in helpers
 
 ### doc
@@ -168,6 +190,20 @@ phel:3> (ns-refers 'my\app)
 
 phel:4> (ns-list)
 ; Returns all loaded namespaces
+
+phel:5> (ns-interns 'my\app)
+; Returns all interned vars in the namespace
+```
+
+### Namespace manipulation
+
+Create, find, remove namespaces and intern vars at runtime (`phel\repl`):
+
+```phel
+(find-ns 'my\app)              ; => namespace or nil
+(create-ns 'my\scratch)        ; create and return
+(intern 'my\scratch 'answer 42) ; intern a var
+(remove-ns 'my\scratch)
 ```
 
 ### Macro expansion

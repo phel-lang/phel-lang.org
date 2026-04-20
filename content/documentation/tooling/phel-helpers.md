@@ -27,7 +27,7 @@ Register or unregister a handler function:
   (println "TAP:" value))
 
 (add-tap my-logger)
-(tap> "hello")       ;; Prints: TAP: hello
+(tap> "hello")       ; Prints: TAP: hello
 (remove-tap my-logger)
 ```
 

@@ -86,7 +86,7 @@ Available macros:
 
 ## Cross-platform code with reader conditionals
 
-Since v0.31.0, Phel supports `.cljc` files and reader conditionals, enabling code that can be shared across platforms.
+Phel supports `.cljc` files and reader conditionals, enabling code that can be shared across platforms.
 
 ### `.cljc` file support
 

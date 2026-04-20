@@ -14,7 +14,7 @@ Extract values from vectors and lists by position using vector syntax:
 
 ```phel
 (let [[a b] [1 2]]
-  (+ a b)) # => 3
+  (+ a b)) ; => 3
 ```
 
 ### Nested destructuring
@@ -23,7 +23,7 @@ Patterns can be nested arbitrarily deep:
 
 ```phel
 (let [[a [b c]] [1 [2 3]]]
-  (+ a b c)) # => 6
+  (+ a b c)) ; => 6
 ```
 
 ### Skipping values
@@ -32,7 +32,7 @@ Use `_` to ignore positions you don't care about:
 
 ```phel
 (let [[a _ b] [1 2 3]]
-  (+ a b)) # => 4
+  (+ a b)) ; => 4
 ```
 
 ### Rest arguments
@@ -41,7 +41,7 @@ Use `&` to capture remaining elements as a sequence:
 
 ```phel
 (let [[a b & rest] [1 2 3 4 5]]
-  rest) # => (3 4 5)
+  rest) ; => (3 4 5)
 ```
 
 {% php_note() %}
@@ -67,7 +67,7 @@ Extract values from maps by key using map syntax:
 
 ```phel
 (let [{:a a :b b} {:a 1 :b 2}]
-  (+ a b)) # => 3
+  (+ a b)) ; => 3
 ```
 
 ### Nested associative destructuring
@@ -76,7 +76,7 @@ Combine map and vector patterns freely:
 
 ```phel
 (let [{:a [a b] :c c} {:a [1 2] :c 3}]
-  (+ a b c)) # => 6
+  (+ a b c)) ; => 6
 ```
 
 ### Default values with `:or`
@@ -86,7 +86,7 @@ Provide defaults for keys that might be missing:
 ```phel
 (let [{:name name :role role :or {role "guest"}}
       {:name "Alice"}]
-  (str name " (" role ")")) # => "Alice (guest)"
+  (str name " (" role ")")) ; => "Alice (guest)"
 ```
 
 Without `:or`, missing keys bind to `nil`.
@@ -114,10 +114,10 @@ Vectors can also be destructured by index using map syntax:
 
 ```phel
 (let [{0 a 1 b} [1 2]]
-  (+ a b)) # => 3
+  (+ a b)) ; => 3
 
 (let [{0 [a b] 1 c} [[1 2] 3]]
-  (+ a b c)) # => 6
+  (+ a b c)) ; => 6
 ```
 
 This is useful when you only need specific positions from a large vector.
@@ -130,8 +130,8 @@ Destructuring works directly in `defn` and `fn` parameter lists:
 (defn greet [{:name name :role role :or {role "member"}}]
   (str "Hello " name " (" role ")"))
 
-(greet {:name "Alice" :role "admin"})  # => "Hello Alice (admin)"
-(greet {:name "Bob"})                  # => "Hello Bob (member)"
+(greet {:name "Alice" :role "admin"})  ; => "Hello Alice (admin)"
+(greet {:name "Bob"})                  ; => "Hello Bob (member)"
 ```
 
 Sequential destructuring in parameters:
@@ -141,7 +141,7 @@ Sequential destructuring in parameters:
   (php/sqrt (+ (* (- x2 x1) (- x2 x1))
                (* (- y2 y1) (- y2 y1)))))
 
-(distance [0 0] [3 4]) # => 5.0
+(distance [0 0] [3 4]) ; => 5.0
 ```
 
 ## Destructuring in `loop`
@@ -153,5 +153,5 @@ Use destructuring in loop bindings to work with structured data:
        acc 0]
   (if (nil? head)
     acc
-    (recur tail (+ acc head)))) # => 15
+    (recur tail (+ acc head)))) ; => 15
 ```

@@ -34,10 +34,10 @@ Creates a new lexical context with assignments defined in bindings. Afterwards t
 ```phel
 (let [x 1
       y 2]
-  (+ x y)) # Evaluates to 3
+  (+ x y)) ; Evaluates to 3
 
 (let [x 1
-      y (+ x 2)]) # Evaluates to nil
+      y (+ x 2)]) ; Evaluates to nil
 ```
 
 All assignments defined in _bindings_ are immutable and cannot be changed.
@@ -68,43 +68,43 @@ While `let` creates a new lexical context, `binding` temporarily redefines exist
 - `binding` temporarily overrides global definitions (dynamic scope)
 
 ```phel
-# Example 1: Simple binding demonstration
+;; Example 1: Simple binding demonstration
 (def *config* "production")
 
 (defn get-config []
   *config*)
 
-(get-config)  # => "production"
+(get-config)  ; => "production"
 
-# let doesn't affect the global definition
+;; let doesn't affect the global definition
 (let [*config* "test"]
-  (get-config))  # => "production" (still uses global!)
+  (get-config))  ; => "production" (still uses global!)
 
-# binding temporarily overrides the global definition
+;; binding temporarily overrides the global definition
 (binding [*config* "test"]
-  (get-config))  # => "test" (uses binding!)
+  (get-config))  ; => "test" (uses binding!)
 
-(get-config)  # => "production" (back to original)
+(get-config)  ; => "production" (back to original)
 
-# Example 2: Mocking functions for testing
+;; Example 2: Mocking functions for testing
 (defn get-system-architecture []
   (php/php_uname "m"))
 
 (defn greet-user-by-architecture []
   (str "Hello " (get-system-architecture) " user!"))
 
-# Without binding - calls actual system function
-(greet-user-by-architecture)  # => "Hello x86_64 user!" (or your system arch)
+;; Without binding - calls actual system function
+(greet-user-by-architecture)  ; => "Hello x86_64 user!" (or your system arch)
 
-# With let - doesn't work! Function still calls original
+;; With let - doesn't work! Function still calls original
 (let [get-system-architecture #(str "i386")]
-  (greet-user-by-architecture))  # => "Hello x86_64 user!" (original still used!)
+  (greet-user-by-architecture))  ; => "Hello x86_64 user!" (original still used!)
 
-# With binding - successfully mocks the function
+;; With binding - successfully mocks the function
 (binding [get-system-architecture #(str "i386")]
-  (greet-user-by-architecture))  # => "Hello i386 user!" (mocked!)
+  (greet-user-by-architecture))  ; => "Hello i386 user!" (mocked!)
 
-# Example 3: Testing with binding
+;; Example 3: Testing with binding
 (ns my-app\tests\demo
   (:require phel\test :refer [deftest is]))
 
@@ -112,9 +112,9 @@ While `let` creates a new lexical context, `binding` temporarily redefines exist
   (binding [get-system-architecture #(str "i386")]
     (is (= "Hello i386 user!" (greet-user-by-architecture))
         "i386 system user is greeted accordingly")))
-# ✔ greeting-test-binding: i386 system user is greeted accordingly
+;; ✔ greeting-test-binding: i386 system user is greeted accordingly
 
-# Example 4: Multiple bindings at once
+;; Example 4: Multiple bindings at once
 (def *db-host* "production-db")
 (def *db-port* 5432)
 
@@ -123,9 +123,9 @@ While `let` creates a new lexical context, `binding` temporarily redefines exist
 
 (binding [*db-host* "test-db"
           *db-port* 3306]
-  (connect))  # => "Connecting to test-db:3306"
+  (connect))  ; => "Connecting to test-db:3306"
 
-(connect)  # => "Connecting to production-db:5432"
+(connect)  ; => "Connecting to production-db:5432"
 ```
 
 {% php_note() %}
@@ -162,7 +162,7 @@ Binding is particularly useful for testing code that depends on global state or 
 Atoms provide a way to manage mutable state. Each atom contains a single value. Create one with the `atom` function:
 
 ```phel
-(def foo (atom 10)) ;; Define an atom with value 10
+(def foo (atom 10)) ; Define an atom with value 10
 ```
 
 The `deref` function (or the `@` reader shorthand) extracts the value. `reset!` replaces the value, and `swap!` updates it by applying a function:
@@ -170,13 +170,13 @@ The `deref` function (or the `@` reader shorthand) extracts the value. `reset!` 
 ```phel
 (def foo (atom 10))
 
-(deref foo)        ;; Evaluates to 10
-@foo               ;; Same as (deref foo)
-(reset! foo 20)    ;; Set foo to 20
-@foo               ;; Evaluates to 20
+(deref foo)        ; Evaluates to 10
+@foo               ; Same as (deref foo)
+(reset! foo 20)    ; Set foo to 20
+@foo               ; Evaluates to 20
 
-(swap! foo + 2)    ;; Evaluates to 22
-@foo               ;; Evaluates to 22
+(swap! foo + 2)    ; Evaluates to 22
+@foo               ; Evaluates to 22
 ```
 
 > **Note:** The original Phel names `var`, `set!`, `var?`, and `function?` still work as deprecated aliases for `atom`, `reset!`, `atom?`, and `fn?`. New code should use the Clojure-compatible names.

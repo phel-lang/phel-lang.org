@@ -41,18 +41,18 @@ This is more powerful and safer than PHP's `eval()` or code generation.
 The quote operator is a special form, it returns its argument without evaluating it. Its purpose is to prevent any evaluation. Preceding a form with a single quote is a shorthand for `(quote form)`.
 
 ```phel
-(quote my-sym) # Evaluates to my-sym
-'my-sym # Shorthand for (same as above)
+(quote my-sym) ; Evaluates to my-sym
+'my-sym ; Shorthand for (same as above)
 ```
 Quote make macros possible, since its helps to distinguish between code and data. Literals like numbers and string evaluate to themselves.
 
 ```phel
-(quote 1) # Evaluates to 1
-(quote hi) # Evaluates the symbol hi
-(quote quote) # Evaluates to the symbol quote
+(quote 1) ; Evaluates to 1
+(quote hi) ; Evaluates the symbol hi
+(quote quote) ; Evaluates to the symbol quote
 
-'(1 2 3) # Evaluates to the list (1 2 3)
-'(print 1 2 3) # Evaluates to the list (print 1 2 3). Nothing is printed.
+'(1 2 3) ; Evaluates to the list (1 2 3)
+'(print 1 2 3) ; Evaluates to the list (print 1 2 3). Nothing is printed.
 ```
 
 ## Define a macro

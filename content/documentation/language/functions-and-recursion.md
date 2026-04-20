@@ -22,20 +22,20 @@ Functions can define multiple arities. When calling such a function, the clause 
 Function also introduces a new lexical scope that is not accessible outside the function.
 
 ```phel
-(fn []) # Function with no arguments that returns nil
-(fn [x] x) # The identity function
-(fn [] 1 2 3) # A function that returns 3
-(fn [a b] (+ a b)) # A function that returns the sum of a and b
+(fn []) ; Function with no arguments that returns nil
+(fn [x] x) ; The identity function
+(fn [] 1 2 3) ; A function that returns 3
+(fn [a b] (+ a b)) ; A function that returns the sum of a and b
 ```
 
 Function can also be defined as variadic function with an infinite amount of arguments using the `&` separator.
 
 ```phel
-(fn [& args] (count args)) # A variadic function that counts the arguments
+(fn [& args] (count args)) ; A variadic function that counts the arguments
 
-(fn [a b c &]) # A variadic function with extra arguments ignored
+(fn [a b c &]) ; A variadic function with extra arguments ignored
 
-(fn # A multi-arity function
+(fn ; A multi-arity function
   ([] "hi") 
   ([name] (str "hi " name))
   ([greeting name & rest] (str greeting " " name rest)))
@@ -131,15 +131,15 @@ Both approaches are equivalent, but `defn-` provides a more concise syntax for d
 Similar to `loop`, functions can be made recursive using `recur`. The `recur` special form enables tail-call optimization, preventing stack overflow errors.
 
 ```phel
-# Recursive factorial (regular recursion - can stack overflow)
+;; Recursive factorial (regular recursion - can stack overflow)
 (defn factorial [n]
   (if (<= n 1)
     1
     (* n (factorial (dec n)))))
 
-(factorial 5)  # => 120
+(factorial 5)  ; => 120
 
-# Tail-recursive factorial using recur with loop
+;; Tail-recursive factorial using recur with loop
 (defn factorial-recur [n]
   (loop [acc 1
          n n]
@@ -147,17 +147,17 @@ Similar to `loop`, functions can be made recursive using `recur`. The `recur` sp
       acc
       (recur (* acc n) (dec n)))))
 
-(factorial-recur 5)  # => 120
+(factorial-recur 5)  ; => 120
 
-# Recursive sum (can stack overflow on large collections)
+;; Recursive sum (can stack overflow on large collections)
 (defn sum-recursive [coll]
   (if (empty? coll)
     0
     (+ (first coll) (sum-recursive (rest coll)))))
 
-(sum-recursive [1 2 3 4 5])  # => 15
+(sum-recursive [1 2 3 4 5])  ; => 15
 
-# Tail-recursive sum using recur (safe for large collections)
+;; Tail-recursive sum using recur (safe for large collections)
 (defn sum-recur [coll]
   (loop [acc 0
          remaining coll]
@@ -165,9 +165,9 @@ Similar to `loop`, functions can be made recursive using `recur`. The `recur` sp
       acc
       (recur (+ acc (first remaining)) (rest remaining)))))
 
-(sum-recur [1 2 3 4 5])  # => 15
+(sum-recur [1 2 3 4 5])  ; => 15
 
-# Using recur directly in function (also tail-call optimized)
+;; Using recur directly in function (also tail-call optimized)
 (defn countdown [n]
   (if (<= n 0)
     "Done!"
@@ -175,7 +175,7 @@ Similar to `loop`, functions can be made recursive using `recur`. The `recur` sp
       (println n)
       (recur (dec n)))))
 
-# (countdown 5)  # Prints: 5, 4, 3, 2, 1, then returns "Done!"
+;; (countdown 5)  ; Prints: 5, 4, 3, 2, 1, then returns "Done!"
 ```
 
 {% php_note() %}
@@ -209,10 +209,10 @@ Multimethods provide runtime polymorphism via dispatch functions. They decouple 
 Use `defmulti` to define a multimethod with a dispatch function, then `defmethod` to add implementations for specific dispatch values:
 
 ```phel
-# Define a multimethod that dispatches on the :shape key
+;; Define a multimethod that dispatches on the :shape key
 (defmulti area :shape)
 
-# Implement for each shape type
+;; Implement for each shape type
 (defmethod area :circle [{:radius r}]
   (* 3.14159 r r))
 
@@ -222,9 +222,9 @@ Use `defmulti` to define a multimethod with a dispatch function, then `defmethod
 (defmethod area :triangle [{:base b :height h}]
   (/ (* b h) 2))
 
-(area {:shape :circle :radius 5})       # => 78.53975
-(area {:shape :rectangle :width 4 :height 3}) # => 12
-(area {:shape :triangle :base 6 :height 4})   # => 12
+(area {:shape :circle :radius 5})       ; => 78.53975
+(area {:shape :rectangle :width 4 :height 3}) ; => 12
+(area {:shape :triangle :base 6 :height 4})   ; => 12
 ```
 
 ### Custom dispatch functions
@@ -238,7 +238,7 @@ The dispatch function can be any function, not just a keyword:
 (defmethod greeting "es" [_] "Hola!")
 (defmethod greeting "de" [_] "Hallo!")
 
-(greeting {:language "es"})  # => "Hola!"
+(greeting {:language "es"})  ; => "Hola!"
 ```
 
 ## Apply functions
@@ -249,9 +249,9 @@ The dispatch function can be any function, not just a keyword:
 Calls the function with the given arguments. The last argument must be a list of values, which are passed as separate arguments, rather than a single list. Apply returns the result of the calling function.
 
 ```phel
-(apply + [1 2 3]) # Evaluates to 6
-(apply + 1 2 [3]) # Evaluates to 6
-(apply + 1 2 3) # BAD! Last element must be a list
+(apply + [1 2 3]) ; Evaluates to 6
+(apply + 1 2 [3]) ; Evaluates to 6
+(apply + 1 2 3) ; BAD! Last element must be a list
 ```
 
 ## Passing by reference

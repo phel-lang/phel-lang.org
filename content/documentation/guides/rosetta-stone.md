@@ -131,10 +131,10 @@ is_array($x);     // true/false
 **Phel**
 
 ```phel
-(string? x)       # true/false
-(int? x)          # true/false
-(nil? x)          # true/false
-(vector? x)       # true/false
+(string? x)       ; true/false
+(int? x)          ; true/false
+(nil? x)          ; true/false
+(vector? x)       ; true/false
 ```
 
 </div>
@@ -169,7 +169,7 @@ echo add(2, 3); // 5
 (defn add [a b]
   (+ a b))
 
-(println (add 2 3)) # 5
+(println (add 2 3)) ; 5
 ```
 
 </div>
@@ -204,8 +204,8 @@ greet("Phel"); // "Hello, Phel!"
   ([] (greet "World"))
   ([name] (str "Hello, " name "!")))
 
-(greet)       # "Hello, World!"
-(greet "Phel") # "Hello, Phel!"
+(greet)       ; "Hello, World!"
+(greet "Phel") ; "Hello, Phel!"
 ```
 
 </div>
@@ -241,7 +241,7 @@ echo $double(5); // 10
 
 (def add (fn [a b] (+ a b)))
 
-(println (double 5)) ;; 10
+(println (double 5)) ; 10
 ```
 
 </div>
@@ -274,7 +274,7 @@ echo sum(1, 2, 3, 4); // 10
 (defn sum [& numbers]
   (reduce + 0 numbers))
 
-(println (sum 1 2 3 4)) # 10
+(println (sum 1 2 3 4)) ; 10
 ```
 
 </div>
@@ -305,8 +305,8 @@ $count = count($numbers);   // 5
 
 ```phel
 (def numbers [1 2 3 4 5])
-(def first-num (first numbers))  # 1
-(def cnt (count numbers))        # 5
+(def first-num (first numbers))  ; 1
+(def cnt (count numbers))        ; 5
 ```
 
 </div>
@@ -340,7 +340,7 @@ $name = $user['name']; // "Alice"
 (def user {:name "Alice"
            :age 30
            :role "admin"})
-(def name (:name user)) # "Alice"
+(def name (:name user)) ; "Alice"
 ```
 
 </div>
@@ -371,10 +371,10 @@ $map['b'] = 2;         // ['a' => 1, 'b' => 2]
 
 ```phel
 (def items [1 2 3])
-(def updated (conj items 4))     # [1 2 3 4]
+(def updated (conj items 4))     ; [1 2 3 4]
 
 (def m {:a 1})
-(def with-b (assoc m :b 2))     # {:a 1 :b 2}
+(def with-b (assoc m :b 2))     ; {:a 1 :b 2}
 ```
 
 </div>
@@ -408,7 +408,7 @@ $filtered = array_filter($items, fn($x) => $x !== 2);
 ```phel
 (def user {:name "Alice" :age 30})
 (dissoc user :age)
-# {:name "Alice"}
+;; {:name "Alice"}
 
 (def items [1 2 3])
 (filter #(not= % 2) items)
@@ -447,7 +447,7 @@ $city = $data['user']['address']['city'];
 ```phel
 (def data {:user {:address {:city "Berlin"}}})
 (def city (get-in data [:user :address :city]))
-# "Berlin"
+;; "Berlin"
 ```
 
 </div>
@@ -532,8 +532,8 @@ $joined = implode("-", $parts);      // "a-b-c"
 **Phel**
 
 ```phel
-(def parts (php/explode "," "a,b,c"))  # PHP array
-(def joined (php/implode "-" parts))   # "a-b-c"
+(def parts (php/explode "," "a,b,c"))  ; PHP array
+(def joined (php/implode "-" parts))   ; "a-b-c"
 ```
 
 </div>
@@ -561,9 +561,9 @@ $has = str_contains("Hello", "ell");     // true
 **Phel**
 
 ```phel
-(def sub (php/substr "Hello World" 0 5))     # "Hello"
-(def pos (php/strpos "Hello World" "World")) # 6
-(def has (php/str_contains "Hello" "ell"))   # true
+(def sub (php/substr "Hello World" 0 5))     ; "Hello"
+(def pos (php/strpos "Hello World" "World")) ; 6
+(def has (php/str_contains "Hello" "ell"))   ; true
 ```
 
 </div>
@@ -758,7 +758,7 @@ for ($i = 1; $i <= 10; $i++) {
 ```phel
 (def sum
   (reduce + 0 (range 1 11)))
-# 55
+;; 55
 ```
 
 </div>
@@ -795,7 +795,7 @@ while ($n > 0) {
   (if (> n 0)
     (recur (dec n) (+ acc n))
     acc))
-# 55
+;; 55
 ```
 
 </div>
@@ -830,7 +830,7 @@ foreach (range(0, 9) as $x) {
 (for [x :range [0 10]
       :when (even? x)]
   (* x x))
-# [0 4 16 36 64]
+;; [0 4 16 36 64]
 ```
 
 </div>
@@ -992,7 +992,7 @@ $evens = array_filter(
 
 ```phel
 (filter even? [1 2 3 4 5 6])
-# [2 4 6]
+;; [2 4 6]
 ```
 
 </div>
@@ -1024,7 +1024,7 @@ $sum = array_reduce(
 
 ```phel
 (reduce + 0 [1 2 3 4])
-# 10
+;; 10
 ```
 
 </div>

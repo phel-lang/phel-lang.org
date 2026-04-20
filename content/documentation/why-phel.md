@@ -35,7 +35,7 @@ Yes, 100%. Phel has full PHP interop through the `php/` prefix:
 
 ```phel
 ;; Call any PHP function
-(php/strlen "hello")  ;; => 5
+(php/strlen "hello")  ; => 5
 (php/array_map #(* % 2) (php/array 1 2 3))
 
 ;; Create objects

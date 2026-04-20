@@ -11,17 +11,17 @@ Since Phel compiles to PHP, you can use familiar PHP debugging functions and too
 You can use any PHP function simply using the `php/` prefix:
 
 ```phel
-# Dumping a definition by its name
+;; Dumping a definition by its name
 (def v (+ 2 2))
 (php/var_dump v)
-# OUTPUT:
+;; OUTPUT:
 int(4)
 ```
 
 ```phel 
-# Directly dumping the result of a function
+;; Directly dumping the result of a function
 (php/var_dump (+ 3 3))
-# OUTPUT:
+;; OUTPUT:
 int(6)
 ```
 
@@ -48,7 +48,7 @@ And then, the same drill, you can `dump()` a definition by its name or the funct
 
 ```phel
 (php/dump (+ 4 4))
-# OUTPUT:
+;; OUTPUT:
 8
 ```
 
@@ -56,7 +56,7 @@ Additionally, you can also use `dd()` to dump and die the execution of the progr
 
 ```phel 
 (php/dd (+ 5 5))
-# OUTPUT:
+;; OUTPUT:
 10
 ```
 
@@ -80,19 +80,19 @@ Additionally, you can also use `dd()` to dump and die the execution of the progr
 ### Best Practices
 
 ```phel
-# Use dump() during development
+;; Use dump() during development
 (defn process-user [user]
-  (php/dump user)  # Inspect without stopping
+  (php/dump user)  ; Inspect without stopping
   (-> user
       (validate)
       (save)))
 
-# Use dd() to stop and inspect
+;; Use dd() to stop and inspect
 (defn debug-pipeline [data]
   (-> data
       (transform)
-      (php/dd)  # Stop here and inspect
-      (save)))  # Never reached
+      (php/dd)  ; Stop here and inspect
+      (save)))  ; Never reached
 ```
 
 ## Check the Evaluated PHP
@@ -121,7 +121,7 @@ Once you enable `setKeepGeneratedTempFiles(true)`, you can:
 **Example workflow:**
 
 ```phel
-# Your Phel code
+;; Your Phel code
 (defn greet [name]
   (str "Hello, " name "!"))
 ```

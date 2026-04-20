@@ -15,33 +15,33 @@ A control flow structure. First evaluates _test_. If _test_ evaluates to `true`,
 The _test_ evaluates to `false` if its value is `false` or equal to `nil`. Every other value evaluates to `true`. In sense of PHP this means (`test != null && test !== false`).
 
 ```phel
-# Basic if examples
-(if true 10) # Evaluates to 10
-(if false 10) # Evaluates to nil
-(if true (print 1) (print 2)) # Prints 1 but not 2
+;; Basic if examples
+(if true 10) ; Evaluates to 10
+(if false 10) ; Evaluates to nil
+(if true (print 1) (print 2)) ; Prints 1 but not 2
 
-# Important: Only false and nil are falsy!
-(if 0 (print 1) (print 2)) # Prints 1 (0 is truthy!)
-(if nil (print 1) (print 2)) # Prints 2 (nil is falsy)
-(if [] (print 1) (print 2)) # Prints 1 (empty vector is truthy!)
+;; Important: Only false and nil are falsy!
+(if 0 (print 1) (print 2)) ; Prints 1 (0 is truthy!)
+(if nil (print 1) (print 2)) ; Prints 2 (nil is falsy)
+(if [] (print 1) (print 2)) ; Prints 1 (empty vector is truthy!)
 
-# Practical examples
+;; Practical examples
 (defn greet [name]
   (if name
     (str "Hello, " name)
     "Hello, stranger"))
 
-(greet "Alice")  # => "Hello, Alice"
-(greet nil)      # => "Hello, stranger"
+(greet "Alice")  ; => "Hello, Alice"
+(greet nil)      ; => "Hello, stranger"
 
-# Using if for validation
+;; Using if for validation
 (defn divide [a b]
   (if (= b 0)
     nil
     (/ a b)))
 
-(divide 10 2)  # => 5
-(divide 10 0)  # => nil
+(divide 10 2)  ; => 5
+(divide 10 0)  ; => nil
 ```
 
 ## Case
@@ -53,18 +53,18 @@ The _test_ evaluates to `false` if its value is `false` or equal to `nil`. Every
 Evaluates the _test_ expression. Then iterates over each pair. If the result of the test expression matches the first value of the pair, the second expression of the pair is evaluated and returned. If no match is found, returns nil.
 
 ```phel
-# Basic case examples
+;; Basic case examples
 (case (+ 7 5)
   3 :small
-  12 :big) # Evaluates to :big
+  12 :big) ; Evaluates to :big
 
 (case (+ 7 5)
   3 :small
-  15 :big) # Evaluates to nil (no match)
+  15 :big) ; Evaluates to nil (no match)
 
-(case (+ 7 5)) # Evaluates to nil (no pairs)
+(case (+ 7 5)) ; Evaluates to nil (no pairs)
 
-# Practical examples
+;; Practical examples
 (defn http-status-message [code]
   (case code
     200 "OK"
@@ -73,11 +73,11 @@ Evaluates the _test_ expression. Then iterates over each pair. If the result of 
     404 "Not Found"
     500 "Internal Server Error"))
 
-(http-status-message 200)  # => "OK"
-(http-status-message 404)  # => "Not Found"
-(http-status-message 999)  # => nil
+(http-status-message 200)  ; => "OK"
+(http-status-message 404)  ; => "Not Found"
+(http-status-message 999)  ; => nil
 
-# Using case with keywords
+;; Using case with keywords
 (defn animal-sound [animal]
   (case animal
     :dog "Woof!"
@@ -85,8 +85,8 @@ Evaluates the _test_ expression. Then iterates over each pair. If the result of 
     :cow "Moo!"
     :duck "Quack!"))
 
-(animal-sound :dog)   # => "Woof!"
-(animal-sound :fish)  # => nil
+(animal-sound :dog)   ; => "Woof!"
+(animal-sound :fish)  ; => nil
 ```
 
 {% php_note() %}
@@ -123,51 +123,51 @@ No `break` needed-Phel's `case` doesn't fall through.
 Iterates over each pair. If the first expression of the pair evaluates to logical true, the second expression of the pair is evaluated and returned. If no match is found, returns nil.
 
 ```phel
-# Basic cond examples
+;; Basic cond examples
 (cond
   (neg? 5) :negative
-  (pos? 5) :positive)  # Evaluates to :positive
+  (pos? 5) :positive)  ; Evaluates to :positive
 
 (cond
   (neg? 5) :negative
-  (neg? 3) :negative) # Evaluates to nil (no match)
+  (neg? 3) :negative) ; Evaluates to nil (no match)
 
-(cond) # Evaluates to nil (no pairs)
+(cond) ; Evaluates to nil (no pairs)
 
-# Practical examples
+;; Practical examples
 (defn classify-number [n]
   (cond
     (< n 0) "negative"
     (= n 0) "zero"
     (> n 0) "positive"))
 
-(classify-number -5)  # => "negative"
-(classify-number 0)   # => "zero"
-(classify-number 10)  # => "positive"
+(classify-number -5)  ; => "negative"
+(classify-number 0)   ; => "zero"
+(classify-number 10)  ; => "positive"
 
-# Using cond for complex conditions
+;; Using cond for complex conditions
 (defn ticket-price [age]
   (cond
-    (< age 3) 0          # Free for toddlers
-    (< age 12) 5         # Child price
-    (< age 65) 10        # Adult price
-    :else 7))            # Senior discount
+    (< age 3) 0          ; Free for toddlers
+    (< age 12) 5         ; Child price
+    (< age 65) 10        ; Adult price
+    :else 7))            ; Senior discount
 
-(ticket-price 2)   # => 0
-(ticket-price 10)  # => 5
-(ticket-price 30)  # => 10
-(ticket-price 70)  # => 7
+(ticket-price 2)   ; => 0
+(ticket-price 10)  ; => 5
+(ticket-price 30)  ; => 10
+(ticket-price 70)  ; => 7
 
-# Combining multiple conditions
+;; Combining multiple conditions
 (defn water-state [temp]
   (cond
     (<= temp 0) :ice
     (and (> temp 0) (< temp 100)) :liquid
     (>= temp 100) :steam))
 
-(water-state -5)   # => :ice
-(water-state 25)   # => :liquid
-(water-state 105)  # => :steam
+(water-state -5)   ; => :ice
+(water-state 25)   ; => :liquid
+(water-state 105)  ; => :steam
 ```
 
 {% php_note() %}
@@ -207,14 +207,14 @@ Evaluates the expressions in order and rebinds them to the recursion point. A re
 Internally `recur` is implemented as a PHP while loop and therefore prevents the _Maximum function nesting level_ errors.
 
 ```phel
-# Basic loop example - sum numbers from 1 to 10
+;; Basic loop example - sum numbers from 1 to 10
 (loop [sum 0
        cnt 10]
   (if (= cnt 0)
     sum
-    (recur (+ cnt sum) (dec cnt))))  # => 55
+    (recur (+ cnt sum) (dec cnt))))  ; => 55
 
-# Recursion in a function
+;; Recursion in a function
 (defn factorial [n]
   (loop [acc 1
          n n]
@@ -222,9 +222,9 @@ Internally `recur` is implemented as a PHP while loop and therefore prevents the
       acc
       (recur (* acc n) (dec n)))))
 
-(factorial 5)  # => 120
+(factorial 5)  ; => 120
 
-# Finding an element in a vector
+;; Finding an element in a vector
 (defn find-index [pred coll]
   (loop [idx 0
          items coll]
@@ -233,10 +233,10 @@ Internally `recur` is implemented as a PHP while loop and therefore prevents the
       (pred (first items)) idx
       :else (recur (inc idx) (rest items)))))
 
-(find-index even? [1 3 5 8 9])  # => 3
-(find-index neg? [1 2 3])       # => nil
+(find-index even? [1 3 5 8 9])  ; => 3
+(find-index neg? [1 2 3])       ; => nil
 
-# Building a result with loop
+;; Building a result with loop
 (defn reverse-vec [v]
   (loop [result []
          remaining v]
@@ -245,7 +245,7 @@ Internally `recur` is implemented as a PHP while loop and therefore prevents the
       (recur (conj result (last remaining))
              (pop remaining)))))
 
-(reverse-vec [1 2 3 4])  # => [4 3 2 1]
+(reverse-vec [1 2 3 4])  ; => [4 3 2 1]
 ```
 
 {% php_note() %}
@@ -278,11 +278,11 @@ The `foreach` special form can be used to iterate over all kind of PHP datastruc
 
 ```phel
 (foreach [v [1 2 3]]
-  (print v)) # Prints 1, 2 and 3
+  (print v)) ; Prints 1, 2 and 3
 
 (foreach [k v {"a" 1 "b" 2}]
   (print k)
-  (print v)) # Prints "a", 1, "b" and 2
+  (print v)) ; Prints "a", 1, "b" and 2
 ```
 
 {% php_note() %}
@@ -338,30 +338,30 @@ have the form `:modifier argument`. The following modifiers are supported:
 * `:reduce [accumulator initial-value]` Instead of returning a list, it reduces the values into `accumulator`. Initially `accumulator` is bound to `initial-value`. Normally with `when` macro inside `reduce` function the accumulator becomes `nil` when the condition is not met. However with `for`, `:when` can be used for conditional logic with `:reduce` without this issue.
 
 ```phel
-(for [x :range [0 3]] x) # Evaluates to [0 1 2]
-(for [x :range [3 0 -1]] x) # Evaluates to [3 2 1]
+(for [x :range [0 3]] x) ; Evaluates to [0 1 2]
+(for [x :range [3 0 -1]] x) ; Evaluates to [3 2 1]
 
-(for [x :in [1 2 3]] (inc x)) # Evaluates to [2 3 4]
-(for [x :in {:a 1 :b 2 :c 3}] x) # Evaluates to [1 2 3]
+(for [x :in [1 2 3]] (inc x)) ; Evaluates to [2 3 4]
+(for [x :in {:a 1 :b 2 :c 3}] x) ; Evaluates to [1 2 3]
 
-(for [x :keys [1 2 3]] x) # Evaluates to [0 1 2]
-(for [x :keys {:a 1 :b 2 :c 3}] x) # Evaluates to [:a :b :c]
+(for [x :keys [1 2 3]] x) ; Evaluates to [0 1 2]
+(for [x :keys {:a 1 :b 2 :c 3}] x) ; Evaluates to [:a :b :c]
 
-(for [[k v] :pairs {:a 1 :b 2 :c 3}] [v k]) # Evaluates to [[1 :a] [2 :b] [3 :c]]
-(for [[k v] :pairs [1 2 3]] [k v]) # Evaluates to [[0 1] [1 2] [2 3]]
+(for [[k v] :pairs {:a 1 :b 2 :c 3}] [v k]) ; Evaluates to [[1 :a] [2 :b] [3 :c]]
+(for [[k v] :pairs [1 2 3]] [k v]) ; Evaluates to [[0 1] [1 2] [2 3]]
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}]]
-  (assoc m k (inc v))) # Evaluates to {:a 2 :b 3 :c 4}
+  (assoc m k (inc v))) ; Evaluates to {:a 2 :b 3 :c 4}
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}] :let [x (inc v)]]
-  (assoc m k x)) # Evaluates to {:a 2 :b 3 :c 4}
+  (assoc m k x)) ; Evaluates to {:a 2 :b 3 :c 4}
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :when (contains-value? [:a :c] k) :reduce [acc {}]]
-    (assoc acc k v)) # Evaluates to {:a 1 :c 3}
+    (assoc acc k v)) ; Evaluates to {:a 1 :c 3}
 
-(for [x :in [2 2 2 3 3 4 5 6 6] :while (even? x)] x) # Evaluates to [2 2 2]
-(for [x :in [2 2 2 3 3 4 5 6 6] :when (even? x)] x) # Evaluates to [2 2 2 4 6 6]
+(for [x :in [2 2 2 3 3 4 5 6 6] :while (even? x)] x) ; Evaluates to [2 2 2]
+(for [x :in [2 2 2 3 3 4 5 6 6] :when (even? x)] x) ; Evaluates to [2 2 2 4 6 6]
 
-(for [x :in [1 2 3] :let [y (inc x)]] [x y]) # Evaluates to [[1 2] [2 3] [3 4]]
+(for [x :in [1 2 3] :let [y (inc x)]] [x y]) ; Evaluates to [[1 2] [2 3] [3 4]]
 
-(for [x :range [0 4] y :range [0 x]] [x y]) # Evaluates to [[1 0] [2 0] [2 1] [3 0] [3 1] [3 2]]
+(for [x :range [0 4] y :range [0 x]] [x y]) ; Evaluates to [[1 0] [2 0] [2 1] [3 0] [3 1] [3 2]]
 ```
 
 {% php_note() %}
@@ -394,15 +394,15 @@ Phel's `for` combines iteration, filtering (`:when`), early termination (`:while
 Evaluates the expressions in order and returns the value of the last expression. If no expression is given, `nil` is returned.
 
 ```phel
-(do 1 2 3 4) # Evaluates to 4
-(do (print 1) (print 2) (print 3)) # Print 1, 2, and 3
+(do 1 2 3 4) ; Evaluates to 4
+(do (print 1) (print 2) (print 3)) ; Print 1, 2, and 3
 ```
 
 # Dofor
 
 ```phel
-(dofor [x :in [1 2 3]] (print x)) # Prints 1, 2, 3 and returns nil
-(dofor [x :in [2 3 4 5] :when (even? x)] (print x)) # Prints 1, 2 and returns nil
+(dofor [x :in [1 2 3]] (print x)) ; Prints 1, 2, 3 and returns nil
+(dofor [x :in [2 3 4 5] :when (even? x)] (print x)) ; Prints 1, 2 and returns nil
 ```
 
 Iterating over collections for side-effects is also possible with `dofor` which has similar behavior to `for` otherwise but returns `nil` as `foreach` does.
@@ -421,10 +421,10 @@ Takes an expression and a set of test/form pairs. Threads the expression through
 (cond-> 1
   true inc
   false (* 42)
-  true (* 3))  # => 6
+  true (* 3))  ; => 6
 
-# Only applies inc (true) and (* 3) (true), skips (* 42) (false)
-# 1 -> (inc 1) -> 2 -> (* 2 3) -> 6
+;; Only applies inc (true) and (* 3) (true), skips (* 42) (false)
+;; 1 -> (inc 1) -> 2 -> (* 2 3) -> 6
 
 (defn maybe-transform [data opts]
   (cond-> data
@@ -445,9 +445,9 @@ Like `cond->` but threads as the last argument (thread-last style).
 (cond->> [1 2 3 4 5]
   true (map inc)
   false (filter odd?)
-  true (take 3))  # => (2 3 4)
+  true (take 3))  ; => (2 3 4)
 
-# Only applies (map inc) and (take 3), skips (filter odd?)
+;; Only applies (map inc) and (take 3), skips (filter odd?)
 ```
 
 # Exceptions

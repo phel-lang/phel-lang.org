@@ -37,44 +37,44 @@ The first argument of the `is` macro must be in one of the following forms. The 
 
 ```phel
 (predicate expected actual)
-# Example: (is (= 4 (+ 2 2)))
+;; Example: (is (= 4 (+ 2 2)))
 ```
 
 This tests whether, according to `predicate`, the `actual` value is in fact what we `expected`.
 
 ```phel
 (predicate value)
-# Example: (is (true? (or true false)))
+;; Example: (is (true? (or true false)))
 ```
 This tests whether the `value` satisfies the `predicate`.
 
 ```phel
 (not (predicate expected actual))
-# Example: (is (not (= 4 (+ 2 3))))
+;; Example: (is (not (= 4 (+ 2 3))))
 ```
 
 This tests whether, according to `predicate`, the `actual` value is **not** what we `expected`.
 
 ```phel
 (not (predicate value))
-# Example (is (not (true? (and true false))))
+;; Example (is (not (true? (and true false))))
 ```
 This tests whether the `value` does **not** satisfies the `predicate`.
 
 ```phel
 (thrown? exception-type body)
-# Example: (is (thrown? \Exception (throw (php/new \Exception "test"))))
+;; Example: (is (thrown? \Exception (throw (php/new \Exception "test"))))
 ```
 This tests whether the execution of `body` throws an exception of type `exception-type`.
 
 ```phel
 (thrown-with-msg? exception-type msg body)
-# Example: (is (thrown? \Exception "test"  (throw (php/new \Exception "test"))))
+;; Example: (is (thrown? \Exception "test"  (throw (php/new \Exception "test"))))
 ```
 This tests whether the execution of `body` throws an exception of type `exception-type` and that the exception has the message `msg`.
 
 ```phel
-(output? expected body) # For example (output? "hello" (php/echo "hello"))
+(output? expected body) ; For example (output? "hello" (php/echo "hello"))
 ```
 This tests whether the execution of `body` prints the `expected` text to the output stream.
 
@@ -145,6 +145,49 @@ Test report can be set to more verbose TestDox format showing individual test na
 
 See more options available by running `./vendor/bin/phel test --help`.
 
+### Reporters
+
+Pick the output format with `--reporter=<name>`. The flag is repeatable so you can emit multiple formats at once.
+
+| Reporter    | Description                                 |
+|-------------|---------------------------------------------|
+| `default`   | Human-readable summary (default)            |
+| `testdox`   | Sentence-style names                        |
+| `dot`       | One character per test                      |
+| `tap`       | Test Anything Protocol                      |
+| `junit-xml` | JUnit XML (use `--output=path` for a file)  |
+
+```bash
+./vendor/bin/phel test --reporter=dot
+./vendor/bin/phel test --reporter=junit-xml --output=build/tests.xml
+./vendor/bin/phel test --reporter=tap --reporter=junit-xml --output=build/tests.xml
+```
+
+`phel\test/report` is a multimethod dispatching on event `:type`, so you can register custom reporters from Phel.
+
+### Selectors
+
+Filter tests by tag, namespace glob, or regex:
+
+```bash
+./vendor/bin/phel test --include=integration
+./vendor/bin/phel test --exclude=slow
+./vendor/bin/phel test --ns='my-app\http\*'
+./vendor/bin/phel test --filter 'user.*login'
+```
+
+Tag tests with metadata:
+
+```phel
+(deftest ^:integration full-signup-flow
+  ...)
+
+(deftest ^{:tags [:integration :slow]} heavy-job
+  ...)
+```
+
+Skipped tests emit a `:skipped` event.
+
 {% php_note() %}
 Phel's test command is similar to PHPUnit:
 
@@ -172,7 +215,7 @@ If you want to run tests from Phel code, the `run-tests` function can be used. A
 
 ### Interactive testing with `test-ns`
 
-Since v0.31.0, you can run tests for a single namespace interactively from the REPL using `test-ns`:
+You can run tests for a single namespace interactively from the REPL using `test-ns`:
 
 ```phel
 (ns my-app\tests
@@ -219,17 +262,17 @@ Phel provides a built-in mocking framework in the `phel\mock` module for replaci
 
 ;; Fixed return value
 (def my-mock (mock :ok))
-(my-mock "any" "args")  ;; => :ok
+(my-mock "any" "args")  ; => :ok
 
 ;; Custom behavior
 (def double-mock (mock-fn #(* % 2)))
-(double-mock 5)  ;; => 10
+(double-mock 5)  ; => 10
 
 ;; Consecutive return values
 (def seq-mock (mock-returning [1 2 3]))
-(seq-mock)  ;; => 1
-(seq-mock)  ;; => 2
-(seq-mock)  ;; => 3
+(seq-mock)  ; => 1
+(seq-mock)  ; => 2
+(seq-mock)  ; => 3
 
 ;; Mock that throws
 (def err-mock (mock-throwing (php/new \RuntimeException "fail")))
@@ -242,12 +285,12 @@ Phel provides a built-in mocking framework in the `phel\mock` module for replaci
 (m "a" "b")
 (m "c")
 
-(calls m)          ;; => [["a" "b"] ["c"]]
-(call-count m)     ;; => 2
-(called? m)        ;; => true
-(called-with? m "a" "b")  ;; => true
-(called-once? m)   ;; => false
-(never-called? m)  ;; => false
+(calls m)          ; => [["a" "b"] ["c"]]
+(call-count m)     ; => 2
+(called? m)        ; => true
+(called-with? m "a" "b")  ; => true
+(called-once? m)   ; => false
+(never-called? m)  ; => false
 ```
 
 ### Replacing functions in tests
@@ -280,3 +323,19 @@ $mock->method('find')->willReturn(['id' => 1]);
 
 No class structure needed - mock any function directly.
 {% end %}
+
+## Property-based testing
+
+The `phel\test\gen` module provides generators, `sample`, `quick-check`, and `defspec` with a seedable PRNG.
+
+```phel
+(ns my-app\tests
+  (:require phel\test :refer [deftest is defspec])
+  (:require phel\test\gen :as gen))
+
+(defspec reverse-roundtrip
+  [xs (gen/vector (gen/int))]
+  (is (= xs (reverse (reverse xs)))))
+```
+
+Failing cases are shrunk via `phel\test\shrink` (rose tree). On failure, a `:defspec-failed` event is emitted with `:shrunk-args`, `:original-args`, `:shrink-steps`, and `:seed`. Opt out with `^:no-shrink` or `:shrink? false`.
