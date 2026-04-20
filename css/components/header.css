@@ -34,11 +34,13 @@
   }
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1039px) {
   .site-header {
     position: relative;
   }
+}
 
+@media (max-width: 767px) {
   .site-header__container {
     padding: 0 var(--space-md);
     gap: var(--space-sm);
@@ -271,12 +273,12 @@
 .mobile-menu-overlay {
   display: none;
   position: fixed;
-  top: var(--header-height);
+  top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   width: 100vw;
-  height: calc(100vh - var(--header-height));
+  height: 100vh;
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(var(--backdrop-blur-lg));
   -webkit-backdrop-filter: blur(var(--backdrop-blur-lg));

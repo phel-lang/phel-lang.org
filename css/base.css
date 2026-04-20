@@ -50,7 +50,7 @@ body {
               color var(--duration-normal) var(--ease-out);
 }
 
-@media (max-width: 767px) {
+@media (max-width: 1039px) {
   body {
     padding-top: 0;
   }

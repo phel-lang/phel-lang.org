@@ -7,11 +7,6 @@
   transition: background-color var(--duration-normal) var(--ease-out);
 }
 
-@media (max-width: 767px) {
-  .layout-container {
-    margin-top: var(--header-height);
-  }
-}
 
 /* One Column Layout - Modern Content */
 .one-column-layout {
@@ -71,7 +66,7 @@
   border-radius: var(--radius-lg);
   color: var(--color-light-text-primary);
   cursor: pointer;
-  margin: var(--space-xl) 0 var(--space-sm);
+  margin: var(--space-sm) 0;
   transition: all var(--duration-fast) var(--ease-out);
   position: relative;
   z-index: 10;
@@ -183,7 +178,8 @@
 }
 
 /* Main content area */
-.two-column-layout__content > h1:first-child {
+.two-column-layout__content > h1:first-child,
+.one-column-layout__content > h1:first-child {
   margin: 0.5em 0 0.5em;
 }
 
