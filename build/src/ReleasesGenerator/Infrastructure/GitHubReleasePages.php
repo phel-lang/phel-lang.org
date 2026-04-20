@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace PhelWeb\ReleasesGenerator\Infrastructure;
 
-use RuntimeException;
 use PhelWeb\ReleasesGenerator\Application\GitHubReleasePagesGenerator;
 use PhelWeb\ReleasesGenerator\Domain\Release;
+use RuntimeException;
 
 final readonly class GitHubReleasePages
 {
@@ -22,20 +22,55 @@ final readonly class GitHubReleasePages
 
     public function generate(): void
     {
-        $releases = $this->fetchAllReleases();
+        $rawReleases = $this->fetchAllReleases();
+        $releases = $this->mapToReleases($rawReleases);
 
         $this->cleanStaleReleasePages();
 
-        foreach ($releases as $release) {
-            $releaseDto = Release::fromArray($release);
-            $this->generateReleasePage($releaseDto);
+        $groups = $this->groupByMinor($releases);
+
+        foreach ($groups as $group) {
+            $this->generateMinorPage($group);
         }
+    }
+
+    /**
+     * @param list<array<string, mixed>> $rawReleases
+     * @return list<Release>
+     */
+    private function mapToReleases(array $rawReleases): array
+    {
+        $releases = [];
+        foreach ($rawReleases as $raw) {
+            $release = Release::fromArray($raw);
+            if ($release->hasValidVersion()) {
+                $releases[] = $release;
+            }
+        }
+        return $releases;
+    }
+
+    /**
+     * @param list<Release> $releases
+     * @return list<list<Release>>
+     */
+    private function groupByMinor(array $releases): array
+    {
+        $groups = [];
+        foreach ($releases as $release) {
+            $key = $release->getMinorKey();
+            $groups[$key] ??= [];
+            $groups[$key][] = $release;
+        }
+        return array_values($groups);
     }
 
     private function cleanStaleReleasePages(): void
     {
-        $pattern = $this->outputDir . '/*-release-*.md';
-        foreach (glob($pattern) ?: [] as $file) {
+        foreach (glob($this->outputDir . '/*.md') ?: [] as $file) {
+            if (basename($file) === '_index.md') {
+                continue;
+            }
             @unlink($file);
         }
     }
@@ -83,20 +118,33 @@ final readonly class GitHubReleasePages
         return $releases;
     }
 
-    private function generateReleasePage(Release $release): void
+    /**
+     * @param list<Release> $group
+     */
+    private function generateMinorPage(array $group): void
     {
-        $fileName = $this->generateFileName($release);
-        $filePath = $this->outputDir . '/' . $fileName;
-
-        $markdown = $this->gitHubReleasePagesGenerator->generateReleasePageContent($release);
-        file_put_contents($filePath, $markdown);
+        $markdown = $this->gitHubReleasePagesGenerator->generateMinorPageContent($group);
+        $fileName = $this->generateFileName($group);
+        file_put_contents($this->outputDir . '/' . $fileName, $markdown);
     }
 
-    private function generateFileName(Release $release): string
+    /**
+     * @param list<Release> $group
+     */
+    private function generateFileName(array $group): string
     {
-        $slug = strtolower(str_replace(['.', ' '], ['-', '-'], $release->tagName));
-        $date = $release->getPublishedDate();
+        $latest = $this->latestRelease($group);
+        $slug = $this->gitHubReleasePagesGenerator->computeSlug($group);
+        return "{$latest->getPublishedDate()}-{$slug}.md";
+    }
 
-        return "{$date}-release-{$slug}.md";
+    /**
+     * @param list<Release> $group
+     */
+    private function latestRelease(array $group): Release
+    {
+        $sorted = $group;
+        usort($sorted, static fn(Release $a, Release $b): int => $b->getPatch() <=> $a->getPatch());
+        return $sorted[0];
     }
 }

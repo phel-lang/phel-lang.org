@@ -37,68 +37,63 @@ final class GitHubReleasePagesTest extends TestCase
         }
     }
 
-    public function test_generate_release_pages_from_mock_data(): void
+    public function test_generate_minor_pages_grouping_patches(): void
     {
         $generator = new GitHubReleasePagesGenerator();
 
-        $this->createMockReleasePages($generator);
+        $minor34Headline = Release::fromArray([
+            'tag_name' => 'v0.34.0',
+            'name' => '0.34.0 - Toolsmith',
+            'body' => 'Big toolsmith release.',
+            'published_at' => '2026-04-20T10:00:00Z',
+            'html_url' => 'https://github.com/phel-lang/phel-lang/releases/tag/v0.34.0',
+            'assets' => [
+                [
+                    'name' => 'phel.phar',
+                    'browser_download_url' => 'https://github.com/phel-lang/phel-lang/releases/download/v0.34.0/phel.phar',
+                    'size' => 5242880,
+                ],
+            ],
+        ]);
+        $minor34Patch = Release::fromArray([
+            'tag_name' => 'v0.34.1',
+            'name' => '0.34.1',
+            'body' => 'Patch release fixing format --dry-run.',
+            'published_at' => '2026-04-21T10:00:00Z',
+            'html_url' => 'https://github.com/phel-lang/phel-lang/releases/tag/v0.34.1',
+            'assets' => [],
+        ]);
+
+        $minor33 = Release::fromArray([
+            'tag_name' => 'v0.33.0',
+            'name' => '0.33.0',
+            'body' => 'Another release.',
+            'published_at' => '2026-04-17T10:00:00Z',
+            'html_url' => 'https://github.com/phel-lang/phel-lang/releases/tag/v0.33.0',
+            'assets' => [],
+        ]);
+
+        $minor34Page = $generator->generateMinorPageContent([$minor34Headline, $minor34Patch]);
+        $minor33Page = $generator->generateMinorPageContent([$minor33]);
+
+        file_put_contents($this->tempDir . '/2026-04-21-0-34-toolsmith.md', $minor34Page);
+        file_put_contents($this->tempDir . '/2026-04-17-0-33.md', $minor33Page);
 
         $files = glob($this->tempDir . '/*.md');
         self::assertCount(2, $files);
 
-        $file1Content = file_get_contents($this->tempDir . '/2025-10-05-release-v0-23-0.md');
-        self::assertStringContainsString('title = "Release: Release 0.23.0"', $file1Content);
-        self::assertStringContainsString('date = 2025-10-05', $file1Content);
-        self::assertStringContainsString('This is a test release', $file1Content);
-        self::assertStringContainsString('## Downloads', $file1Content);
-        self::assertStringContainsString('phel.phar', $file1Content);
-        self::assertStringContainsString('5 MB', $file1Content);
+        $file34 = file_get_contents($this->tempDir . '/2026-04-21-0-34-toolsmith.md');
+        self::assertStringContainsString('title = "Release: 0.34 - Toolsmith"', $file34);
+        self::assertStringContainsString('date = 2026-04-21', $file34);
+        self::assertStringContainsString('slug = "0-34-toolsmith"', $file34);
+        self::assertStringContainsString('## 0.34.1', $file34);
+        self::assertStringContainsString('## 0.34.0 - Toolsmith', $file34);
+        self::assertStringContainsString('## Downloads', $file34);
+        self::assertStringContainsString('**v0.34.0**', $file34);
+        self::assertStringContainsString('5 MB', $file34);
 
-        $file2Content = file_get_contents($this->tempDir . '/2025-09-01-release-v0-22-0.md');
-        self::assertStringContainsString('title = "Release: Release 0.22.0"', $file2Content);
-        self::assertStringContainsString('date = 2025-09-01', $file2Content);
-    }
-
-    private function createMockReleasePages(GitHubReleasePagesGenerator $generator): void
-    {
-        $mockReleases = [
-            [
-                'tag_name' => 'v0.23.0',
-                'name' => 'Release 0.23.0',
-                'body' => 'This is a test release',
-                'published_at' => '2025-10-05T10:00:00Z',
-                'html_url' => 'https://github.com/phel-lang/phel-lang/releases/tag/v0.23.0',
-                'assets' => [
-                    [
-                        'name' => 'phel.phar',
-                        'browser_download_url' => 'https://github.com/phel-lang/phel-lang/releases/download/v0.23.0/phel.phar',
-                        'size' => 5242880, // 5 MB
-                    ],
-                ],
-            ],
-            [
-                'tag_name' => 'v0.22.0',
-                'name' => 'Release 0.22.0',
-                'body' => 'This is another test release',
-                'published_at' => '2025-09-01T10:00:00Z',
-                'html_url' => 'https://github.com/phel-lang/phel-lang/releases/tag/v0.22.0',
-                'assets' => [],
-            ],
-        ];
-
-        foreach ($mockReleases as $releaseData) {
-            $release = Release::fromArray($releaseData);
-            $content = $generator->generateReleasePageContent($release);
-            $fileName = $this->generateFileName($release);
-            file_put_contents($this->tempDir . '/' . $fileName, $content);
-        }
-    }
-
-    private function generateFileName(Release $release): string
-    {
-        $slug = strtolower(str_replace(['.', ' '], ['-', '-'], $release->tagName));
-        $date = $release->getPublishedDate();
-
-        return "{$date}-release-{$slug}.md";
+        $file33 = file_get_contents($this->tempDir . '/2026-04-17-0-33.md');
+        self::assertStringContainsString('title = "Release: 0.33"', $file33);
+        self::assertStringContainsString('slug = "0-33"', $file33);
     }
 }

@@ -6,7 +6,6 @@
 
 <div class="post-list">
 {% for page in section.pages %}
-    {% if page.extra.patch == 0 %}
     <div class="post-list__item">
         <a class="post-card" href="{{ page.path }}">
             {% if page.date %}
@@ -22,24 +21,17 @@
             {% endif %}
             <span class="post-card__cta">View release →</span>
         </a>
-        {% set patch_count = 0 %}
-        {% for p in section.pages %}
-            {% if p.extra.minor == page.extra.minor and p.extra.patch > 0 %}
-                {% set_global patch_count = patch_count + 1 %}
-            {% endif %}
-        {% endfor %}
-        {% if patch_count > 0 %}
-        <div class="post-card__patches" aria-label="Patch releases for {{ page.extra.minor }}">
-            <span class="post-card__patches-label">Patches:</span>
-            {% for p in section.pages %}
-                {% if p.extra.minor == page.extra.minor and p.extra.patch > 0 %}
-                <a class="post-card__patch" href="{{ p.path }}" title="{{ p.description | default(value=p.title) }}">v{{ p.extra.version }}</a>
-                {% endif %}
+        {% set versions = page.extra.versions | default(value=[]) %}
+        {% if versions | length > 1 %}
+        <div class="post-card__patches" aria-label="Versions in this release">
+            <span class="post-card__patches-label">Includes:</span>
+            {% for v in versions %}
+            {% set v_dash = v | replace(from=".", to="-") %}
+            <a class="post-card__patch" href="{{ page.path }}#v{{ v_dash }}">v{{ v }}</a>
             {% endfor %}
         </div>
         {% endif %}
     </div>
-    {% endif %}
 {% endfor %}
 </div>
 {% endblock content %}
