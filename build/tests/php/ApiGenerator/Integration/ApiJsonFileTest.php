@@ -68,7 +68,14 @@ final class ApiJsonFileTest extends TestCase
         $content = json_decode(file_get_contents($jsonFile), true);
 
         $namespaces = array_unique(array_column($content, 'namespace'));
-        $expectedNamespaces = ['ai', 'base64', 'core', 'html', 'http', 'http_client', 'json', 'mock', 'php', 'repl', 'string', 'test'];
+        $expectedNamespaces = [
+            'ai', 'async', 'base64', 'cli', 'core', 'html', 'http', 'http_client',
+            'json', 'match', 'mock', 'php', 'pprint', 'reader', 'repl', 'router',
+            'schema', 'schema\\coercer', 'schema\\explainer', 'schema\\generator',
+            'schema\\instrument', 'schema\\registry', 'schema\\validator',
+            'string', 'test', 'test\\gen', 'test\\rose', 'test\\selector',
+            'test\\shrink', 'walk', 'watch',
+        ];
 
         self::assertCount(count($expectedNamespaces), $namespaces);
     }

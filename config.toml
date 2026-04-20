@@ -31,4 +31,4 @@ extra_grammars = ["syntaxes/phel.tmLanguage.json"]
 # Put all your custom variables here
 
 repo_content_url = "https://github.com/phel-lang/phel-lang.org/edit/master/content/"
-phel_version = "v0.33.0"
+phel_version = "v0.34.0"
