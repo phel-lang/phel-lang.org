@@ -43,6 +43,8 @@ final readonly class Release
 
     public function getPublishedDate(): string
     {
-        return date('Y-m-d', strtotime($this->publishedAt));
+        return (new \DateTimeImmutable($this->publishedAt))
+            ->setTimezone(new \DateTimeZone('Europe/Berlin'))
+            ->format('Y-m-d');
     }
 }

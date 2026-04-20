@@ -13,19 +13,66 @@
     {% if page.date %}
       <div class="meta">Released <time datetime="{{page.date}}">{{ page.date | date(format="%b, %e %Y") }}</time></div>
     {% endif %}
+
+    {% if page.extra.patch == 0 %}
+      {% set releases = get_section(path="releases/_index.md") %}
+      {% set_global patch_pages = [] %}
+      {% for p in releases.pages %}
+        {% if p.extra.minor == page.extra.minor and p.extra.patch > 0 %}
+          {% set_global patch_pages = patch_pages | concat(with=p) %}
+        {% endif %}
+      {% endfor %}
+      {% if patch_pages | length > 0 %}
+        <div class="release-entry__patches">
+          <h2 class="release-entry__patches-title">Patch releases for v{{ page.extra.minor }}</h2>
+          {% for p in patch_pages | sort(attribute="extra.patch") | reverse %}
+            <section class="release-patch" id="v{{ p.extra.version | replace(from=".", to="-") }}">
+              <header class="release-patch__header">
+                <h3 class="release-patch__title">
+                  <a href="{{ p.path }}">{{ p.title }}</a>
+                </h3>
+                {% if p.date %}
+                <time class="release-patch__date" datetime="{{ p.date }}">{{ p.date | date(format="%b, %e %Y") }}</time>
+                {% endif %}
+              </header>
+              <div class="release-patch__body">
+                {{ p.content | safe }}
+              </div>
+            </section>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endif %}
+
     {{page.content | safe}}
 
+    {% set releases_nav = get_section(path="releases/_index.md") %}
+    {% set_global nav_prev = false %}
+    {% set_global nav_next = false %}
+    {% set_global nav_seen_current = false %}
+    {% for p in releases_nav.pages %}
+      {% if p.extra.patch == 0 %}
+        {% if p.path == page.path %}
+          {% set_global nav_seen_current = true %}
+        {% elif nav_seen_current and nav_prev == false %}
+          {% set_global nav_prev = p %}
+        {% elif not nav_seen_current %}
+          {% set_global nav_next = p %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
     <div class="related-container">
-      {% if page.lower %}
-      <a href="{{ page.lower.path }}" class="btn btn-secondary link link--previous">
+      {% if nav_prev %}
+      <a href="{{ nav_prev.path }}" class="btn btn-secondary link link--previous">
         <span>←</span>
-        <span class="link__title">{{ page.lower.title }}</span>
+        <span class="link__title">{{ nav_prev.title }}</span>
       </a>
       {% endif %}
 
-      {% if page.higher %}
-      <a href="{{ page.higher.path }}" class="btn btn-secondary link link--next">
-        <span class="link__title">{{ page.higher.title }}</span>
+      {% if nav_next %}
+      <a href="{{ nav_next.path }}" class="btn btn-secondary link link--next">
+        <span class="link__title">{{ nav_next.title }}</span>
         <span>→</span>
       </a>
       {% endif %}

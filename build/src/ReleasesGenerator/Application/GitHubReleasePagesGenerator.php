@@ -26,11 +26,34 @@ final readonly class GitHubReleasePagesGenerator
             $markdown .= "description = \"" . $this->escapeTomlString($description) . "\"\n";
         }
 
-        $markdown .= "date = " . date('Y-m-d', strtotime($release->publishedAt)) . "\n";
+        $markdown .= "date = " . $release->getPublishedDate() . "\n";
+
+        $markdown .= $this->generateExtra($release);
 
         $markdown .= "+++\n\n";
 
         return $markdown;
+    }
+
+    private function generateExtra(Release $release): string
+    {
+        $version = ltrim($release->tagName, 'vV');
+        if (!preg_match('/^(\d+)\.(\d+)(?:\.(\d+))?/', $version, $m)) {
+            return '';
+        }
+
+        $major = (int) $m[1];
+        $minor = (int) $m[2];
+        $patch = isset($m[3]) ? (int) $m[3] : 0;
+
+        $extra = "\n[extra]\n";
+        $extra .= "version = \"{$major}.{$minor}.{$patch}\"\n";
+        $extra .= "minor = \"{$major}.{$minor}\"\n";
+        $extra .= "patch = {$patch}\n";
+        $extra .= 'is_patch = ' . ($patch > 0 ? 'true' : 'false') . "\n";
+        $extra .= sprintf("minor_sort = \"%05d.%05d\"\n", $major, $minor);
+
+        return $extra;
     }
 
     private function generateBody(Release $release): string

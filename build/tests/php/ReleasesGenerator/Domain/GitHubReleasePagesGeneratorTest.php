@@ -101,6 +101,46 @@ final class GitHubReleasePagesGeneratorTest extends TestCase
         self::assertStringContainsString('[#1125](https://github.com/phel-lang/phel-lang/pull/1125)', $result);
     }
 
+    public function test_extra_block_includes_minor_grouping_fields(): void
+    {
+        $release = Release::fromArray([
+            'tag_name' => 'v0.34.1',
+            'name' => 'Release 0.34.1',
+            'body' => 'Patch notes',
+            'published_at' => '2026-04-21T10:00:00Z',
+            'html_url' => 'https://github.com/phel-lang/phel-lang/releases/tag/v0.34.1',
+            'assets' => [],
+        ]);
+
+        $result = $this->generator->generateReleasePageContent($release);
+
+        self::assertStringContainsString('[extra]', $result);
+        self::assertStringContainsString('version = "0.34.1"', $result);
+        self::assertStringContainsString('minor = "0.34"', $result);
+        self::assertStringContainsString('patch = 1', $result);
+        self::assertStringContainsString('is_patch = true', $result);
+        self::assertStringContainsString('minor_sort = "00000.00034"', $result);
+    }
+
+    public function test_extra_block_for_minor_zero_release(): void
+    {
+        $release = Release::fromArray([
+            'tag_name' => 'v0.34.0',
+            'name' => 'Release 0.34.0',
+            'body' => 'Notes',
+            'published_at' => '2026-04-20T10:00:00Z',
+            'html_url' => 'https://github.com/phel-lang/phel-lang/releases/tag/v0.34.0',
+            'assets' => [],
+        ]);
+
+        $result = $this->generator->generateReleasePageContent($release);
+
+        self::assertStringContainsString('version = "0.34.0"', $result);
+        self::assertStringContainsString('minor = "0.34"', $result);
+        self::assertStringContainsString('patch = 0', $result);
+        self::assertStringContainsString('is_patch = false', $result);
+    }
+
     public function test_extract_description_truncates_long_text(): void
     {
         $longText = str_repeat('This is a very long description. ', 20);

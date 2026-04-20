@@ -24,9 +24,19 @@ final readonly class GitHubReleasePages
     {
         $releases = $this->fetchAllReleases();
 
+        $this->cleanStaleReleasePages();
+
         foreach ($releases as $release) {
             $releaseDto = Release::fromArray($release);
             $this->generateReleasePage($releaseDto);
+        }
+    }
+
+    private function cleanStaleReleasePages(): void
+    {
+        $pattern = $this->outputDir . '/*-release-*.md';
+        foreach (glob($pattern) ?: [] as $file) {
+            @unlink($file);
         }
     }
 
