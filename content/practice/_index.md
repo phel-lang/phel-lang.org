@@ -9,6 +9,8 @@ page_template = "practice-page.html"
 
 A guided journey from your first parenthesis to building real programs. Each section ramps up from the last - data first, then functions, then control flow, then the functional toolbox, and finally a handful of small programs that combine everything.
 
+**Before you start:** make sure Phel is installed - see the [Installation guide](/documentation/installation).
+
 **How to use the journey:**
 - Open the [Phel REPL](/documentation/tooling/repl) and try each exercise yourself before peeking at the solution.
 - Experiment - change values, break things, see what happens.
