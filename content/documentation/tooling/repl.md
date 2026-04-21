@@ -16,27 +16,27 @@ Start it with:
 
 Type any Phel expression and press Enter:
 
-```bash
+```phel
 Welcome to the Phel Repl
 Type "exit" or press Ctrl-D to exit.
-phel:1> (* 6 7)
+user:1> (* 6 7)
 42
-phel:2> (str "Hello, " "world!")
+user:2> (str "Hello, " "world!")
 "Hello, world!"
 ```
 
 Multiline expressions work automatically - the prompt changes to `....` until the expression is complete:
 
-```bash
-phel:1> (defn greet [name]
+```phel
+user:1> (defn greet [name]
 ....:2>   (str "Hello, " name "!"))
-phel:3> (greet "Phel")
+user:3> (greet "Phel")
 "Hello, Phel!"
 ```
 
 Press `Ctrl-D` or type `exit` to end the session.
 
-The prompt shows the current namespace and tracks `(ns ...)` switches. `def` returns a printable var ref (e.g. `#'user/my-var`).
+The prompt shows the current namespace (defaults to `user`) and tracks `(ns ...)` and `(in-ns ...)` switches. `def` returns a printable var ref (e.g. `#'user/my-var`).
 
 ## History variables
 
@@ -47,7 +47,7 @@ The REPL tracks recent evaluations and the last exception:
 - `*3`, two before that
 - `*e`, last exception thrown at the prompt
 
-```bash
+```phel
 user:1> (+ 1 2)
 3
 user:2> (* *1 10)
@@ -64,13 +64,13 @@ user:4> (php/-> *e (getMessage))
 
 Look up documentation for any function or macro in scope:
 
-```bash
-phel:1> (doc all?)
+```phel
+user:1> (doc all?)
 (all? pred xs)
 
 Returns true if `(pred x)` is logical true for every `x` in `xs`, else false.
 nil
-phel:2> (doc map)
+user:2> (doc map)
 (map f & colls)
 
 ...
@@ -82,10 +82,10 @@ This is the fastest way to check function signatures and behavior without leavin
 
 Import a Phel namespace into the REPL session. The arguments are the same as the `:require` clause in `ns`:
 
-```bash
-phel:1> (require phel\html :as h)
+```phel
+user:1> (require phel\html :as h)
 phel\html
-phel:2> (h/html [:span {:class "greeting"} "Hello"])
+user:2> (h/html [:span {:class "greeting"} "Hello"])
 <span class="greeting">Hello</span>
 ```
 
@@ -93,8 +93,8 @@ phel:2> (h/html [:span {:class "greeting"} "Hello"])
 
 List all public definitions in a namespace:
 
-```bash
-phel:1> (dir phel\string)
+```phel
+user:1> (dir phel\string)
 blank?
 capitalize
 ends-with?
@@ -106,8 +106,8 @@ escape
 
 Search for symbols matching a pattern across all loaded namespaces:
 
-```bash
-phel:1> (apropos "map")
+```phel
+user:1> (apropos "map")
 phel\core/map
 phel\core/mapcat
 phel\core/hash-map
@@ -120,8 +120,8 @@ phel\core/zipmap
 
 Search docstrings for a keyword or phrase:
 
-```bash
-phel:1> (search-doc "lazy")
+```phel
+user:1> (search-doc "lazy")
 phel\core/lazy-seq
   Creates a lazy sequence from a thunk...
 phel\core/take
@@ -133,10 +133,10 @@ phel\core/take
 
 Add an alias for a PHP class, same as the `:use` clause in `ns`:
 
-```bash
-phel:1> (use \DateTimeImmutable)
+```phel
+user:1> (use \DateTimeImmutable)
 \DateTimeImmutable
-phel:2> (php/-> (php/new DateTimeImmutable) (format "Y-m-d"))
+user:2> (php/-> (php/new DateTimeImmutable) (format "Y-m-d"))
 "2026-02-07"
 ```
 
@@ -148,8 +148,8 @@ The REPL provides several functions for inspecting code, namespaces, and macros.
 
 Display the source code of a function or macro:
 
-```bash
-phel:1> (source filter)
+```phel
+user:1> (source filter)
 (defn filter [pred xs]
   ...)
 ```
@@ -158,8 +158,8 @@ phel:1> (source filter)
 
 Search for functions by example -- provide an input and expected output, and Phel will find matching functions:
 
-```bash
-phel:1> (find-fn [1 2 3] 3)
+```phel
+user:1> (find-fn [1 2 3] 3)
 phel\core/count
 phel\core/last
 ...
@@ -169,8 +169,8 @@ phel\core/last
 
 Get detailed metadata about a symbol, including its type, namespace, and documentation:
 
-```bash
-phel:1> (symbol-info map)
+```phel
+user:1> (symbol-info map)
 {:name "map" :ns "phel\\core" :type :function ...}
 ```
 
@@ -178,20 +178,20 @@ phel:1> (symbol-info map)
 
 Inspect namespaces and their contents:
 
-```bash
-phel:1> (ns-publics 'phel\core)
+```phel
+user:1> (ns-publics 'phel\core)
 ; Returns all public definitions in the namespace
 
-phel:2> (ns-aliases 'my\app)
+user:2> (ns-aliases 'my\app)
 ; Returns all namespace aliases
 
-phel:3> (ns-refers 'my\app)
+user:3> (ns-refers 'my\app)
 ; Returns all referred symbols
 
-phel:4> (ns-list)
+user:4> (ns-list)
 ; Returns all loaded namespaces
 
-phel:5> (ns-interns 'my\app)
+user:5> (ns-interns 'my\app)
 ; Returns all interned vars in the namespace
 ```
 
@@ -210,11 +210,11 @@ Create, find, remove namespaces and intern vars at runtime (`phel\repl`):
 
 Expand macros to see the code they generate:
 
-```bash
-phel:1> (macroexpand-1 '(defn foo [x] x))
+```phel
+user:1> (macroexpand-1 '(defn foo [x] x))
 ; Expands one level of macro
 
-phel:2> (macroexpand '(defn foo [x] x))
+user:2> (macroexpand '(defn foo [x] x))
 ; Fully expands all macros
 ```
 
@@ -222,11 +222,11 @@ phel:2> (macroexpand '(defn foo [x] x))
 
 Evaluate code from strings or files:
 
-```bash
-phel:1> (eval-str "(+ 1 2)")
+```phel
+user:1> (eval-str "(+ 1 2)")
 3
 
-phel:2> (load-file "src/my/app.phel")
+user:2> (load-file "src/my/app.phel")
 ; Loads and evaluates an entire file
 ```
 
@@ -234,9 +234,9 @@ phel:2> (load-file "src/my/app.phel")
 
 Run tests for a namespace directly from the REPL:
 
-```bash
-phel:1> (require phel\test :refer [test-ns])
-phel:2> (test-ns 'my\app\tests)
+```phel
+user:1> (require phel\test :refer [test-ns])
+user:2> (test-ns 'my\app\tests)
 ; Runs all tests in the namespace and prints results
 ```
 
@@ -246,8 +246,8 @@ See also [Testing](/documentation/testing/) for `reset-stats`, `get-stats`, and 
 
 When you switch namespaces with `(in-ns ...)`, the REPL automatically injects the core utilities (`doc`, `require`, `use`) into the new namespace so they are always available without manual imports.
 
-```bash
-phel:1> (in-ns 'my\app)
+```phel
+user:1> (in-ns 'my\app)
 my\app:2> (doc map)
 ; Works immediately -- no require needed
 ```
@@ -260,15 +260,15 @@ The REPL is most powerful when used as your primary development feedback loop - 
 
 Build up data transformations step by step, verifying each stage:
 
-```bash
-phel:1> (def users [{:name "Alice" :role :admin}
+```phel
+user:1> (def users [{:name "Alice" :role :admin}
 ....:2>             {:name "Bob" :role :user}
 ....:3>             {:name "Carol" :role :admin}])
 
-phel:4> (filter #(= :admin (:role %)) users)
+user:4> (filter #(= :admin (:role %)) users)
 ({:name "Alice" :role :admin} {:name "Carol" :role :admin})
 
-phel:5> (map :name *1)
+user:5> (map :name *1)
 ("Alice" "Carol")
 ```
 
@@ -276,19 +276,19 @@ phel:5> (map :name *1)
 
 Define a function, test it immediately, refine, repeat:
 
-```bash
-phel:1> (defn fizzbuzz [n]
+```phel
+user:1> (defn fizzbuzz [n]
 ....:2>   (cond
 ....:3>     (= 0 (% n 15)) "FizzBuzz"
 ....:4>     (= 0 (% n 3))  "Fizz"
 ....:5>     (= 0 (% n 5))  "Buzz"
 ....:6>     :else n))
 
-phel:7> (fizzbuzz 15)
+user:7> (fizzbuzz 15)
 "FizzBuzz"
-phel:8> (fizzbuzz 7)
+user:8> (fizzbuzz 7)
 7
-phel:9> (map fizzbuzz (range 1 16))
+user:9> (map fizzbuzz (range 1 16))
 (1 2 "Fizz" 4 "Buzz" "Fizz" 7 8 "Fizz" "Buzz" 11 "Fizz" 13 14 "FizzBuzz")
 ```
 
@@ -296,15 +296,15 @@ phel:9> (map fizzbuzz (range 1 16))
 
 The REPL is great for discovering how PHP functions and classes behave in Phel:
 
-```bash
-phel:1> (use \DateTimeImmutable)
-phel:2> (def now (php/new DateTimeImmutable))
-phel:3> (php/-> now (format "l, F j, Y"))
+```phel
+user:1> (use \DateTimeImmutable)
+user:2> (def now (php/new DateTimeImmutable))
+user:3> (php/-> now (format "l, F j, Y"))
 "Friday, February 7, 2026"
-phel:4> (php/-> now (modify "+3 days") (format "Y-m-d"))
+user:4> (php/-> now (modify "+3 days") (format "Y-m-d"))
 "2026-02-10"
 
-phel:5> (php/json_encode (php/array 1 2 3))
+user:5> (php/json_encode (php/array 1 2 3))
 "[1,2,3]"
 ```
 
@@ -312,17 +312,17 @@ phel:5> (php/json_encode (php/array 1 2 3))
 
 Use the REPL to understand how Phel's persistent data structures work:
 
-```bash
-phel:1> (def m {:a 1 :b 2 :c 3})
-phel:2> (assoc m :d 4)
+```phel
+user:1> (def m {:a 1 :b 2 :c 3})
+user:2> (assoc m :d 4)
 {:a 1 :b 2 :c 3 :d 4}
-phel:3> m
+user:3> m
 {:a 1 :b 2 :c 3}   ; Original unchanged!
 
-phel:4> (type m)
-phel:5> (keys m)
+user:4> (type m)
+user:5> (keys m)
 (:a :b :c)
-phel:6> (vals m)
+user:6> (vals m)
 (1 2 3)
 ```
 

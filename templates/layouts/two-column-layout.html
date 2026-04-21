@@ -11,7 +11,7 @@
             </button>
             <div class="sidebar-content" id="sidebar-content">
                 {% block sidebar_extra %}{% endblock sidebar_extra %}
-                {% include "navigation/site-navigation.html" %}
+                {% block site_navigation %}{% include "navigation/site-navigation.html" %}{% endblock site_navigation %}
             </div>
         </aside>
         <main class="two-column-layout__content">

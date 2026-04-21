@@ -6,6 +6,7 @@ scope: source.phel
 
 contexts:
   main:
+    - include: repl-prompt
     - include: reader-skip
     - include: regex-literal
     - include: tagged-literal
@@ -23,6 +24,12 @@ contexts:
     - include: anon-fn-arg
     - include: unquote
     #- include: symbol
+
+  repl-prompt:
+    # REPL prompts like "user:1> ", "my\app:3> ", "....:4> " at line start.
+    # Rendered as muted comments so transcripts stay readable alongside the actual code.
+    - match: '^(?:[A-Za-z][A-Za-z0-9_\-?!]*(?:\\[A-Za-z][A-Za-z0-9_\-?!]*)*|\.{2,4}):\d+>\s?'
+      scope: comment.line.repl-prompt.phel
 
   comment:
     # Multiline block comments: start with #| and end with |#  (deprecated, still supported)
