@@ -115,6 +115,21 @@ ul.api-recent__list > li:before {
   border-bottom: 1px solid var(--color-light-border);
 }
 
+/* When the rail is the only sidebar content, let it own the full height */
+.api-ns-rail--solo {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.api-ns-rail--solo .api-ns-rail__list {
+  max-height: none;
+  flex: 1 1 auto;
+}
+
 .api-ns-rail__title {
   font-size: var(--text-sm);
   font-weight: 700;

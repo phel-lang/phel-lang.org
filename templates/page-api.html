@@ -1,7 +1,9 @@
 {% extends "layouts/two-column-layout.html" %}
 
+{% block site_navigation %}{% endblock site_navigation %}
+
 {% block sidebar_extra %}
-<nav class="api-ns-rail" aria-label="API namespaces">
+<nav class="api-ns-rail api-ns-rail--solo" aria-label="API namespaces">
     <h2 class="api-ns-rail__title">Namespaces</h2>
     <ol class="api-ns-rail__list">
     {% for namespace in page.toc %}
