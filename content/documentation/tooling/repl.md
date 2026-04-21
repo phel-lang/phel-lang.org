@@ -42,10 +42,10 @@ The prompt shows the current namespace and tracks `(ns ...)` switches. `def` ret
 
 The REPL tracks recent evaluations and the last exception:
 
-- `*1` — result of the last expression
-- `*2` — result of the previous one
-- `*3` — two before that
-- `*e` — last exception thrown at the prompt
+- `*1`, result of the last expression
+- `*2`, result of the previous one
+- `*3`, two before that
+- `*e`, last exception thrown at the prompt
 
 ```bash
 user:1> (+ 1 2)

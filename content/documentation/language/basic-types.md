@@ -271,7 +271,7 @@ Produce native PHP arrays inline without calling `php/array`:
 #php {"a" 1 "b" 2}    ; expands to (php-associative-array "a" 1 "b" 2)
 ```
 
-Expansion is non-recursive — nested Phel forms stay Phel data.
+Expansion is non-recursive, nested Phel forms stay Phel data.
 
 ## Regex Literals
 

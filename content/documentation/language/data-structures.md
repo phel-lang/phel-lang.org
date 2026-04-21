@@ -644,7 +644,7 @@ Replace values by looking them up in a map:
 
 ### keywordize-keys and stringify-keys
 
-Convert all map keys between keywords and strings — useful when working with PHP arrays or JSON data:
+Convert all map keys between keywords and strings, useful when working with PHP arrays or JSON data:
 
 ```phel
 (keywordize-keys {"name" "Alice" "age" 30})
