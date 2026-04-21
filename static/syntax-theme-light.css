@@ -9,7 +9,7 @@
   color: #334155; /* slate-700 base text */
 }
 
-/* Comments and REPL prompts ("phel:1>", "user:2>", "....:3>") */
+/* Comments and REPL prompts ("user:1>", "user:2>", "....:3>") */
 .z-comment,
 .z-punctuation.z-definition.z-comment {
   color: #94a3b8; /* slate-400 */
