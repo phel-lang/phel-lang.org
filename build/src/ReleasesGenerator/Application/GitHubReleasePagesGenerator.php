@@ -228,10 +228,20 @@ final readonly class GitHubReleasePagesGenerator
     private function formatChangelogLinks(string $body): string
     {
         $body = $this->formatPrReferences($body);
+        $body = $this->formatContributorMentions($body);
 
         return preg_replace_callback(
             '#https://github\.com/phel-lang/phel-lang/compare/(v[\d.]+)\.\.\.(v[\d.]+)#',
             fn(array $matches): string => "[{$matches[1]}...{$matches[2]}]({$matches[0]})",
+            $body,
+        );
+    }
+
+    private function formatContributorMentions(string $body): string
+    {
+        return preg_replace_callback(
+            '/(?<![\w`\/\[])@([A-Za-z0-9](?:[A-Za-z0-9-]{0,38}))(?![\w-])/',
+            static fn(array $m): string => "[@{$m[1]}](https://github.com/{$m[1]})",
             $body,
         );
     }

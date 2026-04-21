@@ -203,6 +203,23 @@ final class GitHubReleasePagesGeneratorTest extends TestCase
         self::assertStringContainsString('[#1125](https://github.com/phel-lang/phel-lang/pull/1125)', $result);
     }
 
+    public function test_format_contributor_mentions_as_github_profile_links(): void
+    {
+        $release = $this->makeRelease(
+            tagName: 'v0.34.1',
+            name: '0.34.1',
+            body: "## 👥 Contributors\n@Chemaclass @JesusValeraDev\n\nemail@example.com should not match",
+            publishedAt: '2026-04-21T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release]);
+
+        self::assertStringContainsString('[@Chemaclass](https://github.com/Chemaclass)', $result);
+        self::assertStringContainsString('[@JesusValeraDev](https://github.com/JesusValeraDev)', $result);
+        self::assertStringContainsString('email@example.com should not match', $result);
+        self::assertStringNotContainsString('[@example]', $result);
+    }
+
     public function test_extract_description_truncates_long_text(): void
     {
         $longText = str_repeat('This is a very long description. ', 20);
