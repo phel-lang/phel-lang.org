@@ -130,7 +130,8 @@ a:hover {
 }
 
 .documentation__content a:hover,
-.two-column-layout__content a:hover {
+.two-column-layout__content a:hover,
+.release-entry a:hover {
   text-decoration: underline;
 }
 
