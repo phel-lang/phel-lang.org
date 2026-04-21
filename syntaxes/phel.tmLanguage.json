@@ -3,6 +3,7 @@
   "scopeName": "source.phel",
   "fileTypes": ["phel"],
   "patterns": [
+    { "include": "#repl-prompt" },
     { "include": "#reader-skip" },
     { "include": "#regex-literal" },
     { "include": "#tagged-literal" },
@@ -22,6 +23,14 @@
     { "include": "#unquote" }
   ],
   "repository": {
+    "repl-prompt": {
+      "patterns": [
+        {
+          "name": "comment.line.repl-prompt.phel",
+          "match": "^(?:[A-Za-z][A-Za-z0-9_\\-?!]*(?:\\\\[A-Za-z][A-Za-z0-9_\\-?!]*)*|\\.{2,4}):\\d+>\\s?"
+        }
+      ]
+    },
     "comment": {
       "patterns": [
         {

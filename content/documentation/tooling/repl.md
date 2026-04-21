@@ -16,7 +16,7 @@ Start it with:
 
 Type any Phel expression and press Enter:
 
-```bash
+```phel
 Welcome to the Phel Repl
 Type "exit" or press Ctrl-D to exit.
 phel:1> (* 6 7)
@@ -27,7 +27,7 @@ phel:2> (str "Hello, " "world!")
 
 Multiline expressions work automatically - the prompt changes to `....` until the expression is complete:
 
-```bash
+```phel
 phel:1> (defn greet [name]
 ....:2>   (str "Hello, " name "!"))
 phel:3> (greet "Phel")
@@ -47,7 +47,7 @@ The REPL tracks recent evaluations and the last exception:
 - `*3`, two before that
 - `*e`, last exception thrown at the prompt
 
-```bash
+```phel
 user:1> (+ 1 2)
 3
 user:2> (* *1 10)
@@ -64,7 +64,7 @@ user:4> (php/-> *e (getMessage))
 
 Look up documentation for any function or macro in scope:
 
-```bash
+```phel
 phel:1> (doc all?)
 (all? pred xs)
 
@@ -82,7 +82,7 @@ This is the fastest way to check function signatures and behavior without leavin
 
 Import a Phel namespace into the REPL session. The arguments are the same as the `:require` clause in `ns`:
 
-```bash
+```phel
 phel:1> (require phel\html :as h)
 phel\html
 phel:2> (h/html [:span {:class "greeting"} "Hello"])
@@ -93,7 +93,7 @@ phel:2> (h/html [:span {:class "greeting"} "Hello"])
 
 List all public definitions in a namespace:
 
-```bash
+```phel
 phel:1> (dir phel\string)
 blank?
 capitalize
@@ -106,7 +106,7 @@ escape
 
 Search for symbols matching a pattern across all loaded namespaces:
 
-```bash
+```phel
 phel:1> (apropos "map")
 phel\core/map
 phel\core/mapcat
@@ -120,7 +120,7 @@ phel\core/zipmap
 
 Search docstrings for a keyword or phrase:
 
-```bash
+```phel
 phel:1> (search-doc "lazy")
 phel\core/lazy-seq
   Creates a lazy sequence from a thunk...
@@ -133,7 +133,7 @@ phel\core/take
 
 Add an alias for a PHP class, same as the `:use` clause in `ns`:
 
-```bash
+```phel
 phel:1> (use \DateTimeImmutable)
 \DateTimeImmutable
 phel:2> (php/-> (php/new DateTimeImmutable) (format "Y-m-d"))
@@ -148,7 +148,7 @@ The REPL provides several functions for inspecting code, namespaces, and macros.
 
 Display the source code of a function or macro:
 
-```bash
+```phel
 phel:1> (source filter)
 (defn filter [pred xs]
   ...)
@@ -158,7 +158,7 @@ phel:1> (source filter)
 
 Search for functions by example -- provide an input and expected output, and Phel will find matching functions:
 
-```bash
+```phel
 phel:1> (find-fn [1 2 3] 3)
 phel\core/count
 phel\core/last
@@ -169,7 +169,7 @@ phel\core/last
 
 Get detailed metadata about a symbol, including its type, namespace, and documentation:
 
-```bash
+```phel
 phel:1> (symbol-info map)
 {:name "map" :ns "phel\\core" :type :function ...}
 ```
@@ -178,7 +178,7 @@ phel:1> (symbol-info map)
 
 Inspect namespaces and their contents:
 
-```bash
+```phel
 phel:1> (ns-publics 'phel\core)
 ; Returns all public definitions in the namespace
 
@@ -210,7 +210,7 @@ Create, find, remove namespaces and intern vars at runtime (`phel\repl`):
 
 Expand macros to see the code they generate:
 
-```bash
+```phel
 phel:1> (macroexpand-1 '(defn foo [x] x))
 ; Expands one level of macro
 
@@ -222,7 +222,7 @@ phel:2> (macroexpand '(defn foo [x] x))
 
 Evaluate code from strings or files:
 
-```bash
+```phel
 phel:1> (eval-str "(+ 1 2)")
 3
 
@@ -234,7 +234,7 @@ phel:2> (load-file "src/my/app.phel")
 
 Run tests for a namespace directly from the REPL:
 
-```bash
+```phel
 phel:1> (require phel\test :refer [test-ns])
 phel:2> (test-ns 'my\app\tests)
 ; Runs all tests in the namespace and prints results
@@ -246,7 +246,7 @@ See also [Testing](/documentation/testing/) for `reset-stats`, `get-stats`, and 
 
 When you switch namespaces with `(in-ns ...)`, the REPL automatically injects the core utilities (`doc`, `require`, `use`) into the new namespace so they are always available without manual imports.
 
-```bash
+```phel
 phel:1> (in-ns 'my\app)
 my\app:2> (doc map)
 ; Works immediately -- no require needed
@@ -260,7 +260,7 @@ The REPL is most powerful when used as your primary development feedback loop - 
 
 Build up data transformations step by step, verifying each stage:
 
-```bash
+```phel
 phel:1> (def users [{:name "Alice" :role :admin}
 ....:2>             {:name "Bob" :role :user}
 ....:3>             {:name "Carol" :role :admin}])
@@ -276,7 +276,7 @@ phel:5> (map :name *1)
 
 Define a function, test it immediately, refine, repeat:
 
-```bash
+```phel
 phel:1> (defn fizzbuzz [n]
 ....:2>   (cond
 ....:3>     (= 0 (% n 15)) "FizzBuzz"
@@ -296,7 +296,7 @@ phel:9> (map fizzbuzz (range 1 16))
 
 The REPL is great for discovering how PHP functions and classes behave in Phel:
 
-```bash
+```phel
 phel:1> (use \DateTimeImmutable)
 phel:2> (def now (php/new DateTimeImmutable))
 phel:3> (php/-> now (format "l, F j, Y"))
@@ -312,7 +312,7 @@ phel:5> (php/json_encode (php/array 1 2 3))
 
 Use the REPL to understand how Phel's persistent data structures work:
 
-```bash
+```phel
 phel:1> (def m {:a 1 :b 2 :c 3})
 phel:2> (assoc m :d 4)
 {:a 1 :b 2 :c 3 :d 4}
