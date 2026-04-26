@@ -24,13 +24,14 @@ Macros are **not** like PHP functions. They run at compile-time and transform co
 ```php
 // PHP - No macro system
 // You'd need to use code generation or eval()
+```
 
-// Phel - Macros transform code at compile time
+```phel
 (defmacro unless [test then else]
   `(if (not ,test) ,then ,else))
 
-(unless false "yes" "no")  # => "yes"
-# Expands to: (if (not false) "yes" "no") at compile time
+(unless false "yes" "no")  ; => "yes"
+; Expands to: (if (not false) "yes" "no") at compile time
 ```
 
 This is more powerful and safer than PHP's `eval()` or code generation.

@@ -43,7 +43,7 @@ Check if a number is prime:
 ```phel
 (let [n 17]
   (and (> n 1)
-       (every? #(not= 0 (% n %))
+       (every? (fn [d] (not= 0 (% n d)))
                (range 2 (php/intval (+ 1 (php/sqrt n)))))))
 ;; => true
 ```
@@ -74,7 +74,7 @@ Multiplies the base by itself `exp` times.
 Reverse a string:
 
 ```phel
-(str/reverse "hello")
+(phel\string/reverse "hello")
 ;; => "olleh"
 ```
 
@@ -83,7 +83,7 @@ Uses Phel's string library to reverse characters.
 Palindrome check:
 
 ```phel
-(let [s "racecar"] (= s (str/reverse s)))
+(let [s "racecar"] (= s (phel\string/reverse s)))
 ;; => true
 ```
 
@@ -103,9 +103,9 @@ Converts the string to a sequence of characters, filters vowels, and counts them
 Title case a string:
 
 ```phel
-(->> (str/split "hello world of phel" "/ /")
-     (map str/capitalize)
-     (str/join " "))
+(->> (phel\string/split "hello world of phel" "/ /")
+     (map phel\string/capitalize)
+     (phel\string/join " "))
 ;; => "Hello World Of Phel"
 ```
 
@@ -132,7 +132,7 @@ Shifts each letter by 13 positions, wrapping around the alphabet.
 Repeat string pattern:
 
 ```phel
-(str/join "" (map #(if (even? %) "*" "-") (range 0 10)))
+(phel\string/join "" (map #(if (even? %) "*" "-") (range 0 10)))
 ;; => "*-*-*-*-*-"
 ```
 
@@ -267,6 +267,7 @@ Build a frequency-sorted leaderboard:
 
 ```phel
 (->> (frequencies [:alice :bob :alice :carol :bob :alice])
+     pairs
      (sort-by second)
      reverse)
 ;; => ([:alice 3] [:bob 2] [:carol 1])
@@ -312,10 +313,10 @@ Shifts each letter forward by 3 positions in the alphabet.
 Simple slug generator:
 
 ```phel
-(->> "Hello World, This is Phel!"
-     (str/lower-case)
-     (str/replace " " "-")
-     (str/replace "/[^a-z0-9-]/" ""))
+(-> "Hello World, This is Phel!"
+     (phel\string/lower-case)
+     (phel\string/replace " " "-")
+     (phel\string/replace #"[^a-z0-9-]" ""))
 ;; => "hello-world-this-is-phel"
 ```
 
@@ -338,10 +339,10 @@ Diamond pattern (width 5):
 
 ```phel
 (->> (concat (range 1 6 2) (range 3 0 -2))
-     (map #(str/join ""
-             [(str/repeat " " (/ (- 5 %) 2))
-              (str/repeat "*" %)]))
-     (str/join "\n"))
+     (map #(phel\string/join ""
+             [(phel\string/repeat " " (/ (- 5 %) 2))
+              (phel\string/repeat "*" %)]))
+     (phel\string/join "\n"))
 ;; => "  *\n ***\n*****\n ***\n  *"
 ```
 
