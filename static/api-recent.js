@@ -4,15 +4,30 @@
   const STORAGE_KEY = 'phel.apiRecent';
   const MAX = 10;
 
-  function init() {
+  async function loadApiData() {
+    if (Array.isArray(window.searchIndexApi)) return window.searchIndexApi;
+    try {
+      const res = await fetch('/api_search.json');
+      if (!res.ok) return [];
+      const data = await res.json();
+      window.searchIndexApi = data;
+      return data;
+    } catch (_) {
+      return [];
+    }
+  }
+
+  async function init() {
     const content = document.querySelector('.two-column-layout__content');
     if (!content) return;
     const apiIndex = content.querySelector('.api-index');
     if (!apiIndex) return;
-    if (!Array.isArray(window.searchIndexApi)) return;
+
+    const data = await loadApiData();
+    if (!Array.isArray(data) || data.length === 0) return;
 
     const byAnchor = new Map();
-    window.searchIndexApi.forEach((e) => {
+    data.forEach((e) => {
       if (e.type === 'api' && e.anchor != null) byAnchor.set(e.anchor, e);
     });
     if (byAnchor.size === 0) return;

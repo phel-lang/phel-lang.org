@@ -255,6 +255,8 @@ ul.api-recent__list > li:before {
   max-width: 100%;
   padding: 0;
   width: 100%;
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
 }
 
 /* API Namespace Toggle */

@@ -27,7 +27,7 @@ cache/
 
 # API / Search (generated)
 /static/api.json
-/static/api_search.js
+/static/api_search.json
 
 # CSS files (generated)
 /css/tailwind.entry.css
