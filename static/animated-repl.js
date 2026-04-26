@@ -73,7 +73,6 @@ document.addEventListener('DOMContentLoaded', () => {
     state.fns = new Map();
     output.innerHTML = '';
     appendOutput('comment', 'Welcome to the Phel demo REPL');
-    appendOutput('comment', 'This browser demo simulates a small pure Phel subset. The real REPL unleashes PHP interop, IO, Composer packages, and the full language.');
   }
 
   function appendOutput(type, text) {
@@ -486,7 +485,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ? 'that would use PHP interop'
       : 'that is outside this small pure-function subset';
 
-    return `Demo REPL limit: ${name} is not executed here because ${reason}. Use the real Phel REPL for the full language; this browser preview supports pure examples like +, range, map, filter, reduce, get, assoc, let, if, and ->>.`;
+    return `Demo REPL limit: ${name} is not executed here because ${reason}. This browser preview intentionally simulates a small pure Phel subset so it can run instantly on this static page. Use the real Phel REPL to unlock PHP interop, IO, Composer packages, macros, project code, and the full language. Try pure examples here such as +, range, map, filter, reduce, get, assoc, let, if, and ->>.`;
   }
 
   function nativeGet(args) {
