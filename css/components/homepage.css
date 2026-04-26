@@ -406,7 +406,7 @@
 }
 
 .phel-repl-output-wrap {
-  grid-template-rows: auto minmax(18rem, 1fr);
+  grid-template-rows: auto 18rem;
   gap: 0.75rem;
 }
 
@@ -460,6 +460,8 @@
   font: inherit;
   line-height: 1.55;
   tab-size: 2;
+  overflow: auto;
+  white-space: pre;
 }
 
 .phel-repl-input:focus {
@@ -512,16 +514,25 @@
 }
 
 .phel-repl-output {
-  flex: 1;
-  min-height: 0;
-  max-height: 22rem;
-  overflow: auto;
+  display: block;
+  height: 18rem;
+  min-height: 18rem;
+  max-height: 18rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
   border: 1px solid var(--repl-control-border);
   border-radius: var(--radius-md);
   background: var(--repl-panel-bg);
   padding: 0.875rem;
   color: var(--repl-text);
   line-height: 1.6;
+}
+
+.phel-repl-output:focus {
+  outline: 2px solid var(--repl-accent);
+  outline-offset: 2px;
 }
 
 .phel-repl-line {
@@ -554,6 +565,45 @@
   color: var(--repl-error);
 }
 
+.phel-repl-syntax-comment {
+  color: var(--repl-muted);
+}
+
+.phel-repl-syntax-string {
+  color: var(--repl-stdout);
+}
+
+.phel-repl-syntax-keyword {
+  color: var(--repl-accent-strong);
+}
+
+.phel-repl-syntax-paren {
+  color: var(--repl-muted);
+}
+
+.phel-repl-syntax-number {
+  color: var(--repl-output);
+}
+
+.phel-repl-syntax-special {
+  color: var(--repl-accent);
+  font-weight: 700;
+}
+
+.phel-repl-syntax-fn {
+  color: var(--repl-output);
+}
+
+.phel-repl-syntax-symbol {
+  color: var(--repl-text);
+}
+
+.phel-repl-syntax-prompt {
+  color: var(--repl-accent);
+  font-weight: 600;
+  user-select: none;
+}
+
 .phel-repl-output::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -579,7 +629,9 @@
   }
 
   .phel-repl-output {
-    max-height: none;
+    height: 18rem;
+    min-height: 18rem;
+    max-height: 18rem;
   }
 }
 

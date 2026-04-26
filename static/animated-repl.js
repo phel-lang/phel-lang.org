@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="phel-repl-output-wrap">
         <div class="phel-repl-pane-title">output</div>
-        <div class="phel-repl-output" role="log" aria-live="polite" aria-label="REPL output"></div>
+        <div class="phel-repl-output" role="log" aria-live="polite" aria-label="REPL output" tabindex="0"></div>
       </div>
     </div>
   `;
@@ -76,11 +76,64 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function appendOutput(type, text) {
+    const shouldFollow = isOutputPinnedToBottom();
     const line = document.createElement('div');
     line.className = `phel-repl-line phel-repl-line--${type}`;
-    line.textContent = text;
+    if (type === 'input') {
+      line.innerHTML = highlightPromptLine(text);
+    } else if (type === 'result') {
+      line.innerHTML = highlightPhel(text);
+    } else {
+      line.textContent = text;
+    }
     output.appendChild(line);
-    output.scrollTop = output.scrollHeight;
+
+    if (shouldFollow) {
+      output.scrollTop = output.scrollHeight;
+    }
+  }
+
+  function isOutputPinnedToBottom() {
+    return output.scrollTop + output.clientHeight >= output.scrollHeight - 8;
+  }
+
+  function escapeHtml(text) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;');
+  }
+
+  function highlightPromptLine(text) {
+    const match = text.match(/^((?:user:\d+|\.{4}:\d+)> )(.*)$/);
+    if (!match) return highlightPhel(text);
+
+    return `<span class="phel-repl-syntax-prompt">${escapeHtml(match[1])}</span>${highlightPhel(match[2])}`;
+  }
+
+  function highlightPhel(code) {
+    const tokenPattern = /(;.*$)|("(?:\\.|[^"\\])*")|(:[A-Za-z0-9*+!_?$%&=<>.-]+)|(#\(|[()[\]{}])|(-?\d+(?:\.\d+)?)|([A-Za-z_*+!/?<>=.-][A-Za-z0-9_*+!/?<>=.-]*)/gm;
+    let html = '';
+    let cursor = 0;
+
+    code.replace(tokenPattern, (match, comment, string, keyword, paren, number, symbol, offset) => {
+      html += escapeHtml(code.slice(cursor, offset));
+      const escaped = escapeHtml(match);
+
+      if (comment) html += `<span class="phel-repl-syntax-comment">${escaped}</span>`;
+      else if (string) html += `<span class="phel-repl-syntax-string">${escaped}</span>`;
+      else if (keyword) html += `<span class="phel-repl-syntax-keyword">${escaped}</span>`;
+      else if (paren) html += `<span class="phel-repl-syntax-paren">${escaped}</span>`;
+      else if (number) html += `<span class="phel-repl-syntax-number">${escaped}</span>`;
+      else if (symbol && syntaxSpecialForms.has(symbol)) html += `<span class="phel-repl-syntax-special">${escaped}</span>`;
+      else if (symbol && nativeFns[symbol]) html += `<span class="phel-repl-syntax-fn">${escaped}</span>`;
+      else if (symbol) html += `<span class="phel-repl-syntax-symbol">${escaped}</span>`;
+      else html += escaped;
+
+      cursor = offset + match.length;
+      return match;
+    });
+
+    return html + escapeHtml(code.slice(cursor));
   }
 
   function appendPrompt(code) {
@@ -535,6 +588,20 @@ document.addEventListener('DOMContentLoaded', () => {
     'contains?': ([map, key]) => Boolean(map?.entries?.has(mapKey(key))),
     'hash-map': (args) => nativeFns.assoc([{ kind: 'map', entries: new Map() }, ...args]),
   };
+
+  const syntaxSpecialForms = new Set([
+    'def',
+    'defn',
+    'fn',
+    'let',
+    'if',
+    'do',
+    'and',
+    'or',
+    'quote',
+    '->',
+    '->>',
+  ]);
 
   function asArrayOrMap(value) {
     if (value && value.kind === 'map') return [...value.entries];
