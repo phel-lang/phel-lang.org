@@ -141,16 +141,17 @@ Use `phel\json/decode`. It turns JSON objects into Phel maps with keyword keys, 
 
 ```phel
 (ns my\app
-  (:require phel\json :as json))
+  (:require phel\json :as json)
+  (:require phel\string :as str))
 
 (defn handle-pr-event [payload]
   (let [{:keys [action number pull_request]}  payload
         {:keys [title user labels]}           pull_request
         {:keys [login]}                       user
-        label-names (map |(get $ :name) labels)]
+        label-names (map :name labels)]
     (println (str "PR #" number " by " login ": " title))
     (println (str "Action: " action))
-    (println (str "Labels: " (php/implode ", " (to-array label-names))))))
+    (println (str "Labels: " (str/join ", " label-names)))))
 
 (handle-pr-event
   (json/decode
@@ -192,12 +193,15 @@ The caller gets a single map, the body gets individual names *and* the full map 
 `loop` accepts the same patterns, so recursion on structured data stays readable:
 
 ```phel
+(ns my\csv
+  (:require phel\string :as str))
+
 (defn parse-csv-line [line]
-  (loop [[field & rest] (vec (php/explode "," line))
+  (loop [[field & rest] (str/split line #",")
          acc []]
     (if (nil? field)
       acc
-      (recur rest (conj acc (php/trim field))))))
+      (recur rest (conj acc (str/trim field))))))
 
 (parse-csv-line " foo, bar ,baz ")
 ;; => ["foo" "bar" "baz"]

@@ -21,7 +21,7 @@ The map function takes two arguments. The first argument is a one-argument funct
 ;; Multiply by 2 using fn syntax
 (map (fn [x] (* 2 x)) [1 2 3]) ; => [2 4 6]
 ;; Multiply by 2 using fn shorthand syntax
-(map |(* 2 $) [1 2 3]) ; => [2 4 6]
+(map #(* 2 %) [1 2 3]) ; => [2 4 6]
 ```
 
 The filter function takes two arguments. The first argument is a one-argument function that returns true if it should keep the value in the list. The second argument is the sequence that should be filtered.
@@ -32,16 +32,16 @@ The filter function takes two arguments. The first argument is a one-argument fu
 ;; keep odd numbers
 (filter odd? [1 2 3]) ; => [1 3]
 ;; keep numbers bigger than 2
-(filter |(> $ 2) [1 2 3]) ; => [3]
+(filter #(> % 2) [1 2 3]) ; => [3]
 ```
 
-The reduce function takes three arguments. The first argument is a two-argument function (accumulated value and sequence value) that return a new accumulated value. The second argument is the initial accumulated value and the third argument is the sequence that should be reduced.
+The reduce function takes a function and a sequence. The function receives the accumulated value and the next sequence value, then returns the new accumulated value. You can also pass an explicit initial value when you need one.
 
 ```phel
-;; sum all values starting from 0
-(reduce + 0 [1 2 3]) ; => 6
-;; multiply all values starting from 1
-(reduce (fn [acc x] (* acc x)) 1 [2 3 4]) ; => 24
+;; sum all values
+(reduce + [1 2 3]) ; => 6
+;; multiply all values
+(reduce * [2 3 4]) ; => 24
 ;; concat all numbers to a string
 (reduce str "" [1 2 3]) ; => "123"
 ```

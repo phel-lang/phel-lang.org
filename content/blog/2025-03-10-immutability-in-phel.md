@@ -50,9 +50,9 @@ Immutability pairs nicely with Phel's pipeline-friendly tools. Each step receive
 (def scores [10 18 21 7])
 
 (->> scores
-     (filter |(>= $ 15))
-     (map |(- $ 10))
-     (reduce + 0))
+     (filter #(>= % 15))
+     (map #(- % 10))
+     (reduce +))
 ;; => 19
 
 scores

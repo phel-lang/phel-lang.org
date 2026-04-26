@@ -93,36 +93,35 @@ Here is something you cannot do with a plain function. Say you want to measure h
 (defmacro time
   "Evaluates expr and prints the time it took. Returns the value of expr."
   [expr]
-  `(let [start$ (php/microtime true)
-         ret$ ,expr]
-     (println "Elapsed time:" (* 1000 (- (php/microtime true) start$)) "msecs")
-     ret$))
+  `(let [start# (php/microtime true)
+         ret# ,expr]
+     (println "Elapsed time:" (* 1000 (- (php/microtime true) start#)) "msecs")
+     ret#))
 
 (time (slow-operation))
 ;; Prints: Elapsed time: 142.3 msecs
 ```
 
-The `$` suffix is a convention for local bindings inside macros. It helps avoid name collisions with user code. The body runs between the two `microtime` calls, and you get the elapsed time printed for free.
+The `#` suffix inside a quasiquote is Phel's auto-gensym syntax. It generates unique local symbols for the macro expansion, so helper bindings do not collide with user code. The body runs between the two `microtime` calls, and you get the elapsed time printed for free.
 
 In PHP you would wrap this in a closure or duplicate the timing code everywhere. The macro keeps it clean and reusable.
 
-## Avoiding name collisions with gensym
+## Avoiding name collisions
 
-The `$` suffix works for simple cases, but what if your macro could be nested or the user happens to use `start$` as a variable? For guaranteed uniqueness, use `gensym` to generate fresh symbols.
+Auto-gensym works well when one quasiquoted template owns the helper symbol. For more complex macros, especially when you need to coordinate symbols across nested templates, use `gensym` directly.
 
-Here is how Phel's core implements `with-output-buffer`:
+Here is a simple `with-output-buffer` macro using auto-gensym:
 
 ```phel
 (defmacro with-output-buffer
   "Everything printed inside the body is captured and returned as a string."
   [& body]
-  (let [res (gensym)]
-    `(do
-       (php/ob_start)
-       ,@body
-       (let [,res (php/ob_get_contents)]
-         (php/ob_end_clean)
-         ,res))))
+  `(do
+     (php/ob_start)
+     ,@body
+     (let [res# (php/ob_get_contents)]
+       (php/ob_end_clean)
+       res#)))
 
 (with-output-buffer
   (print "Hello ")
@@ -130,7 +129,7 @@ Here is how Phel's core implements `with-output-buffer`:
 ;; => "Hello World"
 ```
 
-We call `gensym` outside the quasiquote to get a unique symbol, then unquote it with `,res` wherever we need it. No matter how many times you nest `with-output-buffer`, each expansion gets its own symbol.
+Every `res#` inside that quasiquoted template refers to the same generated symbol. No matter how many times you nest `with-output-buffer`, each expansion gets its own local binding.
 
 ## More patterns from Phel's core
 
@@ -148,7 +147,7 @@ We call `gensym` outside the quasiquote to get a unique symbol, then unquote it 
          (if ,v ,v (or ,@(next args)))))))
 ```
 
-Notice how `or` uses `gensym` because it recursively expands itself. Each level needs its own unique binding.
+Notice how `or` uses `gensym` because it recursively expands itself. Each level needs its own unique binding that is coordinated across the recursive expansion.
 
 **Auto-logging function calls:**
 
