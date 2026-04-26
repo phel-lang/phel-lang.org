@@ -32,6 +32,12 @@
                                     {% set_global has_active_child = true %}
                                 {% endif %}
                             {% endfor %}
+                            {% for nested_path in subsection.subsections %}
+                                {% set nested = get_section(path=nested_path) %}
+                                {% if current_path is starting_with(nested.path) %}
+                                    {% set_global has_active_child = true %}
+                                {% endif %}
+                            {% endfor %}
                             <li class="sidebar-section {% if is_section_active or has_active_child %}active{% else %}collapsed{% endif %}">
                                 <div class="sidebar-section-header">
                                     <span class="sidebar-section-label">{{ subsection.title }}</span>
@@ -43,11 +49,17 @@
                                         </button>
                                     {% endif %}
                                 </div>
-                                {% if subsection.pages | length > 0 %}
+                                {% if subsection.pages | length > 0 or subsection.subsections | length > 0 %}
                                     <ol class="sidebar-subsection">
                                         {% for subpage in subsection.pages %}
                                             <li class="{% if current_path == subpage.path %}active{% endif %}">
                                                 <a href="{{ subpage.path }}">{{ subpage.title }}</a>
+                                            </li>
+                                        {% endfor %}
+                                        {% for nested_path in subsection.subsections %}
+                                            {% set nested = get_section(path=nested_path) %}
+                                            <li class="{% if current_path is starting_with(nested.path) %}active{% endif %}">
+                                                <a href="{{ nested.path }}">{{ nested.title }}</a>
                                             </li>
                                         {% endfor %}
                                     </ol>
@@ -80,11 +92,17 @@
                                     </button>
                                 {% endif %}
                             </div>
-                            {% if subsection.pages | length > 0 %}
+                            {% if subsection.pages | length > 0 or subsection.subsections | length > 0 %}
                                 <ol class="sidebar-subsection">
                                     {% for subpage in subsection.pages %}
                                         <li class="{% if current_path == subpage.path %}active{% endif %}">
                                             <a href="{{ subpage.path }}">{{ subpage.title }}</a>
+                                        </li>
+                                    {% endfor %}
+                                    {% for nested_path in subsection.subsections %}
+                                        {% set nested = get_section(path=nested_path) %}
+                                        <li class="{% if current_path is starting_with(nested.path) %}active{% endif %}">
+                                            <a href="{{ nested.path }}">{{ nested.title }}</a>
                                         </li>
                                     {% endfor %}
                                 </ol>

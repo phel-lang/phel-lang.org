@@ -296,7 +296,9 @@
   display: none;
 }
 
-.section-page-card:hover {
+.section-page-card:hover,
+.two-column-layout__content a.section-page-card:hover,
+.documentation__content a.section-page-card:hover {
   border-color: var(--color-light-link);
   box-shadow: var(--shadow-md);
   text-decoration: none;
@@ -326,7 +328,8 @@
   border-color: var(--color-dark-border);
 }
 
-.dark .section-page-card:hover {
+.dark .section-page-card:hover,
+.dark a.section-page-card:hover {
   border-color: var(--color-dark-text-accent);
   box-shadow: var(--shadow-dark-md, var(--shadow-md));
   text-decoration: none;
@@ -336,7 +339,8 @@
   color: var(--color-dark-text-primary);
 }
 
-.dark .section-page-card:hover .section-page-card__title {
+.dark .section-page-card:hover .section-page-card__title,
+.dark a.section-page-card:hover .section-page-card__title {
   color: var(--color-dark-text-accent);
 }
 
@@ -354,56 +358,6 @@
   font-weight: 400;
   cursor: pointer;
   transition: opacity var(--duration-fast) var(--ease-out);
-}
-
-.zola-anchor__toast {
-  position: absolute;
-  left: 100%;
-  top: 50%;
-  transform: translate(var(--space-sm), -50%) scale(0.95);
-  margin-left: var(--space-xs);
-  padding: 2px var(--space-sm);
-  background: var(--color-light-text-primary);
-  color: var(--color-light-bg);
-  font-size: var(--text-xs);
-  font-weight: 500;
-  border-radius: var(--radius-sm);
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
-}
-
-.zola-anchor__toast.is-visible {
-  opacity: 1;
-  transform: translate(var(--space-sm), -50%) scale(1);
-}
-
-.dark .zola-anchor__toast {
-  background: var(--color-dark-text-primary);
-  color: var(--color-dark-bg);
-}
-
-/* Anchor Flash */
-@keyframes anchorFlash {
-  0%   { background-color: rgba(29, 78, 216, 0.18); box-shadow: 0 0 0 6px rgba(29, 78, 216, 0.15); }
-  60%  { background-color: rgba(29, 78, 216, 0.10); box-shadow: 0 0 0 6px rgba(29, 78, 216, 0.05); }
-  100% { background-color: transparent; box-shadow: 0 0 0 6px transparent; }
-}
-
-.anchor-flash {
-  border-radius: var(--radius-sm);
-  animation: anchorFlash 1.5s var(--ease-out);
-}
-
-.dark .anchor-flash {
-  animation: anchorFlashDark 1.5s var(--ease-out);
-}
-
-@keyframes anchorFlashDark {
-  0%   { background-color: rgba(191, 164, 255, 0.18); box-shadow: 0 0 0 6px rgba(191, 164, 255, 0.15); }
-  60%  { background-color: rgba(191, 164, 255, 0.08); box-shadow: 0 0 0 6px rgba(191, 164, 255, 0.04); }
-  100% { background-color: transparent; box-shadow: 0 0 0 6px transparent; }
 }
 
 h1:hover .zola-anchor,

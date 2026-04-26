@@ -198,7 +198,6 @@
 
   .site-header__navigation li.active a {
     color: var(--color-light-link);
-    font-weight: 600;
     text-decoration: underline;
   }
 }

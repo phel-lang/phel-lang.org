@@ -21,8 +21,8 @@ final readonly class ApiSearchFile
         $searchIndex = $this->apiSearchGenerator->generateSearchIndex();
 
         file_put_contents(
-            $this->appRootDir . '/../static/api_search.js',
-            "window.searchIndexApi = " . json_encode($searchIndex, JSON_THROW_ON_ERROR)
+            $this->appRootDir . '/../static/api_search.json',
+            json_encode($searchIndex, JSON_THROW_ON_ERROR)
         );
     }
 }

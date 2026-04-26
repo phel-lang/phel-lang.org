@@ -1,0 +1,40 @@
+{# Reusable breadcrumb. Caller must set one of:
+     {% set crumb_page = page %}
+     {% set crumb_section = section %}
+   The optional `crumb_self` flag (default true) controls whether the current
+   page/section title is appended as a non-link tail segment.
+#}
+{% if crumb_page %}
+  {% set ancestors = crumb_page.ancestors %}
+  {% set self_title = crumb_page.title %}
+{% elif crumb_section %}
+  {% set ancestors = crumb_section.ancestors %}
+  {% set self_title = crumb_section.title %}
+{% else %}
+  {% set ancestors = [] %}
+  {% set self_title = "" %}
+{% endif %}
+
+{# Filter ancestors: drop the site root (`_index.md`) and the implicit
+   `documentation/_index.md` (visitors already know they're in docs). The
+   tail (current page title) renders only when at least one ancestor
+   remains after filtering — keeps the breadcrumb off direct children of
+   /documentation/ and off the site root. #}
+{% set hide = ["_index.md", "documentation/_index.md"] %}
+{% set_global rendered_ancestors = [] %}
+{% for ancestor_path in ancestors %}
+  {% if ancestor_path not in hide %}
+    {% set_global rendered_ancestors = rendered_ancestors | concat(with=ancestor_path) %}
+  {% endif %}
+{% endfor %}
+
+{% if rendered_ancestors | length >= 1 %}
+<nav class="page-breadcrumb" aria-label="Breadcrumb">
+  {% for ancestor_path in rendered_ancestors %}
+    {% set ancestor = get_section(path=ancestor_path) %}
+    <a href="{{ ancestor.permalink | safe }}">{{ ancestor.title }}</a>
+    <span class="page-breadcrumb__sep" aria-hidden="true">/</span>
+  {% endfor %}
+  <strong>{{ self_title }}</strong>
+</nav>
+{% endif %}

@@ -3,12 +3,14 @@
 {% block sidebar_extra %}{% endblock sidebar_extra %}
 
 {% block content %}
+{% set crumb_section = section %}
+{% include "partials/breadcrumb.html" %}
 <h1>{{ section.title }}</h1>
 <div class="flex-container">
     <div class="page-content">
         {{ section.content | safe }}
 
-        {% if section.pages | length > 0 %}
+        {% if section.pages | length > 0 or section.subsections | length > 0 %}
         <div class="section-page-list">
             {% for page in section.pages %}
             <a href="{{ page.path }}" class="section-page-card">
@@ -20,11 +22,28 @@
                 {% endif %}
             </a>
             {% endfor %}
+            {% for nested_path in section.subsections %}
+                {% set nested = get_section(path=nested_path) %}
+                <a href="{{ nested.path }}" class="section-page-card">
+                    <h3 class="section-page-card__title">{{ nested.title }}</h3>
+                    {% if nested.description %}
+                    <p class="section-page-card__desc">{{ nested.description }}</p>
+                    {% elif nested.content %}
+                    <p class="section-page-card__desc">{{ nested.content | striptags | truncate(length=120) }}</p>
+                    {% else %}
+                    <p class="section-page-card__desc">{{ nested.pages | length }} page{% if nested.pages | length != 1 %}s{% endif %}</p>
+                    {% endif %}
+                </a>
+            {% endfor %}
         </div>
         {% endif %}
     </div>
 </div>
 {% endblock content %}
+
+{% block navigation %}
+{% include "partials/doc-prev-next.html" %}
+{% endblock navigation %}
 
 {% block editable %}
 <div class="edit-page-link">

@@ -8,10 +8,9 @@ use Phel\Shared\Facade\ApiFacadeInterface;
 
 final readonly class ApiSearchGenerator
 {
-    private const array SPECIAL_ENDING_CHARS = ['=', '*', '?', '+', '>', '<', '!'];
-
     public function __construct(
         private ApiFacadeInterface $apiFacade,
+        private ApiMarkdownGenerator $apiMarkdownGenerator,
     ) {
     }
 
@@ -34,21 +33,20 @@ final readonly class ApiSearchGenerator
          * table  -> table
          * table? -> table-1
          */
-        $groupFnNameAppearances = [];
+        $anchorAppearances = [];
         $result = [];
         $groupedPhelFns = $this->apiFacade->getPhelFunctions();
 
         foreach ($groupedPhelFns as $fn) {
-            $groupKey = $fn->groupKey;
-            $groupFnNameAppearances[$groupKey] ??= 0;
+            $base = $this->headingAnchor($fn->nameWithNamespace());
+            $anchorAppearances[$base] ??= 0;
+            $count = $anchorAppearances[$base]++;
+            $anchor = $count === 0 ? $base : $base . '-' . $count;
 
-            if ($groupFnNameAppearances[$groupKey] === 0) {
-                $anchor = $groupKey;
-                $groupFnNameAppearances[$groupKey]++;
-            } else {
-                $sanitizedFnName = str_replace(['/', ...self::SPECIAL_ENDING_CHARS], ['-', ''], $fn->name);
-                $anchor = rtrim($sanitizedFnName, '-') . '-' . $groupFnNameAppearances[$groupKey]++;
-            }
+            $namespaceSlug = $this->apiMarkdownGenerator->namespaceSlug($fn->namespace);
+            $path = $namespaceSlug !== ''
+                ? sprintf('/documentation/reference/api/%s/#%s', $namespaceSlug, $anchor)
+                : '#' . $anchor;
 
             $result[] = [
                 'id' => 'api_' . $fn->name,
@@ -56,6 +54,8 @@ final readonly class ApiSearchGenerator
                 'signatures' => $fn->signatures,
                 'desc' => $this->formatDescription($fn->description),
                 'anchor' => $anchor,
+                'namespace' => $fn->namespace,
+                'path' => $path,
                 'type' => 'api',
             ];
         }
@@ -64,6 +64,20 @@ final readonly class ApiSearchGenerator
         $documentationItems = $this->generateDocumentationSearchItems();
 
         return array_merge($result, $documentationItems);
+    }
+
+    /**
+     * Mirrors Zola's default heading-anchor slugifier: lowercase, replace any
+     * non-alphanumeric/dash character with `-`, collapse runs, trim.
+     * Disambiguation suffixes (`-1`, `-2`, ...) are layered on top by the
+     * caller, the same way Zola handles repeated heading text.
+     */
+    private function headingAnchor(string $text): string
+    {
+        $text = strtolower($text);
+        $text = preg_replace('/[^a-z0-9-]/', '-', $text) ?? '';
+        $text = preg_replace('/-+/', '-', $text) ?? '';
+        return trim($text, '-');
     }
 
     /**

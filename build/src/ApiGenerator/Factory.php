@@ -45,6 +45,7 @@ final class Factory extends AbstractFactory
     {
         return new ApiSearchGenerator(
             $this->getPhelApiFacade(),
+            $this->createApiMarkdownGenerator(),
         );
     }
 
