@@ -299,7 +299,7 @@ ul.api-namespace-grid > li::before {
 
 .api-namespace-grid__name {
   font-family: var(--font-mono, monospace);
-  color: var(--color-light-text-secondary);
+  color: inherit;
 }
 
 .api-namespace-grid__count {

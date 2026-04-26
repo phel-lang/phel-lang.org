@@ -74,8 +74,8 @@
 
 /* Dark blockquote */
 .dark blockquote {
-  background: var(--color-dark-blockquote-bg);
-  border-left-color: var(--color-dark-blockquote-border);
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
   color: var(--color-dark-text-secondary);
 }
 

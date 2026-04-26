@@ -314,13 +314,16 @@ img {
 
 /* Modern Blockquote */
 blockquote {
-  background: var(--color-light-blockquote-bg);
-  border-left: 4px solid var(--color-light-blockquote-border);
-  border-radius: var(--radius-md);
+  background: var(--color-light-surface);
+  border: 1px solid var(--color-light-border);
+  border-radius: var(--radius-lg);
   padding: var(--space-md) var(--space-lg);
   margin: var(--space-lg) 0;
   color: var(--color-light-text-secondary);
 }
+
+blockquote > *:first-child { margin-top: 0; }
+blockquote > *:last-child { margin-bottom: 0; }
 
 
 /* Modern Code Blocks */
