@@ -41,6 +41,10 @@
 </div>
 {% endblock content %}
 
+{% block navigation %}
+{% include "partials/doc-prev-next.html" %}
+{% endblock navigation %}
+
 {% block editable %}
 <div class="edit-page-link">
   {% set url = config.extra.repo_content_url ~ section.relative_path %}

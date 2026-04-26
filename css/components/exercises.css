@@ -106,20 +106,29 @@
 .page-navigation {
   display: flex;
   justify-content: space-between;
-  margin-top: var(--space-xl);
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-xl);
+  border-top: 1px solid var(--color-light-border);
   gap: var(--space-md);
 }
 
+.dark .page-navigation {
+  border-top-color: var(--color-dark-border);
+}
+
 .page-navigation a.btn {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
   text-decoration: none;
   max-width: 48%;
 }
 
-.page-navigation a.btn:last-child:first-child {
+/* Lone Next button (no previous) pushes right; lone Previous stays left. */
+.page-navigation .link--next:only-child {
   margin-left: auto;
+}
+
+/* Next button (always second when both exist) right-aligns its content. */
+.page-navigation a.btn + a.btn {
+  text-align: right;
 }
 
 /* ========================================

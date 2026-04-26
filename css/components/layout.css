@@ -219,6 +219,18 @@
   color: var(--color-light-link);
 }
 
+.related-container .btn:hover,
+.two-column-layout__content .related-container a.btn:hover,
+.documentation__content .related-container a.btn:hover {
+  text-decoration: none;
+}
+
+/* When the page has no previous link (e.g. first release), push the
+   lone next link to the right so the row mirrors the usual layout. */
+.related-container .link--next:only-child {
+  margin-left: auto;
+}
+
 .related-container .link__title {
   flex: 1;
 }
