@@ -299,6 +299,8 @@ function initSearch() {
 
         return token;
     };
+    elasticlunr.trimmer.label = "trimmer";
+    elasticlunr.Pipeline.registeredFunctions["trimmer"] = elasticlunr.trimmer;
 
     // Create API index
     const apiIndex = elasticlunr(function () {
