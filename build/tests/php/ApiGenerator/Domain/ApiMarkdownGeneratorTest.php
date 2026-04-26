@@ -204,7 +204,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
         ))[0];
 
         self::assertStringContainsString(
-            '<a href="/documentation/reference/api/http/#function-2"><code>function-2</code></a>',
+            '<a href="/documentation/reference/api/http/#http-function-2"><code>function-2</code></a>',
             $seeAlso,
         );
     }

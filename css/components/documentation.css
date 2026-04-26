@@ -328,7 +328,8 @@
   border-color: var(--color-dark-border);
 }
 
-.dark .section-page-card:hover {
+.dark .section-page-card:hover,
+.dark a.section-page-card:hover {
   border-color: var(--color-dark-text-accent);
   box-shadow: var(--shadow-dark-md, var(--shadow-md));
   text-decoration: none;
@@ -338,7 +339,8 @@
   color: var(--color-dark-text-primary);
 }
 
-.dark .section-page-card:hover .section-page-card__title {
+.dark .section-page-card:hover .section-page-card__title,
+.dark a.section-page-card:hover .section-page-card__title {
   color: var(--color-dark-text-accent);
 }
 
