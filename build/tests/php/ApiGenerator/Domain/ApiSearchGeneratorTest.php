@@ -7,11 +7,26 @@ namespace PhelWebTests\FileGenerator\Domain;
 use Phel\Api\Transfer\PhelFunction;
 use Phel\Shared\Facade\ApiFacadeInterface;
 use PHPUnit\Framework\TestCase;
+use PhelWeb\ApiGenerator\Application\ApiMarkdownGenerator;
 use PhelWeb\ApiGenerator\Application\ApiSearchGenerator;
 
 final class ApiSearchGeneratorTest extends TestCase
 {
-    public function test_generate_search_index_one_item(): void
+    private function generator(ApiFacadeInterface $apiFacade): ApiSearchGenerator
+    {
+        return new ApiSearchGenerator($apiFacade, new ApiMarkdownGenerator($apiFacade));
+    }
+
+    /**
+     * @return list<array<string, mixed>>
+     */
+    private function apiOnly(array $items): array
+    {
+        $apiItems = array_filter($items, static fn ($item) => $item['type'] === 'api');
+        return array_values($apiItems);
+    }
+
+    public function test_anchor_for_simple_function(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
         $apiFacade->method('getPhelFunctions')
@@ -20,306 +35,106 @@ final class ApiSearchGeneratorTest extends TestCase
                     'name' => 'table?',
                     'signatures' => ['(table? x)'],
                     'desc' => 'doc for table?',
-                    'groupKey' => 'table'
+                    'namespace' => 'core',
                 ]),
             ]);
 
-        $generator = new ApiSearchGenerator($apiFacade);
-        $actual = $generator->generateSearchIndex();
+        $apiItems = $this->apiOnly($this->generator($apiFacade)->generateSearchIndex());
 
-        $expected = [
-            [
-                'id' => 'api_table?',
-                'name' => 'table?',
-                'signatures' => ['(table? x)'],
-                'desc' => 'doc for table?',
-                'anchor' => 'table',
-                'type' => 'api',
-            ],
-        ];
-
-        // Filter out documentation items for this test
-        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
-        $apiItems = array_values($apiItems); // Re-index array
-
-        self::assertEquals($expected, $apiItems);
+        self::assertCount(1, $apiItems);
+        self::assertSame('core', $apiItems[0]['namespace']);
+        self::assertSame('table', $apiItems[0]['anchor']);
+        self::assertSame('/documentation/reference/api/core/#table', $apiItems[0]['path']);
     }
 
-    public function test_generate_search_index_one_item_and_multiple_signatures(): void
-    {
-        $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getPhelFunctions')
-            ->willReturn([
-                PhelFunction::fromArray([
-                    'name' => 'memoize-lru',
-                    'signatures' => ['(memoize-lru f)', '(memoize-lru f max-size)'],
-                    'desc' => 'doc for memoize-lru',
-                    'groupKey' => 'memoize'
-                ]),
-            ]);
-
-        $generator = new ApiSearchGenerator($apiFacade);
-        $actual = $generator->generateSearchIndex();
-
-        $expected = [
-            [
-                'id' => 'api_memoize-lru',
-                'name' => 'memoize-lru',
-                'signatures' => ['(memoize-lru f)', '(memoize-lru f max-size)'],
-                'desc' => 'doc for memoize-lru',
-                'anchor' => 'memoize',
-                'type' => 'api',
-            ],
-        ];
-
-        // Filter out documentation items for this test
-        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
-        $apiItems = array_values($apiItems); // Re-index array
-
-        self::assertEquals($expected, $apiItems);
-    }
-
-    public function test_multiple_items_in_different_groups(): void
+    public function test_collision_disambiguation_uses_dash_counter(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
         $apiFacade->method('getPhelFunctions')
             ->willReturn([
                 PhelFunction::fromArray([
                     'name' => 'table',
-                    'signatures' => ['(table & xs)'],
                     'desc' => 'doc for table',
-                    'groupKey' => 'table',
-                ]),
-                PhelFunction::fromArray([
-                    'name' => 'not',
-                    'signatures' => ['(not x)'],
-                    'desc' => 'doc for not',
-                    'groupKey' => 'not',
-                ]),
-            ]);
-
-        $generator = new ApiSearchGenerator($apiFacade);
-        $actual = $generator->generateSearchIndex();
-
-        $expected = [
-            [
-                'id' => 'api_table',
-                'name' => 'table',
-                'signatures' => ['(table & xs)'],
-                'desc' => 'doc for table',
-                'anchor' => 'table',
-                'type' => 'api',
-            ],
-            [
-                'id' => 'api_not',
-                'name' => 'not',
-                'signatures' => ['(not x)'],
-                'desc' => 'doc for not',
-                'anchor' => 'not',
-                'type' => 'api',
-            ],
-        ];
-
-        // Filter out documentation items for this test
-        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
-        $apiItems = array_values($apiItems); // Re-index array
-
-        self::assertEquals($expected, $apiItems);
-    }
-
-    public function test_multiple_items_in_the_same_group(): void
-    {
-        $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getPhelFunctions')
-            ->willReturn([
-                PhelFunction::fromArray([
-                    'name' => 'table',
-                    'signatures' => ['(table & xs)'],
-                    'desc' => 'doc for table',
-                    'groupKey' => 'table',
+                    'namespace' => 'core',
                 ]),
                 PhelFunction::fromArray([
                     'name' => 'table?',
-                    'signatures' => ['(table? x)'],
                     'desc' => 'doc for table?',
-                    'groupKey' => 'table',
+                    'namespace' => 'core',
                 ]),
             ]);
 
-        $generator = new ApiSearchGenerator($apiFacade);
-        $actual = $generator->generateSearchIndex();
+        $apiItems = $this->apiOnly($this->generator($apiFacade)->generateSearchIndex());
 
-        $expected = [
-            [
-                'id' => 'api_table',
-                'name' => 'table',
-                'signatures' => ['(table & xs)'],
-                'desc' => 'doc for table',
-                'anchor' => 'table',
-                'type' => 'api',
-            ],
-            [
-                'id' => 'api_table?',
-                'name' => 'table?',
-                'signatures' => ['(table? x)'],
-                'desc' => 'doc for table?',
-                'anchor' => 'table-1',
-                'type' => 'api',
-            ],
-        ];
-
-        // Filter out documentation items for this test
-        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
-        $apiItems = array_values($apiItems); // Re-index array
-
-        self::assertEquals($expected, $apiItems);
+        self::assertSame('table', $apiItems[0]['anchor']);
+        self::assertSame('table-1', $apiItems[1]['anchor']);
+        self::assertSame('/documentation/reference/api/core/#table', $apiItems[0]['path']);
+        self::assertSame('/documentation/reference/api/core/#table-1', $apiItems[1]['path']);
     }
 
-    public function test_fn_name_with_slash_in_the_middle(): void
+    public function test_anchor_for_namespaced_function_includes_namespace(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
         $apiFacade->method('getPhelFunctions')
             ->willReturn([
                 PhelFunction::fromArray([
-                    'name' => 'http/response',
-                    'signatures' => [''],
+                    'name' => 'build-index',
                     'desc' => '',
-                    'groupKey' => 'http-response',
-                ]),
-                PhelFunction::fromArray([
-                    'name' => 'http/response?',
-                    'signatures' => [''],
-                    'desc' => '',
-                    'groupKey' => 'http-response-1',
+                    'namespace' => 'ai',
                 ]),
             ]);
 
-        $generator = new ApiSearchGenerator($apiFacade);
-        $actual = $generator->generateSearchIndex();
+        $apiItems = $this->apiOnly($this->generator($apiFacade)->generateSearchIndex());
 
-        $expected = [
-            [
-                'id' => 'api_http/response',
-                'name' => 'http/response',
-                'signatures' => [''],
-                'desc' => '',
-                'anchor' => 'http-response',
-                'type' => 'api',
-            ],
-            [
-                'id' => 'api_http/response?',
-                'name' => 'http/response?',
-                'signatures' => [''],
-                'desc' => '',
-                'anchor' => 'http-response-1',
-                'type' => 'api',
-            ],
-        ];
-
-        // Filter out documentation items for this test
-        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
-        $apiItems = array_values($apiItems); // Re-index array
-
-        self::assertEquals($expected, $apiItems);
+        // Heading is `ai/build-index`; Zola anchor: ai-build-index.
+        self::assertSame('ai-build-index', $apiItems[0]['anchor']);
+        self::assertSame('ai', $apiItems[0]['namespace']);
+        self::assertSame('/documentation/reference/api/ai/#ai-build-index', $apiItems[0]['path']);
     }
 
-    public function test_fn_name_ending_with_minus(): void
+    public function test_namespace_with_backslash_slugs_to_dashes(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
         $apiFacade->method('getPhelFunctions')
             ->willReturn([
                 PhelFunction::fromArray([
-                    'name' => 'defn',
-                    'signatures' => [''],
+                    'name' => 'coerce',
                     'desc' => '',
-                    'groupKey' => 'defn',
-                ]),
-                PhelFunction::fromArray([
-                    'name' => 'defn-',
-                    'signatures' => [''],
-                    'desc' => '',
-                    'groupKey' => 'defn',
+                    'namespace' => 'schema\\coercer',
                 ]),
             ]);
 
-        $generator = new ApiSearchGenerator($apiFacade);
-        $actual = $generator->generateSearchIndex();
+        $apiItems = $this->apiOnly($this->generator($apiFacade)->generateSearchIndex());
 
-        $expected = [
-            [
-                'id' => 'api_defn',
-                'name' => 'defn',
-                'signatures' => [''],
-                'desc' => '',
-                'anchor' => 'defn',
-                'type' => 'api',
-            ],
-            [
-                'id' => 'api_defn-',
-                'name' => 'defn-',
-                'signatures' => [''],
-                'desc' => '',
-                'anchor' => 'defn-1',
-                'type' => 'api',
-            ],
-        ];
-
-        // Filter out documentation items for this test
-        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
-        $apiItems = array_values($apiItems); // Re-index array
-
-        self::assertEquals($expected, $apiItems);
+        self::assertSame('schema\\coercer', $apiItems[0]['namespace']);
+        self::assertSame('schema-coercer-coerce', $apiItems[0]['anchor']);
+        self::assertSame(
+            '/documentation/reference/api/schema-coercer/#schema-coercer-coerce',
+            $apiItems[0]['path'],
+        );
     }
 
-    public function test_fn_name_with_upper_case(): void
+    public function test_underscore_namespace_slugs_to_dash(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
         $apiFacade->method('getPhelFunctions')
             ->willReturn([
                 PhelFunction::fromArray([
-                    'name' => 'NAN',
-                    'signatures' => [''],
+                    'name' => 'get',
                     'desc' => '',
-                    'groupKey' => 'nan',
-                ]),
-                PhelFunction::fromArray([
-                    'name' => 'nan?',
-                    'signatures' => [''],
-                    'desc' => '',
-                    'groupKey' => 'nan',
+                    'namespace' => 'http_client',
                 ]),
             ]);
 
-        $generator = new ApiSearchGenerator($apiFacade);
-        $actual = $generator->generateSearchIndex();
+        $apiItems = $this->apiOnly($this->generator($apiFacade)->generateSearchIndex());
 
-        $expected = [
-            [
-                'id' => 'api_NAN',
-                'name' => 'NAN',
-                'signatures' => [''],
-                'desc' => '',
-                'anchor' => 'nan',
-                'type' => 'api',
-            ],
-            [
-                'id' => 'api_nan?',
-                'name' => 'nan?',
-                'signatures' => [''],
-                'desc' => '',
-                'anchor' => 'nan-1',
-                'type' => 'api',
-            ],
-        ];
-
-        // Filter out documentation items for this test
-        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
-        $apiItems = array_values($apiItems); // Re-index array
-
-        self::assertEquals($expected, $apiItems);
+        // URL slug uses dashes, anchor is derived from heading text (also dashed).
+        self::assertSame('http_client', $apiItems[0]['namespace']);
+        self::assertSame('http-client-get', $apiItems[0]['anchor']);
+        self::assertSame('/documentation/reference/api/http-client/#http-client-get', $apiItems[0]['path']);
     }
 
-    public function test_multi_arity_signature_is_comma_separated(): void
+    public function test_multi_arity_signatures_are_preserved(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
         $apiFacade->method('getPhelFunctions')
@@ -328,18 +143,14 @@ final class ApiSearchGeneratorTest extends TestCase
                     'name' => 'conj',
                     'signatures' => ['(conj coll x)', '(conj coll x & xs)'],
                     'desc' => 'Adds elements to a collection.',
-                    'groupKey' => 'conj',
+                    'namespace' => 'core',
                 ]),
             ]);
 
-        $generator = new ApiSearchGenerator($apiFacade);
-        $actual = $generator->generateSearchIndex();
-
-        // Filter out documentation items for this test
-        $apiItems = array_filter($actual, fn($item) => $item['type'] === 'api');
-        $apiItems = array_values($apiItems);
+        $apiItems = $this->apiOnly($this->generator($apiFacade)->generateSearchIndex());
 
         self::assertCount(1, $apiItems);
-        self::assertEquals(['(conj coll x)', '(conj coll x & xs)'], $apiItems[0]['signatures']);
+        self::assertSame(['(conj coll x)', '(conj coll x & xs)'], $apiItems[0]['signatures']);
+        self::assertSame('/documentation/reference/api/core/#conj', $apiItems[0]['path']);
     }
 }

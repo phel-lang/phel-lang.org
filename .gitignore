@@ -27,7 +27,7 @@ cache/
 
 # API / Search (generated)
 /static/api.json
-/static/api_search.js
+/static/api_search.json
 
 # CSS files (generated)
 /css/tailwind.entry.css
@@ -35,6 +35,6 @@ cache/
 /static/giallo.css
 
 # Content (generated)
-/content/documentation/reference/api.md
+/content/documentation/reference/api/
 /content/releases/*
 !/content/releases/_index.md

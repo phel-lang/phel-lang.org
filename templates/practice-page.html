@@ -1,6 +1,8 @@
 {% extends "layouts/one-column-layout.html" %}
 
 {% block content %}
+    {% set crumb_page = page %}
+    {% include "partials/breadcrumb.html" %}
     <h1>{{page.title}}</h1>
     <div class="flex-container">
         <div class="page-content">
@@ -31,15 +33,13 @@
             {% if page.lower or page.higher %}
             <div class="page-navigation">
               {% if page.lower %}
-              <a href="{{ page.lower.path }}" class="btn btn-secondary">
-                <span>&larr; Previous</span>
-                <span>{{ page.lower.title }}</span>
+              <a href="{{ page.lower.path }}" class="btn btn-secondary link--previous" aria-label="Previous: {{ page.lower.title }}">
+                &larr; {{ page.lower.title }}
               </a>
               {% endif %}
               {% if page.higher %}
-              <a href="{{ page.higher.path }}" class="btn btn-secondary">
-                <span>{{ page.higher.title }}</span>
-                <span>Next &rarr;</span>
+              <a href="{{ page.higher.path }}" class="btn btn-secondary link--next" aria-label="Next: {{ page.higher.title }}">
+                {{ page.higher.title }} &rarr;
               </a>
               {% endif %}
             </div>

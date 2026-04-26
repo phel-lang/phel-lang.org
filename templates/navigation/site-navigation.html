@@ -32,10 +32,16 @@
                                     {% set_global has_active_child = true %}
                                 {% endif %}
                             {% endfor %}
+                            {% for nested_path in subsection.subsections %}
+                                {% set nested = get_section(path=nested_path) %}
+                                {% if current_path is starting_with(nested.path) %}
+                                    {% set_global has_active_child = true %}
+                                {% endif %}
+                            {% endfor %}
                             <li class="site-navigation__entry sidebar-section sidebar-section--{{ subsection.title | slugify }} {% if is_section_active or has_active_child %}active{% else %}collapsed{% endif %}">
                                 <div class="sidebar-section-header">
                                     <span class="sidebar-section-label">{{ subsection.title }}</span>
-                                    {% if subsection.pages | length > 0 %}
+                                    {% if subsection.pages | length > 0 or subsection.subsections | length > 0 %}
                                         <button class="subsection-toggle" aria-label="Toggle {{ subsection.title }} subsection" aria-expanded="{% if is_section_active or has_active_child %}true{% else %}false{% endif %}">
                                             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -43,11 +49,17 @@
                                         </button>
                                     {% endif %}
                                 </div>
-                                {% if subsection.pages | length > 0 %}
+                                {% if subsection.pages | length > 0 or subsection.subsections | length > 0 %}
                                     <ol class="sidebar-subsection">
                                         {% for subpage in subsection.pages %}
-                                            <li class="{% if current_path == subpage.path %}active{% endif %}">
+                                            <li class="site-navigation__entry {% if current_path == subpage.path %}active{% endif %}">
                                                 <a href="{{ subpage.path }}">{{ subpage.title }}</a>
+                                            </li>
+                                        {% endfor %}
+                                        {% for nested_path in subsection.subsections %}
+                                            {% set nested = get_section(path=nested_path) %}
+                                            <li class="site-navigation__entry {% if current_path is starting_with(nested.path) %}active{% endif %}">
+                                                <a href="{{ nested.path }}">{{ nested.title }}</a>
                                             </li>
                                         {% endfor %}
                                     </ol>
@@ -69,11 +81,17 @@
                             {% set_global has_active_child = true %}
                         {% endif %}
                     {% endfor %}
+                    {% for nested_path in subsection.subsections %}
+                        {% set nested = get_section(path=nested_path) %}
+                        {% if current_path is starting_with(nested.path) %}
+                            {% set_global has_active_child = true %}
+                        {% endif %}
+                    {% endfor %}
                     <li class="site-navigation__entry sidebar-section sidebar-section--{{ subsection.title | slugify }} {% if is_section_active or has_active_child %}active{% else %}collapsed{% endif %}">
                         <div class="sidebar-section-header">
                             <span class="sidebar-section-icon" aria-hidden="true"></span>
                             <span class="sidebar-section-label">{{ subsection.title }}</span>
-                            {% if subsection.pages | length > 0 %}
+                            {% if subsection.pages | length > 0 or subsection.subsections | length > 0 %}
                                 <button class="subsection-toggle" aria-label="Toggle {{ subsection.title }} subsection" aria-expanded="{% if is_section_active or has_active_child %}true{% else %}false{% endif %}">
                                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M3 4.5L6 7.5L9 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -81,11 +99,17 @@
                                 </button>
                             {% endif %}
                         </div>
-                        {% if subsection.pages | length > 0 %}
+                        {% if subsection.pages | length > 0 or subsection.subsections | length > 0 %}
                             <ol class="sidebar-subsection">
                                 {% for subpage in subsection.pages %}
                                     <li class="site-navigation__entry {% if current_path == subpage.path %}active{% endif %}">
                                         <a href="{{ subpage.path }}">{{ subpage.title }}</a>
+                                    </li>
+                                {% endfor %}
+                                {% for nested_path in subsection.subsections %}
+                                    {% set nested = get_section(path=nested_path) %}
+                                    <li class="site-navigation__entry {% if current_path is starting_with(nested.path) %}active{% endif %}">
+                                        <a href="{{ nested.path }}">{{ nested.title }}</a>
                                     </li>
                                 {% endfor %}
                             </ol>

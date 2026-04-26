@@ -1,0 +1,78 @@
+{# Walks the documentation tree in the same order the sidebar uses
+   (root pages plus subsections inserted by `extra.insert_after`,
+   followed by remaining subsections), then emits prev/next links
+   based on `current_path`.
+
+   Only renders inside `/documentation/...`; quietly does nothing
+   elsewhere. Tera arrays can't hold object literals via `concat`,
+   so paths and titles are kept in two parallel arrays. #}
+
+{% if current_path is starting_with("/documentation/") %}
+  {% set main = get_section(path="documentation/_index.md") %}
+  {% set_global flat_paths = [] %}
+  {% set_global flat_titles = [] %}
+  {% set_global rendered_subs = [] %}
+
+  {# Section landings (Language, Web, Tooling, Guides, Reference) are
+     omitted from the flow — they're table-of-contents pages with their
+     own card grid, so prev/next there would be redundant, and skipping
+     them keeps the read order clean: last page of one section -> first
+     page of the next. #}
+  {% for doc_page in main.pages %}
+    {% set_global flat_paths = flat_paths | concat(with=doc_page.path) %}
+    {% set_global flat_titles = flat_titles | concat(with=doc_page.title) %}
+    {% for sub_path in main.subsections %}
+      {% if sub_path not in rendered_subs %}
+        {% set sub = get_section(path=sub_path) %}
+        {% if sub.extra.insert_after and doc_page.title == sub.extra.insert_after %}
+          {% for p in sub.pages %}
+            {% set_global flat_paths = flat_paths | concat(with=p.path) %}
+            {% set_global flat_titles = flat_titles | concat(with=p.title) %}
+          {% endfor %}
+          {% set_global rendered_subs = rendered_subs | concat(with=sub_path) %}
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+
+  {% for sub_path in main.subsections %}
+    {% if sub_path not in rendered_subs %}
+      {% set sub = get_section(path=sub_path) %}
+      {% for p in sub.pages %}
+        {% set_global flat_paths = flat_paths | concat(with=p.path) %}
+        {% set_global flat_titles = flat_titles | concat(with=p.title) %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
+
+  {% set_global current_index = -1 %}
+  {% for entry_path in flat_paths %}
+    {% if entry_path == current_path %}
+      {% set_global current_index = loop.index0 %}
+    {% endif %}
+  {% endfor %}
+
+  {% if current_index >= 0 %}
+    {% set last_index = flat_paths | length - 1 %}
+    {% set has_prev = current_index > 0 %}
+    {% set has_next = current_index < last_index %}
+    {% if has_prev or has_next %}
+    <div class="page-navigation">
+      {% if has_prev %}
+        {% set prev_i = current_index - 1 %}
+        {% set prev_title = flat_titles | nth(n=prev_i) %}
+        <a href="{{ flat_paths | nth(n=prev_i) }}" class="btn btn-secondary link--previous" aria-label="Previous: {{ prev_title }}">
+          &larr; {{ prev_title }}
+        </a>
+      {% endif %}
+      {% if has_next %}
+        {% set next_i = current_index + 1 %}
+        {% set next_title = flat_titles | nth(n=next_i) %}
+        <a href="{{ flat_paths | nth(n=next_i) }}" class="btn btn-secondary link--next" aria-label="Next: {{ next_title }}">
+          {{ next_title }} &rarr;
+        </a>
+      {% endif %}
+    </div>
+    {% endif %}
+  {% endif %}
+{% endif %}

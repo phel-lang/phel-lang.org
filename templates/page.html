@@ -3,6 +3,8 @@
 {% block sidebar_extra %}{% endblock sidebar_extra %}
 
 {% block content %}
+    {% set crumb_page = page %}
+    {% include "partials/breadcrumb.html" %}
     <h1>{{page.title}}</h1>
     <div class="flex-container">
         <div class="page-content">
@@ -12,22 +14,7 @@
 {% endblock content %}
 
 {% block navigation %}
-{% if page.lower or page.higher %}
-<div class="page-navigation">
-  {% if page.lower %}
-  <a href="{{ page.lower.path }}" class="btn btn-secondary">
-    <span>&larr; Previous</span>
-    <span>{{ page.lower.title }}</span>
-  </a>
-  {% endif %}
-  {% if page.higher %}
-  <a href="{{ page.higher.path }}" class="btn btn-secondary">
-    <span>{{ page.higher.title }}</span>
-    <span>Next &rarr;</span>
-  </a>
-  {% endif %}
-</div>
-{% endif %}
+{% include "partials/doc-prev-next.html" %}
 {% endblock navigation %}
 
 {% block editable %}

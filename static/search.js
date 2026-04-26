@@ -299,6 +299,8 @@ function initSearch() {
 
         return token;
     };
+    elasticlunr.trimmer.label = "trimmer";
+    elasticlunr.Pipeline.registeredFunctions["trimmer"] = elasticlunr.trimmer;
 
     // Create API index
     const apiIndex = elasticlunr(function () {
@@ -381,19 +383,43 @@ function initSearch() {
         return tokens;
     };
 
-    // Load API symbols into elasticlunr index
-    if (window.searchIndexApi) {
-        window.searchIndexApi.forEach(item => apiIndex.addDoc(item));
+    // Lazy index build: defer the expensive work until the user actually
+    // interacts with search, and run it inside requestIdleCallback so it
+    // never competes with first paint or hot interactions.
+    let searchIndices = null;
+    let searchReadyPromise = null;
+
+    function whenIdle(fn) {
+        return new Promise((resolve) => {
+            const run = () => { fn(); resolve(); };
+            if (typeof window.requestIdleCallback === "function") {
+                window.requestIdleCallback(run, { timeout: 500 });
+            } else {
+                setTimeout(run, 1);
+            }
+        });
     }
 
-    // Load Zola documentation index
-    let docsIndex = null;
-    if (window.searchIndex) {
-        docsIndex = elasticlunr.Index.load(window.searchIndex);
+    function ensureSearchReady() {
+        if (searchReadyPromise) return searchReadyPromise;
+        searchReadyPromise = (async () => {
+            const apiData = window.searchIndexApi
+                || await fetch("/api_search.json").then(r => r.ok ? r.json() : []).catch(() => []);
+            window.searchIndexApi = apiData;
+            await whenIdle(() => apiData.forEach(item => apiIndex.addDoc(item)));
+            let docsIndex = null;
+            if (window.searchIndex) {
+                await whenIdle(() => { docsIndex = elasticlunr.Index.load(window.searchIndex); });
+            }
+            searchIndices = { api: apiIndex, docs: docsIndex };
+            window.dispatchEvent(new CustomEvent("phel:api-search-ready", { detail: { apiData } }));
+            return searchIndices;
+        })();
+        return searchReadyPromise;
     }
 
-    // Create combined search object
-    const searchIndices = { api: apiIndex, docs: docsIndex };
+    // Warm the index as soon as the user shows intent to search.
+    searchInput.addEventListener("focus", ensureSearchReady, { once: true });
 
     // Search on input
     searchInput.addEventListener("keyup", function (keyboardEvent) {
@@ -403,7 +429,7 @@ function initSearch() {
 
         searchItemSelected = null;
         resultsItemsIndex = -1;
-        debounce(showResults(searchIndices), 150)();
+        ensureSearchReady().then((idx) => debounce(showResults(idx), 150)());
     });
 
     // Hide results list when user clears the search field
@@ -416,7 +442,7 @@ function initSearch() {
     // Show results when input is focused and has value
     searchInput.addEventListener("focus", function () {
         if (searchInput.value.trim() !== "") {
-            showResults(searchIndices)();
+            ensureSearchReady().then((idx) => showResults(idx)());
         }
     });
 }
@@ -536,7 +562,9 @@ function showResults(searchIndices) {
                     if (doc.signatures !== undefined) cleanDoc.signatures = doc.signatures;
                     if (doc.desc !== undefined) cleanDoc.desc = getSnippetAroundTerm(doc.desc, term);
                     if (doc.anchor !== undefined) cleanDoc.anchor = doc.anchor;
-                    
+                    if (doc.path !== undefined) cleanDoc.path = doc.path;
+                    if (doc.namespace !== undefined) cleanDoc.namespace = doc.namespace;
+
                     return {
                         ref: result.ref,
                         score: result.score,
@@ -606,7 +634,7 @@ function showResults(searchIndices) {
         // Deduplicate results by normalized URL (remove trailing slashes)
         const seenUrls = new Set();
         const uniqueResults = allResults.filter(result => {
-            const url = result.doc.url || result.doc.anchor || '';
+            const url = result.doc.path || result.doc.url || result.doc.anchor || '';
             // Normalize URL: remove trailing slash for comparison
             const normalizedUrl = url.replace(/\/$/, '');
             if (seenUrls.has(normalizedUrl)) {
@@ -702,7 +730,8 @@ function formatSearchResultItem(item, filter) {
         const badge = showApiBadge 
             ? `<span class="search-results__badge search-results__badge--api">API</span>` 
             : '';
-        return `<a class="search-results__link" href="/documentation/reference/api/#${item.anchor || ''}">`
+        const apiHref = item.path || `/documentation/reference/api/#${item.anchor || ''}`;
+        return `<a class="search-results__link" href="${apiHref}">`
             + `<div class="search-results__item">`
             + `<div class="search-results__header">`
             + `<div class="fn-info">`
