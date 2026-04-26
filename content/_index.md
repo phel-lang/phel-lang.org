@@ -7,9 +7,9 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 **Phel** is a functional, Lisp-inspired language that compiles to PHP. Inspired by [Clojure](https://clojure.org/), Phel brings macros, persistent data structures, and expressive functional idioms to the PHP ecosystem.
 
 <div class="homepage-cta">
-  <a href="#try-phel-instantly-with-docker" class="btn btn-primary homepage-cta-button homepage-cta-primary">
+  <a href="#try-phel-in-your-browser" class="btn btn-primary homepage-cta-button homepage-cta-primary">
     <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-    Try Phel with Docker
+    Try Phel
   </a>
   <a href="/documentation/getting-started" class="btn btn-secondary homepage-cta-button homepage-cta-secondary">
     <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
@@ -194,20 +194,14 @@ If you've ever wished PHP was a bit more... functional, Phel is for you.
 
 </div>
 
-## Try Phel Instantly with Docker
-
-No setup? No problem. You can run Phel's REPL right away:
-
-```bash
-docker run -it --rm phellang/repl
-# To update to the latest version of Phel:
-# docker pull phellang/repl
-```
+## Try Phel in Your Browser
 
 <div id="animated-repl"></div>
 
 <noscript>
 
-![Try Phel animation](/try-phel.gif "Try Phel Animation")
+```phel
+(+ 1 2 3)
+```
 
 </noscript>
