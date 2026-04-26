@@ -251,8 +251,9 @@ Calls the function with the given arguments. The last argument must be a list of
 ```phel
 (apply + [1 2 3]) ; Evaluates to 6
 (apply + 1 2 [3]) ; Evaluates to 6
-(apply + 1 2 3) ; BAD! Last element must be a list
 ```
+
+Calling `(apply + 1 2 3)` is invalid because the last argument must be a list.
 
 ## Passing by reference
 

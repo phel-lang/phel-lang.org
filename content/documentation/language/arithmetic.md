@@ -32,7 +32,7 @@ Some operators support zero, one or multiple arguments.
 ```phel
 (+) ; Evaluates to 0
 (+ 1) ; Evaluates to 1
-(+ 1 2) ; Evalutaes to 3
+(+ 1 2) ; Evaluates to 3
 (+ 1 2 3 4 5 6 7 8 9) ; Evaluates to 45
 
 (-) ; Evaluates to 0
@@ -42,11 +42,11 @@ Some operators support zero, one or multiple arguments.
 
 (*) ; Evaluates to 1
 (* 2) ; Evaluates to 2
-(* 2 3 4) #Evaluates to 24
+(* 2 3 4) ; Evaluates to 24
 
 (/) ; Evaluates to 1
 (/ 2) ; Evaluates to 0.5 (reciprocal of 2)
-(/ 24 4 2) #Evaluates to 3
+(/ 24 4 2) ; Evaluates to 3
 ```
 
 {% php_note() %}
@@ -58,9 +58,9 @@ Phel's variadic operators are more flexible than PHP's:
 // Can't do this: +();  <- syntax error
 
 // Phel - supports 0, 1, or many operands
-(+)                     # 0 (identity)
-(+ 1)                   # 1 (identity)
-(+ 1 2 3 4 5)          # 15 (sum of all)
+(+)                     ; 0 (identity)
+(+ 1)                   ; 1 (identity)
+(+ 1 2 3 4 5)          ; 15 (sum of all)
 ```
 
 **Useful patterns:**
@@ -90,9 +90,9 @@ is_nan(log(-1));     // true
 is_nan(NAN);         // true
 
 // Phel
-(nan? 1)             # false
-(nan? (php/log -1))  # true
-(nan? NAN)           # true
+(nan? 1)             ; false
+(nan? (php/log -1))  ; true
+(nan? NAN)           ; true
 ```
 
 The `%` operator for remainder and `**` for exponentiation work like PHP's `%` and `**` operators.
@@ -158,4 +158,3 @@ Phel provides named functions for bitwise operations instead of PHP's operators:
 
 Phel also provides additional bit manipulation functions not available in PHP: `bit-set`, `bit-clear`, `bit-flip`, and `bit-test`.
 {% end %}
-

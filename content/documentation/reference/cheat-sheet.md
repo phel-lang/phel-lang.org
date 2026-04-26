@@ -153,7 +153,6 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 #(* % 2)                           ; short form (single param)
 #(+ %1 %2)                        ; short form (multiple params)
 #(apply + %&)                     ; short form (variadic)
-|(* $ 2)                           ; legacy short form (deprecated)
 
 (defn greet                        ; multi-arity
   ([] "Hi")
@@ -470,10 +469,7 @@ Derive ad-hoc hierarchies for use with multimethods and `isa?` checks.
 (ancestors :filled-square)         ; => #{:square :shape}
 (descendants :shape)               ; => #{:square :circle :filled-square}
 
-;; Use a custom hierarchy
-(def h (make-hierarchy))
-(def h (derive h :dog :animal))
-(isa? h :dog :animal)              ; => true
+(make-hierarchy)                   ; => {:parents {} :descendants {} :ancestors {}}
 ```
 
 ## Transducers

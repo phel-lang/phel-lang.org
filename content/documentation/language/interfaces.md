@@ -130,7 +130,7 @@ Interfaces shine when you have different types that share behavior:
                 (image "/logo.png" "Phel logo")]]
   (->> elements
        (map render)
-       (str/join "\n")))
+       (phel\string/join "\n")))
 ;; => "<h1>Welcome</h1>\n<p>Hello from Phel!</p>\n<img src=\"/logo.png\" alt=\"Phel logo\">"
 ```
 
@@ -252,18 +252,13 @@ Use `underive` to remove a parent-child relationship:
 (isa? :square :rectangle)     ; => false
 ```
 
-### Custom hierarchies
+### Empty hierarchy maps
 
-By default, `derive` and friends use a global hierarchy. Use `make-hierarchy` to create an isolated hierarchy and pass it explicitly:
+Use `make-hierarchy` to create the empty hierarchy map shape used by hierarchy-aware code. The public `derive`, `underive`, `isa?`, `parents`, `ancestors`, and `descendants` helpers operate on the global hierarchy.
 
 ```phel
-(def animal-h (make-hierarchy))
-(def animal-h (derive animal-h :dog :animal))
-(def animal-h (derive animal-h :cat :animal))
-(def animal-h (derive animal-h :poodle :dog))
-
-(isa? animal-h :poodle :animal)  ; => true
-(descendants animal-h :animal)   ; => #{:dog :cat :poodle}
+(make-hierarchy)
+; => {:parents {} :descendants {} :ancestors {}}
 ```
 
 ### Hierarchy-aware multimethod dispatch

@@ -262,7 +262,7 @@ function countdown($n) {
 (loop [n 1000000]
   (if (= n 0)
     0
-    (recur (dec n))))  # No stack overflow!
+    (recur (dec n))))  ; No stack overflow!
 ```
 
 This is critical for functional programming patterns in PHP.
@@ -375,7 +375,7 @@ foreach (range(1, 3) as $x) {
 }
 
 // Phel - declarative comprehension
-(for [x :in [1 2 3]] (inc x))  # [2 3 4]
+(for [x :in [1 2 3]] (inc x))  ; [2 3 4]
 ```
 
 Phel's `for` combines iteration, filtering (`:when`), early termination (`:while`), reduction (`:reduce`), and nested loops in one elegant expression-much more powerful than PHP's `for`/`foreach`.
@@ -385,7 +385,7 @@ Phel's `for` combines iteration, filtering (`:when`), early termination (`:while
 `for` works similarly to Clojure's `for`-list comprehensions with `:let`, `:when`, and nested bindings. The `:reduce` modifier is a Phel extension.
 {% end %}
 
-# Do
+## Do
 
 ```phel
 (do expr*)
@@ -398,7 +398,7 @@ Evaluates the expressions in order and returns the value of the last expression.
 (do (print 1) (print 2) (print 3)) ; Print 1, 2, and 3
 ```
 
-# Dofor
+## Dofor
 
 ```phel
 (dofor [x :in [1 2 3]] (print x)) ; Prints 1, 2, 3 and returns nil
@@ -428,9 +428,9 @@ Takes an expression and a set of test/form pairs. Threads the expression through
 
 (defn maybe-transform [data opts]
   (cond-> data
-    (:uppercase opts) (str/upper-case)
-    (:trim opts)      (str/trim)
-    (:prefix opts)    (str (:prefix opts))))
+    (:uppercase opts) (phel\string/upper-case)
+    (:trim opts)      (phel\string/trim)
+    (:prefix opts)    (#(str (:prefix opts) %))))
 ```
 
 ### cond->>
@@ -450,7 +450,7 @@ Like `cond->` but threads as the last argument (thread-last style).
 ;; Only applies (map inc) and (take 3), skips (filter odd?)
 ```
 
-# Exceptions
+## Exceptions
 
 ```phel
 (throw expr)
@@ -535,4 +535,3 @@ Use `ex-data`, `ex-message`, and `ex-cause` to extract information from structur
         404 (println "Not found:" (ex-message e))
         403 (println "Forbidden:" (ex-message e))))))
 ```
-

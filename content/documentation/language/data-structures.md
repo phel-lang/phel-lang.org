@@ -534,7 +534,7 @@ Use `update-keys` and `update-vals` to apply a function to all keys or all value
 (update-vals {:a 1 :b 2 :c 3} inc)
 ; => {:a 2 :b 3 :c 4}
 
-(update-vals {:x "hello" :y "world"} str/upper-case)
+(update-vals {:x "hello" :y "world"} phel\string/upper-case)
 ; => {:x "HELLO" :y "WORLD"}
 ```
 

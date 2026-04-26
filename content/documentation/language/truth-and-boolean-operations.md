@@ -38,9 +38,9 @@ if ("") { }       // false - won't execute
 if ([]) { }       // false - won't execute
 
 // Phel
-(if 0 "yes" "no")   # => "yes" - 0 is truthy!
-(if "" "yes" "no")  # => "yes" - "" is truthy!
-(if [] "yes" "no")  # => "yes" - [] is truthy!
+(if 0 "yes" "no")   ; => "yes" - 0 is truthy!
+(if "" "yes" "no")  ; => "yes" - "" is truthy!
+(if [] "yes" "no")  ; => "yes" - [] is truthy!
 ```
 {% end %}
 

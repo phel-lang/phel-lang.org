@@ -289,7 +289,7 @@ $arr[5] ?? null;  // Returns null
 // Phel
 (php/aget arr 0)
 (php/aget arr 1)
-(php/aget arr 5)  # Returns nil
+(php/aget arr 5)  ; Returns nil
 ```
 
 **Important distinction:**
@@ -338,7 +338,7 @@ $data['meta']['missing'] ?? null;
 // Phel - clean path-based access
 (php/aget-in users ["users" 1 "name"])
 (php/aget-in data ["meta" "status"])
-(php/aget-in data ["meta" "missing"])  # Returns nil safely
+(php/aget-in data ["meta" "missing"])  ; Returns nil safely
 ```
 
 This is similar to Phel's `get-in` for immutable data structures, but specifically for PHP arrays.
