@@ -9,39 +9,111 @@ use Phel\Shared\Facade\ApiFacadeInterface;
 
 final readonly class ApiMarkdownGenerator
 {
+    public const string INDEX_KEY = '_index';
+
     public function __construct(
         private ApiFacadeInterface $apiFacade,
     ) {
     }
 
     /**
-     * @return list<string>
+     * Returns one entry per output markdown file.
+     *
+     * Keys:
+     *   "_index"     -> lines for content/documentation/reference/api/_index.md
+     *   "<namespace>" -> lines for content/documentation/reference/api/<slug>.md
+     *
+     * @return array<string, list<string>>
      */
     public function generate(): array
     {
-        $result = $this->buildZolaHeaders();
-        $result = array_merge($result, $this->buildJsonEndpointNotice());
         $phelFns = $this->apiFacade->getPhelFunctions();
         $groupedByNamespace = $this->groupFunctionsByNamespace($phelFns);
         $functionMap = $this->buildFunctionMap($phelFns);
 
+        $files = [];
+        $files[self::INDEX_KEY] = $this->buildIndexFile($groupedByNamespace);
+
         foreach ($groupedByNamespace as $namespace => $functions) {
-            $result = array_merge($result, $this->buildNamespaceSection($namespace, $functions, $functionMap));
+            $files[$namespace] = $this->buildNamespaceFile($namespace, $functions, $functionMap);
         }
 
-        return $result;
+        return $files;
+    }
+
+    public function namespaceSlug(string $namespace): string
+    {
+        $slug = strtolower($namespace);
+        $slug = str_replace(['\\', '/', '_'], '-', $slug);
+        $slug = preg_replace('/[^a-z0-9-]/', '-', $slug) ?? '';
+        $slug = preg_replace('/-+/', '-', $slug) ?? '';
+        return trim($slug, '-');
     }
 
     /**
+     * @param array<string, list<PhelFunction>> $groupedByNamespace
      * @return list<string>
      */
-    private function buildJsonEndpointNotice(): array
+    private function buildIndexFile(array $groupedByNamespace): array
     {
-        return [
+        $lines = [
+            '+++',
+            'title = "API"',
+            'weight = 110',
+            'template = "page-api-index.html"',
+            'sort_by = "title"',
+            'aliases = ["/api", "/documentation/api"]',
+            '+++',
             '',
             '> **Tip:** This documentation is also available in JSON format at [`/api.json`](/api.json).',
             '',
+            'Browse the API by namespace:',
+            '',
         ];
+
+        ksort($groupedByNamespace);
+        $lines[] = '<ul class="api-namespace-grid">';
+        foreach ($groupedByNamespace as $namespace => $functions) {
+            $slug = $this->namespaceSlug($namespace);
+            $count = count($functions);
+            $lines[] = sprintf(
+                '<li><a href="/documentation/reference/api/%s/"><span class="api-namespace-grid__name"><code>%s</code></span><span class="api-namespace-grid__count">%d</span></a></li>',
+                $slug,
+                htmlspecialchars($namespace),
+                $count,
+            );
+        }
+        $lines[] = '</ul>';
+        $lines[] = '';
+
+        return $lines;
+    }
+
+    /**
+     * @param list<PhelFunction> $functions
+     * @param array<string, PhelFunction> $functionMap
+     * @return list<string>
+     */
+    private function buildNamespaceFile(string $namespace, array $functions, array $functionMap): array
+    {
+        $count = count($functions);
+        $lines = [
+            '+++',
+            sprintf('title = "%s"', addslashes($namespace)),
+            'template = "page-api-namespace.html"',
+            '',
+            '[extra]',
+            sprintf('fn_count = %d', $count),
+            sprintf('namespace = "%s"', addslashes($namespace)),
+            '+++',
+            '',
+        ];
+
+        foreach ($functions as $fn) {
+            $lines = array_merge($lines, $this->buildFunctionSection($namespace, $fn, $functionMap));
+        }
+
+        return $lines;
     }
 
     /**
@@ -65,36 +137,24 @@ final readonly class ApiMarkdownGenerator
     {
         $map = [];
         foreach ($phelFns as $fn) {
+            // Qualified key takes precedence; bare-name key is a best-effort fallback.
             $map[$fn->nameWithNamespace()] = $fn;
+            if (!isset($map[$fn->name])) {
+                $map[$fn->name] = $fn;
+            }
         }
         return $map;
     }
 
     /**
-     * @param list<PhelFunction> $functions
      * @param array<string, PhelFunction> $functionMap
      * @return list<string>
      */
-    private function buildNamespaceSection(string $namespace, array $functions, array $functionMap): array
-    {
-        $lines = ['', '---', '', "## `{$namespace}`", ''];
-
-        foreach ($functions as $fn) {
-            $lines = array_merge($lines, $this->buildFunctionSection($fn, $functionMap));
-        }
-
-        return $lines;
-    }
-
-    /**
-     * @param array<string, PhelFunction> $functionMap
-     * @return list<string>
-     */
-    private function buildFunctionSection(PhelFunction $fn, array $functionMap): array
+    private function buildFunctionSection(string $namespace, PhelFunction $fn, array $functionMap): array
     {
         $lines = ["### `{$fn->nameWithNamespace()}`"];
 
-        if ($deprecation = $this->buildDeprecationNotice($fn, $functionMap)) {
+        if ($deprecation = $this->buildDeprecationNotice($namespace, $fn, $functionMap)) {
             $lines[] = $deprecation;
         }
 
@@ -111,7 +171,7 @@ final readonly class ApiMarkdownGenerator
             $lines = array_merge($lines, $example);
         }
 
-        if ($footer = $this->buildFooterSection($fn, $functionMap)) {
+        if ($footer = $this->buildFooterSection($namespace, $fn, $functionMap)) {
             $lines = array_merge($lines, $footer);
         }
         $lines[] = '';
@@ -122,7 +182,7 @@ final readonly class ApiMarkdownGenerator
     /**
      * @param array<string, PhelFunction> $functionMap
      */
-    private function buildDeprecationNotice(PhelFunction $fn, array $functionMap): ?string
+    private function buildDeprecationNotice(string $namespace, PhelFunction $fn, array $functionMap): ?string
     {
         if (!isset($fn->meta['deprecated'])) {
             return null;
@@ -134,12 +194,12 @@ final readonly class ApiMarkdownGenerator
         );
 
         if (isset($fn->meta['superseded-by'])) {
-            $supersededBy = $fn->meta['superseded-by'];
-            $anchor = $this->sanitizeAnchor($supersededBy);
+            $supersededBy = (string) $fn->meta['superseded-by'];
+            $href = $this->buildFunctionHref($namespace, $supersededBy, $functionMap);
             $message .= sprintf(
-                ' &mdash; Use [`%s`](#%s) instead',
+                ' &mdash; Use [`%s`](%s) instead',
                 $supersededBy,
-                $anchor,
+                $href,
             );
         }
 
@@ -169,7 +229,7 @@ final readonly class ApiMarkdownGenerator
      * @param array<string, PhelFunction> $functionMap
      * @return list<string>|null
      */
-    private function buildFooterSection(PhelFunction $fn, array $functionMap): ?array
+    private function buildFooterSection(string $namespace, PhelFunction $fn, array $functionMap): ?array
     {
         $hasSeeAlso = isset($fn->meta['see-also']);
         $hasSource = $fn->githubUrl !== '' || $fn->docUrl !== '';
@@ -182,7 +242,7 @@ final readonly class ApiMarkdownGenerator
 
         if ($hasSeeAlso) {
             $functionNames = $this->extractFunctionNames($fn->meta['see-also']);
-            $links = $this->buildFunctionLinks($functionNames);
+            $links = $this->buildFunctionLinks($namespace, $functionNames, $functionMap);
             $lines[] = '<div><strong>See also:</strong> ' . implode(', ', $links) . '</div>';
         }
 
@@ -210,16 +270,37 @@ final readonly class ApiMarkdownGenerator
 
     /**
      * @param list<string> $functionNames
+     * @param array<string, PhelFunction> $functionMap
      * @return list<string>
      */
-    private function buildFunctionLinks(array $functionNames): array
+    private function buildFunctionLinks(string $currentNamespace, array $functionNames, array $functionMap): array
     {
         return array_map(
-            function (string $func) {
-                return sprintf('<a href="#%s"><code>%s</code></a>', $this->sanitizeAnchor($func), htmlspecialchars($func));
+            function (string $func) use ($currentNamespace, $functionMap) {
+                $href = $this->buildFunctionHref($currentNamespace, $func, $functionMap);
+                return sprintf('<a href="%s"><code>%s</code></a>', $href, htmlspecialchars($func));
             },
             $functionNames,
         );
+    }
+
+    /**
+     * @param array<string, PhelFunction> $functionMap
+     */
+    private function buildFunctionHref(string $currentNamespace, string $name, array $functionMap): string
+    {
+        $target = $functionMap[$name] ?? null;
+
+        if ($target === null) {
+            return '#' . $this->sanitizeAnchor($name);
+        }
+
+        $anchor = $this->sanitizeAnchor($target->nameWithNamespace());
+        if ($target->namespace === $currentNamespace) {
+            return '#' . $anchor;
+        }
+
+        return '/documentation/reference/api/' . $this->namespaceSlug($target->namespace) . '/#' . $anchor;
     }
 
     private function sanitizeAnchor(string $text): string
@@ -228,20 +309,5 @@ final readonly class ApiMarkdownGenerator
         $text = preg_replace('/[^a-z0-9-]/', '-', $text);
         $text = preg_replace('/-+/', '-', $text);
         return trim($text, '-');
-    }
-
-    /**
-     * @return list<string>
-     */
-    private function buildZolaHeaders(): array
-    {
-        return [
-            '+++',
-            'title = "API"',
-            'weight = 110',
-            'template = "page-api.html"',
-            'aliases = ["/api", "/documentation/api"]',
-            '+++',
-        ];
     }
 }

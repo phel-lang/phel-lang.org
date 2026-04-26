@@ -35,6 +35,6 @@ cache/
 /static/giallo.css
 
 # Content (generated)
-/content/documentation/reference/api.md
+/content/documentation/reference/api/
 /content/releases/*
 !/content/releases/_index.md

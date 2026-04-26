@@ -562,7 +562,9 @@ function showResults(searchIndices) {
                     if (doc.signatures !== undefined) cleanDoc.signatures = doc.signatures;
                     if (doc.desc !== undefined) cleanDoc.desc = getSnippetAroundTerm(doc.desc, term);
                     if (doc.anchor !== undefined) cleanDoc.anchor = doc.anchor;
-                    
+                    if (doc.path !== undefined) cleanDoc.path = doc.path;
+                    if (doc.namespace !== undefined) cleanDoc.namespace = doc.namespace;
+
                     return {
                         ref: result.ref,
                         score: result.score,
@@ -632,7 +634,7 @@ function showResults(searchIndices) {
         // Deduplicate results by normalized URL (remove trailing slashes)
         const seenUrls = new Set();
         const uniqueResults = allResults.filter(result => {
-            const url = result.doc.url || result.doc.anchor || '';
+            const url = result.doc.path || result.doc.url || result.doc.anchor || '';
             // Normalize URL: remove trailing slash for comparison
             const normalizedUrl = url.replace(/\/$/, '');
             if (seenUrls.has(normalizedUrl)) {
@@ -728,7 +730,8 @@ function formatSearchResultItem(item, filter) {
         const badge = showApiBadge 
             ? `<span class="search-results__badge search-results__badge--api">API</span>` 
             : '';
-        return `<a class="search-results__link" href="/documentation/reference/api/#${item.anchor || ''}">`
+        const apiHref = item.path || `/documentation/reference/api/#${item.anchor || ''}`;
+        return `<a class="search-results__link" href="${apiHref}">`
             + `<div class="search-results__item">`
             + `<div class="search-results__header">`
             + `<div class="fn-info">`

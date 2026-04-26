@@ -1,0 +1,43 @@
+{% extends "layouts/two-column-layout.html" %}
+
+{% block site_navigation %}{% endblock site_navigation %}
+
+{% block sidebar_extra %}
+{% set api_section = get_section(path="documentation/reference/api/_index.md") %}
+<nav class="api-ns-rail api-ns-rail--solo" aria-label="API namespaces">
+    <h2 class="api-ns-rail__title">Namespaces</h2>
+    <ol class="api-ns-rail__list">
+    {% for ns_page in api_section.pages %}
+        <li class="api-ns-rail__item{% if ns_page.permalink == page.permalink %} is-active{% endif %}">
+            <a href="{{ ns_page.permalink | safe }}">
+                <span class="api-ns-rail__name">{{ ns_page.title }}</span>
+                <span class="api-ns-rail__count">{{ ns_page.extra.fn_count | default(value=0) }}</span>
+            </a>
+        </li>
+    {% endfor %}
+    </ol>
+</nav>
+{% endblock sidebar_extra %}
+
+{% block content %}
+    <nav class="api-page-breadcrumb" aria-label="Breadcrumb">
+        <a href="{{ api_section.permalink | safe }}">API</a>
+        <span aria-hidden="true">/</span>
+        <strong><code>{{ page.title }}</code></strong>
+    </nav>
+
+    <h1><code>{{ page.title }}</code></h1>
+
+    {% if page.toc and page.toc | length > 0 %}
+    <details class="api-namespace-toc" open>
+        <summary>Functions ({{ page.toc | length }})</summary>
+        <ul class="api-namespace-toc__list">
+        {% for fn in page.toc %}
+            <li><a href="#{{ fn.id }}">{{ fn.title }}</a></li>
+        {% endfor %}
+        </ul>
+    </details>
+    {% endif %}
+
+    {{ page.content | safe }}
+{% endblock content %}

@@ -11,28 +11,38 @@ use PhelWeb\ApiGenerator\Application\ApiMarkdownGenerator;
 
 final class ApiMarkdownGeneratorTest extends TestCase
 {
-    public function test_generate_page_without_phel_functions(): void
+    public function test_generate_without_phel_functions_returns_only_index(): void
     {
         $generator = new ApiMarkdownGenerator(
             $this->createStub(ApiFacadeInterface::class)
         );
 
-        $expected = [
-            '+++',
-            'title = "API"',
-            'weight = 110',
-            'template = "page-api.html"',
-            'aliases = ["/api", "/documentation/api"]',
-            '+++',
-            '',
-            '> **Tip:** This documentation is also available in JSON format at [`/api.json`](/api.json).',
-            '',
-        ];
+        $files = $generator->generate();
 
-        self::assertEquals($expected, $generator->generate());
+        self::assertSame([ApiMarkdownGenerator::INDEX_KEY], array_keys($files));
+        self::assertSame(
+            [
+                '+++',
+                'title = "API"',
+                'weight = 110',
+                'template = "page-api-index.html"',
+                'sort_by = "title"',
+                'aliases = ["/api", "/documentation/api"]',
+                '+++',
+                '',
+                '> **Tip:** This documentation is also available in JSON format at [`/api.json`](/api.json).',
+                '',
+                'Browse the API by namespace:',
+                '',
+                '<ul class="api-namespace-grid">',
+                '</ul>',
+                '',
+            ],
+            $files[ApiMarkdownGenerator::INDEX_KEY],
+        );
     }
 
-    public function test_generate_page_with_one_phel_function(): void
+    public function test_generate_with_one_phel_function_emits_namespace_file(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
         $apiFacade->method('getPhelFunctions')
@@ -47,30 +57,29 @@ final class ApiMarkdownGeneratorTest extends TestCase
 
         $generator = new ApiMarkdownGenerator($apiFacade);
 
-        $expected = [
-            '+++',
-            'title = "API"',
-            'weight = 110',
-            'template = "page-api.html"',
-            'aliases = ["/api", "/documentation/api"]',
-            '+++',
-            '',
-            '> **Tip:** This documentation is also available in JSON format at [`/api.json`](/api.json).',
-            '',
-            '',
-            '---',
-            '',
-            '## `ns-1`',
-            '',
-            '### `ns-1/function-1`',
-            'The doc from function 1',
-            '',
-        ];
+        $files = $generator->generate();
 
-        self::assertEquals($expected, $generator->generate());
+        self::assertContains('ns-1', array_keys($files));
+        self::assertSame(
+            [
+                '+++',
+                'title = "ns-1"',
+                'template = "page-api-namespace.html"',
+                '',
+                '[extra]',
+                'fn_count = 1',
+                'namespace = "ns-1"',
+                '+++',
+                '',
+                '### `ns-1/function-1`',
+                'The doc from function 1',
+                '',
+            ],
+            $files['ns-1'],
+        );
     }
 
-    public function test_generate_page_with_multiple_phel_functions_in_same_group(): void
+    public function test_generate_groups_functions_per_namespace(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
         $apiFacade->method('getPhelFunctions')
@@ -88,34 +97,18 @@ final class ApiMarkdownGeneratorTest extends TestCase
             ]);
 
         $generator = new ApiMarkdownGenerator($apiFacade);
+        $files = $generator->generate();
 
-        $expected = [
-            '+++',
-            'title = "API"',
-            'weight = 110',
-            'template = "page-api.html"',
-            'aliases = ["/api", "/documentation/api"]',
-            '+++',
-            '',
-            '> **Tip:** This documentation is also available in JSON format at [`/api.json`](/api.json).',
-            '',
-            '',
-            '---',
-            '',
-            '## `core`',
-            '',
-            '### `function-1`',
-            'The doc from function 1',
-            '',
-            '### `function-2`',
-            'The doc from function 2',
-            '',
-        ];
+        self::assertContains('core', array_keys($files));
+        $core = $files['core'];
 
-        self::assertEquals($expected, $generator->generate());
+        self::assertSame('+++', $core[0]);
+        self::assertSame('title = "core"', $core[1]);
+        self::assertContains('### `function-1`', $core);
+        self::assertContains('### `function-2`', $core);
     }
 
-    public function test_generate_page_with_multiple_phel_functions_in_different_groups(): void
+    public function test_generate_emits_one_file_per_namespace(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
         $apiFacade->method('getPhelFunctions')
@@ -133,39 +126,15 @@ final class ApiMarkdownGeneratorTest extends TestCase
             ]);
 
         $generator = new ApiMarkdownGenerator($apiFacade);
+        $files = $generator->generate();
 
-        $expected = [
-            '+++',
-            'title = "API"',
-            'weight = 110',
-            'template = "page-api.html"',
-            'aliases = ["/api", "/documentation/api"]',
-            '+++',
-            '',
-            '> **Tip:** This documentation is also available in JSON format at [`/api.json`](/api.json).',
-            '',
-            '',
-            '---',
-            '',
-            '## `ns-1`',
-            '',
-            '### `ns-1/function-1`',
-            'The doc from function 1',
-            '',
-            '',
-            '---',
-            '',
-            '## `ns-2`',
-            '',
-            '### `ns-2/function-2`',
-            'The doc from function 2',
-            '',
-        ];
-
-        self::assertEquals($expected, $generator->generate());
+        self::assertSame(
+            [ApiMarkdownGenerator::INDEX_KEY, 'ns-1', 'ns-2'],
+            array_keys($files),
+        );
     }
 
-    public function test_generate_page_with_see_also_section_in_footer(): void
+    public function test_see_also_link_within_namespace_uses_relative_anchor(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
         $apiFacade->method('getPhelFunctions')
@@ -190,135 +159,61 @@ final class ApiMarkdownGeneratorTest extends TestCase
             ]);
 
         $generator = new ApiMarkdownGenerator($apiFacade);
+        $files = $generator->generate();
+        $core = $files['core'];
 
-        $expected = [
-            '+++',
-            'title = "API"',
-            'weight = 110',
-            'template = "page-api.html"',
-            'aliases = ["/api", "/documentation/api"]',
-            '+++',
-            '',
-            '> **Tip:** This documentation is also available in JSON format at [`/api.json`](/api.json).',
-            '',
-            '',
-            '---',
-            '',
-            '## `core`',
-            '',
-            '### `function-1`',
-            'The doc from function 1',
-            '',
-            '<div class="api-footer">',
-            '<div><strong>See also:</strong> <a href="#function-2"><code>function-2</code></a></div>',
-            '<div><a href="https://github.com/phel-lang/phel-lang/blob/main/src/phel/core.phel#L100">View source</a></div>',
-            '</div>',
-            '',
-            '',
-            '### `function-2`',
-            'The doc from function 2',
-            '',
-            '<div class="api-footer">',
-            '<div><a href="https://github.com/phel-lang/phel-lang/blob/main/src/phel/core.phel#L200">View source</a></div>',
-            '</div>',
-            '',
-            '',
-        ];
+        $seeAlso = array_values(array_filter(
+            $core,
+            static fn (string $line) => str_starts_with($line, '<div><strong>See also:</strong>'),
+        ))[0];
 
-        self::assertEquals($expected, $generator->generate());
+        self::assertStringContainsString('<a href="#function-2"><code>function-2</code></a>', $seeAlso);
     }
 
-    public function test_generate_page_with_multiple_see_also_references_in_footer(): void
+    public function test_see_also_link_across_namespaces_uses_absolute_path(): void
     {
         $apiFacade = $this->createStub(ApiFacadeInterface::class);
         $apiFacade->method('getPhelFunctions')
             ->willReturn([
                 PhelFunction::fromArray([
-                    'name' => 'assoc-in',
-                    'doc' => 'Associates a value in a nested associative structure',
+                    'name' => 'function-1',
+                    'doc' => 'The doc from function 1',
                     'namespace' => 'core',
-                    'githubUrl' => 'https://github.com/phel-lang/phel-lang/blob/main/src/phel/core.phel#L1403',
                     'meta' => [
                         'see-also' => new \ArrayIterator([
-                            \Phel\Lang\Symbol::create('get-in'),
-                            \Phel\Lang\Symbol::create('update-in'),
-                            \Phel\Lang\Symbol::create('dissoc-in'),
+                            \Phel\Lang\Symbol::create('function-2'),
                         ]),
                     ],
                 ]),
                 PhelFunction::fromArray([
-                    'name' => 'get-in',
-                    'doc' => 'Gets a value from a nested structure',
-                    'namespace' => 'core',
-                    'githubUrl' => 'https://github.com/phel-lang/phel-lang/blob/main/src/phel/core.phel#L1350',
-                ]),
-                PhelFunction::fromArray([
-                    'name' => 'update-in',
-                    'doc' => 'Updates a value in a nested structure',
-                    'namespace' => 'core',
-                    'githubUrl' => 'https://github.com/phel-lang/phel-lang/blob/main/src/phel/core.phel#L1420',
-                ]),
-                PhelFunction::fromArray([
-                    'name' => 'dissoc-in',
-                    'doc' => 'Dissociates a value in a nested structure',
-                    'namespace' => 'core',
-                    'githubUrl' => 'https://github.com/phel-lang/phel-lang/blob/main/src/phel/core.phel#L1440',
+                    'name' => 'function-2',
+                    'doc' => 'The doc from function 2',
+                    'namespace' => 'http',
                 ]),
             ]);
 
         $generator = new ApiMarkdownGenerator($apiFacade);
+        $files = $generator->generate();
+        $core = $files['core'];
 
-        $output = $generator->generate();
+        $seeAlso = array_values(array_filter(
+            $core,
+            static fn (string $line) => str_starts_with($line, '<div><strong>See also:</strong>'),
+        ))[0];
 
-        // Find the "See also" line for assoc-in (it should be in the api-footer now)
-        $seeAlsoLine = array_values(array_filter($output, fn($line) => str_starts_with($line, '<div><strong>See also:</strong>')))[0];
-
-        // The see-also section should NOT include individual source links
-        self::assertStringContainsString('<a href="#get-in"><code>get-in</code></a>', $seeAlsoLine);
-        self::assertStringContainsString('<a href="#update-in"><code>update-in</code></a>', $seeAlsoLine);
-        self::assertStringContainsString('<a href="#dissoc-in"><code>dissoc-in</code></a>', $seeAlsoLine);
+        self::assertStringContainsString(
+            '<a href="/documentation/reference/api/http/#function-2"><code>function-2</code></a>',
+            $seeAlso,
+        );
     }
 
-    public function test_generate_page_with_source_link_only_in_footer(): void
+    public function test_namespace_slug_replaces_backslash_with_dash(): void
     {
-        $apiFacade = $this->createStub(ApiFacadeInterface::class);
-        $apiFacade->method('getPhelFunctions')
-            ->willReturn([
-                PhelFunction::fromArray([
-                    'name' => 'simple-func',
-                    'doc' => 'A simple function with source link',
-                    'namespace' => 'core',
-                    'githubUrl' => 'https://github.com/phel-lang/phel-lang/blob/main/src/phel/core.phel#L500',
-                ]),
-            ]);
+        $generator = new ApiMarkdownGenerator($this->createStub(ApiFacadeInterface::class));
 
-        $generator = new ApiMarkdownGenerator($apiFacade);
-
-        $expected = [
-            '+++',
-            'title = "API"',
-            'weight = 110',
-            'template = "page-api.html"',
-            'aliases = ["/api", "/documentation/api"]',
-            '+++',
-            '',
-            '> **Tip:** This documentation is also available in JSON format at [`/api.json`](/api.json).',
-            '',
-            '',
-            '---',
-            '',
-            '## `core`',
-            '',
-            '### `simple-func`',
-            'A simple function with source link',
-            '',
-            '<div class="api-footer">',
-            '<div><a href="https://github.com/phel-lang/phel-lang/blob/main/src/phel/core.phel#L500">View source</a></div>',
-            '</div>',
-            '',
-            '',
-        ];
-
-        self::assertEquals($expected, $generator->generate());
+        self::assertSame('schema-coercer', $generator->namespaceSlug('schema\\coercer'));
+        self::assertSame('test-gen', $generator->namespaceSlug('test\\gen'));
+        self::assertSame('http-client', $generator->namespaceSlug('http_client'));
+        self::assertSame('core', $generator->namespaceSlug('core'));
     }
 }
