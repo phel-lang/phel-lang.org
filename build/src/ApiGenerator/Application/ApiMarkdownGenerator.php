@@ -63,6 +63,7 @@ final readonly class ApiMarkdownGenerator
             'weight = 110',
             'template = "page-api-index.html"',
             'sort_by = "title"',
+            'insert_anchor_links = "right"',
             'aliases = ["/api", "/documentation/api"]',
             '+++',
             '',
