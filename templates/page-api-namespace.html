@@ -20,22 +20,24 @@
 {% endblock sidebar_extra %}
 
 {% block content %}
-    <nav class="api-page-breadcrumb" aria-label="Breadcrumb">
-        <a href="{{ api_section.permalink | safe }}">API</a>
-        <span aria-hidden="true">/</span>
-        <strong><code>{{ page.title }}</code></strong>
-    </nav>
+    {% set crumb_page = page %}
+    {% include "partials/breadcrumb.html" %}
 
     <h1><code>{{ page.title }}</code></h1>
 
     {% if page.toc and page.toc | length > 0 %}
-    <details class="api-namespace-toc" open>
-        <summary>Functions ({{ page.toc | length }})</summary>
-        <ul class="api-namespace-toc__list">
-        {% for fn in page.toc %}
-            <li><a href="#{{ fn.id }}">{{ fn.title }}</a></li>
-        {% endfor %}
-        </ul>
+    <details class="api-namespace-toc">
+        <summary>
+            <span class="api-namespace-toc__title">Jump to function ({{ page.toc | length }})</span>
+            <span class="api-namespace-toc__chevron">&rsaquo;</span>
+        </summary>
+        <div class="api-namespace-toc__content">
+            <ul class="api-namespace-toc__list">
+            {% for fn in page.toc %}
+                <li><a href="#{{ fn.id }}">{{ fn.title }}</a></li>
+            {% endfor %}
+            </ul>
+        </div>
     </details>
     {% endif %}
 

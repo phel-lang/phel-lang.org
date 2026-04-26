@@ -59,6 +59,7 @@ final readonly class ApiMarkdownGenerator
         $lines = [
             '+++',
             'title = "API"',
+            'description = "Browse all built-in Phel namespaces and functions."',
             'weight = 110',
             'template = "page-api-index.html"',
             'sort_by = "title"',
@@ -77,7 +78,7 @@ final readonly class ApiMarkdownGenerator
             $slug = $this->namespaceSlug($namespace);
             $count = count($functions);
             $lines[] = sprintf(
-                '<li><a href="/documentation/reference/api/%s/"><span class="api-namespace-grid__name"><code>%s</code></span><span class="api-namespace-grid__count">%d</span></a></li>',
+                '<li><a href="/documentation/reference/api/%s/"><span class="api-namespace-grid__name">%s</span><span class="api-namespace-grid__count">%d</span></a></li>',
                 $slug,
                 htmlspecialchars($namespace),
                 $count,

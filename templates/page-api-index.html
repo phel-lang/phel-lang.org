@@ -19,6 +19,8 @@
 {% endblock sidebar_extra %}
 
 {% block content %}
+    {% set crumb_section = section %}
+    {% include "partials/breadcrumb.html" %}
     <h1>{{ section.title }}</h1>
     {{ section.content | safe }}
 {% endblock content %}

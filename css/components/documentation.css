@@ -296,7 +296,9 @@
   display: none;
 }
 
-.section-page-card:hover {
+.section-page-card:hover,
+.two-column-layout__content a.section-page-card:hover,
+.documentation__content a.section-page-card:hover {
   border-color: var(--color-light-link);
   box-shadow: var(--shadow-md);
   text-decoration: none;

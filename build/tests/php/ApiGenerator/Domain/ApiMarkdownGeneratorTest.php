@@ -24,6 +24,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
             [
                 '+++',
                 'title = "API"',
+                'description = "Browse all built-in Phel namespaces and functions."',
                 'weight = 110',
                 'template = "page-api-index.html"',
                 'sort_by = "title"',

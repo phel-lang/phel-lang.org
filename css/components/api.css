@@ -295,14 +295,11 @@ ul.api-namespace-grid > li::before {
   color: var(--color-light-link);
   box-shadow: var(--shadow-md);
   text-decoration: none;
-  transform: translateY(-1px);
 }
 
-.api-namespace-grid__name code {
+.api-namespace-grid__name {
   font-family: var(--font-mono, monospace);
-  font-weight: 600;
-  background: transparent;
-  padding: 0;
+  color: var(--color-light-text-secondary);
 }
 
 .api-namespace-grid__count {
@@ -317,7 +314,7 @@ ul.api-namespace-grid > li::before {
 }
 
 /* Breadcrumb on namespace pages */
-.api-page-breadcrumb {
+.page-breadcrumb {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
@@ -328,25 +325,25 @@ ul.api-namespace-grid > li::before {
   margin: 0 0 var(--space-md);
 }
 
-.api-page-breadcrumb > * {
+.page-breadcrumb > * {
   font-size: inherit;
   line-height: inherit;
 }
 
-.api-page-breadcrumb a {
+.page-breadcrumb a {
   color: var(--color-light-link);
   text-decoration: none;
 }
 
-.api-page-breadcrumb a:hover {
+.page-breadcrumb a:hover {
   text-decoration: underline;
 }
 
-.api-page-breadcrumb a::after {
+.page-breadcrumb a::after {
   display: none;
 }
 
-.api-page-breadcrumb code {
+.page-breadcrumb code {
   background: transparent;
   padding: 0;
   font-family: var(--font-mono, monospace);
@@ -354,47 +351,65 @@ ul.api-namespace-grid > li::before {
   line-height: inherit;
 }
 
-.api-page-breadcrumb strong {
+.page-breadcrumb strong {
   font-weight: 600;
 }
 
-/* Per-namespace function TOC */
+/* Per-namespace function TOC — same disclosure pattern as `.dev-note`. */
 .api-namespace-toc {
   margin: var(--space-lg) 0 var(--space-2xl);
-  padding: var(--space-md) var(--space-lg);
-  background: var(--color-light-bg-secondary);
+  border-radius: var(--radius-lg);
+  background: var(--color-light-surface);
   border: 1px solid var(--color-light-border);
-  border-radius: var(--radius-md);
+  overflow: hidden;
 }
 
-.api-namespace-toc > summary {
+.api-namespace-toc summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md) var(--space-lg);
   cursor: pointer;
-  font-weight: 600;
-  color: var(--color-light-text-primary);
   list-style: none;
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--color-light-text-secondary);
+  transition: all var(--duration-fast) var(--ease-out);
 }
 
-.api-namespace-toc > summary::-webkit-details-marker {
+.api-namespace-toc summary::-webkit-details-marker {
   display: none;
 }
 
-.api-namespace-toc > summary::before {
-  content: '▸';
-  display: inline-block;
-  margin-right: var(--space-sm);
+.api-namespace-toc summary:hover {
+  background: var(--color-light-surface-hover);
+}
+
+.api-namespace-toc__title {
+  flex: 1;
+}
+
+.api-namespace-toc__chevron {
+  font-size: var(--text-xl);
+  color: var(--color-light-text-muted);
   transition: transform var(--duration-fast) var(--ease-out);
 }
 
-.api-namespace-toc[open] > summary::before {
+.api-namespace-toc[open] .api-namespace-toc__chevron {
   transform: rotate(90deg);
+}
+
+.api-namespace-toc__content {
+  padding: var(--space-md) var(--space-lg) var(--space-lg);
+  background: var(--color-light-bg-secondary);
 }
 
 ul.api-namespace-toc__list {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-xs) var(--space-sm);
-  margin: var(--space-md) 0 0;
+  gap: var(--space-xs);
+  margin: 0;
   padding: 0;
 }
 
@@ -419,6 +434,7 @@ ul.api-namespace-toc__list > li::before {
   border: 1px solid var(--color-light-border);
   border-radius: var(--radius-sm);
   text-decoration: none;
+  transition: all var(--duration-fast) var(--ease-out);
 }
 
 .api-namespace-toc__list a::after {
@@ -564,11 +580,11 @@ ul.api-namespace-toc__list > li::before {
   color: var(--color-dark-text-secondary);
 }
 
-.dark .api-page-breadcrumb {
+.dark .page-breadcrumb {
   color: var(--color-dark-text-secondary);
 }
 
-.dark .api-page-breadcrumb a {
+.dark .page-breadcrumb a {
   color: var(--color-dark-text-accent);
 }
 
@@ -577,12 +593,24 @@ ul.api-namespace-toc__list > li::before {
   border-color: var(--color-dark-border);
 }
 
-.dark .api-namespace-toc > summary {
-  color: var(--color-dark-text-primary);
+.dark .api-namespace-toc summary {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .api-namespace-toc summary:hover {
+  background: var(--color-dark-surface-hover);
+}
+
+.dark .api-namespace-toc__chevron {
+  color: var(--color-dark-text-muted);
+}
+
+.dark .api-namespace-toc__content {
+  background: var(--color-dark-bg);
 }
 
 .dark .api-namespace-toc__list a {
-  background: var(--color-dark-bg);
+  background: var(--color-dark-surface);
   border-color: var(--color-dark-border);
   color: var(--color-dark-text-accent);
 }
