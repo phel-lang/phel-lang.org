@@ -94,7 +94,7 @@ user:2> (h/html [:span {:class "greeting"} "Hello"])
 List all public definitions in a namespace:
 
 ```phel
-user:1> (dir phel\string)
+user:1> (dir "phel\\string")
 blank?
 capitalize
 ends-with?
