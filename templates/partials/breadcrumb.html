@@ -37,4 +37,28 @@
   {% endfor %}
   <strong>{{ self_title }}</strong>
 </nav>
+{% set self_url = crumb_page.permalink | default(value=crumb_section.permalink | default(value="")) %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {% for ancestor_path in rendered_ancestors %}
+    {% set ancestor = get_section(path=ancestor_path) %}
+    {
+      "@type": "ListItem",
+      "position": {{ loop.index }},
+      "name": {{ ancestor.title | json_encode | safe }},
+      "item": {{ ancestor.permalink | json_encode | safe }}
+    },
+    {% endfor %}
+    {
+      "@type": "ListItem",
+      "position": {{ rendered_ancestors | length + 1 }},
+      "name": {{ self_title | json_encode | safe }}{% if self_url %},
+      "item": {{ self_url | json_encode | safe }}{% endif %}
+    }
+  ]
+}
+</script>
 {% endif %}

@@ -7,11 +7,16 @@
   {# ---------- Resolved metadata ---------- #}
   {% set site_name = config.title %}
   {% set page_title = page.title | default(value=section.title | default(value=config.title)) %}
-  {% set full_title = page.title | default(value=section.title | default(value="")) %}
-  {% if full_title and full_title != config.title %}
-    {% set full_title = full_title ~ " | " ~ config.title %}
+  {% set seo_title = page.extra.seo_title | default(value=section.extra.seo_title | default(value="")) %}
+  {% if seo_title %}
+    {% set full_title = seo_title %}
   {% else %}
-    {% set full_title = config.title %}
+    {% set full_title = page.title | default(value=section.title | default(value="")) %}
+    {% if full_title and full_title != config.title %}
+      {% set full_title = full_title ~ " | " ~ config.title %}
+    {% else %}
+      {% set full_title = config.title %}
+    {% endif %}
   {% endif %}
   {% set page_desc = page.description | default(value=section.description | default(value=config.description)) %}
   {% set page_url = current_url | default(value=config.base_url ~ "/") %}
@@ -33,6 +38,7 @@
   </script>
 
   <!-- Cronitor RUM -->
+  <link rel="preconnect" href="https://rum.cronitor.io" crossorigin>
   <script async src="https://rum.cronitor.io/script.js"></script>
   <script>
     window.cronitor = window.cronitor || function() { (window.cronitor.q = window.cronitor.q || []).push(arguments); };
@@ -74,10 +80,11 @@
 
   {# ---------- Styles & icons ---------- #}
   <link rel="stylesheet" href="/tailwind.css"/>
-  <link rel="stylesheet" href="/syntax-theme-light.css" media="(prefers-color-scheme: light)" />
-  <link rel="stylesheet" href="/syntax-theme-dark.css" media="(prefers-color-scheme: dark)" />
+  <link rel="stylesheet" href="/syntax-theme-light.css" />
+  <link rel="stylesheet" href="/syntax-theme-dark.css" />
   <link rel="alternate icon" type="image/png" href="/favicon-32.png">
   <link rel="icon" type="image/png" href="/favicon-512.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 
   {# ---------- Structured data ---------- #}
   {% block structured_data %}
@@ -94,10 +101,12 @@
 </head>
 
 <body>
+  <a class="skip-to-content" href="#main-content">Skip to main content</a>
   {% block body %} {% endblock %}
 
   <button onclick="backToTop()" id="back-to-top-button" class="back-to-top-button" title="Go to top">Top</button>
 
+  {# Always-on: header UI, navigation, content affordances, search shell. #}
   <script type="text/javascript" src="/mobile-menu.js"></script>
   <script type="text/javascript" src="/dark-mode.js"></script>
   <script type="text/javascript" src="/sidebar-toggle.js"></script>
@@ -106,21 +115,18 @@
   <script type="text/javascript" src="/toc-scrollspy.js" defer></script>
   <script type="text/javascript" src="/copy-code.js" defer></script>
   <script type="text/javascript" src="/copy-anchor-link.js" defer></script>
-  <script type="text/javascript" src="/elasticlunr.min.js" defer></script>
-  <script type="text/javascript" src="/search_index.en.js" defer></script>
   <script type="text/javascript" src="/search.js" defer></script>
   <script type="text/javascript" src="/back_to_top.js" defer></script>
-  <script type="text/javascript" src="/api-ns-rail.js" defer></script>
-  <script type="text/javascript" src="/api-recent.js" defer></script>
-  <script type="text/javascript" src="/progress-tracker.js" defer></script>
-  <script type="text/javascript" src="/practice-overview.js" defer></script>
-  <script type="text/javascript" src="/browser-repl.js" defer></script>
-  <script type="text/javascript" src="/animated-repl.js" defer></script>
-  <script type="text/javascript" src="/homepage-tabs.js" defer></script>
   <script type="text/javascript" src="/easter-eggs.js" defer></script>
-  <script type="text/javascript" src="/cheat-sheet-filter.js" defer></script>
   <script type="text/javascript" src="/keyboard-nav.js" defer></script>
-  <script type="text/javascript" src="/rosetta-stone.js" defer></script>
+
+  {# Page-specific scripts injected by individual templates. #}
+  {% block page_scripts %}{% endblock page_scripts %}
+  {% if page is defined and page.extra is defined and page.extra.scripts is defined %}
+    {% for s in page.extra.scripts %}
+      <script type="text/javascript" src="/{{ s }}" defer></script>
+    {% endfor %}
+  {% endif %}
 </body>
 
 </html>

@@ -14,7 +14,7 @@
                 {% block site_navigation %}{% include "navigation/site-navigation.html" %}{% endblock site_navigation %}
             </div>
         </aside>
-        <main class="two-column-layout__content">
+        <main id="main-content" tabindex="-1" class="two-column-layout__content">
             {% block content %} {% endblock %}
             {% block navigation %} {% endblock %}
             {% block editable %} {% endblock %}

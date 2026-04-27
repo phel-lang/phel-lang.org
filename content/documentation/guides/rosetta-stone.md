@@ -2,6 +2,9 @@
 title = "Rosetta Stone: PHP → Phel"
 weight = 3
 aliases = ["/documentation/rosetta-stone"]
+
+[extra]
+scripts = ["rosetta-stone.js"]
 +++
 
 See how common PHP patterns translate to Phel. Click a category to filter, or browse them all.

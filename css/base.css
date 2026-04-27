@@ -450,3 +450,87 @@ tr:hover {
 [id] {
 scroll-margin-top: calc(var(--header-height) + 2rem);
 }
+
+/* Skip-to-content link: visually hidden until keyboard-focused. */
+.skip-to-content {
+  position: fixed;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: var(--z-modal);
+  padding: 0.5rem 0.875rem;
+  background: var(--color-light-bg);
+  color: var(--color-light-primary);
+  font-weight: 600;
+  border: 1px solid var(--color-light-border);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transform: translateY(-150%);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.skip-to-content:focus {
+  transform: translateY(0);
+  outline: 2px solid var(--color-light-primary);
+  outline-offset: 2px;
+}
+
+/* Cancel the * + * stacking margin that the skip link would otherwise
+   inflict on the next element (typically <header>). */
+.skip-to-content + * {
+  margin-top: 0;
+}
+
+.dark .skip-to-content {
+  background: var(--color-dark-bg);
+  color: var(--color-dark-primary);
+  border-color: var(--color-dark-border);
+}
+
+.dark .skip-to-content:focus {
+  outline-color: var(--color-dark-primary);
+}
+
+[id="main-content"]:focus {
+  outline: none;
+}
+
+.error-page {
+  max-width: 640px;
+  margin: 2rem auto;
+}
+
+.error-page__links {
+  list-style: none;
+  padding: 0;
+  margin-top: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+}
+
+.error-page__links li {
+  margin: 0;
+}
+
+.error-page__links a {
+  display: block;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid var(--color-light-border);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: background var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out);
+}
+
+.error-page__links a:hover {
+  background: var(--color-light-surface);
+  border-color: var(--color-light-primary);
+}
+
+.dark .error-page__links a {
+  border-color: var(--color-dark-border);
+}
+
+.dark .error-page__links a:hover {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-primary);
+}

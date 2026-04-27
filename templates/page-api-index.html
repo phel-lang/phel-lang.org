@@ -24,3 +24,8 @@
     <h1>{{ section.title }}</h1>
     {{ section.content | safe }}
 {% endblock content %}
+
+{% block page_scripts %}
+    <script type="text/javascript" src="/api-ns-rail.js" defer></script>
+    <script type="text/javascript" src="/api-recent.js" defer></script>
+{% endblock page_scripts %}

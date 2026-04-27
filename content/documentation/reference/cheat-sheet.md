@@ -2,6 +2,9 @@
 title = "Cheat Sheet"
 weight = 1
 aliases = ["/documentation/cheat-sheet"]
+
+[extra]
+scripts = ["cheat-sheet-filter.js"]
 +++
 
 A quick reference for Phel syntax and core functions.
