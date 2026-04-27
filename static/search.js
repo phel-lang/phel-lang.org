@@ -292,30 +292,58 @@ if (document.readyState === "complete" || (document.readyState !== "loading" && 
 }
 
 function initSearch() {
-    elasticlunr.trimmer = function (token) {
-        if (token === null || token === undefined) {
-            throw new Error("token should not be undefined");
-        }
+    let apiIndex = null;
+    let elasticlunrConfigured = false;
 
-        return token;
-    };
-    elasticlunr.trimmer.label = "trimmer";
-    elasticlunr.Pipeline.registeredFunctions["trimmer"] = elasticlunr.trimmer;
+    function loadScript(src) {
+        return new Promise((resolve, reject) => {
+            const existing = document.querySelector('script[data-search-asset="' + src + '"]');
+            if (existing) {
+                existing.addEventListener("load", resolve, { once: true });
+                existing.addEventListener("error", reject, { once: true });
+                return;
+            }
+            const s = document.createElement("script");
+            s.src = src;
+            s.dataset.searchAsset = src;
+            s.onload = resolve;
+            s.onerror = reject;
+            document.head.appendChild(s);
+        });
+    }
 
-    // Create API index
-    const apiIndex = elasticlunr(function () {
-        this.addField("name");
-        this.addField("desc");
-        this.addField("title");
-        this.addField("content");
-        this.setRef("id");
-        elasticlunr.stopWordFilter.stopWords = {};
-        elasticlunr.tokenizer.seperator = /[\s~~]+/;
-    });
+    function configureElasticlunr() {
+        if (elasticlunrConfigured) return;
+        elasticlunrConfigured = true;
 
-    // Custom tokenizer to handle symbols with '/', ':', and camelCase
-    const originalTokenizer = elasticlunr.tokenizer;
-    elasticlunr.tokenizer = function (obj, metadata) {
+        elasticlunr.trimmer = function (token) {
+            if (token === null || token === undefined) {
+                throw new Error("token should not be undefined");
+            }
+
+            return token;
+        };
+        elasticlunr.trimmer.label = "trimmer";
+        elasticlunr.Pipeline.registeredFunctions["trimmer"] = elasticlunr.trimmer;
+
+        // Create API index
+        apiIndex = elasticlunr(function () {
+            this.addField("name");
+            this.addField("desc");
+            this.addField("title");
+            this.addField("content");
+            this.setRef("id");
+            elasticlunr.stopWordFilter.stopWords = {};
+            elasticlunr.tokenizer.seperator = /[\s~~]+/;
+        });
+
+        // Custom tokenizer to handle symbols with '/', ':', and camelCase
+        const originalTokenizer = elasticlunr.tokenizer;
+        elasticlunr.tokenizer = decorateTokenizer(originalTokenizer);
+    }
+
+    function decorateTokenizer(originalTokenizer) {
+        return function (obj, metadata) {
         if (obj == null) {
             return [];
         }
@@ -381,7 +409,8 @@ function initSearch() {
         }
 
         return tokens;
-    };
+        };
+    }
 
     // Lazy index build: defer the expensive work until the user actually
     // interacts with search, and run it inside requestIdleCallback so it
@@ -403,6 +432,13 @@ function initSearch() {
     function ensureSearchReady() {
         if (searchReadyPromise) return searchReadyPromise;
         searchReadyPromise = (async () => {
+            if (typeof window.elasticlunr === "undefined") {
+                await loadScript("/elasticlunr.min.js");
+            }
+            configureElasticlunr();
+            if (typeof window.searchIndex === "undefined") {
+                await loadScript("/search_index.en.js").catch(() => {});
+            }
             const apiData = window.searchIndexApi
                 || await fetch("/api_search.json").then(r => r.ok ? r.json() : []).catch(() => []);
             window.searchIndexApi = apiData;
