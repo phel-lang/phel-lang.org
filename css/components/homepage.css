@@ -517,7 +517,7 @@
 }
 
 .phel-repl-examples {
-  min-width: 12rem;
+  min-width: 4rem;
   padding-right: 2.25rem;
   background:
     linear-gradient(45deg, transparent 50%, var(--repl-muted) 50%) calc(100% - 1rem) 50% / 6px 6px no-repeat,
