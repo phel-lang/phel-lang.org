@@ -472,7 +472,7 @@
 
 .phel-repl-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.5rem;
   align-items: center;
   justify-content: flex-start;
@@ -517,7 +517,10 @@
 }
 
 .phel-repl-examples {
+  flex: 0 1 12rem;
+  width: 12rem;
   min-width: 4rem;
+  max-width: 12rem;
   padding-right: 2.25rem;
   background:
     linear-gradient(45deg, transparent 50%, var(--repl-muted) 50%) calc(100% - 1rem) 50% / 6px 6px no-repeat,
@@ -657,7 +660,14 @@
 @media (max-width: 520px) {
   .phel-repl-actions {
     width: 100%;
+    flex-wrap: wrap;
     justify-content: flex-start;
+  }
+
+  .phel-repl-examples {
+    flex-basis: 100%;
+    width: 100%;
+    max-width: none;
   }
 }
 
