@@ -306,7 +306,7 @@
   --repl-control-border: #d1d5db;
   --repl-scrollbar: #d1d5db;
 
-  max-width: 840px;
+  max-width: min(1080px, calc(100vw - 3rem));
   margin: var(--space-2xl) auto;
   overflow: hidden;
   border: 1px solid var(--repl-border);
