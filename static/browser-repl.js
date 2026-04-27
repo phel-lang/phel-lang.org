@@ -420,6 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!name) fail('CompilerException: def expects a symbol');
       const value = evalNode(items[2], env);
       state.vars.set(name, value);
+      env.set(name, value);
       return { kind: 'var', name };
     }
 
