@@ -738,7 +738,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const example = replExamples[Number(examplesSelect.value)];
     if (!example) return;
     input.value = example.code;
-    resetState();
     input.focus();
   });
 
