@@ -3,14 +3,32 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!container) return;
 
   const initialCode = '(->> (range 1 10)\n     (filter odd?)\n     (map #(* % %))\n     (reduce +))';
-  const featureExamples = new Map([
-    ['Built on PHP Ecosystem', ';; PHP interop belongs to the real REPL\n(php/strtoupper "phel")'],
-    ['Immutable Data Structures', '(def user {:name "Ada" :age 36})\n(assoc user :language "Phel")'],
-    ['Macro System', ';; Macros are available in the real REPL\n(defmacro unless [test & body]\n  `(if (not ,test) (do ,@body)))'],
-    ['Interactive REPL', '(defn greet [name]\n  (str "Hello, " name "!"))\n(greet "Phel")'],
-    ['Lisp-inspired Syntax', '(->> (range 1 10)\n     (filter odd?)\n     (map #(* % %))\n     (reduce +))'],
-    ['Modern Tooling', ';; Project tooling belongs to the real REPL\n(require phel\\html)'],
-  ]);
+  const replExamples = [
+    {
+      label: 'Lisp-inspired syntax',
+      code: initialCode,
+    },
+    {
+      label: 'Data structures',
+      code: '(def user {:name "Ada" :role "PHP developer"})\n(assoc user :language "Phel" :editor "REPL")',
+    },
+    {
+      label: 'Collections',
+      code: '(->> [1 2 3 4 5 6]\n     (filter even?)\n     (map inc)\n     (reduce +))',
+    },
+    {
+      label: 'Functions',
+      code: '(defn greet [name]\n  (str "Hello, " name "!"))\n(greet "Phel")',
+    },
+    {
+      label: 'Conditionals',
+      code: '(let [score 42]\n  (if (>= score 40)\n    "ship it"\n    "keep iterating"))',
+    },
+    {
+      label: 'Keyword lookup',
+      code: '(:name {:name "Ada" :language "Phel"})',
+    },
+  ];
 
   const state = {
     line: 1,
@@ -39,6 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="phel-repl-actions">
           <button type="button" class="phel-repl-run" data-repl-run>Run</button>
           <button type="button" class="phel-repl-ghost" data-repl-reset>Reset</button>
+          <select class="phel-repl-examples" aria-label="Load example" data-repl-examples>
+            ${replExamples.map((example, index) => `<option value="${index}">${example.label}</option>`).join('')}
+          </select>
         </div>
       </div>
       <div class="phel-repl-output-wrap">
@@ -55,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const output = repl.querySelector('.phel-repl-output');
   const runButton = repl.querySelector('[data-repl-run]');
   const resetButton = repl.querySelector('[data-repl-reset]');
+  const examplesSelect = repl.querySelector('[data-repl-examples]');
 
   input.value = initialCode;
 
@@ -695,6 +717,15 @@ document.addEventListener('DOMContentLoaded', () => {
   runButton.addEventListener('click', runInput);
   resetButton.addEventListener('click', () => {
     input.value = initialCode;
+    examplesSelect.value = '0';
+    resetState();
+    input.focus();
+  });
+
+  examplesSelect.addEventListener('change', () => {
+    const example = replExamples[Number(examplesSelect.value)];
+    if (!example) return;
+    input.value = example.code;
     resetState();
     input.focus();
   });
@@ -704,37 +735,6 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
       runInput();
     }
-  });
-
-  function activateFeatureExample(card, title) {
-    input.value = featureExamples.get(title);
-    resetState();
-    document.querySelectorAll('.feature-card.is-repl-example-active').forEach((activeCard) => {
-      activeCard.classList.remove('is-repl-example-active');
-      activeCard.setAttribute('aria-pressed', 'false');
-    });
-    card.classList.add('is-repl-example-active');
-    card.setAttribute('aria-pressed', 'true');
-    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    input.focus({ preventScroll: true });
-  }
-
-  document.querySelectorAll('.feature-card').forEach((card) => {
-    const title = card.querySelector('.feature-title')?.textContent?.trim();
-    if (!featureExamples.has(title)) return;
-
-    card.dataset.replExample = title;
-    card.setAttribute('role', 'button');
-    card.setAttribute('tabindex', '0');
-    card.setAttribute('aria-label', `Load ${title} example in the Phel demo REPL`);
-    card.setAttribute('aria-pressed', 'false');
-
-    card.addEventListener('click', () => activateFeatureExample(card, title));
-    card.addEventListener('keydown', (event) => {
-      if (event.key !== 'Enter' && event.key !== ' ') return;
-      event.preventDefault();
-      activateFeatureExample(card, title);
-    });
   });
 
   resetState();
