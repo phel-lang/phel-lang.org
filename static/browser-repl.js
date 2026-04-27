@@ -2,31 +2,43 @@ document.addEventListener('DOMContentLoaded', () => {
   const container = document.getElementById('browser-repl');
   if (!container) return;
 
-  const initialCode = '(->> (range 1 10)\n     (filter odd?)\n     (map #(* % %))\n     (reduce +))';
+  const initialCode = '(def my-name "world")\n(str "Hello, " my-name "!")';
   const replExamples = [
     {
-      label: 'Lisp-inspired syntax',
+      label: 'Hello world',
       code: initialCode,
     },
     {
-      label: 'Data structures',
-      code: '(def user {:name "Ada" :role "PHP developer"})\n(assoc user :language "Phel" :editor "REPL")',
+      label: 'Define a function',
+      code: '(defn greet [name]\n  (str "Hello, " name "!"))\n(greet "PHP developer")',
     },
     {
-      label: 'Collections',
+      label: 'Data structures',
+      code: '(def users [{:name "Ada" :age 36}\n            {:name "Alan" :age 41}\n            {:name "Lin" :age 28}])\n(map :name users)',
+    },
+    {
+      label: 'Keywords as functions',
+      code: '(:language {:name "Ada" :language "Phel"})',
+    },
+    {
+      label: 'Map/filter/reduce',
       code: '(->> [1 2 3 4 5 6]\n     (filter even?)\n     (map inc)\n     (reduce +))',
     },
     {
-      label: 'Functions',
-      code: '(defn greet [name]\n  (str "Hello, " name "!"))\n(greet "Phel")',
+      label: 'Threading pipeline',
+      code: '(->> (range 1 10)\n     (filter odd?)\n     (map #(* % %))\n     (reduce +))',
     },
     {
       label: 'Conditionals',
       code: '(let [score 42]\n  (if (>= score 40)\n    "ship it"\n    "keep iterating"))',
     },
     {
-      label: 'Keyword lookup',
-      code: '(:name {:name "Ada" :language "Phel"})',
+      label: 'Real REPL: macros',
+      code: ';; Macros need the real Phel compiler\n(defmacro unless [test & body]\n  `(if (not ,test) (do ,@body)))',
+    },
+    {
+      label: 'Real REPL: PHP interop',
+      code: ';; PHP interop runs in the real Phel REPL\n(php/number_format 166650 0 "." ",")',
     },
   ];
 
