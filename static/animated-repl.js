@@ -85,25 +85,21 @@ document.addEventListener('DOMContentLoaded', () => {
       body.appendChild(div);
 
       if (line.delay > 0) {
-        // Typewriter effect for input lines
         const textSpan = document.createElement('span');
         div.appendChild(textSpan);
-        await sleep(300); // pause before typing
+        await sleep(300);
         await typeLine(textSpan, line.text, line.delay);
-        await sleep(400); // pause after typing (like pressing Enter)
+        await sleep(400);
       } else {
-        // Instant display for output
         const textSpan = document.createElement('span');
         textSpan.textContent = line.text;
         div.appendChild(textSpan);
         await sleep(100);
       }
 
-      // Auto-scroll
       body.scrollTop = body.scrollHeight;
     }
 
-    // Add replay button
     await sleep(1000);
     const replay = document.createElement('div');
     replay.className = 'terminal-replay';
@@ -118,7 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
     isRunning = false;
   }
 
-  // Start animation when element is in viewport
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting && !isRunning) {
