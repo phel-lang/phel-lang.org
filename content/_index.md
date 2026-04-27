@@ -2,7 +2,7 @@
 title = "Phel: A Functional Lisp Dialect for PHP Developers"
 +++
 
-<img src="/images/logo_phel.svg" width="380" alt="Phel language logo"/>
+<img src="/images/logo_phel.svg" width="380" height="380" alt="Phel language logo" fetchpriority="high" decoding="async"/>
 
 **Phel** is a functional, Lisp-inspired language that compiles to PHP. Inspired by [Clojure](https://clojure.org/), Phel brings macros, persistent data structures, and expressive functional idioms to the PHP ecosystem.
 

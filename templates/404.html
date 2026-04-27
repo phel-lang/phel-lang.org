@@ -1,7 +1,18 @@
 {% extends "layouts/one-column-layout.html" %}
 
 {% block content %}
-    <h1>404 - Page Not Found</h1>
-    <a href="/">Back to start page</a>
+    <div class="error-page">
+        <h1>404 — Page Not Found</h1>
+        <p>The page you were looking for has moved, was renamed, or never existed.</p>
+        <p>Try one of these instead, or open search from the top of the page.</p>
+        <ul class="error-page__links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/documentation/getting-started/">Getting started</a></li>
+            <li><a href="/documentation/reference/api/">API reference</a></li>
+            <li><a href="/documentation/reference/cheat-sheet/">Cheat sheet</a></li>
+            <li><a href="/practice/">Practice</a></li>
+            <li><a href="/blog/">Blog</a></li>
+        </ul>
+    </div>
 {% endblock content %}
 

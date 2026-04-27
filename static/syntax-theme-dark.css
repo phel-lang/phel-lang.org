@@ -1,137 +1,139 @@
 /*
  * Phel dark syntax theme
  * Tuned to the phel-lang.org dark palette (violet accent, slate neutrals on #212830 bg).
+ * Scoped under `.dark` so it can be loaded alongside the light theme without
+ * relying on prefers-color-scheme or runtime media-attr swaps.
  */
 
-.z-code {
+.dark .z-code {
   color: #cbd5e1; /* slate-300 base text */
 }
 
 /* Comments and REPL prompts */
-.z-comment,
-.z-punctuation.z-definition.z-comment {
+.dark .z-comment,
+.dark .z-punctuation.z-definition.z-comment {
   color: #64748b; /* slate-500 */
   font-style: italic;
 }
 
 /* Strings */
-.z-string,
-.z-constant.z-other.z-symbol,
-.z-entity.z-other.z-inherited-class {
+.dark .z-string,
+.dark .z-constant.z-other.z-symbol,
+.dark .z-entity.z-other.z-inherited-class {
   color: #7ee2b8; /* teal-light */
 }
-.z-punctuation.z-definition.z-string {
+.dark .z-punctuation.z-definition.z-string {
   color: #7ee2b8;
 }
 
 /* Regex literals and character escapes */
-.z-string.z-regexp,
-.z-constant.z-character.z-escape {
+.dark .z-string.z-regexp,
+.dark .z-constant.z-character.z-escape {
   color: #67e8f9; /* cyan-300 */
 }
 
 /* Keywords: defn, def, if, when, cond, let, ns, recur, try, catch, ... */
-.z-keyword {
+.dark .z-keyword {
   color: #c4b5fd; /* violet-300 */
 }
-.z-keyword.z-operator {
+.dark .z-keyword.z-operator {
   color: #c4b5fd;
 }
 
 /* Storage (tagged literals like #uuid, #inst) */
-.z-storage {
+.dark .z-storage {
   color: #f9a8d4; /* pink-300 */
 }
 
 /* PHP interop (php/..., php/new, php/->) and other support functions */
-.z-support,
-.z-support.z-function,
-.z-support.z-function.z-any-method {
+.dark .z-support,
+.dark .z-support.z-function,
+.dark .z-support.z-function.z-any-method {
   color: #f9a8d4; /* pink-300 */
 }
 
 /* Keysyms (:keys, :ns, :refer, :as) */
-.z-constant.z-other.z-keyword {
+.dark .z-constant.z-other.z-keyword {
   color: #67e8f9; /* cyan-300 */
 }
 
 /* Literals (true / false / nil) */
-.z-constant.z-language {
+.dark .z-constant.z-language {
   color: #93c5fd; /* blue-300 */
 }
 
 /* Numeric constants */
-.z-constant.z-numeric {
+.dark .z-constant.z-numeric {
   color: #fbbf24; /* amber-400 */
 }
 
 /* Generic constant fallback */
-.z-constant {
+.dark .z-constant {
   color: #fbbf24;
 }
 
 /* Anonymous-fn arg (%, %1, %&) */
-.z-variable.z-parameter.z-anon-fn,
-.z-variable.z-parameter {
+.dark .z-variable.z-parameter.z-anon-fn,
+.dark .z-variable.z-parameter {
   color: #fbbf24;
 }
 
-.z-variable {
+.dark .z-variable {
   color: #fca5a5; /* red-300 */
 }
 
 /* Function/class identifiers (used by other grammars) */
-.z-entity.z-name.z-function,
-.z-meta.z-require,
-.z-keyword.z-other.z-special-method {
+.dark .z-entity.z-name.z-function,
+.dark .z-meta.z-require,
+.dark .z-keyword.z-other.z-special-method {
   color: #93c5fd; /* blue-300 */
 }
 
-.z-support.z-class,
-.z-entity.z-name.z-class,
-.z-entity.z-name.z-type.z-class {
+.dark .z-support.z-class,
+.dark .z-entity.z-name.z-class,
+.dark .z-entity.z-name.z-type.z-class {
   color: #fbbf24;
 }
 
-.z-entity.z-name.z-tag {
+.dark .z-entity.z-name.z-tag {
   color: #fca5a5;
 }
 
-.z-entity.z-other.z-attribute-name {
+.dark .z-entity.z-other.z-attribute-name {
   color: #fbbf24;
 }
 
 /* Structural punctuation: parens, brackets, braces, anon-fn #(...) */
-.z-punctuation.z-paren,
-.z-punctuation.z-bracket,
-.z-punctuation.z-brace,
-.z-punctuation.z-section {
+.dark .z-punctuation.z-paren,
+.dark .z-punctuation.z-bracket,
+.dark .z-punctuation.z-brace,
+.dark .z-punctuation.z-section {
   color: #94a3b8; /* slate-400 */
 }
 
 /* Markdown / diff niceties retained from upstream theme */
-.z-markup.z-heading .z-punctuation.z-definition.z-heading,
-.z-entity.z-name.z-section {
+.dark .z-markup.z-heading .z-punctuation.z-definition.z-heading,
+.dark .z-entity.z-name.z-section {
   color: #93c5fd;
 }
-.z-markup.z-bold,
-.z-punctuation.z-definition.z-bold {
+.dark .z-markup.z-bold,
+.dark .z-punctuation.z-definition.z-bold {
   color: #fbbf24;
   font-weight: bold;
 }
-.z-markup.z-italic,
-.z-punctuation.z-definition.z-italic {
+.dark .z-markup.z-italic,
+.dark .z-punctuation.z-definition.z-italic {
   color: #c4b5fd;
   font-style: italic;
 }
-.z-markup.z-raw.z-inline { color: #7ee2b8; }
-.z-markup.z-list { color: #fca5a5; }
-.z-markup.z-quote { color: #fbbf24; }
-.z-markup.z-inserted { color: #7ee2b8; }
-.z-markup.z-deleted { color: #fca5a5; }
-.z-markup.z-changed { color: #c4b5fd; }
+.dark .z-markup.z-raw.z-inline { color: #7ee2b8; }
+.dark .z-markup.z-list { color: #fca5a5; }
+.dark .z-markup.z-quote { color: #fbbf24; }
+.dark .z-markup.z-inserted { color: #7ee2b8; }
+.dark .z-markup.z-deleted { color: #fca5a5; }
+.dark .z-markup.z-changed { color: #c4b5fd; }
 
-.z-invalid.z-illegal {
+.dark .z-invalid.z-illegal {
   color: #1f2937;
   background-color: #fca5a5;
 }

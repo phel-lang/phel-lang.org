@@ -61,14 +61,21 @@ document.addEventListener('DOMContentLoaded', () => {
     return 'terminal-input';
   }
 
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   async function sleep(ms) {
+    if (reduceMotion) return;
     return new Promise(r => setTimeout(r, ms));
   }
 
   async function typeLine(lineEl, text, charDelay) {
+    if (reduceMotion || charDelay <= 0) {
+      lineEl.textContent = text;
+      return;
+    }
     for (let i = 0; i < text.length; i++) {
       lineEl.textContent += text[i];
-      if (charDelay > 0) await sleep(charDelay + Math.random() * 20);
+      await sleep(charDelay + Math.random() * 20);
     }
   }
 

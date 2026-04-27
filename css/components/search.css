@@ -49,6 +49,10 @@
   pointer-events: none;
 }
 
+.site-header__search-trigger .search-trigger-text--short {
+  display: none;
+}
+
 .site-header__search-trigger .search-shortcut {
   flex-shrink: 0;
   padding: 3px 8px;
@@ -83,6 +87,14 @@
     width: 100%;
     flex: 1;
     margin-left: var(--space-md);
+  }
+
+  .site-header__search-trigger .search-trigger-text--long {
+    display: none;
+  }
+
+  .site-header__search-trigger .search-trigger-text--short {
+    display: inline;
   }
 }
 
