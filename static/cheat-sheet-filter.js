@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const filterWrapper = document.createElement('div');
   filterWrapper.className = 'cheat-filter';
   filterWrapper.innerHTML = `
-    <input type="text" class="cheat-filter-input" placeholder="Filter cheat sheet... (e.g., map, threading, loop)" autocomplete="off" spellcheck="false">
+    <input type="search" class="cheat-filter-input" placeholder="Filter cheat sheet... (e.g., map, threading, loop)" autocomplete="off" spellcheck="false">
     <span class="cheat-filter-count"></span>
   `;
 
@@ -54,14 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
       if (match) visible++;
     });
 
-    if (q) {
-      countEl.textContent = `${visible}/${sections.length} sections`;
-    } else {
-      countEl.textContent = '';
-    }
+    countEl.textContent = `(${visible}/${sections.length} sections)`;
   }
 
+  filter('');
+
   input.addEventListener('input', (e) => filter(e.target.value));
+  input.addEventListener('search', (e) => filter(e.target.value));
 
   // Focus on Ctrl+F or / when not already focused on an input
   document.addEventListener('keydown', (e) => {
