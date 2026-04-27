@@ -832,9 +832,20 @@
   transition: all var(--duration-fast) var(--ease-out);
 }
 
+.feature-card[data-repl-example] {
+  cursor: pointer;
+}
+
 .feature-card:hover {
   border-color: var(--color-light-link);
   box-shadow: var(--shadow-sm);
+}
+
+.feature-card[data-repl-example]:focus-visible,
+.feature-card.is-repl-example-active {
+  border-color: var(--color-light-link);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+  outline: none;
 }
 
 .feature-icon {
@@ -956,6 +967,12 @@
 .dark .feature-card:hover {
   border-color: var(--color-dark-text-accent);
   box-shadow: var(--shadow-dark-sm);
+}
+
+.dark .feature-card[data-repl-example]:focus-visible,
+.dark .feature-card.is-repl-example-active {
+  border-color: var(--color-dark-text-accent);
+  box-shadow: 0 0 0 3px rgba(191, 164, 255, 0.22);
 }
 
 .dark .feature-icon {

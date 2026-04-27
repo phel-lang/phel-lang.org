@@ -3,6 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!container) return;
 
   const initialCode = '(->> (range 1 10)\n     (filter odd?)\n     (map #(* % %))\n     (reduce +))';
+  const featureExamples = new Map([
+    ['Built on PHP Ecosystem', ';; PHP interop belongs to the real REPL\n(php/strtoupper "phel")'],
+    ['Immutable Data Structures', '(def user {:name "Ada" :age 36})\n(assoc user :language "Phel")'],
+    ['Macro System', ';; Macros are available in the real REPL\n(defmacro unless [test & body]\n  `(if (not ,test) (do ,@body)))'],
+    ['Interactive REPL', '(defn greet [name]\n  (str "Hello, " name "!"))\n(greet "Phel")'],
+    ['Lisp-inspired Syntax', '(->> (range 1 10)\n     (filter odd?)\n     (map #(* % %))\n     (reduce +))'],
+    ['Modern Tooling', ';; Project tooling belongs to the real REPL\n(require phel\\html)'],
+  ]);
 
   const state = {
     line: 1,
@@ -394,6 +402,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return evalThread(headName, items.slice(1), env);
     }
 
+    if (unsupportedFeatureForms.has(headName)) {
+      fail(unsupportedFeatureMessage(headName));
+    }
+
     const fn = evalNode(head, env);
     const args = items.slice(1).map((item) => evalNode(item, env));
     return callFn(fn, args, env);
@@ -486,6 +498,17 @@ document.addEventListener('DOMContentLoaded', () => {
       : 'that is outside this small pure-function subset';
 
     return `Demo REPL limit: ${name} is not executed here because ${reason}. This browser preview intentionally simulates a small pure Phel subset so it can run instantly on this static page. Use the real Phel REPL to unlock PHP interop, IO, Composer packages, macros, project code, and the full language. Try pure examples here such as +, range, map, filter, reduce, get, assoc, let, if, and ->>.`;
+  }
+
+  function unsupportedFeatureMessage(name) {
+    const reasons = {
+      defmacro: 'macros need the real Phel compiler',
+      ns: 'namespaces are project-level code',
+      require: 'loading project namespaces and packages needs a real Phel runtime',
+      import: 'imports need project/runtime context',
+    };
+
+    return `Demo REPL limit: ${name} is not executed here because ${reasons[name] || 'it is outside this small pure-function subset'}. This browser preview intentionally keeps evaluation local and static. Use the real Phel REPL to unlock PHP interop, IO, Composer packages, macros, project code, and the full language.`;
   }
 
   function nativeGet(args) {
@@ -620,6 +643,13 @@ document.addEventListener('DOMContentLoaded', () => {
     '->>',
   ]);
 
+  const unsupportedFeatureForms = new Set([
+    'defmacro',
+    'ns',
+    'require',
+    'import',
+  ]);
+
   function asArrayOrMap(value) {
     if (value && value.kind === 'map') return [...value.entries];
     return asArray(value);
@@ -674,6 +704,37 @@ document.addEventListener('DOMContentLoaded', () => {
       event.preventDefault();
       runInput();
     }
+  });
+
+  function activateFeatureExample(card, title) {
+    input.value = featureExamples.get(title);
+    resetState();
+    document.querySelectorAll('.feature-card.is-repl-example-active').forEach((activeCard) => {
+      activeCard.classList.remove('is-repl-example-active');
+      activeCard.setAttribute('aria-pressed', 'false');
+    });
+    card.classList.add('is-repl-example-active');
+    card.setAttribute('aria-pressed', 'true');
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    input.focus({ preventScroll: true });
+  }
+
+  document.querySelectorAll('.feature-card').forEach((card) => {
+    const title = card.querySelector('.feature-title')?.textContent?.trim();
+    if (!featureExamples.has(title)) return;
+
+    card.dataset.replExample = title;
+    card.setAttribute('role', 'button');
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('aria-label', `Load ${title} example in the Phel demo REPL`);
+    card.setAttribute('aria-pressed', 'false');
+
+    card.addEventListener('click', () => activateFeatureExample(card, title));
+    card.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      activateFeatureExample(card, title);
+    });
   });
 
   resetState();
