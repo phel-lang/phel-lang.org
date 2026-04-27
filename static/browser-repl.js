@@ -187,6 +187,54 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function splitTopLevelForms(source) {
+    const forms = [];
+    const buffer = [];
+    let depth = 0;
+    let inString = false;
+    let escaped = false;
+
+    source.split('\n').forEach((line) => {
+      buffer.push(line);
+
+      for (let i = 0; i < line.length; i += 1) {
+        const char = line[i];
+
+        if (escaped) {
+          escaped = false;
+          continue;
+        }
+
+        if (char === '\\' && inString) {
+          escaped = true;
+          continue;
+        }
+
+        if (char === '"') {
+          inString = !inString;
+          continue;
+        }
+
+        if (inString) continue;
+        if (char === ';') break;
+        if ('([{'.includes(char)) depth += 1;
+        if (')]}'.includes(char)) depth -= 1;
+      }
+
+      if (depth <= 0 && !inString && buffer.join('\n').trim() !== '') {
+        forms.push(buffer.join('\n').trimEnd());
+        buffer.length = 0;
+        depth = 0;
+      }
+    });
+
+    if (buffer.join('\n').trim() !== '') {
+      forms.push(buffer.join('\n').trimEnd());
+    }
+
+    return forms;
+  }
+
   function fail(message) {
     throw new Error(message);
   }
@@ -709,21 +757,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const code = input.value.trim();
     if (code === '') return;
 
-    appendPrompt(code);
+    const env = rootEnv();
 
-    try {
-      const forms = parse(code);
-      const env = rootEnv();
-      let result = null;
+    splitTopLevelForms(code).forEach((formSource) => {
+      appendPrompt(formSource);
 
-      forms.forEach((form) => {
-        result = evalNode(form, env);
-      });
+      try {
+        const forms = parse(formSource);
 
-      if (result !== null) appendOutput('result', printValue(result));
-    } catch (error) {
-      appendOutput('error', error.message || 'RuntimeException: evaluation failed');
-    }
+        forms.forEach((form) => {
+          const result = evalNode(form, env);
+          if (result !== null) appendOutput('result', printValue(result));
+        });
+      } catch (error) {
+        appendOutput('error', error.message || 'RuntimeException: evaluation failed');
+      }
+    });
   }
 
   runButton.addEventListener('click', runInput);
