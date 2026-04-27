@@ -474,6 +474,12 @@ scroll-margin-top: calc(var(--header-height) + 2rem);
   outline-offset: 2px;
 }
 
+/* Cancel the * + * stacking margin that the skip link would otherwise
+   inflict on the next element (typically <header>). */
+.skip-to-content + * {
+  margin-top: 0;
+}
+
 .dark .skip-to-content {
   background: var(--color-dark-bg);
   color: var(--color-dark-primary);
