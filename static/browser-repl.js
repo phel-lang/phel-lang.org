@@ -32,14 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
       label: 'Conditionals',
       code: '(let [score 42]\n  (if (>= score 40)\n    "ship it"\n    "keep iterating"))',
     },
-    {
-      label: 'Real REPL: macros',
-      code: ';; Macros need the real Phel compiler\n(defmacro unless [test & body]\n  `(if (not ,test) (do ,@body)))',
-    },
-    {
-      label: 'Real REPL: PHP interop',
-      code: ';; PHP interop runs in the real Phel REPL\n(php/number_format 166650 0 "." ",")',
-    },
   ];
 
   const state = {
