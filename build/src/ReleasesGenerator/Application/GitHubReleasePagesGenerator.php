@@ -230,10 +230,21 @@ final readonly class GitHubReleasePagesGenerator
         $body = $this->formatPrReferences($body);
         $body = $this->formatContributorMentions($body);
 
-        return preg_replace_callback(
+        $body = preg_replace_callback(
             '#https://github\.com/phel-lang/phel-lang/compare/(v[\d.]+)\.\.\.(v[\d.]+)#',
             fn(array $matches): string => "[{$matches[1]}...{$matches[2]}]({$matches[0]})",
             $body,
+        );
+
+        return $this->stripEmDash($body);
+    }
+
+    private function stripEmDash(string $text): string
+    {
+        return str_replace(
+            [' &mdash; ', ' &mdash;', '&mdash; ', '&mdash;', ' — ', ' —', '— ', '—'],
+            [', ',        ',',        ', ',        ',',       ', ', ',',  ', ', ','],
+            $text,
         );
     }
 

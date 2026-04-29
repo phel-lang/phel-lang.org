@@ -8,10 +8,10 @@ Time to put everything together. These challenges grow from gentle warm-ups into
 {% question(difficulty="hard") %}
 **Temperature converter**: write `c->f` and `f->c` to convert between Celsius and Fahrenheit. Then build `convert` so that `(convert 100 :c->f)` returns `212.0`.
 ```phel
-(c->f 100)            ;; => 212.0
-(f->c 32)             ;; => 0.0
-(convert 100 :c->f)   ;; => 212.0
-(convert 32 :f->c)    ;; => 0.0
+(c->f 100)            ; => 212.0
+(f->c 32)             ; => 0.0
+(convert 100 :c->f)   ; => 212.0
+(convert 32 :f->c)    ; => 0.0
 ```
 {% end %}
 {% solution() %}
@@ -60,7 +60,7 @@ Learn more: [Control Flow](/documentation/language/control-flow), [Arithmetic](/
 {% question(difficulty="hard") %}
 **Fibonacci**: return the first `n` Fibonacci numbers.
 ```phel
-(fib 8) ;; => [0 1 1 2 3 5 8 13]
+(fib 8) ; => [0 1 1 2 3 5 8 13]
 ```
 Hint: `loop`/`recur` with an accumulator.
 {% end %}
@@ -82,8 +82,8 @@ Learn more: [Control Flow](/documentation/language/control-flow), [Data Structur
 {% question(difficulty="hard") %}
 **Caesar cipher**: write `encode` and `decode` that shift lowercase letters by `n` positions. Leave other characters alone.
 ```phel
-(encode "hello" 3)  ;; => "khoor"
-(decode "khoor" 3)  ;; => "hello"
+(encode "hello" 3)  ; => "khoor"
+(decode "khoor" 3)  ; => "hello"
 ```
 Hint: `php/ord` and `php/chr` give you character codes.
 {% end %}
@@ -101,8 +101,8 @@ Hint: `php/ord` and `php/chr` give you character codes.
 (defn decode [text n]
   (encode text (- 26 n)))
 
-(encode "hello" 3)  ;; => "khoor"
-(decode "khoor" 3)  ;; => "hello"
+(encode "hello" 3)  ; => "khoor"
+(decode "khoor" 3)  ; => "hello"
 ```
 This combines `map` over a string (treated as a sequence of characters), the short anonymous `|` form, PHP interop for character codes, and modular arithmetic for the wrap-around.
 
@@ -155,7 +155,7 @@ Learn more: [PHP Interop](/documentation/php-interop), [Data Structures](/docume
 ```phel
 (reset-counter!)
 (tick!) (tick!) (tick!)
-(current) ;; => 3
+(current) ; => 3
 ```
 {% end %}
 {% solution() %}
@@ -168,7 +168,7 @@ Learn more: [PHP Interop](/documentation/php-interop), [Data Structures](/docume
 
 (reset-counter!)
 (tick!) (tick!) (tick!)
-(current) ;; => 3
+(current) ; => 3
 ```
 Most Phel data is immutable, but sometimes you need a single mutable cell - a request counter, a cached result, an in-memory app state. `var` gives you exactly that, `swap!` updates it with a function, and `@` (or `deref`) reads the current value. By convention, functions that mutate end with `!`.
 

@@ -1,7 +1,7 @@
 /*
  * Phel light syntax theme
  * Tuned to the phel-lang.org palette (indigo/violet accent, slate neutrals).
- * Applies to every fenced code block Zola emits — Phel gets the full treatment,
+ * Applies to every fenced code block Zola emits, Phel gets the full treatment,
  * other languages inherit the same token colors via shared z-* classes.
  */
 

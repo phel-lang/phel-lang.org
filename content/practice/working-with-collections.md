@@ -238,7 +238,7 @@ Use `group-by` to split numbers into evens and odds:
 {% question(difficulty="hard") %}
 Define `area` so it accepts a map `{:width w :height h}` and returns `w * h`. Use destructuring in the parameter list:
 ```phel
-(area {:width 5 :height 3}) ;; => 15
+(area {:width 5 :height 3}) ; => 15
 ```
 {% end %}
 {% solution() %}
