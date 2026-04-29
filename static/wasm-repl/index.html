@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phel Browser REPL</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --fg: #1f2937;
+      --muted: #6b7280;
+      --border: rgba(0, 0, 0, 0.12);
+      --accent: #9333ea;
+      --accent-strong: #7e22ce;
+      --panel: #f8fafc;
+      --code-bg: #f8fafc;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f172a;
+        --fg: #f1f5f9;
+        --muted: #94a3b8;
+        --border: rgba(255, 255, 255, 0.12);
+        --panel: #111827;
+        --code-bg: #0b1220;
+      }
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .app { display: flex; flex-direction: column; height: 100vh; }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+      flex: 0 0 auto;
+    }
+    .toolbar button {
+      font: inherit;
+      padding: 0.4rem 0.9rem;
+      border-radius: 0.375rem;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #ffffff;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .toolbar button:hover:not(:disabled),
+    .toolbar button:focus-visible:not(:disabled) {
+      background: var(--accent-strong);
+      border-color: var(--accent-strong);
+    }
+    .toolbar button:disabled { opacity: 0.6; cursor: progress; }
+    .toolbar .status { font-size: 0.85rem; color: var(--muted); }
+    .panes {
+      flex: 1 1 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 0;
+    }
+    @media (max-width: 720px) {
+      .panes { grid-template-columns: 1fr; grid-template-rows: 1fr 1fr; }
+    }
+    #editor, #output {
+      width: 100%;
+      height: 100%;
+      padding: 0.75rem 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      background: var(--code-bg);
+      color: var(--fg);
+      border: 0;
+      overflow: auto;
+      resize: none;
+      outline: none;
+      tab-size: 2;
+    }
+    #editor {
+      border-right: 1px solid var(--border);
+      white-space: pre;
+    }
+    @media (max-width: 720px) {
+      #editor { border-right: 0; border-bottom: 1px solid var(--border); }
+    }
+    #editor:focus { box-shadow: inset 0 0 0 2px var(--accent); }
+    #output {
+      background: var(--bg);
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin: 0;
+    }
+    #output.muted { color: var(--muted); }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="toolbar">
+      <button id="run" disabled>Loading runtime…</button>
+      <button id="test" disabled type="button" style="background:#374151;border-color:#374151">Test PHP</button>
+      <span class="status" id="status">Downloading Phel WASM bundle (~80 MB, cached after first load)</span>
+    </div>
+    <div class="panes">
+      <textarea id="editor" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off">;; Welcome to the Phel browser REPL
+;; Edit and click Run to evaluate
+
+(ns test)
+
+(def my-name "world")
+
+(defn greet [name]
+  (str "Hello, " name "!"))
+
+(print (greet my-name))
+</textarea>
+      <pre id="output" class="muted">Output appears here.</pre>
+    </div>
+  </div>
+
+  <script type="module">
+    import php from "./build/php-web.mjs";
+
+    const buffer = [];
+    let isRunning = false;
+    const editorEl = document.getElementById('editor');
+    const outputEl = document.getElementById('output');
+    const runBtn = document.getElementById('run');
+    const statusEl = document.getElementById('status');
+
+    const isDeprecatedNotice = (s) => /^Deprecated:.*\bon line \d+\s*$/.test(s);
+
+    function setLoading(loading) {
+      runBtn.disabled = loading;
+      runBtn.textContent = loading ? 'Running…' : 'Run';
+    }
+
+    function showResult(text, muted) {
+      outputEl.textContent = text;
+      outputEl.classList.toggle('muted', !!muted);
+    }
+
+    let runtime;
+    try {
+      runtime = await php({
+        print(data) { buffer.push(data); },
+        printErr(data) { buffer.push(data); console.warn('[phel-wasm:stderr]', data); },
+      });
+    } catch (e) {
+      console.error('[phel-wasm] runtime init failed:', e);
+      statusEl.textContent = 'Failed to load runtime. Check console.';
+      showResult(String(e), true);
+    }
+
+    if (runtime) {
+      const { ccall, FS } = runtime;
+      try { FS.writeFile('/app/test.php', "<?php echo 'hello world';"); } catch (_) {}
+
+      runBtn.disabled = false;
+      runBtn.textContent = 'Run';
+      const testBtn = document.getElementById('test');
+      testBtn.disabled = false;
+      statusEl.textContent = 'Ready. Edit code on the left, click Run.';
+
+      testBtn.addEventListener('click', () => {
+        try {
+          buffer.length = 0;
+          showResult('', false);
+          const ret = ccall('phpw_with_args', 'string', ['string', 'string', 'string'], [
+            '/app/test.php',
+          ]);
+          const text = buffer.join('');
+          showResult(
+            'Test PHP result:\n' +
+            '  buffer.length=' + buffer.length + '\n' +
+            '  buffer=' + JSON.stringify(buffer) + '\n' +
+            '  ret=' + JSON.stringify(ret),
+            false
+          );
+        } catch (e) {
+          console.error('[phel-wasm:test] failed:', e);
+          showResult('Test PHP threw: ' + String(e), true);
+        }
+      });
+
+      runBtn.addEventListener('click', () => {
+        try {
+          FS.writeFile('/app/src/test.phel', editorEl.value);
+          buffer.length = 0;
+          isRunning = true;
+          showResult('', false);
+          setLoading(true);
+
+          const ret = ccall('phpw_with_args', 'string', ['string', 'string', 'string'], [
+            '/app/src/wasm-entry/entry-point.php',
+          ]);
+
+          const filtered = buffer.filter((line) => !isDeprecatedNotice(line));
+          const text = filtered.join('');
+          if (text.trim().length > 0) {
+            showResult(text, false);
+          } else if (buffer.length > 0) {
+            showResult(buffer.join(''), false);
+          } else if (typeof ret === 'string' && ret.length > 0) {
+            showResult(ret, false);
+          } else {
+            showResult('(no output: buffer empty, ret=' + JSON.stringify(ret) + ')', true);
+          }
+          console.debug('[phel-wasm] buffer:', buffer, 'ret:', ret);
+        } catch (e) {
+          console.error('[phel-wasm] run failed:', e);
+          showResult(String(e), true);
+        } finally {
+          isRunning = false;
+          setLoading(false);
+        }
+      });
+
+      editorEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = editorEl.selectionStart;
+          const end = editorEl.selectionEnd;
+          editorEl.value = editorEl.value.slice(0, start) + '  ' + editorEl.value.slice(end);
+          editorEl.selectionStart = editorEl.selectionEnd = start + 2;
+        } else if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+          e.preventDefault();
+          runBtn.click();
+        }
+      });
+    }
+  </script>
+</body>
+</html>
