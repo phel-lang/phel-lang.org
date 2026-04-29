@@ -38,7 +38,7 @@ That covers running, testing, formatting, and building. Everything else has sens
 
 ```php
 <?php
-// phel-config.php — every setter, default values shown
+// phel-config.php, every setter, default values shown
 return (new \Phel\Config\PhelConfig())
     ->setSrcDirs(['src'])
     ->setTestDirs(['tests'])

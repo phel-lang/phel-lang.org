@@ -18,7 +18,7 @@
 {# Filter ancestors: drop the site root (`_index.md`) and the implicit
    `documentation/_index.md` (visitors already know they're in docs). The
    tail (current page title) renders only when at least one ancestor
-   remains after filtering — keeps the breadcrumb off direct children of
+   remains after filtering, keeps the breadcrumb off direct children of
    /documentation/ and off the site root. #}
 {% set hide = ["_index.md", "documentation/_index.md"] %}
 {% set_global rendered_ancestors = [] %}

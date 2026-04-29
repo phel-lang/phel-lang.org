@@ -47,10 +47,10 @@ Try a few expressions:
 >>> (conj xs 4)
 [1 2 3 4]
 >>> xs
-[1 2 3]                    ;; original vector is unchanged
+[1 2 3]                    ; original vector is unchanged
 >>> (map inc xs)
 (2 3 4)
->>> (php/date "Y-m-d")      ;; call any PHP function
+>>> (php/date "Y-m-d")      ; call any PHP function
 "2026-04-21"
 ```
 
@@ -154,16 +154,16 @@ This checks required PHP extensions (`json`, `mbstring`, `readline`), cache dire
 
 Follow in order. Each step builds on the last. By the end you will be writing real Phel.
 
-1. **[Practice: Basics](/practice/basic)** (~10 min) — graded REPL exercises from "Hello, world" up.
-2. **[Basic Types](/documentation/language/basic-types)** (~5 min) — every literal in one page.
-3. **[Cheat Sheet](/documentation/reference/cheat-sheet)** (keep open) — core functions, one page, filterable.
-4. **[Cookbook](/documentation/guides/cookbook)** (~15 min) — copy-paste recipes for real tasks.
+1. **[Practice: Basics](/practice/basic)** (~10 min), graded REPL exercises from "Hello, world" up.
+2. **[Basic Types](/documentation/language/basic-types)** (~5 min), every literal in one page.
+3. **[Cheat Sheet](/documentation/reference/cheat-sheet)** (keep open), core functions, one page, filterable.
+4. **[Cookbook](/documentation/guides/cookbook)** (~15 min), copy-paste recipes for real tasks.
 
 After that, branch by need:
 
 - **Daily editor flow:** [REPL](/documentation/tooling/repl) → [Editor Support](/documentation/tooling/editor-support).
 - **Coming from PHP:** [Rosetta Stone](/documentation/guides/rosetta-stone), [PHP Interop](/documentation/php-interop).
 - **Power features:** [Macros](/documentation/language/macros), [Interfaces](/documentation/language/interfaces).
-- **Pair with an AI agent:** [Agentic Coding](/documentation/reference/agentic-coding) — single-page reference for Claude Code, Codex, Cursor.
+- **Pair with an AI agent:** [Agentic Coding](/documentation/reference/agentic-coding), single-page reference for Claude Code, Codex, Cursor.
 
 Need a different install path? See [Installation](/documentation/installation).
