@@ -150,22 +150,20 @@ vendor/bin/phel doctor
 
 This checks required PHP extensions (`json`, `mbstring`, `readline`), cache directory permissions, and source layout. Run it any time the tooling misbehaves.
 
-## Where to Go Next
+## Your First 30 Minutes
 
-**Build intuition**
-- [Practice exercises](/practice/basic): graded challenges from "Hello, world" to real programs.
-- [Basic Types](/documentation/language/basic-types): the full set of literals.
-- [Cheat Sheet](/documentation/reference/cheat-sheet): one-page core functions.
+Follow in order. Each step builds on the last. By the end you will be writing real Phel.
 
-**Tooling**
-- [REPL guide](/documentation/tooling/repl): history, reloading, helpers.
-- [Editor Support](/documentation/tooling/editor-support): nREPL, LSP, syntax highlighting.
-- [CLI Commands](/documentation/tooling/cli-commands): every command explained.
+1. **[Practice: Basics](/practice/basic)** (~10 min) — graded REPL exercises from "Hello, world" up.
+2. **[Basic Types](/documentation/language/basic-types)** (~5 min) — every literal in one page.
+3. **[Cheat Sheet](/documentation/reference/cheat-sheet)** (keep open) — core functions, one page, filterable.
+4. **[Cookbook](/documentation/guides/cookbook)** (~15 min) — copy-paste recipes for real tasks.
 
-**Going deeper**
-- [Rosetta Stone: PHP → Phel](/documentation/guides/rosetta-stone): side-by-side patterns.
-- [Cookbook](/documentation/guides/cookbook): real-world snippets.
-- [PHP Interop](/documentation/php-interop): calling PHP code from Phel.
-- [Macros](/documentation/language/macros): the superpower.
+After that, branch by need:
+
+- **Daily editor flow:** [REPL](/documentation/tooling/repl) → [Editor Support](/documentation/tooling/editor-support).
+- **Coming from PHP:** [Rosetta Stone](/documentation/guides/rosetta-stone), [PHP Interop](/documentation/php-interop).
+- **Power features:** [Macros](/documentation/language/macros), [Interfaces](/documentation/language/interfaces).
+- **Pair with an AI agent:** [Agentic Coding](/documentation/reference/agentic-coding) — single-page reference for Claude Code, Codex, Cursor.
 
 Need a different install path? See [Installation](/documentation/installation).

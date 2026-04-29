@@ -1,0 +1,59 @@
+# Phel Lang
+
+> Phel is a functional Lisp that compiles to PHP. Persistent immutable data structures,
+> macros, REPL-driven development, full PHP interop. Runs on PHP 8.4+.
+
+If you only fetch one URL, fetch the agent reference:
+
+- [Agentic Coding (single-page reference)](https://phel-lang.org/documentation/reference/agentic-coding/)
+
+## Onboarding
+
+- [Getting Started](https://phel-lang.org/documentation/getting-started/): zero to REPL in 60 seconds.
+- [Installation](https://phel-lang.org/documentation/installation/): Composer, PHAR, Docker, Nix.
+- [Why Phel?](https://phel-lang.org/documentation/why-phel/): honest FAQ.
+
+## Language
+
+- [Cheat Sheet](https://phel-lang.org/documentation/reference/cheat-sheet/): full filterable core surface.
+- [Basic Types](https://phel-lang.org/documentation/language/basic-types/)
+- [Data Structures](https://phel-lang.org/documentation/language/data-structures/)
+- [Functions and Recursion](https://phel-lang.org/documentation/language/functions-and-recursion/)
+- [Control Flow](https://phel-lang.org/documentation/language/control-flow/)
+- [Destructuring](https://phel-lang.org/documentation/language/destructuring/)
+- [Global and Local Bindings](https://phel-lang.org/documentation/language/global-and-local-bindings/)
+- [Namespaces](https://phel-lang.org/documentation/language/namespaces/)
+- [Macros](https://phel-lang.org/documentation/language/macros/)
+- [Interfaces](https://phel-lang.org/documentation/language/interfaces/)
+- [Truth and Boolean](https://phel-lang.org/documentation/language/truth-and-boolean-operations/)
+- [Arithmetic](https://phel-lang.org/documentation/language/arithmetic/)
+
+## Interop and Tooling
+
+- [PHP Interop](https://phel-lang.org/documentation/php-interop/)
+- [CLI Commands](https://phel-lang.org/documentation/tooling/cli-commands/)
+- [REPL](https://phel-lang.org/documentation/tooling/repl/)
+- [Editor Support](https://phel-lang.org/documentation/tooling/editor-support/)
+- [Phel Helpers](https://phel-lang.org/documentation/tooling/phel-helpers/)
+- [XDebug Setup](https://phel-lang.org/documentation/tooling/xdebug-setup/)
+- [Authoring Libraries](https://phel-lang.org/documentation/tooling/authoring-libraries/)
+- [Configuration](https://phel-lang.org/documentation/configuration/)
+- [Testing](https://phel-lang.org/documentation/testing/)
+
+## Guides
+
+- [Cookbook](https://phel-lang.org/documentation/guides/cookbook/)
+- [Rosetta Stone (PHP to Phel)](https://phel-lang.org/documentation/guides/rosetta-stone/)
+- [Coming from Clojure](https://phel-lang.org/documentation/guides/coming-from-clojure/)
+- [Phel for PHP Developers](https://phel-lang.org/documentation/guides/phel-for-php-developers/)
+
+## Web
+
+- [HTML Rendering](https://phel-lang.org/documentation/web/html-rendering/)
+- [HTTP Request and Response](https://phel-lang.org/documentation/web/http-request-and-response/)
+
+## Source of Truth
+
+- Compiler + core: <https://github.com/phel-lang/phel-lang>
+- Agent skill adapters: `vendor/phel-lang/phel-lang/.agents/` after `composer require phel-lang/phel-lang`.
+- Install adapter for active agent: `vendor/bin/phel agent-install <claude|codex|cursor|copilot|aider|gemini|--all>`.
