@@ -27,4 +27,5 @@ This page contains a list of libraries and projects that use Phel. If you want t
 * [smeghead/phel-saraudon](https://github.com/smeghead/phel-saraudon): A command to visualize result of `git log --stat`.
 * [smeghead/phel-cellular-automaton](https://github.com/smeghead/phel-cellular-automaton): The cellular automaton using the CLI terminal written in phel.
 * [smeghead/phel-mml2wav](https://github.com/smeghead/phel-mml2wav): Generate WAV format files from MML (Music Macro Language).
+* [Lacsw/phelgeon](https://github.com/Lacsw/phelgeon): A Phel project by Lacsw.
 
