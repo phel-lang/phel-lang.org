@@ -10,9 +10,9 @@ aliases = ["/documentation/control-flow"]
 (if test then else?)
 ```
 
-A control flow structure. First evaluates _test_. If _test_ evaluates to `true`, only the _then_ form is evaluated and the result is returned. If _test_ evaluates to `false` only the _else_ form is evaluated and the result is returned. If no _else_ form is given, `nil` will be returned.
+Evaluates _test_. If truthy, returns _then_; if falsy, returns _else_ (or `nil`).
 
-The _test_ evaluates to `false` if its value is `false` or equal to `nil`. Every other value evaluates to `true`. In sense of PHP this means (`test != null && test !== false`).
+Only `false` and `nil` are falsy. Everything else truthy. PHP equivalent: `test !== null && test !== false`.
 
 ```phel
 ;; Basic if examples
@@ -50,7 +50,7 @@ The _test_ evaluates to `false` if its value is `false` or equal to `nil`. Every
 (case test & pairs)
 ```
 
-Evaluates the _test_ expression. Then iterates over each pair. If the result of the test expression matches the first value of the pair, the second expression of the pair is evaluated and returned. If no match is found, returns nil.
+Evaluates _test_, matches against first item of each pair. Returns the matching second item, or `nil` if no match.
 
 ```phel
 ;; Basic case examples
@@ -90,7 +90,7 @@ Evaluates the _test_ expression. Then iterates over each pair. If the result of 
 ```
 
 {% php_note() %}
-`case` is similar to PHP's `switch` but more concise:
+Like PHP `switch`, more concise:
 
 ```php
 // PHP
@@ -111,7 +111,7 @@ switch ($value) {
   12 :big)
 ```
 
-No `break` needed-Phel's `case` doesn't fall through.
+No `break`, no fall-through.
 {% end %}
 
 ## Cond
@@ -120,7 +120,7 @@ No `break` needed-Phel's `case` doesn't fall through.
 (cond & pairs)
 ```
 
-Iterates over each pair. If the first expression of the pair evaluates to logical true, the second expression of the pair is evaluated and returned. If no match is found, returns nil.
+Walks pairs. First pair whose test is truthy: returns its second expression. No match returns `nil`.
 
 ```phel
 ;; Basic cond examples
@@ -171,7 +171,7 @@ Iterates over each pair. If the first expression of the pair evaluates to logica
 ```
 
 {% php_note() %}
-`cond` is like a chain of `if`/`elseif` in PHP:
+Like a chain of `if`/`elseif`:
 
 ```php
 // PHP
@@ -189,7 +189,7 @@ if ($value < 0) {
   (pos? value) :positive)
 ```
 
-More elegant for multiple conditions than nested `if` expressions. Use `:else` as the last condition for a default case.
+Cleaner than nested `if`. Use `:else` as a default.
 {% end %}
 
 ## Loop
@@ -197,14 +197,16 @@ More elegant for multiple conditions than nested `if` expressions. Use `:else` a
 ```phel
 (loop [bindings*] expr*)
 ```
-Creates a new lexical context with variables defined in bindings and defines a recursion point at the top of the loop.
+
+Creates a lexical context with bindings and a recursion point at the top.
 
 ```phel
 (recur expr*)
 ```
-Evaluates the expressions in order and rebinds them to the recursion point. A recursion point can be either a `fn` or a `loop`. The recur expressions must match the arity of the recursion point exactly.
 
-Internally `recur` is implemented as a PHP while loop and therefore prevents the _Maximum function nesting level_ errors.
+Evaluates expressions and rebinds at the recursion point. Recursion point is a `fn` or `loop`. Arities must match exactly.
+
+`recur` compiles to a PHP `while` loop, avoiding _Maximum function nesting level_ errors.
 
 ```phel
 ;; Basic loop example - sum numbers from 1 to 10
@@ -249,7 +251,7 @@ Internally `recur` is implemented as a PHP while loop and therefore prevents the
 ```
 
 {% php_note() %}
-`loop`/`recur` provides tail-call optimization, which PHP doesn't support natively:
+TCO not in PHP natively:
 
 ```php
 // PHP - recursive functions can cause stack overflow
@@ -265,7 +267,7 @@ function countdown($n) {
     (recur (dec n))))  ; No stack overflow!
 ```
 
-This is critical for functional programming patterns in PHP.
+Critical for FP patterns in PHP.
 {% end %}
 
 ## Foreach
@@ -274,7 +276,8 @@ This is critical for functional programming patterns in PHP.
 (foreach [value valueExpr] expr*)
 (foreach [key value valueExpr] expr*)
 ```
-The `foreach` special form can be used to iterate over all kind of PHP datastructures for side-effects. The return value of `foreach` is always `nil`. The `loop` special form should be preferred of the `foreach` special form whenever possible.
+
+Iterate any PHP data structure for side-effects. Always returns `nil`. Prefer `loop` when possible.
 
 ```phel
 (foreach [v [1 2 3]]
@@ -286,7 +289,7 @@ The `foreach` special form can be used to iterate over all kind of PHP datastruc
 ```
 
 {% php_note() %}
-`foreach` mirrors PHP's foreach loop syntax:
+Mirrors PHP `foreach`:
 
 ```php
 // PHP
@@ -308,34 +311,30 @@ foreach (["a" => 1, "b" => 2] as $k => $v) {
   (print v))
 ```
 
-**Note:** Prefer `for` or `loop` when you need to return values. `foreach` is only for side-effects.
+**Note:** Use `for` or `loop` to return values. `foreach` is side-effects only.
 {% end %}
 
 ## For
 
-A more powerful loop functionality is provided by the `for` loop. The `for` loop is an elegant way to define and create arrays based on existing collections. It combines the functionality of `foreach`, `let`, `if` and `reduce` in one call.
+`for` builds collections from existing ones. Combines `foreach`, `let`, `if`, `reduce`.
 
 ```phel
 (for head body+)
 ```
 
-The `head` of the loop is a vector that contains a
-sequence of bindings and modifiers. A binding is a sequence of three
-values `binding :verb expr`. Where `binding` is a binding as
-in `let` and `:verb` is one of the following keywords:
+`head` is a vector of bindings and modifiers. A binding is `binding :verb expr` where `binding` works as in `let` and `:verb` is one of:
 
-* `:range` loop over a range, by using the range function.
-* `:in` loops over all values of a collection.
-* `:keys` loops over all keys/indexes of a collection.
-* `:pairs` loops over all key value pairs of a collection.
+* `:range` loop over a range
+* `:in` values of a collection
+* `:keys` keys/indexes of a collection
+* `:pairs` key-value pairs
 
-After each loop binding additional modifiers can be applied. Modifiers
-have the form `:modifier argument`. The following modifiers are supported:
+Modifiers (form `:modifier argument`):
 
-* `:while` breaks the loop if the expression is falsy.
-* `:let` defines additional bindings.
-* `:when` only evaluates the loop body if the condition is true.
-* `:reduce [accumulator initial-value]` Instead of returning a list, it reduces the values into `accumulator`. Initially `accumulator` is bound to `initial-value`. Normally with `when` macro inside `reduce` function the accumulator becomes `nil` when the condition is not met. However with `for`, `:when` can be used for conditional logic with `:reduce` without this issue.
+* `:while` break when expression is falsy
+* `:let` additional bindings
+* `:when` evaluate body only when condition is true
+* `:reduce [acc init]` reduce instead of returning a list. `acc` starts at `init`. Unlike `when` inside `reduce`, `:when` works cleanly with `:reduce`
 
 ```phel
 (for [x :range [0 3]] x) ; Evaluates to [0 1 2]
@@ -365,7 +364,7 @@ have the form `:modifier argument`. The following modifiers are supported:
 ```
 
 {% php_note() %}
-Phel's `for` is a powerful list comprehension, not like PHP's `for` loop:
+List comprehension, not PHP's `for`:
 
 ```php
 // PHP - manual array building
@@ -378,11 +377,11 @@ foreach (range(1, 3) as $x) {
 (for [x :in [1 2 3]] (inc x))  ; [2 3 4]
 ```
 
-Phel's `for` combines iteration, filtering (`:when`), early termination (`:while`), reduction (`:reduce`), and nested loops in one elegant expression-much more powerful than PHP's `for`/`foreach`.
+Combines iteration, filtering (`:when`), early termination (`:while`), reduction (`:reduce`), nested loops.
 {% end %}
 
 {% clojure_note() %}
-`for` works similarly to Clojure's `for`-list comprehensions with `:let`, `:when`, and nested bindings. The `:reduce` modifier is a Phel extension.
+Like Clojure `for` (`:let`, `:when`, nesting). `:reduce` is a Phel extension.
 {% end %}
 
 ## Do
@@ -391,7 +390,7 @@ Phel's `for` combines iteration, filtering (`:when`), early termination (`:while
 (do expr*)
 ```
 
-Evaluates the expressions in order and returns the value of the last expression. If no expression is given, `nil` is returned.
+Evaluates expressions in order. Returns the last value, or `nil` if empty.
 
 ```phel
 (do 1 2 3 4) ; Evaluates to 4
@@ -401,13 +400,13 @@ Evaluates the expressions in order and returns the value of the last expression.
 ## Dofor
 
 ```phel
-(dofor [x :in [1 2 3]] (print x)) ; Prints 1, 2, 3 and returns nil
-(dofor [x :in [2 3 4 5] :when (even? x)] (print x)) ; Prints 1, 2 and returns nil
+(dofor [x :in [1 2 3]] (print x)) ; Prints 1, 2, 3, returns nil
+(dofor [x :in [2 3 4 5] :when (even? x)] (print x)) ; Prints 2, 4, returns nil
 ```
 
-Iterating over collections for side-effects is also possible with `dofor` which has similar behavior to `for` otherwise but returns `nil` as `foreach` does.
+Like `for` but for side-effects. Returns `nil` like `foreach`.
 
-## Conditional Threading
+## Conditional threading
 
 ### cond->
 
@@ -415,7 +414,7 @@ Iterating over collections for side-effects is also possible with `dofor` which 
 (cond-> expr & clauses)
 ```
 
-Takes an expression and a set of test/form pairs. Threads the expression through each form where the corresponding test is truthy (thread-first style). Forms where the test is falsy are skipped.
+Threads expression through each form whose test is truthy (thread-first). Skips forms with falsy tests.
 
 ```phel
 (cond-> 1
@@ -439,7 +438,7 @@ Takes an expression and a set of test/form pairs. Threads the expression through
 (cond->> expr & clauses)
 ```
 
-Like `cond->` but threads as the last argument (thread-last style).
+Like `cond->` but threads as last arg (thread-last).
 
 ```phel
 (cond->> [1 2 3 4 5]
@@ -456,15 +455,15 @@ Like `cond->` but threads as the last argument (thread-last style).
 (throw expr)
 ```
 
-The _expr_ is evaluated and thrown, therefore _expr_ must return a value that implements PHP's `Throwable` interface.
+Evaluates _expr_ and throws it. Must implement PHP `Throwable`.
 
-## Try, Catch and Finally
+## Try, catch, finally
 
 ```phel
 (try expr* catch-clause* finally-clause?)
 ```
 
-All expressions are evaluated and if no exception is thrown the value of the last expression is returned. If an exception occurs and a matching _catch-clause_ is provided, its expression is evaluated and the value is returned. If no matching _catch-clause_ can be found the exception is propagated out of the function. Before returning normally or abnormally the optionally _finally-clause_ is evaluated.
+Evaluates expressions. No exception: returns last value. Matching _catch-clause_: returns its value. No match: exception propagates. _finally-clause_ runs before return.
 
 ```phel
 (try) ; Evaluates to nil
@@ -483,18 +482,18 @@ All expressions are evaluated and if no exception is thrown the value of the las
   (finally (print "test"))) ; Evaluates to "error" and prints "test"
 ```
 
-## Structured Exceptions
+## Structured exceptions
 
-Phel provides functions for creating and inspecting structured exceptions that carry data maps, inspired by Clojure's `ex-info` system. This is useful when you need to attach context to errors beyond just a message string.
+Exceptions carrying data maps, inspired by Clojure's `ex-info`. Useful for attaching context beyond a message.
 
-### Creating structured exceptions with `ex-info`
+### Creating with `ex-info`
 
 ```phel
 (ex-info message data)
 (ex-info message data cause)
 ```
 
-Creates an exception with a message string, an associated data map, and an optional cause (a previous exception). The data map can contain any information relevant to the error:
+Exception with message, data map, optional cause:
 
 ```phel
 (throw (ex-info "User not found" {:user-id 42 :status 404}))
@@ -506,9 +505,9 @@ Creates an exception with a message string, an associated data map, and an optio
     (throw (ex-info "Operation failed" {:step "processing"} e))))
 ```
 
-### Inspecting structured exceptions
+### Inspecting
 
-Use `ex-data`, `ex-message`, and `ex-cause` to extract information from structured exceptions:
+Use `ex-data`, `ex-message`, `ex-cause`:
 
 ```phel
 (def err (ex-info "Validation failed" {:field :email :reason "invalid format"}))
@@ -518,7 +517,7 @@ Use `ex-data`, `ex-message`, and `ex-cause` to extract information from structur
 (ex-cause err)    ; => nil (no cause provided)
 ```
 
-### Practical example: error handling with data
+### Example: error handling with data
 
 ```phel
 (defn find-user [id]

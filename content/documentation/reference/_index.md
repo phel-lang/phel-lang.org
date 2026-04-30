@@ -6,4 +6,4 @@ insert_anchor_links = "right"
 template = "section-page.html"
 +++
 
-Quick-reference material, the full API documentation, and community projects built with Phel.
+Quick reference, full API docs, community projects.

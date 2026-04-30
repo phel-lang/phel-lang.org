@@ -9,14 +9,15 @@ aliases = ["/documentation/global-and-local-bindings"]
 ```phel
 (def name meta? value)
 ```
-This special form binds a value to a global symbol. A definition cannot be redefined at a later point.
+
+Binds a value to a global symbol. Cannot be redefined later.
 
 ```phel
 (def my-name "phel")
 (def sum-of-three (+ 1 2 3))
 ```
 
-To each definition metadata can be attached. Metadata is either a Keyword, a String or a Map.
+Attach metadata: a Keyword, String, or Map.
 
 ```phel
 (def my-private-definition :private 12)
@@ -29,7 +30,8 @@ To each definition metadata can be attached. Metadata is either a Keyword, a Str
 ```phel
 (let [bindings*] expr*)
 ```
-Creates a new lexical context with assignments defined in bindings. Afterwards the list of expressions is evaluated and the value of the last expression is returned. If no expression is given `nil` is returned.
+
+Creates a lexical context with the bindings, then evaluates the expressions. Returns the last value (or `nil` if no expressions).
 
 ```phel
 (let [x 1
@@ -40,10 +42,10 @@ Creates a new lexical context with assignments defined in bindings. Afterwards t
       y (+ x 2)]) ; Evaluates to nil
 ```
 
-All assignments defined in _bindings_ are immutable and cannot be changed.
+All bindings are immutable.
 
 {% php_note() %}
-`let` creates block-scoped bindings, similar to PHP's block scope, but with immutability:
+Block-scoped bindings, like PHP, but immutable:
 
 ```php
 // PHP - mutable variables
@@ -61,11 +63,11 @@ $x = 10;  // Can reassign
 
 ## Binding
 
-While `let` creates a new lexical context, `binding` temporarily redefines existing definitions while executing the body. This can be useful when writing tests on functions depending on external state as `binding` allows to remap existing functions or values with mocks.
+`binding` temporarily redefines existing globals while executing the body. Useful for tests, mocking, dependency injection.
 
-**Key difference:**
-- `let` creates new local variables (lexical scope only)
-- `binding` temporarily overrides global definitions (dynamic scope)
+**Difference:**
+- `let`: new local variables (lexical scope)
+- `binding`: temporarily overrides globals (dynamic scope)
 
 ```phel
 ;; Example 1: Simple binding demonstration
@@ -129,7 +131,7 @@ While `let` creates a new lexical context, `binding` temporarily redefines exist
 ```
 
 {% php_note() %}
-`binding` is useful for dependency injection and testing, similar to mocking frameworks in PHP:
+Useful for DI and testing, similar to PHP mocking frameworks:
 
 ```php
 // PHP - using dependency injection
@@ -150,7 +152,7 @@ $service = new UserService($mockDb);
     (is (= "Alice" (:name (get-user 1))))))
 ```
 
-Binding is particularly useful for testing code that depends on global state or external systems.
+Useful for testing code with global state or external systems.
 {% end %}
 
 ## Atoms
@@ -159,13 +161,13 @@ Binding is particularly useful for testing code that depends on global state or 
 (atom value)
 ```
 
-Atoms provide a way to manage mutable state. Each atom contains a single value. Create one with the `atom` function:
+Atoms manage mutable state. Each holds a single value. Create with `atom`:
 
 ```phel
 (def foo (atom 10)) ; Define an atom with value 10
 ```
 
-The `deref` function (or the `@` reader shorthand) extracts the value. `reset!` replaces the value, and `swap!` updates it by applying a function:
+`deref` (or `@` shorthand) extracts the value. `reset!` replaces it. `swap!` applies a function:
 
 ```phel
 (def foo (atom 10))
@@ -179,10 +181,10 @@ The `deref` function (or the `@` reader shorthand) extracts the value. `reset!` 
 @foo               ; Evaluates to 22
 ```
 
-> **Note:** The original Phel names `var`, `set!`, `var?`, and `function?` still work as deprecated aliases for `atom`, `reset!`, `atom?`, and `fn?`. New code should use the Clojure-compatible names.
+> **Note:** `var`, `set!`, `var?`, `function?` are deprecated aliases for `atom`, `reset!`, `atom?`, `fn?`. Use the Clojure-compatible names.
 
 {% php_note() %}
-Atoms provide mutable state similar to PHP variables, but are explicit and contained:
+Atoms are explicit, contained mutable state:
 
 ```php
 // PHP - everything is mutable by default
@@ -194,6 +196,6 @@ $count++;
 (swap! count inc)
 ```
 
-Use Phel's immutable data structures when possible. Atoms are mainly useful for interop with PHP code or managing application state.
+Prefer immutable data structures. Atoms mainly for PHP interop or app state.
 {% end %}
 

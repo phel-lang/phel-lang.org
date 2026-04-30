@@ -3,7 +3,7 @@ title = "Configuration"
 weight = 60
 +++
 
-Phel reads `phel-config.php` from the project root. For most projects you only need the factory:
+Phel reads `phel-config.php` from the project root. Most projects only need the factory:
 
 ```php
 <?php
@@ -11,11 +11,9 @@ Phel reads `phel-config.php` from the project root. For most projects you only n
 return \Phel\Config\PhelConfig::forProject('your-ns\main');
 ```
 
-This sets a conventional layout (`src/phel/`, `tests/phel/`) and the build entry namespace. Override anything by chaining setters.
+Sets `src/phel/`, `tests/phel/`, and the build entry namespace. Chain setters to override.
 
-## Common Tweaks
-
-The five settings most projects touch:
+## Common tweaks
 
 ```php
 <?php
@@ -29,9 +27,9 @@ return \Phel\Config\PhelConfig::forProject('your-ns\main')
 ;
 ```
 
-That covers running, testing, formatting, and building. Everything else has sensible defaults.
+Covers running, testing, formatting, building. Defaults handle the rest.
 
-## Full Reference
+## Full reference
 
 <details>
 <summary><strong>All available options</strong></summary>

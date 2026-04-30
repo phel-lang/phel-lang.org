@@ -4,40 +4,40 @@ weight = 8
 aliases = ["/documentation/destructuring"]
 +++
 
-Destructuring binds names to values inside data structures. Instead of manually extracting each value, you describe the shape of the data and Phel binds the pieces for you.
+Destructuring binds names to values inside data structures. Describe the shape, Phel binds the pieces.
 
-Destructuring works in `let` bindings, function parameters (`defn`, `fn`), and `loop` bindings.
+Works in `let`, function params (`defn`, `fn`), `loop`.
 
-## Sequential destructuring
+## Sequential
 
-Extract values from vectors and lists by position using vector syntax:
+Extract from vectors/lists by position with vector syntax:
 
 ```phel
 (let [[a b] [1 2]]
   (+ a b)) ; => 3
 ```
 
-### Nested destructuring
+### Nested
 
-Patterns can be nested arbitrarily deep:
+Patterns nest arbitrarily deep:
 
 ```phel
 (let [[a [b c]] [1 [2 3]]]
   (+ a b c)) ; => 6
 ```
 
-### Skipping values
+### Skipping
 
-Use `_` to ignore positions you don't care about:
+`_` ignores a position:
 
 ```phel
 (let [[a _ b] [1 2 3]]
   (+ a b)) ; => 4
 ```
 
-### Rest arguments
+### Rest args
 
-Use `&` to capture remaining elements as a sequence:
+`&` captures the remaining elements:
 
 ```phel
 (let [[a b & rest] [1 2 3 4 5]]
@@ -45,7 +45,7 @@ Use `&` to capture remaining elements as a sequence:
 ```
 
 {% php_note() %}
-Destructuring is more powerful than PHP's list() or array unpacking:
+More powerful than PHP `list()` or array unpacking:
 
 ```php
 // PHP - limited destructuring
@@ -58,30 +58,30 @@ Destructuring is more powerful than PHP's list() or array unpacking:
   )
 ```
 
-Phel's destructuring works in more places (function params, let, loop) and supports more patterns.
+Works in more places (function params, let, loop) with more patterns.
 {% end %}
 
-## Associative destructuring
+## Associative
 
-Extract values from maps by key using map syntax:
+Extract from maps by key with map syntax:
 
 ```phel
 (let [{:a a :b b} {:a 1 :b 2}]
   (+ a b)) ; => 3
 ```
 
-### Nested associative destructuring
+### Nested associative
 
-Combine map and vector patterns freely:
+Mix map and vector patterns:
 
 ```phel
 (let [{:a [a b] :c c} {:a [1 2] :c 3}]
   (+ a b c)) ; => 6
 ```
 
-### Default values with `:or`
+### Defaults with `:or`
 
-Provide defaults for keys that might be missing:
+Defaults for missing keys:
 
 ```phel
 (let [{:name name :role role :or {role "guest"}}
@@ -92,7 +92,7 @@ Provide defaults for keys that might be missing:
 Without `:or`, missing keys bind to `nil`.
 
 {% php_note() %}
-Associative destructuring lets you extract values by key:
+Extract values by key:
 
 ```php
 // PHP - manual extraction with defaults
@@ -108,9 +108,9 @@ $role = $data['role'] ?? 'guest';
 ```
 {% end %}
 
-## Index-based destructuring
+## Index-based
 
-Vectors can also be destructured by index using map syntax:
+Destructure vectors by index using map syntax:
 
 ```phel
 (let [{0 a 1 b} [1 2]]
@@ -120,11 +120,11 @@ Vectors can also be destructured by index using map syntax:
   (+ a b c)) ; => 6
 ```
 
-This is useful when you only need specific positions from a large vector.
+Useful for specific positions in a large vector.
 
-## Destructuring in function parameters
+## In function parameters
 
-Destructuring works directly in `defn` and `fn` parameter lists:
+Works directly in `defn` and `fn` params:
 
 ```phel
 (defn greet [{:name name :role role :or {role "member"}}]
@@ -134,7 +134,7 @@ Destructuring works directly in `defn` and `fn` parameter lists:
 (greet {:name "Bob"})                  ; => "Hello Bob (member)"
 ```
 
-Sequential destructuring in parameters:
+Sequential in params:
 
 ```phel
 (defn distance [[x1 y1] [x2 y2]]
@@ -144,9 +144,9 @@ Sequential destructuring in parameters:
 (distance [0 0] [3 4]) ; => 5.0
 ```
 
-## Destructuring in `loop`
+## In `loop`
 
-Use destructuring in loop bindings to work with structured data:
+Loop bindings:
 
 ```phel
 (loop [[head & tail] [1 2 3 4 5]

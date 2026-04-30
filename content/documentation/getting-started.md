@@ -3,26 +3,26 @@ title = "Getting Started"
 weight = 1
 +++
 
-Phel is a Lisp that compiles to PHP. You get persistent data structures, immutability by default, and macros. All running on the PHP runtime you already have.
+Phel is a Lisp that compiles to PHP. Persistent data structures, immutability by default, macros. Runs on your existing PHP runtime.
 
-This page gets you from zero to a live REPL in under a minute.
+Zero to live REPL in under a minute.
 
 ## Requirements
 
-- **PHP 8.4+**, check with `php -v`
-- **[Composer](https://getcomposer.org/)**, check with `composer --version`
+- **PHP 8.4+** (`php -v`)
+- **[Composer](https://getcomposer.org/)** (`composer --version`)
 
-That is all you need. No extra runtime, no JVM.
+No extra runtime. No JVM.
 
-> **No PHP installed?** Skip to the one-line Docker REPL:
+> **No PHP installed?** One-line Docker REPL:
 >
 > ```bash
 > docker run --rm -it php:8.4-cli sh -c "curl -sL https://phel-lang.org/phar -o /tmp/phel.phar && php /tmp/phel.phar repl"
 > ```
 >
-> See [Installation → Docker](/documentation/installation#docker-no-php-required) for a `phel` alias and Composer-based workflows.
+> See [Installation, Docker](/documentation/installation#docker-no-php-required) for a `phel` alias and Composer workflows.
 
-## 60-Second Quick Start
+## 60-second quick start
 
 ```bash
 composer create-project --stability dev phel-lang/cli-skeleton example-app
@@ -60,9 +60,9 @@ Exit with `Ctrl+D` or `exit`. Run the entry script:
 composer dev
 ```
 
-Done. You have a working Phel project.
+Done. Working Phel project.
 
-## Which Background Do You Come From?
+## Which background do you come from?
 
 <details class="dev-note dev-note--clojure">
 <summary>
@@ -72,18 +72,18 @@ Done. You have a working Phel project.
 </summary>
 <div class="dev-note__content">
 
-**Most of your intuition transfers unchanged.** `def`, `defn`, `let`, `fn`, `if`, `when`, `cond`, `case`, `loop`/`recur`, `->`, `->>`, `as->`, destructuring, `conj`, `assoc`, `map`, `filter`, `reduce`, transducers, protocols: all work as you expect.
+**Most intuition transfers.** `def`, `defn`, `let`, `fn`, `if`, `when`, `cond`, `case`, `loop`/`recur`, `->`, `->>`, `as->`, destructuring, `conj`, `assoc`, `map`, `filter`, `reduce`, transducers, protocols: work as expected.
 
-**Key differences at a glance:**
+**Key differences:**
 
-- Runtime is PHP, not the JVM. `println`, files, HTTP all go through PHP.
-- Namespaces use dashes in source but map to PHP classes under the hood (`my-app\core` ↔ `MyApp\Core`).
+- Runtime is PHP, not JVM. `println`, files, HTTP go through PHP.
+- Namespaces use dashes in source, map to PHP classes (`my-app\core` ↔ `MyApp\Core`).
 - Interop: `(php/date "Y-m-d")`, `(php/new DateTime)`, `(php/-> obj (method arg))`.
-- No agents/refs. Use PHP features for concurrency, or Phel's fiber-based `async` (amphp).
-- `nil` is the only falsy value other than `false`. Strings, `0`, `[]` are all truthy.
-- Comments: `;` inline, `;;` standalone. `#_` reader discard and `(comment ...)` both work.
+- No agents/refs. Use PHP for concurrency, or Phel's fiber-based `async` (amphp).
+- Only `nil` and `false` are falsy. Strings, `0`, `[]` truthy.
+- Comments: `;` inline, `;;` standalone. `#_` reader discard and `(comment ...)` work.
 
-**Start here:** [Coming from Clojure](/documentation/guides/coming-from-clojure) for the full diff guide.
+**Start:** [Coming from Clojure](/documentation/guides/coming-from-clojure).
 
 </div>
 </details>
@@ -96,42 +96,42 @@ Done. You have a working Phel project.
 </summary>
 <div class="dev-note__content">
 
-**Your PHP ecosystem stays.** Phel compiles to PHP, ships via Composer, runs with your PHP binary, and can call any PHP function or class directly.
+**PHP ecosystem stays.** Compiles to PHP, ships via Composer, runs with your PHP binary, calls any PHP function/class directly.
 
-**What is different:**
+**Differences:**
 
-- Immutable by default. Instead of `$x = $x + 1`, you bind a new value: `(let [x (+ x 1)] ...)`.
-- Prefix notation: `add(1, 2)` becomes `(+ 1 2)`. The function is always the first element.
-- Persistent vectors/maps/sets instead of PHP arrays (structural sharing, O(log32 n) updates).
-- Everything is an expression. No statements, no `return` keyword.
-- Interop is one-liner: `(php/date "Y-m-d")`, `(php/new DateTime "2024-01-01")`, `(php/-> obj (method arg))`.
-- REPL-first workflow. You write code by evaluating forms, not by running scripts repeatedly.
+- Immutable by default. Bind new values: `(let [x (+ x 1)] ...)` instead of `$x = $x + 1`.
+- Prefix notation: `add(1, 2)` becomes `(+ 1 2)`. Function is always first.
+- Persistent vectors/maps/sets, not PHP arrays (structural sharing, O(log32 n) updates).
+- Everything an expression. No statements, no `return`.
+- One-liner interop: `(php/date "Y-m-d")`, `(php/new DateTime "2024-01-01")`, `(php/-> obj (method arg))`.
+- REPL-first. Evaluate forms, don't re-run scripts.
 
-**Start here:** [Phel for PHP Developers](/documentation/guides/phel-for-php-developers). Maps every common PHP pattern to Phel.
+**Start:** [Phel for PHP Developers](/documentation/guides/phel-for-php-developers). Maps PHP patterns to Phel.
 
 </div>
 </details>
 
-## Project Layout
+## Project layout
 
-The skeleton gives you this:
+Skeleton gives you:
 
 ```
 example-app/
-├── composer.json       # PHP dependencies + phel scripts
-├── phel-config.php     # project config (source/test dirs, build)
+├── composer.json       ; PHP deps + phel scripts
+├── phel-config.php     ; project config (src/test dirs, build)
 ├── src/
-│   ├── main.phel       # entry namespace
-│   └── modules/        # your code, organized by namespace
+│   ├── main.phel       ; entry namespace
+│   └── modules/        ; your code by namespace
 └── tests/
     └── modules/
 ```
 
-All commands are available as `vendor/bin/phel <cmd>` (for example `vendor/bin/phel repl`). The skeleton also wires `composer repl`, `composer dev`, `composer test`, and `composer build` as shortcuts.
+All commands as `vendor/bin/phel <cmd>` (e.g. `vendor/bin/phel repl`). Skeleton wires `composer repl`, `composer dev`, `composer test`, `composer build` as shortcuts.
 
-## Initialize Without the Skeleton
+## Initialize without the skeleton
 
-Prefer a minimal setup? Add Phel to any Composer project:
+Minimal setup? Add Phel to any Composer project:
 
 ```bash
 mkdir my-app && cd my-app
@@ -140,30 +140,30 @@ vendor/bin/phel init my-app
 vendor/bin/phel repl
 ```
 
-`phel init` creates `phel-config.php`, a `src/` namespace, and a matching test file.
+`phel init` creates `phel-config.php`, a `src/` namespace, matching test file.
 
-## Verify Your Setup
+## Verify setup
 
 ```bash
 vendor/bin/phel doctor
 ```
 
-This checks required PHP extensions (`json`, `mbstring`, `readline`), cache directory permissions, and source layout. Run it any time the tooling misbehaves.
+Checks PHP extensions (`json`, `mbstring`, `readline`), cache dir permissions, source layout. Run when tooling misbehaves.
 
-## Your First 30 Minutes
+## Your first 30 minutes
 
-Follow in order. Each step builds on the last. By the end you will be writing real Phel.
+In order:
 
-1. **[Practice: Basics](/practice/basic)** (~10 min), graded REPL exercises from "Hello, world" up.
-2. **[Basic Types](/documentation/language/basic-types)** (~5 min), every literal in one page.
-3. **[Cheat Sheet](/documentation/reference/cheat-sheet)** (keep open), core functions, one page, filterable.
-4. **[Cookbook](/documentation/guides/cookbook)** (~15 min), copy-paste recipes for real tasks.
+1. **[Practice: Basics](/practice/basic)** (~10 min), graded REPL exercises.
+2. **[Basic Types](/documentation/language/basic-types)** (~5 min), every literal.
+3. **[Cheat Sheet](/documentation/reference/cheat-sheet)** (keep open), core functions, filterable.
+4. **[Cookbook](/documentation/guides/cookbook)** (~15 min), copy-paste recipes.
 
-After that, branch by need:
+Branch by need:
 
-- **Daily editor flow:** [REPL](/documentation/tooling/repl) → [Editor Support](/documentation/tooling/editor-support).
-- **Coming from PHP:** [Rosetta Stone](/documentation/guides/rosetta-stone), [PHP Interop](/documentation/php-interop).
+- **Editor flow:** [REPL](/documentation/tooling/repl), [Editor Support](/documentation/tooling/editor-support).
+- **From PHP:** [Rosetta Stone](/documentation/guides/rosetta-stone), [PHP Interop](/documentation/php-interop).
 - **Power features:** [Macros](/documentation/language/macros), [Interfaces](/documentation/language/interfaces).
-- **Pair with an AI agent:** [Agentic Coding](/documentation/reference/agentic-coding), single-page reference for Claude Code, Codex, Cursor.
+- **AI agent pairing:** [Agentic Coding](/documentation/reference/agentic-coding) for Claude Code, Codex, Cursor.
 
-Need a different install path? See [Installation](/documentation/installation).
+Different install path? See [Installation](/documentation/installation).

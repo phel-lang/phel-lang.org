@@ -4,7 +4,7 @@ weight = 2
 aliases = ["/documentation/one-liners"]
 +++
 
-Elegant solutions in a single expression. These one-liners showcase Phel's expressiveness and functional power.
+Single-expression solutions. Showcase Phel's expressiveness and functional power.
 
 ## Math & Numbers
 

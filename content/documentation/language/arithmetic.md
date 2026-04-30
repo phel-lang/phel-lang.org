@@ -4,17 +4,17 @@ weight = 2
 aliases = ["/documentation/arithmetic"]
 +++
 
-## Arithmetic Operators
+## Arithmetic operators
 
-All arithmetic operators are entered in prefix notation.
+Prefix notation:
 
 ```phel
-;; (1 + (2*2) + (10/5) + 3 + 4 + (5 - 6))
-(+ 1 (* 2 2) (/ 10 5) 3 4 (- 5 6)) ; Evaluates to 13
+;; 1 + (2*2) + (10/5) + 3 + 4 + (5 - 6)
+(+ 1 (* 2 2) (/ 10 5) 3 4 (- 5 6)) ; => 13
 ```
 
 {% php_note() %}
-Phel uses prefix notation (operator comes first) instead of PHP's infix notation:
+Prefix notation (operator first) instead of PHP's infix:
 
 ```php
 // PHP - infix notation
@@ -24,33 +24,33 @@ Phel uses prefix notation (operator comes first) instead of PHP's infix notation
 (+ 1 (* 2 2) (/ 10 5) 3 4 (- 5 6))
 ```
 
-This allows operators to accept any number of arguments and eliminates operator precedence concerns.
+Operators take any number of args, no precedence concerns.
 {% end %}
 
-Some operators support zero, one or multiple arguments.
+Operators take zero, one, or many args:
 
 ```phel
-(+) ; Evaluates to 0
-(+ 1) ; Evaluates to 1
-(+ 1 2) ; Evaluates to 3
-(+ 1 2 3 4 5 6 7 8 9) ; Evaluates to 45
+(+) ; => 0
+(+ 1) ; => 1
+(+ 1 2) ; => 3
+(+ 1 2 3 4 5 6 7 8 9) ; => 45
 
-(-) ; Evaluates to 0
-(- 1) ; Evaluates to -1
-(- 2 1) ; Evaluates to 1
-(- 3 2 1) ; Evaluates to 0
+(-) ; => 0
+(- 1) ; => -1
+(- 2 1) ; => 1
+(- 3 2 1) ; => 0
 
-(*) ; Evaluates to 1
-(* 2) ; Evaluates to 2
-(* 2 3 4) ; Evaluates to 24
+(*) ; => 1
+(* 2) ; => 2
+(* 2 3 4) ; => 24
 
-(/) ; Evaluates to 1
-(/ 2) ; Evaluates to 0.5 (reciprocal of 2)
-(/ 24 4 2) ; Evaluates to 3
+(/) ; => 1
+(/ 2) ; => 0.5 (reciprocal)
+(/ 24 4 2) ; => 3
 ```
 
 {% php_note() %}
-Phel's variadic operators are more flexible than PHP's:
+Variadic operators more flexible than PHP:
 
 ```php
 // PHP - requires at least two operands
@@ -63,16 +63,16 @@ Phel's variadic operators are more flexible than PHP's:
 (+ 1 2 3 4 5)          ; 15 (sum of all)
 ```
 
-**Useful patterns:**
-- `(+)` returns the additive identity (0)
-- `(*)` returns the multiplicative identity (1)
-- `(- x)` negates a number
-- `(/ x)` computes the reciprocal
+**Patterns:**
+- `(+)` additive identity (0)
+- `(*)` multiplicative identity (1)
+- `(- x)` negate
+- `(/ x)` reciprocal
 {% end %}
 
-Further numeric operations are `%` to compute the remainder of two values and `**` to raise a number to the power. All numeric operations can be found in the API documentation.
+Other numerics: `%` (remainder), `**` (power). Full list in the API docs.
 
-Some numeric operations can result in an undefined or unrepresentable value. These values are called _Not a Number_ (NaN). Phel represents these values by the constant `NAN`. You can check if a result is NaN by using the `nan?` function.
+Some operations yield NaN. Phel uses `NAN` constant. Check with `nan?`:
 
 ```phel
 (nan? 1) ; false
@@ -81,7 +81,7 @@ Some numeric operations can result in an undefined or unrepresentable value. The
 ```
 
 {% php_note() %}
-NaN handling is similar to PHP:
+NaN handling matches PHP:
 
 ```php
 // PHP
@@ -95,12 +95,12 @@ is_nan(NAN);         // true
 (nan? NAN)           ; true
 ```
 
-The `%` operator for remainder and `**` for exponentiation work like PHP's `%` and `**` operators.
+`%` remainder and `**` exponent match PHP's.
 {% end %}
 
-## Bitwise Operators
+## Bitwise operators
 
-Phel allows the evaluation and manipulation of specific bits within an integer.
+Manipulate bits in integers.
 
 ```phel
 ;; Bitwise and
@@ -136,7 +136,7 @@ Phel allows the evaluation and manipulation of specific bits within an integer.
 ```
 
 {% php_note() %}
-Phel provides named functions for bitwise operations instead of PHP's operators:
+Named functions instead of PHP operators:
 
 ```php
 // PHP bitwise operators
@@ -156,5 +156,5 @@ Phel provides named functions for bitwise operations instead of PHP's operators:
 (bit-shift-right 0b1101 1)
 ```
 
-Phel also provides additional bit manipulation functions not available in PHP: `bit-set`, `bit-clear`, `bit-flip`, and `bit-test`.
+Adds extra functions not in PHP: `bit-set`, `bit-clear`, `bit-flip`, `bit-test`.
 {% end %}

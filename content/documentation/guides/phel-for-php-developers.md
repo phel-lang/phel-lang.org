@@ -4,11 +4,11 @@ weight = 1
 aliases = ["/documentation/phel-for-php-developers"]
 +++
 
-This guide maps common PHP patterns to their Phel equivalents. If you already know PHP, you can use this page as a quick reference to start writing Phel productively. Each section shows familiar PHP code alongside the idiomatic Phel way of doing the same thing.
+PHP patterns mapped to Phel. Quick reference for PHP devs. Each section: PHP code, then idiomatic Phel.
 
-## Variables and Constants
+## Variables and constants
 
-In PHP, variables are mutable by default. In Phel, bindings are immutable -- you create new values instead of changing existing ones.
+PHP variables are mutable. Phel bindings are immutable: create new values, don't change existing ones.
 
 ```php
 // PHP
@@ -38,9 +38,9 @@ function example() {
 ;; local and other do not exist outside the let block
 ```
 
-Key difference: `def` and `let` bindings are immutable. You don't modify a value -- you create a new one. See [Global and Local Bindings](/documentation/language/global-and-local-bindings) for more details.
+Key: `def` and `let` are immutable. Create a new value, don't modify. See [Global and Local Bindings](/documentation/language/global-and-local-bindings).
 
-If you need mutable state, Phel provides explicit variables:
+For mutable state, use atoms:
 
 ```phel
 (def counter (atom 0))
@@ -50,7 +50,7 @@ If you need mutable state, Phel provides explicit variables:
 
 ## Functions
 
-PHP functions map naturally to Phel's `defn`. The last expression in a Phel function is its return value -- no `return` statement needed.
+`defn` defines a function. Last expression is the return value. No `return`.
 
 ```php
 // PHP
@@ -91,20 +91,20 @@ function sum(...$numbers): int {
 (sum 1 2 3 4)    ; => 10
 ```
 
-The short anonymous function syntax `#(...)` replaces PHP's arrow functions. Use `%` for a single parameter, or `%1`, `%2`, etc. for multiple parameters:
+`#(...)` replaces PHP arrow functions. `%` for one param, `%1`, `%2` for multiple:
 
 ```phel
 #(+ %1 %2)          ; Same as fn($a, $b) => $a + $b
 #(str "Hi " %)      ; Same as fn($x) => "Hi " . $x
 ```
 
-See [Functions and Recursion](/documentation/language/functions-and-recursion) for the full reference.
+Full reference: [Functions and Recursion](/documentation/language/functions-and-recursion).
 
-## Arrays to Vectors and Maps
+## Arrays to vectors and maps
 
-PHP uses a single `array` type for both indexed and associative arrays. Phel separates these into distinct immutable data structures.
+PHP arrays are both indexed and associative. Phel splits these into distinct immutable data structures.
 
-### Indexed arrays become vectors
+### Indexed arrays, vectors
 
 ```php
 // PHP
@@ -121,7 +121,7 @@ $first = $numbers[0];         // Access by index
 (first numbers)                 ; => 1
 ```
 
-### Associative arrays become maps
+### Associative arrays, maps
 
 ```php
 // PHP
@@ -152,9 +152,9 @@ unset($user['age']);                     // Remove key
 | `in_array($v, $arr)` | `(some #(= % v) coll)` | |
 | `array_key_exists` | `(contains? map :k)` | |
 
-The critical difference: all operations return **new** collections. The original is never modified. See [Data Structures](/documentation/language/data-structures) for the full reference.
+All operations return **new** collections. Originals never change. See [Data Structures](/documentation/language/data-structures).
 
-## Control Flow
+## Control flow
 
 ### if / else
 
@@ -189,9 +189,9 @@ if ($debug) {
   (log "enabled"))
 ```
 
-`when` returns `nil` when the condition is false. Use it for side-effects or when you do not need an else branch.
+`when` returns `nil` if condition is false. For side-effects or no else.
 
-### switch becomes case
+### switch, case
 
 ```php
 // PHP
@@ -210,7 +210,7 @@ switch ($code) {
     404 "Not Found"))  ; Returns nil if no match
 ```
 
-### match becomes cond
+### match, cond
 
 ```php
 // PHP
@@ -234,7 +234,7 @@ $label = match(true) {
 
 ### Truthiness difference
 
-This is a common gotcha for PHP developers:
+Common PHP-dev gotcha:
 
 ```php
 // PHP falsy values: false, null, 0, "", "0", [], 0.0
@@ -250,11 +250,11 @@ if ([]) { /* NOT reached */ }
 (if [] "truthy" "falsy")   ; => "truthy"
 ```
 
-See [Control Flow](/documentation/language/control-flow) and [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations) for more.
+See [Control Flow](/documentation/language/control-flow), [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations).
 
 ## Loops
 
-Phel favors higher-order functions over explicit loops. Most PHP loops translate into `map`, `filter`, or `reduce`.
+Phel prefers higher-order functions. Most PHP loops become `map`, `filter`, `reduce`.
 
 ### foreach
 
@@ -316,7 +316,7 @@ $sum = array_reduce($numbers, fn($carry, $x) => $carry + $x, 0);
 (def sum (reduce + 0 numbers))
 ```
 
-Notice how Phel's argument order differs from PHP: the function comes before the collection. This makes composition and threading natural.
+Phel's arg order: function first, collection last. Makes composition and threading natural.
 
 ## Strings
 
@@ -338,11 +338,11 @@ $contains = str_contains($haystack, $needle);
 (def contains (php/str_contains haystack needle))
 ```
 
-Any PHP string function can be called with the `php/` prefix. Phel provides `str` for concatenation and `format` for sprintf-style formatting. See [PHP Interop](/documentation/php-interop) for the full interop reference.
+Any PHP string function via `php/` prefix. `str` concatenates, `format` for sprintf-style. See [PHP Interop](/documentation/php-interop).
 
-## Classes and Objects
+## Classes and objects
 
-Phel is not object-oriented, but it provides full interop with PHP's object system.
+Phel isn't OO, but has full interop with PHP's object system.
 
 ### Creating objects
 
@@ -403,7 +403,7 @@ $parsed = DateTimeImmutable::createFromFormat('Y-m-d', '2024-03-22');
 (def parsed (php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2024-03-22")))
 ```
 
-For data modeling, Phel uses structs and maps instead of classes:
+For data modeling, Phel uses structs and maps:
 
 ```phel
 (defstruct user [name email role])
@@ -413,11 +413,11 @@ For data modeling, Phel uses structs and maps instead of classes:
 (assoc alice :role :editor)  ; => new struct with role changed
 ```
 
-See [PHP Interop](/documentation/php-interop) for the complete reference.
+See [PHP Interop](/documentation/php-interop) for the full reference.
 
-## Protocols vs PHP Interfaces
+## Protocols vs PHP interfaces
 
-PHP interfaces define contracts that classes must implement at class definition time. Phel protocols are similar in purpose but more flexible -- you can extend a protocol to a type **after** it was defined, without touching the original code.
+PHP interfaces require implementation at class definition. Phel protocols extend to types **after** they're defined, without modifying the original code.
 
 ```php
 // PHP -- interface must be declared at class definition
@@ -468,11 +468,11 @@ class Order implements Loggable {
 (satisfies? Loggable (order 1 0)) ; => true
 ```
 
-The key advantage: you can make **any** type satisfy a protocol at any time, even types from external libraries. In PHP, you would need a wrapper class, an adapter, or inheritance.
+Advantage: any type can satisfy a protocol at any time, even external library types. PHP would need a wrapper, adapter, or inheritance.
 
-## Regex: Literals vs preg_match
+## Regex: literals vs preg_match
 
-PHP uses `preg_match` with pattern strings. Phel provides regex literals (`#"..."`) and dedicated matching functions.
+PHP uses `preg_match` with pattern strings. Phel has regex literals (`#"..."`) and matching functions.
 
 ```php
 // PHP
@@ -505,9 +505,9 @@ preg_match_all('/\d+/', 'a1b2c3', $all);
 (re-find #"\d+" "abc123def")       ; => "123"
 ```
 
-`re-matches` requires the entire string to match (like wrapping PHP's pattern with `^...$`). `re-find` returns the first match anywhere in the string (like `preg_match` without anchors).
+`re-matches` requires full-string match (like wrapping with `^...$`). `re-find` returns first match anywhere (like `preg_match` without anchors).
 
-## Error Handling
+## Error handling
 
 ```php
 // PHP
@@ -539,11 +539,11 @@ throw new RuntimeException("Something went wrong");
 (throw (php/new \RuntimeException "Something went wrong"))
 ```
 
-The structure is similar to PHP's try/catch but expressed as a single form. See the exceptions section in [Control Flow](/documentation/language/control-flow) for more details.
+Single form, similar structure to PHP try/catch. See [Control Flow](/documentation/language/control-flow) exceptions section.
 
 ### Structured exceptions with ex-info
 
-PHP exceptions carry a string message, an integer code, and an optional previous exception. Phel's `ex-info` adds a **data map**, making exceptions much more informative without creating custom exception classes.
+PHP exceptions: message string, integer code, optional previous. Phel's `ex-info` adds a **data map**: more informative without custom exception classes.
 
 ```php
 // PHP -- custom exception to carry context
@@ -575,11 +575,11 @@ try {
     (println (ex-cause e))))       ; => nil
 ```
 
-With `ex-info` you get structured context attached to any exception without defining new classes. Use `ex-message`, `ex-data`, and `ex-cause` to inspect the exception.
+`ex-info` attaches context without new classes. `ex-message`, `ex-data`, `ex-cause` inspect.
 
-## Common Patterns
+## Common patterns
 
-Here are practical examples of real PHP code converted to idiomatic Phel.
+Real PHP converted to idiomatic Phel.
 
 ### Processing a list of users
 
@@ -681,9 +681,9 @@ $dbPort = $config['database']['port'] ?? 3306;
 (def db-port (or (php/aget-in config ["database" "port"]) 3306))
 ```
 
-## Transducers vs Array Pipelines
+## Transducers vs array pipelines
 
-PHP developers often chain `array_filter`, `array_map`, and `array_reduce` to process data. Each step creates a new intermediate array. Phel's transducers compose these operations into a single pass with no intermediate collections.
+Chaining `array_filter`, `array_map`, `array_reduce` creates intermediate arrays per step. Transducers compose into a single pass, no intermediate collections.
 
 ```php
 // PHP -- each step creates a new array
@@ -720,9 +720,9 @@ $result = array_reduce(
 
 | Approach | When to use |
 |----------|-------------|
-| `->>` threading | Most of the time -- readable, uses lazy seqs, good enough for typical data |
-| `transduce` | Performance-critical paths, very large collections, or when you want to reuse a transformation |
-| `into` with xf | When you want the transducer result as a specific collection type |
+| `->>` threading | Default. Readable, lazy seqs, good for typical data |
+| `transduce` | Hot paths, large collections, or reusable transforms |
+| `into` with xf | Want a specific collection type as result |
 
 ```phel
 ; Reusable transducer: define once, apply to any data source
@@ -738,17 +738,17 @@ $result = array_reduce(
 (transduce process-events str "" log-stream-c)
 ```
 
-Transducers are especially useful when the same transformation needs to be applied to different data sources (vectors, lazy sequences, channels, etc.) since they are decoupled from the input/output type.
+Transducers shine when the same transform applies to different sources (vectors, lazy seqs, channels). Decoupled from input/output type.
 
-## Key Mindset Shifts
+## Key mindset shifts
 
-Moving from PHP to Phel involves a few conceptual shifts:
+PHP to Phel:
 
-- **Data is immutable** -- you do not modify data in place, you transform it into new values. The original is always preserved.
-- **Functions are values** -- pass them as arguments, return them from other functions, store them in collections.
-- **Prefix notation** -- the operator always comes first: `(+ 1 2)` not `1 + 2`. This is consistent for everything, including function calls.
-- **No return statement** -- the last expression in a function body is its return value.
-- **No semicolons, no curly braces** -- just parentheses. Indentation conveys structure visually; parentheses convey it to the compiler.
-- **Truthiness** -- only `false` and `nil` are falsy. `0`, `""`, and `[]` are all truthy. This catches many PHP developers off guard at first.
-- **Everything is an expression** -- `if`, `let`, `case`, and `cond` all return values. There are no statements.
-- **Thread-last (`->>`) replaces method chaining** -- instead of `$arr->filter()->map()->sort()`, use `(->> coll (filter pred) (map f) (sort))`.
+- **Immutable data:** transform to new values, originals stay intact.
+- **Functions are values:** pass them, return them, store them.
+- **Prefix notation:** operator first. `(+ 1 2)` not `1 + 2`. Consistent across all calls.
+- **No return:** last expression is the return value.
+- **No semicolons or braces:** just parens. Indentation for humans, parens for the compiler.
+- **Truthiness:** only `false` and `nil` falsy. `0`, `""`, `[]` truthy. Catches PHP devs off guard.
+- **Everything is an expression:** `if`, `let`, `case`, `cond` all return values. No statements.
+- **Thread-last (`->>`) replaces method chaining:** instead of `$arr->filter()->map()->sort()`, write `(->> coll (filter pred) (map f) (sort))`.

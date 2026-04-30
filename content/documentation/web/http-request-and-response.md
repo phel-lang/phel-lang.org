@@ -4,11 +4,11 @@ weight = 1
 aliases = ["/documentation/http-request-and-response"]
 +++
 
-## HTTP Request
+## HTTP request
 
-Phel provides an easy method to access the current HTTP request. While in PHP the request is distributed in different globals variables (`$_GET`, `$_POST`, `$_SERVER`, `$_COOKIES` and `$_FILES`) Phel normalizes them into a single struct. All functions and structs are defined in the `phel\http` module.
+PHP scatters the request across `$_GET`, `$_POST`, `$_SERVER`, `$_COOKIES`, `$_FILES`. Phel normalizes them into one struct. All in `phel\http`.
 
-The request struct is defined like this:
+Request struct:
 
 ```phel
 (defstruct request [
@@ -43,7 +43,7 @@ The request struct is defined like this:
 ])
 ```
 
-To create a request struct the `phel\http` module must be imported. Then the `request-from-globals` function can be called.
+Import `phel\http`, call `request-from-globals`:
 
 ```phel
 (ns my-namepace
@@ -52,9 +52,9 @@ To create a request struct the `phel\http` module must be imported. Then the `re
 (http/request-from-globals) ; Evaluates to a request struct
 ```
 
-## HTTP Response
+## HTTP response
 
-The `phel\http` module also contains a response struct. This struct can be used to send HTTP responses to the client. The response struct takes the following values.
+`phel\http` includes a response struct for sending responses:
 
 ```phel
 (defstruct response [
@@ -66,7 +66,7 @@ The `phel\http` module also contains a response struct. This struct can be used 
 ])
 ```
 
-To make it easier to create responses. Phel has two helpers methods to create a response.
+Two helpers create responses:
 
 ```phel
 (ns my-namepace
@@ -81,7 +81,7 @@ To make it easier to create responses. Phel has two helpers methods to create a 
 ;; Evaluates to (response 200 {} "Hello World" "1.1" "OK")
 ```
 
-To send the response to the client the `emit-response` function can be used.
+Send with `emit-response`:
 
 ```phel
 (ns my-namepace
@@ -92,6 +92,6 @@ To send the response to the client the `emit-response` function can be used.
   (http/emit-response rsp))
 ```
 
-## HTTP Router
+## HTTP router
 
-A Phel router based on symfony routing component: [phel-lang/router](https://github.com/phel-lang/router)
+Phel router on top of Symfony routing: [phel-lang/router](https://github.com/phel-lang/router).

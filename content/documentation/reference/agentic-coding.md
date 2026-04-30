@@ -5,22 +5,22 @@ description = "Single-page Phel reference for AI coding agents (Claude Code, Cod
 aliases = ["/documentation/llms", "/documentation/ai-agents"]
 +++
 
-A single page designed for AI coding agents (Claude Code, Codex, Cursor, Copilot, Aider, Gemini) to learn Phel without crawling the rest of the docs. Humans pairing with an agent will also find it useful.
+Single-page reference for AI agents (Claude Code, Codex, Cursor, Copilot, Aider, Gemini) to learn Phel without crawling the docs. Humans pairing with an agent benefit too.
 
-If you only have time to load one doc into an agent's context, load this one.
+Load this one if you can only load one doc into an agent's context.
 
-## What Phel Is
+## What Phel is
 
-Phel is a functional Lisp that compiles to PHP. It runs on any PHP 8.4+ runtime, ships through Composer, and interops fully with PHP libraries.
+Functional Lisp that compiles to PHP. Runs on any PHP 8.4+, ships via Composer, full PHP interop.
 
-- Immutable persistent data structures by default.
-- Macros, homoiconicity, REPL-driven development.
+- Immutable persistent data structures.
+- Macros, homoiconicity, REPL-driven dev.
 - Compiles to plain PHP. No separate runtime, no JVM.
-- Source files: `.phel`. Project config: `phel-config.php`.
+- Source: `.phel`. Config: `phel-config.php`.
 
-## Verify Before You Generate
+## Verify before you generate
 
-Before suggesting code, verify against the running install:
+Verify against the install before suggesting code:
 
 ```bash
 vendor/bin/phel doc <fn>          # function signature + docstring
@@ -33,20 +33,20 @@ vendor/bin/phel format <file>      # rewrite formatting
 vendor/bin/phel doctor             # env + extension check
 ```
 
-If a function name is uncertain, run `phel doc` or grep `vendor/phel-lang/phel-lang/src/php/Lang/` and `vendor/phel-lang/phel-lang/src/phel/core/`. Do not invent function names.
+Uncertain function name? Run `phel doc` or grep `vendor/phel-lang/phel-lang/src/php/Lang/` and `vendor/phel-lang/phel-lang/src/phel/core/`. Don't invent function names.
 
-## Installed Agent Skills
+## Installed agent skills
 
-The Phel package ships skill adapters in `vendor/phel-lang/phel-lang/.agents/`. Install for the active agent:
+Phel ships skill adapters in `vendor/phel-lang/phel-lang/.agents/`. Install for the active agent:
 
 ```bash
 vendor/bin/phel agent-install claude    # or codex, cursor, copilot, aider, gemini
 vendor/bin/phel agent-install --all     # every adapter
 ```
 
-The `.agents/` tree contains: `RULES.md`, `index.md` (intent map), `tasks/*.md` (recipes for HTTP apps, CLI tools, tests, REPL flow, validation, etc.), and `examples/`. Prefer it over guessing.
+`.agents/` contains: `RULES.md`, `index.md` (intent map), `tasks/*.md` (HTTP apps, CLI tools, tests, REPL flow, validation), `examples/`. Prefer it over guessing.
 
-## Syntax in 60 Seconds
+## Syntax in 60 seconds
 
 ```phel
 ;; Inline comment uses one semicolon.
@@ -178,7 +178,7 @@ Class/CONST
 (defmethod area :rect   [{:w w :h h}] (* w h))
 ```
 
-## Truthiness, Equality, Comments
+## Truthiness, equality, comments
 
 - Only `false` and `nil` are falsy. `0`, `""`, `[]`, `{}` are all truthy.
 - `=` is value equality across all types. `identical?` is reference equality.
@@ -204,22 +204,22 @@ Class/CONST
 
 Run with `vendor/bin/phel test`.
 
-## Common Gotchas
+## Common gotchas
 
-Read these once. They cover most failure modes agents hit.
+Most failure modes agents hit:
 
-1. **CLI args**: use `*argv*` (vector of strings, post-script-path), not `php/$argv` (which is `null` under `phel run`).
-2. **`for` vs `doseq`**: `for` builds a lazy sequence. Use `doseq` for side effects (logging, printing, IO).
-3. **`transduce` with `max`/`min`**: they have no zero-arity, so wrap and pass init: `(transduce xf (fn [a b] (max a b)) 0 coll)`.
-4. **Top-level side effects break `phel build`**: guard with `(when-not *build-mode* ...)`.
-5. **Records access by keyword**: `(get p :x)`, not `(.-x p)`.
-6. **PHP arrays are not Phel collections**: convert with `vec` or `to-php-array`. There is no `to-vec` or `to-list`.
-7. **Namespace must have at least two segments**: `(ns app\main)`, not `(ns main)`.
-8. **String module is `phel\string`** (renamed from `phel\str`).
-9. **PHP assoc literal**: `#php {"k" "v"}`, not `{:k "v"}`. Phel maps are not PHP arrays.
+1. **CLI args:** use `*argv*` (vector of strings, post-script-path). `php/$argv` is `null` under `phel run`.
+2. **`for` vs `doseq`:** `for` builds a lazy sequence. `doseq` for side-effects (logging, IO).
+3. **`transduce` with `max`/`min`:** no zero-arity. Wrap and pass init: `(transduce xf (fn [a b] (max a b)) 0 coll)`.
+4. **Top-level side-effects break `phel build`:** guard with `(when-not *build-mode* ...)`.
+5. **Record access by keyword:** `(get p :x)`, not `(.-x p)`.
+6. **PHP arrays aren't Phel collections:** convert with `vec` or `to-php-array`. No `to-vec`/`to-list`.
+7. **Namespaces need ≥2 segments:** `(ns app\main)`, not `(ns main)`.
+8. **String module:** `phel\string` (renamed from `phel\str`).
+9. **PHP assoc literal:** `#php {"k" "v"}`, not `{:k "v"}`. Phel maps aren't PHP arrays.
 10. **`recur` only in tail position** of `loop` or `fn`.
 
-## Project Layout
+## Project layout
 
 ```
 my-app/
@@ -239,36 +239,36 @@ Minimal `phel-config.php`:
 return \Phel\Config\PhelConfig::forProject('my-app\main');
 ```
 
-Full options in [Configuration](/documentation/configuration).
+Full options: [Configuration](/documentation/configuration).
 
-## Authoring Guidelines for Agents
+## Authoring guidelines for agents
 
 When generating Phel code:
 
-1. **Verify, don't invent.** Run `phel doc <fn>` or grep `src/phel/core/` before using a function name you are unsure about.
-2. **Prefer pure functions.** Push side effects to the edge. Use `atom` only when you genuinely need shared mutable state.
-3. **Thread, don't nest.** `(->> xs (filter f) (map g) (reduce h 0))` beats nested calls four levels deep.
-4. **Reach for the right comprehension.** `for` returns data, `doseq` runs effects, `dotimes` repeats, `loop`/`recur` accumulates.
-5. **Stay immutable.** `(conj v x)` returns a new vector; rebind it. Do not expect in-place mutation.
-6. **Match comment style.** `;` inline, `;;` standalone. The `#` line comment form is deprecated.
-7. **Avoid em-dashes** in any Phel docstrings or generated docs for this site. Prefer commas, colons, periods, or parentheses.
-8. **Conventional commits.** `feat:`, `fix:`, `refactor:`, `chore:`, `docs:`, `test:`. No mention of AI / LLM authorship in commit messages.
+1. **Verify, don't invent.** Run `phel doc <fn>` or grep `src/phel/core/` before using an uncertain name.
+2. **Prefer pure functions.** Push side-effects to the edge. Use `atom` only for shared mutable state.
+3. **Thread, don't nest.** `(->> xs (filter f) (map g) (reduce h 0))` beats deep nesting.
+4. **Right comprehension:** `for` returns data, `doseq` runs effects, `dotimes` repeats, `loop`/`recur` accumulates.
+5. **Stay immutable.** `(conj v x)` returns a new vector. Rebind, don't expect mutation.
+6. **Comment style:** `;` inline, `;;` standalone. `#` line comments deprecated.
+7. **No em-dashes** in docstrings or generated site docs. Prefer commas, colons, periods, parentheses.
+8. **Conventional commits.** `feat:`, `fix:`, `refactor:`, `chore:`, `docs:`, `test:`. No AI/LLM authorship references.
 
-## Where to Look Next
+## Where to look next
 
-Inside the Phel install:
+In the Phel install:
 
 - `vendor/phel-lang/phel-lang/.agents/index.md`: intent → recipe map.
-- `vendor/phel-lang/phel-lang/.agents/RULES.md`: canonical rule set + CLI map.
-- `vendor/phel-lang/phel-lang/.agents/tasks/`: recipes for HTTP, CLI, tests, debugging, validation, pattern matching.
-- `vendor/phel-lang/phel-lang/src/phel/core/`: source of every core function.
+- `vendor/phel-lang/phel-lang/.agents/RULES.md`: canonical rules + CLI map.
+- `vendor/phel-lang/phel-lang/.agents/tasks/`: HTTP, CLI, tests, debugging, validation, pattern matching.
+- `vendor/phel-lang/phel-lang/src/phel/core/`: every core function source.
 
 On this site:
 
-- [Cheat Sheet](/documentation/reference/cheat-sheet): full filterable list of core forms and functions.
-- [Language section](/documentation/language/): one page per concept (types, functions, control flow, macros, interfaces, namespaces, destructuring, recursion).
-- [PHP Interop](/documentation/php-interop): every interop form in detail.
-- [Cookbook](/documentation/guides/cookbook): copy-paste recipes for real tasks.
-- [Rosetta Stone](/documentation/guides/rosetta-stone): PHP → Phel patterns side by side.
-- [REPL guide](/documentation/tooling/repl): development loop.
+- [Cheat Sheet](/documentation/reference/cheat-sheet): filterable forms and functions.
+- [Language section](/documentation/language/): types, functions, control flow, macros, interfaces, namespaces, destructuring, recursion.
+- [PHP Interop](/documentation/php-interop): every interop form.
+- [Cookbook](/documentation/guides/cookbook): copy-paste recipes.
+- [Rosetta Stone](/documentation/guides/rosetta-stone): PHP to Phel side-by-side.
+- [REPL guide](/documentation/tooling/repl): dev loop.
 - [CLI Commands](/documentation/tooling/cli-commands): every subcommand.

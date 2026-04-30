@@ -4,11 +4,11 @@ weight = 4
 aliases = ["/documentation/cookbook"]
 +++
 
-Practical recipes for common tasks in Phel. Each example is self-contained and ready to use.
+Recipes for common tasks. Each example self-contained.
 
-## Read and Process a CSV File
+## Read and process a CSV file
 
-Read a CSV file and parse it into a vector of maps, where each map represents a row with column headers as keys.
+Read CSV into a vector of maps, headers as keys.
 
 ```phel
 (ns cookbook\csv-reader)
@@ -54,9 +54,9 @@ Read a CSV file and parse it into a vector of maps, where each map represents a 
 
 **See also:** [PHP Interop](/documentation/php-interop), [Data Structures](/documentation/language/data-structures)
 
-## Build a Simple CLI Tool
+## Build a simple CLI tool
 
-A command-line script that reads arguments, parses simple flags, and produces output.
+CLI script that reads args, parses flags, produces output.
 
 ```phel
 (ns cookbook\cli-tool)
@@ -101,9 +101,9 @@ A command-line script that reads arguments, parses simple flags, and produces ou
 
 **See also:** [PHP Interop](/documentation/php-interop), [Control Flow](/documentation/language/control-flow)
 
-## HTTP Request with cURL
+## HTTP request with cURL
 
-Make an HTTP GET request using the built-in `phel\http-client` module and parse a JSON response with `phel\json`.
+GET request via `phel\http-client`. Parse JSON via `phel\json`.
 
 ```phel
 (ns cookbook\http-client
@@ -157,7 +157,7 @@ Make an HTTP GET request using the built-in `phel\http-client` module and parse 
 
 ## Generate HTML
 
-Use Phel's `html` module to generate HTML markup with nested elements, attributes, and dynamic content.
+`html` module: nested elements, attributes, dynamic content.
 
 ```phel
 (ns cookbook\html-generator
@@ -221,9 +221,9 @@ Use Phel's `html` module to generate HTML markup with nested elements, attribute
 
 **See also:** [HTML Rendering](/documentation/web/html-rendering)
 
-## Working with Dates
+## Working with dates
 
-Use PHP's DateTime classes via Phel interop to create, format, and compare dates.
+PHP DateTime via interop: create, format, compare.
 
 ```phel
 (ns cookbook\dates
@@ -297,9 +297,9 @@ Use PHP's DateTime classes via Phel interop to create, format, and compare dates
 
 **See also:** [PHP Interop](/documentation/php-interop)
 
-## File System Operations
+## Filesystem operations
 
-Read files, write files, list directories, and check file existence using PHP interop.
+Read, write, list, exist checks via PHP interop.
 
 ```phel
 (ns cookbook\filesystem)
@@ -392,9 +392,9 @@ Read files, write files, list directories, and check file existence using PHP in
 
 **See also:** [PHP Interop](/documentation/php-interop)
 
-## Data Transformation Pipeline
+## Data transformation pipeline
 
-Take raw data, filter it, transform it, and group it using Phel's threading macros and collection functions.
+Filter, transform, group via threading macros and collection functions.
 
 ```phel
 (ns cookbook\data-pipeline)
@@ -464,9 +464,9 @@ Take raw data, filter it, transform it, and group it using Phel's threading macr
 
 **See also:** [Data Structures](/documentation/language/data-structures), [Control Flow](/documentation/language/control-flow)
 
-## Simple Key-Value Store
+## Simple key-value store
 
-Build a persistent key-value store backed by a JSON file, with functions for get, put, delete, and listing keys.
+Persistent KV store backed by JSON. Get, put, delete, list keys.
 
 ```phel
 (ns cookbook\kv-store
@@ -556,9 +556,9 @@ Build a persistent key-value store backed by a JSON file, with functions for get
 
 **See also:** [Data Structures](/documentation/language/data-structures), [PHP Interop](/documentation/php-interop)
 
-## Defining and Using Protocols
+## Defining and using protocols
 
-Protocols let you define polymorphic behavior that can be extended to any type -- even types you didn't create. This is similar to PHP interfaces but more flexible.
+Protocols define polymorphic behavior, extendable to any type. More flexible than PHP interfaces.
 
 ```phel
 (ns cookbook\protocols)
@@ -611,9 +611,9 @@ Protocols let you define polymorphic behavior that can be extended to any type -
 
 **See also:** [Cheat Sheet -- Protocols](/documentation/reference/cheat-sheet#protocols)
 
-## Data Processing with Transducers
+## Data processing with transducers
 
-Transducers let you compose data transformation pipelines without creating intermediate collections. They are faster and more memory-efficient than chaining `map`, `filter`, etc.
+Compose pipelines without intermediate collections. Faster, less memory than chaining `map`/`filter`.
 
 ```phel
 (ns cookbook\transducers)
@@ -680,9 +680,9 @@ Transducers let you compose data transformation pipelines without creating inter
 
 **See also:** [Cheat Sheet -- Transducers](/documentation/reference/cheat-sheet#transducers)
 
-## Reader Conditionals for Cross-Platform Code
+## Reader conditionals for cross-platform code
 
-Reader conditionals allow you to write `.cljc` files that can target different platforms. Use `:phel` for Phel-specific code and `:default` as a fallback.
+Write `.cljc` targeting multiple platforms. `:phel` for Phel-specific, `:default` as fallback.
 
 ```phel
 (ns cookbook\conditionals)
@@ -710,9 +710,9 @@ Reader conditionals allow you to write `.cljc` files that can target different p
 ;; On Phel: => [:core :macros :php-interop :composer]
 ```
 
-## Regex Matching and Validation
+## Regex matching and validation
 
-Phel provides regex literals (`#"..."`) and matching functions for working with PCRE patterns.
+Regex literals (`#"..."`) and matching functions for PCRE patterns.
 
 ```phel
 (ns cookbook\regex)
@@ -751,9 +751,9 @@ Phel provides regex literals (`#"..."`) and matching functions for working with 
 
 **See also:** [Cheat Sheet -- Regular Expressions](/documentation/reference/cheat-sheet#regular-expressions)
 
-## Structured Exceptions with ex-info
+## Structured exceptions with ex-info
 
-Use `ex-info` to create exceptions that carry structured data, making error handling more informative than plain string messages.
+`ex-info` carries structured data with exceptions. More informative than plain messages.
 
 ```phel
 (ns cookbook\exceptions
@@ -810,9 +810,9 @@ Use `ex-info` to create exceptions that carry structured data, making error hand
 
 **See also:** [Cheat Sheet -- Error Handling](/documentation/reference/cheat-sheet#error-handling)
 
-## Pattern Matching with `phel\match`
+## Pattern matching with `phel\match`
 
-The `phel\match` module provides a `match` macro with literal, vector, map, wildcard, `:as`, `:guard`, `:or`, and rest-binding patterns.
+`match` macro: literal, vector, map, wildcard, `:as`, `:guard`, `:or`, rest-binding patterns.
 
 ```phel
 (ns cookbook\match
@@ -836,7 +836,7 @@ The `phel\match` module provides a `match` macro with literal, vector, map, wild
 
 ## Schemas with `phel\schema`
 
-Validate, coerce, and generate data from declarative schemas. Kinds include `:vector`, `:set`, `:map`, `:map-of`, `:tuple`, `:enum`, `:and`, `:or`, `:maybe`, `:re`, `:fn`, `:ref`, and function schemas `[:=> args ret]`.
+Validate, coerce, generate data from declarative schemas. Kinds: `:vector`, `:set`, `:map`, `:map-of`, `:tuple`, `:enum`, `:and`, `:or`, `:maybe`, `:re`, `:fn`, `:ref`, function schemas `[:=> args ret]`.
 
 ```phel
 (ns cookbook\schema
@@ -860,6 +860,7 @@ Validate, coerce, and generate data from declarative schemas. Kinds include `:ve
 ```
 
 Instrument a function to check args/return at call sites:
+
 
 ```phel
 (defn greet [u] (str "Hi " (:name u)))
