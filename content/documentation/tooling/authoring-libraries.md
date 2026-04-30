@@ -4,35 +4,44 @@ weight = 4
 aliases = ["/documentation/authoring-libraries"]
 +++
 
-The reason to create a Phel library is to be able to use the same code across both PHP and Phel projects without manually copying the code around.
+Share Phel code across projects via Composer and Packagist.
 
-## Important files
+Reference repo: [chemaclass/phel-cli-gui](https://github.com/Chemaclass/phel-cli-gui) ([Packagist](https://packagist.org/packages/chemaclass/phel-cli-gui)).
 
-There are two files to keep in mind while developing a Phel library:
+## From scratch
 
-- composer.json
-- phel-config.php
+### 1. Create the project
 
-To better provide you with an example, you can view the source code of the first Phel library [mabasic/phel-json](https://github.com/mabasic/phel-json). The library has been merged to core Phel in namespace [phel\json](/documentation/reference/api/#json-decode), but you can still install it and see how it all works. Read more about `phel\json` in the blog post [Release: v0.8.0](/blog/release-0-8/).
+```bash
+mkdir my-lib && cd my-lib
+git init
+composer init   ; answer prompts, name = your-vendor/my-lib
+composer require phel-lang/phel-lang
+```
 
-### composer.json
+### 2. Add `composer.json` scripts and autoload
 
-The most important part in this file is the `require` section. In here, you need to declare which Phel version your library supports.
+Open the generated `composer.json` and merge in:
 
 ```json
-"require": {
-    "phel-lang/phel-lang": "^0.34"
+{
+    "require": {
+        "phel-lang/phel-lang": "^0.34"
+    },
+    "autoload": {
+        "psr-4": { "YourVendor\\MyLib\\": "src/php/" }
+    },
+    "scripts": {
+        "test": "vendor/bin/phel test",
+        "build": "vendor/bin/phel build --no-cache",
+        "format": "vendor/bin/phel format"
+    }
 }
 ```
 
-The `^` constraint means your library supports Phel from the specified version up to the next major release. Adjust this to match the Phel versions you've tested against. See [Composer](https://getcomposer.org/doc/articles/versions.md) documentation for more info on version constraints.
+`psr-4` only needed if shipping PHP interop. See [Composer constraints](https://getcomposer.org/doc/articles/versions.md) for `^` vs `~`.
 
-
-### phel-config.php
-
-Since the `mabasic/phel-json` library was written, there is a new way of writing the configuration file. The old way used an array (you can still use this today), but the newer way is much more elegant and preferred way of configuring your Phel project.
-
-Here is an example config:
+### 3. Add `phel-config.php`
 
 ```php
 <?php
@@ -42,59 +51,94 @@ use Phel\Config\PhelBuildConfig;
 use Phel\Config\PhelConfig;
 
 return (new PhelConfig())
-    ->setSrcDirs(['src'])
-    ->setTestDirs(['tests'])
+    ->useNestedLayout()
     ->setBuildConfig((new PhelBuildConfig())
-        ->setMainPhelNamespace('your-ns\main')
-        ->setMainPhpPath('out/main.php'))
-    ->setFormatDirs(['src', 'tests'])
-    ->setIgnoreWhenBuilding(['local.phel'])
-    ->setKeepGeneratedTempFiles(false);
+        ->setMainPhelNamespace('your-vendor\my-lib')
+        ->setMainPhpPath('out/main.php'));
 ```
 
-To find out more about what each configuration option means read the documentation for [Configuration](/documentation/configuration/).
+`useNestedLayout()` sets `src/phel`, `tests/phel`, format dirs. Override with `setSrcDirs`, `setTestDirs`, `setFormatDirs`. Full options: [Configuration](/documentation/configuration/).
 
-## Topics of interest
+### 4. Create the source layout
 
-### Namespaces
+```
+my-lib/
+  composer.json
+  phel-config.php
+  src/phel/        ; Phel sources
+  src/php/         ; optional PHP interop
+  tests/phel/      ; Phel tests
+  tests/php/       ; optional PHPUnit tests
+```
 
-You can namespace your library however you want, but to keep to best practices your library should follow this convention: `{username}\{library-name}`.
+First Phel file at `src/phel/core.phel`:
 
-Read the documentation on [Namespaces](/documentation/language/namespaces/). 
+```phel
+(ns your-vendor\my-lib\core)
 
-### Testing
+(defn greet [name]
+  (str "Hello, " name "!"))
+```
 
-Having tests for your library makes it more stable because you can easily see which Phel version makes your library not work.
+Namespace path mirrors directory: `your-vendor\my-lib\core` lives at `src/phel/your-vendor/my-lib/core.phel`. See [Namespaces](/documentation/language/namespaces/).
 
-Read the documentation on [Testing](/documentation/testing/). 
+### 5. Add a test
 
-### PHP interop
+`tests/phel/core-test.phel`:
 
-This applies when you want to use your Phel library from PHP. Be sure to double check the configuration file.
+```phel
+(ns your-vendor\my-lib\core-test
+  (:require phel\test :refer [deftest is])
+  (:require your-vendor\my-lib\core :refer [greet]))
 
-Read the documentation on [PHP interop](/documentation/php-interop/#calling-phel-functions-from-php). 
+(deftest greet-test
+  (is (= "Hello, world!" (greet "world"))))
+```
 
-### Private code
+Run:
 
-When writing a library you get to decide what function, variables or macros you want to expose to the library users. This is important in cases where you don't want the library users to use a specific function or value for some reason.
+```bash
+composer test
+```
 
-Available macros:
+See [Testing](/documentation/testing/).
 
-- [`def-`](/documentation/reference/api/#def) - Define a private value that will not be exported.
-- [`defn-`](/documentation/reference/api/#defn-1) - Define a private function that will not be exported.
-- [`defmacro-`](/documentation/reference/api/#defmacro-1) - Define a private macro that will not be exported.
+### 6. Push to GitHub
 
-## Cross-platform code with reader conditionals
+```bash
+git add . && git commit -m "init"
+git remote add origin git@github.com:your-vendor/my-lib.git
+git push -u origin main
+```
 
-Phel supports `.cljc` files and reader conditionals, enabling code that can be shared across platforms.
+### 7. Publish on Packagist
 
-### `.cljc` file support
+1. Log in to [Packagist](https://packagist.org/).
+2. Click **Submit**, paste the GitHub URL.
+3. On the package page, click **Settings** and add the GitHub webhook (Packagist shows the URL and token). Future tags then auto-publish.
 
-Phel can load `.cljc` files alongside `.phel` files. This is useful when you want to write library code that could be shared with Clojure or other Lisp dialects that support the `.cljc` format.
+### 8. Tag a release
 
-### Reader conditionals
+```bash
+git tag 0.1.0
+git push --tags
+```
 
-Use `#?()` to conditionally include code based on the platform:
+Packagist picks up the tag within seconds. Install anywhere:
+
+```bash
+composer require your-vendor/my-lib
+```
+
+## Conventions
+
+- **Namespace:** `{vendor}\{library-name}`, sub-namespaces map to subdirectories.
+- **Private defs:** [`def-`](/documentation/reference/api/#def), [`defn-`](/documentation/reference/api/#defn-1), [`defmacro-`](/documentation/reference/api/#defmacro-1) keep symbols out of the public API.
+- **PHP interop:** if PHP consumers will call your code, set `setMainPhpPath` then `composer build`. See [PHP interop](/documentation/php-interop/#calling-phel-functions-from-php).
+
+## Cross-platform code
+
+Phel reads `.cljc` files with reader conditionals, so the same source can target Phel and Clojure.
 
 ```clojure
 (def platform
@@ -103,7 +147,7 @@ Use `#?()` to conditionally include code based on the platform:
      :default "Unknown"))
 ```
 
-Use `#?@()` for splicing reader conditionals inside sequences:
+Splice variant for sequences:
 
 ```clojure
 (def features
@@ -112,15 +156,4 @@ Use `#?@()` for splicing reader conditionals inside sequences:
        :clj [:java-interop :maven])])
 ```
 
-The supported platform keys are `:phel` and `:default`. When Phel reads a `.cljc` file, it selects the `:phel` branch if present, otherwise the `:default` branch.
-
-## Publishing
-
-Phel library is just like any PHP library in the sense that the process for publishing is the same. You login to [Packagist](https://packagist.org/) and submit your repository. Then, you can install the library in your Phel or PHP application in the same way:
-
-```bash
-# For example:
-composer require mabasic/phel-json
-```
-
-Happy Pheling!
+Keys: `:phel`, `:default`. Phel picks `:phel`, falls back to `:default`.
