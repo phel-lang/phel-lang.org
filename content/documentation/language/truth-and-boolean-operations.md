@@ -6,9 +6,9 @@ aliases = ["/documentation/truth-and-boolean-operations"]
 
 ## Truthiness
 
-In Phel, only `false` and `nil` represent falsity. Everything else evaluates to true-including `0`, `""`, and `[]`.
+Only `false` and `nil` are falsy. `0`, `""`, `[]` all truthy.
 
-The function `truthy?` can be used to check if a value is truthy. To check for the values `true` and `false` specifically, the functions `true?` and `false?` can be used.
+`truthy?` checks truthiness. `true?` and `false?` check for the values themselves.
 
 ```phel
 (truthy? false) ; Evaluates to false
@@ -44,9 +44,9 @@ if ([]) { }       // false - won't execute
 ```
 {% end %}
 
-## Identity vs Equality
+## Identity vs equality
 
-The function `identical?` returns `true` if two values are identical. Identity is stricter than equality. It first checks if both types are identical and then compares their values. Phel keywords and symbols with the same names are always identical. Lists, vectors, maps and sets are only identical if they point to the same references.
+`identical?` returns `true` if two values are identical. Stricter than equality: types match, then values. Keywords/symbols with same name always identical. Lists, vectors, maps, sets identical only if same reference.
 
 ```phel
 (identical? true true)   ; Evaluates to true
@@ -59,9 +59,9 @@ The function `identical?` returns `true` if two values are identical. Identity i
 (identical? {} {})       ; Evaluates to false
 ```
 
-> **Note:** `id` is still accepted as a deprecated alias for `identical?`.
+> **Note:** `id` is a deprecated alias for `identical?`.
 
-To check if two values are equal, the equal function (`=`) can be used. Two values are equal if they have the same type and value. Lists, vectors, maps and sets are equal if they have same values, but they must not point to the same references.
+`=` checks equality: same type and value. Collections equal if values match (no reference check).
 
 ```phel
 (= true true) ; Evaluates to true
@@ -76,16 +76,16 @@ To check if two values are equal, the equal function (`=`) can be used. Two valu
 (= {} {}) ; Evaluates to true
 ```
 
-To check if two values are unequal, the `not=` function can be used.
+Use `not=` for inequality.
 
 {% php_note() %}
-**Comparison with PHP operators:**
+**vs PHP operators:**
 
-- `identical?` is like PHP's `===` (identity/strict equality) with support for Phel types
-- `=` is **not** like PHP's `==` (loose equality)
-- `=` compares Phel values structurally with type checking
+- `identical?` like `===` (strict, with Phel types)
+- `=` is **not** like `==` (loose)
+- `=` compares structurally with type checking
 
-If you need PHP's loose equality, use `php/==`:
+PHP loose equality: use `php/==`:
 
 ```phel
 (php/== 5 "5")      ; => true (PHP loose equality)
@@ -94,18 +94,16 @@ If you need PHP's loose equality, use `php/==`:
 ```
 {% end %}
 
-## Comparison Operations
+## Comparisons
 
-Further comparison function are:
+- `<=`: each arg ≤ next, returns bool
+- `<`: each arg strictly < next, returns bool
+- `>=`: each arg ≥ next, returns bool
+- `>`: each arg strictly > next, returns bool
 
-- `<=`: Checks if each argument is less than or equal to the following argument. Returns a boolean.
-- `<`: Checks if each argument is strictly less than the following argument. Returns a boolean.
-- `>=`: Checks if each argument is greater than or equal to the following argument. Returns a boolean.
-- `>`: Checks if each argument is strictly greater than the following argument. Returns a boolean.
+## Logical operations
 
-## Logical Operations
-
-The `and` function evaluates each expression one at a time, from left to right. If a form returns logical false, `and` returns that value and doesn't evaluate any of the other expressions, otherwise it returns the value of the last expression. Calling the `and` function without arguments returns true.
+`and` evaluates left-to-right. Returns first falsy or the last value. No args returns true.
 
 ```phel
 (and) ; Evaluates to true
@@ -115,7 +113,7 @@ The `and` function evaluates each expression one at a time, from left to right. 
 (and true 5) ; Evaluates to 5
 ```
 
-The `or` function evaluates each expression one at a time, from left to right. If a form returns a logical true value, `or` returns that value and doesn't evaluate any of the other expressions, otherwise it returns the value of the last expression. Calling `or` without arguments, returns nil.
+`or` evaluates left-to-right. Returns first truthy or the last value. No args returns nil.
 
 ```phel
 (or) ; Evaluates to nil
@@ -123,7 +121,7 @@ The `or` function evaluates each expression one at a time, from left to right. I
 (or false 5) ; Evaluates to 5
 ```
 
-The `not` function returns `true` if the given value is logical false and `false` otherwise.
+`not` returns `true` for falsy values, `false` otherwise.
 
 ```phel
 (not 1) ; Evaluates to false

@@ -4,39 +4,26 @@ weight = 3
 aliases = ["/documentation/editor-support"]
 +++
 
-Phel integrates with popular editors through community-maintained plugins and
-extensions. Install the tool that matches your workflow and point it at your
-project directory.
+Editor integration via community plugins. Install the one matching your workflow.
 
 ## PhpStorm
 
-Use the [Phel IntelliJ plugin](https://github.com/phel-lang/phel-intellij-plugin)
-for syntax highlighting, structural editing, and REPL actions within PhpStorm or
-other JetBrains IDEs. Install it via *Settings → Plugins → Marketplace* and
-search for “Phel”.
+[Phel IntelliJ plugin](https://github.com/phel-lang/phel-intellij-plugin): syntax highlighting, structural editing, REPL actions. Install via *Settings → Plugins → Marketplace*, search "Phel".
 
 ## VSCode
 
-The [Phel VS Code extension](https://github.com/phel-lang/phel-vs-code-extension)
-adds syntax highlighting, snippets, and inline evaluation support. Install it
-from the VS Code marketplace and reload the editor for the language features to
-activate.
+[Phel VS Code extension](https://github.com/phel-lang/phel-vs-code-extension): syntax highlighting, snippets, inline evaluation. Install from the VS Code marketplace, reload.
 
 ## Emacs
 
-[interactive-lang-tools](https://codeberg.org/mmontone/interactive-lang-tools)
-ships Phel support for Emacs, including editing helpers and REPL integration.
-Follow the repository instructions to add it to your Emacs configuration, then
-open a `.phel` file to enable the mode.
+[interactive-lang-tools](https://codeberg.org/mmontone/interactive-lang-tools): Phel support for Emacs, editing helpers, REPL integration. Follow the repo instructions.
 
 ## Vim
 
-[`phel.vim`](https://github.com/danirod/phel.vim) provides core editing
-support-syntax highlighting, filetype detection, and indentation. Install it
-through your plugin manager of choice:
+[`phel.vim`](https://github.com/danirod/phel.vim): syntax highlighting, filetype detection, indentation. Install via your plugin manager:
 
 ```vim
 Plug 'danirod/phel.vim'
 ```
 
-Reload Vim and open a Phel file to confirm the highlighting is active.
+Reload Vim, open a Phel file.

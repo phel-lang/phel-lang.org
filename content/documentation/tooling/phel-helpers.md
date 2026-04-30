@@ -4,15 +4,15 @@ weight = 5
 aliases = ["/documentation/tooling/phel-helpers"]
 +++
 
-The Phel standard library ships with helpers for inspecting values during development. These tools are perfect for quick debugging without setting up external tools.
+Stdlib ships helpers for inspecting values during development. Quick debugging without external tools.
 
-## Global Tap System
+## Global tap system
 
-The tap system provides a global dispatch mechanism for routing debug values to one or more handlers. Values flow through `tap>`, which in turn invokes every function registered with `add-tap`.
+Routes debug values to handlers. `tap>` invokes every function registered via `add-tap`.
 
 ### `tap>`
 
-Sends a value to every registered tap handler. Returns `true`.
+Sends a value to every registered handler. Returns `true`.
 
 ```phel
 (tap> {:event :user-login :user-id 42})
@@ -31,12 +31,12 @@ Register or unregister a handler function:
 (remove-tap my-logger)
 ```
 
-Exceptions thrown by individual taps are swallowed so one misbehaving handler does not affect the others.
+Exceptions in individual taps are swallowed so one bad handler doesn't break others.
 
 **Use cases:**
-- Routing debug output to a log file or external tool
-- Collecting values during a test run for later inspection
-- Building custom debugging dashboards
+- Route debug output to a log file or external tool
+- Collect values during a test run
+- Custom debugging dashboards
 
 ```phel
 ;; Collect tapped values during a test
@@ -53,9 +53,9 @@ Exceptions thrown by individual taps are swallowed so one misbehaving handler do
 (remove-tap collector)
 ```
 
-## Pretty Printing
+## Pretty printing
 
-The `phel\pprint` module provides `pprint` and `pprint-str` for readable output of nested data structures.
+`phel\pprint` provides `pprint` and `pprint-str` for readable nested data output.
 
 ```phel
 (ns my-app
@@ -70,11 +70,11 @@ The `phel\pprint` module provides `pprint` and `pprint-str` for readable output 
 ;;  :count 2}
 ```
 
-`pprint-str` returns the formatted string instead of printing it. Both accept an optional width parameter.
+`pprint-str` returns the formatted string. Both accept an optional width.
 
-## PHP Native Inspection
+## PHP native inspection
 
-Since Phel values are PHP objects under the hood, you can call any PHP inspection function with the `php/` prefix:
+Phel values are PHP objects. Any PHP inspection function works via `php/`:
 
 ```phel
 (php/var_dump (+ 2 2))
@@ -83,11 +83,11 @@ Since Phel values are PHP objects under the hood, you can call any PHP inspectio
 (php/print_r {:a 1 :b 2})
 ```
 
-For more advanced output, use [Symfony's VarDumper](/documentation/tooling/php-tools/) via `(php/dump ...)` and `(php/dd ...)`.
+Advanced output: [Symfony VarDumper](/documentation/tooling/php-tools/) via `(php/dump ...)` and `(php/dd ...)`.
 
-## Next Steps
+## Next steps
 
-- For deeper debugging, set up [XDebug](/documentation/tooling/xdebug-setup/)
-- Use [PHP native tools](/documentation/tooling/php-tools/) for familiar debugging
-- Use [`pprint`](/documentation/api/#pprint) for readable output of nested data structures
-- Check the [API documentation](/documentation/api/) for more helpers
+- Deeper debugging: [XDebug](/documentation/tooling/xdebug-setup/)
+- Familiar debugging: [PHP native tools](/documentation/tooling/php-tools/)
+- Readable output: [`pprint`](/documentation/api/#pprint)
+- More: [API docs](/documentation/api/)

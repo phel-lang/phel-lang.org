@@ -6,20 +6,20 @@ aliases = ["/documentation/macros"]
 
 ## Macros
 
-Macros are functions that take code as input and return transformed code as output. A macro is like a function that is executed at compile time. They are useful to extend the syntax of the language itself.
+Macros are compile-time functions: take code, return transformed code. Used to extend the language's syntax.
 
-Phel's core library uses macros to define the language. For example, `defn` is a macro.
+Phel's core uses macros throughout. Example: `defn` is a macro.
 
 ```phel
 (defn add [a b] (+ a b))
 ```
-is transformed to
+transforms to:
 ```phel
 (def add (fn [a b] (+ a b)))
 ```
 
 {% php_note() %}
-Macros are **not** like PHP functions. They run at compile-time and transform code before execution:
+Macros aren't PHP functions. They run at compile-time, transforming code before execution:
 
 ```php
 // PHP - No macro system
@@ -34,18 +34,19 @@ Macros are **not** like PHP functions. They run at compile-time and transform co
 ; Expands to: (if (not false) "yes" "no") at compile time
 ```
 
-This is more powerful and safer than PHP's `eval()` or code generation.
+More powerful and safer than `eval()` or codegen.
 {% end %}
 
 ## Quote
 
-The quote operator is a special form, it returns its argument without evaluating it. Its purpose is to prevent any evaluation. Preceding a form with a single quote is a shorthand for `(quote form)`.
+`quote` returns its argument unevaluated. Single-quote prefix is shorthand for `(quote form)`.
 
 ```phel
-(quote my-sym) ; Evaluates to my-sym
-'my-sym ; Shorthand for (same as above)
+(quote my-sym) ; => my-sym
+'my-sym ; same
 ```
-Quote make macros possible, since its helps to distinguish between code and data. Literals like numbers and string evaluate to themselves.
+
+Quote distinguishes code from data, making macros possible. Literals (numbers, strings) evaluate to themselves.
 
 ```phel
 (quote 1) ; Evaluates to 1
@@ -62,19 +63,21 @@ Quote make macros possible, since its helps to distinguish between code and data
 (defmacro docstring? attributes? [params*] expr*)
 ```
 
-The `defmacro` function can be used to create a macro. It takes the same parameters as `defn`.
+`defmacro` creates a macro. Same params as `defn`.
 
-Together with `quote` and `defmacro`, it is now possible to define a custom `defn`, which is called `mydefn`:
+With `quote` and `defmacro`, define a custom `defn` called `mydefn`:
 
 ```phel
 (defmacro mydefn [name args & body]
   (list 'def name (apply list 'fn args body)))
 ```
-This macro is very simple at does not support all the feature of `defn`. But it illustrates the basics of a macro.
+Simple, doesn't cover all `defn` features, but shows the basics.
 
 ## Quasiquote
 
-For better readability of macros the `quasiquote` special form is defined. It turns the definition of macros around. Instead of quoting values that should not be evaluated, `quasiquote` marks values that should be evaluated. Every other value is not evaluated. A shorthand for `quasiquote` is the `` ` `` character. Values that should be evaluated are marked with the `unquote` function (shorthand `,`) or `unquote-splicing` function (shorthand `,@`). With quasiquote the `mydefn` macro can be expressed as
+`quasiquote` improves macro readability. Inverts quoting: marks what *should* evaluate, leaves the rest unevaluated. Shorthand: `` ` `` (quasiquote), `,` (unquote), `,@` (unquote-splicing).
+
+`mydefn` with quasiquote:
 
 ```phel
 (defmacro mydefn [name args & body]

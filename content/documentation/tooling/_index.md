@@ -9,4 +9,4 @@ template = "section-page.html"
 insert_after = "Configuration"
 +++
 
-Phel ships with a complete development toolkit - a CLI with build, format, and export commands, an interactive REPL, editor integrations, and everything you need to publish your own libraries.
+Complete dev toolkit: CLI (build, format, export), interactive REPL, editor integrations, library publishing.

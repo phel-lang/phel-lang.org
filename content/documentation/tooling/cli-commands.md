@@ -4,16 +4,16 @@ weight = 1
 aliases = ["/documentation/cli-commands"]
 +++
 
-Phel includes a series of commands out-of-the-box.
+Built-in commands.
 
 ```bash
-# To see an overview of all commands.
+; Overview of all commands
 vendor/bin/phel list
 ```
 
 ## Initialize a new project
 
-Scaffold a new Phel project with minimal configuration:
+Scaffold a new Phel project:
 
 ```bash
 vendor/bin/phel init
@@ -30,7 +30,7 @@ vendor/bin/phel init
 #       --no-gitignore    Skip generating .gitignore
 ```
 
-`phel init` defaults to the **Flat** layout (`src/`, `tests/`). Pass `--nested` for the legacy `src/phel/<name>/` layout.
+Defaults to **Flat** layout (`src/`, `tests/`). `--nested` for legacy `src/phel/<name>/`.
 
 ```bash
 # Flat layout (default)
@@ -55,7 +55,7 @@ php phel build
 #       --source-map|--no-source-map  Enable source maps
 ```
 
-Build the current project into the main php path. This means that the compiled phel code into PHP will be saved in that directory being the entry point the `out/index.php`, and you can run the PHP code directly using the PHP interpreter. This will improve the runtime performance, because there won't be a need to compile the code again.
+Compiles Phel to PHP, writing to the configured main path (entry point `out/index.php`). Run the resulting PHP directly. Skips recompilation, improving runtime.
 
 [Configuration](/documentation/configuration/#buildconfig) in `phel-config.php`:
 ```php
@@ -68,9 +68,7 @@ return (new \Phel\Config\PhelConfig())
 
 ## Export definitions
 
-Export all definitions with the metadata `{:export true}` as PHP classes. 
-
-It generates PHP classes at namespace level and a method for each exported definition. This allows you to use the exported phel functions from your PHP code.
+Exports definitions with `{:export true}` metadata as PHP classes. Generates one class per namespace, one method per exported definition. Lets you call Phel functions from PHP.
 
 ```bash
 vendor/bin/phel export
@@ -88,7 +86,7 @@ return (new \Phel\Config\PhelConfig())
 
 ## Format phel files
 
-Formats the given files. You can pass relative or absolute paths.
+Formats files. Accepts relative or absolute paths.
 
 ```bash
 vendor/bin/phel format
@@ -106,21 +104,21 @@ return (new PhelConfig())
     ->setFormatDirs(['src', 'tests']);
 ```
 
-The formatter aligns key/value pairs in `cond`, `case`, `condp`, and bindings of `let`/`loop`/`binding`/`for`/`foreach`/`dofor`/`if-let`/`when-let`.
+Aligns key/value pairs in `cond`, `case`, `condp`, and bindings of `let`/`loop`/`binding`/`for`/`foreach`/`dofor`/`if-let`/`when-let`.
 
-## Read-Eval-Print Loop
+## Read-eval-print loop
 
-Start a Repl. This is and interactive prompt (stands for Read-eval-print loop). It is very helpful to test out small tasks or to play around with the language itself.
+Interactive prompt for quick tests and language exploration.
 
 ```bash
 vendor/bin/phel repl
 ```
 
-Read more about the [REPL](/documentation/tooling/repl) in its own chapter.
+See [REPL](/documentation/tooling/repl).
 
 ## Run a script
 
-Code can be executed from the command line by calling the run command, followed by the file path or namespace:
+Run a file or namespace:
 
 ```bash
 vendor/bin/phel run
@@ -142,11 +140,11 @@ return (new PhelConfig())
     ->setSrcDirs(['src']);
 ```
 
-Read more about [running the code](/documentation/getting-started/#running-the-code) in the getting started page.
+See [Running the code](/documentation/getting-started/#running-the-code).
 
-## Test your phel logic
+## Test your Phel logic
 
-Tests the given files. If no filenames are provided all tests in the "tests" directory are executed.
+Runs tests. No paths runs everything in `tests/`.
 
 ```bash
 vendor/bin/phel test
@@ -167,7 +165,7 @@ vendor/bin/phel test
 #       --testdox           Shortcut for --reporter=testdox.
 ```
 
-Test selectors (`--include`, `--exclude`, `--ns`, regex `--filter`) and pluggable reporters (`default`, `testdox`, `dot`, `tap`, `junit-xml`) are documented in [Testing](/documentation/testing/).
+Test selectors and reporters: see [Testing](/documentation/testing/).
 
 [Configuration](/documentation/configuration/#testdirs) in `phel-config.php`:
 ```php
@@ -176,18 +174,11 @@ return (new PhelConfig())
     ->setTestDirs(['tests']);
 ```
 
-Use the `filter` option to run only the tests that contain that filter.
-
-[Configuration](/documentation/configuration/) in `phel-config.php`:
-```php
-<?php
-return (new PhelConfig())
-    ->setTestDirs(['tests']);
-```
+Use `filter` to run matching tests only.
 
 ## Evaluate an expression
 
-Evaluate a Phel expression and print the result. Pass a literal expression, or `-` to read from stdin.
+Evaluate and print. Pass a literal expression, or `-` for stdin.
 
 ```bash
 vendor/bin/phel eval '(+ 1 2 3)'
@@ -197,11 +188,9 @@ echo '(map inc [1 2 3])' | vendor/bin/phel eval -
 # => [2 3 4]
 ```
 
-Pass `-` to read the expression from stdin.
-
 ## Lint
 
-Static analysis with configurable rules (unresolved-symbol, arity-mismatch, unused-binding, unused-require, unused-import, shadowed-binding, redundant-do, duplicate-key, invalid-destructuring, discouraged-var).
+Static analysis. Rules: unresolved-symbol, arity-mismatch, unused-binding, unused-require, unused-import, shadowed-binding, redundant-do, duplicate-key, invalid-destructuring, discouraged-var.
 
 ```bash
 vendor/bin/phel lint
@@ -216,10 +205,9 @@ vendor/bin/phel lint
 
 Configure rules in `phel-lint.phel` at the project root.
 
-
 ## Watch
 
-Reload changed namespaces in dependency order. Backends: inotify, fswatch, polling.
+Reloads changed namespaces in dependency order. Backends: inotify, fswatch, polling.
 
 ```bash
 vendor/bin/phel watch
@@ -227,7 +215,7 @@ vendor/bin/phel watch
 #   watch [paths]... [-b backend] [--poll=500] [--debounce=100]
 ```
 
-Programmatic usage from Phel:
+From Phel:
 
 ```phel
 (ns my-app
@@ -239,7 +227,7 @@ Programmatic usage from Phel:
 
 ## nREPL
 
-bencode-over-TCP nREPL server. Supports `eval`, `clone`, `close`, `describe`, `load-file`, `interrupt`, `completions`, `lookup`, `info`, `eldoc`.
+Bencode-over-TCP nREPL server. Ops: `eval`, `clone`, `close`, `describe`, `load-file`, `interrupt`, `completions`, `lookup`, `info`, `eldoc`.
 
 ```bash
 vendor/bin/phel nrepl --port=7888 --host=127.0.0.1
@@ -247,10 +235,9 @@ vendor/bin/phel nrepl --port=7888 --host=127.0.0.1
 
 Connect from any nREPL-aware editor.
 
-
 ## LSP
 
-Language Server Protocol (v3.17) over stdio. Supports hover, definition, references, completion, document/workspace symbols, rename, formatting, and debounced diagnostics.
+LSP v3.17 over stdio. Supports hover, definition, references, completion, document/workspace symbols, rename, formatting, debounced diagnostics.
 
 ```bash
 vendor/bin/phel lsp
@@ -275,7 +262,7 @@ vendor/bin/phel api-daemon
 
 ## Agent install
 
-Write skill/recipe files for AI coding assistants: Claude Code, Cursor, Codex, Gemini, Copilot, Aider.
+Writes skill/recipe files for AI coding assistants: Claude Code, Cursor, Codex, Gemini, Copilot, Aider.
 
 ```bash
 vendor/bin/phel agent-install           # pick platform interactively
@@ -289,10 +276,10 @@ vendor/bin/phel agent-install --all     # all platforms
 
 ## Clear caches
 
-Clear the namespace and compiled code caches:
+Clear namespace and compiled-code caches:
 
 ```bash
 vendor/bin/phel cache:clear
 ```
 
-This removes all cached data from the cache directory. Useful when the cache becomes stale or after upgrading Phel versions.
+Removes everything in the cache dir. Useful for stale caches or after upgrades.

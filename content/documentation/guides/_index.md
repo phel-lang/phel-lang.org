@@ -6,4 +6,4 @@ insert_anchor_links = "right"
 template = "section-page.html"
 +++
 
-Transition guides and practical recipes for developers coming from other languages or looking for real-world patterns.
+Transition guides and recipes for developers from other languages or looking for real-world patterns.

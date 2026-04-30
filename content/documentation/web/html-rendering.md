@@ -4,11 +4,11 @@ weight = 2
 aliases = ["/documentation/html-rendering"]
 +++
 
-Phel offers a template syntax based on Phel's data structures. It uses vectors to represent elements and maps to represent an element's attributes. All values are automatically escaped to provide better defense against cross-site scripting (XSS).
+Template syntax based on Phel data structures. Vectors are elements, maps are attributes. Values auto-escape for XSS protection.
 
 ## Syntax
 
-The `html` function in the module `phel\html` is the main function to generate HTML. See the following example:
+`html` from `phel\html` generates HTML:
 
 ```phel
 (ns my-namespace
@@ -18,14 +18,14 @@ The `html` function in the module `phel\html` is the main function to generate H
 ;; Evaluates to <span class="foo">bar</span>
 ```
 
-The data structure that is accepted by `html` takes one of the following forms:
+Forms:
 
 ```phel
 [tag body+]
 [tag attributes body+]
 ```
 
-The first item in the vector is a mandatory tag name. It can be either a keyword or a string. The second item is an optional map of attributes. All subsequent items in the vector are treated as the element body. This can include strings, nested vectors or lists.
+First item: tag name (keyword or string). Second item: optional attribute map. Rest: body (strings, nested vectors, lists).
 
 ```phel
 (html [:div]) ; Evaluates to "<div></div>"
@@ -35,11 +35,11 @@ The first item in the vector is a mandatory tag name. It can be either a keyword
 (html [:div {:id "foo"}]) ; Evaluates to "<div id=\"foo\"></div>"
 ```
 
-## Classes and Styles
+## Classes and styles
 
-A common need in building HTML templates is to adjust an element's class list and its inline styles. Therefore, Phel provides special enhancements for `class` and `style` attributes.
+Phel enhances `class` and `style` attributes.
 
-Instead of concatenating an inline style string, a map can be used. The next two examples evaluate to the same result.
+Use a map for styles instead of a string. Both forms equivalent:
 
 ```phel
 (html [:div {:style "background:green;color:red;"} "bar"])
@@ -48,7 +48,7 @@ Instead of concatenating an inline style string, a map can be used. The next two
 ;; "<div style=\"background:green;color:red;\">bar</div>"
 ```
 
-Class lists can be built by vectors or maps. If a map is provided, the keys of the map are the class names, and the values are evaluated to true or false. Only keys with true values are added to the final class list.
+Class lists: vector or map. Map keys are class names; only truthy keys appear in the final list.
 
 ```phel
 (html [:div {:class [:a]}]) ; <div class=\"a\"></div>
@@ -59,7 +59,7 @@ Class lists can be built by vectors or maps. If a map is provided, the keys of t
 
 ## Conditional rendering
 
-To conditionally render parts of the HTML, the `if` expression can be used.
+Use `if`:
 
 ```phel
 (html [:div [:p "a"] (if true [:p "b"] [:p "c"])])
@@ -68,9 +68,9 @@ To conditionally render parts of the HTML, the `if` expression can be used.
 ;; Evaluates to "<div><p>a</p><p>c</p></div>"
 ```
 
-## Rendering sequential data structures
+## Rendering sequential data
 
-Similar to conditional rendering, the `for` expression can be used to render iterables such as vectors, lists and sets.
+`for` over vectors, lists, sets:
 
 ```phel
 (html [:ul (for [i :range [0 3]] [:li i])])
@@ -80,9 +80,9 @@ Similar to conditional rendering, the `for` expression can be used to render ite
 ;; Evaluates to "<ul><li>3</li><li>4</li><li>5</li></ul>"
 ```
 
-## Raw Html
+## Raw HTML
 
-By default, all values are automatically escaped to provide better defense against cross-site scripting (XSS). In order to output unescaped HTML, the `raw-string` function can be used.
+Values auto-escape for XSS protection. For unescaped output, use `raw-string`:
 
 ```phel
 (html [:span (raw-string "<a></a>")])
@@ -91,11 +91,11 @@ By default, all values are automatically escaped to provide better defense again
 
 ## Doctypes
 
-To add a doctype at the beginning of each element document, the `doctype` function can be used.
+Use `doctype` for the document doctype:
 
 ```phel
 (html (doctype :html5) [:div])
 ;; Evaluates to "<!DOCTYPE html>\n<div></div>"
 ```
 
-The `doctype` function supports the following values: `:html5`, `:xhtml-transitional`, `:xhtml-strict` and `:html4`.
+Supported values: `:html5`, `:xhtml-transitional`, `:xhtml-strict`, `:html4`.

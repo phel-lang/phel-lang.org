@@ -7,9 +7,9 @@ aliases = ["/documentation/cheat-sheet"]
 scripts = ["cheat-sheet-filter.js"]
 +++
 
-A quick reference for Phel syntax and core functions.
+Quick reference for Phel syntax and core functions.
 
-## Basic Syntax
+## Basic syntax
 
 ```phel
 ; This is a comment
@@ -25,11 +25,11 @@ my-var my-module/fn     ; symbols
 #"[a-z]+"               ; regex literal (PCRE pattern)
 ```
 
-> **Note:** The `#` line comment and `#| |#` multiline comment syntax are deprecated. Use `;` for comments instead.
+> **Note:** `#` line and `#| |#` multiline comments are deprecated. Use `;`.
 
 See [Basic Types](/documentation/language/basic-types), [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations).
 
-## Reader Syntax
+## Reader syntax
 
 ```phel
 @my-var                 ; shorthand for (deref my-var)
@@ -41,11 +41,11 @@ See [Basic Types](/documentation/language/basic-types), [Truth and Boolean Opera
 #?@(:phel [a b] :default [c])  ; splicing reader conditional
 ```
 
-The `#(...)` anonymous function shorthand is the preferred form. Use `%` or `%1` for the first argument, `%2` for the second, and `%&` for variadic rest args. The legacy `|(...)` form with `$` placeholders is still accepted but deprecated.
+`#(...)` is the preferred shorthand. `%` or `%1` first arg, `%2` second, `%&` rest. Legacy `|(...)` with `$` is deprecated.
 
-Reader conditionals (`#?()` and `#?@()`) allow code to be shared across `.cljc` files with platform-specific branches using `:phel` and `:default` keys.
+Reader conditionals (`#?()`, `#?@()`) target platforms in `.cljc` via `:phel` and `:default`.
 
-## Data Structures
+## Data structures
 
 ```phel
 [1 2 3]                 ; vector (indexed)
@@ -61,7 +61,7 @@ Reader conditionals (`#?()` and `#?@()`) allow code to be shared across `.cljc` 
 
 See [Data Structures](/documentation/language/data-structures).
 
-## Accessing Data
+## Accessing data
 
 ```phel
 (get [1 2 3] 0)           ; => 1
@@ -76,7 +76,7 @@ See [Data Structures](/documentation/language/data-structures).
 ([10 20 30] 1)             ; => 20 (vector as function)
 ```
 
-## Modifying Data
+## Modifying data
 
 ```phel
 (conj [1 2] 3)                    ; => [1 2 3]
@@ -122,7 +122,7 @@ See [Data Structures](/documentation/language/data-structures).
 
 See [Destructuring](/documentation/language/destructuring).
 
-## Defining Things
+## Defining things
 
 ```phel
 (def pi 3.14159)                  ; global binding
@@ -174,7 +174,7 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 
 See [Functions and Recursion](/documentation/language/functions-and-recursion).
 
-## Control Flow
+## Control flow
 
 ```phel
 (if (> x 0) "pos" "non-pos")      ; if/else
@@ -194,7 +194,7 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion).
 
 See [Control Flow](/documentation/language/control-flow).
 
-## Loops & Recursion
+## Loops & recursion
 
 ```phel
 (loop [acc 0 n 10]                 ; loop with recur
@@ -244,7 +244,7 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 
 See [Data Structures](/documentation/language/data-structures).
 
-## Walking Data Structures
+## Walking data structures
 
 ```phel
 (postwalk f nested)                ; transform bottom-up
@@ -256,7 +256,7 @@ See [Data Structures](/documentation/language/data-structures).
 
 See [Data Structures](/documentation/language/data-structures#walking-data-structures).
 
-## Lazy Sequences
+## Lazy sequences
 
 ```phel
 (take 5 (range))                   ; => (0 1 2 3 4)
@@ -294,9 +294,9 @@ Lazy file I/O:
 (read-file-lazy "big.txt" 4096)        ; lazy chunked reading
 ```
 
-`map`, `filter`, `take`, `drop`, `concat`, `mapcat`, `interleave`, and `partition` all return lazy sequences.
+`map`, `filter`, `take`, `drop`, `concat`, `mapcat`, `interleave`, `partition` return lazy sequences.
 
-## Threading Macros
+## Threading macros
 
 ```phel
 (-> {:name "Alice" :age 30}        ; thread-first
@@ -333,7 +333,7 @@ Lazy file I/O:
 (php/explode "," "a,b,c")          ; => PHP array ["a" "b" "c"]
 ```
 
-## Regular Expressions
+## Regular expressions
 
 ```phel
 ;; Regex literals use #"..." syntax (PCRE patterns)
@@ -351,7 +351,7 @@ Lazy file I/O:
 (valid-email? "not-an-email")      ; => false
 ```
 
-## Mutable State
+## Mutable state
 
 ```phel
 (def counter (atom 0))             ; create an atom (mutable container)
@@ -375,7 +375,7 @@ Lazy file I/O:
 
 See [Global and Local Bindings](/documentation/language/global-and-local-bindings).
 
-## Error Handling
+## Error handling
 
 ```phel
 (try
@@ -405,7 +405,7 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 
 See [PHP Interop](/documentation/php-interop).
 
-## Interfaces & Structs
+## Interfaces & structs
 
 ```phel
 (definterface Greetable
@@ -431,7 +431,7 @@ See [Interfaces](/documentation/language/interfaces).
 
 ## Protocols
 
-Protocols provide polymorphic dispatch based on the type of the first argument. They are more flexible than interfaces because you can extend existing types without modifying them.
+Polymorphic dispatch on the first argument's type. More flexible than interfaces, extendable to existing types.
 
 ```phel
 ;; Define a protocol
@@ -457,9 +457,9 @@ Protocols provide polymorphic dispatch based on the type of the first argument. 
 (extends? Stringable dog)                        ; => true
 ```
 
-## Hierarchy System
+## Hierarchy system
 
-Derive ad-hoc hierarchies for use with multimethods and `isa?` checks.
+Ad-hoc hierarchies for multimethods and `isa?`.
 
 ```phel
 (derive :square :shape)
@@ -477,7 +477,7 @@ Derive ad-hoc hierarchies for use with multimethods and `isa?` checks.
 
 ## Transducers
 
-Transducers are composable transformations that work independently of the data source. They avoid creating intermediate collections, making pipelines more efficient.
+Composable transformations independent of the data source. Avoid intermediate collections.
 
 ```phel
 ;; Basic transducer usage with transduce
@@ -505,7 +505,7 @@ Transducers are composable transformations that work independently of the data s
 ;; (map f), (filter pred), (take n), (drop n), (partition-all n), etc.
 ```
 
-## PHP Interop
+## PHP interop
 
 ```phel
 ;; Calling PHP functions
@@ -586,7 +586,7 @@ See [Namespaces](/documentation/language/namespaces).
 
 See [Testing](/documentation/testing).
 
-## Delay & Force
+## Delay & force
 
 ```phel
 ;; Delay defers evaluation until first access
@@ -610,7 +610,7 @@ See [Testing](/documentation/testing).
   :initk nil)
 ```
 
-## Utility Functions
+## Utility functions
 
 ```phel
 (parse-long "42")                  ; => 42
@@ -621,7 +621,7 @@ See [Testing](/documentation/testing).
 (random-uuid)                      ; => "550e8400-e29b-..." (random UUID string)
 ```
 
-## REPL Utilities
+## REPL utilities
 
 ```phel
 (source my-fn)                     ; print source code of a function

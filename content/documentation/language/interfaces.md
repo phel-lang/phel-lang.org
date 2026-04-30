@@ -4,20 +4,20 @@ weight = 11
 aliases = ["/documentation/interfaces"]
 +++
 
-Interfaces define contracts - abstract sets of functions that structs must implement. They map directly to PHP interfaces, giving you interop with PHP's type system.
+Interfaces define contracts: abstract sets of functions that structs must implement. Map directly to PHP interfaces.
 
 ## Defining interfaces
 
-Use `definterface` to declare an interface with one or more methods:
+`definterface` declares one or more methods:
 
 ```phel
 (definterface Describable
   (describe [this] "Returns a human-readable description."))
 ```
 
-Each method must have at least one parameter (`this`), which binds to the struct instance at call time. An optional documentation string can follow the parameter list.
+Methods need at least `this`. Optional doc string follows the parameter list.
 
-You can define multiple methods in a single interface:
+Multiple methods per interface:
 
 ```phel
 (definterface Shape
@@ -25,15 +25,15 @@ You can define multiple methods in a single interface:
   (perimeter [this] "Computes the perimeter of the shape."))
 ```
 
-`definterface` also generates callable functions for each method, so you call `(area my-shape)` like any other function.
+Generates callable functions per method: `(area my-shape)` works like any function.
 
-> **Note:** Unlike PHP interfaces, Phel interfaces cannot extend other interfaces.
+> **Note:** Unlike PHP, Phel interfaces don't extend other interfaces.
 
-## Implementing interfaces with structs
+## Implementing with structs
 
-Structs are the only way to implement interfaces in Phel. A struct is a typed map with predefined keys, compiled to a PHP class internally.
+Only structs implement interfaces. A struct is a typed map with fixed keys, compiled to a PHP class.
 
-Add interface implementations after the field list in `defstruct`:
+Add implementations after the field list in `defstruct`:
 
 ```phel
 (defstruct circle [radius]
@@ -47,11 +47,11 @@ Add interface implementations after the field list in `defstruct`:
   (perimeter [this] (* 2 (+ width height))))
 ```
 
-Struct fields (`radius`, `width`, `height`) are directly accessible inside method bodies - no getter calls needed.
+Struct fields (`radius`, `width`, `height`) are directly accessible inside methods. No getters.
 
-### Calling interface methods
+### Calling methods
 
-Interface methods are called like regular functions, with the struct as the first argument:
+Like regular functions, struct first:
 
 ```phel
 (area (circle 5))           ; => 78.53975
@@ -63,7 +63,7 @@ Interface methods are called like regular functions, with the struct as the firs
 
 ### Multiple interfaces
 
-A struct can implement multiple interfaces. List each interface followed by its method implementations:
+A struct can implement many. List each followed by its methods:
 
 ```phel
 (definterface Describable
@@ -80,9 +80,9 @@ A struct can implement multiple interfaces. List each interface followed by its 
 (describe (circle 5))  ; => "Circle with radius 5"
 ```
 
-### Calling other methods from within a struct
+### Calling other methods on same struct
 
-Use `php/-> this` to call another method on the same struct:
+Use `php/-> this`:
 
 ```phel
 (definterface HasSummary
@@ -97,16 +97,16 @@ Use `php/-> this` to call another method on the same struct:
 
 ### Type checking
 
-Each struct gets an auto-generated predicate:
+Each struct gets a predicate:
 
 ```phel
 (circle? (circle 5))       ; => true
 (circle? (rectangle 4 6))  ; => false
 ```
 
-## Practical example: a renderer
+## Example: a renderer
 
-Interfaces shine when you have different types that share behavior:
+Interfaces shine when types share behavior:
 
 ```phel
 (definterface Renderable
@@ -136,7 +136,7 @@ Interfaces shine when you have different types that share behavior:
 
 ## Implementing PHP interfaces
 
-Since Phel interfaces compile to PHP interfaces, structs can also implement any PHP interface:
+Phel interfaces compile to PHP interfaces. Structs can implement any PHP interface:
 
 ```phel
 (defstruct json-config [data]
@@ -146,18 +146,18 @@ Since Phel interfaces compile to PHP interfaces, structs can also implement any 
 
 ## Protocols
 
-Protocols provide a flexible way to define a set of functions that can be extended to existing types without modifying them. Unlike interfaces (which require upfront implementation in `defstruct`), protocols can be extended to any type after the fact.
+Protocols extend functions to existing types without modifying them. Unlike interfaces (require `defstruct`), protocols extend to any type after the fact.
 
-### Defining a protocol
+### Defining
 
-Use `defprotocol` to define a protocol with one or more method signatures:
+`defprotocol` defines method signatures:
 
 ```phel
 (defprotocol Printable
   (to-string [this] "Converts the value to a printable string."))
 ```
 
-Each method must have at least one parameter (`this`). An optional doc string can follow the parameter list. A protocol can define multiple methods:
+Each method needs `this`. Optional doc string. Multiple methods allowed:
 
 ```phel
 (defprotocol Measurable
@@ -166,9 +166,9 @@ Each method must have at least one parameter (`this`). An optional doc string ca
   (dimensions [this] "Returns [width height] as a vector."))
 ```
 
-### Extending protocols to types
+### Extending to types
 
-Use `extend-type` to implement a protocol for a specific type:
+`extend-type` implements a protocol for one type:
 
 ```phel
 (extend-type :string
@@ -183,7 +183,7 @@ Use `extend-type` to implement a protocol for a specific type:
 (to-string 42)       ; => "int:42"
 ```
 
-Use `extend-protocol` to implement a single protocol across multiple types at once:
+`extend-protocol` implements one protocol across many types:
 
 ```phel
 (extend-protocol Printable
@@ -197,9 +197,9 @@ Use `extend-protocol` to implement a single protocol across multiple types at on
 (to-string true)    ; => "true"
 ```
 
-### Checking protocol support
+### Checking
 
-Use `satisfies?` to check if a value satisfies a protocol, and `extends?` to check if a type extends a protocol:
+`satisfies?` (value) and `extends?` (type):
 
 ```phel
 (satisfies? Printable "hello")  ; => true
@@ -209,18 +209,18 @@ Use `satisfies?` to check if a value satisfies a protocol, and `extends?` to che
 (extends? Printable :array)     ; => false
 ```
 
-### When to use protocols vs interfaces
+### Protocols vs interfaces
 
-- **Interfaces** are best when you control the type definition (structs) and want compile-time guarantees
-- **Protocols** are best when you need to add behavior to existing types or types you don't control
+- **Interfaces:** when you control the type (structs), compile-time guarantees.
+- **Protocols:** add behavior to existing types or types you don't control.
 
 ## Hierarchies
 
-Phel provides a hierarchy system for defining relationships between types or values. Hierarchies work with multimethods to enable inheritance-aware dispatch.
+Define relationships between types or values. Hierarchies + multimethods enable inheritance-aware dispatch.
 
-### Deriving relationships
+### Deriving
 
-Use `derive` to establish parent-child relationships between keywords:
+`derive` sets parent-child between keywords:
 
 ```phel
 (derive :circle :shape)
@@ -228,9 +228,9 @@ Use `derive` to establish parent-child relationships between keywords:
 (derive :square :rectangle)   ; A square is a rectangle
 ```
 
-### Querying hierarchies
+### Querying
 
-Use `isa?`, `parents`, `ancestors`, and `descendants` to query the hierarchy:
+`isa?`, `parents`, `ancestors`, `descendants`:
 
 ```phel
 (isa? :circle :shape)         ; => true
@@ -243,9 +243,9 @@ Use `isa?`, `parents`, `ancestors`, and `descendants` to query the hierarchy:
 (descendants :shape)          ; => #{:circle :rectangle :square}
 ```
 
-### Removing relationships
+### Removing
 
-Use `underive` to remove a parent-child relationship:
+`underive`:
 
 ```phel
 (underive :square :rectangle)
@@ -254,7 +254,7 @@ Use `underive` to remove a parent-child relationship:
 
 ### Empty hierarchy maps
 
-Use `make-hierarchy` to create the empty hierarchy map shape used by hierarchy-aware code. The public `derive`, `underive`, `isa?`, `parents`, `ancestors`, and `descendants` helpers operate on the global hierarchy.
+`make-hierarchy` creates the empty hierarchy shape. Public `derive`, `underive`, `isa?`, `parents`, `ancestors`, `descendants` operate on the global hierarchy.
 
 ```phel
 (make-hierarchy)
@@ -263,7 +263,7 @@ Use `make-hierarchy` to create the empty hierarchy map shape used by hierarchy-a
 
 ### Hierarchy-aware multimethod dispatch
 
-Hierarchies integrate with multimethods. When a multimethod dispatches on a value, it checks the hierarchy for parent matches:
+Multimethods check the hierarchy for parent matches when dispatching:
 
 ```phel
 (derive :circle :shape)

@@ -4,9 +4,9 @@ weight = 1
 aliases = ["/documentation/basic-types"]
 +++
 
-## Nil, True, False
+## Nil, true, false
 
-Nil, true and false are literal constants.
+Literal constants:
 
 ```phel
 nil
@@ -14,7 +14,7 @@ true
 false
 ```
 
-In Phel, only `false` and `nil` are falsy. Everything else is truthy-including `0`, `""`, and `[]`.
+Only `false` and `nil` are falsy. `0`, `""`, `[]` truthy.
 
 ```phel
 ;; Truthiness examples
@@ -26,17 +26,17 @@ In Phel, only `false` and `nil` are falsy. Everything else is truthy-including `
 ```
 
 {% php_note() %}
-In PHP, `nil` is the same as `null`, and `true`/`false` are the same. However, truthiness works differently:
+`nil` = PHP `null`. `true`/`false` same. But truthiness differs:
 
-**PHP**: `0`, `""`, `[]`, `null`, and `false` are all falsy
-**Phel**: Only `false` and `nil` are falsy
+**PHP**: `0`, `""`, `[]`, `null`, `false` falsy.
+**Phel**: only `false`, `nil` falsy.
 
-This means `if (0)` in PHP is false, but `(if 0 ...)` in Phel is true!
+`if (0)` in PHP is false, but `(if 0 ...)` in Phel is true.
 {% end %}
 
 ## Symbol
 
-Symbols are used to name functions and variables in Phel.
+Names functions and variables:
 
 ```phel
 symbol
@@ -47,7 +47,7 @@ my-module/my-function
 
 ## Keywords
 
-A keyword is like a symbol that begins with a colon character. However, it is used as a constant rather than a name for something. Keywords are interned and fast for equality checks.
+Like a symbol but starts with `:`. Used as a constant. Interned, fast equality.
 
 ```phel
 :keyword
@@ -57,7 +57,7 @@ A keyword is like a symbol that begins with a colon character. However, it is us
 ::
 ```
 
-Keywords are commonly used as map keys:
+Common as map keys:
 
 ```phel
 ;; Map with keyword keys
@@ -69,7 +69,7 @@ Keywords are commonly used as map keys:
 ```
 
 {% php_note() %}
-Keywords are like string constants, but more efficient for map keys. Use keywords instead of strings for map keys:
+Like string constants, more efficient as map keys. Prefer over strings:
 
 ```phel
 ; Less idiomatic:
@@ -79,12 +79,12 @@ Keywords are like string constants, but more efficient for map keys. Use keyword
 {:name "Alice" :age 30}
 ```
 
-Keywords are interned (only one instance exists in memory), making equality checks very fast.
+Interned: one instance in memory, fast equality.
 {% end %}
 
 ## Numbers
 
-Phel supports integers and floating-point numbers. Both use the underlying PHP implementation. Integers can be specified in decimal (base 10), hexadecimal (base 16), octal (base 8) and binary (base 2) notations. Binary, octal and hexadecimal formats may contain underscores (`_`) between digits for better readability.
+Integers and floats use PHP's implementation. Integers in decimal, hex, octal, binary. Binary/octal/hex may use `_` separators.
 
 ```phel
 1337 ; integer
@@ -115,7 +115,7 @@ Phel supports integers and floating-point numbers. Both use the underlying PHP i
 
 ## Strings
 
-Strings are surrounded by double quotes. The dollar sign (`$`) does not need to be escaped.
+Double-quoted. `$` doesn't need escaping.
 
 ```phel
 "hello world"
@@ -136,14 +136,14 @@ string."
 "Unicodes can be encoded: \u{1000}"
 ```
 
-String concatenation and conversion using `str`:
+Concat and convert with `str`:
 
 ```phel
 (str "Hello" " " "World")  ; => "Hello World"
 (str "The answer is " 42)  ; => "The answer is 42"
 ```
 
-Strings are iterable - they work directly with sequence functions like `map`, `filter`, `count`, `frequencies`, and `foreach`. Full UTF-8 / multibyte support is included:
+Strings are iterable: work with `map`, `filter`, `count`, `frequencies`, `foreach`. Full UTF-8 / multibyte support:
 
 ```phel
 (count "hello")             ; => 5
@@ -152,7 +152,7 @@ Strings are iterable - they work directly with sequence functions like `map`, `f
 ```
 
 {% php_note() %}
-Phel strings are PHP strings internally, so you can use all PHP string functions:
+PHP strings internally. All PHP string functions work:
 
 ```phel
 (php/strlen "hello")                 ; => 5
@@ -160,18 +160,18 @@ Phel strings are PHP strings internally, so you can use all PHP string functions
 (php/str_replace "o" "0" "hello")    ; => "hell0"
 ```
 
-Strings work almost the same as PHP double-quoted strings, with one difference: the dollar sign (`$`) doesn't need escaping.
+Same as PHP double-quoted strings, except `$` doesn't need escaping.
 {% end %}
 
 ## Lists
 
-A list is a sequence of whitespace-separated values surrounded by parentheses.
+Whitespace-separated values in parentheses:
 
 ```phel
 (do 1 2 3)
 ```
 
-A list will be interpreted as a function call, a macro call or a special form by the compiler. A list prefixed with a single quote will be interpreted as data.
+Lists are function/macro/special-form calls. Quoted lists are data:
 
 ```phel
 '(1 2 3)
@@ -179,17 +179,17 @@ A list will be interpreted as a function call, a macro call or a special form by
 
 ## Vectors
 
-A vector is a sequence of whitespace-separated values surrounded by brackets.
+Whitespace-separated values in brackets:
 
 ```phel
 [1 2 3] ; same as (vector 1 2 3)
 ```
 
-A vector in Phel is an indexed data structure. In contrast to PHP arrays, Phel vectors cannot be used as maps, hashtables or dictionaries.
+Indexed data structure. Unlike PHP arrays, vectors are not maps/hashtables.
 
 ## Maps
 
-A map is a sequence of whitespace-separated key/value pairs surrounded by curly braces. The sequence is defined as key1, value1, key2, value2, etc. There must be an even number of items.
+Whitespace-separated key/value pairs in braces. Even count: key1, value1, key2, value2.
 
 ```phel
 {} ; same as (hash-map)
@@ -206,9 +206,9 @@ A map is a sequence of whitespace-separated key/value pairs surrounded by curly 
 
 {% php_note() %}
 Unlike PHP associative arrays, Phel maps:
-- Can have **any type** as keys (not just strings/integers): vectors, lists, or even other maps
-- Are **immutable**: operations return new maps without modifying the original
-- Are **not** PHP arrays internally-they're their own data structure
+- **Any type** as keys: vectors, lists, other maps
+- **Immutable**: operations return new maps
+- **Not** PHP arrays internally
 
 ```phel
 ; PHP:
@@ -224,7 +224,7 @@ $map['name'] = 'Bob';  // Mutates in place
 
 ## Sets
 
-A set is a sequence of whitespace-separated values prefixed by `#` and surrounded by curly braces, or built from individual arguments with `hash-set`:
+Whitespace-separated values in `#{}`, or built with `hash-set`:
 
 ```phel
 #{1 2 3}         ; set literal
@@ -234,7 +234,7 @@ A set is a sequence of whitespace-separated values prefixed by `#` and surrounde
 
 ## Tagged literals
 
-Phel supports reader tags for common values:
+Reader tags for common values:
 
 ```phel
 #inst "2026-04-20T12:00:00Z"      ; => \DateTimeImmutable
@@ -244,7 +244,7 @@ Phel supports reader tags for common values:
 
 ### Custom tags
 
-Register user tags in Phel with `register-tag`:
+Register with `register-tag`:
 
 ```phel
 (ns my-app\readers
@@ -254,28 +254,28 @@ Register user tags in Phel with `register-tag`:
                         {:amount amount :currency currency}))
 ```
 
-Then in any source file:
+In any source file:
 
 ```phel
 #money [100 "EUR"]   ; => {:amount 100 :currency "EUR"}
 ```
 
-A `data-readers.phel` file at any source root is auto-loaded, so you can ship tag definitions with your library.
+A `data-readers.phel` at any source root auto-loads. Ship tag definitions with your library.
 
 ## PHP reader literals
 
-Produce native PHP arrays inline without calling `php/array`:
+Native PHP arrays inline without `php/array`:
 
 ```phel
 #php [1 2 3]          ; expands to (php-indexed-array 1 2 3)
 #php {"a" 1 "b" 2}    ; expands to (php-associative-array "a" 1 "b" 2)
 ```
 
-Expansion is non-recursive, nested Phel forms stay Phel data.
+Non-recursive expansion. Nested Phel forms stay Phel data.
 
-## Regex Literals
+## Regex literals
 
-Phel supports regex literal syntax using `#"..."` as reader sugar for PCRE patterns. This is a convenient shorthand for creating regular expressions:
+`#"..."` is reader sugar for PCRE patterns:
 
 ```phel
 #"\d+"           ; Matches one or more digits
@@ -283,7 +283,7 @@ Phel supports regex literal syntax using `#"..."` as reader sugar for PCRE patte
 #"hello\s+world" ; Matches "hello" followed by whitespace and "world"
 ```
 
-Regex literals can be used with the `re-find` and `re-matches` functions:
+Use with `re-find` and `re-matches`:
 
 ```phel
 (re-find #"\d+" "abc123def")     ; => "123"
@@ -298,12 +298,12 @@ Regex literals can be used with the `re-find` and `re-matches` functions:
 ```
 
 {% clojure_note() %}
-Regex literals use the same `#"..."` syntax as Clojure. The underlying engine is PHP's PCRE rather than Java's regex, so some pattern details may differ.
+Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some details differ.
 {% end %}
 
-## Anonymous Function Shorthand
+## Anonymous function shorthand
 
-The `#(...)` reader syntax provides a compact way to define anonymous functions inline, using `%` placeholders for parameters:
+`#(...)` defines anonymous functions inline. `%` placeholders:
 
 - `%` or `%1` refers to the first argument
 - `%2`, `%3`, etc. refer to subsequent arguments
@@ -320,11 +320,11 @@ The `#(...)` reader syntax provides a compact way to define anonymous functions 
 (sort-by #(get % :age) users)  ; Sort users by age
 ```
 
-> **Note:** The older `|(...)` short-form syntax with `$` placeholders is also accepted but deprecated. See [Functions and Recursion](/documentation/language/functions-and-recursion/) for details.
+> **Note:** Older `|(...)` form with `$` placeholders is deprecated. See [Functions and Recursion](/documentation/language/functions-and-recursion/).
 
-## Deref Shorthand
+## Deref shorthand
 
-The `@` reader syntax is shorthand for `(deref ...)`. It is used to dereference atoms and other reference types:
+`@` is shorthand for `(deref ...)`. Dereferences atoms and other reference types:
 
 ```phel
 (def counter (atom 0))
@@ -336,16 +336,16 @@ The `@` reader syntax is shorthand for `(deref ...)`. It is used to dereference 
 
 ## Comments
 
-A comment begins with a `;` character and continues until the end of the line. Use `;;` for standalone comments and `;` for inline comments:
+`;` runs to end of line. `;;` for standalone, `;` for inline:
 
 ```phel
 ;; This is a standalone comment
 (+ 1 2) ; This is an inline comment
 ```
 
-> **Deprecation notice:** The `#` line comment syntax and `#| ... |#` multiline comment syntax are deprecated. Use `;` and `;;` instead. The `#` prefix is now reserved for reader macros like `#()`, `#""`, and `#?()`.
+> **Deprecation:** `#` line and `#| ... |#` multiline comments are deprecated. Use `;` and `;;`. `#` prefix is reserved for reader macros (`#()`, `#""`, `#?()`).
 
-Phel also supports inline s-expression commenting with `#_` which comments out the next form. It can also be stacked to comment out two or more forms after it.
+`#_` comments out the next form. Stack to comment multiple forms:
 
 ```phel
 [:one :two :three]     ; results to [:one :two :three]
@@ -354,4 +354,4 @@ Phel also supports inline s-expression commenting with `#_` which comments out t
 [#_#_:one :two :three] ; results to [:three]
 ```
 
-See also the [comment](/documentation/reference/api/#comment) macro which ignores the forms inside and returns `nil` while still requiring the content to be valid Phel code.
+See [comment](/documentation/reference/api/#comment) macro: ignores forms, returns `nil`, still requires valid Phel code.

@@ -4,11 +4,11 @@ weight = 7
 aliases = ["/documentation/tooling/php-tools"]
 +++
 
-Since Phel compiles to PHP, you can use familiar PHP debugging functions and tools. These are perfect for quick inspections and work alongside Phel's built-in helpers.
+Phel compiles to PHP, so PHP debugging functions work. Pairs with Phel's built-in helpers.
 
 ## Native var_dump()
 
-You can use any PHP function simply using the `php/` prefix:
+Any PHP function via `php/` prefix:
 
 ```phel
 ;; Dumping a definition by its name
@@ -25,18 +25,18 @@ int(4)
 int(6)
 ```
 
-Additionally, you can call `(php/die)` to force the execution of the process so that you can debug a particular value at your own rhythm.
+`(php/die)` halts execution so you can inspect at leisure.
 
 ### When to use var_dump()
 
-- **Quick and dirty debugging**: No setup required
-- **Inspecting PHP objects**: See internal PHP structure
-- **Checking types**: Verify PHP type conversions
-- **Legacy code**: When working with existing PHP codebases
+- **Quick debugging:** no setup
+- **Inspect PHP objects:** internal structure
+- **Type checks:** verify type conversions
+- **Legacy code:** existing PHP codebases
 
 ## Symfony VarDumper: dump() & dd()
 
-Symfony has an awesome [VarDumper Component](https://symfony.com/doc/current/components/var_dumper.html) which you can use in your Phel projects as well. You can install it by using composer, under your `require-dev` dependencies.
+Use [Symfony VarDumper](https://symfony.com/doc/current/components/var_dumper.html). Install via composer under `require-dev`:
 
 ```json
 "require-dev": {
@@ -44,7 +44,7 @@ Symfony has an awesome [VarDumper Component](https://symfony.com/doc/current/com
 },
 ```
 
-And then, the same drill, you can `dump()` a definition by its name or the function result:
+`dump()` a definition or result:
 
 ```phel
 (php/dump (+ 4 4))
@@ -52,7 +52,7 @@ And then, the same drill, you can `dump()` a definition by its name or the funct
 8
 ```
 
-Additionally, you can also use `dd()` to dump and die the execution of the program as soon as it reaches that point:
+`dd()` dumps and halts:
 
 ```phel 
 (php/dd (+ 5 5))
@@ -62,22 +62,13 @@ Additionally, you can also use `dd()` to dump and die the execution of the progr
 
 ### Why Symfony VarDumper?
 
-**Beautiful output:**
-- Syntax highlighting
-- Collapsible nested structures
-- Better formatting than var_dump()
+**Beautiful output:** syntax highlighting, collapsible nested structures, better formatting than var_dump().
 
-**Rich information:**
-- Object properties and methods
-- Resource types
-- Circular references detection
+**Rich info:** object properties/methods, resource types, circular references.
 
-**Web-friendly:**
-- Nice HTML output in browsers
-- Dark mode support
-- Copy-to-clipboard functionality
+**Web-friendly:** HTML output, dark mode, copy-to-clipboard.
 
-### Best Practices
+### Best practices
 
 ```phel
 ;; Use dump() during development
@@ -95,9 +86,9 @@ Additionally, you can also use `dd()` to dump and die the execution of the progr
       (save)))  ; Never reached
 ```
 
-## Check the Evaluated PHP
+## Check the evaluated PHP
 
-You can keep the generated temporal PHP files for debugging purposes. Useful when you see an error occurring on `/private/var/folders/qq/dvftwj.../T/__phelV2KvGD` but the file does not exist. Read the [docs](/documentation/configuration/#keepgeneratedtempfiles).
+Keep generated temp PHP files for debugging. Useful when an error references `/private/var/folders/.../T/__phelV2KvGD` that no longer exists. See [docs](/documentation/configuration/#keepgeneratedtempfiles).
 
 ```php
 <?php # phel-config-local.php
@@ -107,18 +98,18 @@ return (require __DIR__ . '/phel-config.php')
 ;
 ```
 
-> TIP: Add this file to the `.gitignore` of the project, so you can have control over the configuration while on development without changing the global config.
+> TIP: Add to `.gitignore` to control dev config without touching the global one.
 
-### Inspecting Compiled PHP
+### Inspecting compiled PHP
 
-Once you enable `setKeepGeneratedTempFiles(true)`, you can:
+After `setKeepGeneratedTempFiles(true)`:
 
-1. **Find the generated files**: Look for temp files in `/tmp/` or your system's temp directory
-2. **Read the PHP code**: See exactly how Phel compiles to PHP
-3. **Understand errors**: Match error line numbers to your Phel code
-4. **Learn the compiler**: See optimization patterns
+1. **Find the files** in `/tmp/` or system temp dir.
+2. **Read the PHP** to see how Phel compiles.
+3. **Understand errors** by matching line numbers.
+4. **Learn the compiler** by seeing optimization patterns.
 
-**Example workflow:**
+**Example:**
 
 ```phel
 ;; Your Phel code
@@ -126,7 +117,7 @@ Once you enable `setKeepGeneratedTempFiles(true)`, you can:
   (str "Hello, " name "!"))
 ```
 
-With `setKeepGeneratedTempFiles(true)`, you can find and read the generated PHP:
+Generated PHP:
 
 ```php
 <?php
@@ -136,15 +127,15 @@ function greet($name) {
 }
 ```
 
-This is invaluable for:
-- **Debugging compiler issues**
-- **Understanding performance**
-- **Learning Phel internals**
-- **Reporting bugs** with concrete examples
+Useful for:
+- Debugging compiler issues
+- Understanding performance
+- Learning Phel internals
+- Reporting bugs with concrete examples
 
-## PHP Error Reporting
+## PHP error reporting
 
-Enable detailed error reporting during development:
+Detailed errors in development:
 
 ```php
 <?php # phel-config-local.php
@@ -157,14 +148,14 @@ return (require __DIR__ . '/phel-config.php')
 ;
 ```
 
-This helps catch:
+Catches:
 - Type errors
 - Undefined variables
-- Deprecated function calls
-- PHP warnings and notices
+- Deprecated calls
+- Warnings and notices
 
-## Next Steps
+## Next steps
 
-- Use [Phel's debug helpers](/documentation/tooling/phel-helpers/) for Phel-native debugging
-- Set up [XDebug](/documentation/tooling/xdebug-setup/) for professional step-through debugging
-- Check the [configuration docs](/documentation/configuration/) for more development settings
+- [Phel debug helpers](/documentation/tooling/phel-helpers/) for native debugging
+- [XDebug](/documentation/tooling/xdebug-setup/) for step-through debugging
+- [Config docs](/documentation/configuration/) for more dev settings
