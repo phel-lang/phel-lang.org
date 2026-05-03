@@ -26,7 +26,7 @@ Open the generated `composer.json` and merge in:
 ```json
 {
     "require": {
-        "phel-lang/phel-lang": "^0.34"
+        "phel-lang/phel-lang": "^0.35"
     },
     "autoload": {
         "psr-4": { "YourVendor\\MyLib\\": "src/php/" }
