@@ -41,7 +41,7 @@ Patterns nest arbitrarily deep:
 
 ```phel
 (let [[a b & rest] [1 2 3 4 5]]
-  rest) ; => (3 4 5)
+  rest) ; => [3 4 5]
 ```
 
 {% php_note() %}

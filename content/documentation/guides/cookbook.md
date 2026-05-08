@@ -747,7 +747,7 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
 
 ;; Extract all successive matches with `re-seq` (lazy sequence of matches).
 (re-seq #"\b[A-Z][a-z]+" "Alice met Bob and Charlie")
-;; => ("Alice" "Bob" "Charlie")
+;; => @["Alice" "Bob" "Charlie"]
 ```
 
 **See also:** [Cheat Sheet -- Regular Expressions](/documentation/reference/cheat-sheet/#regular-expressions)

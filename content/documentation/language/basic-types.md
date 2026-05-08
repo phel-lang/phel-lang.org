@@ -168,7 +168,7 @@ Strings are iterable: work with `map`, `filter`, `count`, `frequencies`, `foreac
 ```phel
 (count "hello")             ; => 5
 (frequencies "abracadabra") ; => {"a" 5 "b" 2 "r" 2 "c" 1 "d" 1}
-(seq "abc")                 ; => ("a" "b" "c")
+(seq "abc")                 ; => [a b c]
 ```
 
 {% php_note() %}

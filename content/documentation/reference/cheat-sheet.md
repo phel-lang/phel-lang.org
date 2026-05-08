@@ -103,7 +103,7 @@ See [Data Structures](/documentation/language/data-structures).
   (+ a b c))                      ; => 6
 
 (let [[a b & rest] [1 2 3 4 5]]
-  rest)                            ; => (3 4 5)
+  rest)                            ; => [3 4 5]
 
 ;; Associative destructuring
 (let [{:name name :age age} {:name "Alice" :age 30}]
@@ -218,8 +218,8 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 ## Collections
 
 ```phel
-(map inc [1 2 3])                  ; => (2 3 4)
-(filter even? [1 2 3 4])          ; => (2 4)
+(map inc [1 2 3])                  ; => @[2 3 4]
+(filter even? [1 2 3 4])          ; => @[2 4]
 (reduce + 0 [1 2 3])              ; => 6
 (sort [3 1 2])                    ; => [1 2 3]
 (sort-by :age [{:age 30} {:age 20}])  ; sort by key
@@ -234,12 +234,12 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 (vec '(1 2 3))                     ; => [1 2 3] (coerce to vector)
 (subset? #{1 2} #{1 2 3})         ; => true
 (superset? #{1 2 3} #{1 2})       ; => true
-(distinct [1 2 1 3 2])            ; => (1 2 3)
-(flatten [[1 2] [3 [4]]])         ; => (1 2 3 4)
+(distinct [1 2 1 3 2])            ; => @[1 2 3]
+(flatten [[1 2] [3 [4]]])         ; => @[1 2 3 4]
 (reverse [1 2 3])                  ; => [3 2 1]
-(concat [1 2] [3 4])              ; => (1 2 3 4)
+(concat [1 2] [3 4])              ; => @[1 2 3 4]
 (compact [1 nil 2 nil 3])         ; => (1 2 3)
-(remove neg? [1 -2 3 -4])        ; => (1 3)
+(remove neg? [1 -2 3 -4])        ; => @[1 3]
 ```
 
 See [Data Structures](/documentation/language/data-structures).
@@ -261,29 +261,29 @@ See [Data Structures](/documentation/language/data-structures/#walking-data-stru
 ## Lazy sequences
 
 ```phel
-(take 5 (range))                   ; => (0 1 2 3 4)
-(take 5 (iterate inc 0))          ; => (0 1 2 3 4)
-(take 7 (cycle [1 2 3]))          ; => (1 2 3 1 2 3 1)
-(take 4 (repeat :x))              ; => (:x :x :x :x)
+(take 5 (range))                   ; => @[0 1 2 3 4]
+(take 5 (iterate inc 0))          ; => @[0 1 2 3 4]
+(take 7 (cycle [1 2 3]))          ; => @[1 2 3 1 2 3 1]
+(take 4 (repeat :x))              ; => @[:x :x :x :x]
 (take 5 (repeatedly #(php/rand 1 100)))  ; 5 random numbers
 
-(drop 3 (range 10))               ; => (3 4 5 6 7 8 9)
-(take-while pos? [3 2 1 0 -1])   ; => (3 2 1)
-(drop-while pos? [3 2 1 0 -1])   ; => (0 -1)
-(partition 2 [1 2 3 4 5 6])       ; => ((1 2) (3 4) (5 6))
-(interleave [:a :b :c] [1 2 3])  ; => (:a 1 :b 2 :c 3)
+(drop 3 (range 10))               ; => @[3 4 5 6 7 8 9]
+(take-while pos? [3 2 1 0 -1])   ; => @[3 2 1]
+(drop-while pos? [3 2 1 0 -1])   ; => @[0 -1]
+(partition 2 [1 2 3 4 5 6])       ; => @[[1 2] [3 4] [5 6]]
+(interleave [:a :b :c] [1 2 3])  ; => @[:a 1 :b 2 :c 3]
 
 ;; Lazy filtering + transformation
 (->> (range)
      (filter even?)
-     (take 5))                     ; => (0 2 4 6 8)
+     (take 5))                     ; => @[0 2 4 6 8]
 
 ;; Custom lazy sequence
 (defn fibs []
   (lazy-seq (cons 0 (cons 1
     (map + (fibs) (rest (fibs)))))))
 
-(doall (take 8 (fibs)))           ; => (0 1 1 2 3 5 8 13)
+(doall (take 8 (fibs)))           ; => [0 1 1 2 3 5 8 13]
 (realized? (lazy-seq [1 2 3]))    ; => false
 ```
 
@@ -307,7 +307,7 @@ Lazy file I/O:
 
 (->> [1 2 3 4 5]                   ; thread-last
      (filter odd?)
-     (map inc))                    ; => (2 4 6)
+     (map inc))                    ; => @[2 4 6]
 
 (as-> [1 2 3] v                    ; thread with named binding
       (conj v 4)
@@ -319,7 +319,7 @@ Lazy file I/O:
 
 (cond->> [1 2 3]                   ; conditional thread-last
          true (map inc)
-         false (filter odd?))      ; => (2 3 4)
+         false (filter odd?))      ; => @[2 3 4]
 ```
 
 ## Strings
@@ -495,7 +495,7 @@ Composable transformations independent of the data source. Avoid intermediate co
 (into #{} (filter odd?) [1 2 3 2 1])     ; => #{1 3}
 
 ;; sequence: lazy transducer application
-(sequence (map inc) [1 2 3])             ; => (2 3 4)
+(sequence (map inc) [1 2 3])             ; => [2 3 4]
 
 ;; cat: concatenating transducer for nested collections
 (into [] cat [[1 2] [3 4] [5]])          ; => [1 2 3 4 5]

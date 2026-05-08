@@ -144,7 +144,7 @@ Flatten nested vectors one level:
 
 ```phel
 (apply concat [[1 2] [3 4] [5 6]])
-;; => (1 2 3 4 5 6)
+;; => @[1 2 3 4 5 6]
 ```
 
 Concatenates all inner collections into a single lazy sequence.
@@ -153,7 +153,7 @@ Unique elements preserving order:
 
 ```phel
 (distinct [3 1 4 1 5 9 2 6 5 3])
-;; => (3 1 4 5 9 2 6)
+;; => @[3 1 4 5 9 2 6]
 ```
 
 Returns a lazy sequence with duplicates removed, keeping first occurrences.
@@ -162,7 +162,7 @@ Zip two vectors together:
 
 ```phel
 (map vector [:a :b :c] [1 2 3])
-;; => ([:a 1] [:b 2] [:c 3])
+;; => @[[:a 1] [:b 2] [:c 3]]
 ```
 
 `map` with multiple collections applies the function to parallel elements.
@@ -171,7 +171,7 @@ Partition into pairs:
 
 ```phel
 (partition 2 [1 2 3 4 5 6])
-;; => ([1 2] [3 4] [5 6])
+;; => @[[1 2] [3 4] [5 6]]
 ```
 
 Groups consecutive elements into chunks of size 2.
@@ -180,7 +180,7 @@ Transpose a matrix:
 
 ```phel
 (apply map vector [[1 2 3] [4 5 6] [7 8 9]])
-;; => ([1 4 7] [2 5 8] [3 6 9])
+;; => @[[1 4 7] [2 5 8] [3 6 9]]
 ```
 
 Turns rows into columns by applying `map vector` across all rows.
@@ -209,7 +209,7 @@ Interleave and take:
 
 ```phel
 (take 7 (interleave [:a :b :c :d] [1 2 3 4]))
-;; => (:a 1 :b 2 :c 3 :d)
+;; => @[:a 1 :b 2 :c 3 :d]
 ```
 
 Weaves two sequences together, then takes the first 7 elements.
@@ -223,7 +223,7 @@ Group and count:
       {:role "user"} {:role "user"}]
      (group-by :role)
      (map (fn [[k v]] [k (count v)])))
-;; => (["admin" 2] ["user" 3])
+;; => @[["admin" 2] ["user" 3]]
 ```
 
 Groups items by `:role`, then maps each group to its count.
@@ -235,7 +235,7 @@ Top N items by key:
      (sort-by :score)
      reverse
      (take 2))
-;; => ({:name "B" :score 99} {:name "C" :score 71})
+;; => @[{:name "B" :score 99} {:name "C" :score 71}]
 ```
 
 Sorts by `:score`, reverses to descending, and takes the top 2.
@@ -287,7 +287,7 @@ FizzBuzz (1 to 20):
          (= 0 (% n 5))  "Buzz"
          :else n))
      (range 1 21))
-;; => (1 2 "Fizz" 4 "Buzz" "Fizz" 7 8 "Fizz" "Buzz" 11 "Fizz" 13 14 "FizzBuzz" 16 17 "Fizz" 19 "Buzz")
+;; => @[1 2 "Fizz" 4 "Buzz" "Fizz" 7 8 "Fizz" "Buzz" 11 "Fizz" 13 14 "FizzBuzz" 16 17 "Fizz" 19 "Buzz"]
 ```
 
 The classic interview question in a single `map` expression.

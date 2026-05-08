@@ -609,7 +609,7 @@ $activeNames = array_map(
   (->> users
        (filter :active)
        (map :name)))
-;; => ("Alice" "Charlie")
+;; => @["Alice" "Charlie"]
 ```
 
 ### Building an API response

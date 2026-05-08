@@ -42,7 +42,7 @@ Clojure intuition carries over.
 
 ```phel
 (let [[a b & rest] [1 2 3 4 5]]
-  rest) ; => (3 4 5)
+  rest) ; => [3 4 5]
 
 (let [{:name name :age age} {:name "Alice" :age 30}]
   (str name " is " age)) ; => "Alice is 30"
@@ -51,18 +51,18 @@ Clojure intuition carries over.
 **Higher-order functions:** `map`, `filter`, `reduce`, `some`, `every?`, `comp`, `partial`, `apply`, etc.:
 
 ```phel
-(map inc [1 2 3])          ; => (2 3 4)
-(filter even? [1 2 3 4])   ; => (2 4)
+(map inc [1 2 3])          ; => @[2 3 4]
+(filter even? [1 2 3 4])   ; => @[2 4]
 (reduce + 0 [1 2 3 4 5])   ; => 15
 ```
 
 **Lazy sequences:** full support. `map`, `filter`, `take`, `drop`, `concat`, `mapcat`, `interleave`, `partition` return lazy seqs. Infinite seqs work:
 
 ```phel
-(take 5 (iterate inc 0))       ; => (0 1 2 3 4)
-(take 7 (cycle [1 2 3]))       ; => (1 2 3 1 2 3 1)
+(take 5 (iterate inc 0))       ; => @[0 1 2 3 4]
+(take 7 (cycle [1 2 3]))       ; => @[1 2 3 1 2 3 1]
 (take 5 (repeatedly #(php/rand 1 100)))
-(->> (range) (filter even?) (take 5)) ; => (0 2 4 6 8)
+(->> (range) (filter even?) (take 5)) ; => @[0 2 4 6 8]
 ```
 
 `lazy-seq`, `lazy-cat` build custom lazy seqs. `doall`, `dorun`, `realized?` control realization. Lazy file I/O via `line-seq`, `file-seq`, `read-file-lazy`, `csv-seq`.

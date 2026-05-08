@@ -569,7 +569,7 @@ Composable transformations independent of context. `map`, `filter`, `remove`, `t
 (into [] xf [1 2 3 4 5])             ; => [10 30 50]
 
 ; Apply with sequence (returns a lazy sequence)
-(sequence xf [1 2 3 4 5])            ; => (10 30 50)
+(sequence xf [1 2 3 4 5])            ; => [10 30 50]
 ```
 
 Common transducer producers:

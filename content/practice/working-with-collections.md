@@ -12,7 +12,7 @@ Increment every number in `[4 7 9 10]`. Use `map`.
 ```phel
 ;; pass a named function directly
 (map inc [4 7 9 10])
-;; => [5 8 10 11]
+;; => @[5 8 10 11]
 
 ;; or with the short anonymous form
 (map #(+ % 1) [4 7 9 10])
@@ -36,7 +36,7 @@ Hint: `php/strtoupper` does the lifting.
 {% solution() %}
 ```phel
 (map php/strtoupper ["ada" "grace" "alan"])
-;; => ["ADA" "GRACE" "ALAN"]
+;; => @["ADA" "GRACE" "ALAN"]
 ```
 PHP functions are reachable via the `php/` prefix - the entire PHP stdlib is at your fingertips.
 
@@ -49,7 +49,7 @@ Keep only the even numbers in `[1 2 3 4 5 6 7 8 9 10]`.
 {% solution() %}
 ```phel
 (filter even? [1 2 3 4 5 6 7 8 9 10])
-;; => (2 4 6 8 10)
+;; => @[2 4 6 8 10]
 ```
 `filter` keeps the elements for which the predicate returns truthy.
 {% end %}
@@ -60,7 +60,7 @@ From `[1 2 3 4 5 6 7 8 9 10]`, keep the evens and double each.
 {% solution() %}
 ```phel
 (map #(* % 2) (filter even? [1 2 3 4 5 6 7 8 9 10]))
-;; => (4 8 12 16 20)
+;; => @[4 8 12 16 20]
 ```
 Composing `filter` and `map` is a daily pattern. Read it inside-out: filter first, then map.
 {% end %}
@@ -73,7 +73,7 @@ Rewrite the previous solution with the threading macro `->>` so it reads top-to-
 (->> [1 2 3 4 5 6 7 8 9 10]
      (filter even?)
      (map #(* % 2)))
-;; => (4 8 12 16 20)
+;; => @[4 8 12 16 20]
 ```
 `->>` (thread-last) feeds each result as the **last** argument to the next call. Nested calls become a clear pipeline.
 
@@ -140,7 +140,7 @@ Expected result: `(10.3 20.06 30.1)`.
 ```phel
 (def data [{:id 1 :value 10.3} {:id 2 :value 20.06} {:id 7 :value 30.1}])
 (for [m :in data] (:value m))
-;; => (10.3 20.06 30.1)
+;; => @[10.3 20.06 30.1]
 ```
 `for` is a list comprehension - it generates a new sequence by transforming each element.
 
@@ -163,10 +163,10 @@ Use `for` with two bindings to generate every combination of suit and rank:
 (for [s :in suits
       r :in ranks]
   [s r])
-;; => ([:hearts :ace] [:hearts :king] [:hearts :queen]
-;;     [:diamonds :ace] [:diamonds :king] [:diamonds :queen]
-;;     [:clubs :ace] [:clubs :king] [:clubs :queen]
-;;     [:spades :ace] [:spades :king] [:spades :queen])
+;; => @[[:hearts :ace] [:hearts :king] [:hearts :queen]
+;;      [:diamonds :ace] [:diamonds :king] [:diamonds :queen]
+;;      [:clubs :ace] [:clubs :king] [:clubs :queen]
+;;      [:spades :ace] [:spades :king] [:spades :queen]]
 ```
 Multiple bindings act like nested loops: the right-most binding varies fastest. Add `:when` clauses to filter, `:let` clauses to bind locals.
 
