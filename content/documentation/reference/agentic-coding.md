@@ -113,7 +113,7 @@ vendor/bin/phel agent-install --all     # every adapter
 (some-> x .a .b)                   ; nil-safe thread first
 (cond-> x pred (f y))              ; conditional thread
 
-(try expr (catch php\Exception e (handle e)) (finally cleanup))
+(try expr (catch \Exception e (handle e)) (finally cleanup))
 ```
 
 ## Namespaces

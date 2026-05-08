@@ -52,7 +52,7 @@ Like Clojure: `.` namespace separator. PHP class FQNs in `:use` use `\`.
 
 ### Import a Phel module
 
-Import with `:require`, then access as `module/name`. Namespaces resolve from `src/` (override with [SrcDirs](/documentation/configuration/#srcdirs)).
+Import with `:require`, then access as `module/name`. Namespaces resolve from `src/` (override with [configuration](/documentation/configuration/)).
 
 Module `util` in namespace `hello-world`:
 
@@ -109,7 +109,7 @@ On collision, prefix with the namespace (e.g. `phel.core`). Names retain values 
 
 ```phel
 (ns my.custom.module
-  (:use Some\Php\ClassName)
+  (:use Some\Php\ClassName))
 ```
 
 Reference by name:
@@ -122,7 +122,7 @@ Aliases avoid collisions:
 
 ```phel
 (ns my.custom.module
-  (:use Some\Php\ClassName :as BetterClassName)
+  (:use Some\Php\ClassName :as BetterClassName))
 ```
 
 Importing is preferred, but optional. Use full namespace inline if needed:

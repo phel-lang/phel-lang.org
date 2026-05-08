@@ -18,13 +18,14 @@ Learn more: [Arithmetic](/documentation/language/arithmetic)
 {% end %}
 
 {% question(difficulty="easy") %}
-Compute `(3 + 4 / 5) * 6`.
+Compute `(3 + 4.0 / 5) * 6`.
 {% end %}
 {% solution() %}
 ```phel
-(* (+ 3 (/ 4 5)) 6)
+(* (+ 3 (/ 4.0 5)) 6)
+; => 22.8
 ```
-Nested expressions evaluate inside-out. No precedence rules to memorize - the parens make the order obvious.
+Nested expressions evaluate inside-out. No precedence rules to memorize - the parens make the order obvious. Using `4.0` keeps the result a float; `(/ 4 5)` in Phel returns a rational `4/5`, not `0`.
 
 Learn more: [Arithmetic](/documentation/language/arithmetic)
 {% end %}

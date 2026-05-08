@@ -280,7 +280,7 @@ Useful in REPL to isolate or reset state between runs.
 (my-mock "any" "args")  ; => :ok
 
 ;; Custom behavior
-(def double-mock (mock-fn #(* % 2)))
+(def double-mock (mock-fn |(* $ 2)))
 (double-mock 5)  ; => 10
 
 ;; Consecutive return values

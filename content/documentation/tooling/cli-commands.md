@@ -7,7 +7,7 @@ aliases = ["/documentation/cli-commands"]
 Built-in commands.
 
 ```bash
-; Overview of all commands
+# Overview of all commands
 vendor/bin/phel list
 ```
 

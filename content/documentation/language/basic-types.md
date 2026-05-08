@@ -131,7 +131,9 @@ Integers, floats, ratios, big integers, big decimals. Integers and floats wrap P
 (bigdec? 1.5M)  ; => true
 ```
 
-Auto-promoting variants `+'`, `-'`, `*'`, `inc'`, `dec'` widen to BigInteger on overflow instead of wrapping. See [Arithmetic](/documentation/language/arithmetic).
+Auto-promoting variants `+'`, `-'`, `*'`, `inc'`, `dec'` widen to BigInteger on overflow instead of wrapping. See [Arithmetic](/documentation/language/arithmetic/).
+
+## Strings
 
 Double-quoted. `$` doesn't need escaping.
 
@@ -396,4 +398,4 @@ Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some det
 [#_#_:one :two :three] ; results to [:three]
 ```
 
-See [comment](/documentation/reference/api/#comment) macro: ignores forms, returns `nil`, still requires valid Phel code.
+See [comment](/documentation/reference/api/core/#comment) macro: ignores forms, returns `nil`, still requires valid Phel code.

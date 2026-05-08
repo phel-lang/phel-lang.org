@@ -134,7 +134,7 @@ Manipulate bits in integers.
 (bit-shift-right 0b1101 1) ; Evaluates to 6 (0b0110)
 
 ;; Set bit at index n
-(bit-set 0b1011 2) ; Evalutes to (0b1111)
+(bit-set 0b1011 2) ; Evaluates to 15 (0b1111)
 
 ;; Clear bit at index n
 (bit-clear 0b1011 3) ; Evaluates to 3 (0b0011)

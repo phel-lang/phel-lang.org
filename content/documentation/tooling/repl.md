@@ -94,7 +94,7 @@ user:2> (h/html [:span {:class "greeting"} "Hello"])
 List public definitions in a namespace:
 
 ```phel
-user:1> (dir "phel\\string")
+user:1> (dir "phel.string")
 blank?
 capitalize
 ends-with?
@@ -171,7 +171,7 @@ Symbol metadata: type, namespace, docs:
 
 ```phel
 user:1> (symbol-info map)
-{:name "map" :ns "phel\\core" :type :function ...}
+{:name "map" :ns "phel.core" :type :function ...}
 ```
 
 ### Namespace introspection

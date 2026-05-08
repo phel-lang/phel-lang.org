@@ -239,21 +239,23 @@ Core functions span data structures.
 
 ### Immutability vs PHP mutability
 
-```phel
-;; PHP: Mutable operations
+```php
+// PHP: Mutable operations
 $users = ['Alice', 'Bob'];
-$users[] = 'Charlie';  ; $users is now ['Alice', 'Bob', 'Charlie']
-echo $users[0];        ; Still 'Alice'
+$users[] = 'Charlie';  // $users is now ['Alice', 'Bob', 'Charlie']
+echo $users[0];        // Still 'Alice'
 
+// PHP: Mutating a map
+$config = ['theme' => 'dark', 'lang' => 'en'];
+$config['theme'] = 'light';  // Overwrites in place
+```
+
+```phel
 ;; Phel: Immutable operations
 (def users ["Alice" "Bob"])
 (def updated-users (conj users "Charlie"))  ; New collection
 ;; users is still ["Alice" "Bob"]
 ;; updated-users is ["Alice" "Bob" "Charlie"]
-
-;; PHP: Mutating a map
-$config = ['theme' => 'dark', 'lang' => 'en'];
-$config['theme'] = 'light';  ; Overwrites in place
 
 ;; Phel: Creating a new map
 (def config {:theme "dark" :lang "en"})

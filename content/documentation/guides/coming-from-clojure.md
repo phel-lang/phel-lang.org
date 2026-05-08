@@ -370,7 +370,7 @@ Full interop reference: [PHP Interop](/documentation/php-interop).
 
 ### CIDER / Calva / nREPL
 
-Editor tooling covers [VS Code, PhpStorm, Emacs, Vim](/documentation/tooling/editor-support). Phel ships [nREPL](/documentation/tooling/cli-commands#nrepl) and [LSP](/documentation/tooling/cli-commands#lsp) servers, structured stack frames in `EvalError`, stdout capture in `EvalResult`.
+Editor tooling covers [VS Code, PhpStorm, Emacs, Vim](/documentation/tooling/editor-support/). Phel ships [nREPL](/documentation/tooling/cli-commands/#nrepl) and [LSP](/documentation/tooling/cli-commands/#lsp) servers, structured stack frames in `EvalError`, stdout capture in `EvalResult`.
 
 ### ClojureScript
 

@@ -12,8 +12,8 @@ Quick reference for Phel syntax and core functions.
 ## Basic syntax
 
 ```phel
-; This is a comment
-;; Convention: use ; for line comments
+;; This is a standalone comment
+; inline comment (after an expression)
 
 nil                     ; null value
 true false              ; booleans (only false and nil are falsy)
@@ -25,7 +25,7 @@ my-var my-module/fn     ; symbols
 #"[a-z]+"               ; regex literal (PCRE pattern)
 ```
 
-> **Note:** `#` line and `#| |#` multiline comments are deprecated. Use `;`.
+> **Note:** `#` line and `#| |#` multiline comments are deprecated. Use `;;` for standalone comments and `;` for inline comments.
 
 See [Basic Types](/documentation/language/basic-types), [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations).
 
