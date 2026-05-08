@@ -609,7 +609,7 @@ Protocols define polymorphic behavior, extendable to any type. More flexible tha
 (satisfies? Renderable "plain string")    ; => false
 ```
 
-**See also:** [Cheat Sheet -- Protocols](/documentation/reference/cheat-sheet#protocols)
+**See also:** [Cheat Sheet -- Protocols](/documentation/reference/cheat-sheet/#protocols)
 
 ## Data processing with transducers
 
@@ -678,7 +678,7 @@ Compose pipelines without intermediate collections. Faster, less memory than cha
 (into [] cat nested)               ; => [1 2 3 4 5 6]
 ```
 
-**See also:** [Cheat Sheet -- Transducers](/documentation/reference/cheat-sheet#transducers)
+**See also:** [Cheat Sheet -- Transducers](/documentation/reference/cheat-sheet/#transducers)
 
 ## Reader conditionals for cross-platform code
 
@@ -749,7 +749,7 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
 ;; => ("Alice" "Bob" "Charlie")
 ```
 
-**See also:** [Cheat Sheet -- Regular Expressions](/documentation/reference/cheat-sheet#regular-expressions)
+**See also:** [Cheat Sheet -- Regular Expressions](/documentation/reference/cheat-sheet/#regular-expressions)
 
 ## Structured exceptions with ex-info
 
@@ -808,7 +808,7 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
       (println (str "Caused by: " (ex-message (ex-cause e)))))))
 ```
 
-**See also:** [Cheat Sheet -- Error Handling](/documentation/reference/cheat-sheet#error-handling)
+**See also:** [Cheat Sheet -- Error Handling](/documentation/reference/cheat-sheet/#error-handling)
 
 ## Pattern matching with `phel.match`
 

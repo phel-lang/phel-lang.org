@@ -254,7 +254,7 @@ See [Data Structures](/documentation/language/data-structures).
 (stringify-keys {:name "Alice"})   ; => {"name" "Alice"}
 ```
 
-See [Data Structures](/documentation/language/data-structures#walking-data-structures).
+See [Data Structures](/documentation/language/data-structures/#walking-data-structures).
 
 ## Lazy sequences
 

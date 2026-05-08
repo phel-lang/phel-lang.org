@@ -20,7 +20,7 @@ No extra runtime. No JVM.
 > docker run --rm -it php:8.4-cli sh -c "curl -sL https://phel-lang.org/phar -o /tmp/phel.phar && php /tmp/phel.phar repl"
 > ```
 >
-> See [Installation, Docker](/documentation/installation#docker-no-php-required) for a `phel` alias and Composer workflows.
+> See [Installation, Docker](/documentation/installation/#docker-no-php-required) for a `phel` alias and Composer workflows.
 
 ## 60-second quick start
 
