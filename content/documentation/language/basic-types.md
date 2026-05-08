@@ -394,10 +394,10 @@ Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some det
 `#_` comments out the next form. Stack to comment multiple forms:
 
 ```phel
-[:one :two :three]     ; results to [:one :two :three]
-[#_:one :two :three]   ; results to [:two :three]
-[#_:one :two #_:three] ; results to [:two]
-[#_#_:one :two :three] ; results to [:three]
+[:one :two :three]     ; => [:one :two :three]
+[#_:one :two :three]   ; => [:two :three]
+[#_:one :two #_:three] ; => [:two]
+[#_#_:one :two :three] ; => [:three]
 ```
 
 See [comment](/documentation/reference/api/core/#comment) macro: ignores forms, returns `nil`, still requires valid Phel code.

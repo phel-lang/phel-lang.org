@@ -134,7 +134,7 @@ composer require your-vendor/my-lib
 
 - **Namespace:** `{vendor}.{library-name}`, sub-namespaces map to subdirectories.
 - **Private defs:** [`def-`](/documentation/reference/api/core/#def-), [`defn-`](/documentation/reference/api/core/#defn-), [`defmacro-`](/documentation/reference/api/core/#defmacro-) keep symbols out of the public API.
-- **PHP interop:** if PHP consumers will call your code, set `setMainPhpPath` then `composer build`. See [PHP interop](/documentation/php-interop/#calling-phel-functions-from-php).
+- **PHP interop:** if PHP consumers will call your code, set `setMainPhpPath` then `composer build`. See [PHP interop](/documentation/php-interop/#calling-phel-from-php).
 
 ## Cross-platform code
 

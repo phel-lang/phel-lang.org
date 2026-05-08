@@ -16,10 +16,9 @@ All **persistent** (immutable). Modifications return a new version sharing struc
 
 Linked list. Fast first-element access, slow random access. Lists are function/macro/special-form calls.
 
-Create with parens or `list`:
+Create with `list` or by quoting a parenthesized form:
 
 ```phel
-(do 1 2 3)   ; list with 4 entries
 (list 1 2 3) ; use the list function to create a new list
 '(1 2 3)     ; use a quote to create a list
 ```

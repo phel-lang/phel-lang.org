@@ -96,10 +96,20 @@ PHP loose equality: use `php/==`:
 
 ## Comparisons
 
-- `<=`: each arg ≤ next, returns bool
-- `<`: each arg strictly < next, returns bool
-- `>=`: each arg ≥ next, returns bool
-- `>`: each arg strictly > next, returns bool
+All comparison operators accept multiple arguments and return a bool:
+
+- `<=`: each arg ≤ next
+- `<`: each arg strictly < next
+- `>=`: each arg ≥ next
+- `>`: each arg strictly > next
+
+```phel
+(< 1 2)     ; Evaluates to true
+(< 1 2 3)   ; Evaluates to true  (1 < 2 and 2 < 3)
+(< 1 3 2)   ; Evaluates to false (3 is not < 2)
+(>= 5 5)    ; Evaluates to true
+(> 3 2 1)   ; Evaluates to true  (3 > 2 and 2 > 1)
+```
 
 ## Logical operations
 

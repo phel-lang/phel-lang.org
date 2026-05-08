@@ -862,7 +862,6 @@ Validate, coerce, generate data from declarative schemas. Kinds: `:vector`, `:se
 
 Instrument a function to check args/return at call sites:
 
-
 ```phel
 (defn greet [u] (str "Hi " (:name u)))
 (s/instrument! `greet [:=> [User] :string])

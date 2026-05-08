@@ -142,7 +142,7 @@ return (new PhelConfig())
     ->setSrcDirs(['src']);
 ```
 
-See [Running the code](/documentation/getting-started/#running-the-code).
+See [Getting Started](/documentation/getting-started/).
 
 ## Test your Phel logic
 

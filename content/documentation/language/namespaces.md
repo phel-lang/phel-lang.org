@@ -81,7 +81,7 @@ Use aliases to avoid collisions:
   (:require hello-world.util :as utilities))
 ```
 
-On collision, prefix with the namespace (e.g. `phel.core`). Names retain values from their original namespace before redefinition.
+On collision, use a fully-qualified name to reach the original. A locally defined `get` shadows `phel.core/get` by its short name, but the full `phel.core/get` still works:
 
 ```phel
 (ns hello-world.http-client)

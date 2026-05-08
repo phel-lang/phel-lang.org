@@ -436,4 +436,4 @@ Many orgs already run PHP. Bring FP/Lisp into environments where the JVM isn't a
 | `(transduce xf f coll)` | `(transduce xf f coll)` | Same |
 | `;; comment` | `;; comment` | `;` and `;;` standard |
 
-Welcome to the PHP side of Lisp. The parentheses are the same -- the runtime just happens to be PHP.
+Welcome to the PHP side of Lisp. The parentheses are the same; the runtime just happens to be PHP.

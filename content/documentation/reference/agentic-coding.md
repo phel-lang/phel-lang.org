@@ -100,7 +100,7 @@ vendor/bin/phel agent-install --all     # every adapter
   (if (zero? n) acc (recur (+ acc n) (dec n))))
 
 (for   [x :in xs :when (odd? x)] (* x x))   ; lazy comprehension
-(doseq [x :in xs] (println x))              ; side effects, returns nil
+(foreach [x xs] (println x))               ; side effects, returns nil
 (dotimes [i 5] (println i))
 
 (fn [x] (* x 2))                   ; anonymous fn
@@ -209,7 +209,7 @@ Run with `vendor/bin/phel test`.
 Most failure modes agents hit:
 
 1. **CLI args:** use `*argv*` (vector of strings, post-script-path). `php/$argv` is `null` under `phel run`.
-2. **`for` vs `doseq`:** `for` builds a lazy sequence. `doseq` for side-effects (logging, IO).
+2. **`for` vs `foreach`:** `for` builds a lazy sequence. `foreach` (or `doseq`) for side-effects (logging, IO).
 3. **`transduce` with `max`/`min`:** no zero-arity. Wrap and pass init: `(transduce xf (fn [a b] (max a b)) 0 coll)`.
 4. **Top-level side-effects break `phel build`:** guard with `(when-not *build-mode* ...)`.
 5. **Record access by keyword:** `(get p :x)`, not `(.-x p)`.
@@ -248,7 +248,7 @@ When generating Phel code:
 1. **Verify, don't invent.** Run `phel doc <fn>` or grep `src/phel/core/` before using an uncertain name.
 2. **Prefer pure functions.** Push side-effects to the edge. Use `atom` only for shared mutable state.
 3. **Thread, don't nest.** `(->> xs (filter f) (map g) (reduce h 0))` beats deep nesting.
-4. **Right comprehension:** `for` returns data, `doseq` runs effects, `dotimes` repeats, `loop`/`recur` accumulates.
+4. **Right comprehension:** `for` returns data, `foreach` runs effects, `dotimes` repeats, `loop`/`recur` accumulates.
 5. **Stay immutable.** `(conj v x)` returns a new vector. Rebind, don't expect mutation.
 6. **Comment style:** `;` inline, `;;` standalone. `#` line comments deprecated.
 7. **No em-dashes** in docstrings or generated site docs. Prefer commas, colons, periods, parentheses.

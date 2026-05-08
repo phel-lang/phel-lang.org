@@ -415,7 +415,7 @@ $filtered = array_filter($items, fn($x) => $x !== 2);
 
 (def items [1 2 3])
 (filter #(not= % 2) items)
-;; [1 3]
+;; (1 3)
 ```
 
 </div>
@@ -964,7 +964,7 @@ $doubled = array_map(
 
 ```phel
 (map #(* % 2) [1 2 3 4])
-;; [2 4 6 8]
+;; (2 4 6 8)
 ```
 
 </div>
@@ -995,7 +995,7 @@ $evens = array_filter(
 
 ```phel
 (filter even? [1 2 3 4 5 6])
-;; [2 4 6]
+;; (2 4 6)
 ```
 
 </div>
@@ -1063,11 +1063,12 @@ $result = implode(", ",
 
 ```phel
 ;; Thread-last (top-down, reads naturally)
+;; Requires phel.string :as str in the ns declaration
 (def result
   (->> names
        (filter #(> (php/strlen %) 3))
        (map php/strtoupper)
-       (php/implode ", ")))
+       (str/join ", ")))
 ```
 
 </div>

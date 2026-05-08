@@ -179,7 +179,7 @@ Atoms manage mutable state. Each holds a single value. Create with `atom`:
 
 (deref foo)        ; Evaluates to 10
 @foo               ; Same as (deref foo)
-(reset! foo 20)    ; Set foo to 20
+(reset! foo 20)    ; Set foo to 20, returns 20
 @foo               ; Evaluates to 20
 
 (swap! foo + 2)    ; Evaluates to 22

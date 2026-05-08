@@ -13,13 +13,13 @@ Request struct:
 ```phel
 (defstruct request [
   method            ; HTTP Method ("GET", "POST", ...)
-  uri               ; the 'uri' struct (see below)
+  uri               ; uri struct (defined below)
   headers           ; Map of all headers. Keys are keywords, Values are string
   parsed-body       ; The parsed body ($_POST), when available otherwise nil
   query-params      ; Map with all query parameters ($_GET)
   cookie-params     ; Map with all cookie parameters ($_COOKIE)
   server-params     ; Map with all server parameters ($_SERVER)
-  uploaded-files    ; Map of 'uploaded-file' structs (see below)
+  uploaded-files    ; map of uploaded-file structs (defined below)
   version           ; The HTTP Version
   attributes        ; consumer specific data to enrich the request
 ])

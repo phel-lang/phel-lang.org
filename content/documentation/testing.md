@@ -72,7 +72,7 @@ Tests `body` throws `exception-type`.
 
 ```phel
 (thrown-with-msg? exception-type msg body)
-;; (is (thrown? \Exception "test" (throw (php/new \Exception "test"))))
+;; (is (thrown-with-msg? \Exception "test" (throw (php/new \Exception "test"))))
 ```
 
 Tests `body` throws `exception-type` with message `msg`.

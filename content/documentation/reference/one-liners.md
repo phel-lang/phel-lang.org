@@ -95,7 +95,7 @@ Count vowels in a string:
 (->> (seq "functional programming")
      (filter #(contains? #{"a" "e" "i" "o" "u"} %))
      count)
-;; => 6
+;; => 7
 ```
 
 Converts the string to a sequence of characters, filters vowels, and counts them.
@@ -171,7 +171,7 @@ Partition into pairs:
 
 ```phel
 (partition 2 [1 2 3 4 5 6])
-;; => [[1 2] [3 4] [5 6]]
+;; => ([1 2] [3 4] [5 6])
 ```
 
 Groups consecutive elements into chunks of size 2.
@@ -222,7 +222,7 @@ Group and count:
 (->> [{:role "admin"} {:role "user"} {:role "admin"}
       {:role "user"} {:role "user"}]
      (group-by :role)
-     (map-indexed (fn [_ [k v]] [k (count v)])))
+     (map (fn [[k v]] [k (count v)])))
 ;; => (["admin" 2] ["user" 3])
 ```
 
@@ -270,7 +270,7 @@ Build a frequency-sorted leaderboard:
      pairs
      (sort-by second)
      reverse)
-;; => ([:alice 3] [:bob 2] [:carol 1])
+;; => [[:alice 3] [:bob 2] [:carol 1]]
 ```
 
 Counts occurrences, then sorts by frequency descending.

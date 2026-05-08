@@ -84,18 +84,18 @@ Learn more: [Functions and Recursion](/documentation/language/functions-and-recu
 Use the other threading macro, `->`, to build a user step by step:
 ```phel
 (-> {}
-    (put :name "Ada")
-    (put :age 36)
-    (put :role :admin))
+    (assoc :name "Ada")
+    (assoc :age 36)
+    (assoc :role :admin))
 ;; => {:name "Ada" :age 36 :role :admin}
 ```
 {% end %}
 {% solution() %}
 ```phel
 (-> {}
-    (put :name "Ada")
-    (put :age 36)
-    (put :role :admin))
+    (assoc :name "Ada")
+    (assoc :age 36)
+    (assoc :role :admin))
 ;; => {:name "Ada" :age 36 :role :admin}
 ```
 `->` (thread-first) inserts each result as the **first** argument of the next call. Use `->` for "build up a value" pipelines (often with maps), and `->>` for "transform a sequence" pipelines.

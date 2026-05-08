@@ -50,7 +50,7 @@ Quote distinguishes code from data, making macros possible. Literals (numbers, s
 
 ```phel
 (quote 1) ; Evaluates to 1
-(quote hi) ; Evaluates the symbol hi
+(quote hi) ; Evaluates to the symbol hi
 (quote quote) ; Evaluates to the symbol quote
 
 '(1 2 3) ; Evaluates to the list (1 2 3)
@@ -60,7 +60,7 @@ Quote distinguishes code from data, making macros possible. Literals (numbers, s
 ## Define a macro
 
 ```phel
-(defmacro docstring? attributes? [params*] expr*)
+(defmacro name docstring? attributes? [params*] expr*)
 ```
 
 `defmacro` creates a macro. Same params as `defn`.

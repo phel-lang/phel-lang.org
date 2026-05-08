@@ -236,7 +236,7 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 (superset? #{1 2 3} #{1 2})       ; => true
 (distinct [1 2 1 3 2])            ; => (1 2 3)
 (flatten [[1 2] [3 [4]]])         ; => (1 2 3 4)
-(reverse [1 2 3])                  ; => (3 2 1)
+(reverse [1 2 3])                  ; => [3 2 1]
 (concat [1 2] [3 4])              ; => (1 2 3 4)
 (compact [1 nil 2 nil 3])         ; => (1 2 3)
 (remove neg? [1 -2 3 -4])        ; => (1 3)
@@ -245,6 +245,8 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 See [Data Structures](/documentation/language/data-structures).
 
 ## Walking data structures
+
+Requires `(:require phel.walk :refer [postwalk prewalk postwalk-replace keywordize-keys stringify-keys])`.
 
 ```phel
 (postwalk f nested)                ; transform bottom-up
@@ -301,11 +303,11 @@ Lazy file I/O:
 ```phel
 (-> {:name "Alice" :age 30}        ; thread-first
     (assoc :role "admin")
-    (dissoc :age))
+    (dissoc :age))                  ; => {:name "Alice" :role "admin"}
 
 (->> [1 2 3 4 5]                   ; thread-last
      (filter odd?)
-     (map inc))                    ; => [2 4 6]
+     (map inc))                    ; => (2 4 6)
 
 (as-> [1 2 3] v                    ; thread with named binding
       (conj v 4)
@@ -605,9 +607,9 @@ See [Testing](/documentation/testing).
   {:items [1 2 3] :next-token (when (nil? token) "page2")})
 
 (iteration fetch-page
-  :kf :next-token
-  :vf :items
-  :initk nil)
+  {:kf :next-token
+   :vf :items
+   :initk nil})
 ```
 
 ## Utility functions
@@ -625,7 +627,7 @@ See [Testing](/documentation/testing).
 
 ```phel
 (source my-fn)                     ; print source code of a function
-(find-fn "map")                    ; search for functions by name
+(phel.repl/find-fn "map")          ; search for functions by name
 (symbol-info 'map)                 ; detailed info about a symbol
 (ns-publics 'phel.core)           ; all public vars in a namespace
 (ns-aliases 'my-app.core)         ; namespace aliases

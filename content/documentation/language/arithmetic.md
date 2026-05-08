@@ -53,7 +53,7 @@ Operators take zero, one, or many args:
 `(/ int int)` with a non-integer result returns a `Rational`, not a float. Coerce with `float` or `(/ 10.0 3)` if you need a float.
 
 {% php_note() %}
-Variadic operators more flexible than PHP:
+Variadic operators are more flexible than PHP's:
 
 ```php
 // PHP - requires at least two operands
@@ -116,35 +116,35 @@ Manipulate bits in integers.
 
 ```phel
 ;; Bitwise and
-(bit-and 0b1100 0b1001) ; Evaluates to 8 (0b1000)
+(bit-and 0b1100 0b1001) ; => 8 (0b1000)
 
 ;; Bitwise or
-(bit-or 0b1100 0b1001) ; Evaluates to 13 (0b1101)
+(bit-or 0b1100 0b1001) ; => 13 (0b1101)
 
 ;; Bitwise xor
-(bit-xor 0b1100 0b1001) ; Evaluates to 5 (0b0101)
+(bit-xor 0b1100 0b1001) ; => 5 (0b0101)
 
 ;; Bitwise complement
-(bit-not 0b0111) ; Evaluates to -8
+(bit-not 0b0111) ; => -8
 
 ;; Shifts bit n steps to the left
-(bit-shift-left 0b1101 1) ; Evaluates to 26 (0b11010)
+(bit-shift-left 0b1101 1) ; => 26 (0b11010)
 
 ;; Shifts bit n steps to the right
-(bit-shift-right 0b1101 1) ; Evaluates to 6 (0b0110)
+(bit-shift-right 0b1101 1) ; => 6 (0b0110)
 
 ;; Set bit at index n
-(bit-set 0b1011 2) ; Evaluates to 15 (0b1111)
+(bit-set 0b1011 2) ; => 15 (0b1111)
 
 ;; Clear bit at index n
-(bit-clear 0b1011 3) ; Evaluates to 3 (0b0011)
+(bit-clear 0b1011 3) ; => 3 (0b0011)
 
 ;; Flip bit at index n
-(bit-flip 0b1011 2) ; Evaluates to 15 (0b1111)
+(bit-flip 0b1011 2) ; => 15 (0b1111)
 
 ;; Test bit at index n
-(bit-test 0b1011 0) ; Evaluates to true
-(bit-test 0b1011 2) ; Evaluates to false
+(bit-test 0b1011 0) ; => true
+(bit-test 0b1011 2) ; => false
 ```
 
 {% php_note() %}

@@ -399,12 +399,12 @@ Evaluates expressions in order. Returns the last value, or `nil` if empty.
 
 ## Dofor
 
+Like `for` but for side-effects. Returns `nil` like `foreach`.
+
 ```phel
 (dofor [x :in [1 2 3]] (print x)) ; Prints 1, 2, 3, returns nil
 (dofor [x :in [2 3 4 5] :when (even? x)] (print x)) ; Prints 2, 4, returns nil
 ```
-
-Like `for` but for side-effects. Returns `nil` like `foreach`.
 
 ## Conditional threading
 

@@ -88,7 +88,7 @@ docker run --rm -it php:8.4-cli sh -c \
   "curl -sL https://phel-lang.org/phar -o /tmp/phel.phar && php /tmp/phel.phar repl"
 ```
 
-Container downloads PHAR fresh each run. Fine for experimenting, wasteful for daily use (see below).
+Container downloads PHAR fresh each run. Fine for experimenting, wasteful for daily use. See [Persistent `phel` alias](#persistent-phel-alias-backed-by-docker) for a cached setup.
 
 ### Run a Phel file from your host
 

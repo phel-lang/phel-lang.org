@@ -16,7 +16,7 @@ PHP [`define`](https://www.php.net/manual/en/function.define.php) constants acce
 
 ```phel
 (php/define "MY_SETTING" "My value") ; Calls PHP define('MY_SETTING', 'My value');
-php/MY_SETTING ; Returns "My value"
+php/MY_SETTING ; => "My value"
 ```
 
 {% php_note() %}
@@ -42,8 +42,8 @@ php/MY_SETTING
 Add `php/` prefix to any PHP function name:
 
 ```phel
-(php/strlen "test") ; Calls PHP's strlen function and evaluates to 4
-(php/date "l") ; Evaluates to something like "Monday"
+(php/strlen "test") ; => 4
+(php/date "l")      ; => "Monday" (or whatever the current day is)
 ```
 
 {% php_note() %}
@@ -114,8 +114,8 @@ Evaluates `expr`, creates instance with `args`, returns it.
 (ns my.module
   (:use \DateTime))
 
-(php/new DateTime) ; Returns a new instance of the DateTime class
-(php/new DateTime "now") ; Returns a new instance of the DateTime class
+(php/new DateTime)       ; => DateTime instance
+(php/new DateTime "now") ; => DateTime instance
 
 (php/new "\\DateTimeImmutable") ; instantiate a new PHP class from string
 ```
@@ -213,9 +213,9 @@ Same as above, but static.
 (ns my.module
   (:use \DateTimeImmutable))
 
-(php/:: DateTimeImmutable ATOM) ; Evaluates to "Y-m-d\TH:i:sP"
+(php/:: DateTimeImmutable ATOM) ; => "Y-m-d\TH:i:sP"
 
-;; Evaluates to a new instance of DateTimeImmutable
+;; => DateTimeImmutable instance
 (php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2020-03-22"))
 ```
 
