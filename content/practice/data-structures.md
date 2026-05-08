@@ -50,10 +50,10 @@ Build a set from `1`, `2`, `3`, `2`. How many elements does it hold?
 {% end %}
 {% solution() %}
 ```phel
-(set 1 2 3 2)
-; => (set 1 2 3) - duplicates dropped
+(hash-set 1 2 3 2)
+; => #{1 2 3} - duplicates dropped
 
-(count (set 1 2 3 2))
+(count (hash-set 1 2 3 2))
 ; => 3
 ```
 Sets store unique values. Adding a duplicate is a no-op.
@@ -166,11 +166,11 @@ Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}
 
 {% question(difficulty="easy") %}
-Use `contains?` to check whether the set `(set :apple :banana :cherry)` has `:banana`. Then check `:grape`.
+Use `contains?` to check whether the set `(hash-set :apple :banana :cherry)` has `:banana`. Then check `:grape`.
 {% end %}
 {% solution() %}
 ```phel
-(def fruits (set :apple :banana :cherry))
+(def fruits (hash-set :apple :banana :cherry))
 
 (contains? fruits :banana) ; => true
 (contains? fruits :grape)  ; => false

@@ -24,19 +24,21 @@ vendor/bin/phel init
 #   project-name          The project/namespace name (default: "app")
 #
 # Options:
-#       --nested          Use legacy nested layout (src/phel/<name>/, tests/phel/<name>/)
+#       --nested          Use nested layout (src/phel/, tests/phel/)
+#   -m, --minimal         Use root layout (single main.phel at project root)
 #       --force           Overwrite existing files
 #       --dry-run         Show what would be created without writing anything
 #       --no-gitignore    Skip generating .gitignore
+#       --no-tests        Skip generating a test file
 ```
 
-Defaults to **Flat** layout (`src/`, `tests/`). `--nested` for legacy `src/phel/<name>/`.
+Defaults to **Flat** layout (`src/`, `tests/`). `--nested` for `src/phel/`. `--minimal` for a single root file.
 
 ```bash
 # Flat layout (default)
 vendor/bin/phel init my-app
 
-# Legacy nested layout
+# Nested layout
 vendor/bin/phel init my-app --nested
 
 # Preview what would be created
@@ -46,7 +48,7 @@ vendor/bin/phel init my-app --dry-run
 ## Build the project
 
 ```bash
-php phel build
+vendor/bin/phel build
 # Usage:
 #   build [options]
 #
@@ -57,7 +59,7 @@ php phel build
 
 Compiles Phel to PHP, writing to the configured main path (entry point `out/index.php`). Run the resulting PHP directly. Skips recompilation, improving runtime.
 
-[Configuration](/documentation/configuration/#buildconfig) in `phel-config.php`:
+[Configuration](/documentation/configuration/) in `phel-config.php`:
 ```php
 <?php
 return (new \Phel\Config\PhelConfig())
@@ -74,7 +76,7 @@ Exports definitions with `{:export true}` metadata as PHP classes. Generates one
 vendor/bin/phel export
 ```
 
-[Configuration](/documentation/configuration/#export-definitions) in `phel-config.php`:
+[Configuration](/documentation/configuration/) in `phel-config.php`:
 ```php
 <?php
 return (new \Phel\Config\PhelConfig())
@@ -133,7 +135,7 @@ vendor/bin/phel run
 #   -t, --with-time       With time awareness
 ```
 
-[Configuration](/documentation/configuration/#srcdirs) in `phel-config.php`:
+[Configuration](/documentation/configuration/) in `phel-config.php`:
 ```php
 <?php
 return (new PhelConfig())
@@ -167,7 +169,7 @@ vendor/bin/phel test
 
 Test selectors and reporters: see [Testing](/documentation/testing/).
 
-[Configuration](/documentation/configuration/#testdirs) in `phel-config.php`:
+[Configuration](/documentation/configuration/) in `phel-config.php`:
 ```php
 <?php
 return (new PhelConfig())
@@ -212,10 +214,18 @@ Reloads changed namespaces in dependency order. Backends: inotify, fswatch, poll
 ```bash
 vendor/bin/phel watch
 # Usage:
-#   watch [paths]... [-b backend] [--poll=500] [--debounce=100]
+#   watch [options] [--] [<paths>...]
+#
+# Arguments:
+#   paths                 Files or directories to watch (default: configured src dirs)
+#
+# Options:
+#   -b, --backend=BACKEND Watcher backend: auto, inotify, fswatch, polling (default: auto)
+#       --poll=MS         Polling interval in ms, polling backend only (default: 500)
+#       --debounce=MS     Debounce window in ms (default: 100)
 ```
 
-From Phel:
+From Phel code, use `phel.watch`:
 
 ```phel
 (ns my-app

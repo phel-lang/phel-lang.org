@@ -54,7 +54,7 @@ More powerful than PHP `list()` or array unpacking:
 
 // Phel - full destructuring with nesting and rest
 (let [[a [b c] & rest] [1 [2 3] 4 5 6]]
-  ; a = 1, b = 2, c = 3, rest = (4 5 6)
+  // a = 1, b = 2, c = 3, rest = (4 5 6)
   )
 ```
 
@@ -103,7 +103,7 @@ $role = $data['role'] ?? 'guest';
 // Phel - destructuring with :or
 (let [{:name name :role role :or {role "guest"}}
       {:name "Alice"}]
-  ; name = "Alice", role = "guest"
+  // name = "Alice", role = "guest"
   )
 ```
 {% end %}

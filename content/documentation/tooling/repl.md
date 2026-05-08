@@ -320,6 +320,7 @@ user:3> m
 {:a 1 :b 2 :c 3}   ; Original unchanged!
 
 user:4> (type m)
+:map
 user:5> (keys m)
 (:a :b :c)
 user:6> (vals m)

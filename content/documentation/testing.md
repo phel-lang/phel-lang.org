@@ -78,7 +78,7 @@ Tests `body` throws `exception-type`.
 Tests `body` throws `exception-type` with message `msg`.
 
 ```phel
-(output? expected body) ; (output? "hello" (php/echo "hello"))
+(output? expected body) ; (output? "hello" (print "hello"))
 ```
 
 Tests `body` prints `expected` to output.
@@ -108,7 +108,7 @@ $this->expectOutputString("hello");
 echo "hello";
 
 // Phel
-(is (output? "hello" (php/echo "hello")))
+(is (output? "hello" (print "hello")))
 ```
 {% end %}
 
@@ -126,7 +126,7 @@ echo "hello";
 
 ## Running tests
 
-Run via `./vendor/bin/phel test`. Picks up tests recursively from [setTestDirs](/documentation/configuration/#testdirs), defaults to `tests/`.
+Run via `./vendor/bin/phel test`. Picks up tests recursively from [setTestDirs](/documentation/configuration/), defaults to `tests/`.
 
 Pass filenames to run specific files:
 
@@ -280,7 +280,7 @@ Useful in REPL to isolate or reset state between runs.
 (my-mock "any" "args")  ; => :ok
 
 ;; Custom behavior
-(def double-mock (mock-fn |(* $ 2)))
+(def double-mock (mock-fn #(* % 2)))
 (double-mock 5)  ; => 10
 
 ;; Consecutive return values

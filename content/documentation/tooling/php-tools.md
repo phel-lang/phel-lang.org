@@ -40,7 +40,7 @@ Use [Symfony VarDumper](https://symfony.com/doc/current/components/var_dumper.ht
 
 ```json
 "require-dev": {
-    "symfony/var-dumper": "^5.4"
+    "symfony/var-dumper": "^6.4|^7.0"
 },
 ```
 
@@ -88,7 +88,7 @@ Use [Symfony VarDumper](https://symfony.com/doc/current/components/var_dumper.ht
 
 ## Check the evaluated PHP
 
-Keep generated temp PHP files for debugging. Useful when an error references `/private/var/folders/.../T/__phelV2KvGD` that no longer exists. See [docs](/documentation/configuration/#keepgeneratedtempfiles).
+Keep generated temp PHP files for debugging. Useful when an error references `/private/var/folders/.../T/__phelV2KvGD` that no longer exists. See [docs](/documentation/configuration/).
 
 ```php
 <?php # phel-config-local.php

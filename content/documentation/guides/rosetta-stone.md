@@ -715,7 +715,7 @@ foreach ($items as $item) {
 }
 
 foreach ($map as $key => $value) {
-    echo "$key: $value.n";
+    echo "$key: $value\n";
 }
 ```
 

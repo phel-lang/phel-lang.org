@@ -75,6 +75,6 @@ return (new \Phel\Config\PhelConfig())
 | `setEnableNamespaceCache` | Persistent namespace cache for warm runs. Default `true`. |
 | `setEnableCompiledCodeCache` | Compiled-code cache for tests/builds. Default `true`. |
 | `setBuildConfig` | `setMainPhelNamespace` (entry ns) + `setMainPhpPath` (generated PHP entry). |
-| `setExportConfig` | `setFromDirectories`, `setNamespacePrefix`, `setTargetDirectory` for `phel export`. See [PHP Interop](/documentation/php-interop/#calling-phel-functions-from-php). |
+| `setExportConfig` | `setFromDirectories`, `setNamespacePrefix`, `setTargetDirectory` for `phel export`. See [PHP Interop](/documentation/php-interop/#calling-phel-from-php). |
 
 </details>

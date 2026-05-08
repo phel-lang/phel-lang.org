@@ -126,7 +126,7 @@ No agents, refs, STM. See [Global and Local Bindings](/documentation/language/gl
 
 ### No spec
 
-No built-in spec/schema. Validate with predicates + `cond`, or use a PHP validation library via interop.
+No `clojure.spec`. Phel ships `phel.schema` for validation, coercion, and generation. See the schema recipe in the [Cookbook](/documentation/guides/cookbook/).
 
 ### Truthiness
 
@@ -363,10 +363,6 @@ For PHP arrays (not Phel data structures), use `php/aget`, `php/aset`:
 Full interop reference: [PHP Interop](/documentation/php-interop).
 
 ## What you'll miss (and workarounds)
-
-### Protocols
-
-`defprotocol` and `extend-type` work like Clojure's. `definterface` + `defstruct` for simpler patterns. See [Interfaces](/documentation/language/interfaces).
 
 ### CIDER / Calva / nREPL
 

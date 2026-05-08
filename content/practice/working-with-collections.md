@@ -15,7 +15,7 @@ Increment every number in `[4 7 9 10]`. Use `map`.
 ;; => [5 8 10 11]
 
 ;; or with the short anonymous form
-(map |(+ $ 1) [4 7 9 10])
+(map #(+ % 1) [4 7 9 10])
 
 ;; or with fn
 (map (fn [x] (+ x 1)) [4 7 9 10])
@@ -59,7 +59,7 @@ From `[1 2 3 4 5 6 7 8 9 10]`, keep the evens and double each.
 {% end %}
 {% solution() %}
 ```phel
-(map |(* $ 2) (filter even? [1 2 3 4 5 6 7 8 9 10]))
+(map #(* % 2) (filter even? [1 2 3 4 5 6 7 8 9 10]))
 ;; => (4 8 12 16 20)
 ```
 Composing `filter` and `map` is a daily pattern. Read it inside-out: filter first, then map.
@@ -72,7 +72,7 @@ Rewrite the previous solution with the threading macro `->>` so it reads top-to-
 ```phel
 (->> [1 2 3 4 5 6 7 8 9 10]
      (filter even?)
-     (map |(* $ 2)))
+     (map #(* % 2)))
 ;; => (4 8 12 16 20)
 ```
 `->>` (thread-last) feeds each result as the **last** argument to the next call. Nested calls become a clear pipeline.

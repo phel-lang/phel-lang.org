@@ -15,7 +15,7 @@ Reference repo: [chemaclass/phel-cli-gui](https://github.com/Chemaclass/phel-cli
 ```bash
 mkdir my-lib && cd my-lib
 git init
-composer init   ; answer prompts, name = your-vendor/my-lib
+composer init   # answer prompts, name = your-vendor/my-lib
 composer require phel-lang/phel-lang
 ```
 
@@ -133,7 +133,7 @@ composer require your-vendor/my-lib
 ## Conventions
 
 - **Namespace:** `{vendor}.{library-name}`, sub-namespaces map to subdirectories.
-- **Private defs:** [`def-`](/documentation/reference/api/#def), [`defn-`](/documentation/reference/api/#defn-1), [`defmacro-`](/documentation/reference/api/#defmacro-1) keep symbols out of the public API.
+- **Private defs:** [`def-`](/documentation/reference/api/core/#def-), [`defn-`](/documentation/reference/api/core/#defn-), [`defmacro-`](/documentation/reference/api/core/#defmacro-) keep symbols out of the public API.
 - **PHP interop:** if PHP consumers will call your code, set `setMainPhpPath` then `composer build`. See [PHP interop](/documentation/php-interop/#calling-phel-functions-from-php).
 
 ## Cross-platform code

@@ -96,7 +96,7 @@ Hint: `php/ord` and `php/chr` give you character codes.
       c)))
 
 (defn encode [text n]
-  (apply str (map |(shift-char $ n) text)))
+  (apply str (map #(shift-char % n) text)))
 
 (defn decode [text n]
   (encode text (- 26 n)))
@@ -121,20 +121,20 @@ Tips:
 
 ```phel
 (def book-url "https://gist.githubusercontent.com/Chemaclass/da9a0ba72adee6644193c730d4f307b2/raw/1164593f76ae7157d816bcc8d700937dfb73420e/moby-dick.txt")
-(def stop-words (set "the" "he" "at" "but" "there" "of" "was" "be" "not" "use" "and" "for" "this" "what" "an" "a" "on" "have" "all" "each" "to" "are" "from" "were" "which" "in" "as" "or" "we" "she" "is" "with" "ine" "when" "do" "you" "his" "had" "your" "how" "that" "they" "by" "can" "their" "it" "I" "word" "said" "if" "i" "s"))
+(def stop-words (hash-set "the" "he" "at" "but" "there" "of" "was" "be" "not" "use" "and" "for" "this" "what" "an" "a" "on" "have" "all" "each" "to" "are" "from" "were" "which" "in" "as" "or" "we" "she" "is" "with" "ine" "when" "do" "you" "his" "had" "your" "how" "that" "they" "by" "can" "their" "it" "I" "word" "said" "if" "i" "s"))
 ```
 {% end %}
 {% solution() %}
 ```phel
 (def book-url "https://gist.githubusercontent.com/Chemaclass/da9a0ba72adee6644193c730d4f307b2/raw/1164593f76ae7157d816bcc8d700937dfb73420e/moby-dick.txt")
 (def full-book (php/file_get_contents book-url))
-(def words (re-seq "/\\w+/" full-book))
+(def words (re-seq #"\w+" full-book))
 
-(def stop-words (set "the" "he" "at" "but" "there" "of" "was" "be" "not" "use" "and" "for" "this" "what" "an" "a" "on" "have" "all" "each" "to" "are" "from" "were" "which" "in" "as" "or" "we" "she" "is" "with" "ine" "when" "do" "you" "his" "had" "your" "how" "that" "they" "by" "can" "their" "it" "I" "word" "said" "if" "i" "s"))
+(def stop-words (hash-set "the" "he" "at" "but" "there" "of" "was" "be" "not" "use" "and" "for" "this" "what" "an" "a" "on" "have" "all" "each" "to" "are" "from" "were" "which" "in" "as" "or" "we" "she" "is" "with" "ine" "when" "do" "you" "his" "had" "your" "how" "that" "they" "by" "can" "their" "it" "I" "word" "said" "if" "i" "s"))
 
 (->> words
      (map php/strtolower)
-     (filter |(not (contains? stop-words $)))
+     (filter #(not (contains? stop-words %)))
      (frequencies)
      (pairs)
      (sort-by second)
@@ -151,7 +151,7 @@ Learn more: [PHP Interop](/documentation/php-interop), [Data Structures](/docume
 {% end %}
 
 {% question(difficulty="hard") %}
-**Counter with mutable state**: build a tiny counter using `var` and `swap!`.
+**Counter with mutable state**: build a tiny counter using `atom` and `swap!`.
 ```phel
 (reset-counter!)
 (tick!) (tick!) (tick!)
@@ -160,7 +160,7 @@ Learn more: [PHP Interop](/documentation/php-interop), [Data Structures](/docume
 {% end %}
 {% solution() %}
 ```phel
-(def counter (var 0))
+(def counter (atom 0))
 
 (defn current [] @counter)
 (defn tick! [] (swap! counter inc))
@@ -170,7 +170,7 @@ Learn more: [PHP Interop](/documentation/php-interop), [Data Structures](/docume
 (tick!) (tick!) (tick!)
 (current) ; => 3
 ```
-Most Phel data is immutable, but sometimes you need a single mutable cell - a request counter, a cached result, an in-memory app state. `var` gives you exactly that, `swap!` updates it with a function, and `@` (or `deref`) reads the current value. By convention, functions that mutate end with `!`.
+Most Phel data is immutable, but sometimes you need a single mutable cell - a request counter, a cached result, an in-memory app state. `atom` gives you exactly that, `swap!` updates it with a function, and `@` (or `deref`) reads the current value. By convention, functions that mutate end with `!`.
 
 Learn more: [Global and Local Bindings](/documentation/language/global-and-local-bindings)
 {% end %}

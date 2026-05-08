@@ -441,14 +441,14 @@ class Order implements Loggable {
 ```
 
 ```phel
-; Phel -- define a protocol
+;; Phel -- define a protocol
 (defprotocol Loggable
   (to-log-string [this]))
 
-; Define a struct
+;; Define a struct
 (defstruct order [id total])
 
-; Extend the struct to implement the protocol
+;; Extend the struct to implement the protocol
 (extend-type order
   Loggable
   (to-log-string [this]
@@ -456,7 +456,7 @@ class Order implements Loggable {
 
 (to-log-string (order 1 29.99))   ; => "Order#1 $29.99"
 
-; Extend ANY existing type after the fact
+;; Extend ANY existing type after the fact
 (extend-protocol Loggable
   :string (to-log-string [this] (str "String: " this))
   :int    (to-log-string [this] (str "Int: " this)))
@@ -464,7 +464,7 @@ class Order implements Loggable {
 (to-log-string "hello")           ; => "String: hello"
 (to-log-string 42)                ; => "Int: 42"
 
-; Check if a value supports the protocol
+;; Check if a value supports the protocol
 (satisfies? Loggable (order 1 0)) ; => true
 ```
 
@@ -490,7 +490,7 @@ preg_match_all('/\d+/', 'a1b2c3', $all);
 ```
 
 ```phel
-; Phel -- regex literals and matching functions
+;; Phel -- regex literals and matching functions
 (let [m (re-matches #"(\d{4})-(\d{2})-(\d{2})" input)]
   (when m
     (let [year (get m 1)
@@ -525,7 +525,7 @@ throw new RuntimeException("Something went wrong");
 ```
 
 ```phel
-; Phel
+;; Phel
 (def result
   (try
     (risky-operation)
@@ -566,7 +566,7 @@ try {
 ```
 
 ```phel
-; Phel -- no custom class needed
+;; Phel -- no custom class needed
 (try
   (throw (ex-info "User not found" {:user-id 42 :type :not-found}))
   (catch \Exception e
@@ -701,14 +701,14 @@ $result = array_reduce(
 ```
 
 ```phel
-; Phel -- threading macros (creates intermediate lazy sequences)
+;; Phel -- threading macros (creates intermediate lazy sequences)
 (def result
   (->> (range 1 1001)
        (filter even?)
        (map #(* % %))
        (reduce + 0)))
 
-; Phel -- transducers (single pass, no intermediate collections)
+;; Phel -- transducers (single pass, no intermediate collections)
 (def result
   (transduce
     (comp (filter even?) (map #(* % %)))
@@ -725,14 +725,14 @@ $result = array_reduce(
 | `into` with xf | Want a specific collection type as result |
 
 ```phel
-; Reusable transducer: define once, apply to any data source
+;; Reusable transducer: define once, apply to any data source
 (def process-events
   (comp
     (filter #(= :error (get % :level)))
     (map :message)
     (take 10)))
 
-; Apply to different collections
+;; Apply to different collections
 (into [] process-events log-stream-a)
 (into [] process-events log-stream-b)
 (transduce process-events str "" log-stream-c)

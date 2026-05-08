@@ -89,5 +89,5 @@ Advanced output: [Symfony VarDumper](/documentation/tooling/php-tools/) via `(ph
 
 - Deeper debugging: [XDebug](/documentation/tooling/xdebug-setup/)
 - Familiar debugging: [PHP native tools](/documentation/tooling/php-tools/)
-- Readable output: [`pprint`](/documentation/reference/api/#pprint)
+- Readable output: [`pprint`](/documentation/reference/api/pprint/#pprint)
 - More: [API docs](/documentation/reference/api/)

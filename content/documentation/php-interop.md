@@ -15,7 +15,7 @@ Access PHP superglobals with `php/` prefix and `get`:
 PHP [`define`](https://www.php.net/manual/en/function.define.php) constants accessed via `php/CONSTANT_NAME`:
 
 ```phel
-(php/define "MY_SETTING" "My value") ; Calls PHP define('MY_SETTING', 'My value");
+(php/define "MY_SETTING" "My value") ; Calls PHP define('MY_SETTING', 'My value');
 php/MY_SETTING ; Returns "My value"
 ```
 
@@ -560,7 +560,7 @@ return (new \Phel\Config\PhelConfig())
 ;
 ```
 
-Option details: [Configuration](/documentation/configuration/#exportconfig).
+Option details: [Configuration](/documentation/configuration/).
 
 Mark a function exported with metadata:
 

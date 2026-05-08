@@ -131,7 +131,7 @@ Integers, floats, ratios, big integers, big decimals. Integers and floats wrap P
 (bigdec? 1.5M)  ; => true
 ```
 
-Auto-promoting variants `+'`, `-'`, `*'`, `inc'`, `dec'` widen to BigInteger on overflow instead of wrapping. See [Arithmetic](/documentation/language/arithmetic/).
+Auto-promoting variants `+'`, `-'`, `*'`, `inc'`, `dec'` widen to BigInteger on overflow instead of wrapping. See [Arithmetic](/documentation/language/arithmetic).
 
 ## Strings
 
@@ -230,15 +230,17 @@ Unlike PHP associative arrays, Phel maps:
 - **Immutable**: operations return new maps
 - **Not** PHP arrays internally
 
-```phel
-; PHP:
+```php
+// PHP: mutable
 $map = ['name' => 'Alice'];
 $map['name'] = 'Bob';  // Mutates in place
+```
 
-; Phel:
+```phel
+;; Phel: immutable
 (def map {:name "Alice"})
 (def new-map (assoc map :name "Bob"))  ; Returns new map
-; map is still {:name "Alice"}
+;; map is still {:name "Alice"}
 ```
 {% end %}
 
@@ -364,7 +366,7 @@ Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some det
 (sort-by #(get % :age) users)  ; Sort users by age
 ```
 
-> **Note:** Older `|(...)` form with `$` placeholders is deprecated. See [Functions and Recursion](/documentation/language/functions-and-recursion/).
+> **Note:** Older `|(...)` form with `$` placeholders is deprecated. See [Functions and Recursion](/documentation/language/functions-and-recursion).
 
 ## Deref shorthand
 

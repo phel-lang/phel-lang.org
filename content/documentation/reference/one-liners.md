@@ -103,7 +103,7 @@ Converts the string to a sequence of characters, filters vowels, and counts them
 Title case a string:
 
 ```phel
-(->> (phel.string/split "hello world of phel" "/ /")
+(->> (phel.string/split "hello world of phel" #" ")
      (map phel.string/capitalize)
      (phel.string/join " "))
 ;; => "Hello World Of Phel"

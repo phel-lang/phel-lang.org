@@ -432,7 +432,8 @@ Filter, transform, group via threading macros and collection functions.
 
 ;; More pipeline examples:
 
-;; Average age of active users
+;; Average age of active users.
+;; (/ int int) returns a Rational when not evenly divisible.
 (def avg-age
   (let [active (filter :active users)
         total-age (reduce + 0 (map :age active))]
@@ -869,21 +870,20 @@ Instrument a function to check args/return at call sites:
 
 ## Async with `phel.async`
 
-Fiber-backed promises and futures:
+Fiber-backed promises and futures. `promise`, `deliver`, `future-call`, `future?`, and `deref` live in `phel.core` and are available without a require:
 
 ```phel
-(ns cookbook.async
-  (:require phel.async :refer [promise deliver future-call future? deref]))
+(ns cookbook.async)
 
 (def p (promise))
 (future-call (fn [] (deliver p 42)))
 
-(deref p)          ; blocks
-(deref p 1000 :timeout)  ; 3-arg: wait ms, default on timeout
+(deref p)                ; blocks until delivered
+(deref p 1000 :timeout)  ; wait up to 1000 ms, return :timeout on expiry
 
 (def f (future-call (fn [] (+ 1 2))))
-(future? f)        ; => true
-@f                 ; => 3
+(future? f)              ; => true
+@f                       ; => 3
 ```
 
 ## File Watching

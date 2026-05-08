@@ -15,7 +15,7 @@ Request struct:
   method            ; HTTP Method ("GET", "POST", ...)
   uri               ; the 'uri' struct (see below)
   headers           ; Map of all headers. Keys are keywords, Values are string
-  parsed-body       ; The parsed body ($_POST), when availabe otherwise nil
+  parsed-body       ; The parsed body ($_POST), when available otherwise nil
   query-params      ; Map with all query parameters ($_GET)
   cookie-params     ; Map with all cookie parameters ($_COOKIE)
   server-params     ; Map with all server parameters ($_SERVER)
@@ -31,7 +31,7 @@ Request struct:
   port              ; Port of the URI
   path              ; Path of the URI
   query             ; Query string of the URI
-  fragment          ; Fragement string of the URI
+  fragment          ; Fragment string of the URI
 ])
 
 (defstruct uploaded-file [
@@ -46,7 +46,7 @@ Request struct:
 Import `phel.http`, call `request-from-globals`:
 
 ```phel
-(ns my-namepace
+(ns my-namespace
   (:require phel.http))
 
 (http/request-from-globals) ; Evaluates to a request struct
@@ -69,7 +69,7 @@ Import `phel.http`, call `request-from-globals`:
 Two helpers create responses:
 
 ```phel
-(ns my-namepace
+(ns my-namespace
   (:require phel.http))
 
 ;; Create response from map
@@ -84,7 +84,7 @@ Two helpers create responses:
 Send with `emit-response`:
 
 ```phel
-(ns my-namepace
+(ns my-namespace
   (:require phel.http))
 
 (let [rsp (http/response-from-map

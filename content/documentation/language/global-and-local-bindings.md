@@ -56,7 +56,7 @@ $x = 10;  // Can reassign
 // Phel - immutable bindings
 (let [x 1
       y (+ x 2)]
-  ; x = 10  <- This would be a compile error!
+  // x = 10  <- This would be a compile error!
   (+ x y))
 ```
 {% end %}

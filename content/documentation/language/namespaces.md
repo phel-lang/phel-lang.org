@@ -135,7 +135,7 @@ Importing is preferred, but optional. Use full namespace inline if needed:
 
 Load external PHP files via `:require-file` (calls `require_once`). Example for Composer autoload:
 
-```
+```phel
 (ns hello-world.boot
   (:require-file "vendor/autoload.php"))
 ```
@@ -164,5 +164,6 @@ Fully qualified: namespace, `/`, keyword name.
 ```phel
 (ns foobar
   (:require abc.xyz :as bar))
-  ::bar/foo ; evaluates to :abc.xyz/bar
+
+::bar/foo ; evaluates to :abc.xyz/foo
 ```
