@@ -383,7 +383,7 @@ Use Composer. `composer.json` replaces `deps.edn`:
 ```json
 {
   "require": {
-    "phel-lang/phel-lang": "^0.31"
+    "phel-lang/phel-lang": "^0.36"
   }
 }
 ```
@@ -421,10 +421,14 @@ Many orgs already run PHP. Bring FP/Lisp into environments where the JVM isn't a
 | `(ns foo.bar)` | `(ns foo\bar)` | `\` separator instead of `.` |
 | `(:require [foo.bar :as b])` | `(:require foo\bar :as b)` | No vector wrapping required |
 | `#(* % 2)` | `#(* % 2)` | Same. `|(* $ 2)` legacy |
-| `(atom 0)` | `(atom 0)` | Same. `(var 0)` deprecated |
+| `(atom 0)` | `(atom 0)` | Same |
 | `@my-atom` | `@my-atom` | Same |
-| `(reset! a v)` | `(reset! a v)` | Same. `(set! a v)` deprecated |
+| `(reset! a v)` | `(reset! a v)` | Same |
 | `(swap! a f)` | `(swap! a f)` | Same |
+| `#'sym` / `(var sym)` | `#'sym` / `(var sym)` | First-class `Var` handle |
+| `(alter-var-root #'v f)` | `(alter-var-root #'v f)` | Same |
+| `(with-redefs [v x] ...)` | `(with-redefs [v x] ...)` | Same. Works for non-dynamic vars |
+| `(binding [*x* v] ...)` | `(binding [*x* v] ...)` | Var must be `^:dynamic` |
 | `(.method obj)` | `(php/-> obj (method))` | Instance method |
 | `(Class/static)` | `(php/:: Class (static))` | Static method |
 | `(new Class)` | `(php/new Class)` | Instantiation |

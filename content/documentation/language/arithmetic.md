@@ -45,9 +45,12 @@ Operators take zero, one, or many args:
 (* 2 3 4) ; => 24
 
 (/) ; => 1
-(/ 2) ; => 0.5 (reciprocal)
+(/ 2) ; => 1/2 (reciprocal as Rational)
 (/ 24 4 2) ; => 3
+(/ 10 3)   ; => 10/3 (Rational, exact)
 ```
+
+`(/ int int)` with a non-integer result returns a `Rational`, not a float. Coerce with `float` or `(/ 10.0 3)` if you need a float.
 
 {% php_note() %}
 Variadic operators more flexible than PHP:
@@ -70,7 +73,16 @@ Variadic operators more flexible than PHP:
 - `(/ x)` reciprocal
 {% end %}
 
-Other numerics: `%` (remainder), `**` (power). Full list in the API docs.
+Other numerics:
+
+- `quot`, `rem`, `mod`: integer quotient, remainder, modulo. `%` aliases `rem`.
+- `floor`, `ceil`, `round`, `sqrt`: math primitives.
+- `**`: power.
+- `+'`, `-'`, `*'`, `inc'`, `dec'`: auto-promote to `BigInteger` on overflow.
+- `numerator`, `denominator`, `rationalize`, `ratio?`.
+- `bigint`, `biginteger`, `bigint?`; `bigdec`, `bigdec?` / `decimal?`.
+
+Full list in the API docs.
 
 Some operations yield NaN. Phel uses `NAN` constant. Check with `nan?`:
 

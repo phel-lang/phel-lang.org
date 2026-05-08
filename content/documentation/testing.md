@@ -146,6 +146,16 @@ Stop on first failure with `--fail-fast`:
 ./vendor/bin/phel test --fail-fast
 ```
 
+Print discovered tests without running them (`--list`), re-run only failures from the previous run (`--last-failed`), or print the N slowest tests after the summary (`--slowest=N`):
+
+```bash
+./vendor/bin/phel test --list
+./vendor/bin/phel test --last-failed
+./vendor/bin/phel test --slowest=10
+```
+
+`--last-failed` persists failures to `.phel/last-failed.txt`.
+
 `--testdox` for TestDox format. `--quiet` for errors only, `--silent` to silence fully.
 
 Full options: `./vendor/bin/phel test --help`.

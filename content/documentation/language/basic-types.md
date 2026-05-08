@@ -84,7 +84,7 @@ Interned: one instance in memory, fast equality.
 
 ## Numbers
 
-Integers and floats use PHP's implementation. Integers in decimal, hex, octal, binary. Binary/octal/hex may use `_` separators.
+Integers, floats, ratios, big integers, big decimals. Integers and floats wrap PHP's natives. Integers in decimal, hex, octal, binary. Binary/octal/hex may use `_` separators.
 
 ```phel
 1337 ; integer
@@ -113,7 +113,25 @@ Integers and floats use PHP's implementation. Integers in decimal, hex, octal, b
 024_71 ; octal number with underscores
 ```
 
-## Strings
+### Ratios, BigInteger, BigDecimal
+
+```phel
+1/2          ; Rational
+-3/4         ; Rational
+(/ 10 3)     ; => 10/3 (int / int with non-integer result returns Rational)
+(numerator 1/2)    ; => 1
+(denominator 1/2)  ; => 2
+
+(bigint "100000000000000000000")  ; BigInteger from string
+(bigint? 1N)                       ; predicate
+
+1.5M         ; BigDecimal literal (M suffix)
+1.5e3M       ; BigDecimal exponent
+(bigdec "0.1")
+(bigdec? 1.5M)  ; => true
+```
+
+Auto-promoting variants `+'`, `-'`, `*'`, `inc'`, `dec'` widen to BigInteger on overflow instead of wrapping. See [Arithmetic](/documentation/language/arithmetic).
 
 Double-quoted. `$` doesn't need escaping.
 
@@ -230,6 +248,30 @@ Whitespace-separated values in `#{}`, or built with `hash-set`:
 #{1 2 3}         ; set literal
 (hash-set 1 2 3) ; same result
 (set [1 2 3])    ; coerce a collection to a set
+```
+
+## Queues
+
+Persistent FIFO queues with amortised O(1) `push`, `peek`, `pop`:
+
+```phel
+(def q (queue 1 2 3))
+(queue? q)        ; => true
+(peek q)          ; => 1
+(push q 4)        ; => queue 1 2 3 4
+(pop q)           ; => queue 2 3
+```
+
+## Map entries
+
+`map-entry` produces an entry that compares equal to a 2-element vector. `seq` over a map yields map entries:
+
+```phel
+(def e (map-entry :a 1))
+(map-entry? e)    ; => true
+(key e)           ; => :a
+(val e)           ; => 1
+(= e [:a 1])      ; => true
 ```
 
 ## Tagged literals
