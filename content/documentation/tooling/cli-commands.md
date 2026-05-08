@@ -62,7 +62,7 @@ Compiles Phel to PHP, writing to the configured main path (entry point `out/inde
 <?php
 return (new \Phel\Config\PhelConfig())
     ->setBuildConfig((new \Phel\Config\PhelBuildConfig())
-        ->setMainPhelNamespace('your-ns\index')
+        ->setMainPhelNamespace('your-ns.index')
         ->setMainPhpPath('out/index.php'));
 ```
 
@@ -219,7 +219,7 @@ From Phel:
 
 ```phel
 (ns my-app
-  (:require phel\watch :refer [watch!]))
+  (:require phel.watch :refer [watch!]))
 
 (watch! ["src/"])
 ```

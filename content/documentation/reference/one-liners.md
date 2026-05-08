@@ -74,7 +74,7 @@ Multiplies the base by itself `exp` times.
 Reverse a string:
 
 ```phel
-(phel\string/reverse "hello")
+(phel.string/reverse "hello")
 ;; => "olleh"
 ```
 
@@ -83,7 +83,7 @@ Uses Phel's string library to reverse characters.
 Palindrome check:
 
 ```phel
-(let [s "racecar"] (= s (phel\string/reverse s)))
+(let [s "racecar"] (= s (phel.string/reverse s)))
 ;; => true
 ```
 
@@ -103,9 +103,9 @@ Converts the string to a sequence of characters, filters vowels, and counts them
 Title case a string:
 
 ```phel
-(->> (phel\string/split "hello world of phel" "/ /")
-     (map phel\string/capitalize)
-     (phel\string/join " "))
+(->> (phel.string/split "hello world of phel" "/ /")
+     (map phel.string/capitalize)
+     (phel.string/join " "))
 ;; => "Hello World Of Phel"
 ```
 
@@ -132,7 +132,7 @@ Shifts each letter by 13 positions, wrapping around the alphabet.
 Repeat string pattern:
 
 ```phel
-(phel\string/join "" (map #(if (even? %) "*" "-") (range 0 10)))
+(phel.string/join "" (map #(if (even? %) "*" "-") (range 0 10)))
 ;; => "*-*-*-*-*-"
 ```
 
@@ -314,9 +314,9 @@ Simple slug generator:
 
 ```phel
 (-> "Hello World, This is Phel!"
-     (phel\string/lower-case)
-     (phel\string/replace " " "-")
-     (phel\string/replace #"[^a-z0-9-]" ""))
+     (phel.string/lower-case)
+     (phel.string/replace " " "-")
+     (phel.string/replace #"[^a-z0-9-]" ""))
 ;; => "hello-world-this-is-phel"
 ```
 
@@ -339,10 +339,10 @@ Diamond pattern (width 5):
 
 ```phel
 (->> (concat (range 1 6 2) (range 3 0 -2))
-     (map #(phel\string/join ""
-             [(phel\string/repeat " " (/ (- 5 %) 2))
-              (phel\string/repeat "*" %)]))
-     (phel\string/join "\n"))
+     (map #(phel.string/join ""
+             [(phel.string/repeat " " (/ (- 5 %) 2))
+              (phel.string/repeat "*" %)]))
+     (phel.string/join "\n"))
 ;; => "  *\n ***\n*****\n ***\n  *"
 ```
 

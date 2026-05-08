@@ -8,11 +8,11 @@ Template syntax based on Phel data structures. Vectors are elements, maps are at
 
 ## Syntax
 
-`html` from `phel\html` generates HTML:
+`html` from `phel.html` generates HTML:
 
 ```phel
 (ns my-namespace
-  (:require phel\html :refer [html]))
+  (:require phel.html :refer [html]))
 
 (html [:span {:class "foo"} "bar"])
 ;; Evaluates to <span class="foo">bar</span>

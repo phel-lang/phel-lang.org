@@ -117,8 +117,8 @@ echo "hello";
 `deftest` defines a test. Like a no-arg function.
 
 ```phel
-(ns my-namespace\tests
-  (:require phel\test :refer [deftest is]))
+(ns my-namespace.tests
+  (:require phel.test :refer [deftest is]))
 
 (deftest my-test
   (is (= 4 (+ 2 2))))
@@ -178,7 +178,7 @@ Pick format with `--reporter=<name>`. Repeatable for multiple formats.
 ./vendor/bin/phel test --reporter=tap --reporter=junit-xml --output=build/tests.xml
 ```
 
-`phel\test/report` is a multimethod dispatching on event `:type`. Register custom reporters from Phel.
+`phel.test/report` is a multimethod dispatching on event `:type`. Register custom reporters from Phel.
 
 ### Selectors
 
@@ -187,7 +187,7 @@ Filter by tag, namespace glob, or regex:
 ```bash
 ./vendor/bin/phel test --include=integration
 ./vendor/bin/phel test --exclude=slow
-./vendor/bin/phel test --ns='my-app\http\*'
+./vendor/bin/phel test --ns='my-app.http.*'
 ./vendor/bin/phel test --filter 'user.*login'
 ```
 
@@ -225,7 +225,7 @@ Both support filtering, verbose output, specific files.
 Run tests from Phel code with `run-tests`. Takes options map (can be empty) and one or more namespaces.
 
 ```phel
-(run-tests {} 'my\ns\a 'my\ns\b)
+(run-tests {} 'my.ns.a 'my.ns.b)
 ```
 
 ### Interactive testing with `test-ns`
@@ -233,11 +233,11 @@ Run tests from Phel code with `run-tests`. Takes options map (can be empty) and 
 Run tests for a single namespace from the REPL:
 
 ```phel
-(ns my-app\tests
-  (:require phel\test :refer [deftest is test-ns]))
+(ns my-app.tests
+  (:require phel.test :refer [deftest is test-ns]))
 
 ; Run all tests in a namespace
-(test-ns 'my-app\tests)
+(test-ns 'my-app.tests)
 ```
 
 Useful for REPL-driven feedback without running the full suite.
@@ -255,7 +255,7 @@ Manage stats programmatically:
 
 ; Save and restore stats around a test run
 (def saved (get-stats))
-(test-ns 'my-app\tests)
+(test-ns 'my-app.tests)
 (restore-stats saved)
 ```
 
@@ -263,14 +263,14 @@ Useful in REPL to isolate or reset state between runs.
 
 ## Mocking
 
-`phel\mock` module replaces functions with test doubles.
+`phel.mock` module replaces functions with test doubles.
 
 ### Creating mocks
 
 ```phel
-(ns my-app\tests
-  (:require phel\test :refer [deftest is])
-  (:require phel\mock :refer [mock mock-fn mock-returning mock-throwing
+(ns my-app.tests
+  (:require phel.test :refer [deftest is])
+  (:require phel.mock :refer [mock mock-fn mock-returning mock-throwing
                                calls call-count called? called-with?
                                called-once? never-called? reset-mock!
                                with-mocks]))
@@ -341,16 +341,16 @@ No class structure. Mock any function directly.
 
 ## Property-based testing
 
-`phel\test\gen` provides generators, `sample`, `quick-check`, `defspec` with seedable PRNG.
+`phel.test.gen` provides generators, `sample`, `quick-check`, `defspec` with seedable PRNG.
 
 ```phel
-(ns my-app\tests
-  (:require phel\test :refer [deftest is defspec])
-  (:require phel\test\gen :as gen))
+(ns my-app.tests
+  (:require phel.test :refer [deftest is defspec])
+  (:require phel.test.gen :as gen))
 
 (defspec reverse-roundtrip
   [xs (gen/vector (gen/int))]
   (is (= xs (reverse (reverse xs)))))
 ```
 
-Failing cases shrink via `phel\test\shrink` (rose tree). On failure, `:defspec-failed` event emits `:shrunk-args`, `:original-args`, `:shrink-steps`, `:seed`. Opt out with `^:no-shrink` or `:shrink? false`.
+Failing cases shrink via `phel.test.shrink` (rose tree). On failure, `:defspec-failed` event emits `:shrunk-args`, `:original-args`, `:shrink-steps`, `:seed`. Opt out with `^:no-shrink` or `:shrink? false`.

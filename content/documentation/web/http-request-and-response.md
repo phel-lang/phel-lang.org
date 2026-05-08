@@ -6,7 +6,7 @@ aliases = ["/documentation/http-request-and-response"]
 
 ## HTTP request
 
-PHP scatters the request across `$_GET`, `$_POST`, `$_SERVER`, `$_COOKIES`, `$_FILES`. Phel normalizes them into one struct. All in `phel\http`.
+PHP scatters the request across `$_GET`, `$_POST`, `$_SERVER`, `$_COOKIES`, `$_FILES`. Phel normalizes them into one struct. All in `phel.http`.
 
 Request struct:
 
@@ -43,18 +43,18 @@ Request struct:
 ])
 ```
 
-Import `phel\http`, call `request-from-globals`:
+Import `phel.http`, call `request-from-globals`:
 
 ```phel
 (ns my-namepace
-  (:require phel\http))
+  (:require phel.http))
 
 (http/request-from-globals) ; Evaluates to a request struct
 ```
 
 ## HTTP response
 
-`phel\http` includes a response struct for sending responses:
+`phel.http` includes a response struct for sending responses:
 
 ```phel
 (defstruct response [
@@ -70,7 +70,7 @@ Two helpers create responses:
 
 ```phel
 (ns my-namepace
-  (:require phel\http))
+  (:require phel.http))
 
 ;; Create response from map
 (http/response-from-map {:status 200 :body "Test"})
@@ -85,7 +85,7 @@ Send with `emit-response`:
 
 ```phel
 (ns my-namepace
-  (:require phel\http))
+  (:require phel.http))
 
 (let [rsp (http/response-from-map
             {:status 404 :body "Page not found"})]

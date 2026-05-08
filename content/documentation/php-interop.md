@@ -67,13 +67,13 @@ However, Phel provides functional equivalents for many operations. For example, 
 Namespaced PHP functions use full path after `php/`:
 
 ```phel
-(php/Amp\trapSignal [(php/:: SIGINT) (php/:: SIGTERM)])
+(php/Amp.trapSignal [(php/:: SIGINT) (php/:: SIGTERM)])
 ```
 
 Capture into a Phel alias:
 
 ```phel
-(def trap-signal php/\Amp\trapSignal)
+(def trap-signal php/\Amp.trapSignal)
 (trap-signal [2 15])
 ```
 
@@ -90,7 +90,7 @@ Terse forms that expand to verbose `php/*`. Use whichever reads better.
 | `\Ns\Class/MEMBER`              | `(php/:: \Ns\Class MEMBER)`         |
 
 ```phel
-(ns my\module
+(ns my.module
   (:use \DateTimeImmutable))
 
 (new DateTimeImmutable "2026-04-20")           ; constructor
@@ -111,7 +111,7 @@ Terse forms that expand to verbose `php/*`. Use whichever reads better.
 Evaluates `expr`, creates instance with `args`, returns it.
 
 ```phel
-(ns my\module
+(ns my.module
   (:use \DateTime))
 
 (php/new DateTime) ; Returns a new instance of the DateTime class
@@ -150,7 +150,7 @@ Calls method or accesses property. Both `methodname` and `property` must be symb
 Chain multiple in one `php/->`. Each element evaluates on result of previous, enabling fluent chains or nested property access.
 
 ```phel
-(ns my\module)
+(ns my.module)
 
 (def di (php/new \DateInterval "PT30S"))
 
@@ -210,7 +210,7 @@ The `php/->` operator is inspired by Clojure's thread-first macro `->`, but spec
 Same as above, but static.
 
 ```phel
-(ns my\module
+(ns my.module
   (:use \DateTimeImmutable))
 
 (php/:: DateTimeImmutable ATOM) ; Evaluates to "Y-m-d\TH:i:sP"
@@ -513,7 +513,7 @@ $projectRootDir = dirname(__DIR__);
 
 require $projectRootDir . '/vendor/autoload.php';
 
-Phel::run($projectRootDir, 'cli-skeleton\modules\adder-module');
+Phel::run($projectRootDir, 'cli-skeleton.modules.adder-module');
 
 $adder = new AdderModule();
 $result = $adder->adder(1, 2, 3);
@@ -536,7 +536,7 @@ class MyExistingClass {
 
   public function myExistingMethod(...$arguments) {
     return $this->callPhel(
-        'my\phel\namespace', 
+        'my.phel.namespace', 
         'phel-function-name', 
         ...$arguments
     );

@@ -289,8 +289,8 @@ Reader tags for common values:
 Register with `register-tag`:
 
 ```phel
-(ns my-app\readers
-  (:require phel\reader :refer [register-tag]))
+(ns my-app.readers
+  (:require phel.reader :refer [register-tag]))
 
 (register-tag "money" (fn [[amount currency]]
                         {:amount amount :currency currency}))

@@ -83,8 +83,8 @@ Fastest way to check signatures without leaving the REPL.
 Import a Phel namespace. Same args as `:require` in `ns`:
 
 ```phel
-user:1> (require phel\html :as h)
-phel\html
+user:1> (require phel.html :as h)
+phel.html
 user:2> (h/html [:span {:class "greeting"} "Hello"])
 <span class="greeting">Hello</span>
 ```
@@ -108,11 +108,11 @@ Search symbols by pattern across loaded namespaces:
 
 ```phel
 user:1> (apropos "map")
-phel\core/map
-phel\core/mapcat
-phel\core/hash-map
-phel\core/map-indexed
-phel\core/zipmap
+phel.core/map
+phel.core/mapcat
+phel.core/hash-map
+phel.core/map-indexed
+phel.core/zipmap
 ...
 ```
 
@@ -122,9 +122,9 @@ Search docstrings:
 
 ```phel
 user:1> (search-doc "lazy")
-phel\core/lazy-seq
+phel.core/lazy-seq
   Creates a lazy sequence from a thunk...
-phel\core/take
+phel.core/take
   Returns a lazy sequence of the first n items...
 ...
 ```
@@ -160,8 +160,8 @@ Find functions by input/output example:
 
 ```phel
 user:1> (find-fn [1 2 3] 3)
-phel\core/count
-phel\core/last
+phel.core/count
+phel.core/last
 ...
 ```
 
@@ -179,31 +179,31 @@ user:1> (symbol-info map)
 Inspect namespaces:
 
 ```phel
-user:1> (ns-publics 'phel\core)
+user:1> (ns-publics 'phel.core)
 ; Returns all public definitions in the namespace
 
-user:2> (ns-aliases 'my\app)
+user:2> (ns-aliases 'my.app)
 ; Returns all namespace aliases
 
-user:3> (ns-refers 'my\app)
+user:3> (ns-refers 'my.app)
 ; Returns all referred symbols
 
 user:4> (ns-list)
 ; Returns all loaded namespaces
 
-user:5> (ns-interns 'my\app)
+user:5> (ns-interns 'my.app)
 ; Returns all interned vars in the namespace
 ```
 
 ### Namespace manipulation
 
-Create, find, remove namespaces and intern vars at runtime (`phel\repl`):
+Create, find, remove namespaces and intern vars at runtime (`phel.repl`):
 
 ```phel
-(find-ns 'my\app)              ; => namespace or nil
-(create-ns 'my\scratch)        ; create and return
-(intern 'my\scratch 'answer 42) ; intern a var
-(remove-ns 'my\scratch)
+(find-ns 'my.app)              ; => namespace or nil
+(create-ns 'my.scratch)        ; create and return
+(intern 'my.scratch 'answer 42) ; intern a var
+(remove-ns 'my.scratch)
 ```
 
 ### Macro expansion
@@ -235,8 +235,8 @@ user:2> (load-file "src/my/app.phel")
 Run tests for a namespace from the REPL:
 
 ```phel
-user:1> (require phel\test :refer [test-ns])
-user:2> (test-ns 'my\app\tests)
+user:1> (require phel.test :refer [test-ns])
+user:2> (test-ns 'my.app.tests)
 ; Runs all tests in the namespace and prints results
 ```
 
@@ -247,8 +247,8 @@ See also [Testing](/documentation/testing/) for `reset-stats`, `get-stats`, and 
 `(in-ns ...)` auto-injects `doc`, `require`, `use` into the new namespace. No manual imports.
 
 ```phel
-user:1> (in-ns 'my\app)
-my\app:2> (doc map)
+user:1> (in-ns 'my.app)
+my.app:2> (doc map)
 ; Works immediately -- no require needed
 ```
 

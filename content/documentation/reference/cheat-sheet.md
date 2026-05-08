@@ -541,10 +541,10 @@ See [PHP Interop](/documentation/php-interop).
 ## Namespaces
 
 ```phel
-(ns my-app\handlers
-  (:require my-app\db)              ; import Phel module
-  (:require my-app\utils :as u)     ; with alias
-  (:require my-app\auth :refer [login logout])  ; import symbols
+(ns my-app.handlers
+  (:require my-app.db)              ; import Phel module
+  (:require my-app.utils :as u)     ; with alias
+  (:require my-app.auth :refer [login logout])  ; import symbols
   (:use \DateTimeImmutable)          ; import PHP class
   (:use \Some\Long\Name :as Short)) ; PHP class with alias
 
@@ -559,8 +559,8 @@ See [Namespaces](/documentation/language/namespaces).
 ## Testing
 
 ```phel
-(ns my-app\tests
-  (:require phel\test :refer [deftest is are]))
+(ns my-app.tests
+  (:require phel.test :refer [deftest is are]))
 
 (deftest addition-test
   (is (= 4 (+ 2 2)))
@@ -627,13 +627,13 @@ See [Testing](/documentation/testing).
 (source my-fn)                     ; print source code of a function
 (find-fn "map")                    ; search for functions by name
 (symbol-info 'map)                 ; detailed info about a symbol
-(ns-publics 'phel\core)           ; all public vars in a namespace
-(ns-aliases 'my-app\core)         ; namespace aliases
-(ns-refers 'my-app\core)          ; referred symbols
+(ns-publics 'phel.core)           ; all public vars in a namespace
+(ns-aliases 'my-app.core)         ; namespace aliases
+(ns-refers 'my-app.core)          ; referred symbols
 (ns-list)                          ; list all loaded namespaces
 (macroexpand-1 '(when true 1))    ; expand one level of macro
 (macroexpand '(when true 1))      ; fully expand macro
 (eval-str "(+ 1 2)")              ; evaluate a string of Phel code
 (load-file "src/my-module.phel")  ; load and evaluate a file
-(test-ns 'my-app\tests)           ; run tests in a namespace
+(test-ns 'my-app.tests)           ; run tests in a namespace
 ```

@@ -150,7 +150,7 @@ Clojure and Phel side by side for syntactically different constructs.
 
 ### Namespace declaration
 
-Use `\` separator (PHP convention) instead of `.`:
+Same `.` separator as Clojure. PHP class FQNs in `:use` keep `\`:
 
 ```clojure
 ;; Clojure
@@ -161,15 +161,15 @@ Use `\` separator (PHP convention) instead of `.`:
 
 ```phel
 ;; Phel
-(ns myapp\users
-  (:require myapp\db :as db))
+(ns myapp.users
+  (:require myapp.db :as db))
 ```
 
 Differences:
-- `\` instead of `.`
 - No vector wrap per require clause
 - `:use` for PHP classes; `:require` for Phel modules
-- `:refer` same: `(:require myapp\db :refer [query])`
+- `:refer` same: `(:require myapp.db :refer [query])`
+- Backslash form `(ns myapp.db)` still parses for legacy code, warns under `PHEL_WARN_DEPRECATIONS=1`
 
 See [Namespaces](/documentation/language/namespaces).
 
@@ -323,7 +323,7 @@ Phel's equivalent of Clojure's Java interop. `php/` prefix unlocks the PHP ecosy
 ### Creating objects
 
 ```phel
-(ns my\app
+(ns my.app
   (:use \DateTimeImmutable)
   (:use \PDO))
 
@@ -418,8 +418,8 @@ Many orgs already run PHP. Bring FP/Lisp into environments where the JVM isn't a
 
 | Clojure | Phel | Notes |
 |---------|------|-------|
-| `(ns foo.bar)` | `(ns foo\bar)` | `\` separator instead of `.` |
-| `(:require [foo.bar :as b])` | `(:require foo\bar :as b)` | No vector wrapping required |
+| `(ns foo.bar)` | `(ns foo.bar)` | Same separator. PHP FQNs keep `\` |
+| `(:require [foo.bar :as b])` | `(:require foo.bar :as b)` | No vector wrapping required |
 | `#(* % 2)` | `#(* % 2)` | Same. `|(* $ 2)` legacy |
 | `(atom 0)` | `(atom 0)` | Same |
 | `@my-atom` | `@my-atom` | Same |

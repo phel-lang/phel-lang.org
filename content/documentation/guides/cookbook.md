@@ -11,7 +11,7 @@ Recipes for common tasks. Each example self-contained.
 Read CSV into a vector of maps, headers as keys.
 
 ```phel
-(ns cookbook\csv-reader)
+(ns cookbook.csv-reader)
 
 ;; Read a CSV file and return a vector of maps
 ;; Each row becomes a map with header names as keys
@@ -59,7 +59,7 @@ Read CSV into a vector of maps, headers as keys.
 CLI script that reads args, parses flags, produces output.
 
 ```phel
-(ns cookbook\cli-tool)
+(ns cookbook.cli-tool)
 
 ;; Access command-line arguments via PHP's $argv
 ;; When running: vendor/bin/phel run src/cli-tool.phel --name Alice --greeting Hi
@@ -103,12 +103,12 @@ CLI script that reads args, parses flags, produces output.
 
 ## HTTP request with cURL
 
-GET request via `phel\http-client`. Parse JSON via `phel\json`.
+GET request via `phel.http-client`. Parse JSON via `phel.json`.
 
 ```phel
-(ns cookbook\http-client
-  (:require phel\http-client :as http)
-  (:require phel\json :as json))
+(ns cookbook.http-client
+  (:require phel.http-client :as http)
+  (:require phel.json :as json))
 
 ;; Perform an HTTP GET request. `http/get` returns an http/response struct
 ;; with :status, :headers, :body, :version, and :reason keys.
@@ -118,7 +118,7 @@ GET request via `phel\http-client`. Parse JSON via `phel\json`.
       {:body (get resp :body) :status (get resp :status)}
       {:error (get resp :reason) :status (get resp :status)})))
 
-;; Parse a JSON string into a Phel map using phel\json
+;; Parse a JSON string into a Phel map using phel.json
 (defn parse-json [json-string]
   (try
     (json/decode json-string)
@@ -134,7 +134,7 @@ GET request via `phel\http-client`. Parse JSON via `phel\json`.
 
 ;; Example: fetch a list of todos from a public API
 (def response (fetch-json "https://jsonplaceholder.typicode.com/todos/1"))
-;; response is a Phel map (phel\json converts keys to keywords)
+;; response is a Phel map (phel.json converts keys to keywords)
 (println (str "Title: " (get response :title)))
 (println (str "Completed: " (if (get response :completed) "yes" "no")))
 
@@ -160,8 +160,8 @@ GET request via `phel\http-client`. Parse JSON via `phel\json`.
 `html` module: nested elements, attributes, dynamic content.
 
 ```phel
-(ns cookbook\html-generator
-  (:require phel\html :refer [html doctype raw-string]))
+(ns cookbook.html-generator
+  (:require phel.html :refer [html doctype raw-string]))
 
 ;; Generate a simple page layout
 (defn page [title & body]
@@ -226,7 +226,7 @@ GET request via `phel\http-client`. Parse JSON via `phel\json`.
 PHP DateTime via interop: create, format, compare.
 
 ```phel
-(ns cookbook\dates
+(ns cookbook.dates
   (:use DateTimeImmutable)
   (:use DateInterval)
   (:use DateTimeZone))
@@ -302,7 +302,7 @@ PHP DateTime via interop: create, format, compare.
 Read, write, list, exist checks via PHP interop.
 
 ```phel
-(ns cookbook\filesystem)
+(ns cookbook.filesystem)
 
 ;; Read entire file contents
 (defn read-file [path]
@@ -397,7 +397,7 @@ Read, write, list, exist checks via PHP interop.
 Filter, transform, group via threading macros and collection functions.
 
 ```phel
-(ns cookbook\data-pipeline)
+(ns cookbook.data-pipeline)
 
 ;; Sample dataset: a vector of user maps
 (def users
@@ -469,8 +469,8 @@ Filter, transform, group via threading macros and collection functions.
 Persistent KV store backed by JSON. Get, put, delete, list keys.
 
 ```phel
-(ns cookbook\kv-store
-  (:require phel\json :as json))
+(ns cookbook.kv-store
+  (:require phel.json :as json))
 
 ;; Path to the JSON storage file
 (def default-store-path "data/store.json")
@@ -561,7 +561,7 @@ Persistent KV store backed by JSON. Get, put, delete, list keys.
 Protocols define polymorphic behavior, extendable to any type. More flexible than PHP interfaces.
 
 ```phel
-(ns cookbook\protocols)
+(ns cookbook.protocols)
 
 ;; Define a protocol for rendering things as HTML
 (defprotocol Renderable
@@ -616,7 +616,7 @@ Protocols define polymorphic behavior, extendable to any type. More flexible tha
 Compose pipelines without intermediate collections. Faster, less memory than chaining `map`/`filter`.
 
 ```phel
-(ns cookbook\transducers)
+(ns cookbook.transducers)
 
 ;; Sample data: a log of events
 (def events
@@ -685,7 +685,7 @@ Compose pipelines without intermediate collections. Faster, less memory than cha
 Write `.cljc` targeting multiple platforms. `:phel` for Phel-specific, `:default` as fallback.
 
 ```phel
-(ns cookbook\conditionals)
+(ns cookbook.conditionals)
 
 ;; Reader conditional: select platform-specific expression
 ;; In a .cljc file, this compiles only the :phel branch:
@@ -715,7 +715,7 @@ Write `.cljc` targeting multiple platforms. `:phel` for Phel-specific, `:default
 Regex literals (`#"..."`) and matching functions for PCRE patterns.
 
 ```phel
-(ns cookbook\regex)
+(ns cookbook.regex)
 
 ;; Basic matching with re-find (returns first match)
 (re-find #"\d+" "Order #12345 confirmed")
@@ -756,8 +756,8 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
 `ex-info` carries structured data with exceptions. More informative than plain messages.
 
 ```phel
-(ns cookbook\exceptions
-  (:require phel\json :as json))
+(ns cookbook.exceptions
+  (:require phel.json :as json))
 
 ;; Stub user lookup -- replace with real datasource
 (def users {1 {:id 1 :name "Alice"}
@@ -810,13 +810,13 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
 
 **See also:** [Cheat Sheet -- Error Handling](/documentation/reference/cheat-sheet#error-handling)
 
-## Pattern matching with `phel\match`
+## Pattern matching with `phel.match`
 
 `match` macro: literal, vector, map, wildcard, `:as`, `:guard`, `:or`, rest-binding patterns.
 
 ```phel
-(ns cookbook\match
-  (:require phel\match :refer [match]))
+(ns cookbook.match
+  (:require phel.match :refer [match]))
 
 (defn describe [x]
   (match x
@@ -834,13 +834,13 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
 (describe {:type :error :msg "x"}) ; => "error: x"
 ```
 
-## Schemas with `phel\schema`
+## Schemas with `phel.schema`
 
 Validate, coerce, generate data from declarative schemas. Kinds: `:vector`, `:set`, `:map`, `:map-of`, `:tuple`, `:enum`, `:and`, `:or`, `:maybe`, `:re`, `:fn`, `:ref`, function schemas `[:=> args ret]`.
 
 ```phel
-(ns cookbook\schema
-  (:require phel\schema :as s))
+(ns cookbook.schema
+  (:require phel.schema :as s))
 
 (def User
   [:map
@@ -867,13 +867,13 @@ Instrument a function to check args/return at call sites:
 (s/instrument! `greet [:=> [User] :string])
 ```
 
-## Async with `phel\async`
+## Async with `phel.async`
 
 Fiber-backed promises and futures:
 
 ```phel
-(ns cookbook\async
-  (:require phel\async :refer [promise deliver future-call future? deref]))
+(ns cookbook.async
+  (:require phel.async :refer [promise deliver future-call future? deref]))
 
 (def p (promise))
 (future-call (fn [] (deliver p 42)))
@@ -891,20 +891,20 @@ Fiber-backed promises and futures:
 Reload namespaces on file change:
 
 ```phel
-(ns cookbook\watcher
-  (:require phel\watch :refer [watch!]))
+(ns cookbook.watcher
+  (:require phel.watch :refer [watch!]))
 
 (watch! ["src/" "tests/"])
 ```
 
 Or from the shell: `vendor/bin/phel watch src/`.
 
-## Property Tests with `phel\test\gen`
+## Property Tests with `phel.test.gen`
 
 ```phel
-(ns cookbook\gen-tests
-  (:require phel\test :refer [deftest is defspec])
-  (:require phel\test\gen :as gen))
+(ns cookbook.gen-tests
+  (:require phel.test :refer [deftest is defspec])
+  (:require phel.test.gen :as gen))
 
 (defspec addition-commutes
   [a (gen/int) b (gen/int)]

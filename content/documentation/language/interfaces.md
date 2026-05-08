@@ -130,7 +130,7 @@ Interfaces shine when types share behavior:
                 (image "/logo.png" "Phel logo")]]
   (->> elements
        (map render)
-       (phel\string/join "\n")))
+       (phel.string/join "\n")))
 ;; => "<h1>Welcome</h1>\n<p>Hello from Phel!</p>\n<img src=\"/logo.png\" alt=\"Phel logo\">"
 ```
 

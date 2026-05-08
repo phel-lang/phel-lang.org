@@ -354,7 +354,7 @@ $date = new DateTimeImmutable('2024-01-15');
 
 ```phel
 ;; Phel
-(ns my\module
+(ns my.module
   (:use \DateTime)
   (:use \DateTimeImmutable))
 
@@ -651,7 +651,7 @@ $isWeekend = in_array($now->format('N'), ['6', '7']);
 
 ```phel
 ;; Phel
-(ns my\dates
+(ns my.dates
   (:use \DateTimeImmutable))
 
 (def now (php/new DateTimeImmutable))

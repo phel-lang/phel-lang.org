@@ -427,8 +427,8 @@ Threads expression through each form whose test is truthy (thread-first). Skips 
 
 (defn maybe-transform [data opts]
   (cond-> data
-    (:uppercase opts) (phel\string/upper-case)
-    (:trim opts)      (phel\string/trim)
+    (:uppercase opts) (phel.string/upper-case)
+    (:trim opts)      (phel.string/trim)
     (:prefix opts)    (#(str (:prefix opts) %))))
 ```
 

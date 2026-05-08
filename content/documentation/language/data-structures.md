@@ -532,7 +532,7 @@ All data structures are callable:
 (update-vals {:a 1 :b 2 :c 3} inc)
 ; => {:a 2 :b 3 :c 4}
 
-(update-vals {:x "hello" :y "world"} phel\string/upper-case)
+(update-vals {:x "hello" :y "world"} phel.string/upper-case)
 ; => {:x "HELLO" :y "WORLD"}
 ```
 
@@ -599,7 +599,7 @@ Common transducer producers:
 
 ## Walking data structures
 
-`phel\walk` recursively transforms nested data.
+`phel.walk` recursively transforms nested data.
 
 ### walk
 
@@ -607,7 +607,7 @@ Common transducer producers:
 
 ```phel
 (ns my-app
-  (:require phel\walk :refer [walk postwalk prewalk
+  (:require phel.walk :refer [walk postwalk prewalk
                                postwalk-replace prewalk-replace
                                keywordize-keys stringify-keys]))
 

@@ -26,7 +26,7 @@ Open the generated `composer.json` and merge in:
 ```json
 {
     "require": {
-        "phel-lang/phel-lang": "^0.35"
+        "phel-lang/phel-lang": "^0.36"
     },
     "autoload": {
         "psr-4": { "YourVendor\\MyLib\\": "src/php/" }
@@ -53,7 +53,7 @@ use Phel\Config\PhelConfig;
 return (new PhelConfig())
     ->useNestedLayout()
     ->setBuildConfig((new PhelBuildConfig())
-        ->setMainPhelNamespace('your-vendor\my-lib')
+        ->setMainPhelNamespace('your-vendor.my-lib')
         ->setMainPhpPath('out/main.php'));
 ```
 
@@ -74,22 +74,22 @@ my-lib/
 First Phel file at `src/phel/core.phel`:
 
 ```phel
-(ns your-vendor\my-lib\core)
+(ns your-vendor.my-lib.core)
 
 (defn greet [name]
   (str "Hello, " name "!"))
 ```
 
-Namespace path mirrors directory: `your-vendor\my-lib\core` lives at `src/phel/your-vendor/my-lib/core.phel`. See [Namespaces](/documentation/language/namespaces/).
+Namespace path mirrors directory: `your-vendor.my-lib.core` lives at `src/phel/your-vendor/my-lib/core.phel`. See [Namespaces](/documentation/language/namespaces/).
 
 ### 5. Add a test
 
 `tests/phel/core-test.phel`:
 
 ```phel
-(ns your-vendor\my-lib\core-test
-  (:require phel\test :refer [deftest is])
-  (:require your-vendor\my-lib\core :refer [greet]))
+(ns your-vendor.my-lib.core-test
+  (:require phel.test :refer [deftest is])
+  (:require your-vendor.my-lib.core :refer [greet]))
 
 (deftest greet-test
   (is (= "Hello, world!" (greet "world"))))

@@ -120,9 +120,9 @@ vendor/bin/phel agent-install --all     # every adapter
 
 ```phel
 ;; src/my-app/users.phel
-(ns my-app\users
-  (:require phel\string :as str)
-  (:require phel\html :as h)
+(ns my-app.users
+  (:require phel.string :as str)
+  (:require phel.html :as h)
   (:use \DateTimeImmutable))
 
 (defn full-name [{:first f :last l}]
@@ -131,8 +131,8 @@ vendor/bin/phel agent-install --all     # every adapter
 
 Rules:
 
-- Two or more segments required (`my-app\main`, not `main`).
-- File path mirrors namespace under `src/`. Source uses dashes, compiled PHP uses studly case (`my-app\users` ↔ `MyApp\Users`).
+- Two or more segments required (`my-app.main`, not `main`).
+- File path mirrors namespace under `src/`. Source uses dashes, compiled PHP uses studly case (`my-app.users` ↔ `MyApp\Users`).
 
 ## PHP Interop
 
@@ -193,9 +193,9 @@ Class/CONST
 ## Tests
 
 ```phel
-(ns my-app\users-test
-  (:require phel\test :refer [deftest is])
-  (:require my-app\users :as users))
+(ns my-app.users-test
+  (:require phel.test :refer [deftest is])
+  (:require my-app.users :as users))
 
 (deftest full-name-joins
   (is (= "Ada Lovelace"
@@ -214,8 +214,8 @@ Most failure modes agents hit:
 4. **Top-level side-effects break `phel build`:** guard with `(when-not *build-mode* ...)`.
 5. **Record access by keyword:** `(get p :x)`, not `(.-x p)`.
 6. **PHP arrays aren't Phel collections:** convert with `vec` or `to-php-array`. No `to-vec`/`to-list`.
-7. **Namespaces need ≥2 segments:** `(ns app\main)`, not `(ns main)`.
-8. **String module:** `phel\string` (renamed from `phel\str`).
+7. **Namespaces need ≥2 segments:** `(ns app.main)`, not `(ns main)`.
+8. **String module:** `phel.string` (renamed from `phel.str`).
 9. **PHP assoc literal:** `#php {"k" "v"}`, not `{:k "v"}`. Phel maps aren't PHP arrays.
 10. **`recur` only in tail position** of `loop` or `fn`.
 
@@ -236,7 +236,7 @@ Minimal `phel-config.php`:
 
 ```php
 <?php
-return \Phel\Config\PhelConfig::forProject('my-app\main');
+return \Phel\Config\PhelConfig::forProject('my-app.main');
 ```
 
 Full options: [Configuration](/documentation/configuration).

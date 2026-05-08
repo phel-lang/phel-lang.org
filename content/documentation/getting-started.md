@@ -77,7 +77,7 @@ Done. Working Phel project.
 **Key differences:**
 
 - Runtime is PHP, not JVM. `println`, files, HTTP go through PHP.
-- Namespaces use dashes in source, map to PHP classes (`my-app\core` ↔ `MyApp\Core`).
+- Namespaces use dashes and dot separators in source, map to PHP classes (`my-app.core` ↔ `MyApp\Core`).
 - Interop: `(php/date "Y-m-d")`, `(php/new DateTime)`, `(php/-> obj (method arg))`.
 - No agents/refs. Use PHP for concurrency, or Phel's fiber-based `async` (amphp).
 - Only `nil` and `false` are falsy. Strings, `0`, `[]` truthy.

@@ -105,8 +105,8 @@ Vars must be tagged `^:dynamic` at their `def`, otherwise `binding` throws. To s
   (greet-user-by-architecture))  ; => "Hello i386 user!" (mocked!)
 
 ;; Example 3: Testing with with-redefs
-(ns my-app\tests\demo
-  (:require phel\test :refer [deftest is]))
+(ns my-app.tests.demo
+  (:require phel.test :refer [deftest is]))
 
 (deftest greeting-test
   (with-redefs [get-system-architecture (fn [] "i386")]

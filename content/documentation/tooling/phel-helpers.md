@@ -55,11 +55,11 @@ Exceptions in individual taps are swallowed so one bad handler doesn't break oth
 
 ## Pretty printing
 
-`phel\pprint` provides `pprint` and `pprint-str` for readable nested data output.
+`phel.pprint` provides `pprint` and `pprint-str` for readable nested data output.
 
 ```phel
 (ns my-app
-  (:require phel\pprint :refer [pprint]))
+  (:require phel.pprint :refer [pprint]))
 
 (pprint {:users [{:name "Alice" :roles [:admin :editor]}
                   {:name "Bob" :roles [:viewer]}]

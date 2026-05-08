@@ -8,7 +8,7 @@ Phel reads `phel-config.php` from the project root. Most projects only need the 
 ```php
 <?php
 // phel-config.php
-return \Phel\Config\PhelConfig::forProject('your-ns\main');
+return \Phel\Config\PhelConfig::forProject('your-ns.main');
 ```
 
 Sets `src/phel/`, `tests/phel/`, and the build entry namespace. Chain setters to override.
@@ -17,12 +17,12 @@ Sets `src/phel/`, `tests/phel/`, and the build entry namespace. Chain setters to
 
 ```php
 <?php
-return \Phel\Config\PhelConfig::forProject('your-ns\main')
+return \Phel\Config\PhelConfig::forProject('your-ns.main')
     ->setSrcDirs(['src'])                      // Phel source roots
     ->setTestDirs(['tests'])                   // test roots, picked up by `phel test`
     ->setFormatDirs(['src', 'tests'])          // dirs `phel format` rewrites
     ->setBuildConfig((new \Phel\Config\PhelBuildConfig())
-        ->setMainPhelNamespace('your-ns\index')   // entry ns for `phel build`
+        ->setMainPhelNamespace('your-ns.index')   // entry ns for `phel build`
         ->setMainPhpPath('out/index.php'))        // generated PHP entry
 ;
 ```
@@ -51,7 +51,7 @@ return (new \Phel\Config\PhelConfig())
     ->setEnableNamespaceCache(true)
     ->setEnableCompiledCodeCache(true)
     ->setBuildConfig((new \Phel\Config\PhelBuildConfig())
-        ->setMainPhelNamespace('your-ns\index')
+        ->setMainPhelNamespace('your-ns.index')
         ->setMainPhpPath('out/index.php'))
     ->setExportConfig((new \Phel\Config\PhelExportConfig())
         ->setFromDirectories(['src'])

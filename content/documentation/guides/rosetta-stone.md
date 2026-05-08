@@ -715,7 +715,7 @@ foreach ($items as $item) {
 }
 
 foreach ($map as $key => $value) {
-    echo "$key: $value\n";
+    echo "$key: $value.n";
 }
 ```
 
@@ -862,7 +862,7 @@ $date = new DateTimeImmutable("2024-01-15");
 **Phel**
 
 ```phel
-(ns my\module
+(ns my.module
   (:use \DateTime)
   (:use \DateTimeImmutable))
 
