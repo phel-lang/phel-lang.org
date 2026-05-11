@@ -134,8 +134,8 @@ phel.core/take
 Alias a PHP class. Same as `:use` in `ns`:
 
 ```phel
-user:1> (use \DateTimeImmutable)
-\DateTimeImmutable
+user:1> (use DateTimeImmutable)
+DateTimeImmutable
 user:2> (php/-> (php/new DateTimeImmutable) (format "Y-m-d"))
 "2026-02-07"
 ```
@@ -297,7 +297,7 @@ user:9> (map fizzbuzz (range 1 16))
 Try PHP functions and classes interactively:
 
 ```phel
-user:1> (use \DateTimeImmutable)
+user:1> (use DateTimeImmutable)
 user:2> (def now (php/new DateTimeImmutable))
 user:3> (php/-> now (format "l, F j, Y"))
 "Friday, February 7, 2026"

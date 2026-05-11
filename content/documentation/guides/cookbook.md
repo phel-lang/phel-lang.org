@@ -108,7 +108,8 @@ GET request via `phel.http-client`. Parse JSON via `phel.json`.
 ```phel
 (ns cookbook.http-client
   (:require phel.http-client :as http)
-  (:require phel.json :as json))
+  (:require phel.json :as json)
+  (:use JsonException))
 
 ;; Perform an HTTP GET request. `http/get` returns an http/response struct
 ;; with :status, :headers, :body, :version, and :reason keys.
@@ -122,7 +123,7 @@ GET request via `phel.http-client`. Parse JSON via `phel.json`.
 (defn parse-json [json-string]
   (try
     (json/decode json-string)
-    (catch \JsonException e
+    (catch JsonException e
       {:error (php/-> e (getMessage))})))
 
 ;; Fetch data from a JSON API
@@ -471,7 +472,8 @@ Persistent KV store backed by JSON. Get, put, delete, list keys.
 
 ```phel
 (ns cookbook.kv-store
-  (:require phel.json :as json))
+  (:require phel.json :as json)
+  (:use JsonException))
 
 ;; Path to the JSON storage file
 (def default-store-path "data/store.json")
@@ -485,7 +487,7 @@ Persistent KV store backed by JSON. Get, put, delete, list keys.
         {}
         (try
           (json/decode contents)
-          (catch \JsonException _ {}))))))
+          (catch JsonException _ {}))))))
 
 ;; Save the store to disk as pretty-printed JSON
 (defn store-save [path data]
@@ -758,7 +760,8 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
 
 ```phel
 (ns cookbook.exceptions
-  (:require phel.json :as json))
+  (:require phel.json :as json)
+  (:use Exception))
 
 ;; Stub user lookup -- replace with real datasource
 (def users {1 {:id 1 :name "Alice"}
@@ -780,7 +783,7 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
   (try
     (let [user (find-user user-id)]
       {:status 200 :body user})
-    (catch \Exception e
+    (catch Exception e
       (let [data (ex-data e)]
         (case (get data :type)
           :not-found   {:status 404 :body (ex-message e)}
@@ -794,7 +797,7 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
       (when (= false raw)
         (throw (ex-info "File not readable" {:path path})))
       (json/decode raw))
-    (catch \Exception e
+    (catch Exception e
       (throw (ex-info "Config load failed"
                       {:path path :step :read}
                       e)))))
@@ -802,7 +805,7 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
 ;; Later, inspect the chain
 (try
   (load-config "missing.json")
-  (catch \Exception e
+  (catch Exception e
     (println (str "Error: " (ex-message e)))
     (println (str "Data: " (ex-data e)))
     (when (ex-cause e)

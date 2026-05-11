@@ -382,24 +382,24 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 ```phel
 (try
   (/ 1 0)
-  (catch \DivisionByZeroError e
+  (catch DivisionByZeroError e
     (str "Error: " (php/-> e (getMessage)))))
 
 (try
   (do-risky-thing)
-  (catch \Exception e
+  (catch Exception e
     (println (str "Failed: " (php/-> e (getMessage)))))
   (finally
     (cleanup)))
 
-(throw (php/new \InvalidArgumentException "bad input"))
+(throw (php/new InvalidArgumentException "bad input"))
 
 ;; Structured exceptions with ex-info
 (throw (ex-info "User not found" {:id 42 :type :not-found}))
 
 (try
   (throw (ex-info "Validation failed" {:field :email} nil))
-  (catch \Exception e
+  (catch Exception e
     (ex-message e)                 ; => "Validation failed"
     (ex-data e)                    ; => {:field :email}
     (ex-cause e)))                 ; => nil
@@ -516,8 +516,8 @@ Composable transformations independent of the data source. Avoid intermediate co
 (php/array_merge arr1 arr2)        ; call any PHP function
 
 ;; Instantiation
-(php/new \DateTime "now")          ; new DateTime("now")
-(new \DateTime "now")              ; shorthand
+(php/new DateTime "now")           ; new DateTime("now")
+(new DateTime "now")               ; shorthand
 
 ;; Instance methods & properties
 (php/-> obj (method arg))          ; $obj->method($arg)
@@ -530,7 +530,7 @@ Composable transformations independent of the data source. Avoid intermediate co
 (php/:: MyClass CONST)             ; MyClass::CONST
 (php/:: MyClass (create "x"))      ; MyClass::create("x")
 (MyClass/create "x")               ; static shorthand
-\Ns\MyClass/CONST                  ; static member shorthand
+Ns.MyClass/CONST                   ; static member shorthand
 
 ;; PHP arrays
 (php/aget arr 0)                   ; $arr[0] ?? null
@@ -547,8 +547,8 @@ See [PHP Interop](/documentation/php-interop).
   (:require my-app.db)              ; import Phel module
   (:require my-app.utils :as u)     ; with alias
   (:require my-app.auth :refer [login logout])  ; import symbols
-  (:use \DateTimeImmutable)          ; import PHP class
-  (:use \Some\Long\Name :as Short)) ; PHP class with alias
+  (:use DateTimeImmutable)           ; import PHP class
+  (:use Some.Long.Name :as Short))  ; PHP class with alias
 
 (db/query "SELECT 1")               ; use module prefix
 (u/format-date date)                 ; use alias
@@ -575,8 +575,8 @@ See [Namespaces](/documentation/language/namespaces).
     4 3))
 
 (deftest exception-test
-  (is (thrown? \Exception
-    (throw (php/new \Exception "boom")))))
+  (is (thrown? Exception
+    (throw (php/new Exception "boom")))))
 ```
 
 ```bash

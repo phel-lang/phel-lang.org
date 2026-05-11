@@ -150,7 +150,7 @@ Clojure and Phel side by side for syntactically different constructs.
 
 ### Namespace declaration
 
-Same `.` separator as Clojure. PHP class FQNs in `:use` keep `\`:
+Same `.` separator as Clojure. PHP class FQNs in `:use` use `.`:
 
 ```clojure
 ;; Clojure
@@ -324,8 +324,8 @@ Phel's equivalent of Clojure's Java interop. `php/` prefix unlocks the PHP ecosy
 
 ```phel
 (ns my.app
-  (:use \DateTimeImmutable)
-  (:use \PDO))
+  (:use DateTimeImmutable)
+  (:use PDO))
 
 (def now (php/new DateTimeImmutable))
 (def db (php/new PDO "sqlite::memory:"))
@@ -414,7 +414,7 @@ Many orgs already run PHP. Bring FP/Lisp into environments where the JVM isn't a
 
 | Clojure | Phel | Notes |
 |---------|------|-------|
-| `(ns foo.bar)` | `(ns foo.bar)` | Same separator. PHP FQNs keep `\` |
+| `(ns foo.bar)` | `(ns foo.bar)` | Same separator. PHP FQNs use `.` |
 | `(:require [foo.bar :as b])` | `(:require foo.bar :as b)` | No vector wrapping required |
 | `#(* % 2)` | `#(* % 2)` | Same. `|(* $ 2)` legacy |
 | `(atom 0)` | `(atom 0)` | Same |

@@ -469,16 +469,16 @@ Evaluates expressions. No exception: returns last value. Matching _catch-clause_
 (try) ; Evaluates to nil
 
 (try
-  (throw (php/new \Exception))
-  (catch \Exception e "error")) ; Evaluates to "error"
+  (throw (php/new Exception))
+  (catch Exception e "error")) ; Evaluates to "error"
 
 (try
   (+ 1 1)
   (finally (print "test"))) ; Evaluates to 2 and prints "test"
 
 (try
-  (throw (php/new \Exception))
-  (catch \Exception e "error")
+  (throw (php/new Exception))
+  (catch Exception e "error")
   (finally (print "test"))) ; Evaluates to "error" and prints "test"
 ```
 
@@ -501,7 +501,7 @@ Exception with message, data map, optional cause:
 ; With a cause (chaining exceptions)
 (try
   (do-something-risky)
-  (catch \Exception e
+  (catch Exception e
     (throw (ex-info "Operation failed" {:step "processing"} e))))
 ```
 
@@ -528,7 +528,7 @@ Use `ex-data`, `ex-message`, `ex-cause`:
 
 (try
   (find-user 42)
-  (catch \Exception e
+  (catch Exception e
     (let [data (ex-data e)]
       (case (:status data)
         404 (println "Not found:" (ex-message e))

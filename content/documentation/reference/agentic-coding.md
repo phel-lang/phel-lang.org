@@ -113,7 +113,7 @@ vendor/bin/phel agent-install --all     # every adapter
 (some-> x .a .b)                   ; nil-safe thread first
 (cond-> x pred (f y))              ; conditional thread
 
-(try expr (catch \Exception e (handle e)) (finally cleanup))
+(try expr (catch Exception e (handle e)) (finally cleanup))
 ```
 
 ## Namespaces
@@ -123,7 +123,7 @@ vendor/bin/phel agent-install --all     # every adapter
 (ns my-app.users
   (:require phel.string :as str)
   (:require phel.html :as h)
-  (:use \DateTimeImmutable))
+  (:use DateTimeImmutable))
 
 (defn full-name [{:first f :last l}]
   (str/join " " [f l]))
@@ -138,9 +138,9 @@ Rules:
 
 ```phel
 (php/strlen "hi")                          ; call PHP function
-(php/new \DateTimeImmutable "2024-01-15")  ; construct
+(php/new DateTimeImmutable "2024-01-15")   ; construct
 (php/-> obj (method arg))                  ; instance method
-(php/:: \DateTimeImmutable ATOM)           ; static / constant
+(php/:: DateTimeImmutable ATOM)            ; static / constant
 
 ;; Shorthands also accepted:
 (.method obj arg)
@@ -156,7 +156,7 @@ Class/CONST
 
 ;; Catch PHP exceptions:
 (try (risky)
-  (catch \RuntimeException e (handle e)))
+  (catch RuntimeException e (handle e)))
 ```
 
 ## Records, Protocols, Multimethods

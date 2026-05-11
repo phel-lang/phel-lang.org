@@ -65,14 +65,14 @@ Tests `value` does **not** satisfy `predicate`.
 
 ```phel
 (thrown? exception-type body)
-;; (is (thrown? \Exception (throw (php/new \Exception "test"))))
+;; (is (thrown? Exception (throw (php/new Exception "test"))))
 ```
 
 Tests `body` throws `exception-type`.
 
 ```phel
 (thrown-with-msg? exception-type msg body)
-;; (is (thrown-with-msg? \Exception "test" (throw (php/new \Exception "test"))))
+;; (is (thrown-with-msg? Exception "test" (throw (php/new Exception "test"))))
 ```
 
 Tests `body` throws `exception-type` with message `msg`.
@@ -97,8 +97,8 @@ $this->expectExceptionMessage("test");
 throw new Exception("test");
 
 // Phel - inline exception assertions
-(is (thrown? \Exception (throw (php/new \Exception "test"))))
-(is (thrown-with-msg? \Exception "test" (throw (php/new \Exception "test"))))
+(is (thrown? Exception (throw (php/new Exception "test"))))
+(is (thrown-with-msg? Exception "test" (throw (php/new Exception "test"))))
 ```
 
 The `output?` assertion is similar to PHPUnit's output buffering:
@@ -290,7 +290,7 @@ Useful in REPL to isolate or reset state between runs.
 (seq-mock)  ; => 3
 
 ;; Mock that throws
-(def err-mock (mock-throwing (php/new \RuntimeException "fail")))
+(def err-mock (mock-throwing (php/new RuntimeException "fail")))
 ```
 
 ### Inspecting calls

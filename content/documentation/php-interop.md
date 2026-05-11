@@ -87,17 +87,18 @@ Terse forms that expand to verbose `php/*`. Use whichever reads better.
 | `(.method obj args)`            | `(php/-> obj (method args))`        |
 | `(.-field obj)`                 | `(php/-> obj field)`                |
 | `(ClassName/method args)`       | `(php/:: ClassName (method args))`  |
-| `\Ns\Class/MEMBER`              | `(php/:: \Ns\Class MEMBER)`         |
+| `Ns.Class/MEMBER`               | `(php/:: Ns.Class MEMBER)`          |
 
 ```phel
 (ns my.module
-  (:use \DateTimeImmutable))
+  (:use DateTimeImmutable)
+  (:use DateInterval))
 
 (new DateTimeImmutable "2026-04-20")           ; constructor
 (.format (new DateTimeImmutable) "Y-m-d")       ; instance method
-(.-s (new \DateInterval "PT30S"))               ; property
+(.-s (new DateInterval "PT30S"))               ; property
 (DateTimeImmutable/createFromFormat "Y-m-d" "2026-04-20") ; static method
-\DateTimeImmutable/ATOM                         ; static constant
+DateTimeImmutable/ATOM                         ; static constant
 ```
 
 `(ClassName. args)` constructor shorthand also works.
@@ -112,7 +113,7 @@ Evaluates `expr`, creates instance with `args`, returns it.
 
 ```phel
 (ns my.module
-  (:use \DateTime))
+  (:use DateTime))
 
 (php/new DateTime)       ; => DateTime instance
 (php/new DateTime "now") ; => DateTime instance
@@ -150,16 +151,19 @@ Calls method or accesses property. Both `methodname` and `property` must be symb
 Chain multiple in one `php/->`. Each element evaluates on result of previous, enabling fluent chains or nested property access.
 
 ```phel
-(ns my.module)
+(ns my.module
+  (:use DateInterval)
+  (:use DateTimeImmutable)
+  (:use stdClass))
 
-(def di (php/new \DateInterval "PT30S"))
+(def di (php/new DateInterval "PT30S"))
 
 (php/-> di (format "%s seconds")) ; Evaluates to "30 seconds"
 (php/-> di s) ; Evaluates to 30
 
 ;; Chain multiple calls:
 ;; (new DateTimeImmutable("2024-03-10"))->modify("+1 day")->format("Y-m-d")
-(php/-> (php/new \DateTimeImmutable "2024-03-10")
+(php/-> (php/new DateTimeImmutable "2024-03-10")
         (modify "+1 day")
         (format "Y-m-d"))
 
@@ -167,8 +171,8 @@ Chain multiple in one `php/->`. Each element evaluates on result of previous, en
 (php/-> user profile (getDisplayName))
 
 ;; Other example using nested properties:
-(def address (php/new \stdClass))
-(def user (php/new \stdClass))
+(def address (php/new stdClass))
+(def user (php/new stdClass))
 (php/oset (php/-> address city) "Berlin")
 (php/oset (php/-> user address) address)
 (php/-> user address city) ; Evaluates to "Berlin"
@@ -187,7 +191,7 @@ $user->profile->getDisplayName();
 // Phel
 (php/-> di (format "%s seconds"))
 (php/-> di s)
-(php/-> (php/new \DateTimeImmutable "2024-03-10")
+(php/-> (php/new DateTimeImmutable "2024-03-10")
         (modify "+1 day")
         (format "Y-m-d"))
 (php/-> user profile (getDisplayName))
@@ -211,7 +215,7 @@ Same as above, but static.
 
 ```phel
 (ns my.module
-  (:use \DateTimeImmutable))
+  (:use DateTimeImmutable))
 
 (php/:: DateTimeImmutable ATOM) ; => "Y-m-d\TH:i:sP"
 
@@ -243,7 +247,7 @@ DateTimeImmutable::createFromFormat("Y-m-d", "2020-03-22");
 Set value on class/object property.
 
 ```phel
-(def x (php/new \stdclass))
+(def x (php/new stdclass))
 (php/oset (php/-> x name) "foo")
 ```
 
@@ -256,7 +260,7 @@ $x = new stdClass();
 $x->name = "foo";
 
 // Phel
-(def x (php/new \stdclass))
+(def x (php/new stdclass))
 (php/oset (php/-> x name) "foo")
 ```
 

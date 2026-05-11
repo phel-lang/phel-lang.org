@@ -18,7 +18,7 @@ Sets the namespace and registers imports. `:use` for PHP classes, `:require` for
 (ns my.custom.module
   (:require-file "vendor/autoload.php")
   (:require my.phel.module)
-  (:use Some\Php\Class))
+  (:use Some.Php.Class))
 ```
 
 Also sets `*ns*` to the namespace.
@@ -34,18 +34,18 @@ use My\Phel\Module as Utilities;
 
 // Phel
 (ns my.custom.module
-  (:use Some\Php\Class)
+  (:use Some.Php.Class)
   (:require my.phel.module :as utilities))
 ```
 
 **Differences:**
-- `.` separator for Phel namespaces (PHP class FQNs in `:use` keep `\`)
+- `.` separator for Phel namespaces (PHP class FQNs in `:use` use `.`)
 - `:require` for Phel modules, `:use` for PHP classes
 - Access via `/`, not `::`
 {% end %}
 
 {% clojure_note() %}
-Like Clojure: `.` namespace separator. PHP class FQNs in `:use` use `\`.
+Like Clojure: `.` namespace separator. PHP class FQNs in `:use` use `.`.
 - `:use` is for PHP classes
 - `:require` works as in Clojure
 {% end %}
@@ -65,10 +65,10 @@ Module `util` in namespace `hello-world`:
   (print (str "Hello, " name)))
 ```
 
-Module `boot` imports `util`:
+Module `main` imports `util`:
 
 ```phel
-(ns hello-world.boot
+(ns hello-world.main
   (:require hello-world.util))
 
 (util/greet util/my-name)
@@ -77,7 +77,7 @@ Module `boot` imports `util`:
 Use aliases to avoid collisions:
 
 ```phel
-(ns hello-world.boot
+(ns hello-world.main
   (:require hello-world.util :as utilities))
 ```
 
@@ -95,7 +95,7 @@ On collision, use a fully-qualified name to reach the original. A locally define
 `:refer` brings symbols into the current namespace:
 
 ```phel
-(ns hello-world.boot
+(ns hello-world.main
   (:require hello-world.util :refer [greet]))
 
 (greet util/my-name)
@@ -109,7 +109,7 @@ On collision, use a fully-qualified name to reach the original. A locally define
 
 ```phel
 (ns my.custom.module
-  (:use Some\Php\ClassName))
+  (:use Some.Php.ClassName))
 ```
 
 Reference by name:
@@ -122,13 +122,13 @@ Aliases avoid collisions:
 
 ```phel
 (ns my.custom.module
-  (:use Some\Php\ClassName :as BetterClassName))
+  (:use Some.Php.ClassName :as BetterClassName))
 ```
 
 Importing is preferred, but optional. Use full namespace inline if needed:
 
 ```phel
-(php/new \Some\Php\ClassName)
+(php/new Some.Php.ClassName)
 ```
 
 ## Require PHP files
@@ -136,7 +136,7 @@ Importing is preferred, but optional. Use full namespace inline if needed:
 Load external PHP files via `:require-file` (calls `require_once`). Example for Composer autoload:
 
 ```phel
-(ns hello-world.boot
+(ns hello-world.main
   (:require-file "vendor/autoload.php"))
 ```
 

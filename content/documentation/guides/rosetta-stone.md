@@ -863,8 +863,8 @@ $date = new DateTimeImmutable("2024-01-15");
 
 ```phel
 (ns my.module
-  (:use \DateTime)
-  (:use \DateTimeImmutable))
+  (:use DateTime)
+  (:use DateTimeImmutable))
 
 (def now (php/new DateTime))
 (def date (php/new DateTimeImmutable "2024-01-15"))

@@ -50,9 +50,9 @@ Yes. Full interop through the `php/` prefix:
 
 ```phel
 (php/strlen "hello")                          ; => 5
-(php/new \DateTimeImmutable "2024-01-15")     ; create object
+(php/new DateTimeImmutable "2024-01-15")      ; create object
 (php/-> date (format "Y-m-d"))                ; call method
-(php/:: \DateTimeImmutable ATOM)              ; static / constant
+(php/:: DateTimeImmutable ATOM)               ; static / constant
 ```
 
 Composer packages work. Any class, trait, function, constant. See [PHP Interop](/documentation/php-interop).
