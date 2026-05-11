@@ -27,7 +27,7 @@ my-var my-module/fn     ; symbols
 
 > **Note:** `#` line and `#| |#` multiline comments are deprecated. Use `;;` for standalone comments and `;` for inline comments.
 
-See [Basic Types](/documentation/language/basic-types), [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations).
+See [Basic Types](/documentation/language/basic-types).
 
 ## Reader syntax
 
@@ -39,11 +39,22 @@ See [Basic Types](/documentation/language/basic-types), [Truth and Boolean Opera
 #(apply + %&)           ; variadic: %& captures rest args
 #?(:phel expr1 :default expr2)  ; reader conditional
 #?@(:phel [a b] :default [c])  ; splicing reader conditional
+
+;; Tagged literals
+#inst "2026-01-15T12:00:00Z"    ; => DateTimeImmutable
+#uuid "550e8400-e29b-41d4-a716-446655440000"  ; => UUID string
+#regex "\\d+"                    ; => PCRE pattern string
+
+;; First-class var handles
+#'my-fn                 ; shorthand for (var my-fn)
+(var my-fn)             ; returns the Var object for my-fn
 ```
 
 `#(...)` is the preferred shorthand. `%` or `%1` first arg, `%2` second, `%&` rest. Legacy `|(...)` with `$` is deprecated.
 
 Reader conditionals (`#?()`, `#?@()`) target platforms in `.cljc` via `:phel` and `:default`.
+
+Tagged literals: `#inst` reads as `DateTimeImmutable`, `#uuid` as a UUID string, `#regex` as a PCRE pattern. Register custom tags with `register-tag` from `phel.reader`.
 
 ## Data structures
 
@@ -588,9 +599,34 @@ See [Namespaces](/documentation/language/namespaces).
 
 See [Testing](/documentation/testing).
 
-## Delay & force
+## Async & concurrency
+
+`async`, `await`, `await-all`, `await-any`, `->closure` are in `phel.core` (AMPHP-backed fibers).
 
 ```phel
+;; Run body in a new fiber, returns an Amp\Future
+(def f (async (+ 1 2)))
+(await f)                          ; => 3 (blocks until resolved)
+
+;; Await multiple futures concurrently
+(await-all [(async 1) (async 2)]) ; => [1 2]
+(await-any [(async 1) (async 2)]) ; => 1 (first to resolve)
+
+;; Convert Phel fn to PHP Closure (for AMPHP and other libraries)
+(->closure (fn [x] (* x 2)))
+
+;; pmap: parallel map via fibers
+(pmap #(async (inc %)) [1 2 3])   ; => [2 3 4]
+```
+
+## Delay & force
+
+`delay` is in `phel.async` (lazy computation wrapper, not a sleep).
+
+```phel
+(ns my-app
+  (:require phel.async :refer [delay delay?]))
+
 ;; Delay defers evaluation until first access
 (def d (delay (do (println "computing...") 42)))
 (delay? d)                         ; => true
@@ -612,6 +648,24 @@ See [Testing](/documentation/testing).
    :initk nil})
 ```
 
+## Arithmetic
+
+```phel
+(+ 1 2 3)                          ; => 6
+(- 10 3)                           ; => 7
+(* 2 3 4)                          ; => 24
+(/ 10 2)                           ; => 5
+(/ 10 3)                           ; => 10/3 (Rational, exact)
+(/ 10.0 3)                         ; => 3.333... (float)
+(float (/ 10 3))                   ; => 3.333... (coerce Rational to float)
+(quot 10 3)                        ; => 3 (integer quotient)
+(rem 10 3)                         ; => 1 (remainder)
+(mod -10 3)                        ; => 2 (modulo, always non-negative)
+(** 2 10)                          ; => 1024
+```
+
+Integer division (`/`) returns a `Rational` when not evenly divisible. Use `float` or `(/ 10.0 3)` if you need a float.
+
 ## Utility functions
 
 ```phel
@@ -620,6 +674,7 @@ See [Testing](/documentation/testing).
 (parse-boolean "true")             ; => true
 (abs -5)                           ; => 5
 (inf? php/INF)                     ; => true
+(nan? (php/log -1))                ; => true
 (random-uuid)                      ; => "550e8400-e29b-..." (random UUID string)
 ```
 
