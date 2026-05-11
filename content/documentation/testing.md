@@ -33,7 +33,7 @@ Output:
 ```
 
 {% php_note() %}
-No class boilerplate - just functions:
+No class boilerplate. Tests are plain functions:
 
 ```php
 // PHPUnit
@@ -99,7 +99,7 @@ $this->expectException(Exception::class);
 $this->expectExceptionMessage("test");
 throw new Exception("test");
 
-// Phel - inline exception assertions
+// Phel (inline exception assertions)
 (is (thrown? Exception (throw (php/new Exception "test"))))
 (is (thrown-with-msg? Exception "test" (throw (php/new Exception "test"))))
 ```
@@ -360,12 +360,12 @@ Instead of writing specific examples, describe properties that must hold for *an
   (:require phel.test :refer [deftest is defspec])
   (:require phel.test.gen :as gen))
 
-;; "reversing twice gives back the original" - for ANY vector of ints
+;; Property: reversing twice gives back the original (holds for any vector of ints)
 (defspec reverse-roundtrip
   [xs (gen/vector (gen/int))]
   (is (= xs (reverse (reverse xs)))))
 
-;; "sorting is idempotent" - sort of a sorted list is still sorted
+;; Property: sorting is idempotent (sort of a sorted list is still sorted)
 (defspec sort-idempotent
   [xs (gen/vector (gen/int))]
   (let [sorted (sort xs)]
