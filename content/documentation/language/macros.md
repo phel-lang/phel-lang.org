@@ -6,35 +6,48 @@ aliases = ["/documentation/macros"]
 
 ## Macros
 
-Macros are compile-time functions: take code, return transformed code. Used to extend the language's syntax.
+PHP has functions and classes. Phel has those too, plus *macros* - callables that run at **compile time**, not runtime. They receive unevaluated code as data, transform it, and return new code for the compiler to process.
 
-Phel's core uses macros throughout. Example: `defn` is a macro.
-
-```phel
-(defn add [a b] (+ a b))
-```
-transforms to:
-```phel
-(def add (fn [a b] (+ a b)))
-```
-
-{% php_note() %}
-Macros aren't PHP functions. They run at compile-time, transforming code before execution:
+**Why does this matter?** In PHP, you can't add new language constructs. Want `unless` (opposite of `if`)? The closest is a function - but functions evaluate all arguments before the call, which breaks short-circuit logic and makes them second-class compared to `if`:
 
 ```php
-// PHP - No macro system
-// You'd need to use code generation or eval()
+// PHP: forced to use closures to avoid premature evaluation
+function unless(bool $cond, callable $then, callable $else): mixed {
+    return $cond ? $else() : $then();
+}
 ```
+
+In Phel, a macro receives the raw code unevaluated, rewrites it, and the result compiles normally:
 
 ```phel
 (defmacro unless [test then else]
   `(if (not ,test) ,then ,else))
 
 (unless false "yes" "no")  ; => "yes"
-; Expands to: (if (not false) "yes" "no") at compile time
+;; Expands to: (if (not false) "yes" "no")
+;; Only "yes" is ever evaluated - identical to a built-in if.
 ```
 
-More powerful and safer than `eval()` or codegen.
+This works because **Phel code is data**. The call `(unless false "yes" "no")` is a plain Phel list - the same persistent list you work with everywhere. Macros manipulate that list at compile time using ordinary Phel functions.
+
+`defn`, `when`, `and`, `or`, `->`, `->>` - all macros in Phel's standard library. Not special compiler syntax: just Phel code that rewrites other Phel code.
+
+`defn` itself expands to `def` + `fn`:
+
+```phel
+(defn add [a b] (+ a b))
+;; expands to:
+(def add (fn [a b] (+ a b)))
+```
+
+{% php_note() %}
+PHP has no macro system. The alternatives - `eval()`, code generation, Attributes - all operate differently:
+
+- `eval()` runs at runtime, has security implications, can't be type-checked or linted
+- Code generation produces files on disk, requires a build step, output is opaque
+- Attributes are metadata only - they can't transform the code they annotate
+
+Phel macros are none of these. They run at compile time inside the compiler pipeline, produce normal Phel AST nodes, and are fully inspectable with `macroexpand`.
 {% end %}
 
 ## Quote

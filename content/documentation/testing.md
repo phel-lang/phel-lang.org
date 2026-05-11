@@ -3,85 +3,88 @@ title = "Testing"
 weight = 70
 +++
 
-Built-in unit testing framework.
+Built-in unit testing with no boilerplate. Define tests as functions, run them from the CLI.
+
+## Quick start
+
+```phel
+(ns my-app.math-test
+  (:require phel.test :refer [deftest is]))
+
+(deftest addition-works
+  (is (= 4 (+ 2 2))))
+
+(deftest string-concat
+  (is (= "hello world" (str "hello" " " "world")))
+  (is (not (= "" (str "a" "b")))))
+```
+
+Run:
+
+```bash
+./vendor/bin/phel test
+```
+
+Output:
+
+```
+....
+2 tests, 3 assertions, 0 failures.
+```
 
 {% php_note() %}
-Lighter than PHPUnit. No classes/methods:
+No class boilerplate - just functions:
 
 ```php
-// PHPUnit - class-based tests
-class MyTest extends TestCase {
+// PHPUnit
+class MathTest extends TestCase {
     public function testAddition() {
         $this->assertEquals(4, 2 + 2);
     }
 }
 
-// Phel - function-based tests
-(deftest my-test
+// Phel
+(deftest addition-works
   (is (= 4 (+ 2 2))))
 ```
-
-No class boilerplate, simpler for functional code.
 {% end %}
 
 ## Assertions
 
-The `is` macro defines assertions:
+The `is` macro defines assertions. Optional second argument is a description string shown on failure.
 
 ```phel
-(is (= 4 (+ 2 2)) "my test description")
-(is (true? (or true false)) "another test")
+(is (= 4 (+ 2 2)))
+(is (= 4 (+ 2 2)) "2 + 2 should be 4")
 ```
 
-First arg must take one of the forms below. Second arg is an optional description string.
+### Equality and predicates
 
 ```phel
-(predicate expected actual)
-;; (is (= 4 (+ 2 2)))
+(is (= expected actual))           ; equality
+(is (true? value))                 ; predicate
+(is (not (= "x" (str "a" "b"))))  ; negation
+(is (nil? (get {} :missing)))      ; any predicate works
 ```
 
-Tests `actual` against `expected` via `predicate`.
+### Exceptions
 
 ```phel
-(predicate value)
-;; (is (true? (or true false)))
+;; assert throws
+(is (thrown? Exception
+      (throw (php/new Exception "test"))))
+
+;; assert throws with specific message
+(is (thrown-with-msg? Exception "test"
+      (throw (php/new Exception "test"))))
 ```
 
-Tests `value` satisfies `predicate`.
+### Output
 
 ```phel
-(not (predicate expected actual))
-;; (is (not (= 4 (+ 2 3))))
+;; assert what gets printed to stdout
+(is (output? "hello" (print "hello")))
 ```
-
-Tests `actual` does **not** match `expected` via `predicate`.
-
-```phel
-(not (predicate value))
-;; (is (not (true? (and true false))))
-```
-
-Tests `value` does **not** satisfy `predicate`.
-
-```phel
-(thrown? exception-type body)
-;; (is (thrown? Exception (throw (php/new Exception "test"))))
-```
-
-Tests `body` throws `exception-type`.
-
-```phel
-(thrown-with-msg? exception-type msg body)
-;; (is (thrown-with-msg? Exception "test" (throw (php/new Exception "test"))))
-```
-
-Tests `body` throws `exception-type` with message `msg`.
-
-```phel
-(output? expected body) ; (output? "hello" (print "hello"))
-```
-
-Tests `body` prints `expected` to output.
 
 {% php_note() %}
 Exception testing more concise than PHPUnit:
@@ -114,14 +117,23 @@ echo "hello";
 
 ## Defining tests
 
-`deftest` defines a test. Like a no-arg function.
+`deftest` defines a test. Each test can contain any number of `is` assertions. A test passes when all assertions pass.
 
 ```phel
-(ns my-namespace.tests
-  (:require phel.test :refer [deftest is]))
+(ns my-app.cart-test
+  (:require phel.test :refer [deftest is])
+  (:require my-app.cart :refer [add-item total]))
 
-(deftest my-test
-  (is (= 4 (+ 2 2))))
+(deftest empty-cart-has-zero-total
+  (is (= 0 (total []))))
+
+(deftest add-item-increases-total
+  (let [cart (add-item [] {:price 10 :qty 2})]
+    (is (= 20 (total cart)))
+    (is (= 1 (count cart)))))
+
+(deftest rejects-negative-price
+  (is (thrown? Exception (add-item [] {:price -5 :qty 1}))))
 ```
 
 ## Running tests
@@ -341,16 +353,27 @@ No class structure. Mock any function directly.
 
 ## Property-based testing
 
-`phel.test.gen` provides generators, `sample`, `quick-check`, `defspec` with seedable PRNG.
+Instead of writing specific examples, describe properties that must hold for *any* input. Phel generates random inputs and shrinks failures to the smallest reproducing case.
 
 ```phel
 (ns my-app.tests
   (:require phel.test :refer [deftest is defspec])
   (:require phel.test.gen :as gen))
 
+;; "reversing twice gives back the original" - for ANY vector of ints
 (defspec reverse-roundtrip
   [xs (gen/vector (gen/int))]
   (is (= xs (reverse (reverse xs)))))
+
+;; "sorting is idempotent" - sort of a sorted list is still sorted
+(defspec sort-idempotent
+  [xs (gen/vector (gen/int))]
+  (let [sorted (sort xs)]
+    (is (= sorted (sort sorted)))))
 ```
 
-Failing cases shrink via `phel.test.shrink` (rose tree). On failure, `:defspec-failed` event emits `:shrunk-args`, `:original-args`, `:shrink-steps`, `:seed`. Opt out with `^:no-shrink` or `:shrink? false`.
+On failure, Phel shrinks the input to the smallest case that still fails, then reports `:shrunk-args`, `:original-args`, `:shrink-steps`, and a `:seed` to reproduce the run.
+
+Available generators: `gen/int`, `gen/string`, `gen/boolean`, `gen/keyword`, `gen/vector`, `gen/map`, `gen/one-of`, `gen/frequency`, `gen/such-that`, and more in [phel.test.gen](/documentation/reference/api/test-gen/).
+
+Opt out of shrinking with `^:no-shrink` metadata or `:shrink? false`.
