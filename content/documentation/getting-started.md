@@ -107,7 +107,7 @@ Done. Working Phel project.
 - One-liner interop: `(php/date "Y-m-d")`, `(php/new DateTime "2024-01-01")`, `(php/-> obj (method arg))`.
 - REPL-first. Evaluate forms, don't re-run scripts.
 
-**Start:** [Phel for PHP Developers](/documentation/guides/phel-for-php-developers). Maps PHP patterns to Phel.
+**Start:** [Rosetta Stone: PHP → Phel](/documentation/guides/rosetta-stone). Maps PHP patterns to Phel.
 
 </div>
 </details>

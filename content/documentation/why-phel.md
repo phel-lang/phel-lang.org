@@ -75,7 +75,7 @@ Full PHP debugging ecosystem works:
 - **PHP native**: `var_dump`, `print_r`, Symfony `dump()`. Phel values are PHP objects.
 - **XDebug**: step-through, breakpoints, variable inspection. PhpStorm and VS Code.
 
-See [Debug helpers](/documentation/tooling/phel-helpers/) and [XDebug setup](/documentation/tooling/xdebug-setup/).
+See [Debug helpers](/documentation/tooling/repl/#debug-helpers) and [XDebug setup](/documentation/tooling/xdebug-setup/).
 
 ## What about IDE support?
 

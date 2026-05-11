@@ -1,7 +1,7 @@
 +++
 title = "REPL"
 weight = 2
-aliases = ["/documentation/repl"]
+aliases = ["/documentation/repl", "/documentation/tooling/phel-helpers"]
 +++
 
 ## Interactive prompt
@@ -326,6 +326,81 @@ user:5> (keys m)
 user:6> (vals m)
 (1 2 3)
 ```
+
+## Debug helpers
+
+Stdlib ships helpers for inspecting values during development.
+
+### Global tap system
+
+Routes debug values to handlers. `tap>` invokes every function registered via `add-tap`.
+
+`tap>` sends a value to every registered handler and returns `true`:
+
+```phel
+(tap> {:event :user-login :user-id 42})
+```
+
+`add-tap` / `remove-tap` register or unregister a handler function:
+
+```phel
+(defn my-logger [value]
+  (println "TAP:" value))
+
+(add-tap my-logger)
+(tap> "hello")       ; Prints: TAP: hello
+(remove-tap my-logger)
+```
+
+Exceptions in individual taps are swallowed so one bad handler doesn't break others.
+
+Collect tapped values during a test:
+
+```phel
+(def tapped (atom []))
+(def collector (fn [v] (swap! tapped conj v)))
+
+(add-tap collector)
+(tap> {:step 1 :result "ok"})
+(tap> {:step 2 :result "fail"})
+
+(deref tapped)
+;; => [{:step 1 :result "ok"} {:step 2 :result "fail"}]
+
+(remove-tap collector)
+```
+
+### Pretty printing
+
+`phel.pprint` provides `pprint` and `pprint-str` for readable nested data output:
+
+```phel
+(ns my-app
+  (:require phel.pprint :refer [pprint]))
+
+(pprint {:users [{:name "Alice" :roles [:admin :editor]}
+                  {:name "Bob" :roles [:viewer]}]
+          :count 2})
+;; Prints:
+;; {:users [{:name "Alice" :roles [:admin :editor]}
+;;          {:name "Bob" :roles [:viewer]}]
+;;  :count 2}
+```
+
+`pprint-str` returns the formatted string. Both accept an optional width.
+
+### PHP native inspection
+
+Phel values are PHP objects, so any PHP inspection function works via `php/`:
+
+```phel
+(php/var_dump (+ 2 2))
+;; int(4)
+
+(php/print_r {:a 1 :b 2})
+```
+
+For richer output, [Symfony VarDumper](/documentation/tooling/php-tools/) via `(php/dump ...)` and `(php/dd ...)`.
 
 ## Tips
 
