@@ -93,4 +93,4 @@ Core is stable and tested. Good fit for:
 
 Community small but active. Need LTS-grade enterprise stability? Not yet. Want expressive PHP and OK being an early adopter? Phel delivers.
 
-See [In the Wild](/documentation/reference/in-the-wild) for what people build.
+See [awesome-phel](https://github.com/phel-lang/awesome-phel) for libraries, tools, and projects.
