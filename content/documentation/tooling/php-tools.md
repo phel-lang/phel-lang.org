@@ -94,7 +94,7 @@ Keep generated temp PHP files for debugging. Useful when an error references `/p
 <?php # phel-config-local.php
 
 return (require __DIR__ . '/phel-config.php')
-    ->setKeepGeneratedTempFiles(true)
+    ->withKeepGeneratedTempFiles(true)
 ;
 ```
 
@@ -102,7 +102,7 @@ return (require __DIR__ . '/phel-config.php')
 
 ### Inspecting compiled PHP
 
-After `setKeepGeneratedTempFiles(true)`:
+After `withKeepGeneratedTempFiles(true)`:
 
 1. **Find the files** in `/tmp/` or system temp dir.
 2. **Read the PHP** to see how Phel compiles.
@@ -144,7 +144,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
 return (require __DIR__ . '/phel-config.php')
-    ->setKeepGeneratedTempFiles(true)
+    ->withKeepGeneratedTempFiles(true)
 ;
 ```
 

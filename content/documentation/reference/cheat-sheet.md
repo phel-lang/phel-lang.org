@@ -181,6 +181,13 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 (identity 42)                      ; => 42
 (memoize expensive-fn)             ; => cached version of fn
 (memoize-lru expensive-fn 100)     ; => cached with max 100 entries
+
+(defn ^:memoize fib [n] ...)       ; defn metadata: auto-wraps in memoize
+(defn ^{:memoize-lru 128} f [k] ...)
+(defn ^:async fetch [url] ...)     ; wraps body in (async ...) -> Amp\Future
+
+(defn ^int add [^int a ^int b]     ; :tag metadata -> PHP type decls
+  (+ a b))
 ```
 
 See [Functions and Recursion](/documentation/language/functions-and-recursion).

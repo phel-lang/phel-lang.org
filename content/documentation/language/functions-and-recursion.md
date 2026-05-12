@@ -126,6 +126,43 @@ Private functions don't export from the namespace. Two forms:
 
 Equivalent, but `defn-` is more concise.
 
+### Defn metadata shortcuts
+
+Tag a `defn` with metadata to wrap the body automatically (added in 0.37):
+
+```phel
+;; Memoize results — keep every (args -> value) pair forever
+(defn ^:memoize fib [n]
+  (if (< n 2) n (+ (fib (dec n)) (fib (- n 2)))))
+
+;; LRU cap of 128 entries
+(defn ^{:memoize-lru 128} expensive [k]
+  (slow-lookup k))
+
+;; Wrap body in (async ...) — returns Amp\Future
+(defn ^:async fetch [url]
+  (http/get url))
+```
+
+`^:memoize` / `^{:memoize-lru N}` desugar to [`memoize`](/documentation/reference/api/core/#memoize) / [`memoize-lru`](/documentation/reference/api/core/#memoize-lru) wrappers; entries from recursive self-calls within a single invocation are retained. `^:async` wraps the body with `async`, returning an `Amp\Future`.
+
+### Return and parameter types (`:tag`)
+
+Annotate types with `:tag` metadata (added in 0.37). The compiler emits PHP type declarations and runs static checks at compile time:
+
+```phel
+(defn ^int add [^int a ^int b] (+ a b))
+
+(defn greet ^{:tag "?string"} [^string name]
+  (when (seq name) (str "hi " name)))
+
+(defn make-foo ^"\\My\\Foo" [] (php/new "My\\Foo"))
+```
+
+Reader shorthands: `^int`, `^"?int"`, `^"\\Foo\\Bar"`, `^{:tag "..."}`.
+
+Tag inference fills in return types from tail primitive ops, tail calls to tagged globals or pure PHP builtins, and parameter types from primitive body uses — inferred tags persist in def metadata and graft onto compiled PHP signatures for single-arity `defn`. Mismatches surface at compile time.
+
 ## Recursion
 
 Like `loop`, functions can recurse with `recur`. TCO prevents stack overflow.

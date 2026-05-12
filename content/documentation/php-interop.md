@@ -557,10 +557,9 @@ Add config to `phel-config.php` first:
 ```php
 <?php
 return (new \Phel\Config\PhelConfig())
-    ->setExportConfig((new \Phel\Config\PhelExportConfig())
-        ->setFromDirectories(['src'])
-        ->setNamespacePrefix('PhelGenerated')
-        ->setTargetDirectory('src/PhelGenerated'))
+    ->withExportFromDirectories(['src'])
+    ->withExportNamespacePrefix('PhelGenerated')
+    ->withExportTargetDirectory('src/PhelGenerated')
 ;
 ```
 

@@ -180,7 +180,7 @@ For PHP-level debugging (or no Phel extension), use the [PHP Debug extension](ht
 }
 ```
 
-Set breakpoints in compiled PHP files (in the temp dir). Use `setKeepGeneratedTempFiles(true)` in `phel-config.php` to preserve them.
+Set breakpoints in compiled PHP files (in the temp dir). Use `withKeepGeneratedTempFiles(true)` in `phel-config.php` to preserve them.
 
 </details>
 
@@ -254,7 +254,7 @@ dap.configurations.php = {
 
 Without native Phel support:
 
-1. **Breakpoints in compiled PHP:** Phel compiles to PHP. Use `setKeepGeneratedTempFiles(true)` to inspect output.
+1. **Breakpoints in compiled PHP:** Phel compiles to PHP. Use `withKeepGeneratedTempFiles(true)` to inspect output.
 2. **Path mapping:** map container/VM paths to local.
 3. **Compiler debugging:** breakpoints in `vendor/phel-lang/phel-lang/src/`.
 4. **REPL debugging:** start REPL with XDebug enabled.

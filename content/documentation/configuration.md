@@ -8,22 +8,24 @@ Phel reads `phel-config.php` from the project root. Most projects only need the 
 ```php
 <?php
 // phel-config.php
-return \Phel\Config\PhelConfig::forProject('your-ns.main');
+return \Phel\Config\PhelConfig::forProject(\Phel\Config\ProjectLayout::Flat, 'your-ns.main');
 ```
 
-Sets `src/phel/`, `tests/phel/`, and the build entry namespace. Chain setters to override.
+Sets `src/`, `tests/`, and the build entry namespace. Chain `withX()` methods to override.
 
 ## Common tweaks
 
 ```php
 <?php
-return \Phel\Config\PhelConfig::forProject('your-ns.main')
-    ->setSrcDirs(['src'])                      // Phel source roots
-    ->setTestDirs(['tests'])                   // test roots, picked up by `phel test`
-    ->setFormatDirs(['src', 'tests'])          // dirs `phel format` rewrites
-    ->setBuildConfig((new \Phel\Config\PhelBuildConfig())
-        ->setMainPhelNamespace('your-ns.index')   // entry ns for `phel build`
-        ->setMainPhpPath('out/index.php'))        // generated PHP entry
+use Phel\Config\PhelConfig;
+use Phel\Config\ProjectLayout;
+
+return PhelConfig::forProject(ProjectLayout::Flat, 'your-ns.main')
+    ->withSrcDirs(['src'])                      // Phel source roots
+    ->withTestDirs(['tests'])                   // test roots, picked up by `phel test`
+    ->withFormatDirs(['src', 'tests'])          // dirs `phel format` rewrites
+    ->withMainPhelNamespace('your-ns.index')    // entry ns for `phel build`
+    ->withMainPhpPath('out/index.php')          // generated PHP entry
 ;
 ```
 
@@ -36,45 +38,56 @@ Covers running, testing, formatting, building. Defaults handle the rest.
 
 ```php
 <?php
-// phel-config.php, every setter, default values shown
+// phel-config.php, every with*() option, default values shown
 return (new \Phel\Config\PhelConfig())
-    ->setSrcDirs(['src'])
-    ->setTestDirs(['tests'])
-    ->setVendorDir('vendor')
-    ->setErrorLogFile('data/error.log')
-    ->setIgnoreWhenBuilding(['ignore-when-building.phel'])
-    ->setNoCacheWhenBuilding([])
-    ->setFormatDirs(['src', 'tests'])
-    ->setKeepGeneratedTempFiles(false)
-    ->setTempDir(sys_get_temp_dir().'/phel')
-    ->setCacheDir(sys_get_temp_dir().'/phel/cache')
-    ->setEnableNamespaceCache(true)
-    ->setEnableCompiledCodeCache(true)
-    ->setBuildConfig((new \Phel\Config\PhelBuildConfig())
-        ->setMainPhelNamespace('your-ns.index')
-        ->setMainPhpPath('out/index.php'))
-    ->setExportConfig((new \Phel\Config\PhelExportConfig())
-        ->setFromDirectories(['src'])
-        ->setNamespacePrefix('PhelGenerated')
-        ->setTargetDirectory('src/PhelGenerated'))
+    ->withSrcDirs(['src'])
+    ->withTestDirs(['tests'])
+    ->withVendorDir('vendor')
+    ->withErrorLogFile('.phel/error.log')
+    ->withIgnoreWhenBuilding(['ignore-when-building.phel'])
+    ->withNoCacheWhenBuilding([])
+    ->withFormatDirs(['src', 'tests'])
+    ->withKeepGeneratedTempFiles(false)
+    ->withTempDir(sys_get_temp_dir().'/phel')
+    ->withCacheDir('.phel/cache')
+    ->withPhelDir('.phel')
+    ->withEnableNamespaceCache(true)
+    ->withEnableCompiledCodeCache(true)
+    ->withMainPhelNamespace('your-ns.index')
+    ->withMainPhpPath('out/index.php')
+    ->withBuildDestDir('out')
+    ->withExportFromDirectories(['src'])
+    ->withExportNamespacePrefix('PhelGenerated')
+    ->withExportTargetDirectory('src/PhelGenerated')
 ;
 ```
 
-| Setter | Purpose |
+| Method | Purpose |
 |--------|---------|
-| `setSrcDirs` | Source directories scanned by the compiler. |
-| `setTestDirs` | Directories `phel test` walks. |
-| `setVendorDir` | Composer vendor directory name. |
-| `setErrorLogFile` | Path of the `error.log` file. |
-| `setIgnoreWhenBuilding` | Phel files skipped by `phel build`. |
-| `setNoCacheWhenBuilding` | Files always retranspiled, regardless of `--cache` / `--no-cache`. |
-| `setFormatDirs` | Directories rewritten by `phel format`. |
-| `setKeepGeneratedTempFiles` | Keep generated temp files after `phel run`. Default `false`. |
-| `setTempDir` | Absolute path for temporary files. Throws if not writable. |
-| `setCacheDir` | Directory for namespace + compiled-code caches. |
-| `setEnableNamespaceCache` | Persistent namespace cache for warm runs. Default `true`. |
-| `setEnableCompiledCodeCache` | Compiled-code cache for tests/builds. Default `true`. |
-| `setBuildConfig` | `setMainPhelNamespace` (entry ns) + `setMainPhpPath` (generated PHP entry). |
-| `setExportConfig` | `setFromDirectories`, `setNamespacePrefix`, `setTargetDirectory` for `phel export`. See [PHP Interop](/documentation/php-interop/#calling-phel-from-php). |
+| `withLayout` | Apply `ProjectLayout::Flat`, `Nested`, or `Root`. Sets src/test/format/export dirs. |
+| `withSrcDirs` | Source directories scanned by the compiler. |
+| `withTestDirs` | Directories `phel test` walks. |
+| `withVendorDir` | Composer vendor directory name. |
+| `withErrorLogFile` | Path of the `error.log` file (under `.phel/` by default). |
+| `withIgnoreWhenBuilding` | Phel files skipped by `phel build`. |
+| `withNoCacheWhenBuilding` | Files always retranspiled, regardless of `--cache` / `--no-cache`. |
+| `withFormatDirs` | Directories rewritten by `phel format`. |
+| `withKeepGeneratedTempFiles` | Keep generated temp files after `phel run`. Default `false`. |
+| `withTempDir` | Absolute path for temporary files. Throws if not writable. |
+| `withCacheDir` | Directory for namespace + compiled-code caches. Default `.phel/cache`. |
+| `withPhelDir` | Root for runtime state (cache, REPL history, error log). Default `.phel`. Override via `PHEL_DIR` env. |
+| `withEnableNamespaceCache` | Persistent namespace cache for warm runs. Default `true`. |
+| `withEnableCompiledCodeCache` | Compiled-code cache for tests/builds. Default `true`. |
+| `withEnableAsserts` | Toggle runtime `assert` checks. |
+| `withWarnDeprecations` | Emit warnings on deprecated APIs. |
+| `withMainPhelNamespace` | Entry ns for `phel build`. |
+| `withMainPhpPath` | Generated PHP entry path. |
+| `withBuildDestDir` | Output directory for `phel build`. |
+| `withExportFromDirectories` | Source dirs scanned by `phel export`. |
+| `withExportNamespacePrefix` | PHP namespace prefix for exported wrappers. |
+| `withExportTargetDirectory` | Output dir for `phel export`. See [PHP Interop](/documentation/php-interop/#calling-phel-from-php). |
+| `withBuildConfig` / `withExportConfig` | Replace nested config objects wholesale (rarely needed). |
 
 </details>
+
+> **Note:** Old `setX()` setters are deprecated since 0.37 and emit notices. Use the `withX()` chain — the API is immutable.

@@ -138,7 +138,7 @@ echo "hello";
 
 ## Running tests
 
-Run via `./vendor/bin/phel test`. Picks up tests recursively from [setTestDirs](/documentation/configuration/), defaults to `tests/`.
+Run via `./vendor/bin/phel test`. Picks up tests recursively from [withTestDirs](/documentation/configuration/), defaults to `tests/`.
 
 Pass filenames to run specific files:
 
@@ -214,6 +214,18 @@ Tag tests with metadata:
 ```
 
 Skipped tests emit `:skipped` event.
+
+### Repeat and random order
+
+Re-run each test N times, randomize discovery order, and seed for reproducible runs:
+
+```bash
+./vendor/bin/phel test --repeat=10            # stress a flaky test
+./vendor/bin/phel test --random-order         # random order, random seed
+./vendor/bin/phel test --random-order --seed=42  # deterministic
+```
+
+`--seed=<int>` alone fixes the seed for the default deterministic order.
 
 {% php_note() %}
 Test command similar to PHPUnit:

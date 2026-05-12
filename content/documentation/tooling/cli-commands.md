@@ -63,9 +63,8 @@ Compiles Phel to PHP, writing to the configured main path (entry point `out/inde
 ```php
 <?php
 return (new \Phel\Config\PhelConfig())
-    ->setBuildConfig((new \Phel\Config\PhelBuildConfig())
-        ->setMainPhelNamespace('your-ns.index')
-        ->setMainPhpPath('out/index.php'));
+    ->withMainPhelNamespace('your-ns.index')
+    ->withMainPhpPath('out/index.php');
 ```
 
 ## Export definitions
@@ -80,10 +79,9 @@ vendor/bin/phel export
 ```php
 <?php
 return (new \Phel\Config\PhelConfig())
-    ->setExportConfig((new \Phel\Config\PhelExportConfig())
-        ->setFromDirectories(['src'])
-        ->setNamespacePrefix('PhelGenerated')
-        ->setTargetDirectory('src/PhelGenerated'));
+    ->withExportFromDirectories(['src'])
+    ->withExportNamespacePrefix('PhelGenerated')
+    ->withExportTargetDirectory('src/PhelGenerated');
 ```
 
 ## Format phel files
@@ -103,7 +101,7 @@ vendor/bin/phel format
 ```php
 <?php
 return (new PhelConfig())
-    ->setFormatDirs(['src', 'tests']);
+    ->withFormatDirs(['src', 'tests']);
 ```
 
 Aligns key/value pairs in `cond`, `case`, `condp`, and bindings of `let`/`loop`/`binding`/`for`/`foreach`/`dofor`/`if-let`/`when-let`.
@@ -139,7 +137,7 @@ vendor/bin/phel run
 ```php
 <?php
 return (new PhelConfig())
-    ->setSrcDirs(['src']);
+    ->withSrcDirs(['src']);
 ```
 
 See [Getting Started](/documentation/getting-started/).
@@ -165,6 +163,9 @@ vendor/bin/phel test
 #       --reporter=NAME     Reporter: default|testdox|dot|tap|junit-xml. Repeatable.
 #       --output=PATH       Output path (for junit-xml).
 #       --testdox           Shortcut for --reporter=testdox.
+#       --repeat=N          Run each test N times (default 1).
+#       --seed=INT          Seed used for randomized order.
+#       --random-order      Run tests in random order (uses --seed if given).
 ```
 
 Test selectors and reporters: see [Testing](/documentation/testing/).
@@ -173,7 +174,7 @@ Test selectors and reporters: see [Testing](/documentation/testing/).
 ```php
 <?php
 return (new PhelConfig())
-    ->setTestDirs(['tests']);
+    ->withTestDirs(['tests']);
 ```
 
 Use `filter` to run matching tests only.
@@ -272,15 +273,32 @@ vendor/bin/phel api-daemon
 
 ## Agent install
 
-Writes skill/recipe files for AI coding assistants: Claude Code, Cursor, Codex, Gemini, Copilot, Aider.
+Writes skill/recipe files for AI coding assistants: Claude Code, Cursor, Codex, Gemini, Copilot, Aider. Skills are stamped with `<!-- phel-agents vX.Y.Z -->` from `VERSION`; re-install is idempotent.
 
 ```bash
-vendor/bin/phel agent-install           # pick platform interactively
-vendor/bin/phel agent-install claude    # single platform
-vendor/bin/phel agent-install --all     # all platforms
-#   --with-docs        Include reference docs
+vendor/bin/phel agent-install              # pick platform interactively
+vendor/bin/phel agent-install claude       # single platform
+vendor/bin/phel agent-install --all        # all platforms
+vendor/bin/phel agent-install --auto       # only platforms detected in project
+vendor/bin/phel agent-install --check      # report installed vs current; exits 1 on drift
+vendor/bin/phel agent-install --list       # enumerate platforms, sources, targets, state
+vendor/bin/phel agent-install --uninstall  # remove skill files, restore .pre-phel.bak
+#   --with-docs        Include reference docs (.agents/)
 #   --dry-run          Show what would be written
 #   --force            Overwrite existing files
+```
+
+`phel doctor` surfaces installed agent skill versions and flags stale ones.
+
+## Profile
+
+Per-function timings and compile-phase costs:
+
+```bash
+vendor/bin/phel profile path/to/file.phel
+# Options:
+#   --format=FORMAT   text (default), json
+#   --output=PATH     Write report to PATH
 ```
 
 
@@ -293,3 +311,5 @@ vendor/bin/phel cache:clear
 ```
 
 Removes everything in the cache dir. Useful for stale caches or after upgrades.
+
+Runtime state (cache, REPL history, error log) lives under `.phel/` by default. Override via `withPhelDir('...')` in `phel-config.php` or the `PHEL_DIR` env var.
