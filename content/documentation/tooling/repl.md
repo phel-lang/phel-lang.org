@@ -58,6 +58,8 @@ user:4> (php/-> *e (getMessage))
 "Division by zero"
 ```
 
+Eval errors render as a headline + optional hint + trace with internal frames hidden (added in 0.37). Full PHP frames remain on `*e` for inspection via interop.
+
 ## Built-in helpers
 
 ### doc

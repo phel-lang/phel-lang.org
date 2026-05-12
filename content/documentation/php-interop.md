@@ -64,9 +64,13 @@ array_map($fn, $array);
 However, Phel provides functional equivalents for many operations. For example, use `(count "test")` instead of `(php/strlen "test")` when working with Phel data structures.
 {% end %}
 
-Namespaced PHP functions use full path after `php/`:
+Namespaced PHP functions use full path after `php/`. Three equivalent forms accepted (added in 0.37, last two are backslash-free):
 
 ```phel
+(php/Foo\Bar\baz)      ; classic backslash form
+(php/Foo.Bar/baz)      ; dot-separated, slash before fn name
+(php/Foo.Bar.baz)      ; fully dot-separated
+
 (php/Amp.trapSignal [(php/:: SIGINT) (php/:: SIGTERM)])
 ```
 

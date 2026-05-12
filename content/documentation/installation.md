@@ -207,6 +207,23 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 </div>
 </details>
 
+## Upgrading from 0.36
+
+```bash
+composer require phel-lang/phel-lang:^0.37
+./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
+```
+
+Cached PHP from earlier installs references old FQNs (`Phel\Printer`, exception classes under `Phel\Compiler\Domain\Exceptions`, …) and fails to load otherwise. Both Phel sources and compiled fixtures in the upstream repo are regenerated; downstream projects must rebuild theirs.
+
+Breaking changes in 0.37:
+
+- `PhelConfig` setters replaced by immutable `withX()` chain; old `setX()` shims emit deprecation notices. See [Configuration](/documentation/configuration/).
+- `PhelConfig::forProject(ProjectLayout $layout = Flat, string $mainNamespace = '')`: layout argument is first, `Flat` is the default.
+- `Phel\Printer` moved to `Phel\Shared\Printer`. Phel sources should `(:use Phel.Shared.Printer.Printer)`; the old path no longer resolves.
+- Cross-module exceptions + `CodeSnippet` moved to `Phel\Shared\Exceptions` / `Phel\Shared\Parser\ReadModel`.
+- Runtime state (cache, REPL history, error log) now lives under `.phel/`. Override via `withPhelDir('...')` or the `PHEL_DIR` env var.
+
 ## Next steps
 
 - [Getting Started](/documentation/getting-started): first REPL session, project tour.
