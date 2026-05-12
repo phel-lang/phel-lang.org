@@ -552,7 +552,11 @@ ul.api-namespace-toc__list > li::before {
 }
 
 .dark .page-toc {
-  border-bottom-color: var(--color-dark-border);
+  border-left-color: var(--color-dark-border);
+}
+
+.dark .page-toc a.active {
+  border-left-color: var(--color-dark-text-accent);
 }
 
 .dark .page-toc h2 {

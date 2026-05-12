@@ -6,10 +6,14 @@
     {% set crumb_page = page %}
     {% include "partials/breadcrumb.html" %}
     <h1>{{page.title}}</h1>
-    <div class="flex-container">
+    {% set show_toc = page.path is starting_with("/documentation/") and page.toc and page.toc | length >= 2 %}
+    <div class="flex-container{% if show_toc %} flex-container--with-toc{% endif %}">
         <div class="page-content">
             {{page.content | safe}}
         </div>
+        {% if show_toc %}
+            {% include "page/table-of-content.html" %}
+        {% endif %}
     </div>
 {% endblock content %}
 
