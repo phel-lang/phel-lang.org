@@ -16,15 +16,20 @@
       if (target) map.set(target, a);
     });
 
-    if (map.size === 0) return;
+    if (map.size === 0) {
+      return;
+    }
 
     function setActive(a) {
       links.forEach((x) => x.classList.remove('active'));
       if (a) a.classList.add('active');
     }
 
+    let suppressUntil = 0;
+
     const observer = new IntersectionObserver(
       (entries) => {
+        if (Date.now() < suppressUntil) return;
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => a.target.offsetTop - b.target.offsetTop);
@@ -34,6 +39,13 @@
     );
 
     map.forEach((_, target) => observer.observe(target));
+
+    links.forEach((a) => {
+      a.addEventListener('click', () => {
+        setActive(a);
+        suppressUntil = Date.now() + 800;
+      });
+    });
   }
 
   if (document.readyState === 'loading') {
