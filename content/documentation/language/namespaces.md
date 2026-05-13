@@ -6,25 +6,25 @@ aliases = ["/documentation/namespaces"]
 
 ## Namespace (ns)
 
-Every Phel file is required to have a namespace. A valid namespace name starts with a letter, followed by any number of letters, numbers, or dashes. Individual parts of the namespace are separated by the `\` character. The last part of the namespace has to match the name of the file.
+Every Phel file needs a namespace. Names start with a letter, then letters/numbers/dashes. Parts separated by `.` (canonical) or `\` (legacy, still parses). Last part must match filename.
 
 ```phel
 (ns name imports*)
 ```
 
-Defines the namespace for the current file and adds imports to the environment. Imports can either be _uses_ or _requires_. The keyword `:use` is used to import PHP classes, the keyword `:require` is used to import Phel modules and the keyword `:require-file` is used to load php files.
+Sets the namespace and registers imports. `:use` for PHP classes, `:require` for Phel modules, `:require-file` for PHP files.
 
 ```phel
-(ns my\custom\module
+(ns my.custom.module
   (:require-file "vendor/autoload.php")
-  (:require my\phel\module)
-  (:use Some\Php\Class))
+  (:require my.phel.module)
+  (:use Some.Php.Class))
 ```
 
-The call also sets the `*ns*` variable to the given namespace.
+Also sets `*ns*` to the namespace.
 
 {% php_note() %}
-Phel namespaces are similar to PHP namespaces, but with key differences:
+Similar to PHP namespaces, with differences:
 
 ```php
 // PHP
@@ -33,32 +33,31 @@ use Some\Php\Class;
 use My\Phel\Module as Utilities;
 
 // Phel
-(ns my\custom\module
-  (:use Some\Php\Class)
-  (:require my\phel\module :as utilities))
+(ns my.custom.module
+  (:use Some.Php.Class)
+  (:require my.phel.module :as utilities))
 ```
 
-**Key differences:**
-- Phel uses `\` as separator (like PHP)
+**Differences:**
+- `.` separator for Phel namespaces (PHP class FQNs in `:use` use `.`)
 - `:require` for Phel modules, `:use` for PHP classes
-- Functions/values are accessed with `/` not `::`
+- Access via `/`, not `::`
 {% end %}
 
 {% clojure_note() %}
-Namespaces work similarly to Clojure, but:
-- Use `\` instead of `.` as separator (following PHP conventions)
-- `:use` is for PHP classes (not Clojure vars)
-- `:require` works like Clojure's `:require`
+Like Clojure: `.` namespace separator. PHP class FQNs in `:use` use `.`.
+- `:use` is for PHP classes
+- `:require` works as in Clojure
 {% end %}
 
 ### Import a Phel module
 
-Before a Phel module can be used, it has to be imported with the keyword `:require`. Once imported, the module can be accessed by its name followed by a slash and the name of the public function or value. Namespaces are indexed from source file directory which is `src/` by default and can changed with [SrcDirs configuration option](/documentation/configuration/#srcdirs) in `phel-config.php`.
+Import with `:require`, then access as `module/name`. Namespaces resolve from `src/` (override with [configuration](/documentation/configuration/)).
 
-Given, a module `util` is defined in the namespace `hello-world`.
+Module `util` in namespace `hello-world`:
 
 ```phel
-(ns hello-world\util)
+(ns hello-world.util)
 
 (def my-name "Phel")
 
@@ -66,104 +65,105 @@ Given, a module `util` is defined in the namespace `hello-world`.
   (print (str "Hello, " name)))
 ```
 
-Module `boot` imports module `util` and uses its functions and values.
+Module `main` imports `util`:
 
 ```phel
-(ns hello-world\boot
-  (:require hello-world\util))
+(ns hello-world.main
+  (:require hello-world.util))
 
 (util/greet util/my-name)
 ```
 
-To prevent name collision from other modules in different namespaces, aliases can be used.
+Use aliases to avoid collisions:
 
 ```phel
-(ns hello-world\boot
-  (:require hello-world\util :as utilities))
+(ns hello-world.main
+  (:require hello-world.util :as utilities))
 ```
 
-When names collide, names from different namespaces remain available by prefixing them with a namespace identifier (such as `phel\core`). However, care should be taken when referring to names before redefining them, as the names retain their values from the original namespaces before the redefinition.
+On collision, use a fully-qualified name to reach the original. A locally defined `get` shadows `phel.core/get` by its short name, but the full `phel.core/get` still works:
 
 ```phel
-(ns hello-world\http-client)
+(ns hello-world.http-client)
 
 (defn get [uri]
   {:status 200 :body "Hello World" :headers {}})
 
-(phel\core/get (get "https://example.com") :status) ; Evaluates to 200
+(phel.core/get (get "https://example.com") :status) ; Evaluates to 200
 ```
 
-Additionally, it is possible to refer symbols of other modules in the current namespace by using `:refer` keyword.
+`:refer` brings symbols into the current namespace:
 
 ```phel
-(ns hello-world\boot
-  (:require hello-world\util :refer [greet]))
+(ns hello-world.main
+  (:require hello-world.util :refer [greet]))
 
 (greet util/my-name)
 ```
 
-Both, `:refer` and `:as` can be combined in any order.
+`:refer` and `:as` combine in any order.
 
 ### Import a PHP class
 
-PHP classes are imported with the keyword `:use`.
+`:use` imports PHP classes:
 
 ```phel
-(ns my\custom\module
-  (:use Some\Php\ClassName)
+(ns my.custom.module
+  (:use Some.Php.ClassName))
 ```
 
-Once imported, a class can be referenced by its name.
+Reference by name:
 
 ```phel
 (php/new ClassName)
 ```
 
-To prevent name collision from other classes in different namespaces, aliases can be used.
+Aliases avoid collisions:
 
 ```phel
-(ns my\custom\module
-  (:use Some\Php\ClassName :as BetterClassName)
+(ns my.custom.module
+  (:use Some.Php.ClassName :as BetterClassName))
 ```
 
-Importing PHP classes is considered a "better" coding style, but it is optional. Any PHP class can be used by typing its namespace with the class name.
+Importing is preferred, but optional. Use full namespace inline if needed:
 
 ```phel
-(php/new \Some\Php\ClassName)
+(php/new Some.Php.ClassName)
 ```
 
 ## Require PHP files
 
-In some cases it is necessary to load external PHP file via PHP's `require_once` statement. This can be archived by using the `:require-file` keyword. For example, to load composer's autoload file the following code can be used:
+Load external PHP files via `:require-file` (calls `require_once`). Example for Composer autoload:
 
-```
-(ns hello-world\boot
+```phel
+(ns hello-world.main
   (:require-file "vendor/autoload.php"))
 ```
 
-As alternative, you can also call `(php/require_once "vendor/autload.php")` anywhere in your code. However, especially for the autoload file this statement is executed to late, because Phel's core library needs to load PHP files via the autoloader. Therefore, it is recommended to use the `:require-file` method.
+`(php/require_once "vendor/autoload.php")` works elsewhere, but for autoload it runs too late since Phel's core needs the autoloader. Use `:require-file`.
 
 ## Namespaced keywords
 
-If code or data is shared to the outside world simple keywords can lead to collisions. This problem can be solved by using namespaced keywords.
+Plain keywords collide when sharing data. Namespaced keywords solve this.
 
-There are multiple options to define namespaced keywords. The most simple one is to define a fully qualified keyword with the full namespace followed by a `/` and the keyword name.
+Fully qualified: namespace, `/`, keyword name.
 
 ```phel
-:my\namespace/foo ; a absolute namespaced keyword
+:my.namespace/foo ; absolute namespaced keyword
 ```
 
-The `::` shortcut can be used to assign the current namespace to the keyword
+`::` shortcut binds current namespace:
 
 ```phel
 (ns bar)
-::foo ; Evaluates to :bar/foo
+::foo ; => :bar/foo
 ```
 
-Aliases defined in the `ns` expression can also be used
+`ns` aliases also work:
 
 ```phel
 (ns foobar
-  (:require abc\xyz :as bar))
-  ::bar/foo ; evaluates to :abc\xyz/bar
+  (:require abc.xyz :as bar))
+
+::bar/foo ; evaluates to :abc.xyz/foo
 ```

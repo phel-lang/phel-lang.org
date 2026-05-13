@@ -111,17 +111,17 @@ Learn more: [Destructuring](/documentation/language/destructuring)
 {% end %}
 
 {% question(difficulty="medium") %}
-Create an anonymous function that adds 10 to a number. Call it with `5`. Try both the `fn` form and the short `|` form.
+Create an anonymous function that adds 10 to a number. Call it with `5`. Try both the `fn` form and the short `#()` form.
 {% end %}
 {% solution() %}
 ```phel
 ((fn [x] (+ x 10)) 5)
 ; => 15
 
-(|(+ $ 10) 5)
+(#(+ % 10) 5)
 ; => 15
 ```
-Anonymous functions shine when you need a one-off (think `map`, `filter`). The `|` shortcut uses `$` for the first argument, `$1` for the second, and so on.
+Anonymous functions shine when you need a one-off (think `map`, `filter`). The `#()` shortcut uses `%` for the first argument, `%2` for the second, and so on.
 
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}

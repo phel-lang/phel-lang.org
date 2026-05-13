@@ -30,7 +30,7 @@
       if (check) {
         check.innerHTML = done ? '&#10003;' : '';
         check.classList.toggle('completed', done);
-        check.title = done ? 'Completed — click to undo' : 'Mark as done';
+        check.title = done ? 'Completed, click to undo' : 'Mark as done';
       }
     }
 

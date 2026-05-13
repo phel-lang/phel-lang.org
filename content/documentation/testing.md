@@ -3,83 +3,103 @@ title = "Testing"
 weight = 70
 +++
 
-Phel comes with an integrated unit testing framework.
+Built-in unit testing with no boilerplate. Define tests as functions, run them from the CLI.
+
+## Quick start
+
+```phel
+(ns my-app.math-test
+  (:require phel.test :refer [deftest is]))
+
+(deftest addition-works
+  (is (= 4 (+ 2 2))))
+
+(deftest string-concat
+  (is (= "hello world" (str "hello" " " "world")))
+  (is (not (= "" (str "a" "b")))))
+```
+
+Run:
+
+```bash
+./vendor/bin/phel test
+```
+
+Output:
+
+```
+....
+2 tests, 3 assertions, 0 failures.
+```
 
 {% php_note() %}
-Unlike PHPUnit which uses classes and methods, Phel's testing is more lightweight:
+No class boilerplate. Tests are plain functions:
 
 ```php
-// PHPUnit - class-based tests
-class MyTest extends TestCase {
+// PHPUnit
+class MathTest extends TestCase {
     public function testAddition() {
         $this->assertEquals(4, 2 + 2);
     }
 }
 
-// Phel - function-based tests
-(deftest my-test
+// Phel
+(deftest addition-works
   (is (= 4 (+ 2 2))))
 ```
-
-Phel's approach is simpler for functional code and doesn't require class boilerplate.
 {% end %}
 
 ## Assertions
 
-The core of the library is the `is` macro, which can be used to defined assertions.
+The `is` macro defines assertions. Optional second argument is a description string shown on failure.
 
 ```phel
-(is (= 4 (+ 2 2)) "my test description")
-(is (true? (or true false)) "my othe test")
+(is (= 4 (+ 2 2)))
+(is (= 4 (+ 2 2)) "2 + 2 should be 4")
 ```
 
-The first argument of the `is` macro must be in one of the following forms. The second argument is an optional string to describe the test.
+### Equality and predicates
 
 ```phel
-(predicate expected actual)
-;; Example: (is (= 4 (+ 2 2)))
+(is (= expected actual))           ; equality
+(is (true? value))                 ; predicate
+(is (not (= "x" (str "a" "b"))))  ; negation
+(is (nil? (get {} :missing)))      ; any predicate works
 ```
 
-This tests whether, according to `predicate`, the `actual` value is in fact what we `expected`.
+For collection equality, failures render a unified diff (added in 0.37) so missing/extra entries are obvious:
+
+```
+FAIL (= a b)
+--- expected
++++ actual
+ [:a 1
+- :b 2
++ :b 99
+  :c 3]
+```
+
+### Exceptions
 
 ```phel
-(predicate value)
-;; Example: (is (true? (or true false)))
+;; assert throws
+(is (thrown? Exception
+      (throw (php/new Exception "test"))))
+
+;; assert throws with specific message
+(is (thrown-with-msg? Exception "test"
+      (throw (php/new Exception "test"))))
 ```
-This tests whether the `value` satisfies the `predicate`.
+
+### Output
 
 ```phel
-(not (predicate expected actual))
-;; Example: (is (not (= 4 (+ 2 3))))
+;; assert what gets printed to stdout
+(is (output? "hello" (print "hello")))
 ```
-
-This tests whether, according to `predicate`, the `actual` value is **not** what we `expected`.
-
-```phel
-(not (predicate value))
-;; Example (is (not (true? (and true false))))
-```
-This tests whether the `value` does **not** satisfies the `predicate`.
-
-```phel
-(thrown? exception-type body)
-;; Example: (is (thrown? \Exception (throw (php/new \Exception "test"))))
-```
-This tests whether the execution of `body` throws an exception of type `exception-type`.
-
-```phel
-(thrown-with-msg? exception-type msg body)
-;; Example: (is (thrown? \Exception "test"  (throw (php/new \Exception "test"))))
-```
-This tests whether the execution of `body` throws an exception of type `exception-type` and that the exception has the message `msg`.
-
-```phel
-(output? expected body) ; For example (output? "hello" (php/echo "hello"))
-```
-This tests whether the execution of `body` prints the `expected` text to the output stream.
 
 {% php_note() %}
-Exception testing in Phel is more concise than PHPUnit:
+Exception testing more concise than PHPUnit:
 
 ```php
 // PHPUnit
@@ -91,9 +111,9 @@ $this->expectException(Exception::class);
 $this->expectExceptionMessage("test");
 throw new Exception("test");
 
-// Phel - inline exception assertions
-(is (thrown? \Exception (throw (php/new \Exception "test"))))
-(is (thrown-with-msg? \Exception "test" (throw (php/new \Exception "test"))))
+// Phel (inline exception assertions)
+(is (thrown? Exception (throw (php/new Exception "test"))))
+(is (thrown-with-msg? Exception "test" (throw (php/new Exception "test"))))
 ```
 
 The `output?` assertion is similar to PHPUnit's output buffering:
@@ -103,51 +123,70 @@ $this->expectOutputString("hello");
 echo "hello";
 
 // Phel
-(is (output? "hello" (php/echo "hello")))
+(is (output? "hello" (print "hello")))
 ```
 {% end %}
 
 ## Defining tests
 
-Test can be defined by using the `deftest` macro. This macro is like a function without arguments.
+`deftest` defines a test. Each test can contain any number of `is` assertions. A test passes when all assertions pass.
 
 ```phel
-(ns my-namespace\tests
-  (:require phel\test :refer [deftest is]))
+(ns my-app.cart-test
+  (:require phel.test :refer [deftest is])
+  (:require my-app.cart :refer [add-item total]))
 
-(deftest my-test
-  (is (= 4 (+ 2 2))))
+(deftest empty-cart-has-zero-total
+  (is (= 0 (total []))))
+
+(deftest add-item-increases-total
+  (let [cart (add-item [] {:price 10 :qty 2})]
+    (is (= 20 (total cart)))
+    (is (= 1 (count cart)))))
+
+(deftest rejects-negative-price
+  (is (thrown? Exception (add-item [] {:price -5 :qty 1}))))
 ```
 
 ## Running tests
 
-Tests can be run using the `./vendor/bin/phel test` command. Tests are looked up recursively in all directories set by [setTestDirs](/documentation/configuration/#testdirs) configuration option which defaults to `tests/`.
+Run via `./vendor/bin/phel test`. Picks up tests recursively from [withTestDirs](/documentation/configuration/), defaults to `tests/`.
 
-Pass filenames as arguments to the `phel test` command to run tests in specified files only:
+Pass filenames to run specific files:
 
 ```bash
 ./vendor/bin/phel test tests/main.phel tests/utils.phel
 ```
 
-To filter tests that should run by name, `--filter` command line argument can be used:
+Filter by name with `--filter`:
 
 ```bash
 ./vendor/bin/phel test tests/utils.phel --filter my-test-function
 ```
 
-To stop on the first failure or error, use the `--fail-fast` flag:
+Stop on first failure with `--fail-fast`:
 
 ```bash
 ./vendor/bin/phel test --fail-fast
 ```
 
-Test report can be set to more verbose TestDox format showing individual test names with `--testdox` flag. Output can also be suppressed with `--quiet` flag to only include errors or silenced fully with `--silent` flag.
+Print discovered tests without running them (`--list`), re-run only failures from the previous run (`--last-failed`), or print the N slowest tests after the summary (`--slowest=N`):
 
-See more options available by running `./vendor/bin/phel test --help`.
+```bash
+./vendor/bin/phel test --list
+./vendor/bin/phel test --last-failed
+./vendor/bin/phel test --slowest=10
+```
+
+`--last-failed` persists failures to `.phel/last-failed.txt`.
+
+`--testdox` for TestDox format. `--quiet` for errors only, `--silent` to silence fully.
+
+Full options: `./vendor/bin/phel test --help`.
 
 ### Reporters
 
-Pick the output format with `--reporter=<name>`. The flag is repeatable so you can emit multiple formats at once.
+Pick format with `--reporter=<name>`. Repeatable for multiple formats.
 
 | Reporter    | Description                                 |
 |-------------|---------------------------------------------|
@@ -163,16 +202,16 @@ Pick the output format with `--reporter=<name>`. The flag is repeatable so you c
 ./vendor/bin/phel test --reporter=tap --reporter=junit-xml --output=build/tests.xml
 ```
 
-`phel\test/report` is a multimethod dispatching on event `:type`, so you can register custom reporters from Phel.
+`phel.test/report` is a multimethod dispatching on event `:type`. Register custom reporters from Phel.
 
 ### Selectors
 
-Filter tests by tag, namespace glob, or regex:
+Filter by tag, namespace glob, or regex:
 
 ```bash
 ./vendor/bin/phel test --include=integration
 ./vendor/bin/phel test --exclude=slow
-./vendor/bin/phel test --ns='my-app\http\*'
+./vendor/bin/phel test --ns='my-app.http.*'
 ./vendor/bin/phel test --filter 'user.*login'
 ```
 
@@ -186,10 +225,22 @@ Tag tests with metadata:
   ...)
 ```
 
-Skipped tests emit a `:skipped` event.
+Skipped tests emit `:skipped` event.
+
+### Repeat and random order
+
+Re-run each test N times, randomize discovery order, and seed for reproducible runs:
+
+```bash
+./vendor/bin/phel test --repeat=10            # stress a flaky test
+./vendor/bin/phel test --random-order         # random order, random seed
+./vendor/bin/phel test --random-order --seed=42  # deterministic
+```
+
+`--seed=<int>` alone fixes the seed for the default deterministic order.
 
 {% php_note() %}
-Phel's test command is similar to PHPUnit:
+Test command similar to PHPUnit:
 
 ```bash
 # PHPUnit
@@ -203,33 +254,33 @@ Phel's test command is similar to PHPUnit:
 ./vendor/bin/phel test --filter my-test-function
 ```
 
-Both support filtering, verbose output, and running specific test files.
+Both support filtering, verbose output, specific files.
 {% end %}
 
 
-If you want to run tests from Phel code, the `run-tests` function can be used. As arguments, it takes a map of options (that can be empty) and one or more namespaces that should be tested.
+Run tests from Phel code with `run-tests`. Takes options map (can be empty) and one or more namespaces.
 
 ```phel
-(run-tests {} 'my\ns\a 'my\ns\b)
+(run-tests {} 'my.ns.a 'my.ns.b)
 ```
 
 ### Interactive testing with `test-ns`
 
-You can run tests for a single namespace interactively from the REPL using `test-ns`:
+Run tests for a single namespace from the REPL:
 
 ```phel
-(ns my-app\tests
-  (:require phel\test :refer [deftest is test-ns]))
+(ns my-app.tests
+  (:require phel.test :refer [deftest is test-ns]))
 
 ; Run all tests in a namespace
-(test-ns 'my-app\tests)
+(test-ns 'my-app.tests)
 ```
 
-This is especially useful during REPL-driven development when you want quick feedback on a specific namespace without running the full test suite.
+Useful for REPL-driven feedback without running the full suite.
 
-### Test statistics management
+### Test statistics
 
-You can manage test statistics programmatically with these functions:
+Manage stats programmatically:
 
 ```phel
 ; Reset test counters to zero
@@ -240,22 +291,22 @@ You can manage test statistics programmatically with these functions:
 
 ; Save and restore stats around a test run
 (def saved (get-stats))
-(test-ns 'my-app\tests)
+(test-ns 'my-app.tests)
 (restore-stats saved)
 ```
 
-These are useful when running tests interactively in the REPL and you need to isolate results or reset state between runs.
+Useful in REPL to isolate or reset state between runs.
 
 ## Mocking
 
-Phel provides a built-in mocking framework in the `phel\mock` module for replacing functions with test doubles.
+`phel.mock` module replaces functions with test doubles.
 
 ### Creating mocks
 
 ```phel
-(ns my-app\tests
-  (:require phel\test :refer [deftest is])
-  (:require phel\mock :refer [mock mock-fn mock-returning mock-throwing
+(ns my-app.tests
+  (:require phel.test :refer [deftest is])
+  (:require phel.mock :refer [mock mock-fn mock-returning mock-throwing
                                calls call-count called? called-with?
                                called-once? never-called? reset-mock!
                                with-mocks]))
@@ -275,7 +326,7 @@ Phel provides a built-in mocking framework in the `phel\mock` module for replaci
 (seq-mock)  ; => 3
 
 ;; Mock that throws
-(def err-mock (mock-throwing (php/new \RuntimeException "fail")))
+(def err-mock (mock-throwing (php/new RuntimeException "fail")))
 ```
 
 ### Inspecting calls
@@ -295,7 +346,7 @@ Phel provides a built-in mocking framework in the `phel\mock` module for replaci
 
 ### Replacing functions in tests
 
-Use `with-mocks` to temporarily replace functions with mocks using dynamic binding. Mocks are automatically reset after the block:
+`with-mocks` temporarily replaces functions via dynamic binding. Auto-resets after the block:
 
 ```phel
 (defn fetch-user [id]
@@ -309,7 +360,7 @@ Use `with-mocks` to temporarily replace functions with mocks using dynamic bindi
 ```
 
 {% php_note() %}
-Phel's mocking is simpler than Mockery or PHPUnit mocks:
+Simpler than Mockery or PHPUnit mocks:
 
 ```php
 // PHPUnit
@@ -321,21 +372,32 @@ $mock->method('find')->willReturn(['id' => 1]);
   (find-user 42))
 ```
 
-No class structure needed - mock any function directly.
+No class structure. Mock any function directly.
 {% end %}
 
 ## Property-based testing
 
-The `phel\test\gen` module provides generators, `sample`, `quick-check`, and `defspec` with a seedable PRNG.
+Instead of writing specific examples, describe properties that must hold for *any* input. Phel generates random inputs and shrinks failures to the smallest reproducing case.
 
 ```phel
-(ns my-app\tests
-  (:require phel\test :refer [deftest is defspec])
-  (:require phel\test\gen :as gen))
+(ns my-app.tests
+  (:require phel.test :refer [deftest is defspec])
+  (:require phel.test.gen :as gen))
 
+;; Property: reversing twice gives back the original (holds for any vector of ints)
 (defspec reverse-roundtrip
   [xs (gen/vector (gen/int))]
   (is (= xs (reverse (reverse xs)))))
+
+;; Property: sorting is idempotent (sort of a sorted list is still sorted)
+(defspec sort-idempotent
+  [xs (gen/vector (gen/int))]
+  (let [sorted (sort xs)]
+    (is (= sorted (sort sorted)))))
 ```
 
-Failing cases are shrunk via `phel\test\shrink` (rose tree). On failure, a `:defspec-failed` event is emitted with `:shrunk-args`, `:original-args`, `:shrink-steps`, and `:seed`. Opt out with `^:no-shrink` or `:shrink? false`.
+On failure, Phel shrinks the input to the smallest case that still fails, then reports `:shrunk-args`, `:original-args`, `:shrink-steps`, and a `:seed` to reproduce the run.
+
+Available generators: `gen/int`, `gen/string`, `gen/boolean`, `gen/keyword`, `gen/vector`, `gen/map`, `gen/one-of`, `gen/frequency`, `gen/such-that`, and more in [phel.test.gen](/documentation/reference/api/test-gen/).
+
+Opt out of shrinking with `^:no-shrink` metadata or `:shrink? false`.

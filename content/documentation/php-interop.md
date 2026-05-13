@@ -3,20 +3,20 @@ title = "PHP Interop"
 weight = 50
 +++
 
-## Accessing global variables and named constants
+## Globals and constants
 
-Use the `php/` prefix to access the global variables (superglobals) in combination with `get`.
+Access PHP superglobals with `php/` prefix and `get`:
 
 ```phel
-(get php/$_SERVER "key") ; Similar to $_SERVER['key']
-(get php/$GLOBALS "argv") ; Similar to $GLOBALS['argv']
+(get php/$_SERVER "key") ; $_SERVER['key']
+(get php/$GLOBALS "argv") ; $GLOBALS['argv']
 ```
 
-Named constants set with PHP [`define`](https://www.php.net/manual/en/function.define.php) can be accessed in Phel via `php/CONSTANT_NAME`.
+PHP [`define`](https://www.php.net/manual/en/function.define.php) constants accessed via `php/CONSTANT_NAME`:
 
 ```phel
-(php/define "MY_SETTING" "My value") ; Calls PHP define('MY_SETTING', 'My value");
-php/MY_SETTING ; Returns "My value"
+(php/define "MY_SETTING" "My value") ; Calls PHP define('MY_SETTING', 'My value');
+php/MY_SETTING ; => "My value"
 ```
 
 {% php_note() %}
@@ -39,11 +39,11 @@ php/MY_SETTING
 
 ## Calling PHP functions
 
-PHP comes with huge set of functions that can be called from Phel by just adding a `php/` prefix to the function name.
+Add `php/` prefix to any PHP function name:
 
 ```phel
-(php/strlen "test") ; Calls PHP's strlen function and evaluates to 4
-(php/date "l") ; Evaluates to something like "Monday"
+(php/strlen "test") ; => 4
+(php/date "l")      ; => "Monday" (or whatever the current day is)
 ```
 
 {% php_note() %}
@@ -64,22 +64,26 @@ array_map($fn, $array);
 However, Phel provides functional equivalents for many operations. For example, use `(count "test")` instead of `(php/strlen "test")` when working with Phel data structures.
 {% end %}
 
-Namespaced PHP functions are called with their full path after `php/`:
+Namespaced PHP functions use full path after `php/`. Three equivalent forms accepted (added in 0.37, last two are backslash-free):
 
 ```phel
-(php/Amp\trapSignal [(php/:: SIGINT) (php/:: SIGTERM)])
+(php/Foo\Bar\baz)      ; classic backslash form
+(php/Foo.Bar/baz)      ; dot-separated, slash before fn name
+(php/Foo.Bar.baz)      ; fully dot-separated
+
+(php/Amp.trapSignal [(php/:: SIGINT) (php/:: SIGTERM)])
 ```
 
-You can also capture a namespaced function into a Phel alias:
+Capture into a Phel alias:
 
 ```phel
-(def trap-signal php/\Amp\trapSignal)
+(def trap-signal php/\Amp.trapSignal)
 (trap-signal [2 15])
 ```
 
-## PHP interop shorthands
+## Interop shorthands
 
-Terse shorthands that expand to the verbose `php/*` forms below. Use whichever form reads better in context.
+Terse forms that expand to verbose `php/*`. Use whichever reads better.
 
 | Shorthand                       | Expands to                          |
 |---------------------------------|-------------------------------------|
@@ -87,35 +91,36 @@ Terse shorthands that expand to the verbose `php/*` forms below. Use whichever f
 | `(.method obj args)`            | `(php/-> obj (method args))`        |
 | `(.-field obj)`                 | `(php/-> obj field)`                |
 | `(ClassName/method args)`       | `(php/:: ClassName (method args))`  |
-| `\Ns\Class/MEMBER`              | `(php/:: \Ns\Class MEMBER)`         |
+| `Ns.Class/MEMBER`               | `(php/:: Ns.Class MEMBER)`          |
 
 ```phel
-(ns my\module
-  (:use \DateTimeImmutable))
+(ns my.module
+  (:use DateTimeImmutable)
+  (:use DateInterval))
 
 (new DateTimeImmutable "2026-04-20")           ; constructor
 (.format (new DateTimeImmutable) "Y-m-d")       ; instance method
-(.-s (new \DateInterval "PT30S"))               ; property
+(.-s (new DateInterval "PT30S"))               ; property
 (DateTimeImmutable/createFromFormat "Y-m-d" "2026-04-20") ; static method
-\DateTimeImmutable/ATOM                         ; static constant
+DateTimeImmutable/ATOM                         ; static constant
 ```
 
 `(ClassName. args)` constructor shorthand also works.
 
-## PHP class instantiation
+## Class instantiation
 
 ```phel
 (php/new expr args*)
 ```
 
-Evaluates `expr` and creates a new PHP class using the arguments. The instance of the class is returned.
+Evaluates `expr`, creates instance with `args`, returns it.
 
 ```phel
-(ns my\module
-  (:use \DateTime))
+(ns my.module
+  (:use DateTime))
 
-(php/new DateTime) ; Returns a new instance of the DateTime class
-(php/new DateTime "now") ; Returns a new instance of the DateTime class
+(php/new DateTime)       ; => DateTime instance
+(php/new DateTime "now") ; => DateTime instance
 
 (php/new "\\DateTimeImmutable") ; instantiate a new PHP class from string
 ```
@@ -138,28 +143,31 @@ new \DateTimeImmutable();
 You can import classes with `:use` to avoid repeating the namespace, just like PHP's `use` statement.
 {% end %}
 
-## PHP method and property call
+## Method and property call
 
 ```phel
 (php/-> object (methodname expr*))
 (php/-> object property)
 ```
 
-Calls a method or property on a PHP object. Both `methodname` and `property` must be symbols and cannot be an evaluated value.
+Calls method or accesses property. Both `methodname` and `property` must be symbols, not evaluated values.
 
-You can chain multiple method calls or property accesses in one `php/->` expression. Each element is evaluated sequentially on the result of the previous call, allowing fluent-style interactions or access to nested properties.
+Chain multiple in one `php/->`. Each element evaluates on result of previous, enabling fluent chains or nested property access.
 
 ```phel
-(ns my\module)
+(ns my.module
+  (:use DateInterval)
+  (:use DateTimeImmutable)
+  (:use stdClass))
 
-(def di (php/new \DateInterval "PT30S"))
+(def di (php/new DateInterval "PT30S"))
 
 (php/-> di (format "%s seconds")) ; Evaluates to "30 seconds"
 (php/-> di s) ; Evaluates to 30
 
 ;; Chain multiple calls:
 ;; (new DateTimeImmutable("2024-03-10"))->modify("+1 day")->format("Y-m-d")
-(php/-> (php/new \DateTimeImmutable "2024-03-10")
+(php/-> (php/new DateTimeImmutable "2024-03-10")
         (modify "+1 day")
         (format "Y-m-d"))
 
@@ -167,8 +175,8 @@ You can chain multiple method calls or property accesses in one `php/->` express
 (php/-> user profile (getDisplayName))
 
 ;; Other example using nested properties:
-(def address (php/new \stdClass))
-(def user (php/new \stdClass))
+(def address (php/new stdClass))
+(def user (php/new stdClass))
 (php/oset (php/-> address city) "Berlin")
 (php/oset (php/-> user address) address)
 (php/-> user address city) ; Evaluates to "Berlin"
@@ -187,7 +195,7 @@ $user->profile->getDisplayName();
 // Phel
 (php/-> di (format "%s seconds"))
 (php/-> di s)
-(php/-> (php/new \DateTimeImmutable "2024-03-10")
+(php/-> (php/new DateTimeImmutable "2024-03-10")
         (modify "+1 day")
         (format "Y-m-d"))
 (php/-> user profile (getDisplayName))
@@ -200,22 +208,22 @@ Method calls use parentheses `(methodname args)`, while property access is just 
 The `php/->` operator is inspired by Clojure's thread-first macro `->`, but specifically designed for PHP object method chaining.
 {% end %}
 
-## PHP static method and property call
+## Static method and property
 
 ```phel
 (php/:: class (methodname expr*))
 (php/:: class property)
 ```
 
-Same as above, but for static calls on PHP classes.
+Same as above, but static.
 
 ```phel
-(ns my\module
-  (:use \DateTimeImmutable))
+(ns my.module
+  (:use DateTimeImmutable))
 
-(php/:: DateTimeImmutable ATOM) ; Evaluates to "Y-m-d\TH:i:sP"
+(php/:: DateTimeImmutable ATOM) ; => "Y-m-d\TH:i:sP"
 
-;; Evaluates to a new instance of DateTimeImmutable
+;; => DateTimeImmutable instance
 (php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2020-03-22"))
 ```
 
@@ -233,17 +241,17 @@ DateTimeImmutable::createFromFormat("Y-m-d", "2020-03-22");
 ```
 {% end %}
 
-## PHP set object properties
+## Set object properties
 
 ```phel
 (php/oset (php/-> object property) value)
 (php/oset (php/:: class property) value)
 ```
 
-Use `php/oset` to set a value to a class/object property.
+Set value on class/object property.
 
 ```phel
-(def x (php/new \stdclass))
+(def x (php/new stdclass))
 (php/oset (php/-> x name) "foo")
 ```
 
@@ -256,20 +264,20 @@ $x = new stdClass();
 $x->name = "foo";
 
 // Phel
-(def x (php/new \stdclass))
+(def x (php/new stdclass))
 (php/oset (php/-> x name) "foo")
 ```
 
 **Note:** This mutates the PHP object. When possible, use Phel's immutable data structures instead.
 {% end %}
 
-## Get PHP-Array value
+## Get PHP array value
 
 ```phel
 (php/aget arr index)
 ```
 
-Equivalent to PHP's `arr[index] ?? null`.
+Equivalent: `arr[index] ?? null`.
 
 ```phel
 (php/aget ["a" "b" "c"] 0) ; Evaluates to "a"
@@ -297,15 +305,13 @@ $arr[5] ?? null;  // Returns null
 - Use `get` for **Phel data structures** (immutable vectors, maps)
 {% end %}
 
-## Get nested PHP-Array value
+## Get nested PHP array value
 
 ```phel
 (php/aget-in arr path)
 ```
 
-Resolves nested values in a PHP array using a sequence of keys or indexes. The
-`path` must be a sequential collection such as a vector. If any step in the
-path is missing, `nil` is returned.
+Resolves nested values via a sequence of keys/indexes. `path` is a sequential collection (e.g. vector). Missing step returns `nil`.
 
 ```phel
 (def users
@@ -344,13 +350,13 @@ $data['meta']['missing'] ?? null;
 This is similar to Phel's `get-in` for immutable data structures, but specifically for PHP arrays.
 {% end %}
 
-## Set PHP-Array value
+## Set PHP array value
 
 ```phel
 (php/aset arr index value)
 ```
 
-Equivalent to PHP's `arr[index] = value`.
+Equivalent: `arr[index] = value`.
 
 {% php_note() %}
 `php/aset` mutates a PHP array in place:
@@ -366,14 +372,13 @@ $arr[0] = "value";
 **Important:** This mutates the array. For immutable operations, use Phel's `assoc` on Phel data structures instead.
 {% end %}
 
-## Set nested PHP-Array value
+## Set nested PHP array value
 
 ```phel
 (php/aset-in arr path value)
 ```
 
-Creates or updates nested entries inside a PHP array. Intermediate arrays are
-created as needed to ensure the path exists before writing the value.
+Creates or updates nested entries. Missing intermediate arrays are created.
 
 ```phel
 (def data (php/array))
@@ -398,13 +403,13 @@ $data['user']['profile']['name'] = 'Charlie';
 This is the mutable counterpart to Phel's `assoc-in` for immutable data structures.
 {% end %}
 
-## Append PHP-Array value
+## Append PHP array value
 
 ```phel
 (php/apush arr value)
 ```
 
-Equivalent to PHP's `arr[] = value`.
+Equivalent: `arr[] = value`.
 
 {% php_note() %}
 `php/apush` appends to a PHP array:
@@ -420,13 +425,13 @@ $arr[] = "new value";
 For immutable operations, use `conj` on Phel vectors instead.
 {% end %}
 
-## Unset PHP-Array value
+## Unset PHP array value
 
 ```phel
 (php/aunset arr index)
 ```
 
-Equivalent to PHP's `unset(arr[index])`.
+Equivalent: `unset(arr[index])`.
 
 {% php_note() %}
 `php/aunset` removes an element from a PHP array:
@@ -442,14 +447,13 @@ unset($arr[0]);
 For immutable operations, use `dissoc` on Phel maps instead.
 {% end %}
 
-## Unset nested PHP-Array value
+## Unset nested PHP array value
 
 ```phel
 (php/aunset-in arr path)
 ```
 
-Removes a nested entry in a PHP array. Once the value is removed, parent arrays
-remain untouched even if they become empty.
+Removes nested entry. Parent arrays remain untouched even if empty after.
 
 ```phel
 (def data (php/array "user" (php/array "profile" (php/array "name" "Dora"))))
@@ -472,17 +476,11 @@ unset($data['user']['profile']['name']);
 Parent arrays remain intact even if they become empty after the unset.
 {% end %}
 
-## `__DIR__`, `__FILE__`, and `*file*`
+## `__DIR__`, `__FILE__`, `*file*`
 
-In Phel you can also use PHP Magic Methods `__DIR__` and `__FILE__`. When the
-compiler runs, these constants are expanded by PHP and therefore point to the
-generated PHP file that is executed (e.g. the temporary file under
-`.phel/cache`).
+PHP magic constants `__DIR__` and `__FILE__` work but expand at PHP compile, pointing to the generated PHP file under `.phel/cache`.
 
-Sometimes you need the path of the original Phel source file instead. For that
-Phel exposes the special var `*file*`, which contains the absolute path of the
-current Phel file. Combine it with `php/dirname` if you need the source
-directory.
+For the original Phel source path, use `*file*` (absolute path of current Phel file). Combine with `php/dirname` for the source dir.
 
 ```phel
 (println __DIR__)  ; Directory name of the generated PHP file
@@ -507,12 +505,11 @@ __FILE__  // Points to cached .php file
 Use `*file*` when you need to reference the original Phel source location, such as for loading resources relative to your source code.
 {% end %}
 
-## Calling Phel functions from PHP
+## Calling Phel from PHP
 
-Phel also provides a way to let you call Phel functions from PHP. This is useful for existing PHP application that wants to integrate Phel.
-Therefore, you have to load the Phel namespace that you want to call at the beginning of your script. This can be done directly after the `autoload.php` file was loaded.
+Useful for integrating Phel into existing PHP apps. Load the Phel namespace after `autoload.php`.
 
-For example, see [using-exported-phel-function.php](https://github.com/phel-lang/cli-skeleton/blob/main/example/using-exported-phel-function.php)
+Example: [using-exported-phel-function.php](https://github.com/phel-lang/cli-skeleton/blob/main/example/using-exported-phel-function.php)
 
 ```php
 <?php
@@ -524,7 +521,7 @@ $projectRootDir = dirname(__DIR__);
 
 require $projectRootDir . '/vendor/autoload.php';
 
-Phel::run($projectRootDir, 'cli-skeleton\modules\adder-module');
+Phel::run($projectRootDir, 'cli-skeleton.modules.adder-module');
 
 $adder = new AdderModule();
 $result = $adder->adder(1, 2, 3);
@@ -532,12 +529,11 @@ $result = $adder->adder(1, 2, 3);
 echo 'Result = ' . $result . PHP_EOL;
 ```
 
-Phel provide two ways to call Phel functions, manually or by using the `export` command.
+Two ways: manually, or via the `export` command.
 
 ### Manually
 
-The `PhelCallerTrait` can be used to call any Phel function from an existing PHP class.
-Simply inject the trait in the class and call the `callPhel` function.
+`PhelCallerTrait` calls any Phel function from a PHP class. Inject the trait, call `callPhel`.
 
 ```php
 <?php
@@ -548,7 +544,7 @@ class MyExistingClass {
 
   public function myExistingMethod(...$arguments) {
     return $this->callPhel(
-        'my\phel\namespace', 
+        'my.phel.namespace', 
         'phel-function-name', 
         ...$arguments
     );
@@ -558,23 +554,22 @@ class MyExistingClass {
 
 ### Using the `export` command
 
-Alternatively, the `phel export` command can be used. This command will generate a wrapper class for all Phel functions that are marked as *export*.
+`phel export` generates a wrapper class for all Phel functions marked *export*.
 
-Before using the `export` command the required configuration options need to be added to `phel-config.php`:
+Add config to `phel-config.php` first:
 
 ```php
 <?php
 return (new \Phel\Config\PhelConfig())
-    ->setExportConfig((new \Phel\Config\PhelExportConfig())
-        ->setFromDirectories(['src'])
-        ->setNamespacePrefix('PhelGenerated')
-        ->setTargetDirectory('src/PhelGenerated'))
+    ->withExportFromDirectories(['src'])
+    ->withExportNamespacePrefix('PhelGenerated')
+    ->withExportTargetDirectory('src/PhelGenerated')
 ;
 ```
 
-A detailed description of the options can be found in the [Configuration](/documentation/configuration/#exportconfig) chapter.
+Option details: [Configuration](/documentation/configuration/).
 
-To mark a function as exported the following metadata needs to be added to the function:
+Mark a function exported with metadata:
 
 ```phel
 (defn my-function
@@ -583,4 +578,4 @@ To mark a function as exported the following metadata needs to be added to the f
   (+ a b))
 ```
 
-Now the `phel export` command will generate a PHP wrapper class in the target directory (in this case `src/PhelGenerated`). This class can then be used in the PHP application to call Phel functions.
+`phel export` then generates a wrapper class in the target dir (here `src/PhelGenerated`). Use it from PHP to call Phel functions.

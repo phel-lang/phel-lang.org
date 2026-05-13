@@ -1,17 +1,17 @@
 +++
 title = "Cookbook"
 weight = 4
-aliases = ["/documentation/cookbook"]
+aliases = ["/documentation/cookbook", "/documentation/one-liners"]
 +++
 
-Practical recipes for common tasks in Phel. Each example is self-contained and ready to use.
+Recipes for common tasks. Each example self-contained.
 
-## Read and Process a CSV File
+## Read and process a CSV file
 
-Read a CSV file and parse it into a vector of maps, where each map represents a row with column headers as keys.
+Read CSV into a vector of maps, headers as keys.
 
 ```phel
-(ns cookbook\csv-reader)
+(ns cookbook.csv-reader)
 
 ;; Read a CSV file and return a vector of maps
 ;; Each row becomes a map with header names as keys
@@ -54,12 +54,12 @@ Read a CSV file and parse it into a vector of maps, where each map represents a 
 
 **See also:** [PHP Interop](/documentation/php-interop), [Data Structures](/documentation/language/data-structures)
 
-## Build a Simple CLI Tool
+## Build a simple CLI tool
 
-A command-line script that reads arguments, parses simple flags, and produces output.
+CLI script that reads args, parses flags, produces output.
 
 ```phel
-(ns cookbook\cli-tool)
+(ns cookbook.cli-tool)
 
 ;; Access command-line arguments via PHP's $argv
 ;; When running: vendor/bin/phel run src/cli-tool.phel --name Alice --greeting Hi
@@ -101,14 +101,15 @@ A command-line script that reads arguments, parses simple flags, and produces ou
 
 **See also:** [PHP Interop](/documentation/php-interop), [Control Flow](/documentation/language/control-flow)
 
-## HTTP Request with cURL
+## HTTP request with cURL
 
-Make an HTTP GET request using the built-in `phel\http-client` module and parse a JSON response with `phel\json`.
+GET request via `phel.http-client`. Parse JSON via `phel.json`.
 
 ```phel
-(ns cookbook\http-client
-  (:require phel\http-client :as http)
-  (:require phel\json :as json))
+(ns cookbook.http-client
+  (:require phel.http-client :as http)
+  (:require phel.json :as json)
+  (:use JsonException))
 
 ;; Perform an HTTP GET request. `http/get` returns an http/response struct
 ;; with :status, :headers, :body, :version, and :reason keys.
@@ -118,11 +119,11 @@ Make an HTTP GET request using the built-in `phel\http-client` module and parse 
       {:body (get resp :body) :status (get resp :status)}
       {:error (get resp :reason) :status (get resp :status)})))
 
-;; Parse a JSON string into a Phel map using phel\json
+;; Parse a JSON string into a Phel map using phel.json
 (defn parse-json [json-string]
   (try
     (json/decode json-string)
-    (catch \JsonException e
+    (catch JsonException e
       {:error (php/-> e (getMessage))})))
 
 ;; Fetch data from a JSON API
@@ -134,7 +135,7 @@ Make an HTTP GET request using the built-in `phel\http-client` module and parse 
 
 ;; Example: fetch a list of todos from a public API
 (def response (fetch-json "https://jsonplaceholder.typicode.com/todos/1"))
-;; response is a Phel map (phel\json converts keys to keywords)
+;; response is a Phel map (phel.json converts keys to keywords)
 (println (str "Title: " (get response :title)))
 (println (str "Completed: " (if (get response :completed) "yes" "no")))
 
@@ -157,11 +158,11 @@ Make an HTTP GET request using the built-in `phel\http-client` module and parse 
 
 ## Generate HTML
 
-Use Phel's `html` module to generate HTML markup with nested elements, attributes, and dynamic content.
+`html` module: nested elements, attributes, dynamic content.
 
 ```phel
-(ns cookbook\html-generator
-  (:require phel\html :refer [html doctype raw-string]))
+(ns cookbook.html-generator
+  (:require phel.html :refer [html doctype raw-string]))
 
 ;; Generate a simple page layout
 (defn page [title & body]
@@ -221,12 +222,12 @@ Use Phel's `html` module to generate HTML markup with nested elements, attribute
 
 **See also:** [HTML Rendering](/documentation/web/html-rendering)
 
-## Working with Dates
+## Working with dates
 
-Use PHP's DateTime classes via Phel interop to create, format, and compare dates.
+PHP DateTime via interop: create, format, compare.
 
 ```phel
-(ns cookbook\dates
+(ns cookbook.dates
   (:use DateTimeImmutable)
   (:use DateInterval)
   (:use DateTimeZone))
@@ -297,12 +298,12 @@ Use PHP's DateTime classes via Phel interop to create, format, and compare dates
 
 **See also:** [PHP Interop](/documentation/php-interop)
 
-## File System Operations
+## Filesystem operations
 
-Read files, write files, list directories, and check file existence using PHP interop.
+Read, write, list, exist checks via PHP interop.
 
 ```phel
-(ns cookbook\filesystem)
+(ns cookbook.filesystem)
 
 ;; Read entire file contents
 (defn read-file [path]
@@ -392,12 +393,12 @@ Read files, write files, list directories, and check file existence using PHP in
 
 **See also:** [PHP Interop](/documentation/php-interop)
 
-## Data Transformation Pipeline
+## Data transformation pipeline
 
-Take raw data, filter it, transform it, and group it using Phel's threading macros and collection functions.
+Filter, transform, group via threading macros and collection functions.
 
 ```phel
-(ns cookbook\data-pipeline)
+(ns cookbook.data-pipeline)
 
 ;; Sample dataset: a vector of user maps
 (def users
@@ -432,7 +433,8 @@ Take raw data, filter it, transform it, and group it using Phel's threading macr
 
 ;; More pipeline examples:
 
-;; Average age of active users
+;; Average age of active users.
+;; (/ int int) returns a Rational when not evenly divisible.
 (def avg-age
   (let [active (filter :active users)
         total-age (reduce + 0 (map :age active))]
@@ -464,13 +466,14 @@ Take raw data, filter it, transform it, and group it using Phel's threading macr
 
 **See also:** [Data Structures](/documentation/language/data-structures), [Control Flow](/documentation/language/control-flow)
 
-## Simple Key-Value Store
+## Simple key-value store
 
-Build a persistent key-value store backed by a JSON file, with functions for get, put, delete, and listing keys.
+Persistent KV store backed by JSON. Get, put, delete, list keys.
 
 ```phel
-(ns cookbook\kv-store
-  (:require phel\json :as json))
+(ns cookbook.kv-store
+  (:require phel.json :as json)
+  (:use JsonException))
 
 ;; Path to the JSON storage file
 (def default-store-path "data/store.json")
@@ -484,7 +487,7 @@ Build a persistent key-value store backed by a JSON file, with functions for get
         {}
         (try
           (json/decode contents)
-          (catch \JsonException _ {}))))))
+          (catch JsonException _ {}))))))
 
 ;; Save the store to disk as pretty-printed JSON
 (defn store-save [path data]
@@ -550,18 +553,18 @@ Build a persistent key-value store backed by a JSON file, with functions for get
     (store-save path updated)
     updated))
 
-(store-put-many [[:lang "phel"] [:version "0.34"] [:status "awesome"]])
+(store-put-many [[:lang "phel"] [:version "0.37"] [:status "awesome"]])
 (println (str "All keys: " (store-keys)))
 ```
 
 **See also:** [Data Structures](/documentation/language/data-structures), [PHP Interop](/documentation/php-interop)
 
-## Defining and Using Protocols
+## Defining and using protocols
 
-Protocols let you define polymorphic behavior that can be extended to any type -- even types you didn't create. This is similar to PHP interfaces but more flexible.
+Protocols define polymorphic behavior, extendable to any type. More flexible than PHP interfaces.
 
 ```phel
-(ns cookbook\protocols)
+(ns cookbook.protocols)
 
 ;; Define a protocol for rendering things as HTML
 (defprotocol Renderable
@@ -609,14 +612,14 @@ Protocols let you define polymorphic behavior that can be extended to any type -
 (satisfies? Renderable "plain string")    ; => false
 ```
 
-**See also:** [Cheat Sheet -- Protocols](/documentation/reference/cheat-sheet#protocols)
+**See also:** [Cheat Sheet -- Protocols](/documentation/reference/cheat-sheet/#protocols)
 
-## Data Processing with Transducers
+## Data processing with transducers
 
-Transducers let you compose data transformation pipelines without creating intermediate collections. They are faster and more memory-efficient than chaining `map`, `filter`, etc.
+Compose pipelines without intermediate collections. Faster, less memory than chaining `map`/`filter`.
 
 ```phel
-(ns cookbook\transducers)
+(ns cookbook.transducers)
 
 ;; Sample data: a log of events
 (def events
@@ -678,14 +681,14 @@ Transducers let you compose data transformation pipelines without creating inter
 (into [] cat nested)               ; => [1 2 3 4 5 6]
 ```
 
-**See also:** [Cheat Sheet -- Transducers](/documentation/reference/cheat-sheet#transducers)
+**See also:** [Cheat Sheet -- Transducers](/documentation/reference/cheat-sheet/#transducers)
 
-## Reader Conditionals for Cross-Platform Code
+## Reader conditionals for cross-platform code
 
-Reader conditionals allow you to write `.cljc` files that can target different platforms. Use `:phel` for Phel-specific code and `:default` as a fallback.
+Write `.cljc` targeting multiple platforms. `:phel` for Phel-specific, `:default` as fallback.
 
 ```phel
-(ns cookbook\conditionals)
+(ns cookbook.conditionals)
 
 ;; Reader conditional: select platform-specific expression
 ;; In a .cljc file, this compiles only the :phel branch:
@@ -710,12 +713,12 @@ Reader conditionals allow you to write `.cljc` files that can target different p
 ;; On Phel: => [:core :macros :php-interop :composer]
 ```
 
-## Regex Matching and Validation
+## Regex matching and validation
 
-Phel provides regex literals (`#"..."`) and matching functions for working with PCRE patterns.
+Regex literals (`#"..."`) and matching functions for PCRE patterns.
 
 ```phel
-(ns cookbook\regex)
+(ns cookbook.regex)
 
 ;; Basic matching with re-find (returns first match)
 (re-find #"\d+" "Order #12345 confirmed")
@@ -746,18 +749,19 @@ Phel provides regex literals (`#"..."`) and matching functions for working with 
 
 ;; Extract all successive matches with `re-seq` (lazy sequence of matches).
 (re-seq #"\b[A-Z][a-z]+" "Alice met Bob and Charlie")
-;; => ("Alice" "Bob" "Charlie")
+;; => @["Alice" "Bob" "Charlie"]
 ```
 
-**See also:** [Cheat Sheet -- Regular Expressions](/documentation/reference/cheat-sheet#regular-expressions)
+**See also:** [Cheat Sheet -- Regular Expressions](/documentation/reference/cheat-sheet/#regular-expressions)
 
-## Structured Exceptions with ex-info
+## Structured exceptions with ex-info
 
-Use `ex-info` to create exceptions that carry structured data, making error handling more informative than plain string messages.
+`ex-info` carries structured data with exceptions. More informative than plain messages.
 
 ```phel
-(ns cookbook\exceptions
-  (:require phel\json :as json))
+(ns cookbook.exceptions
+  (:require phel.json :as json)
+  (:use Exception))
 
 ;; Stub user lookup -- replace with real datasource
 (def users {1 {:id 1 :name "Alice"}
@@ -779,7 +783,7 @@ Use `ex-info` to create exceptions that carry structured data, making error hand
   (try
     (let [user (find-user user-id)]
       {:status 200 :body user})
-    (catch \Exception e
+    (catch Exception e
       (let [data (ex-data e)]
         (case (get data :type)
           :not-found   {:status 404 :body (ex-message e)}
@@ -793,7 +797,7 @@ Use `ex-info` to create exceptions that carry structured data, making error hand
       (when (= false raw)
         (throw (ex-info "File not readable" {:path path})))
       (json/decode raw))
-    (catch \Exception e
+    (catch Exception e
       (throw (ex-info "Config load failed"
                       {:path path :step :read}
                       e)))))
@@ -801,22 +805,22 @@ Use `ex-info` to create exceptions that carry structured data, making error hand
 ;; Later, inspect the chain
 (try
   (load-config "missing.json")
-  (catch \Exception e
+  (catch Exception e
     (println (str "Error: " (ex-message e)))
     (println (str "Data: " (ex-data e)))
     (when (ex-cause e)
       (println (str "Caused by: " (ex-message (ex-cause e)))))))
 ```
 
-**See also:** [Cheat Sheet -- Error Handling](/documentation/reference/cheat-sheet#error-handling)
+**See also:** [Cheat Sheet -- Error Handling](/documentation/reference/cheat-sheet/#error-handling)
 
-## Pattern Matching with `phel\match`
+## Pattern matching with `phel.match`
 
-The `phel\match` module provides a `match` macro with literal, vector, map, wildcard, `:as`, `:guard`, `:or`, and rest-binding patterns.
+`match` macro: literal, vector, map, wildcard, `:as`, `:guard`, `:or`, rest-binding patterns.
 
 ```phel
-(ns cookbook\match
-  (:require phel\match :refer [match]))
+(ns cookbook.match
+  (:require phel.match :refer [match]))
 
 (defn describe [x]
   (match x
@@ -834,13 +838,13 @@ The `phel\match` module provides a `match` macro with literal, vector, map, wild
 (describe {:type :error :msg "x"}) ; => "error: x"
 ```
 
-## Schemas with `phel\schema`
+## Schemas with `phel.schema`
 
-Validate, coerce, and generate data from declarative schemas. Kinds include `:vector`, `:set`, `:map`, `:map-of`, `:tuple`, `:enum`, `:and`, `:or`, `:maybe`, `:re`, `:fn`, `:ref`, and function schemas `[:=> args ret]`.
+Validate, coerce, generate data from declarative schemas. Kinds: `:vector`, `:set`, `:map`, `:map-of`, `:tuple`, `:enum`, `:and`, `:or`, `:maybe`, `:re`, `:fn`, `:ref`, function schemas `[:=> args ret]`.
 
 ```phel
-(ns cookbook\schema
-  (:require phel\schema :as s))
+(ns cookbook.schema
+  (:require phel.schema :as s))
 
 (def User
   [:map
@@ -866,23 +870,22 @@ Instrument a function to check args/return at call sites:
 (s/instrument! `greet [:=> [User] :string])
 ```
 
-## Async with `phel\async`
+## Async with `phel.async`
 
-Fiber-backed promises and futures:
+Fiber-backed promises and futures. `promise`, `deliver`, `future-call`, `future?`, and `deref` live in `phel.core` and are available without a require:
 
 ```phel
-(ns cookbook\async
-  (:require phel\async :refer [promise deliver future-call future? deref]))
+(ns cookbook.async)
 
 (def p (promise))
 (future-call (fn [] (deliver p 42)))
 
-(deref p)          ; blocks
-(deref p 1000 :timeout)  ; 3-arg: wait ms, default on timeout
+(deref p)                ; blocks until delivered
+(deref p 1000 :timeout)  ; wait up to 1000 ms, return :timeout on expiry
 
 (def f (future-call (fn [] (+ 1 2))))
-(future? f)        ; => true
-@f                 ; => 3
+(future? f)              ; => true
+@f                       ; => 3
 ```
 
 ## File Watching
@@ -890,20 +893,20 @@ Fiber-backed promises and futures:
 Reload namespaces on file change:
 
 ```phel
-(ns cookbook\watcher
-  (:require phel\watch :refer [watch!]))
+(ns cookbook.watcher
+  (:require phel.watch :refer [watch!]))
 
 (watch! ["src/" "tests/"])
 ```
 
 Or from the shell: `vendor/bin/phel watch src/`.
 
-## Property Tests with `phel\test\gen`
+## Property Tests with `phel.test.gen`
 
 ```phel
-(ns cookbook\gen-tests
-  (:require phel\test :refer [deftest is defspec])
-  (:require phel\test\gen :as gen))
+(ns cookbook.gen-tests
+  (:require phel.test :refer [deftest is defspec])
+  (:require phel.test.gen :as gen))
 
 (defspec addition-commutes
   [a (gen/int) b (gen/int)]
@@ -911,3 +914,289 @@ Or from the shell: `vendor/bin/phel watch src/`.
 ```
 
 Failing cases shrink automatically; the reported seed makes them reproducible.
+
+## One-liners
+
+Single-expression solutions showcasing Phel's expressiveness and functional power.
+
+### Math & Numbers
+
+Factorial of 10:
+
+```phel
+(reduce * 1 (range 1 11))
+;; => 3628800
+```
+
+Sum of squares from 1 to 100:
+
+```phel
+(->> (range 1 101) (map #(* % %)) (reduce + 0))
+;; => 338350
+```
+
+Fibonacci sequence (first 10):
+
+```phel
+(->> (range 2 10)
+     (reduce (fn [acc _]
+               (conj acc (+ (peek acc) (get acc (- (count acc) 2)))))
+             [0 1]))
+;; => [0 1 1 2 3 5 8 13 21 34]
+```
+
+Check if a number is prime:
+
+```phel
+(let [n 17]
+  (and (> n 1)
+       (every? (fn [d] (not= 0 (% n d)))
+               (range 2 (php/intval (+ 1 (php/sqrt n)))))))
+;; => true
+```
+
+Greatest common divisor (Euclidean algorithm):
+
+```phel
+(loop [a 48 b 18] (if (= b 0) a (recur b (% a b))))
+;; => 6
+```
+
+Power via reduce:
+
+```phel
+(let [base 2 exp 10]
+  (reduce (fn [acc _] (* acc base)) 1 (range 0 exp)))
+;; => 1024
+```
+
+### Strings
+
+Reverse a string:
+
+```phel
+(phel.string/reverse "hello")
+;; => "olleh"
+```
+
+Palindrome check:
+
+```phel
+(let [s "racecar"] (= s (phel.string/reverse s)))
+;; => true
+```
+
+Count vowels:
+
+```phel
+(->> (seq "functional programming")
+     (filter #(contains? #{"a" "e" "i" "o" "u"} %))
+     count)
+;; => 7
+```
+
+Title case:
+
+```phel
+(->> (phel.string/split "hello world of phel" #" ")
+     (map phel.string/capitalize)
+     (phel.string/join " "))
+;; => "Hello World Of Phel"
+```
+
+ROT13 cipher:
+
+```phel
+(->> (seq "Hello")
+     (map (fn [c]
+            (let [o (php/ord c)]
+              (cond
+                (and (>= o 65) (<= o 90))
+                  (php/chr (+ 65 (% (+ (- o 65) 13) 26)))
+                (and (>= o 97) (<= o 122))
+                  (php/chr (+ 97 (% (+ (- o 97) 13) 26)))
+                :else c))))
+     (apply str))
+;; => "Uryyb"
+```
+
+Alternating character pattern:
+
+```phel
+(phel.string/join "" (map #(if (even? %) "*" "-") (range 0 10)))
+;; => "*-*-*-*-*-"
+```
+
+### Collections
+
+Flatten nested vectors one level:
+
+```phel
+(apply concat [[1 2] [3 4] [5 6]])
+;; => @[1 2 3 4 5 6]
+```
+
+Unique elements preserving order:
+
+```phel
+(distinct [3 1 4 1 5 9 2 6 5 3])
+;; => @[3 1 4 5 9 2 6]
+```
+
+Zip two vectors together:
+
+```phel
+(map vector [:a :b :c] [1 2 3])
+;; => @[[:a 1] [:b 2] [:c 3]]
+```
+
+Partition into pairs:
+
+```phel
+(partition 2 [1 2 3 4 5 6])
+;; => @[[1 2] [3 4] [5 6]]
+```
+
+Transpose a matrix:
+
+```phel
+(apply map vector [[1 2 3] [4 5 6] [7 8 9]])
+;; => @[[1 4 7] [2 5 8] [3 6 9]]
+```
+
+Character frequencies:
+
+```phel
+(frequencies (seq "abracadabra"))
+;; => {"a" 5 "b" 2 "r" 2 "c" 1 "d" 1}
+```
+
+Index a collection by key:
+
+```phel
+(reduce (fn [acc item] (assoc acc (get item :id) item))
+        {}
+        [{:id 1 :name "Alice"} {:id 2 :name "Bob"}])
+;; => {1 {:id 1 :name "Alice"} 2 {:id 2 :name "Bob"}}
+```
+
+Interleave and take:
+
+```phel
+(take 7 (interleave [:a :b :c :d] [1 2 3 4]))
+;; => @[:a 1 :b 2 :c 3 :d]
+```
+
+### Data Processing
+
+Group and count:
+
+```phel
+(->> [{:role "admin"} {:role "user"} {:role "admin"}
+      {:role "user"} {:role "user"}]
+     (group-by :role)
+     (map (fn [[k v]] [k (count v)])))
+;; => @[["admin" 2] ["user" 3]]
+```
+
+Top N items by key:
+
+```phel
+(->> [{:name "A" :score 42} {:name "B" :score 99} {:name "C" :score 71}]
+     (sort-by :score)
+     reverse
+     (take 2))
+;; => @[{:name "B" :score 99} {:name "C" :score 71}]
+```
+
+Merge maps with defaults:
+
+```phel
+(merge {:host "localhost" :port 3306 :db "test"}
+       {:port 5432 :db "prod"})
+;; => {:host "localhost" :port 5432 :db "prod"}
+```
+
+Sum values by category:
+
+```phel
+(->> [{:cat "a" :v 10} {:cat "b" :v 20} {:cat "a" :v 30}]
+     (group-by :cat)
+     (reduce (fn [acc [k items]]
+               (assoc acc k (reduce + 0 (map :v items))))
+             {}))
+;; => {"a" 40 "b" 20}
+```
+
+Frequency-sorted leaderboard:
+
+```phel
+(->> (frequencies [:alice :bob :alice :carol :bob :alice])
+     pairs
+     (sort-by second)
+     reverse)
+;; => [[:alice 3] [:bob 2] [:carol 1]]
+```
+
+### Fun & Creative
+
+FizzBuzz (1 to 20):
+
+```phel
+(map (fn [n]
+       (cond
+         (= 0 (% n 15)) "FizzBuzz"
+         (= 0 (% n 3))  "Fizz"
+         (= 0 (% n 5))  "Buzz"
+         :else n))
+     (range 1 21))
+;; => @[1 2 "Fizz" 4 "Buzz" "Fizz" 7 8 "Fizz" "Buzz" 11 "Fizz" 13 14 "FizzBuzz" 16 17 "Fizz" 19 "Buzz"]
+```
+
+Caesar cipher (shift by 3):
+
+```phel
+(->> (seq "Attack at dawn")
+     (map (fn [c]
+            (let [o (php/ord c)]
+              (cond
+                (and (>= o 65) (<= o 90))
+                  (php/chr (+ 65 (% (+ (- o 65) 3) 26)))
+                (and (>= o 97) (<= o 122))
+                  (php/chr (+ 97 (% (+ (- o 97) 3) 26)))
+                :else c))))
+     (apply str))
+;; => "Dwwdfn dw gdzq"
+```
+
+Simple slug generator:
+
+```phel
+(-> "Hello World, This is Phel!"
+     (phel.string/lower-case)
+     (phel.string/replace " " "-")
+     (phel.string/replace #"[^a-z0-9-]" ""))
+;; => "hello-world-this-is-phel"
+```
+
+Collatz sequence from a starting number:
+
+```phel
+(loop [n 12 acc []]
+  (if (= n 1)
+    (conj acc 1)
+    (recur (if (even? n) (/ n 2) (+ 1 (* 3 n)))
+           (conj acc n))))
+;; => [12 6 3 10 5 16 8 4 2 1]
+```
+
+Diamond pattern (width 5):
+
+```phel
+(->> (concat (range 1 6 2) (range 3 0 -2))
+     (map #(phel.string/join ""
+             [(phel.string/repeat " " (/ (- 5 %) 2))
+              (phel.string/repeat "*" %)]))
+     (phel.string/join "\n"))
+;; => "  *\n ***\n*****\n ***\n  *"
+```

@@ -1,6 +1,7 @@
 # IDE / Editor
 .cache/
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
 .omc/
 .idea/
 .vscode/
@@ -24,6 +25,7 @@ Thumbs.db
 .phel-repl-history
 .phpunit.result.cache
 cache/
+/static/wasm-repl/
 
 # API / Search (generated)
 /static/api.json

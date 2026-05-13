@@ -1,18 +1,48 @@
 {% extends "layouts/one-column-layout.html" %}
 
 {% block content %}
-    <div class="error-page">
-        <h1>404 — Page Not Found</h1>
-        <p>The page you were looking for has moved, was renamed, or never existed.</p>
-        <p>Try one of these instead, or open search from the top of the page.</p>
-        <ul class="error-page__links">
-            <li><a href="/">Home</a></li>
-            <li><a href="/documentation/getting-started/">Getting started</a></li>
-            <li><a href="/documentation/reference/api/">API reference</a></li>
-            <li><a href="/documentation/reference/cheat-sheet/">Cheat sheet</a></li>
-            <li><a href="/practice/">Practice</a></li>
-            <li><a href="/blog/">Blog</a></li>
-        </ul>
-    </div>
-{% endblock content %}
+<section class="error-page" aria-labelledby="error-title">
+  <header class="error-page__hero">
+    <p class="error-page__tag" aria-hidden="true">404</p>
+    <h1 id="error-title" class="error-page__title">Page not found</h1>
+    <p class="error-page__lead">
+      The page you were looking for has moved, was renamed, or never existed.
+    </p>
+    <pre class="error-page__repl" aria-hidden="true"><code>&gt;&gt;&gt; (find-page <span class="error-page__repl-string">"requested-url"</span>)
+nil  <span class="error-page__repl-comment">;; not in this namespace</span></code></pre>
+  </header>
 
+  <div class="error-page__groups">
+    <section class="error-page__group">
+      <h2 class="error-page__group-title">Learn</h2>
+      <ul class="error-page__links">
+        <li><a href="/documentation/getting-started/">Getting started</a></li>
+        <li><a href="/practice/">Practice exercises</a></li>
+        <li><a href="/documentation/guides/cookbook/">Cookbook</a></li>
+      </ul>
+    </section>
+
+    <section class="error-page__group">
+      <h2 class="error-page__group-title">Reference</h2>
+      <ul class="error-page__links">
+        <li><a href="/documentation/reference/cheat-sheet/">Cheat sheet</a></li>
+        <li><a href="/documentation/reference/api/">API reference</a></li>
+        <li><a href="/documentation/reference/agentic-coding/">Agentic coding</a></li>
+      </ul>
+    </section>
+
+    <section class="error-page__group">
+      <h2 class="error-page__group-title">Explore</h2>
+      <ul class="error-page__links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/documentation/">All documentation</a></li>
+      </ul>
+    </section>
+  </div>
+
+  <p class="error-page__hint">
+    Or open search from the top of any page to find what you need.
+  </p>
+</section>
+{% endblock content %}

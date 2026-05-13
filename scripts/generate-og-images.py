@@ -114,7 +114,7 @@ def main() -> None:
     )
     render(
         title="Destructuring Deep Dive",
-        subtitle="Nested vectors and maps, :keys, :or, :as, & rest — the Clojure way in Phel.",
+        subtitle="Nested vectors and maps, :keys, :or, :as, & rest, the Clojure way in Phel.",
         out_path=OUT_DIR / "og-destructuring-deep-dive.png",
     )
 

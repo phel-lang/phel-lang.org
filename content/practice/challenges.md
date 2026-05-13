@@ -8,10 +8,10 @@ Time to put everything together. These challenges grow from gentle warm-ups into
 {% question(difficulty="hard") %}
 **Temperature converter**: write `c->f` and `f->c` to convert between Celsius and Fahrenheit. Then build `convert` so that `(convert 100 :c->f)` returns `212.0`.
 ```phel
-(c->f 100)            ;; => 212.0
-(f->c 32)             ;; => 0.0
-(convert 100 :c->f)   ;; => 212.0
-(convert 32 :f->c)    ;; => 0.0
+(c->f 100)            ; => 212.0
+(f->c 32)             ; => 0.0
+(convert 100 :c->f)   ; => 212.0
+(convert 32 :f->c)    ; => 0.0
 ```
 {% end %}
 {% solution() %}
@@ -60,7 +60,7 @@ Learn more: [Control Flow](/documentation/language/control-flow), [Arithmetic](/
 {% question(difficulty="hard") %}
 **Fibonacci**: return the first `n` Fibonacci numbers.
 ```phel
-(fib 8) ;; => [0 1 1 2 3 5 8 13]
+(fib 8) ; => [0 1 1 2 3 5 8 13]
 ```
 Hint: `loop`/`recur` with an accumulator.
 {% end %}
@@ -82,8 +82,8 @@ Learn more: [Control Flow](/documentation/language/control-flow), [Data Structur
 {% question(difficulty="hard") %}
 **Caesar cipher**: write `encode` and `decode` that shift lowercase letters by `n` positions. Leave other characters alone.
 ```phel
-(encode "hello" 3)  ;; => "khoor"
-(decode "khoor" 3)  ;; => "hello"
+(encode "hello" 3)  ; => "khoor"
+(decode "khoor" 3)  ; => "hello"
 ```
 Hint: `php/ord` and `php/chr` give you character codes.
 {% end %}
@@ -96,13 +96,13 @@ Hint: `php/ord` and `php/chr` give you character codes.
       c)))
 
 (defn encode [text n]
-  (apply str (map |(shift-char $ n) text)))
+  (apply str (map #(shift-char % n) text)))
 
 (defn decode [text n]
   (encode text (- 26 n)))
 
-(encode "hello" 3)  ;; => "khoor"
-(decode "khoor" 3)  ;; => "hello"
+(encode "hello" 3)  ; => "khoor"
+(decode "khoor" 3)  ; => "hello"
 ```
 This combines `map` over a string (treated as a sequence of characters), the short anonymous `|` form, PHP interop for character codes, and modular arithmetic for the wrap-around.
 
@@ -121,20 +121,20 @@ Tips:
 
 ```phel
 (def book-url "https://gist.githubusercontent.com/Chemaclass/da9a0ba72adee6644193c730d4f307b2/raw/1164593f76ae7157d816bcc8d700937dfb73420e/moby-dick.txt")
-(def stop-words (set "the" "he" "at" "but" "there" "of" "was" "be" "not" "use" "and" "for" "this" "what" "an" "a" "on" "have" "all" "each" "to" "are" "from" "were" "which" "in" "as" "or" "we" "she" "is" "with" "ine" "when" "do" "you" "his" "had" "your" "how" "that" "they" "by" "can" "their" "it" "I" "word" "said" "if" "i" "s"))
+(def stop-words (hash-set "the" "he" "at" "but" "there" "of" "was" "be" "not" "use" "and" "for" "this" "what" "an" "a" "on" "have" "all" "each" "to" "are" "from" "were" "which" "in" "as" "or" "we" "she" "is" "with" "ine" "when" "do" "you" "his" "had" "your" "how" "that" "they" "by" "can" "their" "it" "I" "word" "said" "if" "i" "s"))
 ```
 {% end %}
 {% solution() %}
 ```phel
 (def book-url "https://gist.githubusercontent.com/Chemaclass/da9a0ba72adee6644193c730d4f307b2/raw/1164593f76ae7157d816bcc8d700937dfb73420e/moby-dick.txt")
 (def full-book (php/file_get_contents book-url))
-(def words (re-seq "/\\w+/" full-book))
+(def words (re-seq #"\w+" full-book))
 
-(def stop-words (set "the" "he" "at" "but" "there" "of" "was" "be" "not" "use" "and" "for" "this" "what" "an" "a" "on" "have" "all" "each" "to" "are" "from" "were" "which" "in" "as" "or" "we" "she" "is" "with" "ine" "when" "do" "you" "his" "had" "your" "how" "that" "they" "by" "can" "their" "it" "I" "word" "said" "if" "i" "s"))
+(def stop-words (hash-set "the" "he" "at" "but" "there" "of" "was" "be" "not" "use" "and" "for" "this" "what" "an" "a" "on" "have" "all" "each" "to" "are" "from" "were" "which" "in" "as" "or" "we" "she" "is" "with" "ine" "when" "do" "you" "his" "had" "your" "how" "that" "they" "by" "can" "their" "it" "I" "word" "said" "if" "i" "s"))
 
 (->> words
      (map php/strtolower)
-     (filter |(not (contains? stop-words $)))
+     (filter #(not (contains? stop-words %)))
      (frequencies)
      (pairs)
      (sort-by second)
@@ -151,16 +151,16 @@ Learn more: [PHP Interop](/documentation/php-interop), [Data Structures](/docume
 {% end %}
 
 {% question(difficulty="hard") %}
-**Counter with mutable state**: build a tiny counter using `var` and `swap!`.
+**Counter with mutable state**: build a tiny counter using `atom` and `swap!`.
 ```phel
 (reset-counter!)
 (tick!) (tick!) (tick!)
-(current) ;; => 3
+(current) ; => 3
 ```
 {% end %}
 {% solution() %}
 ```phel
-(def counter (var 0))
+(def counter (atom 0))
 
 (defn current [] @counter)
 (defn tick! [] (swap! counter inc))
@@ -168,9 +168,9 @@ Learn more: [PHP Interop](/documentation/php-interop), [Data Structures](/docume
 
 (reset-counter!)
 (tick!) (tick!) (tick!)
-(current) ;; => 3
+(current) ; => 3
 ```
-Most Phel data is immutable, but sometimes you need a single mutable cell - a request counter, a cached result, an in-memory app state. `var` gives you exactly that, `swap!` updates it with a function, and `@` (or `deref`) reads the current value. By convention, functions that mutate end with `!`.
+Most Phel data is immutable, but sometimes you need a single mutable cell - a request counter, a cached result, an in-memory app state. `atom` gives you exactly that, `swap!` updates it with a function, and `@` (or `deref`) reads the current value. By convention, functions that mutate end with `!`.
 
 Learn more: [Global and Local Bindings](/documentation/language/global-and-local-bindings)
 {% end %}

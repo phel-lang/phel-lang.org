@@ -9,4 +9,4 @@ template = "section-page.html"
 insert_after = "PHP Interop"
 +++
 
-Phel includes built-in support for building web applications. These pages cover HTTP request/response handling and HTML rendering using Phel's data-structure-based template syntax.
+Built-in web support. Pages: HTTP request/response handling, HTML rendering via Phel's data-structure templates.

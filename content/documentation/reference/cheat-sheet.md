@@ -7,13 +7,13 @@ aliases = ["/documentation/cheat-sheet"]
 scripts = ["cheat-sheet-filter.js"]
 +++
 
-A quick reference for Phel syntax and core functions.
+Quick reference for Phel syntax and core functions.
 
-## Basic Syntax
+## Basic syntax
 
 ```phel
-; This is a comment
-;; Convention: use ; for line comments
+;; This is a standalone comment
+; inline comment (after an expression)
 
 nil                     ; null value
 true false              ; booleans (only false and nil are falsy)
@@ -25,11 +25,11 @@ my-var my-module/fn     ; symbols
 #"[a-z]+"               ; regex literal (PCRE pattern)
 ```
 
-> **Note:** The `#` line comment and `#| |#` multiline comment syntax are deprecated. Use `;` for comments instead.
+> **Note:** `#` line and `#| |#` multiline comments are deprecated. Use `;;` for standalone comments and `;` for inline comments.
 
-See [Basic Types](/documentation/language/basic-types), [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations).
+See [Basic Types](/documentation/language/basic-types).
 
-## Reader Syntax
+## Reader syntax
 
 ```phel
 @my-var                 ; shorthand for (deref my-var)
@@ -39,13 +39,24 @@ See [Basic Types](/documentation/language/basic-types), [Truth and Boolean Opera
 #(apply + %&)           ; variadic: %& captures rest args
 #?(:phel expr1 :default expr2)  ; reader conditional
 #?@(:phel [a b] :default [c])  ; splicing reader conditional
+
+;; Tagged literals
+#inst "2026-01-15T12:00:00Z"    ; => DateTimeImmutable
+#uuid "550e8400-e29b-41d4-a716-446655440000"  ; => UUID string
+#regex "\\d+"                    ; => PCRE pattern string
+
+;; First-class var handles
+#'my-fn                 ; shorthand for (var my-fn)
+(var my-fn)             ; returns the Var object for my-fn
 ```
 
-The `#(...)` anonymous function shorthand is the preferred form. Use `%` or `%1` for the first argument, `%2` for the second, and `%&` for variadic rest args. The legacy `|(...)` form with `$` placeholders is still accepted but deprecated.
+`#(...)` is the preferred shorthand. `%` or `%1` first arg, `%2` second, `%&` rest. Legacy `|(...)` with `$` is deprecated.
 
-Reader conditionals (`#?()` and `#?@()`) allow code to be shared across `.cljc` files with platform-specific branches using `:phel` and `:default` keys.
+Reader conditionals (`#?()`, `#?@()`) target platforms in `.cljc` via `:phel` and `:default`.
 
-## Data Structures
+Tagged literals: `#inst` reads as `DateTimeImmutable`, `#uuid` as a UUID string, `#regex` as a PCRE pattern. Register custom tags with `register-tag` from `phel.reader`.
+
+## Data structures
 
 ```phel
 [1 2 3]                 ; vector (indexed)
@@ -61,7 +72,7 @@ Reader conditionals (`#?()` and `#?@()`) allow code to be shared across `.cljc` 
 
 See [Data Structures](/documentation/language/data-structures).
 
-## Accessing Data
+## Accessing data
 
 ```phel
 (get [1 2 3] 0)           ; => 1
@@ -76,7 +87,7 @@ See [Data Structures](/documentation/language/data-structures).
 ([10 20 30] 1)             ; => 20 (vector as function)
 ```
 
-## Modifying Data
+## Modifying data
 
 ```phel
 (conj [1 2] 3)                    ; => [1 2 3]
@@ -103,7 +114,7 @@ See [Data Structures](/documentation/language/data-structures).
   (+ a b c))                      ; => 6
 
 (let [[a b & rest] [1 2 3 4 5]]
-  rest)                            ; => (3 4 5)
+  rest)                            ; => [3 4 5]
 
 ;; Associative destructuring
 (let [{:name name :age age} {:name "Alice" :age 30}]
@@ -122,7 +133,7 @@ See [Data Structures](/documentation/language/data-structures).
 
 See [Destructuring](/documentation/language/destructuring).
 
-## Defining Things
+## Defining things
 
 ```phel
 (def pi 3.14159)                  ; global binding
@@ -170,11 +181,18 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 (identity 42)                      ; => 42
 (memoize expensive-fn)             ; => cached version of fn
 (memoize-lru expensive-fn 100)     ; => cached with max 100 entries
+
+(defn ^:memoize fib [n] ...)       ; defn metadata: auto-wraps in memoize
+(defn ^{:memoize-lru 128} f [k] ...)
+(defn ^:async fetch [url] ...)     ; wraps body in (async ...) -> Amp\Future
+
+(defn ^int add [^int a ^int b]     ; :tag metadata -> PHP type decls
+  (+ a b))
 ```
 
 See [Functions and Recursion](/documentation/language/functions-and-recursion).
 
-## Control Flow
+## Control flow
 
 ```phel
 (if (> x 0) "pos" "non-pos")      ; if/else
@@ -194,7 +212,7 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion).
 
 See [Control Flow](/documentation/language/control-flow).
 
-## Loops & Recursion
+## Loops & recursion
 
 ```phel
 (loop [acc 0 n 10]                 ; loop with recur
@@ -218,8 +236,8 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 ## Collections
 
 ```phel
-(map inc [1 2 3])                  ; => (2 3 4)
-(filter even? [1 2 3 4])          ; => (2 4)
+(map inc [1 2 3])                  ; => @[2 3 4]
+(filter even? [1 2 3 4])          ; => @[2 4]
 (reduce + 0 [1 2 3])              ; => 6
 (sort [3 1 2])                    ; => [1 2 3]
 (sort-by :age [{:age 30} {:age 20}])  ; sort by key
@@ -234,17 +252,19 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 (vec '(1 2 3))                     ; => [1 2 3] (coerce to vector)
 (subset? #{1 2} #{1 2 3})         ; => true
 (superset? #{1 2 3} #{1 2})       ; => true
-(distinct [1 2 1 3 2])            ; => (1 2 3)
-(flatten [[1 2] [3 [4]]])         ; => (1 2 3 4)
-(reverse [1 2 3])                  ; => (3 2 1)
-(concat [1 2] [3 4])              ; => (1 2 3 4)
+(distinct [1 2 1 3 2])            ; => @[1 2 3]
+(flatten [[1 2] [3 [4]]])         ; => @[1 2 3 4]
+(reverse [1 2 3])                  ; => [3 2 1]
+(concat [1 2] [3 4])              ; => @[1 2 3 4]
 (compact [1 nil 2 nil 3])         ; => (1 2 3)
-(remove neg? [1 -2 3 -4])        ; => (1 3)
+(remove neg? [1 -2 3 -4])        ; => @[1 3]
 ```
 
 See [Data Structures](/documentation/language/data-structures).
 
-## Walking Data Structures
+## Walking data structures
+
+Requires `(:require phel.walk :refer [postwalk prewalk postwalk-replace keywordize-keys stringify-keys])`.
 
 ```phel
 (postwalk f nested)                ; transform bottom-up
@@ -254,34 +274,34 @@ See [Data Structures](/documentation/language/data-structures).
 (stringify-keys {:name "Alice"})   ; => {"name" "Alice"}
 ```
 
-See [Data Structures](/documentation/language/data-structures#walking-data-structures).
+See [Data Structures](/documentation/language/data-structures/#walking-data-structures).
 
-## Lazy Sequences
+## Lazy sequences
 
 ```phel
-(take 5 (range))                   ; => (0 1 2 3 4)
-(take 5 (iterate inc 0))          ; => (0 1 2 3 4)
-(take 7 (cycle [1 2 3]))          ; => (1 2 3 1 2 3 1)
-(take 4 (repeat :x))              ; => (:x :x :x :x)
+(take 5 (range))                   ; => @[0 1 2 3 4]
+(take 5 (iterate inc 0))          ; => @[0 1 2 3 4]
+(take 7 (cycle [1 2 3]))          ; => @[1 2 3 1 2 3 1]
+(take 4 (repeat :x))              ; => @[:x :x :x :x]
 (take 5 (repeatedly #(php/rand 1 100)))  ; 5 random numbers
 
-(drop 3 (range 10))               ; => (3 4 5 6 7 8 9)
-(take-while pos? [3 2 1 0 -1])   ; => (3 2 1)
-(drop-while pos? [3 2 1 0 -1])   ; => (0 -1)
-(partition 2 [1 2 3 4 5 6])       ; => ((1 2) (3 4) (5 6))
-(interleave [:a :b :c] [1 2 3])  ; => (:a 1 :b 2 :c 3)
+(drop 3 (range 10))               ; => @[3 4 5 6 7 8 9]
+(take-while pos? [3 2 1 0 -1])   ; => @[3 2 1]
+(drop-while pos? [3 2 1 0 -1])   ; => @[0 -1]
+(partition 2 [1 2 3 4 5 6])       ; => @[[1 2] [3 4] [5 6]]
+(interleave [:a :b :c] [1 2 3])  ; => @[:a 1 :b 2 :c 3]
 
 ;; Lazy filtering + transformation
 (->> (range)
      (filter even?)
-     (take 5))                     ; => (0 2 4 6 8)
+     (take 5))                     ; => @[0 2 4 6 8]
 
 ;; Custom lazy sequence
 (defn fibs []
   (lazy-seq (cons 0 (cons 1
     (map + (fibs) (rest (fibs)))))))
 
-(doall (take 8 (fibs)))           ; => (0 1 1 2 3 5 8 13)
+(doall (take 8 (fibs)))           ; => [0 1 1 2 3 5 8 13]
 (realized? (lazy-seq [1 2 3]))    ; => false
 ```
 
@@ -294,18 +314,18 @@ Lazy file I/O:
 (read-file-lazy "big.txt" 4096)        ; lazy chunked reading
 ```
 
-`map`, `filter`, `take`, `drop`, `concat`, `mapcat`, `interleave`, and `partition` all return lazy sequences.
+`map`, `filter`, `take`, `drop`, `concat`, `mapcat`, `interleave`, `partition` return lazy sequences.
 
-## Threading Macros
+## Threading macros
 
 ```phel
 (-> {:name "Alice" :age 30}        ; thread-first
     (assoc :role "admin")
-    (dissoc :age))
+    (dissoc :age))                  ; => {:name "Alice" :role "admin"}
 
 (->> [1 2 3 4 5]                   ; thread-last
      (filter odd?)
-     (map inc))                    ; => [2 4 6]
+     (map inc))                    ; => @[2 4 6]
 
 (as-> [1 2 3] v                    ; thread with named binding
       (conj v 4)
@@ -317,7 +337,7 @@ Lazy file I/O:
 
 (cond->> [1 2 3]                   ; conditional thread-last
          true (map inc)
-         false (filter odd?))      ; => (2 3 4)
+         false (filter odd?))      ; => @[2 3 4]
 ```
 
 ## Strings
@@ -333,7 +353,7 @@ Lazy file I/O:
 (php/explode "," "a,b,c")          ; => PHP array ["a" "b" "c"]
 ```
 
-## Regular Expressions
+## Regular expressions
 
 ```phel
 ;; Regex literals use #"..." syntax (PCRE patterns)
@@ -351,7 +371,7 @@ Lazy file I/O:
 (valid-email? "not-an-email")      ; => false
 ```
 
-## Mutable State
+## Mutable state
 
 ```phel
 (def counter (atom 0))             ; create an atom (mutable container)
@@ -375,29 +395,29 @@ Lazy file I/O:
 
 See [Global and Local Bindings](/documentation/language/global-and-local-bindings).
 
-## Error Handling
+## Error handling
 
 ```phel
 (try
   (/ 1 0)
-  (catch \DivisionByZeroError e
+  (catch DivisionByZeroError e
     (str "Error: " (php/-> e (getMessage)))))
 
 (try
   (do-risky-thing)
-  (catch \Exception e
+  (catch Exception e
     (println (str "Failed: " (php/-> e (getMessage)))))
   (finally
     (cleanup)))
 
-(throw (php/new \InvalidArgumentException "bad input"))
+(throw (php/new InvalidArgumentException "bad input"))
 
 ;; Structured exceptions with ex-info
 (throw (ex-info "User not found" {:id 42 :type :not-found}))
 
 (try
   (throw (ex-info "Validation failed" {:field :email} nil))
-  (catch \Exception e
+  (catch Exception e
     (ex-message e)                 ; => "Validation failed"
     (ex-data e)                    ; => {:field :email}
     (ex-cause e)))                 ; => nil
@@ -405,7 +425,7 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 
 See [PHP Interop](/documentation/php-interop).
 
-## Interfaces & Structs
+## Interfaces & structs
 
 ```phel
 (definterface Greetable
@@ -431,7 +451,7 @@ See [Interfaces](/documentation/language/interfaces).
 
 ## Protocols
 
-Protocols provide polymorphic dispatch based on the type of the first argument. They are more flexible than interfaces because you can extend existing types without modifying them.
+Polymorphic dispatch on the first argument's type. More flexible than interfaces, extendable to existing types.
 
 ```phel
 ;; Define a protocol
@@ -457,9 +477,9 @@ Protocols provide polymorphic dispatch based on the type of the first argument. 
 (extends? Stringable dog)                        ; => true
 ```
 
-## Hierarchy System
+## Hierarchy system
 
-Derive ad-hoc hierarchies for use with multimethods and `isa?` checks.
+Ad-hoc hierarchies for multimethods and `isa?`.
 
 ```phel
 (derive :square :shape)
@@ -477,7 +497,7 @@ Derive ad-hoc hierarchies for use with multimethods and `isa?` checks.
 
 ## Transducers
 
-Transducers are composable transformations that work independently of the data source. They avoid creating intermediate collections, making pipelines more efficient.
+Composable transformations independent of the data source. Avoid intermediate collections.
 
 ```phel
 ;; Basic transducer usage with transduce
@@ -493,7 +513,7 @@ Transducers are composable transformations that work independently of the data s
 (into #{} (filter odd?) [1 2 3 2 1])     ; => #{1 3}
 
 ;; sequence: lazy transducer application
-(sequence (map inc) [1 2 3])             ; => (2 3 4)
+(sequence (map inc) [1 2 3])             ; => [2 3 4]
 
 ;; cat: concatenating transducer for nested collections
 (into [] cat [[1 2] [3 4] [5]])          ; => [1 2 3 4 5]
@@ -505,7 +525,7 @@ Transducers are composable transformations that work independently of the data s
 ;; (map f), (filter pred), (take n), (drop n), (partition-all n), etc.
 ```
 
-## PHP Interop
+## PHP interop
 
 ```phel
 ;; Calling PHP functions
@@ -514,8 +534,8 @@ Transducers are composable transformations that work independently of the data s
 (php/array_merge arr1 arr2)        ; call any PHP function
 
 ;; Instantiation
-(php/new \DateTime "now")          ; new DateTime("now")
-(new \DateTime "now")              ; shorthand
+(php/new DateTime "now")           ; new DateTime("now")
+(new DateTime "now")               ; shorthand
 
 ;; Instance methods & properties
 (php/-> obj (method arg))          ; $obj->method($arg)
@@ -528,7 +548,7 @@ Transducers are composable transformations that work independently of the data s
 (php/:: MyClass CONST)             ; MyClass::CONST
 (php/:: MyClass (create "x"))      ; MyClass::create("x")
 (MyClass/create "x")               ; static shorthand
-\Ns\MyClass/CONST                  ; static member shorthand
+Ns.MyClass/CONST                   ; static member shorthand
 
 ;; PHP arrays
 (php/aget arr 0)                   ; $arr[0] ?? null
@@ -541,12 +561,12 @@ See [PHP Interop](/documentation/php-interop).
 ## Namespaces
 
 ```phel
-(ns my-app\handlers
-  (:require my-app\db)              ; import Phel module
-  (:require my-app\utils :as u)     ; with alias
-  (:require my-app\auth :refer [login logout])  ; import symbols
-  (:use \DateTimeImmutable)          ; import PHP class
-  (:use \Some\Long\Name :as Short)) ; PHP class with alias
+(ns my-app.handlers
+  (:require my-app.db)              ; import Phel module
+  (:require my-app.utils :as u)     ; with alias
+  (:require my-app.auth :refer [login logout])  ; import symbols
+  (:use DateTimeImmutable)           ; import PHP class
+  (:use Some.Long.Name :as Short))  ; PHP class with alias
 
 (db/query "SELECT 1")               ; use module prefix
 (u/format-date date)                 ; use alias
@@ -559,8 +579,8 @@ See [Namespaces](/documentation/language/namespaces).
 ## Testing
 
 ```phel
-(ns my-app\tests
-  (:require phel\test :refer [deftest is are]))
+(ns my-app.tests
+  (:require phel.test :refer [deftest is are]))
 
 (deftest addition-test
   (is (= 4 (+ 2 2)))
@@ -573,8 +593,8 @@ See [Namespaces](/documentation/language/namespaces).
     4 3))
 
 (deftest exception-test
-  (is (thrown? \Exception
-    (throw (php/new \Exception "boom")))))
+  (is (thrown? Exception
+    (throw (php/new Exception "boom")))))
 ```
 
 ```bash
@@ -586,9 +606,34 @@ See [Namespaces](/documentation/language/namespaces).
 
 See [Testing](/documentation/testing).
 
-## Delay & Force
+## Async & concurrency
+
+`async`, `await`, `await-all`, `await-any`, `->closure` are in `phel.core` (AMPHP-backed fibers).
 
 ```phel
+;; Run body in a new fiber, returns an Amp\Future
+(def f (async (+ 1 2)))
+(await f)                          ; => 3 (blocks until resolved)
+
+;; Await multiple futures concurrently
+(await-all [(async 1) (async 2)]) ; => [1 2]
+(await-any [(async 1) (async 2)]) ; => 1 (first to resolve)
+
+;; Convert Phel fn to PHP Closure (for AMPHP and other libraries)
+(->closure (fn [x] (* x 2)))
+
+;; pmap: parallel map via fibers
+(pmap #(async (inc %)) [1 2 3])   ; => [2 3 4]
+```
+
+## Delay & force
+
+`delay` is in `phel.async` (lazy computation wrapper, not a sleep).
+
+```phel
+(ns my-app
+  (:require phel.async :refer [delay delay?]))
+
 ;; Delay defers evaluation until first access
 (def d (delay (do (println "computing...") 42)))
 (delay? d)                         ; => true
@@ -605,12 +650,30 @@ See [Testing](/documentation/testing).
   {:items [1 2 3] :next-token (when (nil? token) "page2")})
 
 (iteration fetch-page
-  :kf :next-token
-  :vf :items
-  :initk nil)
+  {:kf :next-token
+   :vf :items
+   :initk nil})
 ```
 
-## Utility Functions
+## Arithmetic
+
+```phel
+(+ 1 2 3)                          ; => 6
+(- 10 3)                           ; => 7
+(* 2 3 4)                          ; => 24
+(/ 10 2)                           ; => 5
+(/ 10 3)                           ; => 10/3 (Rational, exact)
+(/ 10.0 3)                         ; => 3.333... (float)
+(float (/ 10 3))                   ; => 3.333... (coerce Rational to float)
+(quot 10 3)                        ; => 3 (integer quotient)
+(rem 10 3)                         ; => 1 (remainder)
+(mod -10 3)                        ; => 2 (modulo, always non-negative)
+(** 2 10)                          ; => 1024
+```
+
+Integer division (`/`) returns a `Rational` when not evenly divisible. Use `float` or `(/ 10.0 3)` if you need a float.
+
+## Utility functions
 
 ```phel
 (parse-long "42")                  ; => 42
@@ -618,22 +681,23 @@ See [Testing](/documentation/testing).
 (parse-boolean "true")             ; => true
 (abs -5)                           ; => 5
 (inf? php/INF)                     ; => true
+(nan? (php/log -1))                ; => true
 (random-uuid)                      ; => "550e8400-e29b-..." (random UUID string)
 ```
 
-## REPL Utilities
+## REPL utilities
 
 ```phel
 (source my-fn)                     ; print source code of a function
-(find-fn "map")                    ; search for functions by name
+(phel.repl/find-fn "map")          ; search for functions by name
 (symbol-info 'map)                 ; detailed info about a symbol
-(ns-publics 'phel\core)           ; all public vars in a namespace
-(ns-aliases 'my-app\core)         ; namespace aliases
-(ns-refers 'my-app\core)          ; referred symbols
+(ns-publics 'phel.core)           ; all public vars in a namespace
+(ns-aliases 'my-app.core)         ; namespace aliases
+(ns-refers 'my-app.core)          ; referred symbols
 (ns-list)                          ; list all loaded namespaces
 (macroexpand-1 '(when true 1))    ; expand one level of macro
 (macroexpand '(when true 1))      ; fully expand macro
 (eval-str "(+ 1 2)")              ; evaluate a string of Phel code
 (load-file "src/my-module.phel")  ; load and evaluate a file
-(test-ns 'my-app\tests)           ; run tests in a namespace
+(test-ns 'my-app.tests)           ; run tests in a namespace
 ```

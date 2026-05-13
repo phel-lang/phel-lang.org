@@ -38,7 +38,20 @@ final readonly class ApiMarkdownGenerator
             $files[$namespace] = $this->buildNamespaceFile($namespace, $functions, $functionMap);
         }
 
+        foreach ($files as $key => $lines) {
+            $files[$key] = array_map($this->stripEmDash(...), $lines);
+        }
+
         return $files;
+    }
+
+    private function stripEmDash(string $text): string
+    {
+        return str_replace(
+            [' &mdash; ', ' &mdash;', '&mdash; ', '&mdash;', ' — ', ' —', '— ', '—'],
+            [', ',        ',',        ', ',        ',',       ', ', ',',  ', ', ','],
+            $text,
+        );
     }
 
     public function namespaceSlug(string $namespace): string

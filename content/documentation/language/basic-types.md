@@ -1,12 +1,12 @@
 +++
 title = "Basic Types"
 weight = 1
-aliases = ["/documentation/basic-types"]
+aliases = ["/documentation/basic-types", "/documentation/arithmetic", "/documentation/truth-and-boolean-operations"]
 +++
 
-## Nil, True, False
+## Nil, true, false
 
-Nil, true and false are literal constants.
+Literal constants:
 
 ```phel
 nil
@@ -14,7 +14,7 @@ true
 false
 ```
 
-In Phel, only `false` and `nil` are falsy. Everything else is truthy-including `0`, `""`, and `[]`.
+Only `false` and `nil` are falsy. `0`, `""`, `[]` truthy.
 
 ```phel
 ;; Truthiness examples
@@ -26,17 +26,17 @@ In Phel, only `false` and `nil` are falsy. Everything else is truthy-including `
 ```
 
 {% php_note() %}
-In PHP, `nil` is the same as `null`, and `true`/`false` are the same. However, truthiness works differently:
+`nil` = PHP `null`. `true`/`false` same. But truthiness differs:
 
-**PHP**: `0`, `""`, `[]`, `null`, and `false` are all falsy
-**Phel**: Only `false` and `nil` are falsy
+**PHP**: `0`, `""`, `[]`, `null`, `false` falsy.
+**Phel**: only `false`, `nil` falsy.
 
-This means `if (0)` in PHP is false, but `(if 0 ...)` in Phel is true!
+`if (0)` in PHP is false, but `(if 0 ...)` in Phel is true.
 {% end %}
 
 ## Symbol
 
-Symbols are used to name functions and variables in Phel.
+Names functions and variables:
 
 ```phel
 symbol
@@ -47,7 +47,7 @@ my-module/my-function
 
 ## Keywords
 
-A keyword is like a symbol that begins with a colon character. However, it is used as a constant rather than a name for something. Keywords are interned and fast for equality checks.
+Like a symbol but starts with `:`. Used as a constant. Interned, fast equality.
 
 ```phel
 :keyword
@@ -57,7 +57,7 @@ A keyword is like a symbol that begins with a colon character. However, it is us
 ::
 ```
 
-Keywords are commonly used as map keys:
+Common as map keys:
 
 ```phel
 ;; Map with keyword keys
@@ -69,7 +69,7 @@ Keywords are commonly used as map keys:
 ```
 
 {% php_note() %}
-Keywords are like string constants, but more efficient for map keys. Use keywords instead of strings for map keys:
+Like string constants, more efficient as map keys. Prefer over strings:
 
 ```phel
 ; Less idiomatic:
@@ -79,12 +79,12 @@ Keywords are like string constants, but more efficient for map keys. Use keyword
 {:name "Alice" :age 30}
 ```
 
-Keywords are interned (only one instance exists in memory), making equality checks very fast.
+Interned: one instance in memory, fast equality.
 {% end %}
 
 ## Numbers
 
-Phel supports integers and floating-point numbers. Both use the underlying PHP implementation. Integers can be specified in decimal (base 10), hexadecimal (base 16), octal (base 8) and binary (base 2) notations. Binary, octal and hexadecimal formats may contain underscores (`_`) between digits for better readability.
+Integers, floats, ratios, big integers, big decimals. Integers and floats wrap PHP's natives. Integers in decimal, hex, octal, binary. Binary/octal/hex may use `_` separators.
 
 ```phel
 1337 ; integer
@@ -113,9 +113,196 @@ Phel supports integers and floating-point numbers. Both use the underlying PHP i
 024_71 ; octal number with underscores
 ```
 
+### Ratios, BigInteger, BigDecimal
+
+```phel
+1/2          ; Rational
+-3/4         ; Rational
+(/ 10 3)     ; => 10/3 (int / int with non-integer result returns Rational)
+(numerator 1/2)    ; => 1
+(denominator 1/2)  ; => 2
+
+(bigint "100000000000000000000")  ; BigInteger from string
+(bigint? 1N)                       ; predicate
+
+1.5M         ; BigDecimal literal (M suffix)
+1.5e3M       ; BigDecimal exponent
+(bigdec "0.1")
+(bigdec? 1.5M)  ; => true
+```
+
+Auto-promoting variants `+'`, `-'`, `*'`, `inc'`, `dec'` widen to BigInteger on overflow instead of wrapping.
+
+## Arithmetic operators
+
+Prefix notation:
+
+```phel
+;; 1 + (2*2) + (10/5) + 3 + 4 + (5 - 6)
+(+ 1 (* 2 2) (/ 10 5) 3 4 (- 5 6)) ; => 13
+```
+
+{% php_note() %}
+Prefix notation (operator first) instead of PHP's infix:
+
+```php
+// PHP - infix notation
+1 + (2 * 2) + (10 / 5) + 3 + 4 + (5 - 6);
+
+// Phel - prefix notation
+(+ 1 (* 2 2) (/ 10 5) 3 4 (- 5 6))
+```
+
+Operators take any number of args, no precedence concerns.
+{% end %}
+
+Operators take zero, one, or many args:
+
+```phel
+(+) ; => 0
+(+ 1) ; => 1
+(+ 1 2) ; => 3
+(+ 1 2 3 4 5 6 7 8 9) ; => 45
+
+(-) ; => 0
+(- 1) ; => -1
+(- 2 1) ; => 1
+(- 3 2 1) ; => 0
+
+(*) ; => 1
+(* 2) ; => 2
+(* 2 3 4) ; => 24
+
+(/) ; => 1
+(/ 2) ; => 1/2 (reciprocal as Rational)
+(/ 24 4 2) ; => 3
+(/ 10 3)   ; => 10/3 (Rational, exact)
+```
+
+`(/ int int)` with a non-integer result returns a `Rational`, not a float. Coerce with `float` or `(/ 10.0 3)` if you need a float.
+
+{% php_note() %}
+Variadic operators are more flexible than PHP's:
+
+```php
+// PHP - requires at least two operands
+1 + 2 + 3 + 4 + 5;
+// Can't do this: +();  <- syntax error
+
+// Phel - supports 0, 1, or many operands
+(+)                     ; 0 (identity)
+(+ 1)                   ; 1 (identity)
+(+ 1 2 3 4 5)          ; 15 (sum of all)
+```
+
+**Patterns:**
+- `(+)` additive identity (0)
+- `(*)` multiplicative identity (1)
+- `(- x)` negate
+- `(/ x)` reciprocal
+{% end %}
+
+Other numerics:
+
+- `quot`, `rem`, `mod`: integer quotient, remainder, modulo. `%` aliases `rem`.
+- `floor`, `ceil`, `round`, `sqrt`: math primitives.
+- `**`: power.
+- `+'`, `-'`, `*'`, `inc'`, `dec'`: auto-promote to `BigInteger` on overflow.
+- `numerator`, `denominator`, `rationalize`, `ratio?`.
+- `bigint`, `biginteger`, `bigint?`; `bigdec`, `bigdec?` / `decimal?`.
+
+Full list in the [API docs](/documentation/reference/api/core/).
+
+Some operations yield NaN. Phel uses `NAN` constant. Check with `nan?`:
+
+```phel
+(nan? 1) ; false
+(nan? (php/log -1)) ; true
+(nan? NAN) ; true
+```
+
+{% php_note() %}
+NaN handling matches PHP:
+
+```php
+// PHP
+is_nan(1);           // false
+is_nan(log(-1));     // true
+is_nan(NAN);         // true
+
+// Phel
+(nan? 1)             ; false
+(nan? (php/log -1))  ; true
+(nan? NAN)           ; true
+```
+
+`%` remainder and `**` exponent match PHP's.
+{% end %}
+
+## Bitwise operators
+
+Manipulate bits in integers.
+
+```phel
+;; Bitwise and
+(bit-and 0b1100 0b1001) ; => 8 (0b1000)
+
+;; Bitwise or
+(bit-or 0b1100 0b1001) ; => 13 (0b1101)
+
+;; Bitwise xor
+(bit-xor 0b1100 0b1001) ; => 5 (0b0101)
+
+;; Bitwise complement
+(bit-not 0b0111) ; => -8
+
+;; Shifts bit n steps to the left
+(bit-shift-left 0b1101 1) ; => 26 (0b11010)
+
+;; Shifts bit n steps to the right
+(bit-shift-right 0b1101 1) ; => 6 (0b0110)
+
+;; Set bit at index n
+(bit-set 0b1011 2) ; => 15 (0b1111)
+
+;; Clear bit at index n
+(bit-clear 0b1011 3) ; => 3 (0b0011)
+
+;; Flip bit at index n
+(bit-flip 0b1011 2) ; => 15 (0b1111)
+
+;; Test bit at index n
+(bit-test 0b1011 0) ; => true
+(bit-test 0b1011 2) ; => false
+```
+
+{% php_note() %}
+Named functions instead of PHP operators:
+
+```php
+// PHP bitwise operators
+0b1100 & 0b1001;      // AND
+0b1100 | 0b1001;      // OR
+0b1100 ^ 0b1001;      // XOR
+~0b0111;              // NOT
+0b1101 << 1;          // Left shift
+0b1101 >> 1;          // Right shift
+
+// Phel named functions
+(bit-and 0b1100 0b1001)
+(bit-or 0b1100 0b1001)
+(bit-xor 0b1100 0b1001)
+(bit-not 0b0111)
+(bit-shift-left 0b1101 1)
+(bit-shift-right 0b1101 1)
+```
+
+Adds extra functions not in PHP: `bit-set`, `bit-clear`, `bit-flip`, `bit-test`.
+{% end %}
+
 ## Strings
 
-Strings are surrounded by double quotes. The dollar sign (`$`) does not need to be escaped.
+Double-quoted. `$` doesn't need escaping.
 
 ```phel
 "hello world"
@@ -136,23 +323,23 @@ string."
 "Unicodes can be encoded: \u{1000}"
 ```
 
-String concatenation and conversion using `str`:
+Concat and convert with `str`:
 
 ```phel
 (str "Hello" " " "World")  ; => "Hello World"
 (str "The answer is " 42)  ; => "The answer is 42"
 ```
 
-Strings are iterable - they work directly with sequence functions like `map`, `filter`, `count`, `frequencies`, and `foreach`. Full UTF-8 / multibyte support is included:
+Strings are iterable: work with `map`, `filter`, `count`, `frequencies`, `foreach`. Full UTF-8 / multibyte support:
 
 ```phel
 (count "hello")             ; => 5
 (frequencies "abracadabra") ; => {"a" 5 "b" 2 "r" 2 "c" 1 "d" 1}
-(seq "abc")                 ; => ("a" "b" "c")
+(seq "abc")                 ; => [a b c]
 ```
 
 {% php_note() %}
-Phel strings are PHP strings internally, so you can use all PHP string functions:
+PHP strings internally. All PHP string functions work:
 
 ```phel
 (php/strlen "hello")                 ; => 5
@@ -160,18 +347,18 @@ Phel strings are PHP strings internally, so you can use all PHP string functions
 (php/str_replace "o" "0" "hello")    ; => "hell0"
 ```
 
-Strings work almost the same as PHP double-quoted strings, with one difference: the dollar sign (`$`) doesn't need escaping.
+Same as PHP double-quoted strings, except `$` doesn't need escaping.
 {% end %}
 
 ## Lists
 
-A list is a sequence of whitespace-separated values surrounded by parentheses.
+Whitespace-separated values in parentheses:
 
 ```phel
 (do 1 2 3)
 ```
 
-A list will be interpreted as a function call, a macro call or a special form by the compiler. A list prefixed with a single quote will be interpreted as data.
+Lists are function/macro/special-form calls. Quoted lists are data:
 
 ```phel
 '(1 2 3)
@@ -179,17 +366,17 @@ A list will be interpreted as a function call, a macro call or a special form by
 
 ## Vectors
 
-A vector is a sequence of whitespace-separated values surrounded by brackets.
+Whitespace-separated values in brackets:
 
 ```phel
 [1 2 3] ; same as (vector 1 2 3)
 ```
 
-A vector in Phel is an indexed data structure. In contrast to PHP arrays, Phel vectors cannot be used as maps, hashtables or dictionaries.
+Indexed data structure. Unlike PHP arrays, vectors are not maps/hashtables.
 
 ## Maps
 
-A map is a sequence of whitespace-separated key/value pairs surrounded by curly braces. The sequence is defined as key1, value1, key2, value2, etc. There must be an even number of items.
+Whitespace-separated key/value pairs in braces. Even count: key1, value1, key2, value2.
 
 ```phel
 {} ; same as (hash-map)
@@ -206,25 +393,27 @@ A map is a sequence of whitespace-separated key/value pairs surrounded by curly 
 
 {% php_note() %}
 Unlike PHP associative arrays, Phel maps:
-- Can have **any type** as keys (not just strings/integers): vectors, lists, or even other maps
-- Are **immutable**: operations return new maps without modifying the original
-- Are **not** PHP arrays internally-they're their own data structure
+- **Any type** as keys: vectors, lists, other maps
+- **Immutable**: operations return new maps
+- **Not** PHP arrays internally
 
-```phel
-; PHP:
+```php
+// PHP: mutable
 $map = ['name' => 'Alice'];
 $map['name'] = 'Bob';  // Mutates in place
+```
 
-; Phel:
+```phel
+;; Phel: immutable
 (def map {:name "Alice"})
 (def new-map (assoc map :name "Bob"))  ; Returns new map
-; map is still {:name "Alice"}
+;; map is still {:name "Alice"}
 ```
 {% end %}
 
 ## Sets
 
-A set is a sequence of whitespace-separated values prefixed by `#` and surrounded by curly braces, or built from individual arguments with `hash-set`:
+Whitespace-separated values in `#{}`, or built with `hash-set`:
 
 ```phel
 #{1 2 3}         ; set literal
@@ -232,9 +421,33 @@ A set is a sequence of whitespace-separated values prefixed by `#` and surrounde
 (set [1 2 3])    ; coerce a collection to a set
 ```
 
+## Queues
+
+Persistent FIFO queues with amortised O(1) `push`, `peek`, `pop`:
+
+```phel
+(def q (queue 1 2 3))
+(queue? q)        ; => true
+(peek q)          ; => 1
+(push q 4)        ; => queue 1 2 3 4
+(pop q)           ; => queue 2 3
+```
+
+## Map entries
+
+`map-entry` produces an entry that compares equal to a 2-element vector. `seq` over a map yields map entries:
+
+```phel
+(def e (map-entry :a 1))
+(map-entry? e)    ; => true
+(key e)           ; => :a
+(val e)           ; => 1
+(= e [:a 1])      ; => true
+```
+
 ## Tagged literals
 
-Phel supports reader tags for common values:
+Reader tags for common values:
 
 ```phel
 #inst "2026-04-20T12:00:00Z"      ; => \DateTimeImmutable
@@ -244,38 +457,38 @@ Phel supports reader tags for common values:
 
 ### Custom tags
 
-Register user tags in Phel with `register-tag`:
+Register with `register-tag`:
 
 ```phel
-(ns my-app\readers
-  (:require phel\reader :refer [register-tag]))
+(ns my-app.readers
+  (:require phel.reader :refer [register-tag]))
 
 (register-tag "money" (fn [[amount currency]]
                         {:amount amount :currency currency}))
 ```
 
-Then in any source file:
+In any source file:
 
 ```phel
 #money [100 "EUR"]   ; => {:amount 100 :currency "EUR"}
 ```
 
-A `data-readers.phel` file at any source root is auto-loaded, so you can ship tag definitions with your library.
+A `data-readers.phel` at any source root auto-loads. Ship tag definitions with your library.
 
 ## PHP reader literals
 
-Produce native PHP arrays inline without calling `php/array`:
+Native PHP arrays inline without `php/array`:
 
 ```phel
 #php [1 2 3]          ; expands to (php-indexed-array 1 2 3)
 #php {"a" 1 "b" 2}    ; expands to (php-associative-array "a" 1 "b" 2)
 ```
 
-Expansion is non-recursive, nested Phel forms stay Phel data.
+Non-recursive expansion. Nested Phel forms stay Phel data.
 
-## Regex Literals
+## Regex literals
 
-Phel supports regex literal syntax using `#"..."` as reader sugar for PCRE patterns. This is a convenient shorthand for creating regular expressions:
+`#"..."` is reader sugar for PCRE patterns:
 
 ```phel
 #"\d+"           ; Matches one or more digits
@@ -283,7 +496,7 @@ Phel supports regex literal syntax using `#"..."` as reader sugar for PCRE patte
 #"hello\s+world" ; Matches "hello" followed by whitespace and "world"
 ```
 
-Regex literals can be used with the `re-find` and `re-matches` functions:
+Use with `re-find` and `re-matches`:
 
 ```phel
 (re-find #"\d+" "abc123def")     ; => "123"
@@ -298,12 +511,12 @@ Regex literals can be used with the `re-find` and `re-matches` functions:
 ```
 
 {% clojure_note() %}
-Regex literals use the same `#"..."` syntax as Clojure. The underlying engine is PHP's PCRE rather than Java's regex, so some pattern details may differ.
+Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some details differ.
 {% end %}
 
-## Anonymous Function Shorthand
+## Anonymous function shorthand
 
-The `#(...)` reader syntax provides a compact way to define anonymous functions inline, using `%` placeholders for parameters:
+`#(...)` defines anonymous functions inline. `%` placeholders:
 
 - `%` or `%1` refers to the first argument
 - `%2`, `%3`, etc. refer to subsequent arguments
@@ -320,11 +533,11 @@ The `#(...)` reader syntax provides a compact way to define anonymous functions 
 (sort-by #(get % :age) users)  ; Sort users by age
 ```
 
-> **Note:** The older `|(...)` short-form syntax with `$` placeholders is also accepted but deprecated. See [Functions and Recursion](/documentation/language/functions-and-recursion/) for details.
+> **Note:** Older `|(...)` form with `$` placeholders is deprecated. See [Functions and Recursion](/documentation/language/functions-and-recursion).
 
-## Deref Shorthand
+## Deref shorthand
 
-The `@` reader syntax is shorthand for `(deref ...)`. It is used to dereference atoms and other reference types:
+`@` is shorthand for `(deref ...)`. Dereferences atoms and other reference types:
 
 ```phel
 (def counter (atom 0))
@@ -336,22 +549,140 @@ The `@` reader syntax is shorthand for `(deref ...)`. It is used to dereference 
 
 ## Comments
 
-A comment begins with a `;` character and continues until the end of the line. Use `;;` for standalone comments and `;` for inline comments:
+`;` runs to end of line. `;;` for standalone, `;` for inline:
 
 ```phel
 ;; This is a standalone comment
 (+ 1 2) ; This is an inline comment
 ```
 
-> **Deprecation notice:** The `#` line comment syntax and `#| ... |#` multiline comment syntax are deprecated. Use `;` and `;;` instead. The `#` prefix is now reserved for reader macros like `#()`, `#""`, and `#?()`.
+> **Deprecation:** `#` line and `#| ... |#` multiline comments are deprecated. Use `;` and `;;`. `#` prefix is reserved for reader macros (`#()`, `#""`, `#?()`).
 
-Phel also supports inline s-expression commenting with `#_` which comments out the next form. It can also be stacked to comment out two or more forms after it.
+`#_` comments out the next form. Stack to comment multiple forms:
 
 ```phel
-[:one :two :three]     ; results to [:one :two :three]
-[#_:one :two :three]   ; results to [:two :three]
-[#_:one :two #_:three] ; results to [:two]
-[#_#_:one :two :three] ; results to [:three]
+[:one :two :three]     ; => [:one :two :three]
+[#_:one :two :three]   ; => [:two :three]
+[#_:one :two #_:three] ; => [:two]
+[#_#_:one :two :three] ; => [:three]
 ```
 
-See also the [comment](/documentation/reference/api/#comment) macro which ignores the forms inside and returns `nil` while still requiring the content to be valid Phel code.
+See [comment](/documentation/reference/api/core/#comment) macro: ignores forms, returns `nil`, still requires valid Phel code.
+
+## Truthiness
+
+Only `false` and `nil` are falsy. `truthy?` checks truthiness. `true?` and `false?` check for the exact values.
+
+```phel
+(truthy? false) ; => false
+(truthy? nil)   ; => false
+(truthy? true)  ; => true
+(truthy? 0)     ; => true
+(truthy? -1)    ; => true
+
+(true? true)    ; => true
+(true? false)   ; => false
+(true? 0)       ; => false
+
+(false? false)  ; => true
+(false? true)   ; => false
+(false? 0)      ; => false
+```
+
+{% php_note() %}
+This is **different from PHP** where `0`, `""`, `[]`, and `null` are all falsy.
+
+```php
+// PHP
+if (0) { }        // false - won't execute
+if ("") { }       // false - won't execute
+if ([]) { }       // false - won't execute
+
+// Phel
+(if 0 "yes" "no")   ; => "yes" - 0 is truthy!
+(if "" "yes" "no")  ; => "yes" - "" is truthy!
+(if [] "yes" "no")  ; => "yes" - [] is truthy!
+```
+{% end %}
+
+## Identity vs equality
+
+`identical?` returns `true` if two values are identical. Stricter than equality: types match, then values. Keywords/symbols with same name always identical. Lists, vectors, maps, sets identical only if same reference.
+
+```phel
+(identical? true true)   ; => true
+(identical? true false)  ; => false
+(identical? 5 "5")       ; => false
+(identical? :test :test) ; => true
+(identical? 'sym 'sym)   ; => true
+(identical? '() '())     ; => false
+(identical? [] [])       ; => false
+(identical? {} {})       ; => false
+```
+
+`=` checks equality: same type and value. Collections equal if values match (no reference check).
+
+```phel
+(= true true)  ; => true
+(= 5 "5")      ; => false
+(= 5 5)        ; => true
+(= 5 5.0)      ; => false
+(= :test :test) ; => true
+(= [] [])      ; => true
+(= {} {})      ; => true
+```
+
+Use `not=` for inequality.
+
+{% php_note() %}
+- `identical?` like `===` (strict, with Phel types)
+- `=` is **not** like `==` (loose equality)
+- `=` compares structurally with type checking
+
+PHP loose equality: use `php/==`:
+
+```phel
+(php/== 5 "5")   ; => true (PHP loose equality)
+(= 5 "5")        ; => false (Phel structural equality)
+(identical? 5 5) ; => true (Phel identity)
+```
+{% end %}
+
+## Comparisons
+
+All comparison operators accept multiple arguments:
+
+```phel
+(< 1 2)     ; => true
+(< 1 2 3)   ; => true  (1 < 2 and 2 < 3)
+(< 1 3 2)   ; => false (3 is not < 2)
+(>= 5 5)    ; => true
+(> 3 2 1)   ; => true  (3 > 2 and 2 > 1)
+```
+
+## Logical operations
+
+`and` evaluates left-to-right. Returns first falsy value or the last value. No args returns `true`.
+
+```phel
+(and)        ; => true
+(and 1)      ; => 1
+(and false)  ; => false
+(and true 5) ; => 5
+```
+
+`or` evaluates left-to-right. Returns first truthy value or the last value. No args returns `nil`.
+
+```phel
+(or)          ; => nil
+(or 1)        ; => 1
+(or false 5)  ; => 5
+```
+
+`not` returns `true` for falsy values, `false` otherwise.
+
+```phel
+(not 1)     ; => false
+(not false) ; => true
+(not nil)   ; => true
+```

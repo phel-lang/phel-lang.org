@@ -4,7 +4,7 @@ weight = 6
 aliases = ["/documentation/functions-and-recursion"]
 +++
 
-## Anonymous Function (fn)
+## Anonymous function (fn)
 
 ```phel
 (fn [params*] expr*)
@@ -15,11 +15,11 @@ aliases = ["/documentation/functions-and-recursion"]
   ...)
 ```
 
-Defines a function. A function consists of a list of parameters and a list of expression. The value of the last expression is returned as the result of the function. All other expression are only evaluated for side effects. If no expression is given, the function returns `nil`.
+Defines a function: parameter list, expression list. Returns last expression's value. Earlier expressions evaluate for side-effects. No expressions returns `nil`.
 
-Functions can define multiple arities. When calling such a function, the clause matching the number of provided arguments is chosen. Variadic clauses are supported for at most one arity and must be the one with the most parameters. If no arity matches, a readable compile-time or runtime error is thrown.
+Functions can have multiple arities. Call dispatches on argument count. At most one variadic clause, which must have the most params. No matching arity raises a clear compile/runtime error.
 
-Function also introduces a new lexical scope that is not accessible outside the function.
+Functions introduce their own lexical scope.
 
 ```phel
 (fn []) ; Function with no arguments that returns nil
@@ -28,7 +28,7 @@ Function also introduces a new lexical scope that is not accessible outside the 
 (fn [a b] (+ a b)) ; A function that returns the sum of a and b
 ```
 
-Function can also be defined as variadic function with an infinite amount of arguments using the `&` separator.
+Variadic functions use `&`:
 
 ```phel
 (fn [& args] (count args)) ; A variadic function that counts the arguments
@@ -41,7 +41,7 @@ Function can also be defined as variadic function with an infinite amount of arg
   ([greeting name & rest] (str greeting " " name rest)))
 ```
 
-There is a shorter form to define an anonymous function. This omits the parameter list and names parameters based on their position.
+Shorter form omits the parameter list, naming params by position:
 
 * `%` or `%1` refers to the first argument
 * `%2`, `%3`, etc. refer to subsequent arguments
@@ -57,10 +57,10 @@ There is a shorter form to define an anonymous function. This omits the paramete
 (filter #(> % 3) [1 5 2 8])   ; => [5 8]
 ```
 
-> **Legacy syntax:** Phel also accepts `|(...)` with `$` / `$1` / `$&` placeholders. It still reads, but `#(...)` with `%` placeholders is preferred and matches Clojure.
+> **Legacy:** `|(...)` with `$` / `$1` / `$&` still reads. Prefer `#(...)` with `%` (matches Clojure).
 
 {% php_note() %}
-The short-form anonymous function syntax `#()` is similar to PHP's arrow functions:
+`#()` short-form is like PHP arrow functions:
 
 ```php
 // PHP
@@ -85,7 +85,7 @@ array_map(fn($x) => $x * 2, $array);
   ...)
 ```
 
-Global functions can be defined using `defn`. Like anonymous functions, they may provide multiple arities. The most specific clause based on the number of arguments is chosen at call time. A single variadic clause is allowed and must declare the maximum number of arguments.
+`defn` defines a global function. Multiple arities allowed; single variadic clause must declare the max arg count.
 
 ```phel
 (defn my-add-function [a b]
@@ -97,7 +97,7 @@ Global functions can be defined using `defn`. Like anonymous functions, they may
   ([greeting name] (str greeting " " name)))
 ```
 
-Each global function can take an optional doc comment and attribute map.
+Optional doc string and attribute map:
 
 ```phel
 (defn my-add-function
@@ -108,10 +108,10 @@ Each global function can take an optional doc comment and attribute map.
 
 ### Private functions
 
-Private functions are not exported from the namespace and cannot be accessed from other namespaces. You can create private functions in two ways:
+Private functions don't export from the namespace. Two forms:
 
-1. Using the `{:private true}` attribute map
-2. Using the `defn-` shorthand
+1. `{:private true}` attribute
+2. `defn-` shorthand
 
 ```phel
 (defn my-private-add-function
@@ -124,11 +124,48 @@ Private functions are not exported from the namespace and cannot be accessed fro
   (+ a b))
 ```
 
-Both approaches are equivalent, but `defn-` provides a more concise syntax for defining private functions.
+Equivalent, but `defn-` is more concise.
+
+### Defn metadata shortcuts
+
+Tag a `defn` with metadata to wrap the body automatically (added in 0.37):
+
+```phel
+;; Memoize results — keep every (args -> value) pair forever
+(defn ^:memoize fib [n]
+  (if (< n 2) n (+ (fib (dec n)) (fib (- n 2)))))
+
+;; LRU cap of 128 entries
+(defn ^{:memoize-lru 128} expensive [k]
+  (slow-lookup k))
+
+;; Wrap body in (async ...) — returns Amp\Future
+(defn ^:async fetch [url]
+  (http/get url))
+```
+
+`^:memoize` / `^{:memoize-lru N}` desugar to [`memoize`](/documentation/reference/api/core/#memoize) / [`memoize-lru`](/documentation/reference/api/core/#memoize-lru) wrappers; entries from recursive self-calls within a single invocation are retained. `^:async` wraps the body with `async`, returning an `Amp\Future`.
+
+### Return and parameter types (`:tag`)
+
+Annotate types with `:tag` metadata (added in 0.37). The compiler emits PHP type declarations and runs static checks at compile time:
+
+```phel
+(defn ^int add [^int a ^int b] (+ a b))
+
+(defn greet ^{:tag "?string"} [^string name]
+  (when (seq name) (str "hi " name)))
+
+(defn make-foo ^"\\My\\Foo" [] (php/new "My\\Foo"))
+```
+
+Reader shorthands: `^int`, `^"?int"`, `^"\\Foo\\Bar"`, `^{:tag "..."}`.
+
+Tag inference fills in return types from tail primitive ops, tail calls to tagged globals or pure PHP builtins, and parameter types from primitive body uses — inferred tags persist in def metadata and graft onto compiled PHP signatures for single-arity `defn`. Mismatches surface at compile time.
 
 ## Recursion
 
-Similar to `loop`, functions can be made recursive using `recur`. The `recur` special form enables tail-call optimization, preventing stack overflow errors.
+Like `loop`, functions can recurse with `recur`. TCO prevents stack overflow.
 
 ```phel
 ;; Recursive factorial (regular recursion - can stack overflow)
@@ -179,7 +216,7 @@ Similar to `loop`, functions can be made recursive using `recur`. The `recur` sp
 ```
 
 {% php_note() %}
-`recur` is compiled to a PHP `while` loop, preventing "Maximum function nesting level" errors that would occur with regular recursive calls in PHP.
+`recur` compiles to a PHP `while`, avoiding "Maximum function nesting level" errors:
 
 ```php
 // PHP - This will cause stack overflow for large n
@@ -197,16 +234,16 @@ function factorial($n) {
       (recur (* acc n) (dec n)))))
 ```
 
-**Key difference:** Regular recursion builds up a call stack, while `recur` reuses the same stack frame (tail-call optimization).
+**Difference:** Recursion builds the call stack; `recur` reuses one stack frame (TCO).
 {% end %}
 
 ## Multimethods
 
-Multimethods provide runtime polymorphism via dispatch functions. They decouple the dispatch mechanism from the method implementations, allowing open extension without modifying existing code.
+Runtime polymorphism via dispatch functions. Decouples dispatch from implementations, enabling open extension.
 
-### Defining a multimethod
+### Defining
 
-Use `defmulti` to define a multimethod with a dispatch function, then `defmethod` to add implementations for specific dispatch values:
+`defmulti` declares the dispatch function. `defmethod` adds implementations per dispatch value:
 
 ```phel
 ;; Define a multimethod that dispatches on the :shape key
@@ -227,9 +264,9 @@ Use `defmulti` to define a multimethod with a dispatch function, then `defmethod
 (area {:shape :triangle :base 6 :height 4})   ; => 12
 ```
 
-### Custom dispatch functions
+### Custom dispatch
 
-The dispatch function can be any function, not just a keyword:
+Dispatch function can be anything, not just a keyword:
 
 ```phel
 (defmulti greeting #(get % :language))
@@ -246,28 +283,29 @@ The dispatch function can be any function, not just a keyword:
 ```phel
 (apply f expr*)
 ```
-Calls the function with the given arguments. The last argument must be a list of values, which are passed as separate arguments, rather than a single list. Apply returns the result of the calling function.
+
+Calls `f` with the args. Last arg must be a list, spread as separate arguments. Returns the result.
 
 ```phel
 (apply + [1 2 3]) ; Evaluates to 6
 (apply + 1 2 [3]) ; Evaluates to 6
 ```
 
-Calling `(apply + 1 2 3)` is invalid because the last argument must be a list.
+`(apply + 1 2 3)` is invalid: last arg must be a list.
 
 ## Passing by reference
 
-Sometimes it is required that a variable should pass to a function by reference. This can be done by applying the `:reference` metadata to the symbol.
+Pass a variable by reference with `:reference` metadata:
 
 ```phel
 (fn [^:reference my-arr]
   (php/apush my-arr 10))
 ```
 
-Support for references is very limited in Phel. Currently, it only works for function arguments (except destructuring).
+Limited support: works for function arguments only (no destructuring).
 
 {% php_note() %}
-This is equivalent to PHP's `&` reference operator:
+Equivalent to PHP `&`:
 
 ```php
 // PHP
@@ -280,5 +318,5 @@ function addToArray(&$arr) {
   (php/apush arr 10))
 ```
 
-**Note:** Use references sparingly. Phel's immutable data structures are usually a better choice than mutating PHP arrays.
+**Note:** Prefer immutable data structures over mutating PHP arrays.
 {% end %}

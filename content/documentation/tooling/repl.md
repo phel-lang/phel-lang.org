@@ -1,20 +1,20 @@
 +++
 title = "REPL"
 weight = 2
-aliases = ["/documentation/repl"]
+aliases = ["/documentation/repl", "/documentation/tooling/phel-helpers"]
 +++
 
 ## Interactive prompt
 
-Phel comes with an interactive Read-Eval-Print Loop. The REPL lets you evaluate Phel expressions and see results immediately - invaluable for exploring the language, testing ideas, and debugging.
+Phel ships with an interactive Read-Eval-Print Loop. Evaluate expressions, see results instantly. Useful for exploring, testing, debugging.
 
-Start it with:
+Start:
 
 ```bash
 ./vendor/bin/phel repl
 ```
 
-Type any Phel expression and press Enter:
+Type any expression, press Enter:
 
 ```phel
 Welcome to the Phel Repl
@@ -25,7 +25,7 @@ user:2> (str "Hello, " "world!")
 "Hello, world!"
 ```
 
-Multiline expressions work automatically - the prompt changes to `....` until the expression is complete:
+Multiline works: prompt switches to `....` until the expression is complete.
 
 ```phel
 user:1> (defn greet [name]
@@ -34,18 +34,18 @@ user:3> (greet "Phel")
 "Hello, Phel!"
 ```
 
-Press `Ctrl-D` or type `exit` to end the session.
+`Ctrl-D` or `exit` to quit.
 
-The prompt shows the current namespace (defaults to `user`) and tracks `(ns ...)` and `(in-ns ...)` switches. `def` returns a printable var ref (e.g. `#'user/my-var`).
+Prompt shows current namespace (defaults to `user`), tracks `(ns ...)` and `(in-ns ...)`. `def` returns a printable var ref (e.g. `#'user/my-var`).
 
 ## History variables
 
-The REPL tracks recent evaluations and the last exception:
+REPL tracks recent results and the last exception:
 
-- `*1`, result of the last expression
-- `*2`, result of the previous one
-- `*3`, two before that
-- `*e`, last exception thrown at the prompt
+- `*1` last result
+- `*2` previous
+- `*3` two before
+- `*e` last exception
 
 ```phel
 user:1> (+ 1 2)
@@ -58,11 +58,13 @@ user:4> (php/-> *e (getMessage))
 "Division by zero"
 ```
 
+Eval errors render as a headline + optional hint + trace with internal frames hidden (added in 0.37). Full PHP frames remain on `*e` for inspection via interop.
+
 ## Built-in helpers
 
 ### doc
 
-Look up documentation for any function or macro in scope:
+Show docs for any function or macro in scope:
 
 ```phel
 user:1> (doc all?)
@@ -76,25 +78,25 @@ user:2> (doc map)
 ...
 ```
 
-This is the fastest way to check function signatures and behavior without leaving the REPL.
+Fastest way to check signatures without leaving the REPL.
 
 ### require
 
-Import a Phel namespace into the REPL session. The arguments are the same as the `:require` clause in `ns`:
+Import a Phel namespace. Same args as `:require` in `ns`:
 
 ```phel
-user:1> (require phel\html :as h)
-phel\html
+user:1> (require phel.html :as h)
+phel.html
 user:2> (h/html [:span {:class "greeting"} "Hello"])
 <span class="greeting">Hello</span>
 ```
 
 ### dir
 
-List all public definitions in a namespace:
+List public definitions in a namespace:
 
 ```phel
-user:1> (dir "phel\\string")
+user:1> (dir "phel.string")
 blank?
 capitalize
 ends-with?
@@ -104,49 +106,49 @@ escape
 
 ### apropos
 
-Search for symbols matching a pattern across all loaded namespaces:
+Search symbols by pattern across loaded namespaces:
 
 ```phel
 user:1> (apropos "map")
-phel\core/map
-phel\core/mapcat
-phel\core/hash-map
-phel\core/map-indexed
-phel\core/zipmap
+phel.core/map
+phel.core/mapcat
+phel.core/hash-map
+phel.core/map-indexed
+phel.core/zipmap
 ...
 ```
 
 ### search-doc
 
-Search docstrings for a keyword or phrase:
+Search docstrings:
 
 ```phel
 user:1> (search-doc "lazy")
-phel\core/lazy-seq
+phel.core/lazy-seq
   Creates a lazy sequence from a thunk...
-phel\core/take
+phel.core/take
   Returns a lazy sequence of the first n items...
 ...
 ```
 
 ### use
 
-Add an alias for a PHP class, same as the `:use` clause in `ns`:
+Alias a PHP class. Same as `:use` in `ns`:
 
 ```phel
-user:1> (use \DateTimeImmutable)
-\DateTimeImmutable
+user:1> (use DateTimeImmutable)
+DateTimeImmutable
 user:2> (php/-> (php/new DateTimeImmutable) (format "Y-m-d"))
 "2026-02-07"
 ```
 
-## Introspection functions
+## Introspection
 
-The REPL provides several functions for inspecting code, namespaces, and macros.
+Inspect code, namespaces, macros.
 
 ### source
 
-Display the source code of a function or macro:
+Show source of a function or macro:
 
 ```phel
 user:1> (source filter)
@@ -156,59 +158,59 @@ user:1> (source filter)
 
 ### find-fn
 
-Search for functions by example -- provide an input and expected output, and Phel will find matching functions:
+Find functions by input/output example:
 
 ```phel
 user:1> (find-fn [1 2 3] 3)
-phel\core/count
-phel\core/last
+phel.core/count
+phel.core/last
 ...
 ```
 
 ### symbol-info
 
-Get detailed metadata about a symbol, including its type, namespace, and documentation:
+Symbol metadata: type, namespace, docs:
 
 ```phel
 user:1> (symbol-info map)
-{:name "map" :ns "phel\\core" :type :function ...}
+{:name "map" :ns "phel.core" :type :function ...}
 ```
 
 ### Namespace introspection
 
-Inspect namespaces and their contents:
+Inspect namespaces:
 
 ```phel
-user:1> (ns-publics 'phel\core)
+user:1> (ns-publics 'phel.core)
 ; Returns all public definitions in the namespace
 
-user:2> (ns-aliases 'my\app)
+user:2> (ns-aliases 'my.app)
 ; Returns all namespace aliases
 
-user:3> (ns-refers 'my\app)
+user:3> (ns-refers 'my.app)
 ; Returns all referred symbols
 
 user:4> (ns-list)
 ; Returns all loaded namespaces
 
-user:5> (ns-interns 'my\app)
+user:5> (ns-interns 'my.app)
 ; Returns all interned vars in the namespace
 ```
 
 ### Namespace manipulation
 
-Create, find, remove namespaces and intern vars at runtime (`phel\repl`):
+Create, find, remove namespaces and intern vars at runtime (`phel.repl`):
 
 ```phel
-(find-ns 'my\app)              ; => namespace or nil
-(create-ns 'my\scratch)        ; create and return
-(intern 'my\scratch 'answer 42) ; intern a var
-(remove-ns 'my\scratch)
+(find-ns 'my.app)              ; => namespace or nil
+(create-ns 'my.scratch)        ; create and return
+(intern 'my.scratch 'answer 42) ; intern a var
+(remove-ns 'my.scratch)
 ```
 
 ### Macro expansion
 
-Expand macros to see the code they generate:
+Expand macros to see generated code:
 
 ```phel
 user:1> (macroexpand-1 '(defn foo [x] x))
@@ -218,7 +220,7 @@ user:2> (macroexpand '(defn foo [x] x))
 ; Fully expands all macros
 ```
 
-### Evaluation functions
+### Evaluation
 
 Evaluate code from strings or files:
 
@@ -232,11 +234,11 @@ user:2> (load-file "src/my/app.phel")
 
 ### Interactive testing
 
-Run tests for a namespace directly from the REPL:
+Run tests for a namespace from the REPL:
 
 ```phel
-user:1> (require phel\test :refer [test-ns])
-user:2> (test-ns 'my\app\tests)
+user:1> (require phel.test :refer [test-ns])
+user:2> (test-ns 'my.app.tests)
 ; Runs all tests in the namespace and prints results
 ```
 
@@ -244,21 +246,21 @@ See also [Testing](/documentation/testing/) for `reset-stats`, `get-stats`, and 
 
 ## Auto-injected utilities
 
-When you switch namespaces with `(in-ns ...)`, the REPL automatically injects the core utilities (`doc`, `require`, `use`) into the new namespace so they are always available without manual imports.
+`(in-ns ...)` auto-injects `doc`, `require`, `use` into the new namespace. No manual imports.
 
 ```phel
-user:1> (in-ns 'my\app)
-my\app:2> (doc map)
+user:1> (in-ns 'my.app)
+my.app:2> (doc map)
 ; Works immediately -- no require needed
 ```
 
-## REPL-driven development workflow
+## REPL-driven workflow
 
-The REPL is most powerful when used as your primary development feedback loop - not just for one-off tests.
+Use the REPL as your primary feedback loop, not just one-off tests.
 
 ### Explore data interactively
 
-Build up data transformations step by step, verifying each stage:
+Build transformations step by step, verifying each stage:
 
 ```phel
 user:1> (def users [{:name "Alice" :role :admin}
@@ -274,7 +276,7 @@ user:5> (map :name *1)
 
 ### Test functions as you write them
 
-Define a function, test it immediately, refine, repeat:
+Define, test, refine, repeat:
 
 ```phel
 user:1> (defn fizzbuzz [n]
@@ -294,10 +296,10 @@ user:9> (map fizzbuzz (range 1 16))
 
 ### Explore PHP interop
 
-The REPL is great for discovering how PHP functions and classes behave in Phel:
+Try PHP functions and classes interactively:
 
 ```phel
-user:1> (use \DateTimeImmutable)
+user:1> (use DateTimeImmutable)
 user:2> (def now (php/new DateTimeImmutable))
 user:3> (php/-> now (format "l, F j, Y"))
 "Friday, February 7, 2026"
@@ -310,7 +312,7 @@ user:5> (php/json_encode (php/array 1 2 3))
 
 ### Inspect data structures
 
-Use the REPL to understand how Phel's persistent data structures work:
+See persistent data structures in action:
 
 ```phel
 user:1> (def m {:a 1 :b 2 :c 3})
@@ -320,16 +322,92 @@ user:3> m
 {:a 1 :b 2 :c 3}   ; Original unchanged!
 
 user:4> (type m)
+:map
 user:5> (keys m)
 (:a :b :c)
 user:6> (vals m)
 (1 2 3)
 ```
 
+## Debug helpers
+
+Stdlib ships helpers for inspecting values during development.
+
+### Global tap system
+
+Routes debug values to handlers. `tap>` invokes every function registered via `add-tap`.
+
+`tap>` sends a value to every registered handler and returns `true`:
+
+```phel
+(tap> {:event :user-login :user-id 42})
+```
+
+`add-tap` / `remove-tap` register or unregister a handler function:
+
+```phel
+(defn my-logger [value]
+  (println "TAP:" value))
+
+(add-tap my-logger)
+(tap> "hello")       ; Prints: TAP: hello
+(remove-tap my-logger)
+```
+
+Exceptions in individual taps are swallowed so one bad handler doesn't break others.
+
+Collect tapped values during a test:
+
+```phel
+(def tapped (atom []))
+(def collector (fn [v] (swap! tapped conj v)))
+
+(add-tap collector)
+(tap> {:step 1 :result "ok"})
+(tap> {:step 2 :result "fail"})
+
+(deref tapped)
+;; => [{:step 1 :result "ok"} {:step 2 :result "fail"}]
+
+(remove-tap collector)
+```
+
+### Pretty printing
+
+`phel.pprint` provides `pprint` and `pprint-str` for readable nested data output:
+
+```phel
+(ns my-app
+  (:require phel.pprint :refer [pprint]))
+
+(pprint {:users [{:name "Alice" :roles [:admin :editor]}
+                  {:name "Bob" :roles [:viewer]}]
+          :count 2})
+;; Prints:
+;; {:users [{:name "Alice" :roles [:admin :editor]}
+;;          {:name "Bob" :roles [:viewer]}]
+;;  :count 2}
+```
+
+`pprint-str` returns the formatted string. Both accept an optional width.
+
+### PHP native inspection
+
+Phel values are PHP objects, so any PHP inspection function works via `php/`:
+
+```phel
+(php/var_dump (+ 2 2))
+;; int(4)
+
+(php/print_r {:a 1 :b 2})
+```
+
+For richer output, [Symfony VarDumper](/documentation/tooling/php-tools/) via `(php/dump ...)` and `(php/dd ...)`.
+
 ## Tips
 
-- **Use `doc` liberally** - it's faster than switching to the browser to look up a function.
-- **Build up complex expressions incrementally** - start simple, verify, then compose.
-- **Copy working REPL expressions into your source files** - the REPL is a scratchpad for your final code.
-- **Use `require` to load your project modules** - test your own code interactively.
-- **`Ctrl-C` cancels the current input** if you get stuck in an incomplete expression.
+- **Use `doc` liberally:** faster than the browser.
+- **Build expressions incrementally:** start simple, verify, compose.
+- **Copy working expressions into source files:** the REPL is a scratchpad.
+- **Use `require` to load your modules:** test your code live.
+- **`Ctrl-C` cancels current input** if stuck mid-expression.

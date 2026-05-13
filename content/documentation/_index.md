@@ -1,6 +1,6 @@
 +++
 title = "Documentation"
-description = "Comprehensive guides and references for Phel: installation, language features, tooling, web development, and more."
+description = "Phel docs: install, language, tooling, web, reference."
 sort_by = "weight"
 insert_anchor_links = "right"
 paginate_by = 5
@@ -8,10 +8,8 @@ paginate_by = 5
 
 # Documentation
 
-Welcome to the Phel documentation. Here you'll find comprehensive guides and references for using Phel.
-
 <div class="redirect-notice">
-    <p><strong>Notice:</strong> You will be automatically redirected to the <a href="/documentation/getting-started/">Getting Started</a> guide in a few seconds.</p>
+    <p><strong>Redirecting to <a href="/documentation/getting-started/">Getting Started</a>...</strong></p>
 </div>
 
 <script>

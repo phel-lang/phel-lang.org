@@ -4,27 +4,26 @@ weight = 7
 aliases = ["/documentation/data-structures"]
 +++
 
-Phel has four main data structures: **Lists**, **Vectors**, **Maps**, and **Sets**.
+Four main data structures: **Lists**, **Vectors**, **Maps**, **Sets**.
 
-All data structures are **persistent** (immutable). A persistent data structure preserves the previous version of itself when it is modified. Unlike naive immutable structures that copy everything, persistent data structures efficiently share unmodified values with their previous versions. When you "modify" a collection, you get a new version while the original remains unchanged.
+All **persistent** (immutable). Modifications return a new version sharing structure with the old. The original is unchanged.
 
 {% php_note() %}
-Think of this as "copy-on-write" for collections, similar to how PHP's copy-on-write works for variables. This prevents bugs from unexpected mutations-a common issue in PHP where passing arrays to functions can lead to surprising behavior.
+"Copy-on-write" for collections. Prevents bugs from unexpected mutations.
 {% end %}
 
 ## Lists
 
-A persistent list is simple a linked list. Access or modifications on the first element is efficient, random access is not. In Phel, a list has a special meaning. They are interpreted as function calls, macro calls or special forms by the compiler.
+Linked list. Fast first-element access, slow random access. Lists are function/macro/special-form calls.
 
-To create a list surround the white space separated values with parentheses or use the `list` function.
+Create with `list` or by quoting a parenthesized form:
 
 ```phel
-(do 1 2 3)   ; list with 4 entries
 (list 1 2 3) ; use the list function to create a new list
 '(1 2 3)     ; use a quote to create a list
 ```
 
-To access values in a list the functions `get`, `first`, `second`, `next`, `rest` and `peek` can be used.
+Access values with `get`, `first`, `second`, `next`, `rest`, `peek`:
 
 ```phel
 (get (list 1 2 3) 0)  ; Evaluates to 1
@@ -37,14 +36,14 @@ To access values in a list the functions `get`, `first`, `second`, `next`, `rest
 (rest (list))         ; Evaluates to ()
 ```
 
-New values can only be added to the front of the list with the `cons` function.
+Add to the front with `cons`:
 
 ```phel
 (cons 1 (list))     ; Evaluates to (1)
 (cons 3 (list 1 2)) ; Evaluates to (3 1 2)
 ```
 
-To get the length of the list the `count` function can be used
+`count` for length:
 
 ```phel
 (count (list))       ; Evaluates to 0
@@ -53,9 +52,9 @@ To get the length of the list the `count` function can be used
 
 ## Vectors
 
-Vectors are an indexed, sequential data structure. They offer efficient random access (by index) and are very efficient in appending values at the end.
+Indexed, sequential. Fast random access by index, fast append at end.
 
-To create a vector, wrap the white space separated values with brackets, use the `vector` function, or coerce any collection with `vec`.
+Create with brackets, `vector`, or coerce with `vec`:
 
 ```phel
 [1 2 3]       ; Creates a new vector with three values
@@ -64,7 +63,7 @@ To create a vector, wrap the white space separated values with brackets, use the
 (vec #{1 2 3}) ; Coerce a set to a vector
 ```
 
-To get a value by its index use the `get` function. Similar to list you can use the `first`, `second` and `peek` function to access the first, second and last values of the vector.
+`get` by index. `first`, `second`, `peek` for first/second/last:
 
 ```phel
 (get [1 2 3] 0)  ; Evaluates to 1
@@ -73,20 +72,20 @@ To get a value by its index use the `get` function. Similar to list you can use 
 (peek [1 2 3])   ; Evaluates to 3
 ```
 
-New values can be appended by using the `conj` function.
+Append with `conj`:
 
 ```phel
 (conj [1 2 3] 4) ; Evaluates to [1 2 3 4]
 ```
 
-To change an existing value use the `assoc` function
+Change a value with `assoc`:
 
 ```phel
 (assoc [1 2 3] 0 4) ; Evaluates to [4 2 3]
 (assoc [1 2 3] 3 4) ; Evaluates to [1 2 3 4]
 ```
 
-A vector can be counted using the `count` function.
+Length with `count`:
 
 ```phel
 (count [])      ; Evaluates to 0
@@ -94,14 +93,14 @@ A vector can be counted using the `count` function.
 ```
 
 {% php_note() %}
-Vectors are like PHP's indexed arrays (`[0 => 'a', 1 => 'b']`), but immutable. Use vectors when you need indexed access.
+Like PHP indexed arrays (`[0 => 'a', 1 => 'b']`), but immutable.
 {% end %}
 
 ## Maps
 
-A Map contains key-value-pairs in random order. Each possible key appears at most once in the collection. Any type that implements the `HashableInterface` and `EqualsInterface` can be used as a key-including vectors, lists, or even other maps.
+Key-value pairs in any order. Each key once. Any value implementing `HashableInterface` and `EqualsInterface` can be a key (vectors, lists, maps).
 
-To create a map, wrap the key and values in curly brackets or use the `hash-map` function.
+Create with braces or `hash-map`:
 
 ```phel
 {:key1 value1 :key2 value2}          ; A new hash-map using shortcut syntax
@@ -111,7 +110,7 @@ To create a map, wrap the key and values in curly brackets or use the `hash-map`
 {[1 2] "vector-key" :keyword "keyword-key" "string" "string-key"}
 ```
 
-Use the `get` function to access a value by its key
+Access with `get`:
 
 ```phel
 (get {:a 1 :b 2} :a) ; Evaluates to 1
@@ -119,7 +118,7 @@ Use the `get` function to access a value by its key
 (get {:a 1 :b 2} :c) ; Evaluates to nil
 ```
 
-To add or update key-value pairs in the map use the `assoc` function. Multiple key-value pairs can be set in a single call.
+Add or update with `assoc`. Multiple pairs at once:
 
 ```phel
 (assoc {} :a "hello")           ; Evaluates to {:a "hello"}
@@ -127,13 +126,13 @@ To add or update key-value pairs in the map use the `assoc` function. Multiple k
 (assoc {} :a 1 :b 2 :c 3)      ; Evaluates to {:a 1 :b 2 :c 3}
 ```
 
-A value in a map can be removed with the `dissoc` function
+Remove with `dissoc`:
 
 ```phel
 (dissoc {:a "foo"} :a) ; Evaluates to {}
 ```
 
-As in the other data structures, the `count` function can be used to count the key-value-pairs.
+`count` for size:
 
 ```phel
 (count {})         ; Evaluates to 0
@@ -141,10 +140,10 @@ As in the other data structures, the `count` function can be used to count the k
 ```
 
 {% php_note() %}
-Maps are like PHP's associative arrays, but with two key differences:
+Like PHP assoc arrays, with two differences:
 
-1. **Any type can be a key** (not just strings/integers): vectors, lists, or even other maps
-2. **Immutable**: "updating" a map returns a new map; the original is unchanged
+1. **Any type as a key**: vectors, lists, other maps
+2. **Immutable**: "updating" returns a new map
 
 ```phel
 ;; PHP: $arr = ['name' => 'Alice', 'age' => 30];
@@ -159,13 +158,13 @@ Maps are like PHP's associative arrays, but with two key differences:
 ```
 {% end %}
 
-## Working with Collections
+## Working with collections
 
-Phel provides several core functions for manipulating collections. These functions work across different data structure types.
+Core functions span data structures.
 
-### Adding Elements with `conj`
+### Adding with `conj`
 
-The `conj` function adds elements to collections. The behavior depends on the collection type to maintain efficiency:
+`conj` adds elements. Behavior depends on type for efficiency:
 
 ```phel
 ;; Vectors - appends to end
@@ -184,9 +183,9 @@ The `conj` function adds elements to collections. The behavior depends on the co
 (conj {} [:a 1] [:b 2])  ; Evaluates to {:a 1 :b 2}
 ```
 
-### Associating Values with `assoc`
+### Associating with `assoc`
 
-The `assoc` function associates a value with a key in associative data structures (maps, vectors by index, structs).
+`assoc` sets a key in maps, vectors (by index), structs:
 
 ```phel
 ;; Maps - set or update key-value pairs
@@ -200,9 +199,9 @@ The `assoc` function associates a value with a key in associative data structure
 (assoc [] 0 "first")            ; Evaluates to ["first"]
 ```
 
-### Removing Values with `dissoc`
+### Removing with `dissoc`
 
-The `dissoc` function removes a key from a data structure, returning the structure without that key.
+`dissoc` removes a key:
 
 ```phel
 ;; Maps - remove key-value pair
@@ -214,9 +213,9 @@ The `dissoc` function removes a key from a data structure, returning the structu
 (dissoc #{1 2 3} 2 3)           ; Evaluates to #{1}
 ```
 
-### Nested Operations
+### Nested operations
 
-For working with nested data structures, Phel provides `-in` variants:
+`-in` variants for nested structures:
 
 ```phel
 ;; get-in - Access nested values
@@ -237,23 +236,25 @@ For working with nested data structures, Phel provides `-in` variants:
 
 {% php_note() %}
 
-### Understanding Immutability vs PHP's Mutability
+### Immutability vs PHP mutability
+
+```php
+// PHP: Mutable operations
+$users = ['Alice', 'Bob'];
+$users[] = 'Charlie';  // $users is now ['Alice', 'Bob', 'Charlie']
+echo $users[0];        // Still 'Alice'
+
+// PHP: Mutating a map
+$config = ['theme' => 'dark', 'lang' => 'en'];
+$config['theme'] = 'light';  // Overwrites in place
+```
 
 ```phel
-;; PHP: Mutable operations
-$users = ['Alice', 'Bob'];
-$users[] = 'Charlie';  ; $users is now ['Alice', 'Bob', 'Charlie']
-echo $users[0];        ; Still 'Alice'
-
 ;; Phel: Immutable operations
 (def users ["Alice" "Bob"])
 (def updated-users (conj users "Charlie"))  ; New collection
 ;; users is still ["Alice" "Bob"]
 ;; updated-users is ["Alice" "Bob" "Charlie"]
-
-;; PHP: Mutating a map
-$config = ['theme' => 'dark', 'lang' => 'en'];
-$config['theme'] = 'light';  ; Overwrites in place
 
 ;; Phel: Creating a new map
 (def config {:theme "dark" :lang "en"})
@@ -263,12 +264,12 @@ $config['theme'] = 'light';  ; Overwrites in place
 ```
 
 **Why immutability matters:**
-- **Thread-safe**: Multiple threads can safely read the same data
-- **Predictable**: Functions can't unexpectedly modify your data
-- **Time-travel**: Keep old versions for undo/history features
-- **Easier debugging**: Data doesn't change "magically"
+- **Thread-safe** reads
+- **Predictable**: functions can't mutate your data
+- **Time-travel**: keep old versions for undo/history
+- **Easier debugging**: no surprise changes
 
-**When working with PHP code:** Use `php/aset` for PHP arrays that must be mutable:
+**With PHP code:** use `php/aset` for mutable PHP arrays:
 ```phel
 (def php-arr (php/array))
 (php/aset php-arr "key" "value")  ; Mutates the PHP array
@@ -278,9 +279,9 @@ $config['theme'] = 'light';  ; Overwrites in place
 
 {% clojure_note() %}
 
-### Clojure Compatibility
+### Clojure compatibility
 
-Phel follows Clojure's naming conventions exactly:
+Phel matches Clojure's names:
 
 | Function | Behavior | Clojure Compatible? |
 |----------|----------|---------------------|
@@ -293,13 +294,13 @@ Phel follows Clojure's naming conventions exactly:
 | `update` | Update with function | ✓ Yes |
 | `update-in` | Update nested with function | ✓ Yes |
 
-**Migration note:** The older `push`, `put`, and `unset` functions are deprecated. Use `conj`, `assoc`, and `dissoc` instead for Clojure compatibility.
+**Migration:** `push`, `put`, `unset` deprecated. Use `conj`, `assoc`, `dissoc`.
 
 {% end %}
 
 ## Structs
 
-A Struct is a special kind of Map. It only supports a predefined number of keys and is associated with a global name. The Struct not only defines itself but also a predicate function.
+A struct is a Map with a fixed set of keys and a global name. `defstruct` also defines a predicate function.
 
 ```phel
 (defstruct my-struct [a b c]) ; Defines the struct
@@ -309,13 +310,13 @@ A Struct is a special kind of Map. It only supports a predefined number of keys 
   (assoc x :a 12))            ; Evaluates to (my-struct 12 2 3)
 ```
 
-Internally, Phel Structs are PHP classes where each key correspondence to an object property. Therefore, Structs can be faster than Maps.
+Internally, Structs are PHP classes (one property per key). Faster than Maps.
 
 ## Sets
 
-A Set contains unique values in random order. All types of values are allowed that implement the `HashableInterface` and the `EqualsInterface`.
+Unique values in any order. Values must implement `HashableInterface` and `EqualsInterface`.
 
-A new set can be created using the shortcut syntax `#{}`, the `hash-set` function (from individual arguments), or the `set` function (to coerce a collection).
+Create with `#{}`, `hash-set`, or coerce with `set`:
 
 ```phel
 #{1 2 3}         ; A new set using shortcut syntax
@@ -324,29 +325,29 @@ A new set can be created using the shortcut syntax `#{}`, the `hash-set` functio
 (set '(1 2 3))   ; Works with any collection type
 ```
 
-> **Note:** `set` coerces a collection to a set (Clojure alignment). Use `hash-set` to create a set from individual arguments.
+> **Note:** `set` coerces a collection (Clojure alignment). `hash-set` builds from individual args.
 
-The `conj` function can be used to add a new value to the Set.
+Add with `conj`:
 
 ```phel
 (conj #{1 2 3} 4) ; Evaluates to #{1 2 3 4}
 (conj #{1 2 3} 2) ; Evaluates to #{1 2 3}
 ```
 
-Similar to the Map the `dissoc` function can be used to remove a value from the list
+Remove with `dissoc`:
 
 ```phel
 (dissoc #{1 2 3} 2) ; Evaluates to #{1 3}
 ```
 
-Again the `count` function can be used to count the elements in the set
+Size with `count`:
 
 ```phel
 (count #{})  ; Evaluates to 0
 (count #{2}) ; Evaluates to 1
 ```
 
-Additionally, the union of a collection of sets is the set of all elements in the collection.
+`union`: all elements of multiple sets.
 
 ```phel
 (union)               ; Evaluates to #{}
@@ -354,14 +355,14 @@ Additionally, the union of a collection of sets is the set of all elements in th
 (union #{1 2} #{0 3}) ; Evaluates to #{0 1 2 3}
 ```
 
-The intersection of two sets or more is the set containing all elements shared between those sets.
+`intersection`: elements shared by all sets.
 
 ```phel
 (intersection #{1 2} #{0 3})     ; Evaluates to #{}
 (intersection #{1 2} #{0 1 2 3}) ; Evaluates to #{1 2}
 ```
 
-The difference of two sets or more is the set containing all elements in the first set that aren't in the other sets.
+`difference`: elements in first set not in the others.
 
 ```phel
 (difference #{1 2} #{0 3})     ; Evaluates to #{1 2}
@@ -369,14 +370,14 @@ The difference of two sets or more is the set containing all elements in the fir
 (difference #{0 1 2 3} #{1 2}) ; Evaluates to #{0 3}
 ```
 
-The symmetric difference of two sets or more is the set of elements which are in either of the sets and not in their intersection.
+`symmetric-difference`: elements in some sets but not in their intersection.
 
 ```phel
 (symmetric-difference #{1 2} #{0 3})     ; Evaluates to #{0 1 2 3}
 (symmetric-difference #{1 2} #{0 1 2 3}) ; Evaluates to #{0 3}
 ```
 
-The `subset?` predicate checks if a set is a subset of another set, and `superset?` checks the inverse.
+`subset?` and `superset?`:
 
 ```phel
 (subset? (hash-set 1 2) (hash-set 1 2 3))   ; Evaluates to true
@@ -387,11 +388,11 @@ The `subset?` predicate checks if a set is a subset of another set, and `superse
 
 ## Transients
 
-Nearly all persistent data structures have a transient version (except for Persistent List). The transient version of each persistent data structure is a mutable version of them. It stores the value in the same way as the persistent version, but instead of returning a new persistent version with every modification, it modifies the current version. 
+Most persistent structures have a transient (mutable) version (not lists). Same storage, but modifies in place.
 
-Transient versions are faster and can be used as builders for new persistent collections. Since transients use the same underlying storage, it is rapid to convert a persistent data structure to a transient and back.
+Faster, used as builders. Conversion to/from persistent is cheap.
 
-For example, if we want to convert a PHP Array to a persistent map. This function can be used:
+Convert a PHP array to a persistent map:
 
 ```phel
 (defn php-array-to-map
@@ -403,9 +404,9 @@ For example, if we want to convert a PHP Array to a persistent map. This functio
     (persistent res))) ; Convert the transient map to a persistent map.
 ```
 
-## Data structures are functions
+## Data structures as functions
 
-In Phel all data structures can also be used as functions. This enables concise, elegant code:
+All data structures are callable:
 
 ```phel
 ((list 1 2 3) 0) ; Same as (get (list 1 2 3) 0)
@@ -419,9 +420,7 @@ In Phel all data structures can also be used as functions. This enables concise,
 (map :name users)  ; Evaluates to ["Alice" "Bob"]
 ```
 
-## Practical Example: Working with User Data
-
-Here's a real-world example combining multiple concepts:
+## Example: working with user data
 
 ```phel
 ;; Start with user data
@@ -478,7 +477,7 @@ Here's a real-world example combining multiple concepts:
 ;; => {:user_id 123 :user_name "Alice" :is_active true}
 ```
 
-### Common Patterns
+### Common patterns
 
 **Building data incrementally:**
 ```phel
@@ -518,9 +517,9 @@ Here's a real-world example combining multiple concepts:
 ; => {:theme "dark" :lang "en" :debug false}
 ```
 
-### Transforming Map Keys and Values
+### Transforming map keys and values
 
-Use `update-keys` and `update-vals` to apply a function to all keys or all values in a map:
+`update-keys`, `update-vals` apply a function across keys/values:
 
 ```phel
 ; Transform all keys
@@ -534,13 +533,13 @@ Use `update-keys` and `update-vals` to apply a function to all keys or all value
 (update-vals {:a 1 :b 2 :c 3} inc)
 ; => {:a 2 :b 3 :c 4}
 
-(update-vals {:x "hello" :y "world"} phel\string/upper-case)
+(update-vals {:x "hello" :y "world"} phel.string/upper-case)
 ; => {:x "HELLO" :y "WORLD"}
 ```
 
-### Building Collections with `into`
+### Building collections with `into`
 
-The `into` function pours elements from one collection into another. With a third argument, it applies a transducer to transform elements as they are added:
+`into` pours elements from one collection into another. Third arg applies a transducer:
 
 ```phel
 ; Two-argument form: pour elements into a collection
@@ -557,7 +556,7 @@ The `into` function pours elements from one collection into another. With a thir
 
 ### Transducers
 
-Transducers are composable transformations that are independent of the context they run in. Many collection functions like `map`, `filter`, `remove`, `take`, `drop`, `take-while`, `drop-while`, `take-nth`, `keep`, `keep-indexed`, `distinct`, `dedupe`, `mapcat`, and `interpose` support a transducer arity (called without a collection) that returns a transducer:
+Composable transformations independent of context. `map`, `filter`, `remove`, `take`, `drop`, `take-while`, `drop-while`, `take-nth`, `keep`, `keep-indexed`, `distinct`, `dedupe`, `mapcat`, `interpose` return a transducer when called without a collection:
 
 ```phel
 ; Create a transducer by calling map/filter without a collection
@@ -570,10 +569,10 @@ Transducers are composable transformations that are independent of the context t
 (into [] xf [1 2 3 4 5])             ; => [10 30 50]
 
 ; Apply with sequence (returns a lazy sequence)
-(sequence xf [1 2 3 4 5])            ; => (10 30 50)
+(sequence xf [1 2 3 4 5])            ; => [10 30 50]
 ```
 
-Common transducer-producing functions:
+Common transducer producers:
 
 ```phel
 (into [] (take 3) (range 10))                ; => [0 1 2]
@@ -586,30 +585,30 @@ Common transducer-producing functions:
 (into [] (interpose :sep) [1 2 3])            ; => [1 :sep 2 :sep 3]
 ```
 
-Use `completing` to adapt a reducing function for use with `transduce`:
+`completing` adapts a reducing function for `transduce`:
 
 ```phel
 (def my-rf (completing conj count))
 (transduce (map inc) my-rf [1 2 3])  ; => 3
 ```
 
-The `cat` transducer concatenates inner collections:
+`cat` concatenates inner collections:
 
 ```phel
 (into [] cat [[1 2] [3 4] [5 6]])  ; => [1 2 3 4 5 6]
 ```
 
-## Walking Data Structures
+## Walking data structures
 
-The `phel\walk` module provides functions for recursively transforming nested data structures.
+`phel.walk` recursively transforms nested data.
 
 ### walk
 
-`walk` traverses a data structure, applying an `inner` function to each element and then an `outer` function to the result:
+`walk` traverses a structure, applying `inner` to each element, then `outer` to the result:
 
 ```phel
 (ns my-app
-  (:require phel\walk :refer [walk postwalk prewalk
+  (:require phel.walk :refer [walk postwalk prewalk
                                postwalk-replace prewalk-replace
                                keywordize-keys stringify-keys]))
 
@@ -618,7 +617,7 @@ The `phel\walk` module provides functions for recursively transforming nested da
 
 ### postwalk and prewalk
 
-`postwalk` applies a function to each node bottom-up (children first), while `prewalk` applies it top-down (parent first):
+`postwalk` applies bottom-up (children first). `prewalk` applies top-down:
 
 ```phel
 ;; Double every number in a nested structure
@@ -634,7 +633,7 @@ The `phel\walk` module provides functions for recursively transforming nested da
 
 ### postwalk-replace and prewalk-replace
 
-Replace values by looking them up in a map:
+Replace values via map lookup:
 
 ```phel
 (postwalk-replace {:a :alpha :b :beta}
@@ -644,7 +643,7 @@ Replace values by looking them up in a map:
 
 ### keywordize-keys and stringify-keys
 
-Convert all map keys between keywords and strings, useful when working with PHP arrays or JSON data:
+Convert map keys between keywords and strings. Useful for PHP arrays or JSON:
 
 ```phel
 (keywordize-keys {"name" "Alice" "age" 30})
