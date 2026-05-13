@@ -106,7 +106,7 @@
   bottom: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 999999;
+  z-index: var(--z-tooltip);
   display: none;
   align-items: flex-start;
   justify-content: center;
