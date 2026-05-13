@@ -7,14 +7,14 @@ Requires **PHP 8.4+**. Pick the method matching your workflow.
 
 ## Which method?
 
-| Goal                                        | Use                                                  |
-| ------------------------------------------- | ---------------------------------------------------- |
-| New project with tests + scripts            | [**Composer skeleton**](#new-project-from-skeleton)  |
-| Add to existing Composer project            | [**Composer require**](#add-to-an-existing-project)  |
-| Run a single file, no setup                 | [**PHAR**](#phar-no-project-setup)                   |
-| **No PHP installed** (Docker only)          | [**Docker**](#docker-no-php-required)                |
-| Reproducible dev shells                     | [**Nix**](#nix)                                      |
-| Fastest path                                | [Getting Started](/documentation/getting-started) →  |
+| Goal                               | Use                                               |
+|------------------------------------|---------------------------------------------------|
+| New project with tests + scripts   | [Composer skeleton](#new-project-from-skeleton)   |
+| Add to existing Composer project   | [Composer require](#add-to-an-existing-project)   |
+| Run a single file, no setup        | [PHAR](#phar-no-project-setup)                    |
+| **No PHP installed** (Docker only) | [Docker](#docker-no-php-required)                 |
+| Reproducible dev shells            | [Nix](#nix)                                       |
+| Fastest path                       | [Getting Started](/documentation/getting-started) |
 
 ## Composer (recommended)
 
