@@ -346,11 +346,22 @@ Lazy file I/O:
 (str "Hello" " " "World")         ; => "Hello World"
 (str "n=" 42)                      ; => "n=42"
 (format "Hi %s, age %d" "Jo" 25)  ; => "Hi Jo, age 25"
-(php/strtolower "HELLO")           ; => "hello"
-(php/strtoupper "hello")           ; => "HELLO"
-(php/str_replace "o" "0" "foo")    ; => "f00"
-(php/substr "hello" 1 3)           ; => "ell"
-(php/explode "," "a,b,c")          ; => PHP array ["a" "b" "c"]
+```
+
+Requires `(:require phel.string :as str)`:
+
+```phel
+(str/lower-case "HELLO")           ; => "hello"
+(str/upper-case "hello")           ; => "HELLO"
+(str/replace "foo" "o" "0")        ; => "f00"
+(str/subs "hello" 1 3)             ; => "el"
+(str/split "a,b,c" #",")          ; => ["a" "b" "c"] (Phel vector)
+(str/join ", " ["a" "b" "c"])      ; => "a, b, c"
+(str/starts-with? "hello" "he")   ; => true
+(str/ends-with? "hello" "lo")     ; => true
+(str/trim "  hi  ")               ; => "hi"
+(str/capitalize "hello world")    ; => "Hello world"
+(str/reverse "hello")             ; => "olleh"
 ```
 
 ## Regular expressions
@@ -363,9 +374,12 @@ Lazy file I/O:
 (re-matches #"\d+" "123")          ; => "123"
 (re-matches #"\d+" "abc123")       ; => nil (must match entire string)
 
+;; re-seq: lazy sequence of all matches
+(re-seq #"\d+" "a1b2c3")          ; => @["1" "2" "3"]
+
 ;; Use regex for validation
 (defn valid-email? [s]
-  (not (nil? (re-matches #".+@.+\..+" s))))
+  (some? (re-matches #".+@.+\..+" s)))
 
 (valid-email? "alice@example.com") ; => true
 (valid-email? "not-an-email")      ; => false
@@ -401,16 +415,16 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 (try
   (/ 1 0)
   (catch DivisionByZeroError e
-    (str "Error: " (php/-> e (getMessage)))))
+    (str "Error: " (.getMessage e))))
 
 (try
   (do-risky-thing)
   (catch Exception e
-    (println (str "Failed: " (php/-> e (getMessage)))))
+    (println (str "Failed: " (.getMessage e))))
   (finally
     (cleanup)))
 
-(throw (php/new InvalidArgumentException "bad input"))
+(throw (InvalidArgumentException. "bad input"))
 
 ;; Structured exceptions with ex-info
 (throw (ex-info "User not found" {:id 42 :type :not-found}))
@@ -458,12 +472,10 @@ Polymorphic dispatch on the first argument's type. More flexible than interfaces
 (defprotocol Stringable
   (to-string [this]))
 
-;; Extend a struct to implement the protocol
-(defstruct dog [name breed])
-
-(extend-type dog
+;; Inline protocol implementation inside defstruct
+(defstruct dog [name breed]
   Stringable
-  (to-string [this] (str (get this :name) " the " (get this :breed))))
+  (to-string [this] (str (:name this) " the " (:breed this))))
 
 (to-string (dog "Rex" "Labrador")) ; => "Rex the Labrador"
 
@@ -533,9 +545,10 @@ Composable transformations independent of the data source. Avoid intermediate co
 (php/date "Y-m-d")                 ; => "2026-02-07"
 (php/array_merge arr1 arr2)        ; call any PHP function
 
-;; Instantiation
-(php/new DateTime "now")           ; new DateTime("now")
-(new DateTime "now")               ; shorthand
+;; Instantiation — all three forms are equivalent
+(php/new DateTime "now")
+(new DateTime "now")
+(DateTime. "now")                  ; ClassName. shorthand (preferred)
 
 ;; Instance methods & properties
 (php/-> obj (method arg))          ; $obj->method($arg)
@@ -571,7 +584,7 @@ See [PHP Interop](/documentation/php-interop).
 (db/query "SELECT 1")               ; use module prefix
 (u/format-date date)                 ; use alias
 (login credentials)                  ; use referred symbol
-(php/new DateTimeImmutable)          ; use imported class
+(DateTimeImmutable.)                 ; use imported class (ClassName. shorthand)
 ```
 
 See [Namespaces](/documentation/language/namespaces).

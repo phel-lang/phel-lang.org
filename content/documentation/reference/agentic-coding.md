@@ -153,6 +153,8 @@ Class/CONST
 
 ;; Convert PHP array back to Phel collection:
 (vec (php/explode "," "a,b,c"))            ; => ["a" "b" "c"]
+;; Or with phel.string (returns Phel vector directly):
+;; (phel.string/split "a,b,c" #",")
 
 ;; Catch PHP exceptions:
 (try (risky)
@@ -164,7 +166,8 @@ Class/CONST
 ```phel
 (defrecord Point [x y])
 (def p (->Point 1 2))
-(get p :x)                         ; => 1     (use get, not .-x)
+(:x p)                             ; => 1     (keyword as fn — preferred)
+(get p :x)                         ; => 1     (also valid)
 (map->Point {:x 1 :y 2})           ; => (point 1 2)
 
 (defprotocol Drawable
@@ -212,7 +215,7 @@ Most failure modes agents hit:
 2. **`for` vs `foreach`:** `for` builds a lazy sequence. `foreach` (or `doseq`) for side-effects (logging, IO).
 3. **`transduce` with `max`/`min`:** no zero-arity. Wrap and pass init: `(transduce xf (fn [a b] (max a b)) 0 coll)`.
 4. **Top-level side-effects break `phel build`:** guard with `(when-not *build-mode* ...)`.
-5. **Record access by keyword:** `(get p :x)`, not `(.-x p)`.
+5. **Record access by keyword:** `(:x p)` or `(get p :x)`, not `(.-x p)`.
 6. **PHP arrays aren't Phel collections:** convert with `vec` or `to-php-array`. No `to-vec`/`to-list`.
 7. **Namespaces need ≥2 segments:** `(ns app.main)`, not `(ns main)`.
 8. **String module:** `phel.string` (renamed from `phel.str`).
@@ -250,9 +253,13 @@ When generating Phel code:
 3. **Thread, don't nest.** `(->> xs (filter f) (map g) (reduce h 0))` beats deep nesting.
 4. **Right comprehension:** `for` returns data, `foreach` runs effects, `dotimes` repeats, `loop`/`recur` accumulates.
 5. **Stay immutable.** `(conj v x)` returns a new vector. Rebind, don't expect mutation.
-6. **Comment style:** `;` inline, `;;` standalone. `#` line comments deprecated.
-7. **No em-dashes** in docstrings or generated site docs. Prefer commas, colons, periods, parentheses.
-8. **Conventional commits.** `feat:`, `fix:`, `refactor:`, `chore:`, `docs:`, `test:`. No AI/LLM authorship references.
+6. **Use phel.string, not php/ string functions.** Prefer `str/upper-case`, `str/split`, `str/join`, `str/starts-with?` over `php/strtoupper`, `php/explode`, etc.
+7. **Use interop shorthands.** `(.method obj)`, `(.-prop obj)`, `(Class/method)`, `(ClassName.)` — shorter and idiomatic.
+8. **Use `^:memoize` for caching.** `(defn ^:memoize f [x] ...)` beats a manual `static $cache` pattern.
+9. **Type tags emit PHP declarations.** `^int`, `^string`, `^"?int"` on `defn` params/return = free PHP type hints.
+10. **Comment style:** `;` inline, `;;` standalone. `#` line comments deprecated.
+11. **No em-dashes** in docstrings or generated site docs. Prefer commas, colons, periods, parentheses.
+12. **Conventional commits.** `feat:`, `fix:`, `refactor:`, `chore:`, `docs:`, `test:`. No AI/LLM authorship references.
 
 ## Where to look next
 
