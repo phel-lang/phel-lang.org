@@ -25,7 +25,7 @@ feed_filenames = ["atom.xml"]
 [markdown.highlighting]
 style = "class"
 theme = "github-light"
-extra_grammars = ["syntaxes/phel.tmLanguage.json"]
+extra_grammars = ["syntaxes/phel.tmLanguage.json", "syntaxes/clojure.tmLanguage.json"]
 
 [extra]
 # Put all your custom variables here

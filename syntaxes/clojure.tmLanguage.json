@@ -1,0 +1,234 @@
+{
+  "name": "Clojure",
+  "scopeName": "source.clojure",
+  "fileTypes": ["clj", "cljs", "cljc", "edn"],
+  "patterns": [
+    { "include": "#reader-skip" },
+    { "include": "#regex-literal" },
+    { "include": "#tagged-literal" },
+    { "include": "#comment" },
+    { "include": "#string" },
+    { "include": "#keyword" },
+    { "include": "#java-interop" },
+    { "include": "#namespaced-symbol" },
+    { "include": "#keysym" },
+    { "include": "#literal" },
+    { "include": "#number" },
+    { "include": "#anon-fn-paren" },
+    { "include": "#set-brace" },
+    { "include": "#paren" },
+    { "include": "#bracket" },
+    { "include": "#brace" },
+    { "include": "#anon-fn-arg" },
+    { "include": "#unquote" }
+  ],
+  "repository": {
+    "comment": {
+      "patterns": [
+        {
+          "name": "comment.line.clojure",
+          "match": ";[^\\n]*$"
+        }
+      ]
+    },
+    "reader-skip": {
+      "patterns": [
+        {
+          "name": "comment.line.reader-skip.clojure",
+          "match": "#_"
+        }
+      ]
+    },
+    "regex-literal": {
+      "patterns": [
+        {
+          "name": "string.regexp.clojure",
+          "begin": "#\"",
+          "end": "\"",
+          "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.clojure" } },
+          "endCaptures": { "0": { "name": "punctuation.definition.string.end.clojure" } },
+          "patterns": [
+            {
+              "name": "constant.character.escape.clojure",
+              "match": "\\\\."
+            }
+          ]
+        }
+      ]
+    },
+    "tagged-literal": {
+      "patterns": [
+        {
+          "name": "storage.type.tagged-literal.clojure",
+          "match": "#[A-Za-z][A-Za-z0-9_\\-]*"
+        }
+      ]
+    },
+    "string": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.clojure",
+          "begin": "\"",
+          "end": "\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.clojure",
+              "match": "\\\\(x[0-9A-Fa-f]{1,2}|u[0-9A-Fa-f]{4}|[nrtbf\\\\\"])"
+            }
+          ]
+        }
+      ]
+    },
+    "keyword": {
+      "patterns": [
+        {
+          "name": "keyword.control.clojure",
+          "match": "(?<=\\()(defprotocol|defrecord|deftype|defmulti|defmethod|defmacro|defn-|defn|def-|def|recur|fn|throw|try|catch|finally|loop|ns|quote|do|if-not|if|when-not|when-let|when-some|when|if-let|if-some|apply|let|letfn|for|doseq|dotimes|case|cond|condp|list|vector|hash-map|hash-set|set|println|print|pr|prn|str|format|map|mapv|mapcat|filter|filterv|remove|reduce|reductions|concat|conj|cons|assoc|dissoc|get|get-in|first|second|nth|rest|next|count|empty\\?|contains\\?|merge|merge-with|sort|sort-by|group-by|frequencies|range|take|take-while|take-last|drop|drop-while|drop-last|reverse|partial|comp|identity|not|and|or|true\\?|false\\?|nil\\?|some\\?|zero\\?|even\\?|odd\\?|pos\\?|neg\\?|int\\?|float\\?|number\\?|string\\?|keyword\\?|symbol\\?|vector\\?|map\\?|set\\?|list\\?|coll\\?|seq\\?|fn\\?|deftest|is|are|thrown\\?|->|->>|as->|some->|some->>|cond->|cond->>|some|every\\?|not-any\\?|not-every\\?|update|update-in|assoc-in|into|distinct|partition|partition-by|partition-all|interleave|interpose|map-indexed|keep|keep-indexed|flatten|reduce-kv|extend-type|extend-protocol|extend|require|use|import|in-ns|alias|refer|var|binding|defonce|declare|delay|deref|atom|swap!|reset!|reset-vals!|swap-vals!|compare-and-set!|ref|alter|dosync|agent|send|send-off|future|future-call|promise|deliver|lazy-seq|lazy-cat|cycle|repeat|repeatedly|iterate|memoize|trampoline|reify|proxy|with-redefs|with-open|with-meta|meta|comment|assert|amap|areduce|aget|aset|aclone|byte|short|int|long|float|double|bigint|bigdec|num|inc|dec|min|max|mod|rem|quot|abs|bit-and|bit-or|bit-xor|bit-not|bit-shift-left|bit-shift-right|when-first|while|do-while)(?=[\\s\\)\\]\\}])"
+        }
+      ]
+    },
+    "java-interop": {
+      "patterns": [
+        {
+          "name": "support.function.clojure",
+          "match": "(?<=\\(|\\s)\\.[A-Za-z_][A-Za-z0-9_\\-]*"
+        },
+        {
+          "name": "support.function.clojure",
+          "match": "(?<=\\(|\\s)[A-Z][A-Za-z0-9_]*/[A-Za-z_][A-Za-z0-9_\\-]*"
+        }
+      ]
+    },
+    "namespaced-symbol": {
+      "patterns": [
+        {
+          "name": "entity.name.namespace.clojure",
+          "match": "(?<=\\(|\\s)[a-z][A-Za-z0-9_.\\-]*/[A-Za-z_!?\\-][A-Za-z0-9_!?\\-]*"
+        }
+      ]
+    },
+    "keysym": {
+      "patterns": [
+        {
+          "name": "constant.other.keyword.clojure",
+          "match": "::?[^\\s#(){}\\[\\]'\"`,]+"
+        }
+      ]
+    },
+    "literal": {
+      "patterns": [
+        {
+          "name": "constant.language.clojure",
+          "match": "\\b(true|false|nil)\\b"
+        }
+      ]
+    },
+    "number": {
+      "patterns": [
+        {
+          "name": "constant.numeric.binary.clojure",
+          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?0[bB][01]+(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+        },
+        {
+          "name": "constant.numeric.hex.clojure",
+          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?0[xX][0-9a-fA-F]+(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+        },
+        {
+          "name": "constant.numeric.ratio.clojure",
+          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?\\d+/\\d+(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+        },
+        {
+          "name": "constant.numeric.bigdecimal.clojure",
+          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?(?:\\d+\\.\\d+|\\.\\d+|\\d+)M(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+        },
+        {
+          "name": "constant.numeric.bigint.clojure",
+          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?\\d+N(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+        },
+        {
+          "name": "constant.numeric.float.clojure",
+          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?(?:\\d+\\.\\d+|\\.\\d+)(?:[eE][+-]?\\d+)?(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+        },
+        {
+          "name": "constant.numeric.integer.clojure",
+          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?\\d+(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+        }
+      ]
+    },
+    "anon-fn-paren": {
+      "patterns": [
+        {
+          "begin": "#\\(",
+          "end": "\\)",
+          "beginCaptures": { "0": { "name": "punctuation.section.anon-fn.begin.clojure" } },
+          "endCaptures": { "0": { "name": "punctuation.section.anon-fn.end.clojure" } },
+          "patterns": [{ "include": "$self" }]
+        }
+      ]
+    },
+    "set-brace": {
+      "patterns": [
+        {
+          "begin": "#\\{",
+          "end": "\\}",
+          "beginCaptures": { "0": { "name": "punctuation.section.set.begin.clojure" } },
+          "endCaptures": { "0": { "name": "punctuation.section.set.end.clojure" } },
+          "patterns": [{ "include": "$self" }]
+        }
+      ]
+    },
+    "paren": {
+      "patterns": [
+        {
+          "begin": "\\(",
+          "end": "\\)",
+          "beginCaptures": { "0": { "name": "punctuation.paren.open.clojure" } },
+          "endCaptures": { "0": { "name": "punctuation.paren.close.clojure" } },
+          "patterns": [{ "include": "$self" }]
+        }
+      ]
+    },
+    "bracket": {
+      "patterns": [
+        {
+          "begin": "\\[",
+          "end": "\\]",
+          "beginCaptures": { "0": { "name": "punctuation.bracket.open.clojure" } },
+          "endCaptures": { "0": { "name": "punctuation.bracket.close.clojure" } },
+          "patterns": [{ "include": "$self" }]
+        }
+      ]
+    },
+    "brace": {
+      "patterns": [
+        {
+          "begin": "\\{",
+          "end": "\\}",
+          "beginCaptures": { "0": { "name": "punctuation.brace.open.clojure" } },
+          "endCaptures": { "0": { "name": "punctuation.brace.close.clojure" } },
+          "patterns": [{ "include": "$self" }]
+        }
+      ]
+    },
+    "anon-fn-arg": {
+      "patterns": [
+        {
+          "name": "variable.parameter.anon-fn.clojure",
+          "match": "%(?:&|\\d+)?(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+        }
+      ]
+    },
+    "unquote": {
+      "patterns": [
+        {
+          "name": "keyword.operator.unquote-splicing.clojure",
+          "match": "~@"
+        },
+        {
+          "name": "keyword.operator.unquote.clojure",
+          "match": "~(?![A-Za-z0-9_])"
+        }
+      ]
+    }
+  }
+}
