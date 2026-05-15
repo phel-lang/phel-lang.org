@@ -114,6 +114,38 @@ function area(float $r): float {
 
 <div class="rosetta-item" data-category="variables">
 
+### Destructuring
+
+<div class="rosetta-compare">
+<div class="rosetta-php">
+
+**PHP**
+
+```php
+[$first, $second, ...$rest] = [1, 2, 3, 4, 5];
+
+['name' => $name, 'age' => $age] = $user;
+```
+
+</div>
+<div class="rosetta-phel">
+
+**Phel**
+
+```phel
+(let [[first second & rest] [1 2 3 4 5]]
+  rest) ; => [3 4 5]
+
+(let [{:name name :age age} user]
+  (str name " is " age))
+```
+
+</div>
+</div>
+</div>
+
+<div class="rosetta-item" data-category="variables">
+
 ### Type checking
 
 <div class="rosetta-compare">
@@ -245,6 +277,74 @@ echo $double(5); // 10
 (def add (fn [a b] (+ a b)))
 
 (println (double 5)) ; 10
+```
+
+</div>
+</div>
+</div>
+
+<div class="rosetta-item" data-category="functions">
+
+### Type annotations
+
+<div class="rosetta-compare">
+<div class="rosetta-php">
+
+**PHP**
+
+```php
+function add(int $a, int $b): int {
+    return $a + $b;
+}
+
+function greet(?string $name): string {
+    return "Hello, " . ($name ?? "World");
+}
+```
+
+</div>
+<div class="rosetta-phel">
+
+**Phel**
+
+```phel
+(defn ^int add [^int a ^int b]
+  (+ a b))
+
+(defn ^string greet [^"?string" name]
+  (str "Hello, " (or name "World")))
+```
+
+</div>
+</div>
+</div>
+
+<div class="rosetta-item" data-category="functions">
+
+### Memoize
+
+<div class="rosetta-compare">
+<div class="rosetta-php">
+
+**PHP**
+
+```php
+function fib(int $n): int {
+    static $cache = [];
+    if (isset($cache[$n])) return $cache[$n];
+    return $cache[$n] = $n < 2 ? $n : fib($n-1) + fib($n-2);
+}
+```
+
+</div>
+<div class="rosetta-phel">
+
+**Phel**
+
+```phel
+(defn ^:memoize fib [n]
+  (if (< n 2) n
+    (+ (fib (- n 1)) (fib (- n 2)))))
 ```
 
 </div>
@@ -535,8 +635,9 @@ $joined = implode("-", $parts);      // "a-b-c"
 **Phel**
 
 ```phel
-(def parts (php/explode "," "a,b,c"))  ; PHP array
-(def joined (php/implode "-" parts))   ; "a-b-c"
+;; Requires: (:require phel.string :as str)
+(def parts (str/split "a,b,c" #",")) ; ["a" "b" "c"]
+(def joined (str/join "-" parts))    ; "a-b-c"
 ```
 
 </div>
@@ -556,6 +657,7 @@ $joined = implode("-", $parts);      // "a-b-c"
 $sub = substr("Hello World", 0, 5);     // "Hello"
 $pos = strpos("Hello World", "World");   // 6
 $has = str_contains("Hello", "ell");     // true
+$upper = strtoupper("hello");            // "HELLO"
 ```
 
 </div>
@@ -564,9 +666,43 @@ $has = str_contains("Hello", "ell");     // true
 **Phel**
 
 ```phel
-(def sub (php/substr "Hello World" 0 5))     ; "Hello"
-(def pos (php/strpos "Hello World" "World")) ; 6
-(def has (php/str_contains "Hello" "ell"))   ; true
+;; Requires: (:require phel.string :as str)
+(def sub (str/subs "Hello World" 0 5))        ; "Hello"
+(def has (str/starts-with? "Hello" "He"))     ; true
+(def upper (str/upper-case "hello"))          ; "HELLO"
+(def pos (php/strpos "Hello World" "World"))  ; 6 (PHP interop)
+```
+
+</div>
+</div>
+</div>
+
+<div class="rosetta-item" data-category="strings">
+
+### Regex
+
+<div class="rosetta-compare">
+<div class="rosetta-php">
+
+**PHP**
+
+```php
+preg_match('/\d+/', 'abc123', $m);
+$found = $m[0];              // "123"
+
+$has = preg_match('/^\d+$/', '123') === 1; // true
+```
+
+</div>
+<div class="rosetta-phel">
+
+**Phel**
+
+```phel
+(def found (re-find #"\d+" "abc123"))  ; "123"
+
+(re-matches #"^\d+$" "123")           ; "123" (full match)
+(re-matches #"^\d+$" "abc")           ; nil   (no match)
 ```
 
 </div>
@@ -863,11 +999,11 @@ $date = new DateTimeImmutable("2024-01-15");
 
 ```phel
 (ns my.module
-  (:use DateTime)
-  (:use DateTimeImmutable))
+  (:use DateTime DateTimeImmutable))
 
-(def now (php/new DateTime))
-(def date (php/new DateTimeImmutable "2024-01-15"))
+(def now (DateTime.))                        ; shorthand
+(def date (DateTimeImmutable. "2024-01-15")) ; shorthand
+;; also: (php/new DateTime) or (new DateTime)
 ```
 
 </div>
@@ -894,7 +1030,8 @@ $result = $date->modify("+1 month")->format("Y-m-d");
 **Phel**
 
 ```phel
-(def formatted (php/-> date (format "Y-m-d")))
+(def formatted (.format date "Y-m-d"))   ; shorthand
+;; also:       (php/-> date (format "Y-m-d"))
 (def result
   (php/-> date
     (modify "+1 month")
@@ -907,7 +1044,7 @@ $result = $date->modify("+1 month")->format("Y-m-d");
 
 <div class="rosetta-item" data-category="oop">
 
-### Static method
+### Static method / constant
 
 <div class="rosetta-compare">
 <div class="rosetta-php">
@@ -928,10 +1065,12 @@ $parsed = DateTimeImmutable::createFromFormat(
 **Phel**
 
 ```phel
-(def atom (php/:: DateTimeImmutable ATOM))
+(def atom DateTimeImmutable/ATOM)   ; shorthand
+;; also: (php/:: DateTimeImmutable ATOM)
+
 (def parsed
-  (php/:: DateTimeImmutable
-    (createFromFormat "Y-m-d" "2024-03-22")))
+  (DateTimeImmutable/createFromFormat "Y-m-d" "2024-03-22"))
+;; also: (php/:: DateTimeImmutable (createFromFormat ...))
 ```
 
 </div>
@@ -1062,12 +1201,11 @@ $result = implode(", ",
 **Phel**
 
 ```phel
-;; Thread-last (top-down, reads naturally)
-;; Requires phel.string :as str in the ns declaration
+;; Requires: (:require phel.string :as str)
 (def result
   (->> names
-       (filter #(> (php/strlen %) 3))
-       (map php/strtoupper)
+       (filter #(> (count %) 3))
+       (map str/upper-case)
        (str/join ", ")))
 ```
 

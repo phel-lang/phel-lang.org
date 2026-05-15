@@ -71,7 +71,7 @@ Clojure intuition carries over.
 
 **REPL:** supports `doc`, inline `require`, multiline. See [REPL](/documentation/tooling/repl).
 
-**Macros:** `defmacro`, quote, syntax-quote, unquote, unquote-splicing. `defn` is a macro. See [Macros](/documentation/language/macros).
+**Macros:** `defmacro`, quote, syntax-quote, unquote, unquote-splicing. `defn` is a macro. `defn` supports metadata shorthands: `^:memoize` wraps the body in `memoize`; `^:async` wraps in `async` returning `Amp\Future`. See [Macros](/documentation/language/macros).
 
 Reference: [Data Structures](/documentation/language/data-structures), [Functions and Recursion](/documentation/language/functions-and-recursion).
 
@@ -108,6 +108,53 @@ Phel supports Clojure-style `defmulti` / `defmethod` with hierarchy-aware dispat
 (defmulti area :shape)
 (defmethod area :circle [{:radius r}] (* 3.14159 r r))
 (defmethod area :rectangle [{:width w :height h}] (* w h))
+```
+
+### Type tags and inference
+
+`:tag` metadata emits PHP type declarations. Phel also infers return types from primitive operations:
+
+```phel
+;; Explicit tags
+(defn ^int add [^int a ^int b]
+  (+ a b))
+;; Compiles to: function add(int $a, int $b): int { ... }
+
+;; Nullable type
+(defn ^"?string" find-name [^int id]
+  ...)
+
+;; ^:memoize wraps the body in memoize automatically
+(defn ^:memoize expensive [x]
+  (compute x))
+
+;; ^:async wraps the body in async, returning Amp\Future
+(defn ^:async fetch [url]
+  ...)
+```
+
+Inferred tags from tail primitive ops propagate to the PHP signature — you often don't need to annotate at all.
+
+### Numeric tower
+
+Phel ships `BigInteger`, `BigDecimal`, and `Rational` as first-class types:
+
+```phel
+1N          ; BigInteger literal
+1.5M        ; BigDecimal literal
+1/2         ; Rational literal (not a float — exact ratio)
+
+(/ 1 2)     ; => 1/2  (Rational, exact)
+(/ 1.0 2)   ; => 0.5  (float)
+(+ 1N 2N)   ; => 3N   (BigInteger)
+
+;; PHP ints auto-promote to BigInteger on overflow
+(* 9999999999999999999N 2N) ; stays exact
+
+;; Constructors and predicates
+(bigint 42)    ; => 42N
+(bigdec "1.5") ; => 1.5M
+(ratio? 1/2)   ; => true
 ```
 
 ### Atoms only, no agents/refs/STM
@@ -334,11 +381,12 @@ Phel's equivalent of Clojure's Java interop. `php/` prefix unlocks the PHP ecosy
 ### Method calls
 
 ```phel
-;; Instance methods
+;; Instance methods — two equivalent forms:
 (php/-> now (format "Y-m-d"))
+(.format now "Y-m-d")            ; .method shorthand
 
-;; Chaining (like Clojure's doto but for methods)
-(php/-> (php/new DateTimeImmutable "2024-01-15")
+;; Chaining
+(php/-> (DateTimeImmutable. "2024-01-15")
         (modify "+1 month")
         (format "Y-m-d"))
 ```
@@ -346,8 +394,13 @@ Phel's equivalent of Clojure's Java interop. `php/` prefix unlocks the PHP ecosy
 ### Static methods and constants
 
 ```phel
-(php/:: DateTimeImmutable ATOM)
+;; Static methods — two equivalent forms:
 (php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2024-03-22"))
+(DateTimeImmutable/createFromFormat "Y-m-d" "2024-03-22")  ; shorthand
+
+;; Constants
+(php/:: DateTimeImmutable ATOM)
+DateTimeImmutable/ATOM                                      ; shorthand
 ```
 
 ### PHP array access
@@ -379,7 +432,8 @@ Use Composer. `composer.json` replaces `deps.edn`:
 ```json
 {
   "require": {
-    "phel-lang/phel-lang": "^0.37"
+    "phel-lang/phel-lang": "^0.37",
+    "php": ">=8.4"
   }
 }
 ```
@@ -416,21 +470,26 @@ Many orgs already run PHP. Bring FP/Lisp into environments where the JVM isn't a
 |---------|------|-------|
 | `(ns foo.bar)` | `(ns foo.bar)` | Same separator. PHP FQNs use `.` |
 | `(:require [foo.bar :as b])` | `(:require foo.bar :as b)` | No vector wrapping required |
-| `#(* % 2)` | `#(* % 2)` | Same. `|(* $ 2)` legacy |
+| `#(* % 2)` | `#(* % 2)` | Same. `\|(* $ 2)` legacy, deprecated |
 | `(atom 0)` | `(atom 0)` | Same |
 | `@my-atom` | `@my-atom` | Same |
-| `(reset! a v)` | `(reset! a v)` | Same |
+| `(reset! a v)` | `(reset! a v)` | Same (`set!` alias removed in 0.36) |
 | `(swap! a f)` | `(swap! a f)` | Same |
 | `#'sym` / `(var sym)` | `#'sym` / `(var sym)` | First-class `Var` handle |
 | `(alter-var-root #'v f)` | `(alter-var-root #'v f)` | Same |
 | `(with-redefs [v x] ...)` | `(with-redefs [v x] ...)` | Same. Works for non-dynamic vars |
 | `(binding [*x* v] ...)` | `(binding [*x* v] ...)` | Var must be `^:dynamic` |
-| `(.method obj)` | `(php/-> obj (method))` | Instance method |
-| `(Class/static)` | `(php/:: Class (static))` | Static method |
-| `(new Class)` | `(php/new Class)` | Instantiation |
+| `(.method obj)` | `(.method obj)` or `(php/-> obj (method))` | Both forms work |
+| `(Class/staticMethod)` | `(Class/staticMethod)` or `(php/:: Class (staticMethod))` | Both forms work |
+| `(new Class)` | `(Class.)` or `(php/new Class)` | `ClassName.` shorthand |
+| `^int` tag | `^int` tag | Emits PHP type declaration |
+| `(memoize f)` | `^:memoize` on `defn` | Metadata shorthand |
 | `(defprotocol P)` | `(defprotocol P)` | Same |
 | `(defrecord R)` | `(defrecord R)` or `(defstruct R)` | Both available |
 | `(lazy-seq ...)` | `(lazy-seq ...)` | Same |
+| `1N` / `1.5M` / `1/2` | `1N` / `1.5M` / `1/2` | BigInteger / BigDecimal / Rational |
+| `(/ 1 2)` → `1/2` (Ratio) | `(/ 1 2)` → `1/2` (Rational) | Same; use `(/ 1.0 2)` for float |
+| `#"regex"` | `#"regex"` | Regex literal; `re-find`, `re-matches` |
 | `#?(:clj x :default y)` | `#?(:phel x :default y)` | Reader conditionals |
 | `(ex-info msg data)` | `(ex-info msg data)` | Same |
 | `(transduce xf f coll)` | `(transduce xf f coll)` | Same |
