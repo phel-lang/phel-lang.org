@@ -472,8 +472,9 @@ Polymorphic dispatch on the first argument's type. More flexible than interfaces
 (defprotocol Stringable
   (to-string [this]))
 
-;; Inline protocol implementation inside defstruct
-(defstruct dog [name breed]
+(defstruct dog [name breed])
+
+(extend-type dog
   Stringable
   (to-string [this] (str (:name this) " the " (:breed this))))
 
@@ -486,7 +487,8 @@ Polymorphic dispatch on the first argument's type. More flexible than interfaces
 
 ;; Check protocol support
 (satisfies? Stringable (dog "Rex" "Labrador"))  ; => true
-(extends? Stringable dog)                        ; => true
+(extends? Stringable :string)                    ; => true
+(extends? Stringable :array)                     ; => false
 ```
 
 ## Hierarchy system

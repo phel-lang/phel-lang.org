@@ -85,10 +85,10 @@ Compiles to PHP, runs on PHP. No JVM, classpath, JARs. Dependency manager is Com
 
 ### Protocols
 
-Phel supports Clojure-style protocols with `defprotocol` and `extend-type`. You can also use `definterface` and `defstruct` for simpler cases:
+Phel supports Clojure-style protocols with `defprotocol` and `extend-type`. Use `definterface` + `defstruct` for simpler cases where you control the type:
 
 ```phel
-(defprotocol Greetable
+(definterface Greetable
   (greet [this]))
 
 (defstruct person [name]

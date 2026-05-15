@@ -557,19 +557,22 @@ Protocols define polymorphic behavior, extendable to any type. More flexible tha
 (defprotocol Renderable
   (render-html [this]))
 
-;; Inline protocol implementation inside defstruct
-(defstruct paragraph [text]
+(defstruct paragraph [text])
+(defstruct heading [level text])
+(defstruct link [url label])
+
+(extend-type paragraph
   Renderable
   (render-html [this]
     (str "<p>" (:text this) "</p>")))
 
-(defstruct heading [level text]
+(extend-type heading
   Renderable
   (render-html [this]
     (let [lvl (:level this)]
       (str "<h" lvl ">" (:text this) "</h" lvl ">"))))
 
-(defstruct link [url label]
+(extend-type link
   Renderable
   (render-html [this]
     (str "<a href=\"" (:url this) "\">" (:label this) "</a>")))
