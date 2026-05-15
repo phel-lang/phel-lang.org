@@ -54,7 +54,7 @@ user:2> (* *1 10)
 30
 user:3> (/ 1 0)
 ; => exception
-user:4> (php/-> *e (getMessage))
+user:4> (.getMessage *e)
 "Division by zero"
 ```
 
@@ -138,7 +138,7 @@ Alias a PHP class. Same as `:use` in `ns`:
 ```phel
 user:1> (use DateTimeImmutable)
 DateTimeImmutable
-user:2> (php/-> (php/new DateTimeImmutable) (format "Y-m-d"))
+user:2> (.format (DateTimeImmutable.) "Y-m-d")
 "2026-02-07"
 ```
 
@@ -300,10 +300,10 @@ Try PHP functions and classes interactively:
 
 ```phel
 user:1> (use DateTimeImmutable)
-user:2> (def now (php/new DateTimeImmutable))
-user:3> (php/-> now (format "l, F j, Y"))
+user:2> (def now (DateTimeImmutable.))
+user:3> (.format now "l, F j, Y")
 "Friday, February 7, 2026"
-user:4> (php/-> now (modify "+3 days") (format "Y-m-d"))
+user:4> (-> now (.modify "+3 days") (.format "Y-m-d"))
 "2026-02-10"
 
 user:5> (php/json_encode (php/array 1 2 3))
