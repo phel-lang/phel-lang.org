@@ -115,7 +115,8 @@ On collision, use a fully-qualified name to reach the original. A locally define
 Reference by name:
 
 ```phel
-(php/new ClassName)
+(ClassName.)          ; preferred shorthand
+(php/new ClassName)   ; also valid
 ```
 
 Aliases avoid collisions:
@@ -128,7 +129,7 @@ Aliases avoid collisions:
 Importing is preferred, but optional. Use full namespace inline if needed:
 
 ```phel
-(php/new Some.Php.ClassName)
+(php/new Some.Php.ClassName)   ; or: (Some.Php.ClassName.)
 ```
 
 ## Require PHP files

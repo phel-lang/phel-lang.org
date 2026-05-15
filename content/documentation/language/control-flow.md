@@ -469,7 +469,7 @@ Evaluates expressions. No exception: returns last value. Matching _catch-clause_
 (try) ; Evaluates to nil
 
 (try
-  (throw (php/new Exception))
+  (throw (Exception.))
   (catch Exception e "error")) ; Evaluates to "error"
 
 (try
@@ -477,7 +477,7 @@ Evaluates expressions. No exception: returns last value. Matching _catch-clause_
   (finally (print "test"))) ; Evaluates to 2 and prints "test"
 
 (try
-  (throw (php/new Exception))
+  (throw (Exception.))
   (catch Exception e "error")
   (finally (print "test"))) ; Evaluates to "error" and prints "test"
 ```

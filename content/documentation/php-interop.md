@@ -87,60 +87,54 @@ Terse forms that expand to verbose `php/*`. Use whichever reads better.
 
 | Shorthand                       | Expands to                          |
 |---------------------------------|-------------------------------------|
+| `(ClassName. args)`             | `(php/new ClassName args)`          |
 | `(new ClassName args)`          | `(php/new ClassName args)`          |
 | `(.method obj args)`            | `(php/-> obj (method args))`        |
 | `(.-field obj)`                 | `(php/-> obj field)`                |
 | `(ClassName/method args)`       | `(php/:: ClassName (method args))`  |
-| `Ns.Class/MEMBER`               | `(php/:: Ns.Class MEMBER)`          |
+| `ClassName/MEMBER`              | `(php/:: ClassName MEMBER)`         |
 
 ```phel
 (ns my.module
-  (:use DateTimeImmutable)
-  (:use DateInterval))
+  (:use DateTimeImmutable DateInterval))
 
-(new DateTimeImmutable "2026-04-20")           ; constructor
-(.format (new DateTimeImmutable) "Y-m-d")       ; instance method
-(.-s (new DateInterval "PT30S"))               ; property
+(DateTimeImmutable. "2026-04-20")              ; constructor (preferred)
+(.format (DateTimeImmutable.) "Y-m-d")          ; instance method
+(.-s (DateInterval. "PT30S"))                  ; property
 (DateTimeImmutable/createFromFormat "Y-m-d" "2026-04-20") ; static method
 DateTimeImmutable/ATOM                         ; static constant
 ```
 
-`(ClassName. args)` constructor shorthand also works.
-
 ## Class instantiation
 
-```phel
-(php/new expr args*)
-```
-
-Evaluates `expr`, creates instance with `args`, returns it.
+Three equivalent forms — prefer `ClassName.` for imported classes:
 
 ```phel
 (ns my.module
-  (:use DateTime))
+  (:use DateTime DateTimeImmutable))
 
-(php/new DateTime)       ; => DateTime instance
-(php/new DateTime "now") ; => DateTime instance
+(DateTime.)              ; => DateTime instance (ClassName. shorthand)
+(DateTime. "now")        ; => DateTime instance with arg
+(new DateTime)           ; also valid
+(php/new DateTime)       ; also valid
 
-(php/new "\\DateTimeImmutable") ; instantiate a new PHP class from string
+(php/new "\\DateTimeImmutable") ; instantiate from string (dynamic)
 ```
 
 {% php_note() %}
-Class instantiation in Phel uses `php/new` instead of PHP's `new` keyword:
-
 ```php
 // PHP
 new DateTime();
 new DateTime("now");
 new \DateTimeImmutable();
 
-// Phel
-(php/new DateTime)
-(php/new DateTime "now")
-(php/new "\\DateTimeImmutable")
+// Phel — preferred shorthand
+(DateTime.)
+(DateTime. "now")
+(DateTimeImmutable.)
 ```
 
-You can import classes with `:use` to avoid repeating the namespace, just like PHP's `use` statement.
+Import classes with `:use` to use the short `ClassName.` form without repeating the namespace.
 {% end %}
 
 ## Method and property call
@@ -160,26 +154,27 @@ Chain multiple in one `php/->`. Each element evaluates on result of previous, en
   (:use DateTimeImmutable)
   (:use stdClass))
 
-(def di (php/new DateInterval "PT30S"))
+(def di (DateInterval. "PT30S"))
 
-(php/-> di (format "%s seconds")) ; Evaluates to "30 seconds"
-(php/-> di s) ; Evaluates to 30
+(.format di "%s seconds")          ; => "30 seconds"  (.method shorthand)
+(php/-> di (format "%s seconds"))  ; same, verbose form
+(.-s di)                           ; => 30  (.-prop shorthand)
 
 ;; Chain multiple calls:
 ;; (new DateTimeImmutable("2024-03-10"))->modify("+1 day")->format("Y-m-d")
-(php/-> (php/new DateTimeImmutable "2024-03-10")
-        (modify "+1 day")
-        (format "Y-m-d"))
+(-> (DateTimeImmutable. "2024-03-10")
+    (.modify "+1 day")
+    (.format "Y-m-d"))
 
-;; Mix methods and properties: $user->profile->getDisplayName()
+;; php/-> also works and is required for chains mixing methods and properties:
 (php/-> user profile (getDisplayName))
 
-;; Other example using nested properties:
-(def address (php/new stdClass))
-(def user (php/new stdClass))
+;; Nested property access:
+(def address (stdClass.))
+(def user    (stdClass.))
 (php/oset (php/-> address city) "Berlin")
 (php/oset (php/-> user address) address)
-(php/-> user address city) ; Evaluates to "Berlin"
+(php/-> user address city) ; => "Berlin"
 ```
 
 {% php_note() %}
@@ -192,16 +187,14 @@ $di->s;
 (new DateTimeImmutable("2024-03-10"))->modify("+1 day")->format("Y-m-d");
 $user->profile->getDisplayName();
 
-// Phel
-(php/-> di (format "%s seconds"))
-(php/-> di s)
-(php/-> (php/new DateTimeImmutable "2024-03-10")
-        (modify "+1 day")
-        (format "Y-m-d"))
-(php/-> user profile (getDisplayName))
+// Phel — shorthand forms
+(.format di "%s seconds")
+(.-s di)
+(-> (DateTimeImmutable. "2024-03-10") (.modify "+1 day") (.format "Y-m-d"))
+(php/-> user profile (getDisplayName))   ; mixed chains need php/->
 ```
 
-Method calls use parentheses `(methodname args)`, while property access is just the symbol name.
+Method calls: `(.method obj args)` shorthand or `(php/-> obj (method args))`. Property access: `(.-prop obj)` or `(php/-> obj prop)`. Mixed chains (method + property in one expression) use `php/->` directly.
 {% end %}
 
 {% clojure_note() %}
@@ -221,10 +214,11 @@ Same as above, but static.
 (ns my.module
   (:use DateTimeImmutable))
 
-(php/:: DateTimeImmutable ATOM) ; => "Y-m-d\TH:i:sP"
+DateTimeImmutable/ATOM                                     ; => "Y-m-d\TH:i:sP"  (shorthand)
+(php/:: DateTimeImmutable ATOM)                            ; verbose form
 
-;; => DateTimeImmutable instance
-(php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2020-03-22"))
+(DateTimeImmutable/createFromFormat "Y-m-d" "2020-03-22") ; shorthand
+(php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2020-03-22")) ; verbose
 ```
 
 {% php_note() %}
@@ -235,9 +229,9 @@ The `php/::` operator is equivalent to PHP's `::` for static method and property
 DateTimeImmutable::ATOM;
 DateTimeImmutable::createFromFormat("Y-m-d", "2020-03-22");
 
-// Phel
-(php/:: DateTimeImmutable ATOM)
-(php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2020-03-22"))
+// Phel — shorthand forms
+DateTimeImmutable/ATOM
+(DateTimeImmutable/createFromFormat "Y-m-d" "2020-03-22")
 ```
 {% end %}
 
@@ -251,7 +245,7 @@ DateTimeImmutable::createFromFormat("Y-m-d", "2020-03-22");
 Set value on class/object property.
 
 ```phel
-(def x (php/new stdclass))
+(def x (stdclass.))
 (php/oset (php/-> x name) "foo")
 ```
 
@@ -264,7 +258,7 @@ $x = new stdClass();
 $x->name = "foo";
 
 // Phel
-(def x (php/new stdclass))
+(def x (stdclass.))
 (php/oset (php/-> x name) "foo")
 ```
 

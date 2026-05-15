@@ -339,15 +339,16 @@ Strings are iterable: work with `map`, `filter`, `count`, `frequencies`, `foreac
 ```
 
 {% php_note() %}
-PHP strings internally. All PHP string functions work:
+PHP strings internally. Use `phel.string` for idiomatic string operations:
 
 ```phel
-(php/strlen "hello")                 ; => 5
-(php/strtoupper "hello")             ; => "HELLO"
-(php/str_replace "o" "0" "hello")    ; => "hell0"
+;; Requires: (:require phel.string :as str)
+(count "hello")                      ; => 5
+(str/upper-case "hello")             ; => "HELLO"
+(str/replace "hello" "o" "0")        ; => "hell0"
 ```
 
-Same as PHP double-quoted strings, except `$` doesn't need escaping.
+All PHP string functions also available via `php/` prefix. Same as PHP double-quoted strings, except `$` doesn't need escaping.
 {% end %}
 
 ## Lists
