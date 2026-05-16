@@ -40,3 +40,6 @@ cache/
 /content/documentation/reference/api/
 /content/releases/*
 !/content/releases/_index.md
+
+# WASM REPL binaries (fetched by scripts/fetch-wasm-repl.sh)
+/static/wasm-repl/build/
