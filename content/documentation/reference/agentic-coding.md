@@ -9,6 +9,23 @@ Single-page reference for AI agents (Claude Code, Codex, Cursor, Copilot, Aider,
 
 Load this one if you can only load one doc into an agent's context.
 
+## TL;DR for agents
+
+If you remember nothing else, remember these. Safe even if the rest of this page is truncated.
+
+- **Verify before invent.** `phel doc <fn>` or grep `vendor/phel-lang/phel-lang/src/phel/core/`.
+- **Strings module is `phel.string`** (not `phel.str`, not `clojure.string`). Prefer it over `php/strtoupper`, `php/explode`.
+- **Namespaces need ≥2 segments.** `(ns app.main)`, not `(ns main)`. File path mirrors namespace under `src/`.
+- **CLI args live in `argv`** (vector of strings, no asterisks in Phel 0.39+). `php/$argv` is `null` under `phel run`.
+- **`for` returns data, `foreach` runs effects.** `dotimes` repeats, `loop`/`recur` accumulates.
+- **`recur` only in tail position** of `loop` or `fn`.
+- **PHP arrays are not Phel collections.** Convert with `vec` (PHP to Phel) or `to-php-array` (Phel to PHP).
+- **PHP assoc literal is `#php {"k" "v"}`.** Phel map `{:k "v"}` is not a PHP array.
+- **Record field access:** `(:x p)` or `(get p :x)`. Never `(.-x p)`.
+- **Only `false` and `nil` are falsy.** `0`, `""`, `[]`, `{}` are truthy.
+- **Top-level side effects break `phel build`.** Guard with `(when-not *build-mode* ...)`.
+- **Phel is not Clojure.** See [Phel is not Clojure](#phel-is-not-clojure) below before reaching for a Clojure form.
+
 ## What Phel is
 
 Functional Lisp that compiles to PHP. Runs on any PHP 8.4+, ships via Composer, full PHP interop.
@@ -99,7 +116,7 @@ vendor/bin/phel agent-install --all     # every adapter
 (loop [acc 0 n 10]
   (if (zero? n) acc (recur (+ acc n) (dec n))))
 
-(for   [x :in xs :when (odd? x)] (* x x))   ; lazy comprehension
+(for   [x :in xs :when (odd? x)] (* x x))   ; comprehension, returns vector
 (foreach [x xs] (println x))               ; side effects, returns nil
 (dotimes [i 5] (println i))
 
@@ -166,7 +183,7 @@ Class/CONST
 ```phel
 (defrecord Point [x y])
 (def p (->Point 1 2))
-(:x p)                             ; => 1     (keyword as fn — preferred)
+(:x p)                             ; => 1     (keyword-as-fn: preferred)
 (get p :x)                         ; => 1     (also valid)
 (map->Point {:x 1 :y 2})           ; => (point 1 2)
 
@@ -211,8 +228,8 @@ Run with `vendor/bin/phel test`.
 
 Most failure modes agents hit:
 
-1. **CLI args:** use `*argv*` (vector of strings, post-script-path). `php/$argv` is `null` under `phel run`.
-2. **`for` vs `foreach`:** `for` builds a lazy sequence. `foreach` (or `doseq`) for side-effects (logging, IO).
+1. **CLI args:** use `argv` (vector of strings, post-script-path). `php/$argv` is `null` under `phel run`. Pre-0.39 was `*argv*`.
+2. **`for` vs `foreach`:** `for` builds a vector via list comprehension. `foreach` (or `doseq`) for side-effects (logging, IO).
 3. **`transduce` with `max`/`min`:** no zero-arity. Wrap and pass init: `(transduce xf (fn [a b] (max a b)) 0 coll)`.
 4. **Top-level side-effects break `phel build`:** guard with `(when-not *build-mode* ...)`.
 5. **Record access by keyword:** `(:x p)` or `(get p :x)`, not `(.-x p)`.
@@ -221,6 +238,25 @@ Most failure modes agents hit:
 8. **String module:** `phel.string` (renamed from `phel.str`).
 9. **PHP assoc literal:** `#php {"k" "v"}`, not `{:k "v"}`. Phel maps aren't PHP arrays.
 10. **`recur` only in tail position** of `loop` or `fn`.
+
+## Phel is not Clojure
+
+Agents trained on Clojure data hallucinate Clojure-only forms in Phel code. Phel is Lisp-on-PHP, not Lisp-on-JVM. Verify with `phel doc <name>` before using anything that "sounds Clojure".
+
+Known differences:
+
+- **Strings module:** `phel.string`, not `clojure.string`. Some function names match, some don't. Check each.
+- **Interop is PHP, not Java.** `(php/new Class arg)`, `(.method obj)`, `(Class/method)`, `Class/CONST`. No `Class/.method`, no `Class.`, no JVM.
+- **CLI args:** `argv`, not `*command-line-args*`. (Pre-0.39 used `*argv*`.)
+- **Records:** field access by keyword `(:x p)`. No `.-field` on records.
+- **Numbers:** PHP `int`/`float`, plus Phel `:ratio` (`(/ 1 3)` => `1/3`) and `:bigint` (auto-promoted on overflow). No `BigDecimal`.
+- **No reader conditionals** (`#?(:clj ... :cljs ...)`). One target.
+- **Concurrency primitives are fiber-based.** `atom`, `future`, `promise`, `pmap`, `async`/`await`, `await-all`, `await-any` all exist (see `phel/core/async.phel`). `ref`, `agent`, STM do not. Verify each with `phel doc`.
+- **No `clojure.*` namespaces.** `clojure.set`, `clojure.walk`, `clojure.spec`, `clojure.test.check`, `core.match`: none. Phel modules live under `phel.*` (`phel.string`, `phel.html`, `phel.test`, etc).
+- **`phel.test`, not `clojure.test`.** Uses `deftest` + `is`.
+- **Type tags emit PHP declarations**, not Java. `^int`, `^string`, `^"?int"` on `defn` params/return.
+
+When in doubt: run `phel doc <name>`. If it errors, it does not exist; do not generate code that calls it.
 
 ## Project layout
 
@@ -254,7 +290,7 @@ When generating Phel code:
 4. **Right comprehension:** `for` returns data, `foreach` runs effects, `dotimes` repeats, `loop`/`recur` accumulates.
 5. **Stay immutable.** `(conj v x)` returns a new vector. Rebind, don't expect mutation.
 6. **Use phel.string, not php/ string functions.** Prefer `str/upper-case`, `str/split`, `str/join`, `str/starts-with?` over `php/strtoupper`, `php/explode`, etc.
-7. **Use interop shorthands.** `(.method obj)`, `(.-prop obj)`, `(Class/method)`, `(ClassName.)` — shorter and idiomatic.
+7. **Use interop shorthands.** `(.method obj)`, `(.-prop obj)`, `(Class/method)`, `(ClassName.)`. Shorter, idiomatic.
 8. **Use `^:memoize` for caching.** `(defn ^:memoize f [x] ...)` beats a manual `static $cache` pattern.
 9. **Type tags emit PHP declarations.** `^int`, `^string`, `^"?int"` on `defn` params/return = free PHP type hints.
 10. **Comment style:** `;` inline, `;;` standalone. `#` line comments deprecated.
