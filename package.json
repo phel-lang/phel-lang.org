@@ -14,7 +14,8 @@
   "license": "MIT",
   "author": "Phel Language Team",
   "scripts": {
-    "prebuild-css": "node ./scripts/concat-tailwind.js",
+    "generate-agent-doc": "node ./scripts/generate-agent-doc.js",
+    "prebuild-css": "node ./scripts/concat-tailwind.js && node ./scripts/generate-agent-doc.js",
     "build-css": "npm run prebuild-css && postcss ./css/tailwind.entry.css -o ./static/tailwind.css --watch",
     "build-css-dev": "concurrently \"node ./scripts/concat-tailwind.js --watch\" \"postcss ./css/tailwind.entry.css -o ./static/tailwind.css --watch\" --names \"CONCAT,TAILWIND\" --prefix-colors \"yellow,cyan\"",
     "build-css-prod": "npm run prebuild-css && postcss ./css/tailwind.entry.css -o ./static/tailwind.css --env production",

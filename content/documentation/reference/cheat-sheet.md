@@ -9,6 +9,8 @@ scripts = ["cheat-sheet-filter.js"]
 
 Quick reference for Phel syntax and core functions.
 
+> **AI agents:** load [Agentic Coding](/documentation/reference/agentic-coding) first for the truncation-safe rules and PHP-interop gotchas. This sheet is the wide surface; that one is the must-know.
+
 ## Basic syntax
 
 ```phel

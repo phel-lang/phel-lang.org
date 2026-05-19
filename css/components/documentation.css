@@ -547,3 +547,44 @@ h6:hover .zola-anchor {
 .dark .sidebar-subsection li.active a {
   color: var(--color-dark-text-accent);
 }
+
+/* ========================================
+   AGENT DOC CTA
+   Prominent download link to /agentic-coding.md
+   ======================================== */
+.agent-doc-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  margin: var(--space-lg) 0;
+  padding: var(--space-md) var(--space-lg);
+  background: var(--color-light-surface);
+  border: 1px solid var(--color-light-border);
+  border-radius: var(--radius-md);
+}
+
+.agent-doc-cta .btn {
+  align-self: flex-start;
+}
+
+.agent-doc-cta__hint {
+  font-size: var(--text-sm);
+  color: var(--color-light-text-secondary);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.agent-doc-cta__hint code {
+  user-select: all;
+  white-space: nowrap;
+}
+
+.dark .agent-doc-cta {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+}
+
+.dark .agent-doc-cta__hint {
+  color: var(--color-dark-text-secondary);
+}
