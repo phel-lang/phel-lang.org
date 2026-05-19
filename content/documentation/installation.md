@@ -207,16 +207,27 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 </div>
 </details>
 
-## Upgrading from 0.36
+## Upgrading from 0.38
 
 ```bash
-composer require phel-lang/phel-lang:^0.37
+composer require phel-lang/phel-lang:^0.39
 ./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
-Cached PHP from earlier installs references old FQNs (`Phel\Printer`, exception classes under `Phel\Compiler\Domain\Exceptions`, …) and fails to load otherwise. Both Phel sources and compiled fixtures in the upstream repo are regenerated; downstream projects must rebuild theirs.
+Cached PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects after upgrade.
 
-Breaking changes in 0.37:
+Breaking changes in 0.39 (Clojure-aligned core type renames):
+
+- `Variable` → `Atom`
+- `Uuid` → `UUID`
+- `BigInteger` → `BigInt`
+- `Rational` → `Ratio`
+- `PhelFuture` → `Future`
+- `ExInfoException` → `ExceptionInfo`
+- `LazyCons` → `Cons`
+- Auto-refer: common `Phel\Lang\*` types resolve without `(:use ...)`. `Interface` suffix dropped (e.g. `(php/instanceof x LazySeq)`). User `(:use ...)` still overrides.
+
+Earlier upgrades (0.37):
 
 - `PhelConfig` setters replaced by immutable `withX()` chain; old `setX()` shims emit deprecation notices. See [Configuration](/documentation/configuration/).
 - `PhelConfig::forProject(ProjectLayout $layout = Flat, string $mainNamespace = '')`: layout argument is first, `Flat` is the default.

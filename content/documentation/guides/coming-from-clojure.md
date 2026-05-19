@@ -137,18 +137,18 @@ Inferred tags from tail primitive ops propagate to the PHP signature — you oft
 
 ### Numeric tower
 
-Phel ships `BigInteger`, `BigDecimal`, and `Rational` as first-class types:
+Phel ships `BigInt`, `BigDecimal`, and `Ratio` as first-class types:
 
 ```phel
-1N          ; BigInteger literal
+1N          ; BigInt literal
 1.5M        ; BigDecimal literal
-1/2         ; Rational literal (not a float — exact ratio)
+1/2         ; Ratio literal (not a float, exact ratio)
 
-(/ 1 2)     ; => 1/2  (Rational, exact)
+(/ 1 2)     ; => 1/2  (Ratio, exact)
 (/ 1.0 2)   ; => 0.5  (float)
-(+ 1N 2N)   ; => 3N   (BigInteger)
+(+ 1N 2N)   ; => 3N   (BigInt)
 
-;; PHP ints auto-promote to BigInteger on overflow
+;; PHP ints auto-promote to BigInt on overflow
 (* 9999999999999999999N 2N) ; stays exact
 
 ;; Constructors and predicates
@@ -432,7 +432,7 @@ Use Composer. `composer.json` replaces `deps.edn`:
 ```json
 {
   "require": {
-    "phel-lang/phel-lang": "^0.37",
+    "phel-lang/phel-lang": "^0.39",
     "php": ">=8.4"
   }
 }
@@ -487,8 +487,8 @@ Many orgs already run PHP. Bring FP/Lisp into environments where the JVM isn't a
 | `(defprotocol P)` | `(defprotocol P)` | Same |
 | `(defrecord R)` | `(defrecord R)` or `(defstruct R)` | Both available |
 | `(lazy-seq ...)` | `(lazy-seq ...)` | Same |
-| `1N` / `1.5M` / `1/2` | `1N` / `1.5M` / `1/2` | BigInteger / BigDecimal / Rational |
-| `(/ 1 2)` → `1/2` (Ratio) | `(/ 1 2)` → `1/2` (Rational) | Same; use `(/ 1.0 2)` for float |
+| `1N` / `1.5M` / `1/2` | `1N` / `1.5M` / `1/2` | BigInt / BigDecimal / Ratio |
+| `(/ 1 2)` → `1/2` (Ratio) | `(/ 1 2)` → `1/2` (Ratio) | Same; use `(/ 1.0 2)` for float |
 | `#"regex"` | `#"regex"` | Regex literal; `re-find`, `re-matches` |
 | `#?(:clj x :default y)` | `#?(:phel x :default y)` | Reader conditionals |
 | `(ex-info msg data)` | `(ex-info msg data)` | Same |

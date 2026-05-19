@@ -113,16 +113,16 @@ Integers, floats, ratios, big integers, big decimals. Integers and floats wrap P
 024_71 ; octal number with underscores
 ```
 
-### Ratios, BigInteger, BigDecimal
+### Ratios, BigInt, BigDecimal
 
 ```phel
-1/2          ; Rational
--3/4         ; Rational
-(/ 10 3)     ; => 10/3 (int / int with non-integer result returns Rational)
+1/2          ; Ratio
+-3/4         ; Ratio
+(/ 10 3)     ; => 10/3 (int / int with non-integer result returns Ratio)
 (numerator 1/2)    ; => 1
 (denominator 1/2)  ; => 2
 
-(bigint "100000000000000000000")  ; BigInteger from string
+(bigint "100000000000000000000")  ; BigInt from string
 (bigint? 1N)                       ; predicate
 
 1.5M         ; BigDecimal literal (M suffix)
@@ -131,7 +131,7 @@ Integers, floats, ratios, big integers, big decimals. Integers and floats wrap P
 (bigdec? 1.5M)  ; => true
 ```
 
-Auto-promoting variants `+'`, `-'`, `*'`, `inc'`, `dec'` widen to BigInteger on overflow instead of wrapping.
+Auto-promoting variants `+'`, `-'`, `*'`, `inc'`, `dec'` widen to BigInt on overflow instead of wrapping.
 
 ## Arithmetic operators
 
@@ -174,12 +174,12 @@ Operators take zero, one, or many args:
 (* 2 3 4) ; => 24
 
 (/) ; => 1
-(/ 2) ; => 1/2 (reciprocal as Rational)
+(/ 2) ; => 1/2 (reciprocal as Ratio)
 (/ 24 4 2) ; => 3
-(/ 10 3)   ; => 10/3 (Rational, exact)
+(/ 10 3)   ; => 10/3 (Ratio, exact)
 ```
 
-`(/ int int)` with a non-integer result returns a `Rational`, not a float. Coerce with `float` or `(/ 10.0 3)` if you need a float.
+`(/ int int)` with a non-integer result returns a `Ratio`, not a float. Coerce with `float` or `(/ 10.0 3)` if you need a float.
 
 {% php_note() %}
 Variadic operators are more flexible than PHP's:
@@ -207,7 +207,7 @@ Other numerics:
 - `quot`, `rem`, `mod`: integer quotient, remainder, modulo. `%` aliases `rem`.
 - `floor`, `ceil`, `round`, `sqrt`: math primitives.
 - `**`: power.
-- `+'`, `-'`, `*'`, `inc'`, `dec'`: auto-promote to `BigInteger` on overflow.
+- `+'`, `-'`, `*'`, `inc'`, `dec'`: auto-promote to `BigInt` on overflow.
 - `numerator`, `denominator`, `rationalize`, `ratio?`.
 - `bigint`, `biginteger`, `bigint?`; `bigdec`, `bigdec?` / `decimal?`.
 

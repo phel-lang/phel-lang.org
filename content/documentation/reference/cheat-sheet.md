@@ -677,16 +677,16 @@ See [Testing](/documentation/testing).
 (- 10 3)                           ; => 7
 (* 2 3 4)                          ; => 24
 (/ 10 2)                           ; => 5
-(/ 10 3)                           ; => 10/3 (Rational, exact)
+(/ 10 3)                           ; => 10/3 (Ratio, exact)
 (/ 10.0 3)                         ; => 3.333... (float)
-(float (/ 10 3))                   ; => 3.333... (coerce Rational to float)
+(float (/ 10 3))                   ; => 3.333... (coerce Ratio to float)
 (quot 10 3)                        ; => 3 (integer quotient)
 (rem 10 3)                         ; => 1 (remainder)
 (mod -10 3)                        ; => 2 (modulo, always non-negative)
 (** 2 10)                          ; => 1024
 ```
 
-Integer division (`/`) returns a `Rational` when not evenly divisible. Use `float` or `(/ 10.0 3)` if you need a float.
+Integer division (`/`) returns a `Ratio` when not evenly divisible. Use `float` or `(/ 10.0 3)` if you need a float.
 
 ## Utility functions
 

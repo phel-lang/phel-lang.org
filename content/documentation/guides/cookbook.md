@@ -420,7 +420,7 @@ Filter, transform, group via threading macros and collection functions.
 ;; More pipeline examples:
 
 ;; Average age of active users.
-;; (/ int int) returns a Rational when not evenly divisible.
+;; (/ int int) returns a Ratio when not evenly divisible.
 (def avg-age
   (let [active (filter :active users)
         total-age (reduce + 0 (map :age active))]
