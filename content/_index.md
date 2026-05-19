@@ -6,22 +6,9 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 
 **Phel** is a functional, Lisp-inspired language that compiles to PHP. Inspired by [Clojure](https://clojure.org/), Phel brings macros, persistent data structures, and expressive functional idioms to the PHP ecosystem.
 
-<div class="homepage-cta">
-  <a href="#try-phel-instantly-with-docker" class="btn btn-primary homepage-cta-button homepage-cta-primary">
-    <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-    Try Phel with Docker
-  </a>
-  <a href="/documentation/getting-started" class="btn btn-secondary homepage-cta-button homepage-cta-secondary">
-    <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-    Read Documentation
-  </a>
-  <a href="/practice/basic" class="btn btn-secondary homepage-cta-button homepage-cta-secondary">
-    <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-    Practice Exercises
-  </a>
-</div>
+## Try Phel right now
 
-## See Phel in Action
+No install. Edit the expression and press **Run**:
 
 <div id="browser-repl"></div>
 
@@ -35,6 +22,21 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 ```
 
 </noscript>
+
+<div class="homepage-cta">
+  <a href="/documentation/getting-started" class="btn btn-primary homepage-cta-button homepage-cta-primary">
+    <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+    Read Documentation
+  </a>
+  <a href="/practice/basic" class="btn btn-secondary homepage-cta-button homepage-cta-secondary">
+    <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+    Practice Exercises
+  </a>
+  <a href="#try-phel-instantly-with-docker" class="btn btn-secondary homepage-cta-button homepage-cta-secondary">
+    <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+    Run with Docker
+  </a>
+</div>
 
 ## Key Features of Phel
 
