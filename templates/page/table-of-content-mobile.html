@@ -1,0 +1,12 @@
+{% if page.toc %}
+<details class="page-toc-mobile">
+    <summary>On this page</summary>
+    <ul>
+        {% for h1 in page.toc %}
+        <li>
+            <a href="#{{ h1.id }}">{{ h1.title }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</details>
+{% endif %}
