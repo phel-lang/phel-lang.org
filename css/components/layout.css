@@ -16,6 +16,10 @@
   padding: 0 var(--space-xl);
 }
 
+.one-column-layout:has(.homepage-content) {
+  max-width: var(--container-wide);
+}
+
 @media (max-width: 767px) {
   .one-column-layout {
     padding: 0 var(--space-md);

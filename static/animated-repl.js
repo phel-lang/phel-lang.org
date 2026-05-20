@@ -3,21 +3,16 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!container) return;
 
   const lines = [
-    { type: 'shell', text: 'docker run -it --rm phellang/repl', delay: 40 },
-    { type: 'output', text: 'Welcome to the Phel Repl', delay: 0 },
-    { type: 'output', text: 'Type "exit" or press Ctrl-D to exit.', delay: 0 },
-    { type: 'prompt', text: '(+ 1 2 3)', delay: 60 },
-    { type: 'result', text: '6', delay: 0 },
-    { type: 'prompt', text: '(def name "World")', delay: 50 },
-    { type: 'result', text: "#'user/name", delay: 0 },
-    { type: 'prompt', text: '(str "Hello, " name "!")', delay: 45 },
-    { type: 'result', text: '"Hello, World!"', delay: 0 },
-    { type: 'prompt', text: '(defn greet [who] (str "Hi, " who "!"))', delay: 40 },
+    { type: 'prompt', text: '(map inc [1 2 3])', delay: 45 },
+    { type: 'result', text: '(2 3 4)', delay: 0 },
+    { type: 'prompt', text: '(->> (range 1 6) (filter odd?) (reduce +))', delay: 35 },
+    { type: 'result', text: '9', delay: 0 },
+    { type: 'prompt', text: '(defn greet [name] (str "hello, " name))', delay: 40 },
     { type: 'result', text: "#'user/greet", delay: 0 },
-    { type: 'prompt', text: '(greet "PHP developer")', delay: 50 },
-    { type: 'result', text: '"Hi, PHP developer!"', delay: 0 },
-    { type: 'prompt', text: '(->> (range 1 6) (map (fn [x] (* x x))) (reduce +))', delay: 35 },
-    { type: 'result', text: '55', delay: 0 },
+    { type: 'prompt', text: '(greet "phel")', delay: 50 },
+    { type: 'result', text: '"hello, phel"', delay: 0 },
+    { type: 'prompt', text: '(->> (range 1 11) (map (fn [x] (* x x))) (reduce +))', delay: 35 },
+    { type: 'result', text: '385', delay: 0 },
   ];
 
   const terminal = document.createElement('div');
