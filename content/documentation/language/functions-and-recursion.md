@@ -131,7 +131,7 @@ Equivalent, but `defn-` is more concise.
 Tag a `defn` with metadata to wrap the body automatically (added in 0.37):
 
 ```phel
-;; Memoize results — keep every (args -> value) pair forever
+;; Memoize results - keep every (args -> value) pair forever
 (defn ^:memoize fib [n]
   (if (< n 2) n (+ (fib (dec n)) (fib (- n 2)))))
 
@@ -139,7 +139,7 @@ Tag a `defn` with metadata to wrap the body automatically (added in 0.37):
 (defn ^{:memoize-lru 128} expensive [k]
   (slow-lookup k))
 
-;; Wrap body in (async ...) — returns Amp\Future
+;; Wrap body in (async ...) - returns Amp\Future
 (defn ^:async fetch [url]
   (http/get url))
 ```
@@ -161,7 +161,7 @@ Annotate types with `:tag` metadata (added in 0.37). The compiler emits PHP type
 
 Reader shorthands: `^int`, `^"?int"`, `^"\\Foo\\Bar"`, `^{:tag "..."}`.
 
-Tag inference fills in return types from tail primitive ops, tail calls to tagged globals or pure PHP builtins, and parameter types from primitive body uses — inferred tags persist in def metadata and graft onto compiled PHP signatures for single-arity `defn`. Mismatches surface at compile time.
+Tag inference fills in return types from tail primitive ops, tail calls to tagged globals or pure PHP builtins, and parameter types from primitive body uses - inferred tags persist in def metadata and graft onto compiled PHP signatures for single-arity `defn`. Mismatches surface at compile time.
 
 ## Recursion
 

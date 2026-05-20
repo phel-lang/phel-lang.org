@@ -90,4 +90,4 @@ return (new \Phel\Config\PhelConfig())
 
 </details>
 
-> **Note:** Old `setX()` setters are deprecated since 0.37 and emit notices. Use the `withX()` chain — the API is immutable.
+> **Note:** Old `setX()` setters are deprecated since 0.37 and emit notices. Use the `withX()` chain - the API is immutable.

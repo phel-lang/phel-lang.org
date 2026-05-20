@@ -549,7 +549,7 @@ Composable transformations independent of the data source. Avoid intermediate co
 (php/date "Y-m-d")                 ; => "2026-02-07"
 (php/array_merge arr1 arr2)        ; call any PHP function
 
-;; Instantiation — all three forms are equivalent
+;; Instantiation - all three forms are equivalent
 (php/new DateTime "now")
 (new DateTime "now")
 (DateTime. "now")                  ; ClassName. shorthand (preferred)

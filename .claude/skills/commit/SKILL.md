@@ -8,7 +8,7 @@ model: sonnet
 
 ## Rules
 
-- **Conventional commits — non-negotiable.** Every commit. Use `ref:` not `refactor:`.
+- **Conventional commits - non-negotiable.** Every commit. Use `ref:` not `refactor:`.
 - No AI references. No `Co-Authored-By: Claude`. No emojis unless asked.
 - Identity: `chemaclass@outlook.es`, GPG key `E51B5BF45F85D160`. Never `--no-gpg-sign` or `--no-verify`.
 - Hook fails → fix + NEW commit. Never `--amend`.

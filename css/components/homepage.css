@@ -61,7 +61,7 @@
   margin-right: 0;
 }
 
-/* Phel Terminal (homepage REPL showcase) — styling mirrors animated-repl.css */
+/* Phel Terminal (homepage REPL showcase) - styling mirrors animated-repl.css */
 .phel-terminal {
   --t-chrome-bg: #e5e7eb;
   --t-chrome-border: rgba(0, 0, 0, 0.06);
@@ -927,15 +927,8 @@
   gap: var(--space-md);
 }
 
-@media (min-width: 768px) {
-  .vs-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
 /* vs PHP one-liner under right column */
 .vs-caption {
-  margin: var(--space-sm) 0 0;
   font-size: var(--text-sm);
   color: var(--color-light-text-secondary);
   line-height: 1.5;
@@ -1052,8 +1045,16 @@
   min-width: 0;
 }
 
-.vs-col > * {
-  margin-top: 0;
+.vs-col > .code-block-wrapper,
+.vs-col > pre {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.vs-col > .code-block-wrapper > pre {
+  flex: 1;
+  margin: 0;
 }
 
 .vs-label {
@@ -1066,14 +1067,57 @@
   background: var(--color-light-bg-secondary);
   border: 1px solid var(--color-light-border);
   border-radius: var(--radius-md);
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
   align-self: flex-start;
   margin-bottom: var(--space-sm);
+}
+
+.vs-label-icon {
+  width: 0.95rem;
+  height: 0.95rem;
+  flex-shrink: 0;
+}
+
+.vs-label--php {
+  color: #4f5d95;
+  background: rgba(79, 93, 149, 0.08);
+  border-color: rgba(79, 93, 149, 0.25);
+}
+
+.vs-label--phel {
+  color: #7d4cdb;
+  background: rgba(125, 76, 219, 0.08);
+  border-color: rgba(125, 76, 219, 0.25);
+}
+
+.vs-caption--top {
+  margin: 0 0 var(--space-md);
+  text-align: left;
+  font-size: var(--text-sm);
+  color: var(--color-light-text-secondary);
 }
 
 .dark .vs-label {
   background: var(--color-dark-surface);
   border-color: var(--color-dark-border);
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .vs-label--php {
+  color: #8b9dc3;
+  background: rgba(139, 157, 195, 0.1);
+  border-color: rgba(139, 157, 195, 0.3);
+}
+
+.dark .vs-label--phel {
+  color: var(--color-dark-text-accent);
+  background: rgba(191, 164, 255, 0.12);
+  border-color: rgba(191, 164, 255, 0.3);
+}
+
+.dark .vs-caption--top {
   color: var(--color-dark-text-secondary);
 }
 
@@ -1325,7 +1369,7 @@
 }
 
 /* ========================================
-   HOMEPAGE HERO — 2-col with terminal
+   HOMEPAGE HERO - 2-col with terminal
    ======================================== */
 
 .homepage-hero {
@@ -1356,12 +1400,19 @@
 
 .homepage-content .homepage-hero-logo {
   display: block;
-  width: 96px;
-  height: 96px;
+  width: 200px;
+  height: 200px;
   margin: 0 auto var(--space-md);
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
+}
+
+@media (min-width: 880px) {
+  .homepage-content .homepage-hero-logo {
+    width: 96px;
+    height: 96px;
+  }
 }
 
 @media (min-width: 880px) {
@@ -1407,6 +1458,11 @@
   gap: var(--space-md);
   justify-content: center;
   align-items: center;
+  margin-top: var(--space-xl);
+}
+
+.homepage-hero-text > .homepage-hero-actions {
+  margin-top: var(--space-xl);
 }
 
 @media (min-width: 880px) {
@@ -1421,6 +1477,13 @@
   color: var(--color-light-text-secondary);
   text-decoration: none;
   transition: color var(--duration-fast) var(--ease-out);
+  margin-left: var(--space-md);
+}
+
+@media (max-width: 520px) {
+  .homepage-hero-link {
+    margin-left: 0;
+  }
 }
 
 .homepage-hero-link:hover {
@@ -1433,6 +1496,7 @@
 
 .homepage-hero-aside {
   min-width: 0;
+  min-height: 400px;
 }
 
 .homepage-hero-aside .phel-terminal {
@@ -1465,7 +1529,7 @@
 }
 
 /* ========================================
-   CODE TABS — Phel by example
+   CODE TABS - Phel by example
    ======================================== */
 
 .homepage-code-tabs {
@@ -1499,6 +1563,9 @@
   border-bottom: 2px solid transparent;
   padding: var(--space-md) var(--space-md);
   margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
   font-family: inherit;
   font-size: var(--text-sm);
   font-weight: 600;
@@ -1507,6 +1574,12 @@
   transition: color var(--duration-fast) var(--ease-out),
               border-color var(--duration-fast) var(--ease-out),
               background var(--duration-fast) var(--ease-out);
+}
+
+.homepage-tab-icon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
 }
 
 .homepage-tab-btn:hover {
@@ -1556,7 +1629,6 @@
   font-size: var(--text-sm);
   color: var(--color-light-text-secondary);
   text-align: left;
-  margin: 0;
 }
 
 .dark .homepage-code-tabs {
@@ -1589,7 +1661,7 @@
 }
 
 /* ========================================
-   POSITIONING — Why Phel? 3 cards
+   POSITIONING - Why Phel? 3 cards
    ======================================== */
 
 .positioning-grid {
@@ -1626,8 +1698,7 @@
 
 .positioning-card:hover {
   border-color: var(--color-light-link);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-2px);
+  border-width: 1px;
 }
 
 .positioning-card-tag {
@@ -1682,7 +1753,7 @@
 }
 
 /* ========================================
-   QUICKSTART — Numbered install steps
+   QUICKSTART - Numbered install steps
    ======================================== */
 
 .quickstart-grid {
@@ -1754,6 +1825,42 @@
   flex-shrink: 0;
 }
 
+.quickstart-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--radius-md);
+  background: rgba(125, 76, 219, 0.08);
+  color: var(--color-light-link);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.quickstart-icon svg {
+  width: 1.4rem;
+  height: 1.4rem;
+}
+
+.dark .quickstart-icon {
+  background: rgba(191, 164, 255, 0.12);
+  color: var(--color-dark-text-accent);
+}
+
+.phel-meta-link--status .phel-meta-val {
+  color: #b45309;
+}
+
+.dark .phel-meta-link--status .phel-meta-val {
+  color: #ffbd2e;
+}
+
+@media (max-width: 640px) {
+  .phel-meta-pill:last-child {
+    display: none;
+  }
+}
+
 .quickstart-title {
   font-size: var(--text-lg);
   font-weight: 700;
@@ -1783,7 +1890,7 @@
 
 .quickstart-followup {
   text-align: center;
-  font-size: var(--text-sm);
+  font-size: var(--text-lg);
   color: var(--color-light-text-secondary);
   margin-top: var(--space-md);
 }
@@ -1813,7 +1920,7 @@
 }
 
 /* ========================================
-   FAQ — Native <details> accordion
+   FAQ - Native <details> accordion
    ======================================== */
 
 .faq {
@@ -1993,4 +2100,83 @@
   font-size: var(--text-base);
   color: var(--color-light-text-secondary);
   max-width: none;
+}
+
+/* Feature blocks - individual cards instead of tabs */
+.feature-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  margin: var(--space-xl) 0 var(--space-2xl);
+}
+
+.feature-block {
+  background: var(--color-light-bg);
+  border: 1px solid var(--color-light-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-lg);
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.feature-block:hover {
+  border-color: var(--color-light-link);
+  box-shadow: var(--shadow-sm);
+}
+
+.feature-block > .tab-split {
+  margin: 0;
+}
+
+.dark .feature-block {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+}
+
+.dark .feature-block:hover {
+  border-color: var(--color-dark-text-accent);
+  box-shadow: var(--shadow-dark-sm);
+}
+
+/* Cap homepage content width, hero + full-bleed sections opt out */
+.homepage-content > * {
+  max-width: 890px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.homepage-content > .homepage-hero,
+.homepage-content > .homepage-section--alt {
+  max-width: none;
+}
+
+/* Full-bleed alternating section background */
+.homepage-section {
+  margin-top: var(--space-2xl);
+  margin-bottom: var(--space-2xl);
+}
+
+.homepage-section--alt {
+  position: relative;
+  padding: var(--space-2xl) var(--space-xl);
+  background: rgba(125, 76, 219, 0.04);
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+.homepage-section--alt > * {
+  max-width: 890px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.homepage-section--alt > h2 {
+  margin-top: 0;
+}
+
+.dark .homepage-section--alt {
+  background: rgba(191, 164, 255, 0.05);
 }

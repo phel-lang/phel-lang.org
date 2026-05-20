@@ -133,7 +133,7 @@ Phel supports Clojure-style `defmulti` / `defmethod` with hierarchy-aware dispat
   ...)
 ```
 
-Inferred tags from tail primitive ops propagate to the PHP signature — you often don't need to annotate at all.
+Inferred tags from tail primitive ops propagate to the PHP signature - you often don't need to annotate at all.
 
 ### Numeric tower
 
@@ -381,7 +381,7 @@ Phel's equivalent of Clojure's Java interop. `php/` prefix unlocks the PHP ecosy
 ### Method calls
 
 ```phel
-;; Instance methods — two equivalent forms:
+;; Instance methods - two equivalent forms:
 (php/-> now (format "Y-m-d"))
 (.format now "Y-m-d")            ; .method shorthand
 
@@ -394,7 +394,7 @@ Phel's equivalent of Clojure's Java interop. `php/` prefix unlocks the PHP ecosy
 ### Static methods and constants
 
 ```phel
-;; Static methods — two equivalent forms:
+;; Static methods - two equivalent forms:
 (php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2024-03-22"))
 (DateTimeImmutable/createFromFormat "Y-m-d" "2024-03-22")  ; shorthand
 
