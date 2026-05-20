@@ -20,20 +20,20 @@ Load this one if you can only load one doc into an agent's context.
 
 Truncation-safe rules. Code form first, reason second. Verify with `phel doc` before deviating.
 
-| Use | Avoid | Why |
-|-----|-------|-----|
-| `phel doc <fn>`, grep `vendor/phel-lang/phel-lang/src/phel/core/` | inventing names | Hallucinated symbols compile then fail at runtime. |
-| `phel.string` (alias `str`) | `phel.str`, `clojure.string`, `php/strtoupper`, `php/explode` | `phel.str` removed. Phel string fns return Phel values. |
-| `(ns app.main)` (≥2 segments, file mirrors path under `src/`) | `(ns main)` | Single-segment ns exports invalid PHP under `phel build`. |
-| `argv` (vector of strings) | `*argv*` (pre-0.39), `php/$argv` | Symbol renamed in 0.39. `php/$argv` is `nil` under `phel run`. |
-| `for` for data, `foreach`/`doseq` for effects | `for` with side effects | `for` returns a vector. `foreach` returns `nil`. |
-| `recur` in tail of `loop`/`fn` | `recur` anywhere else | Non-tail `recur` errors at compile time. |
-| `vec` (PHP→Phel), `to-php-array` (Phel→PHP) | treating PHP arrays as Phel collections | Different types. Mixing breaks `count`, `map`, etc. |
-| `#php {"k" "v"}` for PHP assoc | `{:k "v"}` as a PHP array | Phel maps are not PHP arrays. |
-| `(:x p)` or `(get p :x)` for records | `(.-x p)` | Record fields are protected PHP properties. |
-| `false`, `nil` only as falsy | assuming `0`, `""`, `[]`, `{}` falsy | All four are truthy. |
-| `(when-not *build-mode* ...)` around top-level effects | unguarded top-level effects | `phel build` evaluates top level; effects fire at build time. |
-| Verify Clojure-looking forms first ([Phel is not Clojure](#phel-is-not-clojure)) | porting Clojure code blindly | PHP target, not JVM. Different stdlib, different concurrency. |
+| Use                                                                              | Avoid                                                         | Why                                                            |
+|----------------------------------------------------------------------------------|---------------------------------------------------------------|----------------------------------------------------------------|
+| `phel doc <fn>`, grep `vendor/phel-lang/phel-lang/src/phel/core/`                | inventing names                                               | Hallucinated symbols compile then fail at runtime.             |
+| `phel.string` (alias `str`)                                                      | `phel.str`, `clojure.string`, `php/strtoupper`, `php/explode` | `phel.str` removed. Phel string fns return Phel values.        |
+| `(ns app.main)` (≥2 segments, file mirrors path under `src/`)                    | `(ns main)`                                                   | Single-segment ns exports invalid PHP under `phel build`.      |
+| `argv` (vector of strings)                                                       | `*argv*` (pre-0.39), `php/$argv`                              | Symbol renamed in 0.39. `php/$argv` is `nil` under `phel run`. |
+| `for` for data, `foreach`/`doseq` for effects                                    | `for` with side effects                                       | `for` returns a vector. `foreach` returns `nil`.               |
+| `recur` in tail of `loop`/`fn`                                                   | `recur` anywhere else                                         | Non-tail `recur` errors at compile time.                       |
+| `vec` (PHP→Phel), `to-php-array` (Phel→PHP)                                      | treating PHP arrays as Phel collections                       | Different types. Mixing breaks `count`, `map`, etc.            |
+| `#php {"k" "v"}` for PHP assoc                                                   | `{:k "v"}` as a PHP array                                     | Phel maps are not PHP arrays.                                  |
+| `(:x p)` or `(get p :x)` for records                                             | `(.-x p)`                                                     | Record fields are protected PHP properties.                    |
+| `false`, `nil` only as falsy                                                     | assuming `0`, `""`, `[]`, `{}` falsy                          | All four are truthy.                                           |
+| `(when-not *build-mode* ...)` around top-level effects                           | unguarded top-level effects                                   | `phel build` evaluates top level; effects fire at build time.  |
+| Verify Clojure-looking forms first ([Phel is not Clojure](#phel-is-not-clojure)) | porting Clojure code blindly                                  | PHP target, not JVM. Different stdlib, different concurrency.  |
 
 ## What Phel is
 

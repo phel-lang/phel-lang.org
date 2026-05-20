@@ -466,33 +466,33 @@ Many orgs already run PHP. Bring FP/Lisp into environments where the JVM isn't a
 
 ## Quick reference: Clojure to Phel
 
-| Clojure | Phel | Notes |
-|---------|------|-------|
-| `(ns foo.bar)` | `(ns foo.bar)` | Same separator. PHP FQNs use `.` |
-| `(:require [foo.bar :as b])` | `(:require foo.bar :as b)` | No vector wrapping required |
-| `#(* % 2)` | `#(* % 2)` | Same. `\|(* $ 2)` legacy, deprecated |
-| `(atom 0)` | `(atom 0)` | Same |
-| `@my-atom` | `@my-atom` | Same |
-| `(reset! a v)` | `(reset! a v)` | Same (`set!` alias removed in 0.36) |
-| `(swap! a f)` | `(swap! a f)` | Same |
-| `#'sym` / `(var sym)` | `#'sym` / `(var sym)` | First-class `Var` handle |
-| `(alter-var-root #'v f)` | `(alter-var-root #'v f)` | Same |
-| `(with-redefs [v x] ...)` | `(with-redefs [v x] ...)` | Same. Works for non-dynamic vars |
-| `(binding [*x* v] ...)` | `(binding [*x* v] ...)` | Var must be `^:dynamic` |
-| `(.method obj)` | `(.method obj)` or `(php/-> obj (method))` | Both forms work |
-| `(Class/staticMethod)` | `(Class/staticMethod)` or `(php/:: Class (staticMethod))` | Both forms work |
-| `(new Class)` | `(Class.)` or `(php/new Class)` | `ClassName.` shorthand |
-| `^int` tag | `^int` tag | Emits PHP type declaration |
-| `(memoize f)` | `^:memoize` on `defn` | Metadata shorthand |
-| `(defprotocol P)` | `(defprotocol P)` | Same |
-| `(defrecord R)` | `(defrecord R)` or `(defstruct R)` | Both available |
-| `(lazy-seq ...)` | `(lazy-seq ...)` | Same |
-| `1N` / `1.5M` / `1/2` | `1N` / `1.5M` / `1/2` | BigInt / BigDecimal / Ratio |
-| `(/ 1 2)` → `1/2` (Ratio) | `(/ 1 2)` → `1/2` (Ratio) | Same; use `(/ 1.0 2)` for float |
-| `#"regex"` | `#"regex"` | Regex literal; `re-find`, `re-matches` |
-| `#?(:clj x :default y)` | `#?(:phel x :default y)` | Reader conditionals |
-| `(ex-info msg data)` | `(ex-info msg data)` | Same |
-| `(transduce xf f coll)` | `(transduce xf f coll)` | Same |
-| `;; comment` | `;; comment` | `;` and `;;` standard |
+| Clojure                      | Phel                                                      | Notes                                  |
+|------------------------------|-----------------------------------------------------------|----------------------------------------|
+| `(ns foo.bar)`               | `(ns foo.bar)`                                            | Same separator. PHP FQNs use `.`       |
+| `(:require [foo.bar :as b])` | `(:require foo.bar :as b)`                                | No vector wrapping required            |
+| `#(* % 2)`                   | `#(* % 2)`                                                | Same. `\|(* $ 2)` legacy, deprecated   |
+| `(atom 0)`                   | `(atom 0)`                                                | Same                                   |
+| `@my-atom`                   | `@my-atom`                                                | Same                                   |
+| `(reset! a v)`               | `(reset! a v)`                                            | Same (`set!` alias removed in 0.36)    |
+| `(swap! a f)`                | `(swap! a f)`                                             | Same                                   |
+| `#'sym` / `(var sym)`        | `#'sym` / `(var sym)`                                     | First-class `Var` handle               |
+| `(alter-var-root #'v f)`     | `(alter-var-root #'v f)`                                  | Same                                   |
+| `(with-redefs [v x] ...)`    | `(with-redefs [v x] ...)`                                 | Same. Works for non-dynamic vars       |
+| `(binding [*x* v] ...)`      | `(binding [*x* v] ...)`                                   | Var must be `^:dynamic`                |
+| `(.method obj)`              | `(.method obj)` or `(php/-> obj (method))`                | Both forms work                        |
+| `(Class/staticMethod)`       | `(Class/staticMethod)` or `(php/:: Class (staticMethod))` | Both forms work                        |
+| `(new Class)`                | `(Class.)` or `(php/new Class)`                           | `ClassName.` shorthand                 |
+| `^int` tag                   | `^int` tag                                                | Emits PHP type declaration             |
+| `(memoize f)`                | `^:memoize` on `defn`                                     | Metadata shorthand                     |
+| `(defprotocol P)`            | `(defprotocol P)`                                         | Same                                   |
+| `(defrecord R)`              | `(defrecord R)` or `(defstruct R)`                        | Both available                         |
+| `(lazy-seq ...)`             | `(lazy-seq ...)`                                          | Same                                   |
+| `1N` / `1.5M` / `1/2`        | `1N` / `1.5M` / `1/2`                                     | BigInt / BigDecimal / Ratio            |
+| `(/ 1 2)` → `1/2` (Ratio)    | `(/ 1 2)` → `1/2` (Ratio)                                 | Same; use `(/ 1.0 2)` for float        |
+| `#"regex"`                   | `#"regex"`                                                | Regex literal; `re-find`, `re-matches` |
+| `#?(:clj x :default y)`      | `#?(:phel x :default y)`                                  | Reader conditionals                    |
+| `(ex-info msg data)`         | `(ex-info msg data)`                                      | Same                                   |
+| `(transduce xf f coll)`      | `(transduce xf f coll)`                                   | Same                                   |
+| `;; comment`                 | `;; comment`                                              | `;` and `;;` standard                  |
 
 Welcome to the PHP side of Lisp. The parentheses are the same; the runtime just happens to be PHP.

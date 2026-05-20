@@ -62,31 +62,31 @@ return (new \Phel\Config\PhelConfig())
 ;
 ```
 
-| Method | Purpose |
-|--------|---------|
-| `withLayout` | Apply `ProjectLayout::Flat`, `Nested`, or `Root`. Sets src/test/format/export dirs. |
-| `withSrcDirs` | Source directories scanned by the compiler. |
-| `withTestDirs` | Directories `phel test` walks. |
-| `withVendorDir` | Composer vendor directory name. |
-| `withErrorLogFile` | Path of the `error.log` file (under `.phel/` by default). |
-| `withIgnoreWhenBuilding` | Phel files skipped by `phel build`. |
-| `withNoCacheWhenBuilding` | Files always retranspiled, regardless of `--cache` / `--no-cache`. |
-| `withFormatDirs` | Directories rewritten by `phel format`. |
-| `withKeepGeneratedTempFiles` | Keep generated temp files after `phel run`. Default `false`. |
-| `withTempDir` | Absolute path for temporary files. Throws if not writable. |
-| `withCacheDir` | Directory for namespace + compiled-code caches. Default `.phel/cache`. |
-| `withPhelDir` | Root for runtime state (cache, REPL history, error log). Default `.phel`. Override via `PHEL_DIR` env. |
-| `withEnableNamespaceCache` | Persistent namespace cache for warm runs. Default `true`. |
-| `withEnableCompiledCodeCache` | Compiled-code cache for tests/builds. Default `true`. |
-| `withEnableAsserts` | Toggle runtime `assert` checks. |
-| `withWarnDeprecations` | Emit warnings on deprecated APIs. |
-| `withMainPhelNamespace` | Entry ns for `phel build`. |
-| `withMainPhpPath` | Generated PHP entry path. |
-| `withBuildDestDir` | Output directory for `phel build`. |
-| `withExportFromDirectories` | Source dirs scanned by `phel export`. |
-| `withExportNamespacePrefix` | PHP namespace prefix for exported wrappers. |
-| `withExportTargetDirectory` | Output dir for `phel export`. See [PHP Interop](/documentation/php-interop/#calling-phel-from-php). |
-| `withBuildConfig` / `withExportConfig` | Replace nested config objects wholesale (rarely needed). |
+| Method                                 | Purpose                                                                                                |
+|----------------------------------------|--------------------------------------------------------------------------------------------------------|
+| `withLayout`                           | Apply `ProjectLayout::Flat`, `Nested`, or `Root`. Sets src/test/format/export dirs.                    |
+| `withSrcDirs`                          | Source directories scanned by the compiler.                                                            |
+| `withTestDirs`                         | Directories `phel test` walks.                                                                         |
+| `withVendorDir`                        | Composer vendor directory name.                                                                        |
+| `withErrorLogFile`                     | Path of the `error.log` file (under `.phel/` by default).                                              |
+| `withIgnoreWhenBuilding`               | Phel files skipped by `phel build`.                                                                    |
+| `withNoCacheWhenBuilding`              | Files always retranspiled, regardless of `--cache` / `--no-cache`.                                     |
+| `withFormatDirs`                       | Directories rewritten by `phel format`.                                                                |
+| `withKeepGeneratedTempFiles`           | Keep generated temp files after `phel run`. Default `false`.                                           |
+| `withTempDir`                          | Absolute path for temporary files. Throws if not writable.                                             |
+| `withCacheDir`                         | Directory for namespace + compiled-code caches. Default `.phel/cache`.                                 |
+| `withPhelDir`                          | Root for runtime state (cache, REPL history, error log). Default `.phel`. Override via `PHEL_DIR` env. |
+| `withEnableNamespaceCache`             | Persistent namespace cache for warm runs. Default `true`.                                              |
+| `withEnableCompiledCodeCache`          | Compiled-code cache for tests/builds. Default `true`.                                                  |
+| `withEnableAsserts`                    | Toggle runtime `assert` checks.                                                                        |
+| `withWarnDeprecations`                 | Emit warnings on deprecated APIs.                                                                      |
+| `withMainPhelNamespace`                | Entry ns for `phel build`.                                                                             |
+| `withMainPhpPath`                      | Generated PHP entry path.                                                                              |
+| `withBuildDestDir`                     | Output directory for `phel build`.                                                                     |
+| `withExportFromDirectories`            | Source dirs scanned by `phel export`.                                                                  |
+| `withExportNamespacePrefix`            | PHP namespace prefix for exported wrappers.                                                            |
+| `withExportTargetDirectory`            | Output dir for `phel export`. See [PHP Interop](/documentation/php-interop/#calling-phel-from-php).    |
+| `withBuildConfig` / `withExportConfig` | Replace nested config objects wholesale (rarely needed).                                               |
 
 </details>
 

@@ -85,14 +85,14 @@ Capture into a Phel alias:
 
 Terse forms that expand to verbose `php/*`. Use whichever reads better.
 
-| Shorthand                       | Expands to                          |
-|---------------------------------|-------------------------------------|
-| `(ClassName. args)`             | `(php/new ClassName args)`          |
-| `(new ClassName args)`          | `(php/new ClassName args)`          |
-| `(.method obj args)`            | `(php/-> obj (method args))`        |
-| `(.-field obj)`                 | `(php/-> obj field)`                |
-| `(ClassName/method args)`       | `(php/:: ClassName (method args))`  |
-| `ClassName/MEMBER`              | `(php/:: ClassName MEMBER)`         |
+| Shorthand                 | Expands to                         |
+|---------------------------|------------------------------------|
+| `(ClassName. args)`       | `(php/new ClassName args)`         |
+| `(new ClassName args)     | `(php/new ClassName args)`         |
+| `(.method obj args)`      | `(php/-> obj (method args))`       |
+| `(.-field obj)`           | `(php/-> obj field)`               |
+| `(ClassName/method args)` | `(php/:: ClassName (method args))` |
+| `ClassName/MEMBER`        | `(php/:: ClassName MEMBER)`        |
 
 ```phel
 (ns my.module
