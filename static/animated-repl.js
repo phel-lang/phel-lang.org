@@ -3,15 +3,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!container) return;
 
   const lines = [
-    { type: 'prompt', text: '(map inc [1 2 3])', delay: 45 },
+    { type: 'prompt', text: '(map inc [1 2 3])', delay: 32 },
     { type: 'result', text: '(2 3 4)', delay: 0 },
-    { type: 'prompt', text: '(->> (range 1 6) (filter odd?) (reduce +))', delay: 35 },
+    { type: 'prompt', text: '(->> (range 1 6) (filter odd?) (reduce +))', delay: 26 },
     { type: 'result', text: '9', delay: 0 },
-    { type: 'prompt', text: '(defn greet [name] (str "hello, " name))', delay: 40 },
+    { type: 'prompt', text: '(defn greet [name] (str "hello, " name))', delay: 28 },
     { type: 'result', text: "#'user/greet", delay: 0 },
-    { type: 'prompt', text: '(greet "phel")', delay: 50 },
+    { type: 'prompt', text: '(greet "phel")', delay: 34 },
     { type: 'result', text: '"hello, phel"', delay: 0 },
-    { type: 'prompt', text: '(->> (range 1 11) (map (fn [x] (* x x))) (reduce +))', delay: 35 },
+    { type: 'prompt', text: '(->> (range 1 11) (map (fn [x] (* x x))) (reduce +))', delay: 26 },
     { type: 'result', text: '385', delay: 0 },
   ];
 
@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     for (let i = 0; i < text.length; i++) {
       lineEl.textContent += text[i];
-      await sleep(charDelay + Math.random() * 20);
+      await sleep(charDelay + Math.random() * 14);
     }
   }
 
@@ -89,20 +89,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (line.delay > 0) {
         const textSpan = document.createElement('span');
         div.appendChild(textSpan);
-        await sleep(300);
+        await sleep(100);
         await typeLine(textSpan, line.text, line.delay);
-        await sleep(400);
+        await sleep(140);
       } else {
         const textSpan = document.createElement('span');
         textSpan.textContent = line.text;
         div.appendChild(textSpan);
-        await sleep(100);
+        await sleep(40);
       }
 
       body.scrollTop = body.scrollHeight;
     }
 
-    await sleep(1000);
+    await sleep(400);
     const replay = document.createElement('div');
     replay.className = 'terminal-replay';
     replay.innerHTML = '<button class="terminal-replay-btn" title="Replay">&#8635; Replay</button>';
@@ -116,14 +116,5 @@ document.addEventListener('DOMContentLoaded', () => {
     isRunning = false;
   }
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !isRunning) {
-        observer.disconnect();
-        run();
-      }
-    });
-  }, { threshold: 0.3 });
-
-  observer.observe(container);
+  run();
 });

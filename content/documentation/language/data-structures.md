@@ -283,16 +283,16 @@ $config['theme'] = 'light';  // Overwrites in place
 
 Phel matches Clojure's names:
 
-| Function | Behavior | Clojure Compatible? |
-|----------|----------|---------------------|
-| `conj` | Add element (type-specific) | ✓ Yes |
-| `assoc` | Associate key with value | ✓ Yes |
-| `dissoc` | Dissociate key | ✓ Yes |
-| `get` | Get value by key | ✓ Yes |
-| `get-in` | Get nested value | ✓ Yes |
-| `assoc-in` | Set nested value | ✓ Yes |
-| `update` | Update with function | ✓ Yes |
-| `update-in` | Update nested with function | ✓ Yes |
+| Function    | Behavior                    | Clojure Compatible?  |
+|-------------|-----------------------------|----------------------|
+| `conj`      | Add element (type-specific) | ✓ Yes                |
+| `assoc`     | Associate key with value    | ✓ Yes                |
+| `dissoc`    | Dissociate key              | ✓ Yes                |
+| `get`       | Get value by key            | ✓ Yes                |
+| `get-in`    | Get nested value            | ✓ Yes                |
+| `assoc-in`  | Set nested value            | ✓ Yes                |
+| `update`    | Update with function        | ✓ Yes                |
+| `update-in` | Update nested with function | ✓ Yes                |
 
 **Migration:** `push`, `put`, `unset` deprecated. Use `conj`, `assoc`, `dissoc`.
 

@@ -20,7 +20,7 @@ Any Phel snippet added to docs/blog/cookbook MUST be runtime-checked. Examples t
 ./vendor/bin/phel repl
 ```
 
-Write the snippet, run it, paste real output. If output differs from what you assumed, fix the doc — not the runtime.
+Write the snippet, run it, paste real output. If output differs from what you assumed, fix the doc - not the runtime.
 
 ## Gotchas (project-specific)
 
@@ -36,8 +36,8 @@ Write the snippet, run it, paste real output. If output differs from what you as
 ```phel
 (defn greet [name] (str "Hello, " name))      ; function
 (defrecord Todo [id text done])                ; record (positional + map ctor)
-(definterface Showable (show [this]))          ; interface — inline-implementable
-(defprotocol Renderable (render [this]))       ; protocol — extend-type only
+(definterface Showable (show [this]))          ; interface - inline-implementable
+(defprotocol Renderable (render [this]))       ; protocol - extend-type only
 (extend-type Todo Renderable (render [t] ...)) ; protocol impl per type
 
 (defmulti area :shape)                          ; multimethod

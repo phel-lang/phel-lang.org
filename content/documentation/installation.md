@@ -193,14 +193,14 @@ Checks PHP extensions (`json`, `mbstring`, `readline`), writable cache dir, sour
 
 Mapping from `lein`/`deps.edn`:
 
-| Clojure                       | Phel                                |
-| ----------------------------- | ----------------------------------- |
-| `deps.edn` / `project.clj`    | `composer.json` + `phel-config.php` |
-| `lein new app foo`            | `composer create-project … cli-skeleton foo` |
-| `clj` / `lein repl`           | `composer repl` or `phel repl`     |
-| `lein test`                   | `composer test` or `phel test`     |
-| `uberjar`                     | `phel build` (compiles to PHP)     |
-| nREPL                         | `phel nrepl` (bencode over TCP)    |
+| Clojure                    | Phel                                         |
+|----------------------------|----------------------------------------------|
+| `deps.edn` / `project.clj` | `composer.json` + `phel-config.php`          |
+| `lein new app foo`         | `composer create-project … cli-skeleton foo` |
+| `clj` / `lein repl`        | `composer repl` or `phel repl`               |
+| `lein test`                | `composer test` or `phel test`               |
+| `uberjar`                  | `phel build` (compiles to PHP)               |
+| nREPL                      | `phel nrepl` (bencode over TCP)              |
 
 Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/editor-support).
 

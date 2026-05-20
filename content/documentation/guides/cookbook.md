@@ -231,7 +231,7 @@ PHP DateTime via interop: create, format, compare.
 (ns cookbook.dates
   (:use DateTimeImmutable DateInterval DateTimeZone))
 
-;; Create dates — ClassName. is a shorthand constructor
+;; Create dates - ClassName. is a shorthand constructor
 (def now (DateTimeImmutable.))
 (def specific-date (DateTimeImmutable. "2024-06-15"))
 (def from-format
@@ -240,7 +240,7 @@ PHP DateTime via interop: create, format, compare.
 ;; Tagged literal form
 (def tagged #inst "2024-06-15T00:00:00Z")
 
-;; Format dates — .method is shorthand for (php/-> obj (method ...))
+;; Format dates - .method is shorthand for (php/-> obj (method ...))
 (println (.format now "Y-m-d H:i:s"))       ; 2024-03-10 14:30:00
 (println (.format now "l, F j, Y"))         ; Sunday, March 10, 2024
 (println (.format specific-date "D, M j"))  ; Sat, Jun 15
@@ -260,7 +260,7 @@ PHP DateTime via interop: create, format, compare.
 
 (println (str "Tomorrow is after today: " (date-after? tomorrow now)))  ; true
 
-;; Calculate difference — `.-days` reads a PHP public property
+;; Calculate difference - `.-days` reads a PHP public property
 (defn days-between [date1 date2]
   (.-days (.diff date1 date2)))
 

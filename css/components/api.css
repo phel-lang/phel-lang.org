@@ -1,4 +1,4 @@
-/* API Recent — same disclosure-card aesthetic as `.dev-note`
+/* API Recent - same disclosure-card aesthetic as `.dev-note`
    and `.api-namespace-toc`, but always expanded (no <details>). */
 .api-recent {
   margin: 0 0 var(--space-lg);
@@ -505,7 +505,7 @@ ul.api-namespace-grid > li::before {
   font-weight: 600;
 }
 
-/* Per-namespace function TOC — same disclosure pattern as `.dev-note`. */
+/* Per-namespace function TOC - same disclosure pattern as `.dev-note`. */
 .api-namespace-toc {
   margin: var(--space-lg) 0 var(--space-2xl);
   border-radius: var(--radius-lg);
@@ -608,7 +608,7 @@ ul.api-namespace-toc__list > li::before {
   line-height: var(--leading-relaxed);
 }
 
-/* API Footer — same surface card as `.dev-note` and `.api-namespace-toc`. */
+/* API Footer - same surface card as `.dev-note` and `.api-namespace-toc`. */
 .api-footer {
   margin-top: var(--space-lg);
   padding: var(--space-md) var(--space-lg);

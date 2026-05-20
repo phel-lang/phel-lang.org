@@ -85,14 +85,14 @@ Capture into a Phel alias:
 
 Terse forms that expand to verbose `php/*`. Use whichever reads better.
 
-| Shorthand                       | Expands to                          |
-|---------------------------------|-------------------------------------|
-| `(ClassName. args)`             | `(php/new ClassName args)`          |
-| `(new ClassName args)`          | `(php/new ClassName args)`          |
-| `(.method obj args)`            | `(php/-> obj (method args))`        |
-| `(.-field obj)`                 | `(php/-> obj field)`                |
-| `(ClassName/method args)`       | `(php/:: ClassName (method args))`  |
-| `ClassName/MEMBER`              | `(php/:: ClassName MEMBER)`         |
+| Shorthand                 | Expands to                         |
+|---------------------------|------------------------------------|
+| `(ClassName. args)`       | `(php/new ClassName args)`         |
+| `(new ClassName args)     | `(php/new ClassName args)`         |
+| `(.method obj args)`      | `(php/-> obj (method args))`       |
+| `(.-field obj)`           | `(php/-> obj field)`               |
+| `(ClassName/method args)` | `(php/:: ClassName (method args))` |
+| `ClassName/MEMBER`        | `(php/:: ClassName MEMBER)`        |
 
 ```phel
 (ns my.module
@@ -107,7 +107,7 @@ DateTimeImmutable/ATOM                         ; static constant
 
 ## Class instantiation
 
-Three equivalent forms — prefer `ClassName.` for imported classes:
+Three equivalent forms - prefer `ClassName.` for imported classes:
 
 ```phel
 (ns my.module
@@ -128,7 +128,7 @@ new DateTime();
 new DateTime("now");
 new \DateTimeImmutable();
 
-// Phel — preferred shorthand
+// Phel - preferred shorthand
 (DateTime.)
 (DateTime. "now")
 (DateTimeImmutable.)
@@ -187,7 +187,7 @@ $di->s;
 (new DateTimeImmutable("2024-03-10"))->modify("+1 day")->format("Y-m-d");
 $user->profile->getDisplayName();
 
-// Phel — shorthand forms
+// Phel - shorthand forms
 (.format di "%s seconds")
 (.-s di)
 (-> (DateTimeImmutable. "2024-03-10") (.modify "+1 day") (.format "Y-m-d"))
@@ -229,7 +229,7 @@ The `php/::` operator is equivalent to PHP's `::` for static method and property
 DateTimeImmutable::ATOM;
 DateTimeImmutable::createFromFormat("Y-m-d", "2020-03-22");
 
-// Phel — shorthand forms
+// Phel - shorthand forms
 DateTimeImmutable/ATOM
 (DateTimeImmutable/createFromFormat "Y-m-d" "2020-03-22")
 ```
