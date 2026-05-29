@@ -94,16 +94,16 @@ See [Data Structures](/documentation/language/data-structures).
 ```phel
 (conj [1 2] 3)                    ; => [1 2 3]
 (conj #{1 2} 3)                   ; => #{1 2 3}
-(conj {:a 1} [:b 2])              ; => {:a 1 :b 2}
-(assoc {:a 1} :b 2)               ; => {:a 1 :b 2}
+(conj {:a 1} [:b 2])              ; => {:a 1, :b 2}
+(assoc {:a 1} :b 2)               ; => {:a 1, :b 2}
 (assoc [1 2 3] 0 9)               ; => [9 2 3]
 (dissoc {:a 1 :b 2} :a)           ; => {:b 2}
 (update {:a 1} :a inc)            ; => {:a 2}
-(update-keys {:a 1 :b 2} name)    ; => {"a" 1 "b" 2}
-(update-vals {:a 1 :b 2} inc)     ; => {:a 2 :b 3}
+(update-keys {:a 1 :b 2} name)    ; => {"a" 1, "b" 2}
+(update-vals {:a 1 :b 2} inc)     ; => {:a 2, :b 3}
 (assoc-in {} [:a :b] 1)           ; => {:a {:b 1}}
 (update-in {:a {:b 1}} [:a :b] inc)  ; => {:a {:b 2}}
-(merge {:a 1} {:b 2 :a 3})        ; => {:a 3 :b 2}
+(merge {:a 1} {:b 2 :a 3})        ; => {:a 3, :b 2}
 ```
 
 See [Data Structures](/documentation/language/data-structures).
@@ -140,6 +140,7 @@ See [Destructuring](/documentation/language/destructuring).
 ```phel
 (def pi 3.14159)                  ; global binding
 (def secret :private 42)          ; private binding
+(defonce conn (connect!))         ; bind once; skipped if already defined (survives REPL reloads)
 
 (defn greet [name]                ; public function
   (str "Hello, " name))
@@ -244,7 +245,7 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 (sort [3 1 2])                    ; => [1 2 3]
 (sort-by :age [{:age 30} {:age 20}])  ; sort by key
 (group-by :role users)             ; map of role -> [users]
-(frequencies [:a :b :a :a])        ; => {:a 3 :b 1}
+(frequencies [:a :b :a :a])        ; => {:a 3, :b 1}
 (count [1 2 3])                    ; => 3
 (empty? [])                        ; => true
 (contains? {:a 1} :a)             ; => true
@@ -258,7 +259,7 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 (flatten [[1 2] [3 [4]]])         ; => @[1 2 3 4]
 (reverse [1 2 3])                  ; => [3 2 1]
 (concat [1 2] [3 4])              ; => @[1 2 3 4]
-(compact [1 nil 2 nil 3])         ; => (1 2 3)
+(compact [1 nil 2 nil 3])         ; => @[1 2 3]
 (remove neg? [1 -2 3 -4])        ; => @[1 3]
 ```
 
@@ -323,7 +324,7 @@ Lazy file I/O:
 ```phel
 (-> {:name "Alice" :age 30}        ; thread-first
     (assoc :role "admin")
-    (dissoc :age))                  ; => {:name "Alice" :role "admin"}
+    (dissoc :age))                  ; => {:name "Alice", :role "admin"}
 
 (->> [1 2 3 4 5]                   ; thread-last
      (filter odd?)
@@ -376,8 +377,8 @@ Requires `(:require phel.string :as str)`:
 (re-matches #"\d+" "123")          ; => "123"
 (re-matches #"\d+" "abc123")       ; => nil (must match entire string)
 
-;; re-seq: lazy sequence of all matches
-(re-seq #"\d+" "a1b2c3")          ; => @["1" "2" "3"]
+;; re-seq: all matches as a vector
+(re-seq #"\d+" "a1b2c3")          ; => ["1" "2" "3"]
 
 ;; Use regex for validation
 (defn valid-email? [s]
@@ -508,7 +509,7 @@ Ad-hoc hierarchies for multimethods and `isa?`.
 (ancestors :filled-square)         ; => #{:square :shape}
 (descendants :shape)               ; => #{:square :circle :filled-square}
 
-(make-hierarchy)                   ; => {:parents {} :descendants {} :ancestors {}}
+(make-hierarchy)                   ; => {:parents {}, :descendants {}, :ancestors {}}
 ```
 
 ## Transducers
@@ -535,7 +536,7 @@ Composable transformations independent of the data source. Avoid intermediate co
 (into [] cat [[1 2] [3 4] [5]])          ; => [1 2 3 4 5]
 
 ;; completing: supply a final step to a reducing function
-(transduce (map inc) (completing + str) 0 [1 2 3])  ; => "9"
+(transduce (map inc) (completing + str) 0 [1 2 3])  ; => 9
 
 ;; Many core fns have transducer arities (called with no collection):
 ;; (map f), (filter pred), (take n), (drop n), (partition-all n), etc.
@@ -604,7 +605,7 @@ See [Namespaces](/documentation/language/namespaces).
   (is (= 4 (+ 2 2)) "optional description"))
 
 (deftest multiple-assertions
-  (are (= expected (inc input))
+  (are [expected input] (= expected (inc input))
     2 1
     3 2
     4 3))
@@ -640,17 +641,14 @@ See [Testing](/documentation/testing).
 (->closure (fn [x] (* x 2)))
 
 ;; pmap: parallel map via fibers
-(pmap #(async (inc %)) [1 2 3])   ; => [2 3 4]
+(pmap inc [1 2 3])                 ; => [2 3 4]
 ```
 
 ## Delay & force
 
-`delay` is in `phel.async` (lazy computation wrapper, not a sleep).
+`delay`, `delay?`, and `force` are in `phel.core` (auto-imported, no require needed). `phel.async/delay` is a different function that suspends a fiber for N seconds.
 
 ```phel
-(ns my-app
-  (:require phel.async :refer [delay delay?]))
-
 ;; Delay defers evaluation until first access
 (def d (delay (do (println "computing...") 42)))
 (delay? d)                         ; => true
@@ -702,6 +700,33 @@ Integer division (`/`) returns a `Ratio` when not evenly divisible. Use `float` 
 (random-uuid)                      ; => "550e8400-e29b-..." (random UUID string)
 ```
 
+## Serialization (EDN & Transit)
+
+```phel
+;; phel.edn: eval-free EDN read/write (data only, no code execution)
+(edn/read-string "{:a 1 :b [2 3]}")    ; => {:a 1, :b [2 3]}
+(edn/write-string {:a 1 :b [2 3]})     ; => "{:a 1, :b [2 3]}"
+(edn/read-string-all "1 2 3")          ; => [1 2 3] (every top-level form)
+
+;; phel.transit: Transit + JSON-Verbose read/write
+(transit/write-string {:a 1})          ; => "[\"~#cmap\",[\"~:a\",1]]"
+(transit/read-string "[\"~:foo\",1]")  ; => [:foo 1]
+```
+
+Require with `(:require phel.edn :as edn)` / `(:require phel.transit :as transit)`.
+
+## Reflection
+
+```phel
+;; phel.reflect: introspect PHP classes via reflection
+(reflect/class-info \DateTime)         ; => map of name, methods, properties, ...
+(reflect/methods \DateInterval)        ; => vector of method-info maps
+(reflect/properties \DateInterval)     ; => vector of property-info maps
+(reflect/supers \RuntimeException)     ; => parent classes + interfaces
+```
+
+Require with `(:require phel.reflect :as reflect)`.
+
 ## REPL utilities
 
 ```phel
@@ -716,5 +741,5 @@ Integer division (`/`) returns a `Ratio` when not evenly divisible. Use `float` 
 (macroexpand '(when true 1))      ; fully expand macro
 (eval-str "(+ 1 2)")              ; evaluate a string of Phel code
 (load-file "src/my-module.phel")  ; load and evaluate a file
-(test-ns 'my-app.tests)           ; run tests in a namespace
+(test-ns "my-app.tests")          ; run tests in a namespace (name as string)
 ```

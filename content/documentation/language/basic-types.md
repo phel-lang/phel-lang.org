@@ -334,7 +334,7 @@ Strings are iterable: work with `map`, `filter`, `count`, `frequencies`, `foreac
 
 ```phel
 (count "hello")             ; => 5
-(frequencies "abracadabra") ; => {"a" 5 "b" 2 "r" 2 "c" 1 "d" 1}
+(frequencies "abracadabra") ; => {a 5, b 2, r 2, c 1, d 1}
 (seq "abc")                 ; => [a b c]
 ```
 
@@ -430,8 +430,8 @@ Persistent FIFO queues with amortised O(1) `push`, `peek`, `pop`:
 (def q (queue 1 2 3))
 (queue? q)        ; => true
 (peek q)          ; => 1
-(push q 4)        ; => queue 1 2 3 4
-(pop q)           ; => queue 2 3
+(push q 4)        ; => <-(1 2 3 4)-<
+(pop q)           ; => <-(2 3)-<
 ```
 
 ## Map entries
@@ -529,8 +529,8 @@ Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some det
 #(apply + %&)  ; Same as (fn [& xs] (apply + xs))
 
 ; Using with higher-order functions
-(map #(* % 2) [1 2 3])        ; => [2 4 6]
-(filter #(> % 3) [1 5 2 8])   ; => [5 8]
+(map #(* % 2) [1 2 3])        ; => @[2 4 6]
+(filter #(> % 3) [1 5 2 8])   ; => @[5 8]
 (sort-by #(get % :age) users)  ; Sort users by age
 ```
 

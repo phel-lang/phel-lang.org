@@ -49,7 +49,7 @@ Try a few expressions:
 >>> xs
 [1 2 3]                    ; original vector is unchanged
 >>> (map inc xs)
-(2 3 4)
+@[2 3 4]
 >>> (php/date "Y-m-d")      ; call any PHP function
 "2026-04-21"
 ```

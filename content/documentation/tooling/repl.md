@@ -268,10 +268,10 @@ user:1> (def users [{:name "Alice" :role :admin}
 ....:3>             {:name "Carol" :role :admin}])
 
 user:4> (filter #(= :admin (:role %)) users)
-({:name "Alice" :role :admin} {:name "Carol" :role :admin})
+@[{:name "Alice", :role :admin} {:name "Carol", :role :admin}]
 
 user:5> (map :name *1)
-("Alice" "Carol")
+@["Alice" "Carol"]
 ```
 
 ### Test functions as you write them
@@ -291,7 +291,7 @@ user:7> (fizzbuzz 15)
 user:8> (fizzbuzz 7)
 7
 user:9> (map fizzbuzz (range 1 16))
-(1 2 "Fizz" 4 "Buzz" "Fizz" 7 8 "Fizz" "Buzz" 11 "Fizz" 13 14 "FizzBuzz")
+@[1 2 "Fizz" 4 "Buzz" "Fizz" 7 8 "Fizz" "Buzz" 11 "Fizz" 13 14 "FizzBuzz"]
 ```
 
 ### Explore PHP interop
@@ -302,7 +302,7 @@ Try PHP functions and classes interactively:
 user:1> (use DateTimeImmutable)
 user:2> (def now (DateTimeImmutable.))
 user:3> (.format now "l, F j, Y")
-"Friday, February 7, 2026"
+"Saturday, February 7, 2026"
 user:4> (-> now (.modify "+3 days") (.format "Y-m-d"))
 "2026-02-10"
 
@@ -317,16 +317,16 @@ See persistent data structures in action:
 ```phel
 user:1> (def m {:a 1 :b 2 :c 3})
 user:2> (assoc m :d 4)
-{:a 1 :b 2 :c 3 :d 4}
+{:a 1, :b 2, :c 3, :d 4}
 user:3> m
-{:a 1 :b 2 :c 3}   ; Original unchanged!
+{:a 1, :b 2, :c 3}   ; Original unchanged!
 
 user:4> (type m)
-:map
+:hash-map
 user:5> (keys m)
-(:a :b :c)
+[:a :b :c]
 user:6> (vals m)
-(1 2 3)
+[1 2 3]
 ```
 
 ## Debug helpers
@@ -367,7 +367,7 @@ Collect tapped values during a test:
 (tap> {:step 2 :result "fail"})
 
 (deref tapped)
-;; => [{:step 1 :result "ok"} {:step 2 :result "fail"}]
+;; => [{:step 1, :result "ok"} {:step 2, :result "fail"}]
 
 (remove-tap collector)
 ```
@@ -384,8 +384,8 @@ Collect tapped values during a test:
                   {:name "Bob" :roles [:viewer]}]
           :count 2})
 ;; Prints:
-;; {:users [{:name "Alice" :roles [:admin :editor]}
-;;          {:name "Bob" :roles [:viewer]}]
+;; {:users [{:name "Alice", :roles [:admin :editor]}
+;;          {:name "Bob", :roles [:viewer]}]
 ;;  :count 2}
 ```
 

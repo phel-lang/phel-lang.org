@@ -188,7 +188,28 @@ vendor/bin/phel eval '(+ 1 2 3)'
 # => 6
 
 echo '(map inc [1 2 3])' | vendor/bin/phel eval -
-# => [2 3 4]
+# => @[2 3 4]
+```
+
+## Compile to PHP
+
+Emit the PHP that Phel generates for a snippet, file, or stdin, without evaluating it. Handy for understanding the compiler or debugging interop.
+
+```bash
+vendor/bin/phel compile '(php/strlen "hello")'
+# => strlen("hello");
+
+vendor/bin/phel compile src/main.phel    # compile a file
+echo '(map inc [1 2 3])' | vendor/bin/phel compile -
+
+# Usage:
+#   compile [options] [--] [<source>]
+#
+# Arguments:
+#   source            Phel expression, path to a .phel file, or "-" for stdin
+#
+# Options:
+#   -t, --target      Compilation target (currently only "php")
 ```
 
 ## Lint

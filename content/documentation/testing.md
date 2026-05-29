@@ -270,10 +270,11 @@ Run tests for a single namespace from the REPL:
 
 ```phel
 (ns my-app.tests
-  (:require phel.test :refer [deftest is test-ns]))
+  (:require phel.test :refer [deftest is])
+  (:require phel.repl :refer [test-ns]))
 
-; Run all tests in a namespace
-(test-ns 'my-app.tests)
+; Run all tests in a namespace (pass namespace as a string)
+(test-ns "my-app.tests")
 ```
 
 Useful for REPL-driven feedback without running the full suite.
@@ -291,7 +292,7 @@ Manage stats programmatically:
 
 ; Save and restore stats around a test run
 (def saved (get-stats))
-(test-ns 'my-app.tests)
+(test-ns "my-app.tests")
 (restore-stats saved)
 ```
 
@@ -381,23 +382,27 @@ Instead of writing specific examples, describe properties that must hold for *an
 
 ```phel
 (ns my-app.tests
-  (:require phel.test :refer [deftest is defspec])
-  (:require phel.test.gen :as gen))
+  (:require phel.test :refer [deftest is])
+  (:require phel.test.gen :as gen :refer [defspec]))
 
 ;; Property: reversing twice gives back the original (holds for any vector of ints)
+;; Shape: (defspec name options args-gen property-fn)
 (defspec reverse-roundtrip
-  [xs (gen/vector (gen/int))]
-  (is (= xs (reverse (reverse xs)))))
+  {}
+  (gen/tuple (gen/vector-of gen/int))
+  (fn [xs] (= xs (reverse (reverse xs)))))
 
 ;; Property: sorting is idempotent (sort of a sorted list is still sorted)
 (defspec sort-idempotent
-  [xs (gen/vector (gen/int))]
-  (let [sorted (sort xs)]
-    (is (= sorted (sort sorted)))))
+  {}
+  (gen/tuple (gen/vector-of gen/int))
+  (fn [xs]
+    (let [sorted (sort xs)]
+      (= sorted (sort sorted)))))
 ```
 
 On failure, Phel shrinks the input to the smallest case that still fails, then reports `:shrunk-args`, `:original-args`, `:shrink-steps`, and a `:seed` to reproduce the run.
 
-Available generators: `gen/int`, `gen/string`, `gen/boolean`, `gen/keyword`, `gen/vector`, `gen/map`, `gen/one-of`, `gen/frequency`, `gen/such-that`, and more in [phel.test.gen](/documentation/reference/api/test-gen/).
+Available generators: `gen/int`, `gen/string`, `gen/boolean`, `gen/keyword`, `gen/tuple`, `gen/vector-of`, `gen/map-of`, `gen/one-of`, `gen/frequency`, `gen/such-that`, and more in [phel.test.gen](/documentation/reference/api/test-gen/).
 
 Opt out of shrinking with `^:no-shrink` metadata or `:shrink? false`.

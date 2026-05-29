@@ -349,11 +349,11 @@ Modifiers (form `:modifier argument`):
 (for [[k v] :pairs {:a 1 :b 2 :c 3}] [v k]) ; Evaluates to [[1 :a] [2 :b] [3 :c]]
 (for [[k v] :pairs [1 2 3]] [k v]) ; Evaluates to [[0 1] [1 2] [2 3]]
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}]]
-  (assoc m k (inc v))) ; Evaluates to {:a 2 :b 3 :c 4}
+  (assoc m k (inc v))) ; Evaluates to {:a 2, :b 3, :c 4}
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}] :let [x (inc v)]]
-  (assoc m k x)) ; Evaluates to {:a 2 :b 3 :c 4}
+  (assoc m k x)) ; Evaluates to {:a 2, :b 3, :c 4}
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :when (contains-value? [:a :c] k) :reduce [acc {}]]
-    (assoc acc k v)) ; Evaluates to {:a 1 :c 3}
+    (assoc acc k v)) ; Evaluates to {:a 1, :c 3}
 
 (for [x :in [2 2 2 3 3 4 5 6 6] :while (even? x)] x) ; Evaluates to [2 2 2]
 (for [x :in [2 2 2 3 3 4 5 6 6] :when (even? x)] x) ; Evaluates to [2 2 2 4 6 6]
@@ -444,7 +444,7 @@ Like `cond->` but threads as last arg (thread-last).
 (cond->> [1 2 3 4 5]
   true (map inc)
   false (filter odd?)
-  true (take 3))  ; => (2 3 4)
+  true (take 3))  ; => @[2 3 4]
 
 ;; Only applies (map inc) and (take 3), skips (filter odd?)
 ```

@@ -54,7 +54,7 @@ More powerful than PHP `list()` or array unpacking:
 
 // Phel - full destructuring with nesting and rest
 (let [[a [b c] & rest] [1 [2 3] 4 5 6]]
-  // a = 1, b = 2, c = 3, rest = (4 5 6)
+  // a = 1, b = 2, c = 3, rest = [4 5 6]
   )
 ```
 
@@ -141,7 +141,7 @@ Sequential in params:
   (php/sqrt (+ (* (- x2 x1) (- x2 x1))
                (* (- y2 y1) (- y2 y1)))))
 
-(distance [0 0] [3 4]) ; => 5.0
+(distance [0 0] [3 4]) ; => 5
 ```
 
 ## In `loop`

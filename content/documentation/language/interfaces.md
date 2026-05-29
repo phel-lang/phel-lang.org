@@ -190,7 +190,7 @@ Each method needs `this`. Optional doc string. Multiple methods allowed:
   :float
   (to-string [this] (str "float:" this))
 
-  :bool
+  :boolean
   (to-string [this] (if this "true" "false")))
 
 (to-string 3.14)   ; => "float:3.14"
@@ -258,7 +258,7 @@ Define relationships between types or values. Hierarchies + multimethods enable 
 
 ```phel
 (make-hierarchy)
-; => {:parents {} :descendants {} :ancestors {}}
+; => {:parents {}, :descendants {}, :ancestors {}}
 ```
 
 ### Hierarchy-aware multimethod dispatch

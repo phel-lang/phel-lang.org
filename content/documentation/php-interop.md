@@ -88,7 +88,7 @@ Terse forms that expand to verbose `php/*`. Use whichever reads better.
 | Shorthand                 | Expands to                         |
 |---------------------------|------------------------------------|
 | `(ClassName. args)`       | `(php/new ClassName args)`         |
-| `(new ClassName args)     | `(php/new ClassName args)`         |
+| `(new ClassName args)`    | `(php/new ClassName args)`         |
 | `(.method obj args)`      | `(php/-> obj (method args))`       |
 | `(.-field obj)`           | `(php/-> obj field)`               |
 | `(ClassName/method args)` | `(php/:: ClassName (method args))` |
@@ -309,20 +309,18 @@ Resolves nested values via a sequence of keys/indexes. `path` is a sequential co
 
 ```phel
 (def users
-  (php/array
-    "users"
-    (php/array
-      (php/array "name" "Alice")
-      (php/array "name" "Bob"))))
+  #php {"users"
+        #php {0 #php {"name" "Alice"}
+              1 #php {"name" "Bob"}}})
 
 (php/aget-in users ["users" 1 "name"]) ; Evaluates to "Bob"
 
 (php/aget-in
-    (php/array "meta" (php/array "status" "ok"))
+    #php {"meta" #php {"status" "ok"}}
     ["meta" "status"]) ; Evaluates to "ok"
 
 (php/aget-in
-    (php/array "meta" (php/array "status" "ok"))
+    #php {"meta" #php {"status" "ok"}}
     ["meta" "missing"]) ; Evaluates to nil
 ```
 
@@ -450,7 +448,7 @@ For immutable operations, use `dissoc` on Phel maps instead.
 Removes nested entry. Parent arrays remain untouched even if empty after.
 
 ```phel
-(def data (php/array "user" (php/array "profile" (php/array "name" "Dora"))))
+(def data #php {"user" #php {"profile" #php {"name" "Dora"}}})
 (php/aunset-in data ["user" "profile" "name"])
 (php/aget-in data ["user" "profile" "name"]) ; Evaluates to nil
 ;; Equivalent to unset($data['user']['profile']['name']);

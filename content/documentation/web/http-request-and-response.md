@@ -74,11 +74,11 @@ Two helpers create responses:
 
 ;; Create response from map
 (http/response-from-map {:status 200 :body "Test"})
-;; Evaluates to (response 200 {} "Test" "1.1" "OK")
+;; Evaluates to (phel\http\response 200 {} Test 1.1 OK)
 
 ;; Create response from string
 (http/response-from-string "Hello World")
-;; Evaluates to (response 200 {} "Hello World" "1.1" "OK")
+;; Evaluates to (phel\http\response 200 {} Hello World 1.1 OK)
 ```
 
 Send with `emit-response`:

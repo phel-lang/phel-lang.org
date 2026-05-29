@@ -53,8 +53,8 @@ Shorter form omits the parameter list, naming params by position:
 #(apply + %&)  ; Same as (fn [& xs] (apply + xs))
 
 ; Using with higher-order functions
-(map #(* % 2) [1 2 3])        ; => [2 4 6]
-(filter #(> % 3) [1 5 2 8])   ; => [5 8]
+(map #(* % 2) [1 2 3])        ; => @[2 4 6]
+(filter #(> % 3) [1 5 2 8])   ; => @[5 8]
 ```
 
 > **Legacy:** `|(...)` with `$` / `$1` / `$&` still reads. Prefer `#(...)` with `%` (matches Clojure).

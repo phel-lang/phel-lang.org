@@ -417,7 +417,7 @@ All data structures are callable:
 ;; Practical use with map
 (def users [{:name "Alice" :age 30}
             {:name "Bob" :age 25}])
-(map :name users)  ; Evaluates to ["Alice" "Bob"]
+(map :name users)  ; Evaluates to @["Alice" "Bob"]
 ```
 
 ## Example: working with user data
@@ -550,7 +550,7 @@ All data structures are callable:
 ; Three-argument form: apply a transducer during transfer
 (into [] (map inc) [1 2 3])           ; => [2 3 4]
 (into #{} (filter odd?) [1 2 3 4 5])  ; => #{1 3 5}
-(into {} (map (fn [[k v]] [k (* v 2)])) {:a 1 :b 2})
+(into {} (map (fn [[k v]] [k (* v 2)])) (pairs {:a 1 :b 2}))
 ; => {:a 2 :b 4}
 ```
 
@@ -585,11 +585,11 @@ Common transducer producers:
 (into [] (interpose :sep) [1 2 3])            ; => [1 :sep 2 :sep 3]
 ```
 
-`completing` adapts a reducing function for `transduce`:
+`completing` adapts a plain 2-arity reducing function into a full reducing function with 0-arity init and 1-arity completion (defaults to `identity`):
 
 ```phel
-(def my-rf (completing conj count))
-(transduce (map inc) my-rf [1 2 3])  ; => 3
+(def my-rf (completing conj))
+(transduce (map inc) my-rf [1 2 3])  ; => [2 3 4]
 ```
 
 `cat` concatenates inner collections:

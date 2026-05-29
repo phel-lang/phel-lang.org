@@ -146,13 +146,13 @@ Phel ships `BigInt`, `BigDecimal`, and `Ratio` as first-class types:
 
 (/ 1 2)     ; => 1/2  (Ratio, exact)
 (/ 1.0 2)   ; => 0.5  (float)
-(+ 1N 2N)   ; => 3N   (BigInt)
+(+ 1N 2N)   ; => 3    (BigInt)
 
 ;; PHP ints auto-promote to BigInt on overflow
 (* 9999999999999999999N 2N) ; stays exact
 
 ;; Constructors and predicates
-(bigint 42)    ; => 42N
+(bigint 42)    ; => 42
 (bigdec "1.5") ; => 1.5M
 (ratio? 1/2)   ; => true
 ```
