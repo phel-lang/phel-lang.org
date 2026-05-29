@@ -26,7 +26,7 @@ Write the snippet, run it, paste real output. If output differs from what you as
 
 - `defprotocol` cannot be implemented inline in `defstruct`. Use `definterface` for inline; `defprotocol` + `extend-type` per struct.
 - `extends?` works only on primitive type keywords (`:string`, `:int`). Returns `false` for struct types. Use `satisfies?` on instances instead.
-- CLI args: `*argv*`, not `php/$argv`.
+- CLI args: `argv` (vector of user args, excludes program name); `*program*` for the script path. Not `*argv*` or `php/$argv`.
 - Side effects: `doseq` / `foreach`. Build sequences: `for`. Mixing causes wrong return shape.
 - String module: `phel\string` (not `phel\str`).
 - Phel vectors print as `@[...]`. Clojure prints `[...]`. Match the runtime output in docs.
