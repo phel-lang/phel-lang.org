@@ -21,10 +21,11 @@ Read CSV into a vector of maps, headers as keys.
       (do
         (println (str "Error: cannot open " filepath))
         [])
-      (let [headers (php/fgetcsv handle)
+      ;; Pass the escape arg explicitly ("") -- PHP 8.4 deprecates its implicit default
+      (let [headers (php/fgetcsv handle nil "," "\"" "")
             header-keys (for [h :in headers] (keyword h))]
         (loop [rows []]
-          (let [line (php/fgetcsv handle)]
+          (let [line (php/fgetcsv handle nil "," "\"" "")]
             (if (= false line)
               (do
                 (php/fclose handle)
@@ -65,8 +66,8 @@ CLI script that reads args, parses flags, produces output.
 ;; Access command-line arguments via PHP's $argv
 ;; When running: vendor/bin/phel run src/cli-tool.phel --name Alice --greeting Hi
 (def args (let [argv (php/aget php/$_SERVER "argv")]
-            ;; Skip the first two args (phel binary and script path)
-            (for [i :range [2 (php/count argv)]]
+            ;; argv is [binary "run" script-path & user-args] -- skip the first three
+            (for [i :range [3 (php/count argv)]]
               (php/aget argv i))))
 
 ;; Parse flags into a map of --key value pairs
@@ -161,12 +162,26 @@ GET request via `phel.http-client`. Parse JSON via `phel.json`.
 
 `html` module: nested elements, attributes, dynamic content.
 
+`html` is a macro: it walks the literal hiccup at compile time and splices any
+`(for ...)` it finds **inline**. So build the whole page in a single `html` call
+with the loops written in place. Plain element helpers (no embedded loop) like
+`user-card` below still compose -- they return a single element vector that an
+inline `for` can emit.
+
 ```phel
 (ns cookbook.html-generator
   (:require phel.html :refer [html doctype raw-string]))
 
-;; Generate a simple page layout
-(defn page [title & body]
+;; A reusable component: takes data, returns a single element vector (no `for`).
+(defn user-card [user]
+  [:div {:class "card"}
+    [:h3 (get user :name)]
+    [:p (str "Email: " (get user :email))]
+    [:span {:class [:badge (if (get user :active) "active" "inactive")]}
+      (if (get user :active) "Active" "Inactive")]])
+
+;; Render the whole page in one `html` call so every `for` stays inline.
+(defn render-page [title users links]
   (html
     (doctype :html5)
     [:html {:lang "en"}
@@ -183,22 +198,13 @@ GET request via `phel.http-client`. Parse JSON via `phel.json`.
         ")]]
       [:body
         [:h1 title]
-        body]]))
-
-;; Generate a user card component
-(defn user-card [user]
-  [:div {:class "card"}
-    [:h3 (get user :name)]
-    [:p (str "Email: " (get user :email))]
-    [:span {:class [:badge (if (get user :active) "active" "inactive")]}
-      (if (get user :active) "Active" "Inactive")]])
-
-;; Generate a navigation bar
-(defn nav [links]
-  [:nav
-    [:ul {:style {:list-style "none" :display "flex" :gap "1rem" :padding "0"}}
-      (for [link :in links]
-        [:li [:a {:href (get link :url)} (get link :label)]])]])
+        [:nav
+          [:ul {:style {:list-style "none" :display "flex" :gap "1rem" :padding "0"}}
+            (for [link :in links]
+              [:li [:a {:href (get link :url)} (get link :label)]])]]
+        [:p (str "Total users: " (count users))]
+        (for [user :in users]
+          (user-card user))]]))
 
 ;; Build a complete page with dynamic content
 (def users
@@ -211,14 +217,7 @@ GET request via `phel.http-client`. Parse JSON via `phel.json`.
    {:label "Users" :url "/users"}
    {:label "About" :url "/about"}])
 
-(def output
-  (page "User Directory"
-    (nav links)
-    [:p (str "Total users: " (count users))]
-    (for [user :in users]
-      (user-card user))))
-
-(println output)
+(println (render-page "User Directory" users links))
 ```
 
 **See also:** [HTML Rendering](/documentation/web/html-rendering)
@@ -236,9 +235,6 @@ PHP DateTime via interop: create, format, compare.
 (def specific-date (DateTimeImmutable. "2024-06-15"))
 (def from-format
   (DateTimeImmutable/createFromFormat "d/m/Y" "25/12/2024"))
-
-;; Tagged literal form
-(def tagged #inst "2024-06-15T00:00:00Z")
 
 ;; Format dates - .method is shorthand for (php/-> obj (method ...))
 (println (.format now "Y-m-d H:i:s"))       ; 2024-03-10 14:30:00
@@ -427,10 +423,13 @@ Filter, transform, group via threading macros and collection functions.
     (/ total-age (count active))))
 (println (str "Average age of active users: " avg-age))
 
-;; Find the oldest user per role
+;; Find the oldest user per role.
+;; `pairs` turns the grouped map into [key value] tuples -- iterating a map
+;; directly (map/reduce) walks its *values* only, not key/value pairs.
 (def oldest-per-role
   (->> users
        (group-by :role)
+       pairs
        (map (fn [[role members]]
               [role (:name (last (sort-by :age members)))]))
        (into {})))
@@ -526,7 +525,7 @@ Persistent KV store backed by JSON. Get, put, delete, list keys.
 
 (println (str "User 1: " (store-get :user-1)))             ; Alice
 (println (str "User 3: " (store-get :user-3 "unknown")))   ; unknown
-(println (str "Keys: " (store-keys)))                       ; (:user-1 :user-2 :config-theme)
+(println (str "Keys: " (store-keys)))                       ; [:user-1 :user-2 :config-theme]
 
 (store-delete :user-2)
 (println (str "Has :user-2? " (store-has? :user-2)))       ; false
@@ -642,22 +641,22 @@ Compose pipelines without intermediate collections. Faster, less memory than cha
 (println (str "Unique: " unique-slow-paths))
 ;; => #{"/api/users" "/api/posts"}
 
-;; Compute average response time of API calls using transduce
+;; Compute average response time of API calls. The reducing step accumulates
+;; a running [sum count]; divide once afterwards. (`transduce` already wraps the
+;; reducing fn, so a `completing` finalizer here would be ignored.)
 (defn avg-transducer [xf coll]
-  (let [result (transduce xf
-                 (completing
-                   (fn [[sum cnt] ms] [(+ sum ms) (inc cnt)])
-                   (fn [[sum cnt]] (/ sum cnt)))
-                 [0 0]
-                 coll)]
-    result))
+  (let [[sum cnt] (transduce xf
+                    (fn [[sum cnt] x] [(+ sum x) (inc cnt)])
+                    [0 0]
+                    coll)]
+    (if (zero? cnt) 0 (/ (php/floatval sum) cnt))))
 
 (def avg-api-ms
   (avg-transducer
     (comp (filter #(= :api-call (get % :type)))
           (map :ms))
     events))
-(println (str "Avg API response: " avg-api-ms "ms"))
+(println (str "Avg API response: " avg-api-ms "ms"))  ; => 237.5ms
 
 ;; Use cat to flatten nested collections
 (def nested [[1 2 3] [4 5] [6]])
@@ -732,7 +731,7 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
 
 ;; Extract all successive matches with `re-seq` (lazy sequence of matches).
 (re-seq #"\b[A-Z][a-z]+" "Alice met Bob and Charlie")
-;; => @["Alice" "Bob" "Charlie"]
+;; => ["Alice" "Bob" "Charlie"]
 ```
 
 **See also:** [Cheat Sheet -- Regular Expressions](/documentation/reference/cheat-sheet/#regular-expressions)
@@ -799,26 +798,49 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
 
 ## Pattern matching with `phel.match`
 
-`match` macro: literal, vector, map, wildcard, `:as`, `:guard`, `:or`, rest-binding patterns.
+`match` takes a **vector of targets** and clauses of `[pattern-vector expr]`.
+Each pattern vector must have the same length as the target vector. A trailing
+`:else` is the default. Pattern elements: literals, `_` wildcard, bare symbols
+(bindings), nested vectors with optional `& rest`, map patterns `{:k p}`,
+`(inner :guard pred)`, `(inner :as name)`, and `(:or a b ...)`.
 
 ```phel
 (ns cookbook.match
   (:require phel.match :refer [match]))
 
-(defn describe [x]
-  (match x
-    0              "zero"
-    [_ _]          "pair"
-    [_ _ & rest]   (str "tuple+" (count rest))
-    {:type :error :msg m} (str "error: " m)
-    (:or "hi" "hello")    "greeting"
-    (:guard n #(php/is_int %)) (str "int " n)
-    _              "other"))
+;; Multiple targets: classify a 2D point.
+(defn classify [x y]
+  (match [x y]
+    [0 0]                             "origin"
+    [_ 0]                             "on the x-axis"
+    [0 _]                             "on the y-axis"
+    [(a :guard pos?) (b :guard pos?)] "first quadrant"
+    [a b]                             (str "point (" a ", " b ")")
+    :else                             "unknown"))
 
-(describe 0)                        ; => "zero"
-(describe [1 2])                    ; => "pair"
-(describe [1 2 3 4])                ; => "tuple+2"
+(classify 0 0)   ; => "origin"
+(classify 5 0)   ; => "on the x-axis"
+(classify 3 4)   ; => "first quadrant"
+(classify -1 4)  ; => "point (-1, 4)"
+
+;; Single target: wrap one value in a 1-element target vector and match its
+;; shape with nested patterns.
+(defn describe [v]
+  (match [v]
+    [0]                     "zero"
+    [[_ _]]                 "pair"
+    [[_ _ & rest]]          (str "tuple+" (count rest))
+    [{:type :error :msg m}] (str "error: " m)
+    [(:or "hi" "hello")]    "greeting"
+    [(n :guard int?)]       (str "int " n)
+    :else                   "other"))
+
+(describe 0)                       ; => "zero"
+(describe [1 2])                   ; => "pair"
+(describe [1 2 3 4])               ; => "tuple+2"
 (describe {:type :error :msg "x"}) ; => "error: x"
+(describe "hello")                 ; => "greeting"
+(describe 99)                      ; => "int 99"
 ```
 
 ## Schemas with `phel.schema`
@@ -846,11 +868,16 @@ Validate, coerce, generate data from declarative schemas. Kinds: `:vector`, `:se
 ; => {:id 42 :name "Bob" :role :user :tags #{:a}}
 ```
 
-Instrument a function to check args/return at call sites:
+Wrap a function so its args/return are checked on every call. `instrument!`
+takes a name, the function, and a `[:=> [arg-schemas] ret-schema]` schema, and
+returns the wrapped function:
 
 ```phel
 (defn greet [u] (str "Hi " (:name u)))
-(s/instrument! `greet [:=> [User] :string])
+(def greet! (s/instrument! :greet greet [:=> [User] :string]))
+
+(greet! {:id 1 :name "Alice"})   ; => "Hi Alice"
+(greet! {:id "x" :name "Alice"}) ; throws: argument 0 failed schema
 ```
 
 ## Async with `phel.async`
@@ -886,14 +913,18 @@ Or from the shell: `vendor/bin/phel watch src/`.
 
 ## Property Tests with `phel.test.gen`
 
+`defspec` takes a name, an options map (`:num-tests`, `:size`, `:seed`,
+`:shrink?`), a generator producing the property's arguments, and a property
+function that returns truthy on success:
+
 ```phel
 (ns cookbook.gen-tests
-  (:require phel.test :refer [deftest is defspec])
-  (:require phel.test.gen :as gen))
+  (:require phel.test :refer [deftest is])
+  (:require phel.test.gen :as gen :refer [defspec]))
 
-(defspec addition-commutes
-  [a (gen/int) b (gen/int)]
-  (is (= (+ a b) (+ b a))))
+(defspec addition-commutes {:num-tests 100}
+  (gen/tuple gen/int gen/int)
+  (fn [a b] (= (+ a b) (+ b a))))
 ```
 
 Failing cases shrink automatically; the reported seed makes them reproducible.
@@ -1077,6 +1108,7 @@ Group and count:
 (->> [{:role "admin"} {:role "user"} {:role "admin"}
       {:role "user"} {:role "user"}]
      (group-by :role)
+     pairs                          ; map -> [key value] tuples
      (map (fn [[k v]] [k (count v)])))
 ;; => @[["admin" 2] ["user" 3]]
 ```
@@ -1104,6 +1136,7 @@ Sum values by category:
 ```phel
 (->> [{:cat "a" :v 10} {:cat "b" :v 20} {:cat "a" :v 30}]
      (group-by :cat)
+     pairs                          ; map -> [key value] tuples
      (reduce (fn [acc [k items]]
                (assoc acc k (reduce + 0 (map :v items))))
              {}))
