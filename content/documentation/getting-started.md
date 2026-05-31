@@ -1,6 +1,7 @@
 +++
 title = "Getting Started"
 weight = 1
+description = "Go from zero to a live Phel REPL in under a minute, then tour your first project."
 +++
 
 Phel is a Lisp that compiles to PHP. Persistent data structures, immutability by default, macros. Runs on your existing PHP runtime.

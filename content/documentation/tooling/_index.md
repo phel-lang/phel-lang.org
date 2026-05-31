@@ -4,9 +4,7 @@ weight = 61
 sort_by = "weight"
 insert_anchor_links = "right"
 template = "section-page.html"
-
-[extra]
-insert_after = "Configuration"
+description = "The Phel developer toolkit: CLI commands, the interactive REPL, editor integrations, and step debugging with Xdebug."
 +++
 
-Complete dev toolkit: CLI (build, format, export), interactive REPL, editor integrations, library publishing.
+Everything around writing Phel day to day. The **CLI** drives building, formatting, testing, and exporting; the **REPL** is where you explore and iterate; **editor support** and **Xdebug** wire Phel into your workflow.

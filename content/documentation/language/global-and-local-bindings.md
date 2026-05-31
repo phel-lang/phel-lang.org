@@ -1,8 +1,11 @@
 +++
 title = "Global and local bindings"
-weight = 5
+weight = 3
+description = "Bind values to names with def and let, rebind dynamic vars with binding, and manage mutable state with atoms"
 aliases = ["/documentation/global-and-local-bindings"]
 +++
+
+How you name things in Phel: `def` for globals, `let` for locals, `binding` for dynamic vars, and `atom` for the rare mutable state.
 
 ## Definition (def)
 
@@ -228,4 +231,9 @@ $count++;
 
 Prefer immutable data structures. Atoms mainly for PHP interop or app state.
 {% end %}
+
+## Next steps
+
+- [Control flow](/documentation/language/control-flow/) - branch and loop over your bindings
+- [Functions and recursion](/documentation/language/functions-and-recursion/) - define and compose behavior
 

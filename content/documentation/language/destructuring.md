@@ -1,6 +1,7 @@
 +++
 title = "Destructuring"
-weight = 8
+weight = 6
+description = "Bind names to values inside vectors, lists, and maps by shape in let, function params, and loop"
 aliases = ["/documentation/destructuring"]
 +++
 
@@ -155,3 +156,8 @@ Loop bindings:
     acc
     (recur tail (+ acc head)))) ; => 15
 ```
+
+## Next steps
+
+- [Functions and recursion](/documentation/language/functions-and-recursion/) - destructure function arguments
+- [Data structures](/documentation/language/data-structures/) - the collections you destructure

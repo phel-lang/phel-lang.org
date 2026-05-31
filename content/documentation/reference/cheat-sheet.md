@@ -1,6 +1,7 @@
 +++
 title = "Cheat Sheet"
 weight = 1
+description = "Filterable one-page reference of Phel syntax, core functions, and idioms."
 aliases = ["/documentation/cheat-sheet"]
 
 [extra]
@@ -743,3 +744,9 @@ Require with `(:require phel.reflect :as reflect)`.
 (load-file "src/my-module.phel")  ; load and evaluate a file
 (test-ns "my-app.tests")          ; run tests in a namespace (name as string)
 ```
+
+## Next steps
+
+- [Getting Started](/documentation/getting-started): set up a project and a REPL.
+- [Language section](/documentation/language/): the full reference behind each form here.
+- [Agentic Coding](/documentation/reference/agentic-coding): truncation-safe rules for AI pairing.

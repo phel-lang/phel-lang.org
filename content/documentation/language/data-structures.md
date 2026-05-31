@@ -1,12 +1,11 @@
 +++
 title = "Data structures"
-weight = 7
+weight = 2
+description = "Phel's persistent collections: lists, vectors, maps, sets, structs, plus core functions like conj, assoc, get-in, and into"
 aliases = ["/documentation/data-structures"]
 +++
 
-Four main data structures: **Lists**, **Vectors**, **Maps**, **Sets**.
-
-All **persistent** (immutable). Modifications return a new version sharing structure with the old. The original is unchanged.
+Phel's four core collections are lists, vectors, maps, and sets. All are **persistent** (immutable): an operation returns a new version that shares structure with the old one, and the original never changes.
 
 {% php_note() %}
 "Copy-on-write" for collections. Prevents bugs from unexpected mutations.
@@ -652,3 +651,9 @@ Convert map keys between keywords and strings. Useful for PHP arrays or JSON:
 (stringify-keys {:name "Alice" :age 30})
 ;; => {"name" "Alice" "age" 30}
 ```
+
+## Next steps
+
+- [Destructuring](/documentation/language/destructuring/) - pull values out of collections by shape
+- [Control flow](/documentation/language/control-flow/) - iterate and build collections with `for` and `loop`
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

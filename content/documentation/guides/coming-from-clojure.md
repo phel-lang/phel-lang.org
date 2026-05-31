@@ -1,6 +1,7 @@
 +++
 title = "Coming from Clojure"
 weight = 2
+description = "What transfers from Clojure to Phel, what differs, and what Phel adds, with a side-by-side form mapping"
 aliases = ["/documentation/coming-from-clojure"]
 +++
 
@@ -177,7 +178,7 @@ No `clojure.spec`. Phel ships `phel.schema` for validation, coercion, and genera
 
 ### Truthiness
 
-Same as Clojure: only `false` and `nil` falsy. `0`, `""`, `[]` truthy. Differs from PHP. See [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations).
+Same as Clojure: only `false` and `nil` falsy. `0`, `""`, `[]` truthy. Differs from PHP. See [Truthiness](/documentation/language/basic-types/#truthiness).
 
 ### Reader conditionals
 
@@ -432,7 +433,7 @@ Use Composer. `composer.json` replaces `deps.edn`:
 ```json
 {
   "require": {
-    "phel-lang/phel-lang": "^0.39",
+    "phel-lang/phel-lang": "^0.40",
     "php": ">=8.4"
   }
 }
@@ -496,3 +497,9 @@ Many orgs already run PHP. Bring FP/Lisp into environments where the JVM isn't a
 | `;; comment`                 | `;; comment`                                              | `;` and `;;` standard                  |
 
 Welcome to the PHP side of Lisp. The parentheses are the same; the runtime just happens to be PHP.
+
+## Next steps
+
+- [Rosetta Stone: PHP to Phel](/documentation/guides/rosetta-stone/) - the PHP angle on the same forms
+- [Cookbook](/documentation/guides/cookbook/) - copy-paste recipes to get productive fast
+- [PHP interop](/documentation/php-interop/) - the full interop reference

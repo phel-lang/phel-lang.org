@@ -1,10 +1,11 @@
 +++
 title = "HTML Rendering"
-weight = 2
+weight = 3
+description = "Render HTML from Phel data structures: vectors are elements, maps are attributes, values auto-escape"
 aliases = ["/documentation/html-rendering"]
 +++
 
-Template syntax based on Phel data structures. Vectors are elements, maps are attributes. Values auto-escape for XSS protection.
+Build HTML from plain Phel data: vectors are elements, maps are attributes, and values auto-escape for XSS protection. No template language to learn, just the data structures you already use.
 
 ## Syntax
 
@@ -99,3 +100,35 @@ Use `doctype` for the document doctype:
 ```
 
 Supported values: `:html5`, `:xhtml-transitional`, `:xhtml-strict`, `:html4`.
+
+## Composing reusable fragments
+
+Because elements are just vectors, a function that returns a vector is a reusable component. Compose them like any other Phel value, then pass the result to `html` once at the end.
+
+```phel
+(ns my-app
+  (:require phel.html :refer [html]))
+
+(defn nav-link [url label]
+  [:a {:href url} label])
+
+(defn layout [title content]
+  [:html
+   [:head [:title title]]
+   [:body
+    [:nav (nav-link "/" "Home") (nav-link "/about" "About")]
+    content]])
+
+(html (layout "Home" [:p "Welcome"]))
+;; Evaluates to
+;; "<html><head><title>Home</title></head><body>
+;;  <nav><a href=\"/\">Home</a><a href=\"/about\">About</a></nav><p>Welcome</p></body></html>"
+```
+
+Return a fragment from a route handler to produce the response body. See [Request and Response](/documentation/web/http-request-and-response/) and [Routing](/documentation/web/routing/) for wiring fragments into responses.
+
+## Next steps
+
+- [Request and Response](/documentation/web/http-request-and-response/) - send rendered HTML as a response body
+- [Routing](/documentation/web/routing/) - map URLs to handlers that return HTML
+- [html API reference](/documentation/reference/api/html/) - full list of helpers

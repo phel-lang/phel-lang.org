@@ -1,6 +1,7 @@
 +++
 title = "Installation"
 weight = 2
+description = "Install Phel via Composer, PHAR, Docker, or Nix, then verify with phel doctor."
 +++
 
 Requires **PHP 8.4+**. Pick the method matching your workflow.

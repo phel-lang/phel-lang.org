@@ -1,6 +1,7 @@
 +++
 title = "Rosetta Stone: PHP → Phel"
 weight = 3
+description = "Side-by-side PHP and Phel for the same task: variables, functions, collections, strings, control flow, loops, and interop"
 aliases = ["/documentation/rosetta-stone"]
 
 [extra]
@@ -1214,3 +1215,9 @@ $result = implode(", ",
 </div>
 
 <script src="/rosetta-stone.js" defer></script>
+
+## Next steps
+
+- [Cookbook](/documentation/guides/cookbook/) - ready-made recipes for common tasks
+- [PHP interop](/documentation/php-interop/) - reach into the PHP standard library and Composer packages
+- [Data structures](/documentation/language/data-structures/) - how Phel collections differ from PHP arrays

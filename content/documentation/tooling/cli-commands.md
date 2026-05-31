@@ -1,10 +1,11 @@
 +++
 title = "CLI Commands"
 weight = 1
+description = "Every built-in phel command: init, build, run, test, repl, eval, compile, lint, watch, nrepl, lsp, and more"
 aliases = ["/documentation/cli-commands"]
 +++
 
-Built-in commands.
+Every task you run through Phel goes through one CLI. This page lists the built-in commands with a working example for each.
 
 ```bash
 # Overview of all commands
@@ -334,3 +335,9 @@ vendor/bin/phel cache:clear
 Removes everything in the cache dir. Useful for stale caches or after upgrades.
 
 Runtime state (cache, REPL history, error log) lives under `.phel/` by default. Override via `withPhelDir('...')` in `phel-config.php` or the `PHEL_DIR` env var.
+
+## Next steps
+
+- [REPL](/documentation/tooling/repl/) - the interactive loop behind `phel repl`
+- [Editor support](/documentation/tooling/editor-support/) - connect your editor to `phel nrepl`
+- [Configuration](/documentation/configuration/) - tune paths, cache, and export in `phel-config.php`

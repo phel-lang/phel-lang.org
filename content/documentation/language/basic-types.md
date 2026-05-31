@@ -1,8 +1,11 @@
 +++
 title = "Basic Types"
 weight = 1
+description = "Phel's primitive values: nil, booleans, numbers, strings, keywords, plus truthiness, equality, and reader literals"
 aliases = ["/documentation/basic-types", "/documentation/arithmetic", "/documentation/truth-and-boolean-operations"]
 +++
+
+The building blocks of every Phel program: literals, numbers, strings, keywords, and the truthiness rules that differ from PHP.
 
 ## Nil, true, false
 
@@ -687,3 +690,9 @@ All comparison operators accept multiple arguments:
 (not false) ; => true
 (not nil)   ; => true
 ```
+
+## Next steps
+
+- [Data structures](/documentation/language/data-structures/) - lists, vectors, maps, and sets in depth
+- [Control flow](/documentation/language/control-flow/) - put truthiness to work with `if`, `cond`, and `case`
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

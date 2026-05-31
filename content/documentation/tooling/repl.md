@@ -1,12 +1,13 @@
 +++
 title = "REPL"
 weight = 2
+description = "Use the Phel REPL: history vars, doc/dir/apropos helpers, introspection, tap> debugging, and a REPL-driven workflow"
 aliases = ["/documentation/repl", "/documentation/tooling/phel-helpers"]
 +++
 
 ## Interactive prompt
 
-Phel ships with an interactive Read-Eval-Print Loop. Evaluate expressions, see results instantly. Useful for exploring, testing, debugging.
+The REPL is your fastest feedback loop in Phel: type an expression, press Enter, see the result. Use it to explore the language, test functions as you write them, and debug live.
 
 Start:
 
@@ -68,9 +69,9 @@ Show docs for any function or macro in scope:
 
 ```phel
 user:1> (doc all?)
-(all? pred xs)
+(all? pred coll)
 
-Returns true if `(pred x)` is logical true for every `x` in `xs`, else false.
+Returns true if predicate is true for every element in collection, false otherwise.
 nil
 user:2> (doc map)
 (map f & colls)
@@ -106,28 +107,23 @@ escape
 
 ### apropos
 
-Search symbols by pattern across loaded namespaces:
+Search symbols by name across loaded namespaces. Returns a sorted vector of fully qualified names:
 
 ```phel
 user:1> (apropos "map")
-phel.core/map
-phel.core/mapcat
-phel.core/hash-map
-phel.core/map-indexed
-phel.core/zipmap
-...
+@["phel.core/flat-map" "phel.core/hash-map" "phel.core/map" "phel.core/map-indexed" "phel.core/mapcat"]
 ```
 
 ### search-doc
 
-Search docstrings:
+Search docstrings. Prints each matching definition with its docs:
 
 ```phel
 user:1> (search-doc "lazy")
-phel.core/lazy-seq
-  Creates a lazy sequence from a thunk...
-phel.core/take
-  Returns a lazy sequence of the first n items...
+--- phel.core/concat ---
+(concat & xs)
+Returns the concatenation of all xs ... Lazily evaluated, so xs can be lazy seqs.
+
 ...
 ```
 
@@ -144,36 +140,34 @@ user:2> (.format (DateTimeImmutable.) "Y-m-d")
 
 ## Introspection
 
-Inspect code, namespaces, macros.
+Inspect code, namespaces, and macros. These helpers live in `phel.repl` and load automatically in the REPL and over nREPL.
 
 ### source
 
-Show source of a function or macro:
+Return the source code of a function or macro as a string:
 
 ```phel
 user:1> (source filter)
-(defn filter [pred xs]
-  ...)
+"(defn filter\n  \"Returns a lazy sequence of elements where predicate returns true...\"\n  [pred & args]\n  ...)"
 ```
 
 ### find-fn
 
-Find functions by input/output example:
+Search functions by name or docstring. Returns a vector of maps with `:ns`, `:name`, `:doc`, and arity info:
 
 ```phel
-user:1> (find-fn [1 2 3] 3)
-phel.core/count
-phel.core/last
-...
+user:1> (find-fn "reduce")
+@[{:ns "phel.core", :name "reduce", :doc "...", :private false, :min-arity 3, :max-arity 3, :is-variadic false}
+  ...]
 ```
 
 ### symbol-info
 
-Symbol metadata: type, namespace, docs:
+Structured metadata for a symbol: docs, source location, arity, namespace:
 
 ```phel
 user:1> (symbol-info map)
-{:name "map" :ns "phel.core" :type :function ...}
+{:doc "...", :file ".../seq-fns.phel", :line 54, :min-arity 1, :is-variadic true, :ns "phel.core", :name "map"}
 ```
 
 ### Namespace introspection
@@ -251,7 +245,7 @@ See also [Testing](/documentation/testing/) for `reset-stats`, `get-stats`, and 
 ```phel
 user:1> (in-ns 'my.app)
 my.app:2> (doc map)
-; Works immediately -- no require needed
+; Works immediately: no require needed
 ```
 
 ## REPL-driven workflow
@@ -389,17 +383,24 @@ Collect tapped values during a test:
 ;;  :count 2}
 ```
 
-`pprint-str` returns the formatted string. Both accept an optional width.
+`pprint-str` returns the formatted string instead of printing it.
 
 ### PHP native inspection
 
-Phel values are PHP objects, so any PHP inspection function works via `php/`:
+Phel values are PHP objects, so PHP inspection functions work via `php/`:
 
 ```phel
 (php/var_dump (+ 2 2))
 ;; int(4)
 
-(php/print_r {:a 1 :b 2})
+;; print_r expects a native PHP array, so convert first:
+(php/print_r (php/array 1 2 3))
+;; Array
+;; (
+;;     [0] => 1
+;;     [1] => 2
+;;     [2] => 3
+;; )
 ```
 
 For richer output, [Symfony VarDumper](/documentation/tooling/php-tools/) via `(php/dump ...)` and `(php/dd ...)`.
@@ -411,3 +412,9 @@ For richer output, [Symfony VarDumper](/documentation/tooling/php-tools/) via `(
 - **Copy working expressions into source files:** the REPL is a scratchpad.
 - **Use `require` to load your modules:** test your code live.
 - **`Ctrl-C` cancels current input** if stuck mid-expression.
+
+## Next steps
+
+- [CLI commands](/documentation/tooling/cli-commands/) - run, test, and build from the terminal
+- [Editor support](/documentation/tooling/editor-support/) - get the same eval loop inside your editor via `phel nrepl`
+- [Testing](/documentation/testing/) - run and inspect tests from the REPL

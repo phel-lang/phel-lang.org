@@ -1,10 +1,11 @@
 +++
 title = "XDebug Setup"
 weight = 6
+description = "Install and configure XDebug for Phel: breakpoints in .phel files, path mappings, and editor setup for VS Code, PhpStorm, Emacs, and Neovim"
 aliases = ["/documentation/debug/xdebug-setup"]
 +++
 
-[XDebug](https://xdebug.org/) enables step-through debugging with breakpoints, variable inspection, call stack analysis. Useful for Phel core/compiler dev and seeing how your Phel compiles to PHP.
+[XDebug](https://xdebug.org/) gives you step-through debugging: breakpoints, variable inspection, and call-stack analysis. With the VS Code Phel extension you set breakpoints directly in `.phel` files; in other editors you debug the compiled PHP.
 
 <details class="dev-note">
 <summary>
@@ -300,3 +301,9 @@ echo "XDebug is working!\n";
 ```
 
 Run it, verify the debugger connects.
+
+## Next steps
+
+- [Editor support](/documentation/tooling/editor-support/) - install the VS Code Phel extension used above
+- [PHP debugging tools](/documentation/tooling/php-tools/) - lighter-weight `var_dump`/`dump` debugging
+- [Configuration](/documentation/configuration/) - `withKeepGeneratedTempFiles` and other dev settings

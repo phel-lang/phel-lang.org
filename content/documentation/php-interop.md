@@ -1,6 +1,7 @@
 +++
 title = "PHP Interop"
 weight = 50
+description = "Call PHP functions, build objects, work with PHP arrays, and catch PHP exceptions from Phel."
 +++
 
 ## Globals and constants
@@ -497,6 +498,31 @@ __FILE__  // Points to cached .php file
 Use `*file*` when you need to reference the original Phel source location, such as for loading resources relative to your source code.
 {% end %}
 
+## Catching PHP exceptions
+
+PHP functions and methods throw native exceptions, and they cross the interop boundary unchanged. Catch them with `try`/`catch`, matching on the PHP class name. Catch `\Throwable` to handle anything.
+
+```phel
+(try
+  (php/intdiv 1 0)
+  (catch \DivisionByZeroError e
+    (php/-> e (getMessage))))
+; => "Division by zero"
+```
+
+The `.method` shorthand and a `finally` clause work too:
+
+```phel
+(try
+  (risky-php-call)
+  (catch \Throwable e
+    (.getMessage e))
+  (finally
+    (cleanup)))
+```
+
+For Phel's own exceptions, `ex-info`, and re-throwing, see [Error Handling](/documentation/language/error-handling/).
+
 ## Calling Phel from PHP
 
 Useful for integrating Phel into existing PHP apps. Load the Phel namespace after `autoload.php`.
@@ -571,3 +597,9 @@ Mark a function exported with metadata:
 ```
 
 `phel export` then generates a wrapper class in the target dir (here `src/PhelGenerated`). Use it from PHP to call Phel functions.
+
+## Next steps
+
+- [Error Handling](/documentation/language/error-handling/): `try`, `catch`, `finally`, `ex-info`.
+- [Configuration](/documentation/configuration/): `withExport*` options for `phel export`.
+- [PHP API reference](/documentation/reference/api/php): every `php/*` builtin.

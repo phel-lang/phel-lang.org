@@ -1,10 +1,11 @@
 +++
 title = "Cookbook"
 weight = 4
+description = "Runnable Phel recipes for files, JSON, HTTP, dates, error handling, schemas, state, and data-transformation pipelines"
 aliases = ["/documentation/cookbook", "/documentation/one-liners"]
 +++
 
-Recipes for common tasks. Each example self-contained.
+Practical, self-contained Phel recipes for everyday tasks. Copy one, adapt it, ship it.
 
 ## Read and process a CSV file
 
@@ -1213,3 +1214,9 @@ Diamond pattern (width 5):
      (phel.string/join "\n"))
 ;; => "  *\n ***\n*****\n ***\n  *"
 ```
+
+## Next steps
+
+- [Rosetta Stone (PHP to Phel)](/documentation/guides/rosetta-stone/) - look up the Phel form for a PHP idiom
+- [Data structures](/documentation/language/data-structures/) - the collections behind these recipes
+- [PHP interop](/documentation/php-interop/) - call any PHP function from Phel

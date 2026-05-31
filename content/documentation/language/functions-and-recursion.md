@@ -1,8 +1,11 @@
 +++
 title = "Functions and Recursion"
-weight = 6
+weight = 5
+description = "Define functions with fn and defn, use multi-arity and variadics, recurse safely with recur, and dispatch with multimethods"
 aliases = ["/documentation/functions-and-recursion"]
 +++
+
+Define and compose behavior: anonymous and named functions, multiple arities, tail-safe recursion with `recur`, and runtime polymorphism with multimethods.
 
 ## Anonymous function (fn)
 
@@ -320,3 +323,9 @@ function addToArray(&$arr) {
 
 **Note:** Prefer immutable data structures over mutating PHP arrays.
 {% end %}
+
+## Next steps
+
+- [Destructuring](/documentation/language/destructuring/) - bind function params by shape
+- [Macros](/documentation/language/macros/) - go beyond functions with compile-time code
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

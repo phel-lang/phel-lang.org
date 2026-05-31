@@ -1,10 +1,11 @@
 +++
 title = "PHP Debugging Tools"
 weight = 7
+description = "Debug Phel with PHP tools: var_dump, Symfony VarDumper dump/dd, inspecting compiled PHP, and error reporting"
 aliases = ["/documentation/tooling/php-tools"]
 +++
 
-Phel compiles to PHP, so PHP debugging functions work. Pairs with Phel's built-in helpers.
+Phel compiles to PHP, so every PHP debugging function is available through the `php/` prefix. Reach for these alongside Phel's built-in [REPL helpers](/documentation/tooling/repl/#debug-helpers).
 
 ## Native var_dump()
 

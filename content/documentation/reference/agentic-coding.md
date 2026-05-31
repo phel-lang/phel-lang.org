@@ -273,7 +273,7 @@ Minimal `phel-config.php`:
 
 ```php
 <?php
-return \Phel\Config\PhelConfig::forProject('my-app.main');
+return \Phel\Config\PhelConfig::forProject(\Phel\Config\ProjectLayout::Flat, 'my-app.main');
 ```
 
 Full options: [Configuration](/documentation/configuration).

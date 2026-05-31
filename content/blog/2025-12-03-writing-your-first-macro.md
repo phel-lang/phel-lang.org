@@ -23,7 +23,7 @@ You could wrap it in a function, but then `logged-in?` would be evaluated before
 
 ```phel
 (defmacro unless [test & body]
-  `(if ,test nil (do ,@body)))
+  `(if ~test nil (do ~@body)))
 
 (unless logged-in?
   (redirect "/login"))
@@ -44,13 +44,13 @@ Two concepts make macros tick: **quote** and **unquote**.
 '(+ 1 2)   ; => (+ 1 2), just a list
 ```
 
-**Quasiquote** (the backtick `` ` ``) works like quote, but you can poke holes with **unquote** (`,`) to let specific pieces evaluate:
+**Quasiquote** (the backtick `` ` ``) works like quote, but you can poke holes with **unquote** (`~`) to let specific pieces evaluate:
 
 ```phel
-`(1 2 ,(+ 1 2))   ; => (1 2 3)
+`(1 2 ~(+ 1 2))   ; => (1 2 3)
 ```
 
-Think of quasiquote as a template. Most of it stays literal; the `,` parts get filled in. If you have written Clojure, this is exactly what you know.
+Think of quasiquote as a template. Most of it stays literal; the `~` parts get filled in. Identical to Clojure syntax.
 
 ## Building `unless` step by step
 
@@ -58,7 +58,7 @@ Think of quasiquote as a template. Most of it stays literal; the `,` parts get f
 (defmacro unless
   "Evaluates body when test is false."
   [test & body]
-  `(if ,test nil (do ,@body)))
+  `(if ~test nil (do ~@body)))
 ```
 
 What is happening here:
@@ -67,7 +67,7 @@ What is happening here:
 - The docstring explains what the macro does.
 - `test` and `body` receive *unevaluated code*, not values.
 - The backtick starts a code template.
-- `,test` splices in the test expression; `,@body` splices the body expressions inline.
+- `~test` splices in the test expression; `~@body` splices the body expressions inline.
 
 When you write:
 
@@ -94,7 +94,7 @@ Here is something you cannot do with a plain function. Say you want to measure h
   "Evaluates expr and prints the time it took. Returns the value of expr."
   [expr]
   `(let [start# (php/microtime true)
-         ret# ,expr]
+         ret# ~expr]
      (println "Elapsed time:" (* 1000 (- (php/microtime true) start#)) "msecs")
      ret#))
 
@@ -118,7 +118,7 @@ Here is a simple `with-output-buffer` macro using auto-gensym:
   [& body]
   `(do
      (php/ob_start)
-     ,@body
+     ~@body
      (let [res# (php/ob_get_contents)]
        (php/ob_end_clean)
        res#)))
@@ -143,8 +143,8 @@ Every `res#` inside that quasiquoted template refers to the same generated symbo
     0 nil
     1 (first args)
     (let [v (gensym)]
-      `(let [,v ,(first args)]
-         (if ,v ,v (or ,@(next args)))))))
+      `(let [~v ~(first args)]
+         (if ~v ~v (or ~@(next args)))))))
 ```
 
 Notice how `or` uses `gensym` because it recursively expands itself. Each level needs its own unique binding that is coordinated across the recursive expansion.
@@ -155,12 +155,12 @@ Notice how `or` uses `gensym` because it recursively expands itself. Each level 
 (defmacro defn-traced
   "Defines a function that logs when called."
   [name args & body]
-  `(defn ,name ,args
-     (println "Calling" ',name)
-     ,@body))
+  `(defn ~name ~args
+     (println "Calling" '~name)
+     ~@body))
 ```
 
-The `',name` pattern (quote then unquote) inserts the literal symbol name into the output, so the log shows the actual function name.
+The `'~name` pattern (quote then unquote) inserts the literal symbol name into the output, so the log shows the actual function name.
 
 ## When to reach for a macro
 

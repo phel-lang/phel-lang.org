@@ -1,6 +1,7 @@
 +++
 title = "Configuration"
 weight = 60
+description = "Set up phel-config.php: source and test dirs, build, cache, and export options."
 +++
 
 Phel reads `phel-config.php` from the project root. Most projects only need the factory:
@@ -90,4 +91,10 @@ return (new \Phel\Config\PhelConfig())
 
 </details>
 
-> **Note:** Old `setX()` setters are deprecated since 0.37 and emit notices. Use the `withX()` chain - the API is immutable.
+> **Note:** Old `setX()` setters are deprecated since 0.37 and emit notices. Use the `withX()` chain, the API is immutable.
+
+## Next steps
+
+- [Testing](/documentation/testing): point `withTestDirs` at your tests, then run `phel test`.
+- [PHP Interop](/documentation/php-interop): export Phel functions for use from PHP.
+- [CLI Commands](/documentation/tooling/cli-commands): every subcommand the config drives.

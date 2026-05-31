@@ -1,6 +1,7 @@
 +++
 title = "Testing"
 weight = 70
+description = "Write tests with deftest, is, mocks, and property-based specs, then run them with phel test."
 +++
 
 Built-in unit testing with no boilerplate. Define tests as functions, run them from the CLI.
@@ -406,3 +407,9 @@ On failure, Phel shrinks the input to the smallest case that still fails, then r
 Available generators: `gen/int`, `gen/string`, `gen/boolean`, `gen/keyword`, `gen/tuple`, `gen/vector-of`, `gen/map-of`, `gen/one-of`, `gen/frequency`, `gen/such-that`, and more in [phel.test.gen](/documentation/reference/api/test-gen/).
 
 Opt out of shrinking with `^:no-shrink` metadata or `:shrink? false`.
+
+## Next steps
+
+- [Configuration](/documentation/configuration/): point `withTestDirs` at your test folders.
+- [CLI Commands](/documentation/tooling/cli-commands): the full `phel test` flag list.
+- [phel.test API](/documentation/reference/api/test): every assertion and helper.

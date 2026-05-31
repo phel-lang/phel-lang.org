@@ -1,8 +1,11 @@
 +++
 title = "Control flow"
 weight = 4
+description = "Branch, loop, and build collections with if, cond, case, loop/recur, for, and thread macros like cond->"
 aliases = ["/documentation/control-flow"]
 +++
+
+Everything that decides what runs next: conditionals (`if`, `cond`, `case`), iteration (`loop`/`recur`, `foreach`, `for`), and conditional threading.
 
 ## If
 
@@ -457,7 +460,7 @@ Like `cond->` but threads as last arg (thread-last).
 
 Evaluates _expr_ and throws it. Must implement PHP `Throwable`.
 
-## Try, catch, finally
+## Try, catch, and finally
 
 ```phel
 (try expr* catch-clause* finally-clause?)
@@ -482,55 +485,10 @@ Evaluates expressions. No exception: returns last value. Matching _catch-clause_
   (finally (print "test"))) ; Evaluates to "error" and prints "test"
 ```
 
-## Structured exceptions
+For catching PHP exceptions, structured errors with `ex-info`/`ex-data`, exception chaining, and guidance on when to throw, see [Error handling](/documentation/language/error-handling/).
 
-Exceptions carrying data maps, inspired by Clojure's `ex-info`. Useful for attaching context beyond a message.
+## Next steps
 
-### Creating with `ex-info`
-
-```phel
-(ex-info message data)
-(ex-info message data cause)
-```
-
-Exception with message, data map, optional cause:
-
-```phel
-(throw (ex-info "User not found" {:user-id 42 :status 404}))
-
-; With a cause (chaining exceptions)
-(try
-  (do-something-risky)
-  (catch Exception e
-    (throw (ex-info "Operation failed" {:step "processing"} e))))
-```
-
-### Inspecting
-
-Use `ex-data`, `ex-message`, `ex-cause`:
-
-```phel
-(def err (ex-info "Validation failed" {:field :email :reason "invalid format"}))
-
-(ex-message err)  ; => "Validation failed"
-(ex-data err)     ; => {:field :email :reason "invalid format"}
-(ex-cause err)    ; => nil (no cause provided)
-```
-
-### Example: error handling with data
-
-```phel
-(defn find-user [id]
-  (let [user (db-lookup id)]
-    (if (nil? user)
-      (throw (ex-info "User not found" {:user-id id :status 404}))
-      user)))
-
-(try
-  (find-user 42)
-  (catch Exception e
-    (let [data (ex-data e)]
-      (case (:status data)
-        404 (println "Not found:" (ex-message e))
-        403 (println "Forbidden:" (ex-message e))))))
-```
+- [Error handling](/documentation/language/error-handling/) - throw, catch, and structured errors in depth
+- [Functions and recursion](/documentation/language/functions-and-recursion/) - `loop`/`recur` and tail calls
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

@@ -1,6 +1,7 @@
 +++
 title = "Why Phel?"
 weight = 3
+description = "Honest answers for PHP developers: why a Lisp on PHP, what it costs, and where it fits."
 +++
 
 You know PHP. Why learn a Lisp on the same runtime?
@@ -63,9 +64,9 @@ No. `vendor/bin/phel run` or the REPL compiles transparently. No build pipeline,
 
 ## What about performance?
 
-Compiles to standard PHP. Runtime comparable to handwritten PHP. Persistent data structures add some overhead vs plain arrays since "modification" creates a new structure. Negligible for web, CLI, data processing.
+Phel compiles to plain PHP, so the bulk of your code runs at PHP speed. The real overhead is the persistent (immutable) data structures: an "update" allocates a new structure with structural sharing (O(log32 n)) rather than mutating in place, so they are slower than a native PHP array write. For most web, CLI, and data-processing work that cost is negligible.
 
-Trade-off: micro-performance for correctness and DX. For tight inner loops over millions of mutations, plain PHP arrays win. Otherwise immutability wins.
+In a hot inner loop over millions of elements, reach for native PHP arrays through [PHP interop](/documentation/php-interop/) (`php/aset`, `php/aget`, `php/apush`) and stay on the fast path, then hand the result back as a Phel value. Everywhere else, immutability buys correctness and clearer code for a price you will not notice.
 
 ## What about debugging?
 
@@ -94,3 +95,9 @@ Core is stable and tested. Good fit for:
 Community small but active. Need LTS-grade enterprise stability? Not yet. Want expressive PHP and OK being an early adopter? Phel delivers.
 
 See [awesome-phel](https://github.com/phel-lang/awesome-phel) for libraries, tools, and projects.
+
+## Next steps
+
+- [Getting Started](/documentation/getting-started): zero to a live REPL.
+- [PHP Interop](/documentation/php-interop): call any PHP function or class.
+- [Cheat Sheet](/documentation/reference/cheat-sheet): core syntax and functions in one page.

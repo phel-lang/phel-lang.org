@@ -1,10 +1,11 @@
 +++
 title = "Interfaces"
-weight = 11
+weight = 9
+description = "Define contracts with definterface, implement them in structs, extend types with protocols, and dispatch via hierarchies"
 aliases = ["/documentation/interfaces"]
 +++
 
-Interfaces define contracts: abstract sets of functions that structs must implement. Map directly to PHP interfaces.
+Interfaces define contracts: sets of methods that structs implement. They map directly to PHP interfaces. Protocols and hierarchies extend the same idea to types you do not control.
 
 ## Defining interfaces
 
@@ -283,3 +284,8 @@ Multimethods check the hierarchy for parent matches when dispatching:
 (draw {:type :rectangle :width 4 :height 3})
 ; => "Drawing a generic shape" (falls back to :shape via hierarchy)
 ```
+
+## Next steps
+
+- [Functions and recursion](/documentation/language/functions-and-recursion/) - multimethods for open dispatch
+- [Data structures](/documentation/language/data-structures/) - structs and the maps they build on
