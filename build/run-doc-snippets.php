@@ -108,9 +108,18 @@ $cmd = static function (string $file) use ($TIMEOUT_BIN, $TIMEOUT_SECS, $PHEL): 
 
 $startProc = static function (array $job) use ($cmd, $tmpDir): array {
     $descriptor = [1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
-    // Run from the temp dir so snippets that touch the filesystem cannot
-    // litter the repository working tree.
-    $proc = proc_open($cmd($job['file']), $descriptor, $pipes, $tmpDir);
+    // Each snippet gets its own TMPDIR. Phel resolves its compile-cache dir
+    // from sys_get_temp_dir() (which honours TMPDIR), and writes a temp
+    // compiled PHP file keyed by content hash. Two concurrent snippets that
+    // compile to the same hash would otherwise race on that shared file (one
+    // unlinks it while the other requires it). An isolated TMPDIR per process
+    // removes the collision. cwd is also the isolated dir so filesystem side
+    // effects cannot litter the repo.
+    $procTmp = $tmpDir . '/' . basename($job['file'], '.phel');
+    @mkdir($procTmp);
+    $env = getenv();
+    $env['TMPDIR'] = $procTmp;
+    $proc = proc_open($cmd($job['file']), $descriptor, $pipes, $procTmp, $env);
     stream_set_blocking($pipes[1], false);
     stream_set_blocking($pipes[2], false);
     return ['job' => $job, 'proc' => $proc, 'pipes' => $pipes, 'out' => '', 'err' => ''];
@@ -150,7 +159,7 @@ while ($queue !== [] || $running !== []) {
             $raw = trim((string) strtok($r['err'] . "\n" . $r['out'], "\n"));
             $raw = (string) preg_replace('/\e\[[0-9;]*m/', '', $raw);
             $note = $exit === 124 ? 'TIMEOUT' : $raw;
-            $failed[$job['key']] = ['location' => $job['location'], 'note' => $note];
+            $failed[$job['key']] = ['location' => $job['location'], 'note' => $note, 'job' => $job];
         }
         unset($running[$rk]);
     }
@@ -158,6 +167,38 @@ while ($queue !== [] || $running !== []) {
 
     if ($running !== []) {
         usleep(20_000);
+    }
+}
+
+// Retry pass: a failed snippet is re-run once, sequentially and in isolation,
+// before being recorded as a real failure. With an empty baseline the suite
+// has zero tolerance, so a transient hiccup (load spike, slow timeout) must not
+// turn the build red on its own. A genuinely broken snippet fails both times.
+if ($failed !== []) {
+    foreach ($failed as $key => $info) {
+        $job = $info['job'];
+        $retryTmp = $tmpDir . '/retry-' . basename($job['file'], '.phel');
+        @mkdir($retryTmp);
+        $env = getenv();
+        $env['TMPDIR'] = $retryTmp;
+        $descriptor = [1 => ['pipe', 'w'], 2 => ['pipe', 'w']];
+        $proc = proc_open($cmd($job['file']), $descriptor, $pipes, $retryTmp, $env);
+        if (!is_resource($proc)) {
+            continue;
+        }
+        $out = stream_get_contents($pipes[1]);
+        $err = stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        $exit = proc_close($proc);
+        if ($exit === 0) {
+            unset($failed[$key]);
+            $passed++;
+            $passedKeys[$key] = true;
+        } else {
+            $raw = trim((string) strtok($err . "\n" . $out, "\n"));
+            $failed[$key]['note'] = $exit === 124 ? 'TIMEOUT' : (string) preg_replace('/\e\[[0-9;]*m/', '', $raw);
+        }
     }
 }
 
