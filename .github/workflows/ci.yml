@@ -40,3 +40,6 @@ jobs:
 
       - name: Run tests
         run: vendor/bin/phpunit
+
+      - name: Run documentation snippets against the Phel runtime
+        run: composer test:snippets

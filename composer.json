@@ -44,6 +44,7 @@
             "php build/generate-releases.php"
         ],
         "test": "./vendor/bin/phpunit",
+        "test:snippets": "php build/run-doc-snippets.php",
         "post-update-cmd": [
             "php build/update-phel-version.php"
         ]
