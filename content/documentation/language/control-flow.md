@@ -9,6 +9,7 @@ Everything that decides what runs next: conditionals (`if`, `cond`, `case`), ite
 
 ## If
 
+<!-- phel-test: skip -->
 ```phel
 (if test then else?)
 ```
@@ -49,6 +50,7 @@ Only `false` and `nil` are falsy. Everything else truthy. PHP equivalent: `test 
 
 ## Case
 
+<!-- phel-test: skip -->
 ```phel
 (case test & pairs)
 ```
@@ -119,6 +121,7 @@ No `break`, no fall-through.
 
 ## Cond
 
+<!-- phel-test: skip -->
 ```phel
 (cond & pairs)
 ```
@@ -197,12 +200,14 @@ Cleaner than nested `if`. Use `:else` as a default.
 
 ## Loop
 
+<!-- phel-test: skip -->
 ```phel
 (loop [bindings*] expr*)
 ```
 
 Creates a lexical context with bindings and a recursion point at the top.
 
+<!-- phel-test: skip -->
 ```phel
 (recur expr*)
 ```
@@ -275,6 +280,7 @@ Critical for FP patterns in PHP.
 
 ## Foreach
 
+<!-- phel-test: skip -->
 ```phel
 (foreach [value valueExpr] expr*)
 (foreach [key value valueExpr] expr*)
@@ -321,6 +327,7 @@ foreach (["a" => 1, "b" => 2] as $k => $v) {
 
 `for` builds collections from existing ones. Combines `foreach`, `let`, `if`, `reduce`.
 
+<!-- phel-test: skip -->
 ```phel
 (for head body+)
 ```
@@ -389,6 +396,7 @@ Like Clojure `for` (`:let`, `:when`, nesting). `:reduce` is a Phel extension.
 
 ## Do
 
+<!-- phel-test: skip -->
 ```phel
 (do expr*)
 ```
@@ -413,6 +421,7 @@ Like `for` but for side-effects. Returns `nil` like `foreach`.
 
 ### cond->
 
+<!-- phel-test: skip -->
 ```phel
 (cond-> expr & clauses)
 ```
@@ -437,6 +446,7 @@ Threads expression through each form whose test is truthy (thread-first). Skips 
 
 ### cond->>
 
+<!-- phel-test: skip -->
 ```phel
 (cond->> expr & clauses)
 ```
@@ -454,6 +464,7 @@ Like `cond->` but threads as last arg (thread-last).
 
 ## Exceptions
 
+<!-- phel-test: skip -->
 ```phel
 (throw expr)
 ```
@@ -462,6 +473,7 @@ Evaluates _expr_ and throws it. Must implement PHP `Throwable`.
 
 ## Try, catch, and finally
 
+<!-- phel-test: skip -->
 ```phel
 (try expr* catch-clause* finally-clause?)
 ```

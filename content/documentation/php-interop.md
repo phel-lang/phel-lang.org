@@ -67,6 +67,7 @@ However, Phel provides functional equivalents for many operations. For example, 
 
 Namespaced PHP functions use full path after `php/`. Three equivalent forms accepted (added in 0.37, last two are backslash-free):
 
+<!-- phel-test: skip -->
 ```phel
 (php/Foo\Bar\baz)      ; classic backslash form
 (php/Foo.Bar/baz)      ; dot-separated, slash before fn name
@@ -77,6 +78,7 @@ Namespaced PHP functions use full path after `php/`. Three equivalent forms acce
 
 Capture into a Phel alias:
 
+<!-- phel-test: skip -->
 ```phel
 (def trap-signal php/\Amp.trapSignal)
 (trap-signal [2 15])
@@ -140,6 +142,7 @@ Import classes with `:use` to use the short `ClassName.` form without repeating 
 
 ## Method and property call
 
+<!-- phel-test: skip -->
 ```phel
 (php/-> object (methodname expr*))
 (php/-> object property)
@@ -149,6 +152,7 @@ Calls method or accesses property. Both `methodname` and `property` must be symb
 
 Chain multiple in one `php/->`. Each element evaluates on result of previous, enabling fluent chains or nested property access.
 
+<!-- phel-test: skip -->
 ```phel
 (ns my.module
   (:use DateInterval)
@@ -204,6 +208,7 @@ The `php/->` operator is inspired by Clojure's thread-first macro `->`, but spec
 
 ## Static method and property
 
+<!-- phel-test: skip -->
 ```phel
 (php/:: class (methodname expr*))
 (php/:: class property)
@@ -238,6 +243,7 @@ DateTimeImmutable/ATOM
 
 ## Set object properties
 
+<!-- phel-test: skip -->
 ```phel
 (php/oset (php/-> object property) value)
 (php/oset (php/:: class property) value)
@@ -268,6 +274,7 @@ $x->name = "foo";
 
 ## Get PHP array value
 
+<!-- phel-test: skip -->
 ```phel
 (php/aget arr index)
 ```
@@ -302,6 +309,7 @@ $arr[5] ?? null;  // Returns null
 
 ## Get nested PHP array value
 
+<!-- phel-test: skip -->
 ```phel
 (php/aget-in arr path)
 ```
@@ -345,6 +353,7 @@ This is similar to Phel's `get-in` for immutable data structures, but specifical
 
 ## Set PHP array value
 
+<!-- phel-test: skip -->
 ```phel
 (php/aset arr index value)
 ```
@@ -367,6 +376,7 @@ $arr[0] = "value";
 
 ## Set nested PHP array value
 
+<!-- phel-test: skip -->
 ```phel
 (php/aset-in arr path value)
 ```
@@ -398,6 +408,7 @@ This is the mutable counterpart to Phel's `assoc-in` for immutable data structur
 
 ## Append PHP array value
 
+<!-- phel-test: skip -->
 ```phel
 (php/apush arr value)
 ```
@@ -420,6 +431,7 @@ For immutable operations, use `conj` on Phel vectors instead.
 
 ## Unset PHP array value
 
+<!-- phel-test: skip -->
 ```phel
 (php/aunset arr index)
 ```
@@ -442,6 +454,7 @@ For immutable operations, use `dissoc` on Phel maps instead.
 
 ## Unset nested PHP array value
 
+<!-- phel-test: skip -->
 ```phel
 (php/aunset-in arr path)
 ```
@@ -512,6 +525,7 @@ PHP functions and methods throw native exceptions, and they cross the interop bo
 
 The `.method` shorthand and a `finally` clause work too:
 
+<!-- phel-test: skip -->
 ```phel
 (try
   (risky-php-call)

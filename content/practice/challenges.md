@@ -7,6 +7,7 @@ Time to put everything together. These challenges grow from gentle warm-ups into
 
 {% question(difficulty="hard") %}
 **Temperature converter**: write `c->f` and `f->c` to convert between Celsius and Fahrenheit. Then build `convert` so that `(convert 100 :c->f)` returns `212.0`.
+<!-- phel-test: skip -->
 ```phel
 (c->f 100)            ; => 212.0
 (f->c 32)             ; => 0.0
@@ -37,6 +38,7 @@ Learn more: [Functions and Recursion](/documentation/language/functions-and-recu
 - `"FizzBuzz"` if divisible by both
 - the number itself otherwise
 
+<!-- phel-test: skip -->
 ```phel
 (fizzbuzz 15)
 ;; => [1 2 "Fizz" 4 "Buzz" "Fizz" 7 8 "Fizz" "Buzz" 11 "Fizz" 13 14 "FizzBuzz"]
@@ -59,6 +61,7 @@ Learn more: [Control Flow](/documentation/language/control-flow), [Arithmetic](/
 
 {% question(difficulty="hard") %}
 **Fibonacci**: return the first `n` Fibonacci numbers.
+<!-- phel-test: skip -->
 ```phel
 (fib 8) ; => [0 1 1 2 3 5 8 13]
 ```
@@ -81,6 +84,7 @@ Learn more: [Control Flow](/documentation/language/control-flow), [Data Structur
 
 {% question(difficulty="hard") %}
 **Caesar cipher**: write `encode` and `decode` that shift lowercase letters by `n` positions. Leave other characters alone.
+<!-- phel-test: skip -->
 ```phel
 (encode "hello" 3)  ; => "khoor"
 (decode "khoor" 3)  ; => "hello"
@@ -125,6 +129,7 @@ Tips:
 ```
 {% end %}
 {% solution() %}
+<!-- phel-test: skip -->
 ```phel
 (def book-url "https://gist.githubusercontent.com/Chemaclass/da9a0ba72adee6644193c730d4f307b2/raw/1164593f76ae7157d816bcc8d700937dfb73420e/moby-dick.txt")
 (def full-book (php/file_get_contents book-url))
@@ -152,6 +157,7 @@ Learn more: [PHP Interop](/documentation/php-interop), [Data Structures](/docume
 
 {% question(difficulty="hard") %}
 **Counter with mutable state**: build a tiny counter using `atom` and `swap!`.
+<!-- phel-test: skip -->
 ```phel
 (reset-counter!)
 (tick!) (tick!) (tick!)
@@ -185,6 +191,7 @@ Requirements:
 - Loop until the user stops the program (Ctrl+C)
 
 Hints:
+<!-- phel-test: skip -->
 ```phel
 (def rock "r")
 (def paper "p")
@@ -197,6 +204,7 @@ Hints:
 ```
 {% end %}
 {% solution() %}
+<!-- phel-test: skip -->
 ```phel
 (def rock "r")
 (def paper "p")

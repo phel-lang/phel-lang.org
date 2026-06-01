@@ -41,6 +41,7 @@ Only `false` and `nil` are falsy. `0`, `""`, `[]` truthy.
 
 Names functions and variables:
 
+<!-- phel-test: skip -->
 ```phel
 symbol
 snake_case_symbol
@@ -345,7 +346,9 @@ Strings are iterable: work with `map`, `filter`, `count`, `frequencies`, `foreac
 PHP strings internally. Use `phel.string` for idiomatic string operations:
 
 ```phel
-;; Requires: (:require phel.string :as str)
+(ns example
+  (:require phel.string :as str))
+
 (count "hello")                      ; => 5
 (str/upper-case "hello")             ; => "HELLO"
 (str/replace "hello" "o" "0")        ; => "hell0"
@@ -473,6 +476,7 @@ Register with `register-tag`:
 
 In any source file:
 
+<!-- phel-test: skip -->
 ```phel
 #money [100 "EUR"]   ; => {:amount 100 :currency "EUR"}
 ```
@@ -534,6 +538,8 @@ Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some det
 ; Using with higher-order functions
 (map #(* % 2) [1 2 3])        ; => @[2 4 6]
 (filter #(> % 3) [1 5 2 8])   ; => @[5 8]
+
+(def users [{:name "Alice" :age 30} {:name "Bob" :age 25}])
 (sort-by #(get % :age) users)  ; Sort users by age
 ```
 

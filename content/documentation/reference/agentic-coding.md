@@ -97,6 +97,7 @@ vendor/bin/phel agent-install --all     # every adapter
 
 ## Core Forms
 
+<!-- phel-test: skip -->
 ```phel
 (def x 42)                         ; global binding
 (def- secret 7)                    ; private binding
@@ -140,8 +141,9 @@ vendor/bin/phel agent-install --all     # every adapter
 
 ## Namespaces
 
+File `src/my-app/users.phel`:
+
 ```phel
-;; src/my-app/users.phel
 (ns my-app.users
   (:require phel.string :as str)
   (:require phel.html :as h)
@@ -158,6 +160,7 @@ Rules:
 
 ## PHP Interop
 
+<!-- phel-test: skip -->
 ```phel
 (php/strlen "hi")                          ; call PHP function
 (php/new DateTimeImmutable "2024-01-15")   ; construct
@@ -217,6 +220,7 @@ Truthiness is in the [TL;DR](#tl-dr-for-agents).
 
 ## Tests
 
+<!-- phel-test: skip -->
 ```phel
 (ns my-app.users-test
   (:require phel.test :refer [deftest is])

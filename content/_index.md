@@ -23,11 +23,11 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
     <div id="animated-repl" aria-label="Phel REPL animation"></div>
     <noscript>
 <pre class="phel-terminal-session is-active"><span class="t-p">&gt;&gt;&gt;</span> <span class="t-in">(map inc [1 2 3])</span>
-<span class="t-out">(2 3 4)</span>
+<span class="t-out">@[2 3 4]</span>
 <span class="t-p">&gt;&gt;&gt;</span> <span class="t-in">(-&gt;&gt; (range 1 6) (filter odd?) (reduce +))</span>
 <span class="t-out">9</span>
 <span class="t-p">&gt;&gt;&gt;</span> <span class="t-in">(defn greet [name] (str "hello, " name))</span>
-<span class="t-out">user/greet</span>
+<span class="t-out">#'user/greet</span>
 <span class="t-p">&gt;&gt;&gt;</span> <span class="t-in">(greet "phel")</span>
 <span class="t-out">"hello, phel"</span></pre>
     </noscript>
@@ -116,6 +116,7 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 (defmacro unless [pred & body]
   `(if (not ~pred) (do ~@body)))
 
+(def x 5)
 (unless (zero? x)
   (println "x is non-zero")
   (/ 10 x))

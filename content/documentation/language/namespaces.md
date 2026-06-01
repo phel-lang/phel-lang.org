@@ -11,12 +11,14 @@ How Phel organizes code across files: every file declares a namespace with `ns`,
 
 Every Phel file needs a namespace. Names start with a letter, then letters/numbers/dashes. Parts separated by `.` (canonical) or `\` (legacy, still parses). Last part must match filename.
 
+<!-- phel-test: skip -->
 ```phel
 (ns name imports*)
 ```
 
 Sets the namespace and registers imports. `:use` for PHP classes, `:require` for Phel modules, `:require-file` for PHP files.
 
+<!-- phel-test: skip -->
 ```phel
 (ns my.custom.module
   (:require-file "vendor/autoload.php")
@@ -70,6 +72,7 @@ Module `util` in namespace `hello-world`:
 
 Module `main` imports `util`:
 
+<!-- phel-test: skip -->
 ```phel
 (ns hello-world.main
   (:require hello-world.util))
@@ -97,6 +100,7 @@ On collision, use a fully-qualified name to reach the original. A locally define
 
 `:refer` brings specific symbols into the current namespace so you can call them unqualified:
 
+<!-- phel-test: skip -->
 ```phel
 (ns hello-world.main
   (:require hello-world.util :refer [greet]))
@@ -120,6 +124,7 @@ This works for standard-library modules too:
 
 `:use` imports PHP classes:
 
+<!-- phel-test: skip -->
 ```phel
 (ns my.custom.module
   (:use Some.Php.ClassName))
@@ -127,6 +132,7 @@ This works for standard-library modules too:
 
 Reference by name:
 
+<!-- phel-test: skip -->
 ```phel
 (ClassName.)          ; preferred shorthand
 (php/new ClassName)   ; also valid
@@ -134,6 +140,7 @@ Reference by name:
 
 Aliases avoid collisions:
 
+<!-- phel-test: skip -->
 ```phel
 (ns my.custom.module
   (:use Some.Php.ClassName :as BetterClassName))
@@ -141,6 +148,7 @@ Aliases avoid collisions:
 
 Importing is preferred, but optional. Use full namespace inline if needed:
 
+<!-- phel-test: skip -->
 ```phel
 (php/new Some.Php.ClassName)   ; or: (Some.Php.ClassName.)
 ```

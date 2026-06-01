@@ -9,12 +9,14 @@ How Phel signals and recovers from failures: `throw` to raise, `try`/`catch`/`fi
 
 ## Throwing
 
+<!-- phel-test: skip -->
 ```phel
 (throw expr)
 ```
 
 `throw` evaluates _expr_ and throws it. The value must implement PHP's `Throwable` (every PHP exception does).
 
+<!-- phel-test: skip -->
 ```phel
 (throw (php/new \Exception "Something went wrong"))
 
@@ -24,6 +26,7 @@ How Phel signals and recovers from failures: `throw` to raise, `try`/`catch`/`fi
 
 ## Try, catch, finally
 
+<!-- phel-test: skip -->
 ```phel
 (try expr* catch-clause* finally-clause?)
 ```
@@ -92,11 +95,13 @@ try {
 
 A plain message is often not enough. `ex-info` builds an exception that carries a data map (and an optional cause), so handlers can branch on machine-readable context instead of parsing strings.
 
+<!-- phel-test: skip -->
 ```phel
 (ex-info message data)
 (ex-info message data cause)
 ```
 
+<!-- phel-test: skip -->
 ```phel
 (throw (ex-info "User not found" {:user-id 42 :status 404}))
 ```

@@ -9,6 +9,7 @@ Define and compose behavior: anonymous and named functions, multiple arities, ta
 
 ## Anonymous function (fn)
 
+<!-- phel-test: skip -->
 ```phel
 (fn [params*] expr*)
 
@@ -79,6 +80,7 @@ array_map(fn($x) => $x * 2, $array);
 
 ## Global functions
 
+<!-- phel-test: skip -->
 ```phel
 (defn name docstring? attributes? [params*] expr*)
 
@@ -116,6 +118,7 @@ Private functions don't export from the namespace. Two forms:
 1. `{:private true}` attribute
 2. `defn-` shorthand
 
+<!-- phel-test: skip -->
 ```phel
 (defn my-private-add-function
   {:private true}
@@ -133,6 +136,7 @@ Equivalent, but `defn-` is more concise.
 
 Tag a `defn` with metadata to wrap the body automatically (added in 0.37):
 
+<!-- phel-test: skip -->
 ```phel
 ;; Memoize results - keep every (args -> value) pair forever
 (defn ^:memoize fib [n]
@@ -283,6 +287,7 @@ Dispatch function can be anything, not just a keyword:
 
 ## Apply functions
 
+<!-- phel-test: skip -->
 ```phel
 (apply f expr*)
 ```

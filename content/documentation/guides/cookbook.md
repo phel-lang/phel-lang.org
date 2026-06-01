@@ -872,10 +872,24 @@ takes a name, the function, and a `[:=> [arg-schemas] ret-schema]` schema, and
 returns the wrapped function:
 
 ```phel
+(ns cookbook.schema-instrument
+  (:require phel.schema :as s))
+
+(def User
+  [:map
+   [:id   :int]
+   [:name :string]])
+
 (defn greet [u] (str "Hi " (:name u)))
 (def greet! (s/instrument! :greet greet [:=> [User] :string]))
 
 (greet! {:id 1 :name "Alice"})   ; => "Hi Alice"
+```
+
+Calling it with an argument that fails the schema throws:
+
+<!-- phel-test: skip -->
+```phel
 (greet! {:id "x" :name "Alice"}) ; throws: argument 0 failed schema
 ```
 

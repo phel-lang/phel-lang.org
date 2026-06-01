@@ -18,6 +18,7 @@ array_map($fn, $arr);
 str_contains($haystack, $needle);
 ```
 
+<!-- phel-test: skip -->
 ```phel
 ;; Phel
 (map fn arr)
@@ -51,7 +52,7 @@ Yes. Full interop through the `php/` prefix:
 
 ```phel
 (php/strlen "hello")                          ; => 5
-(php/new DateTimeImmutable "2024-01-15")      ; create object
+(def date (php/new DateTimeImmutable "2024-01-15")) ; create object
 (php/-> date (format "Y-m-d"))                ; call method
 (php/:: DateTimeImmutable ATOM)               ; static / constant
 ```

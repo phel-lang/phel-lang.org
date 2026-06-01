@@ -7,6 +7,7 @@ Decisions and loops without mutable variables. Each tool here fits a different s
 
 {% question(difficulty="easy") %}
 Define `absolute` returning the absolute value of a number using `if`.
+<!-- phel-test: skip -->
 ```phel
 (absolute -5) ; => 5
 (absolute 3)  ; => 3
@@ -26,6 +27,7 @@ Learn more: [Control Flow](/documentation/language/control-flow)
 
 {% question(difficulty="easy") %}
 Define a predicate `small?` that returns `true` for numbers under 100.
+<!-- phel-test: skip -->
 ```phel
 (small? 99)  ; => true
 (small? 100) ; => false
@@ -42,6 +44,7 @@ Learn more: [Control Flow](/documentation/language/control-flow)
 
 {% question(difficulty="easy") %}
 Use `when` to print a warning only if a number is negative. What does `when` return when the condition is false?
+<!-- phel-test: skip -->
 ```phel
 (warn-if-negative -5) ; prints "Warning: negative number!"
 (warn-if-negative 5)  ; => nil
@@ -60,6 +63,7 @@ Learn more: [Control Flow](/documentation/language/control-flow)
 
 {% question(difficulty="medium") %}
 Use `if-let` to greet a user by name only if the map has one:
+<!-- phel-test: skip -->
 ```phel
 (welcome {:name "Ada"}) ; => "Welcome, Ada!"
 (welcome {})            ; => "Welcome, stranger!"
@@ -79,6 +83,7 @@ Learn more: [Control Flow](/documentation/language/control-flow)
 
 {% question(difficulty="medium") %}
 Define `grade` mapping a score to a letter (A >= 90, B >= 80, C >= 70, F otherwise) with `cond`.
+<!-- phel-test: skip -->
 ```phel
 (grade 95) ; => "A"
 (grade 82) ; => "B"
@@ -102,6 +107,7 @@ Learn more: [Control Flow](/documentation/language/control-flow)
 
 {% question(difficulty="medium") %}
 Define `day-type` that classifies days using `case`:
+<!-- phel-test: skip -->
 ```phel
 (day-type :monday)   ; => "weekday"
 (day-type :saturday) ; => "weekend"
@@ -124,6 +130,7 @@ Learn more: [Control Flow](/documentation/language/control-flow)
 
 {% question(difficulty="medium") %}
 Pick the right tool. Write `describe-temp` for ranges:
+<!-- phel-test: skip -->
 ```phel
 (describe-temp 35)  ; => "hot"
 (describe-temp 20)  ; => "nice"

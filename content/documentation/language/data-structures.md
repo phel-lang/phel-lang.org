@@ -102,8 +102,8 @@ Key-value pairs in any order. Each key once. Any value implementing `HashableInt
 Create with braces or `hash-map`:
 
 ```phel
-{:key1 value1 :key2 value2}          ; A new hash-map using shortcut syntax
-(hash-map :key1 value1 :key2 value2) ; A new hash-map using the function
+{:key1 "value1" :key2 "value2"}          ; A new hash-map using shortcut syntax
+(hash-map :key1 "value1" :key2 "value2") ; A new hash-map using the function
 
 ;; Any type can be a key
 {[1 2] "vector-key" :keyword "keyword-key" "string" "string-key"}
@@ -619,6 +619,9 @@ Common transducer producers:
 `postwalk` applies bottom-up (children first). `prewalk` applies top-down:
 
 ```phel
+(ns example
+  (:require phel.walk :refer [postwalk prewalk]))
+
 ;; Double every number in a nested structure
 (postwalk #(if (number? %) (* % 2) %)
           {:a 1 :b [2 3] :c {:d 4}})
@@ -635,6 +638,9 @@ Common transducer producers:
 Replace values via map lookup:
 
 ```phel
+(ns example
+  (:require phel.walk :refer [postwalk-replace]))
+
 (postwalk-replace {:a :alpha :b :beta}
                   [:a {:b :c}])
 ;; => [:alpha {:beta :c}]
@@ -645,6 +651,9 @@ Replace values via map lookup:
 Convert map keys between keywords and strings. Useful for PHP arrays or JSON:
 
 ```phel
+(ns example
+  (:require phel.walk :refer [keywordize-keys stringify-keys]))
+
 (keywordize-keys {"name" "Alice" "age" 30})
 ;; => {:name "Alice" :age 30}
 

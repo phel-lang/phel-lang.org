@@ -14,6 +14,7 @@ Quick reference for Phel syntax and core functions.
 
 ## Basic syntax
 
+<!-- phel-test: skip -->
 ```phel
 ;; This is a standalone comment
 ; inline comment (after an expression)
@@ -21,7 +22,7 @@ Quick reference for Phel syntax and core functions.
 nil                     ; null value
 true false              ; booleans (only false and nil are falsy)
 42 -3 1.5 3.14e2        ; numbers
-0xFF 0b1010 0o17        ; hex, binary, octal
+0xFF 0b1010 017         ; hex, binary, octal
 "hello" "line\nbreak"   ; strings
 :keyword :status        ; keywords (interned constants)
 my-var my-module/fn     ; symbols
@@ -34,6 +35,7 @@ See [Basic Types](/documentation/language/basic-types).
 
 ## Reader syntax
 
+<!-- phel-test: skip -->
 ```phel
 @my-var                 ; shorthand for (deref my-var)
 #"pattern"              ; regex literal (PCRE)
@@ -138,6 +140,7 @@ See [Destructuring](/documentation/language/destructuring).
 
 ## Defining things
 
+<!-- phel-test: skip -->
 ```phel
 (def pi 3.14159)                  ; global binding
 (def secret :private 42)          ; private binding
@@ -166,6 +169,7 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 
 ## Functions
 
+<!-- phel-test: skip -->
 ```phel
 (fn [x] (* x 2))                  ; anonymous function
 #(* % 2)                           ; short form (single param)
@@ -198,6 +202,7 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion).
 
 ## Control flow
 
+<!-- phel-test: skip -->
 ```phel
 (if (> x 0) "pos" "non-pos")      ; if/else
 (when (> x 0) (print "pos"))      ; when (no else branch)
@@ -240,6 +245,8 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 ## Collections
 
 ```phel
+(def users [{:role :admin} {:role :user} {:role :admin}])
+
 (map inc [1 2 3])                  ; => @[2 3 4]
 (filter even? [1 2 3 4])          ; => @[2 4]
 (reduce + 0 [1 2 3])              ; => 6
@@ -270,6 +277,7 @@ See [Data Structures](/documentation/language/data-structures).
 
 Requires `(:require phel.walk :refer [postwalk prewalk postwalk-replace keywordize-keys stringify-keys])`.
 
+<!-- phel-test: skip -->
 ```phel
 (postwalk f nested)                ; transform bottom-up
 (prewalk f nested)                 ; transform top-down
@@ -282,6 +290,7 @@ See [Data Structures](/documentation/language/data-structures/#walking-data-stru
 
 ## Lazy sequences
 
+<!-- phel-test: skip -->
 ```phel
 (take 5 (range))                   ; => @[0 1 2 3 4]
 (take 5 (iterate inc 0))          ; => @[0 1 2 3 4]
@@ -311,6 +320,7 @@ See [Data Structures](/documentation/language/data-structures/#walking-data-stru
 
 Lazy file I/O:
 
+<!-- phel-test: skip -->
 ```phel
 (line-seq (php/fopen "file.txt" "r"))  ; lazy line-by-line reading
 (file-seq "src/")                       ; lazy recursive directory listing
@@ -355,6 +365,9 @@ Lazy file I/O:
 Requires `(:require phel.string :as str)`:
 
 ```phel
+(ns my-app.strings
+  (:require phel\string :as str))
+
 (str/lower-case "HELLO")           ; => "hello"
 (str/upper-case "hello")           ; => "HELLO"
 (str/replace "foo" "o" "0")        ; => "f00"
@@ -415,6 +428,7 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 
 ## Error handling
 
+<!-- phel-test: skip -->
 ```phel
 (try
   (/ 1 0)
@@ -500,15 +514,15 @@ Polymorphic dispatch on the first argument's type. More flexible than interfaces
 Ad-hoc hierarchies for multimethods and `isa?`.
 
 ```phel
-(derive :square :shape)
-(derive :circle :shape)
-(derive :filled-square :square)
+(derive :shape/square :shape/poly)
+(derive :shape/circle :shape/poly)
+(derive :shape/filled-square :shape/square)
 
-(isa? :square :shape)              ; => true
-(isa? :filled-square :shape)       ; => true
-(parents :square)                  ; => #{:shape}
-(ancestors :filled-square)         ; => #{:square :shape}
-(descendants :shape)               ; => #{:square :circle :filled-square}
+(isa? :shape/square :shape/poly)         ; => true
+(isa? :shape/filled-square :shape/poly)  ; => true
+(parents :shape/square)                  ; => #{:shape/poly}
+(ancestors :shape/filled-square)         ; => #{:shape/square :shape/poly}
+(descendants :shape/poly)                ; => #{:shape/square :shape/circle :shape/filled-square}
 
 (make-hierarchy)                   ; => {:parents {}, :descendants {}, :ancestors {}}
 ```
@@ -545,6 +559,7 @@ Composable transformations independent of the data source. Avoid intermediate co
 
 ## PHP interop
 
+<!-- phel-test: skip -->
 ```phel
 ;; Calling PHP functions
 (php/strlen "test")                ; => 4
@@ -579,6 +594,7 @@ See [PHP Interop](/documentation/php-interop).
 
 ## Namespaces
 
+<!-- phel-test: skip -->
 ```phel
 (ns my-app.handlers
   (:require my-app.db)              ; import Phel module
@@ -704,6 +720,10 @@ Integer division (`/`) returns a `Ratio` when not evenly divisible. Use `float` 
 ## Serialization (EDN & Transit)
 
 ```phel
+(ns my-app.serialize
+  (:require phel\edn :as edn)
+  (:require phel\transit :as transit))
+
 ;; phel.edn: eval-free EDN read/write (data only, no code execution)
 (edn/read-string "{:a 1 :b [2 3]}")    ; => {:a 1, :b [2 3]}
 (edn/write-string {:a 1 :b [2 3]})     ; => "{:a 1, :b [2 3]}"
@@ -719,6 +739,9 @@ Require with `(:require phel.edn :as edn)` / `(:require phel.transit :as transit
 ## Reflection
 
 ```phel
+(ns my-app.introspect
+  (:require phel\reflect :as reflect))
+
 ;; phel.reflect: introspect PHP classes via reflection
 (reflect/class-info \DateTime)         ; => map of name, methods, properties, ...
 (reflect/methods \DateInterval)        ; => vector of method-info maps
@@ -730,6 +753,7 @@ Require with `(:require phel.reflect :as reflect)`.
 
 ## REPL utilities
 
+<!-- phel-test: skip -->
 ```phel
 (source my-fn)                     ; print source code of a function
 (phel.repl/find-fn "map")          ; search for functions by name

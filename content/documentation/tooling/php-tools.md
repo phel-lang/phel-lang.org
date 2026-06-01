@@ -16,14 +16,14 @@ Any PHP function via `php/` prefix:
 (def v (+ 2 2))
 (php/var_dump v)
 ;; OUTPUT:
-int(4)
+;; int(4)
 ```
 
 ```phel 
 ;; Directly dumping the result of a function
 (php/var_dump (+ 3 3))
 ;; OUTPUT:
-int(6)
+;; int(6)
 ```
 
 `(php/die)` halts execution so you can inspect at leisure.
@@ -55,7 +55,8 @@ Use [Symfony VarDumper](https://symfony.com/doc/current/components/var_dumper.ht
 
 `dd()` dumps and halts:
 
-```phel 
+<!-- phel-test: skip -->
+```phel
 (php/dd (+ 5 5))
 ;; OUTPUT:
 10
@@ -71,6 +72,7 @@ Use [Symfony VarDumper](https://symfony.com/doc/current/components/var_dumper.ht
 
 ### Best practices
 
+<!-- phel-test: skip -->
 ```phel
 ;; Use dump() during development
 (defn process-user [user]

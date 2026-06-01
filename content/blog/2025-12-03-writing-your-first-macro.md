@@ -14,6 +14,7 @@ Regular functions receive values and return values. Macros receive *code* and re
 
 Say you keep writing this pattern:
 
+<!-- phel-test: skip -->
 ```phel
 (when (not logged-in?)
   (redirect "/login"))
@@ -21,6 +22,7 @@ Say you keep writing this pattern:
 
 You could wrap it in a function, but then `logged-in?` would be evaluated before the function even sees it. With a macro you create actual new syntax:
 
+<!-- phel-test: skip -->
 ```phel
 (defmacro unless [test & body]
   `(if ~test nil (do ~@body)))
@@ -71,6 +73,7 @@ What is happening here:
 
 When you write:
 
+<!-- phel-test: skip -->
 ```phel
 (unless (> x 10)
   (print "x is small")
@@ -79,6 +82,7 @@ When you write:
 
 Phel transforms it at compile time to:
 
+<!-- phel-test: skip -->
 ```phel
 (if (> x 10) nil (do (print "x is small") (log-warning "check the value")))
 ```
@@ -89,6 +93,7 @@ No runtime overhead, no string manipulation, no `eval()`.
 
 Here is something you cannot do with a plain function. Say you want to measure how long a chunk of code takes. Phel's core has a `time` macro that does exactly this:
 
+<!-- phel-test: skip -->
 ```phel
 (defmacro time
   "Evaluates expr and prints the time it took. Returns the value of expr."

@@ -21,6 +21,7 @@ Learn more: [Global and Local Bindings](/documentation/language/global-and-local
 
 {% question(difficulty="easy") %}
 Use `defn` to define a function `hello` that takes no arguments and returns `"hello!"`.
+<!-- phel-test: skip -->
 ```phel
 (hello) ; => "hello!"
 ```
@@ -54,7 +55,9 @@ Add a docstring to `double`. Then look it up with `(doc double)`.
   "Multiplies the given number by 2."
   [n]
   (* n 2))
-
+```
+<!-- phel-test: skip -->
+```phel
 (doc double)
 ```
 Docstrings sit between the name and the parameter list. `doc` reads them back at the REPL - your future self will thank you.
@@ -128,6 +131,7 @@ Learn more: [Functions and Recursion](/documentation/language/functions-and-recu
 
 {% question(difficulty="medium") %}
 Define `greet` with an optional second argument that defaults to `"Hello"`:
+<!-- phel-test: skip -->
 ```phel
 (greet "Ada")           ; => "Hello, Ada!"
 (greet "Ada" "Welcome") ; => "Welcome, Ada!"
@@ -147,6 +151,7 @@ Learn more: [Functions and Recursion](/documentation/language/functions-and-recu
 
 {% question(difficulty="medium") %}
 Build `make-adder` so that `(make-adder n)` returns a function that adds `n` to its argument:
+<!-- phel-test: skip -->
 ```phel
 (def add5 (make-adder 5))
 (add5 10) ; => 15
@@ -168,6 +173,7 @@ Learn more: [Functions and Recursion](/documentation/language/functions-and-recu
 
 {% question(difficulty="medium") %}
 Implement `factorial` using recursion.
+<!-- phel-test: skip -->
 ```phel
 (factorial 5) ; => 120
 ```

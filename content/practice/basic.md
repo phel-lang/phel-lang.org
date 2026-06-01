@@ -129,6 +129,7 @@ Learn more: [Truth and Boolean Operations](/documentation/language/truth-and-boo
 What happens if you evaluate `(+ 1 "hello")`? Try it. Then inspect `(type 42)` and `(type "hi")`.
 {% end %}
 {% solution() %}
+<!-- phel-test: skip -->
 ```phel
 (+ 1 "hello") ; => Error! Numbers and strings don't add.
 (type 42)     ; => :int

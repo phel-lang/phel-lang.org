@@ -55,12 +55,17 @@ class MathTest extends TestCase {
 The `is` macro defines assertions. Optional second argument is a description string shown on failure.
 
 ```phel
-(is (= 4 (+ 2 2)))
-(is (= 4 (+ 2 2)) "2 + 2 should be 4")
+(ns my-app.is-test
+  (:require phel.test :refer [deftest is]))
+
+(deftest assertions
+  (is (= 4 (+ 2 2)))
+  (is (= 4 (+ 2 2)) "2 + 2 should be 4"))
 ```
 
 ### Equality and predicates
 
+<!-- phel-test: skip -->
 ```phel
 (is (= expected actual))           ; equality
 (is (true? value))                 ; predicate
@@ -83,20 +88,28 @@ FAIL (= a b)
 ### Exceptions
 
 ```phel
-;; assert throws
-(is (thrown? Exception
-      (throw (php/new Exception "test"))))
+(ns my-app.exception-test
+  (:require phel.test :refer [deftest is]))
 
-;; assert throws with specific message
-(is (thrown-with-msg? Exception "test"
-      (throw (php/new Exception "test"))))
+(deftest exception-assertions
+  ;; assert throws
+  (is (thrown? Exception
+        (throw (php/new Exception "test"))))
+
+  ;; assert throws with specific message
+  (is (thrown-with-msg? Exception "test"
+        (throw (php/new Exception "test")))))
 ```
 
 ### Output
 
 ```phel
-;; assert what gets printed to stdout
-(is (output? "hello" (print "hello")))
+(ns my-app.output-test
+  (:require phel.test :refer [deftest is]))
+
+(deftest output-assertion
+  ;; assert what gets printed to stdout
+  (is (output? "hello" (print "hello"))))
 ```
 
 {% php_note() %}
@@ -132,6 +145,7 @@ echo "hello";
 
 `deftest` defines a test. Each test can contain any number of `is` assertions. A test passes when all assertions pass.
 
+<!-- phel-test: skip -->
 ```phel
 (ns my-app.cart-test
   (:require phel.test :refer [deftest is])
@@ -218,6 +232,7 @@ Filter by tag, namespace glob, or regex:
 
 Tag tests with metadata:
 
+<!-- phel-test: skip -->
 ```phel
 (deftest ^:integration full-signup-flow
   ...)
@@ -262,6 +277,9 @@ Both support filtering, verbose output, specific files.
 Run tests from Phel code with `run-tests`. Takes options map (can be empty) and one or more namespaces.
 
 ```phel
+(ns my-app.runner
+  (:require phel.test :refer [run-tests]))
+
 (run-tests {} 'my.ns.a 'my.ns.b)
 ```
 
@@ -269,6 +287,7 @@ Run tests from Phel code with `run-tests`. Takes options map (can be empty) and 
 
 Run tests for a single namespace from the REPL:
 
+<!-- phel-test: skip -->
 ```phel
 (ns my-app.tests
   (:require phel.test :refer [deftest is])
@@ -284,6 +303,7 @@ Useful for REPL-driven feedback without running the full suite.
 
 Manage stats programmatically:
 
+<!-- phel-test: skip -->
 ```phel
 ; Reset test counters to zero
 (reset-stats)
@@ -334,6 +354,10 @@ Useful in REPL to isolate or reset state between runs.
 ### Inspecting calls
 
 ```phel
+(ns my-app.mock-test
+  (:require phel.mock :refer [mock calls call-count called?
+                              called-with? called-once? never-called?]))
+
 (def m (mock :result))
 (m "a" "b")
 (m "c")
@@ -351,6 +375,10 @@ Useful in REPL to isolate or reset state between runs.
 `with-mocks` temporarily replaces functions via dynamic binding. Auto-resets after the block:
 
 ```phel
+(ns my-app.with-mocks-test
+  (:require phel.test :refer [deftest is])
+  (:require phel.mock :refer [mock with-mocks called-once?]))
+
 (defn fetch-user [id]
   ;; ... makes HTTP call ...
   )

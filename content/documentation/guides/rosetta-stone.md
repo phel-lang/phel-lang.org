@@ -134,9 +134,10 @@ function area(float $r): float {
 **Phel**
 
 ```phel
-(let [[first second & rest] [1 2 3 4 5]]
-  rest) ; => [3 4 5]
+(let [[a b & rest] [1 2 3 4 5]]
+  rest) ; => @[3 4 5]
 
+(def user {:name "Alice" :age 30})
 (let [{:name name :age age} user]
   (str name " is " age))
 ```
@@ -167,6 +168,7 @@ is_array($x);     // true/false
 **Phel**
 
 ```phel
+(def x "hello")
 (string? x)       ; true/false
 (int? x)          ; true/false
 (nil? x)          ; true/false
@@ -608,6 +610,9 @@ $price = sprintf("$%.2f", $amount);
 **Phel**
 
 ```phel
+(def name "Alice")
+(def age 30)
+(def amount 9.5)
 (def msg (format "Hello, %s! You are %d." name age))
 (def price (format "$%.2f" amount))
 ```
@@ -636,7 +641,9 @@ $joined = implode("-", $parts);      // "a-b-c"
 **Phel**
 
 ```phel
-;; Requires: (:require phel.string :as str)
+(ns my-app
+  (:require phel.string :as str))
+
 (def parts (str/split "a,b,c" #",")) ; ["a" "b" "c"]
 (def joined (str/join "-" parts))    ; "a-b-c"
 ```
@@ -667,7 +674,9 @@ $upper = strtoupper("hello");            // "HELLO"
 **Phel**
 
 ```phel
-;; Requires: (:require phel.string :as str)
+(ns my-app
+  (:require phel.string :as str))
+
 (def sub (str/subs "Hello World" 0 5))        ; "Hello"
 (def has (str/starts-with? "Hello" "He"))     ; true
 (def upper (str/upper-case "hello"))          ; "HELLO"
@@ -735,6 +744,7 @@ if ($age >= 18) {
 **Phel**
 
 ```phel
+(def age 21)
 (def status
   (if (>= age 18) "adult" "minor"))
 ```
@@ -767,6 +777,7 @@ switch ($code) {
 **Phel**
 
 ```phel
+(def code 404)
 (def msg
   (case code
     200 "OK"
@@ -798,6 +809,8 @@ $display = $user['name'] ?: "Anonymous";
 **Phel**
 
 ```phel
+(def count 3)
+(def user {:name "Alice"})
 (def label (if (> count 0) "has items" "empty"))
 (def display (or (:name user) "Anonymous"))
 ```
@@ -826,6 +839,8 @@ $host = $config['db']['host'] ?? "localhost";
 **Phel**
 
 ```phel
+(def input nil)
+(def config {:db {:host "db.example.com"}})
 (def name (or input "default"))
 (def host
   (or (get-in config [:db :host]) "localhost"))
@@ -862,6 +877,9 @@ foreach ($map as $key => $value) {
 **Phel**
 
 ```phel
+(def items ["a" "b" "c"])
+(def my-map {:x 1 :y 2})
+
 (foreach [item items]
   (println item))
 
@@ -1031,6 +1049,11 @@ $result = $date->modify("+1 month")->format("Y-m-d");
 **Phel**
 
 ```phel
+(ns my.module
+  (:use DateTimeImmutable))
+
+(def date (DateTimeImmutable. "2024-01-15"))
+
 (def formatted (.format date "Y-m-d"))   ; shorthand
 ;; also:       (php/-> date (format "Y-m-d"))
 (def result
@@ -1202,7 +1225,10 @@ $result = implode(", ",
 **Phel**
 
 ```phel
-;; Requires: (:require phel.string :as str)
+(ns my-app
+  (:require phel.string :as str))
+
+(def names ["Alice" "Bob" "Eve" "Charlie"])
 (def result
   (->> names
        (filter #(> (count %) 3))

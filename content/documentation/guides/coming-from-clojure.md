@@ -33,6 +33,8 @@ Clojure intuition carries over.
 **Threading macros:** `->`, `->>`, `as->` work as in Clojure:
 
 ```phel
+(def users [{:name "Alice" :active true} {:name "Bob" :active false}])
+
 (->> users
      (filter :active)
      (map :name)
@@ -115,6 +117,7 @@ Phel supports Clojure-style `defmulti` / `defmethod` with hierarchy-aware dispat
 
 `:tag` metadata emits PHP type declarations. Phel also infers return types from primitive operations:
 
+<!-- phel-test: skip -->
 ```phel
 ;; Explicit tags
 (defn ^int add [^int a ^int b]
@@ -253,6 +256,8 @@ Keywords act as functions on maps in both: `(:name user)`.
 
 ```phel
 ;; Phel
+(def name "Alice")
+(def age 30)
 (str "Hello, " name "!")
 (format "Hello, %s! You are %d." name age)
 ```
@@ -293,7 +298,7 @@ Both use `{}`. Keyword keys idiomatic:
 
 ```phel
 ;; Phel
-{:name "Alice" :age 30}
+(def user {:name "Alice" :age 30})
 (get user :name)
 (:name user)
 (assoc user :role :admin)
@@ -362,9 +367,9 @@ Phel's equivalent of Clojure's Java interop. `php/` prefix unlocks the PHP ecosy
 ### Calling PHP functions
 
 ```phel
-(php/strlen "hello")             ; => 5
-(php/array_reverse [3 1 2])     ; PHP array_reverse
-(php/date "Y-m-d")              ; => "2024-01-15"
+(php/strlen "hello")                        ; => 5
+(php/array_reverse (to-php-array [3 1 2]))  ; PHP array_reverse
+(php/date "Y-m-d")                          ; => "2024-01-15"
 (php/json_encode (to-php-array {:a 1}))
 ```
 
@@ -372,16 +377,20 @@ Phel's equivalent of Clojure's Java interop. `php/` prefix unlocks the PHP ecosy
 
 ```phel
 (ns my.app
-  (:use DateTimeImmutable)
-  (:use PDO))
+  (:use DateTimeImmutable))
 
 (def now (php/new DateTimeImmutable))
-(def db (php/new PDO "sqlite::memory:"))
+(def db (php/new \PDO "sqlite::memory:"))
 ```
 
 ### Method calls
 
 ```phel
+(ns my.app
+  (:use DateTimeImmutable))
+
+(def now (php/new DateTimeImmutable))
+
 ;; Instance methods - two equivalent forms:
 (php/-> now (format "Y-m-d"))
 (.format now "Y-m-d")            ; .method shorthand

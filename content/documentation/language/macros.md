@@ -35,6 +35,7 @@ This works because **Phel code is data**. The call `(unless false "yes" "no")` i
 
 `defn` itself expands to `def` + `fn`:
 
+<!-- phel-test: skip -->
 ```phel
 (defn add [a b] (+ a b))
 ;; expands to:
@@ -73,6 +74,7 @@ Quote distinguishes code from data, making macros possible. Literals (numbers, s
 
 ## Define a macro
 
+<!-- phel-test: skip -->
 ```phel
 (defmacro name docstring? attributes? [params*] expr*)
 ```

@@ -44,6 +44,9 @@ A handler returns a response, built with `response-from-map` from [Request and R
 (ns my-app
   (:require phel.router :as router))
 
+(def routes
+  [["/" {:get {:handler (fn [request] {:status 200 :body "Home"})}}]])
+
 (def app
   (router/handler (router/router routes)))
 ```
@@ -51,6 +54,15 @@ A handler returns a response, built with `response-from-map` from [Request and R
 `handler` accepts options for the error cases:
 
 ```phel
+(ns my-app
+  (:require phel.router :as router))
+
+(def routes
+  [["/" {:get {:handler (fn [request] {:status 200 :body "Home"})}}]])
+
+(defn logging-mw [handler]
+  (fn [request] (handler request)))
+
 (router/handler (router/router routes)
   {:not-found          (fn [_] {:status 404 :body "Not found"})
    :method-not-allowed (fn [_] {:status 405 :body "Method not allowed"})
@@ -70,6 +82,13 @@ A handler returns a response, built with `response-from-map` from [Request and R
 `match-by-path` tells you which route a path resolves to without invoking a handler. `match-by-name` and `generate` build URLs from a route `:name`.
 
 ```phel
+(ns my-app
+  (:require phel.router :as router))
+
+(def routes
+  [["/users/{id}" {:name :user
+                   :get {:handler (fn [request] {:status 200 :body "User"})}}]])
+
 (router/match-by-path (router/router routes) "/users/42")
 ;; the matched route data, including :path-params {:id 42}
 
@@ -83,6 +102,7 @@ Most of the time you skip these and let `handler` do the matching and dispatch i
 
 Putting it together: read the request, let the router pick and run a handler, emit the response.
 
+<!-- phel-test: skip -->
 ```phel
 (ns my-app
   (:require phel.http :as http)
@@ -103,6 +123,7 @@ The flow is: request (from [Request and Response](/documentation/web/http-reques
 
 `compiled-router` precompiles the route table with Symfony's compiled matcher, around 3x faster for large tables. It runs at macro-expansion time, so the routes must be a literal vector at the call site, not built from runtime values. Use `router` when routes are dynamic.
 
+<!-- phel-test: skip -->
 ```phel
 (router/handler
   (router/compiled-router

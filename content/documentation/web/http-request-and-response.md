@@ -48,9 +48,10 @@ Request struct:
 
 Import `phel.http`, call `request-from-globals`:
 
+<!-- phel-test: skip -->
 ```phel
 (ns my-namespace
-  (:require phel.http))
+  (:require phel.http :as http))
 
 (http/request-from-globals) ; Evaluates to a request struct
 ```
@@ -99,6 +100,7 @@ Send with `emit-response`:
 
 A minimal web entry point reads the request, branches on method and path, builds a response, and emits it. Here `get-in` reads the path from the nested `uri` struct.
 
+<!-- phel-test: skip -->
 ```phel
 (ns my-app
   (:require phel.http :as http)

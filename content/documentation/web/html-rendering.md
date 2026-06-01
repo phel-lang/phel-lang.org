@@ -21,6 +21,7 @@ Build HTML from plain Phel data: vectors are elements, maps are attributes, and 
 
 Forms:
 
+<!-- phel-test: skip -->
 ```phel
 [tag body+]
 [tag attributes body+]
@@ -29,6 +30,9 @@ Forms:
 First item: tag name (keyword or string). Second item: optional attribute map. Rest: body (strings, nested vectors, lists).
 
 ```phel
+(ns my-app
+  (:require phel.html :refer [html]))
+
 (html [:div]) ; Evaluates to "<div></div>"
 (html ["div"]) ; Evaluates to "<div></div>"
 (html [:text "Lorem Ipsum"]) ; Evaluates to "<text>Lorem Ipsum</text>"
@@ -43,6 +47,9 @@ Phel enhances `class` and `style` attributes.
 Use a map for styles instead of a string. Both forms equivalent:
 
 ```phel
+(ns my-app
+  (:require phel.html :refer [html]))
+
 (html [:div {:style "background:green;color:red;"} "bar"])
 (html [:div {:style {:background "green" :color "red"}} "bar"])
 ;; Both evaluate to
@@ -52,6 +59,9 @@ Use a map for styles instead of a string. Both forms equivalent:
 Class lists: vector or map. Map keys are class names; only truthy keys appear in the final list.
 
 ```phel
+(ns my-app
+  (:require phel.html :refer [html]))
+
 (html [:div {:class [:a]}]) ; <div class=\"a\"></div>
 (html [:div {:class [:a "b"]}]) ; <div class=\"a b\"></div>
 (html [:div {:class [:a :b]}]) ; <div class=\"a b\"></div>
@@ -63,6 +73,9 @@ Class lists: vector or map. Map keys are class names; only truthy keys appear in
 Use `if`:
 
 ```phel
+(ns my-app
+  (:require phel.html :refer [html]))
+
 (html [:div [:p "a"] (if true [:p "b"] [:p "c"])])
 ;; Evaluates to "<div><p>a</p><p>b</p></div>"
 (html [:div [:p "a"] (if false [:p "b"] [:p "c"])])
@@ -74,6 +87,9 @@ Use `if`:
 `for` over vectors, lists, sets:
 
 ```phel
+(ns my-app
+  (:require phel.html :refer [html]))
+
 (html [:ul (for [i :range [0 3]] [:li i])])
 ;; Evaluates to "<ul><li>0</li><li>1</li><li>2</li></ul>"
 
@@ -86,6 +102,9 @@ Use `if`:
 Values auto-escape for XSS protection. For unescaped output, use `raw-string`:
 
 ```phel
+(ns my-app
+  (:require phel.html :refer [html raw-string]))
+
 (html [:span (raw-string "<a></a>")])
 ;; Evaluates to "<span><a></a></span>"
 ```
@@ -95,6 +114,9 @@ Values auto-escape for XSS protection. For unescaped output, use `raw-string`:
 Use `doctype` for the document doctype:
 
 ```phel
+(ns my-app
+  (:require phel.html :refer [html doctype]))
+
 (html (doctype :html5) [:div])
 ;; Evaluates to "<!DOCTYPE html>\n<div></div>"
 ```

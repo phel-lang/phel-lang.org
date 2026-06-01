@@ -37,6 +37,10 @@ Only structs implement interfaces. A struct is a typed map with fixed keys, comp
 Add implementations after the field list in `defstruct`:
 
 ```phel
+(definterface Shape
+  (area [this] "Computes the area of the shape.")
+  (perimeter [this] "Computes the perimeter of the shape."))
+
 (defstruct circle [radius]
   Shape
   (area [this] (* 3.14159 radius radius))
@@ -55,6 +59,20 @@ Struct fields (`radius`, `width`, `height`) are directly accessible inside metho
 Like regular functions, struct first:
 
 ```phel
+(definterface Shape
+  (area [this])
+  (perimeter [this]))
+
+(defstruct circle [radius]
+  Shape
+  (area [this] (* 3.14159 radius radius))
+  (perimeter [this] (* 2 3.14159 radius)))
+
+(defstruct rectangle [width height]
+  Shape
+  (area [this] (* width height))
+  (perimeter [this] (* 2 (+ width height))))
+
 (area (circle 5))           ; => 78.53975
 (perimeter (circle 5))      ; => 31.4159
 
@@ -67,6 +85,10 @@ Like regular functions, struct first:
 A struct can implement many. List each followed by its methods:
 
 ```phel
+(definterface Shape
+  (area [this])
+  (perimeter [this]))
+
 (definterface Describable
   (describe [this]))
 
@@ -86,6 +108,9 @@ A struct can implement many. List each followed by its methods:
 Interface dispatch routes through the generated function, not through `this` directly. To call another interface method on the same struct from within a method body, use the PHP method call syntax via `php/-> this`:
 
 ```phel
+(definterface Describable
+  (describe [this]))
+
 (definterface HasSummary
   (summary [this]))
 
@@ -101,6 +126,20 @@ Interface dispatch routes through the generated function, not through `this` dir
 Each struct gets a predicate:
 
 ```phel
+(definterface Shape
+  (area [this])
+  (perimeter [this]))
+
+(defstruct circle [radius]
+  Shape
+  (area [this] (* 3.14159 radius radius))
+  (perimeter [this] (* 2 3.14159 radius)))
+
+(defstruct rectangle [width height]
+  Shape
+  (area [this] (* width height))
+  (perimeter [this] (* 2 (+ width height))))
+
 (circle? (circle 5))       ; => true
 (circle? (rectangle 4 6))  ; => false
 ```
@@ -172,6 +211,9 @@ Each method needs `this`. Optional doc string. Multiple methods allowed:
 `extend-type` implements a protocol for one type:
 
 ```phel
+(defprotocol Printable
+  (to-string [this]))
+
 (extend-type :string
   Printable
   (to-string [this] (str "\"" this "\"")))
@@ -187,6 +229,9 @@ Each method needs `this`. Optional doc string. Multiple methods allowed:
 `extend-protocol` implements one protocol across many types:
 
 ```phel
+(defprotocol Printable
+  (to-string [this]))
+
 (extend-protocol Printable
   :float
   (to-string [this] (str "float:" this))
@@ -203,6 +248,17 @@ Each method needs `this`. Optional doc string. Multiple methods allowed:
 `satisfies?` (value) and `extends?` (type):
 
 ```phel
+(defprotocol Printable
+  (to-string [this]))
+
+(extend-type :string
+  Printable
+  (to-string [this] (str "\"" this "\"")))
+
+(extend-type :int
+  Printable
+  (to-string [this] (str "int:" this)))
+
 (satisfies? Printable "hello")  ; => true
 (satisfies? Printable 42)       ; => true
 
@@ -221,12 +277,12 @@ Define relationships between types or values. Hierarchies + multimethods enable 
 
 ### Deriving
 
-`derive` sets parent-child between keywords:
+`derive` sets parent-child between namespaced keywords (the child must be namespaced):
 
 ```phel
-(derive :circle :shape)
-(derive :rectangle :shape)
-(derive :square :rectangle)   ; A square is a rectangle
+(derive :shapes/circle :shapes/shape)
+(derive :shapes/rectangle :shapes/shape)
+(derive :shapes/square :shapes/rectangle)   ; A square is a rectangle
 ```
 
 ### Querying
@@ -234,14 +290,18 @@ Define relationships between types or values. Hierarchies + multimethods enable 
 `isa?`, `parents`, `ancestors`, `descendants`:
 
 ```phel
-(isa? :circle :shape)         ; => true
-(isa? :square :rectangle)     ; => true
-(isa? :square :shape)         ; => true (transitive)
-(isa? :shape :circle)         ; => false
+(derive :shapes/circle :shapes/shape)
+(derive :shapes/rectangle :shapes/shape)
+(derive :shapes/square :shapes/rectangle)
 
-(parents :square)             ; => #{:rectangle}
-(ancestors :square)           ; => #{:rectangle :shape}
-(descendants :shape)          ; => #{:circle :rectangle :square}
+(isa? :shapes/circle :shapes/shape)         ; => true
+(isa? :shapes/square :shapes/rectangle)     ; => true
+(isa? :shapes/square :shapes/shape)         ; => true (transitive)
+(isa? :shapes/shape :shapes/circle)         ; => false
+
+(parents :shapes/square)             ; => #{:shapes/rectangle}
+(ancestors :shapes/square)           ; => #{:shapes/rectangle :shapes/shape}
+(descendants :shapes/shape)          ; => #{:shapes/circle :shapes/rectangle :shapes/square}
 ```
 
 ### Removing
@@ -249,8 +309,9 @@ Define relationships between types or values. Hierarchies + multimethods enable 
 `underive`:
 
 ```phel
-(underive :square :rectangle)
-(isa? :square :rectangle)     ; => false
+(derive :shapes/square :shapes/rectangle)
+(underive :shapes/square :shapes/rectangle)
+(isa? :shapes/square :shapes/rectangle)     ; => false
 ```
 
 ### Empty hierarchy maps
@@ -267,22 +328,22 @@ Define relationships between types or values. Hierarchies + multimethods enable 
 Multimethods check the hierarchy for parent matches when dispatching:
 
 ```phel
-(derive :circle :shape)
-(derive :rectangle :shape)
+(derive :shapes/circle :shapes/shape)
+(derive :shapes/rectangle :shapes/shape)
 
 (defmulti draw :type)
 
-(defmethod draw :shape [s]
+(defmethod draw :shapes/shape [s]
   (str "Drawing a generic shape"))
 
-(defmethod draw :circle [s]
+(defmethod draw :shapes/circle [s]
   (str "Drawing a circle with radius " (:radius s)))
 
-(draw {:type :circle :radius 5})
+(draw {:type :shapes/circle :radius 5})
 ; => "Drawing a circle with radius 5"
 
-(draw {:type :rectangle :width 4 :height 3})
-; => "Drawing a generic shape" (falls back to :shape via hierarchy)
+(draw {:type :shapes/rectangle :width 4 :height 3})
+; => "Drawing a generic shape" (falls back to :shapes/shape via hierarchy)
 ```
 
 ## Next steps
