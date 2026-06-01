@@ -83,10 +83,9 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 (php/strlen "hello, phel")
 # => 11
 
-(php/array_map
-  php/strtoupper
-  ["foo" "bar" "baz"])
-# => ["FOO" "BAR" "BAZ"]
+(php/array_sum
+  (to-php-array [1 2 3 4]))
+# => 10
 
 (php/-> (php/new \DateTime)
         (format "Y"))
