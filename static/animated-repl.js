@@ -1,19 +1,32 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const container = document.getElementById('animated-repl');
   if (!container) return;
 
-  const lines = [
-    { type: 'prompt', text: '(map inc [1 2 3])', delay: 32 },
-    { type: 'result', text: '(2 3 4)', delay: 0 },
-    { type: 'prompt', text: '(->> (range 1 6) (filter odd?) (reduce +))', delay: 26 },
-    { type: 'result', text: '9', delay: 0 },
-    { type: 'prompt', text: '(defn greet [name] (str "hello, " name))', delay: 28 },
-    { type: 'result', text: "#'user/greet", delay: 0 },
-    { type: 'prompt', text: '(greet "phel")', delay: 34 },
-    { type: 'result', text: '"hello, phel"', delay: 0 },
-    { type: 'prompt', text: '(->> (range 1 11) (map (fn [x] (* x x))) (reduce +))', delay: 26 },
-    { type: 'result', text: '385', delay: 0 },
+  // Prompt/result pairs are generated from REAL `phel repl` output at build
+  // time (build/generate-repl-showcase.php) so the demo can never drift from
+  // what Phel actually prints. A tiny static fallback keeps the homepage from
+  // going blank if the data file fails to load.
+  const fallback = [
+    { prompt: '(map inc [1 2 3])', result: '@[2 3 4]' },
+    { prompt: '(greet "phel")', result: '"hello, phel"' },
   ];
+
+  let pairs = fallback;
+  try {
+    const res = await fetch('/animated-repl-data.json', { cache: 'no-cache' });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) pairs = data;
+    }
+  } catch (_) {
+    // keep fallback
+  }
+
+  const lines = [];
+  for (const { prompt, result } of pairs) {
+    lines.push({ type: 'prompt', text: prompt, delay: 30 });
+    lines.push({ type: 'result', text: result, delay: 0 });
+  }
 
   const terminal = document.createElement('div');
   terminal.className = 'terminal';
