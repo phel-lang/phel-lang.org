@@ -39,7 +39,9 @@ Covers running, testing, formatting, building. Defaults handle the rest.
 
 ```php
 <?php
-// phel-config.php, every with*() option, default values shown
+// phel-config.php, every with*() option with its default value shown.
+// withLayout(ProjectLayout::Flat|Nested|Root) is a shortcut that sets the
+// src/test/format/export dirs below in one call; use it instead of those setters.
 return (new \Phel\Config\PhelConfig())
     ->withSrcDirs(['src'])
     ->withTestDirs(['tests'])
@@ -54,6 +56,8 @@ return (new \Phel\Config\PhelConfig())
     ->withPhelDir('.phel')
     ->withEnableNamespaceCache(true)
     ->withEnableCompiledCodeCache(true)
+    ->withEnableAsserts(true)
+    ->withWarnDeprecations(false)
     ->withMainPhelNamespace('your-ns.index')
     ->withMainPhpPath('out/index.php')
     ->withBuildDestDir('out')
