@@ -246,4 +246,5 @@ Prefer immutable data structures. Atoms mainly for PHP interop or app state.
 
 - [Control flow](/documentation/language/control-flow/) - branch and loop over your bindings
 - [Functions and recursion](/documentation/language/functions-and-recursion/) - define and compose behavior
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding
 

@@ -167,6 +167,7 @@ vendor/bin/phel test
 #       --repeat=N          Run each test N times (default 1).
 #       --seed=INT          Seed used for randomized order.
 #       --random-order      Run tests in random order (uses --seed if given).
+#       --parallel=N        Run namespaces in subprocess workers: int, "auto" (capped at 8), or "max".
 ```
 
 Test selectors and reporters: see [Testing](/documentation/testing/).

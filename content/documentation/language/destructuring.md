@@ -161,3 +161,4 @@ Loop bindings:
 
 - [Functions and recursion](/documentation/language/functions-and-recursion/) - destructure function arguments
 - [Data structures](/documentation/language/data-structures/) - the collections you destructure
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

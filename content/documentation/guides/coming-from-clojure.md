@@ -362,68 +362,17 @@ Use `;` and `;;`. Legacy `#` line and `#| ... |#` block comments still read but 
 
 ## PHP interop
 
-Phel's equivalent of Clojure's Java interop. `php/` prefix unlocks the PHP ecosystem.
+Phel's equivalent of Clojure's Java interop: the `php/` prefix unlocks the whole PHP ecosystem, and the Clojure-style shorthands carry over.
 
-### Calling PHP functions
+| Clojure                   | Phel                                                            |
+|---------------------------|-----------------------------------------------------------------|
+| `(Math/pow 2 10)`         | `(php/pow 2 10)` (any PHP function via `php/`)                   |
+| `(Classname. args)`       | `(php/new Classname args)`                                      |
+| `(.method obj args)`      | `(php/-> obj (method args))` or `(.method obj args)`            |
+| `(Classname/method args)` | `(php/:: Classname (method args))` or `(Classname/method args)` |
+| array element             | `(php/aget arr key)` (PHP arrays, not Phel data structures)     |
 
-```phel
-(php/strlen "hello")                        ; => 5
-(php/array_reverse (to-php-array [3 1 2]))  ; PHP array_reverse
-(php/date "Y-m-d")                          ; => "2024-01-15"
-(php/json_encode (to-php-array {:a 1}))
-```
-
-### Creating objects
-
-```phel
-(ns my.app
-  (:use DateTimeImmutable))
-
-(def now (php/new DateTimeImmutable))
-(def db (php/new \PDO "sqlite::memory:"))
-```
-
-### Method calls
-
-```phel
-(ns my.app
-  (:use DateTimeImmutable))
-
-(def now (php/new DateTimeImmutable))
-
-;; Instance methods - two equivalent forms:
-(php/-> now (format "Y-m-d"))
-(.format now "Y-m-d")            ; .method shorthand
-
-;; Chaining
-(php/-> (DateTimeImmutable. "2024-01-15")
-        (modify "+1 month")
-        (format "Y-m-d"))
-```
-
-### Static methods and constants
-
-```phel
-;; Static methods - two equivalent forms:
-(php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2024-03-22"))
-(DateTimeImmutable/createFromFormat "Y-m-d" "2024-03-22")  ; shorthand
-
-;; Constants
-(php/:: DateTimeImmutable ATOM)
-DateTimeImmutable/ATOM                                      ; shorthand
-```
-
-### PHP array access
-
-For PHP arrays (not Phel data structures), use `php/aget`, `php/aset`:
-
-```phel
-(def config (php/json_decode (php/file_get_contents "config.json") true))
-(php/aget config "database")
-(php/aget-in config ["database" "host"])
-```
-
-Full interop reference: [PHP Interop](/documentation/php-interop).
+See [PHP Interop](/documentation/php-interop/) for the full reference: functions, objects, method and static calls, constants, and PHP-array access.
 
 ## What you'll miss (and workarounds)
 

@@ -350,3 +350,4 @@ Multimethods check the hierarchy for parent matches when dispatching:
 
 - [Functions and recursion](/documentation/language/functions-and-recursion/) - multimethods for open dispatch
 - [Data structures](/documentation/language/data-structures/) - structs and the maps they build on
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

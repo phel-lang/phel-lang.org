@@ -200,3 +200,4 @@ Fully qualified: namespace, `/`, keyword name.
 
 - [Interfaces](/documentation/language/interfaces/) - share behavior across types within a namespace
 - [Configuration](/documentation/configuration/) - set the source paths namespaces resolve from
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

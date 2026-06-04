@@ -617,3 +617,4 @@ Mark a function exported with metadata:
 - [Error Handling](/documentation/language/error-handling/): `try`, `catch`, `finally`, `ex-info`.
 - [Configuration](/documentation/configuration/): `withExport*` options for `phel export`.
 - [PHP API reference](/documentation/reference/api/php): every `php/*` builtin.
+- [Rosetta Stone](/documentation/guides/rosetta-stone/): PHP and Phel side by side, interop included.

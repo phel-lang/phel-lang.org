@@ -163,3 +163,4 @@ If the same result is achievable by passing values or functions, write a functio
 
 - [Functions and recursion](/documentation/language/functions-and-recursion/) - the default tool; prefer it over macros
 - [Basic types](/documentation/language/basic-types/) - quote, lists, and symbols that macros manipulate
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding
