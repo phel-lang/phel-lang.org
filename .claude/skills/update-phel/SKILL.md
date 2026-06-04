@@ -37,7 +37,18 @@ This repo pins `phel-lang/phel-lang` in `composer.json` and mirrors the active v
    (`build/doc-snippets-baseline.json`) is empty, so ANY newly-broken snippet
    is reported as a regression and fails. See "When snippets break" below.
 
-5. **Commit.** Use this exact subject (matches prior `chore: bump phel-lang to 0.39.0` convention):
+5. **Scan prose for stale version strings.** The snippet harness only runs ` ```phel ` blocks, so versions written in prose, JSON examples, and upgrade headings drift silently (they are never executed). After bumping to vX.Y.Z, grep for and update any that still name an older version:
+   ```bash
+   grep -rnE '"phel-lang/phel-lang": *"\^0\.[0-9]+"|^## Upgrading|var-dumper' content/
+   ```
+   Update at least:
+   - `content/documentation/installation.md` - the `## Upgrading to ...` heading, the `composer require phel-lang/phel-lang:^X.Y` command, and a short breaking-changes list for the new minor (pull from the release notes).
+   - `content/documentation/guides/coming-from-clojure.md` - the example `composer.json` pin.
+   - `content/documentation/tooling/php-tools.md` - the `symfony/var-dumper` constraint should match this repo's own `composer.json`.
+
+   These prose fixes belong in the same commit or a follow-up `docs:` commit.
+
+6. **Commit.** Use this exact subject (matches prior `chore: bump phel-lang to 0.39.0` convention):
    ```
    chore: bump phel-lang to X.Y.Z
    ```

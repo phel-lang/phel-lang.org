@@ -537,7 +537,7 @@ Persistent KV store backed by JSON. Get, put, delete, list keys.
     (store-save path updated)
     updated))
 
-(store-put-many [[:lang "phel"] [:version "0.37"] [:status "awesome"]])
+(store-put-many [[:lang "phel"] [:version "0.41"] [:status "awesome"]])
 (println (str "All keys: " (store-keys)))
 ```
 

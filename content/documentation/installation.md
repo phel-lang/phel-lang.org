@@ -208,14 +208,24 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 </div>
 </details>
 
-## Upgrading from 0.38
+## Upgrading to 0.41
 
 ```bash
-composer require phel-lang/phel-lang:^0.39
+composer require phel-lang/phel-lang:^0.41
 ./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
-Cached PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects after upgrade.
+Always clear the cache after upgrading: compiled PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects too.
+
+Breaking changes in 0.41:
+
+- Stricter argument errors: `take` with a non-int count, `remove` / `select-keys` on a non-seqable, `int` / `long` / `float` / `double` on non-numeric values, and `get` / `assoc` / `update` with non-int keys now raise clean Phel errors instead of leaking a PHP `TypeError`. Code that leaned on silent coercion must pass real values.
+- Clojure-aligned laziness: `map`, `filter`, `remove`, `concat`, `distinct`, and `repeatedly` no longer realize their head eagerly, `map` over `nil` returns a lazy seq, and `LazySeq` no longer drops `nil` values. Force with `doall` or `vec` where you relied on eager evaluation.
+
+Breaking changes in 0.40:
+
+- `phel agent-install`: the `.agents/` docs tree is now copied by default. The `--with-docs` flag is gone; use `--no-docs` to opt out.
+- Map destructuring with `:keys` / `:strs` / `:syms` and a non-vector value now reports a shape error instead of silently dropping the binding.
 
 Breaking changes in 0.39 (Clojure-aligned core type renames):
 

@@ -41,7 +41,7 @@ Use [Symfony VarDumper](https://symfony.com/doc/current/components/var_dumper.ht
 
 ```json
 "require-dev": {
-    "symfony/var-dumper": "^6.4|^7.0"
+    "symfony/var-dumper": "^7.4"
 },
 ```
 
