@@ -103,7 +103,7 @@ xdebug.client_port=9003
 
 ### VSCode
 
-Install the [PHP Debug extension](https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug):
+Install the [Phel VS Code extension](https://github.com/phel-lang/phel-vs-code-extension). It ships the `phel` debug adapter that the `launch.json` below uses (the generic PHP Debug extension only provides `"type": "php"` and cannot step through `.phel` files):
 
 Create `.vscode/launch.json` in your Phel project:
 

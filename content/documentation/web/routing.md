@@ -26,7 +26,7 @@ A route is `[path data]`, where `data` is a map. Put a 1-arg `request -> respons
   (http/response-from-map {:status 200 :body (html [:h1 "Home"])}))
 
 (defn show-user [request]
-  (let [id (get-in request [:attributes :match :id])]
+  (let [id (get-in request [:attributes :match :path-params :id])]
     (http/response-from-map {:status 200 :body (html [:h1 (str "User " id)])})))
 
 (def routes
@@ -34,7 +34,7 @@ A route is `[path data]`, where `data` is a map. Put a 1-arg `request -> respons
    ["/users/{id}" {:name :user :get {:handler show-user}}]])
 ```
 
-A handler returns a response, built with `response-from-map` from [Request and Response](/documentation/web/http-request-and-response/). Path variables like `{id}` arrive under `[:attributes :match]` on the request.
+A handler returns a response, built with `response-from-map` from [Request and Response](/documentation/web/http-request-and-response/). Path variables like `{id}` arrive under `[:attributes :match :path-params]` on the request.
 
 ## Build a router and a handler
 
@@ -90,7 +90,8 @@ A handler returns a response, built with `response-from-map` from [Request and R
                    :get {:handler (fn [request] {:status 200 :body "User"})}}]])
 
 (router/match-by-path (router/router routes) "/users/42")
-;; the matched route data, including :path-params {:id 42}
+;; the full match map: {:route-name :user :template "/users/{id}"
+;;                      :data {...} :path "/users/42" :path-params {:id 42}}
 
 (router/generate (router/router routes) :user {:id 42})
 ;; Evaluates to "/users/42"
