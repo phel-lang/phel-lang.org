@@ -26,7 +26,7 @@ A symbol could not be resolved to a definition in the current scope.
 
 **Common cause:** A typo, a missing `(:require ...)` for the namespace the symbol lives in, an alias that does not match, or using a binding before it is defined.
 
-**Fix:** Check the spelling, require the namespace (e.g. `(:require phel\string :as str)` for `str/...`), or move the definition above its first use. The error message suggests near matches.
+**Fix:** Check the spelling, require the namespace (e.g. `(:require phel.string :as str)` for `str/...`), or move the definition above its first use. The error message suggests near matches.
 
 ### PHEL002 : Arity error
 
@@ -60,6 +60,8 @@ A macro threw while expanding.
 
 **Fix:** Check the arguments at the call site and inspect the expansion with `(macroexpand '(your-form ...))`.
 
+**Learn more:** [Macros](/documentation/language/macros/).
+
 ### PHEL006 : Inline expansion error
 
 An inline-expanded function failed to expand.
@@ -84,6 +86,8 @@ A binding vector is invalid.
 
 **Fix:** Provide an even number of `name value` pairs and use valid destructuring targets (symbols, vectors, maps).
 
+**Learn more:** [Destructuring](/documentation/language/destructuring/), [Global and local bindings](/documentation/language/global-and-local-bindings/).
+
 ### PHEL009 : Interface error
 
 An interface or protocol definition (or its implementation) is invalid.
@@ -92,6 +96,8 @@ An interface or protocol definition (or its implementation) is invalid.
 
 **Fix:** Use `definterface` for inline implementation, or `defprotocol` plus `extend-type` per struct.
 
+**Learn more:** [Interfaces](/documentation/language/interfaces/).
+
 ### PHEL010 : Recur error
 
 `recur` was used incorrectly.
@@ -99,6 +105,8 @@ An interface or protocol definition (or its implementation) is invalid.
 **Common cause:** `recur` appeared outside a `loop`/`fn` tail position, or with an argument count that does not match the recursion point.
 
 **Fix:** Use `recur` only in tail position, with as many arguments as the enclosing `loop`/`fn` binds.
+
+**Learn more:** [Functions and recursion](/documentation/language/functions-and-recursion/).
 
 ### PHEL011 : Not callable
 

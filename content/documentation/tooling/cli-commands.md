@@ -167,6 +167,7 @@ vendor/bin/phel test
 #       --repeat=N          Run each test N times (default 1).
 #       --seed=INT          Seed used for randomized order.
 #       --random-order      Run tests in random order (uses --seed if given).
+#       --parallel=N        Run namespaces in subprocess workers: int, "auto" (capped at 8), or "max".
 ```
 
 Test selectors and reporters: see [Testing](/documentation/testing/).
@@ -305,7 +306,9 @@ vendor/bin/phel agent-install --auto       # only platforms detected in project
 vendor/bin/phel agent-install --check      # report installed vs current; exits 1 on drift
 vendor/bin/phel agent-install --list       # enumerate platforms, sources, targets, state
 vendor/bin/phel agent-install --uninstall  # remove skill files, restore .pre-phel.bak
-#   --with-docs        Include reference docs (.agents/)
+#   The shared .agents/ docs tree is copied by default; pass --no-docs to skip it.
+#   --with-examples    Also copy example projects into .agents/examples/ (excluded by default)
+#   --no-docs          Skip the .agents/ docs tree
 #   --dry-run          Show what would be written
 #   --force            Overwrite existing files
 ```

@@ -366,7 +366,7 @@ Requires `(:require phel.string :as str)`:
 
 ```phel
 (ns my-app.strings
-  (:require phel\string :as str))
+  (:require phel.string :as str))
 
 (str/lower-case "HELLO")           ; => "hello"
 (str/upper-case "hello")           ; => "HELLO"
@@ -721,8 +721,8 @@ Integer division (`/`) returns a `Ratio` when not evenly divisible. Use `float` 
 
 ```phel
 (ns my-app.serialize
-  (:require phel\edn :as edn)
-  (:require phel\transit :as transit))
+  (:require phel.edn :as edn)
+  (:require phel.transit :as transit))
 
 ;; phel.edn: eval-free EDN read/write (data only, no code execution)
 (edn/read-string "{:a 1 :b [2 3]}")    ; => {:a 1, :b [2 3]}
@@ -734,13 +734,11 @@ Integer division (`/`) returns a `Ratio` when not evenly divisible. Use `float` 
 (transit/read-string "[\"~:foo\",1]")  ; => [:foo 1]
 ```
 
-Require with `(:require phel.edn :as edn)` / `(:require phel.transit :as transit)`.
-
 ## Reflection
 
 ```phel
 (ns my-app.introspect
-  (:require phel\reflect :as reflect))
+  (:require phel.reflect :as reflect))
 
 ;; phel.reflect: introspect PHP classes via reflection
 (reflect/class-info \DateTime)         ; => map of name, methods, properties, ...
@@ -748,8 +746,6 @@ Require with `(:require phel.edn :as edn)` / `(:require phel.transit :as transit
 (reflect/properties \DateInterval)     ; => vector of property-info maps
 (reflect/supers \RuntimeException)     ; => parent classes + interfaces
 ```
-
-Require with `(:require phel.reflect :as reflect)`.
 
 ## REPL utilities
 

@@ -16,6 +16,7 @@ Phel is a functional Lisp that compiles to PHP: persistent data structures, immu
 3. [Basic Types](/documentation/language/basic-types/) then [Data Structures](/documentation/language/data-structures/) - the core you use everywhere
 4. [Cheat Sheet](/documentation/reference/cheat-sheet/) - keep it open while you code
 5. [Cookbook](/documentation/guides/cookbook/) - copy-paste recipes for real tasks
+6. [Build a Web App](/documentation/guides/build-a-web-app/) - a complete guestbook, end to end
 
 Coming from another language? Jump to [Rosetta Stone: PHP to Phel](/documentation/guides/rosetta-stone/) or [Coming from Clojure](/documentation/guides/coming-from-clojure/).
 
@@ -28,7 +29,7 @@ Coming from another language? Jump to [Rosetta Stone: PHP to Phel](/documentatio
   </a>
   <a href="/documentation/guides/" class="section-page-card">
     <h3 class="section-page-card__title">Guides</h3>
-    <p class="section-page-card__desc">Transition guides for PHP and Clojure developers, plus a cookbook of real-world recipes.</p>
+    <p class="section-page-card__desc">Build a complete web app end to end, transition guides for PHP and Clojure developers, and a cookbook of real-world recipes.</p>
   </a>
   <a href="/documentation/tooling/" class="section-page-card">
     <h3 class="section-page-card__title">Tooling</h3>

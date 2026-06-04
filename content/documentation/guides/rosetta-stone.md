@@ -1240,8 +1240,6 @@ $result = implode(", ",
 </div>
 </div>
 
-<script src="/rosetta-stone.js" defer></script>
-
 ## Next steps
 
 - [Cookbook](/documentation/guides/cookbook/) - ready-made recipes for common tasks

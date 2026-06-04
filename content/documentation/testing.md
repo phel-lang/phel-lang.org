@@ -255,6 +255,18 @@ Re-run each test N times, randomize discovery order, and seed for reproducible r
 
 `--seed=<int>` alone fixes the seed for the default deterministic order.
 
+### Parallel execution
+
+Run namespaces across subprocess workers to speed up large suites:
+
+```bash
+./vendor/bin/phel test --parallel=auto   # CPU detection, capped at 8 workers
+./vendor/bin/phel test --parallel=4      # fixed worker count
+./vendor/bin/phel test --parallel=max    # every core the kernel reports
+```
+
+Auto-disabled for `--reporter=tap`, `--list`, and when a profiler hook is installed.
+
 {% php_note() %}
 Test command similar to PHPUnit:
 
