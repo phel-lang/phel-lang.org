@@ -65,7 +65,7 @@ array_map($fn, $array);
 However, Phel provides functional equivalents for many operations. For example, use `(count "test")` instead of `(php/strlen "test")` when working with Phel data structures.
 {% end %}
 
-Namespaced PHP functions use full path after `php/`. Three equivalent forms accepted (added in 0.37, last two are backslash-free):
+Namespaced PHP functions use full path after `php/`. Three equivalent forms accepted (last two are backslash-free):
 
 <!-- phel-test: skip -->
 ```phel
@@ -240,6 +240,44 @@ DateTimeImmutable/ATOM
 (DateTimeImmutable/createFromFormat "Y-m-d" "2020-03-22")
 ```
 {% end %}
+
+## Named arguments
+
+PHP 8 named arguments are passed after a `:&` marker as `:key value` pairs. Works in `php/new`, `php/->`, and `php/::`. Keyword keys map to the PHP parameter names; order is then irrelevant.
+
+```phel
+(let [dt (php/:: \DateTime
+                 (createFromFormat :& :format "Y-m-d" :datetime "2026-06-06"))]
+  (php/-> dt (format "Y-m-d"))) ; => "2026-06-06"
+```
+
+{% php_note() %}
+```php
+// PHP
+\DateTime::createFromFormat(format: "Y-m-d", datetime: "2026-06-06");
+new \App\Mailer(host: "smtp", port: 587);
+```
+
+<!-- phel-test: skip -->
+```phel
+;; Phel
+(php/:: \DateTime (createFromFormat :& :format "Y-m-d" :datetime "2026-06-06"))
+(php/new \App\Mailer :& :host "smtp" :port 587)
+```
+{% end %}
+
+## By-reference arguments
+
+Some PHP functions write through a `&$ref` parameter (`preg_match`, `sort`, ...). Wrap a **local** binding in `php/ref` to pass it by reference; the local must be `let`-bound (a top-level `def` is not a PHP variable).
+
+```phel
+(let [subject "order-42"
+      matches (php/array)]
+  (php/preg_match "/(\d+)/" subject (php/ref matches))
+  (php/aget matches 1)) ; => "42"
+```
+
+`php/ref` also works inside `php/->` / `php/::` calls.
 
 ## Set object properties
 
@@ -510,6 +548,21 @@ __FILE__  // Points to cached .php file
 
 Use `*file*` when you need to reference the original Phel source location, such as for loading resources relative to your source code.
 {% end %}
+
+## Map to typed object and back
+
+`hydrate` and `bean` bridge a Phel map and a typed PHP object both ways: `hydrate` rebuilds an instance from a map (skipping the constructor, like an ORM rehydrating an entity), and `bean` reads an object's public properties back into a map with keyword keys.
+
+<!-- phel-test: skip -->
+```phel
+;; class App\Point { public int $x; public int $y; }
+(def p (hydrate "App\\Point" {:x 1 :y 2})) ; => App\Point instance
+(bean p)                                    ; => {:x 1 :y 2}
+```
+
+To read PHP 8 attributes and bridge native enums, see `phel.reflect`
+(`class-attributes`, `enum->keyword`, ...) in the
+[API reference](/documentation/reference/api/reflect).
 
 ## Catching PHP exceptions
 

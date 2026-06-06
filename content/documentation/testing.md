@@ -73,7 +73,7 @@ The `is` macro defines assertions. Optional second argument is a description str
 (is (nil? (get {} :missing)))      ; any predicate works
 ```
 
-For collection equality, failures render a unified diff (added in 0.37) so missing/extra entries are obvious:
+For collection equality, failures render a unified diff so missing/extra entries are obvious:
 
 ```
 FAIL (= a b)
