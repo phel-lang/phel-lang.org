@@ -564,6 +564,18 @@ To read PHP 8 attributes and bridge native enums, see `phel.reflect`
 (`class-attributes`, `enum->keyword`, ...) in the
 [API reference](/documentation/reference/api/reflect).
 
+## Native enums and exceptions
+
+`defenum` defines a native PHP backed enum (e.g. for Doctrine/Symfony columns) plus a `Name?` predicate. `defexception` defines an exception extending a chosen parent, so framework `catch` blocks match it by type.
+
+<!-- phel-test: skip -->
+```phel
+(defenum Status :active "active" :inactive "inactive")
+(Status? Status/active) ; => true
+
+(defexception NotFound \RuntimeException)
+```
+
 ## Catching PHP exceptions
 
 PHP functions and methods throw native exceptions, and they cross the interop boundary unchanged. Catch them with `try`/`catch`, matching on the PHP class name. Catch `\Throwable` to handle anything.
@@ -664,6 +676,23 @@ Mark a function exported with metadata:
 ```
 
 `phel export` then generates a wrapper class in the target dir (here `src/PhelGenerated`). Use it from PHP to call Phel functions.
+
+### Typed and annotated output
+
+When the generated PHP must satisfy a framework's type expectations, opt-in metadata enriches it. Untagged forms are unchanged.
+
+| Metadata | On | Emits |
+|---|---|---|
+| `^{:tag T}` | struct field, interface param/return | typed signature; `(a b)` = union `a\|b`, `[a b]` = intersection `a&b` |
+| `^{:php/attr [...]}` | struct/interface name, field, method, param, exported `defn` | PHP 8 `#[Attr]` |
+| `^{:php/doc "..."}` | struct/interface name, field, method | PHPDoc block (phpstan/psalm) |
+| `^{:php/json true}` / `^{:php/stringable true}` | struct name | implements `\JsonSerializable` / `\Stringable` |
+
+```phel
+(defstruct ^{:php/attr [:ORM/Entity] :php/json true} product
+  [^{:tag int :php/attr [:ORM/Id]} id
+   ^{:tag string} name])
+```
 
 ## Next steps
 

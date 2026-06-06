@@ -18,7 +18,7 @@ Request struct:
   method            ; HTTP Method ("GET", "POST", ...)
   uri               ; uri struct (defined below)
   headers           ; Map of all headers. Keys are keywords, Values are string
-  parsed-body       ; The parsed body ($_POST), when available otherwise nil
+  parsed-body       ; Parsed body: $_POST form data, or a decoded JSON body, otherwise nil
   query-params      ; Map with all query parameters ($_GET)
   cookie-params     ; Map with all cookie parameters ($_COOKIE)
   server-params     ; Map with all server parameters ($_SERVER)
@@ -78,11 +78,24 @@ Two helpers create responses:
 
 ;; Create response from map
 (http/response-from-map {:status 200 :body "Test"})
-;; Evaluates to (phel\http\response 200 {} Test 1.1 OK)
+;; Evaluates to (phel.http.response 200 {} Test 1.1 OK)
 
 ;; Create response from string
 (http/response-from-string "Hello World")
-;; Evaluates to (phel\http\response 200 {} Hello World 1.1 OK)
+;; Evaluates to (phel.http.response 200 {} Hello World 1.1 OK)
+```
+
+`json-response` and `html-response` set the `Content-Type` header for you:
+
+```phel
+(ns my-namespace
+  (:require phel.http))
+
+(http/json-response 200 {:message "pong"})
+;; body "{\"message\":\"pong\"}", Content-Type application/json
+
+(http/html-response 200 "<h1>Hi</h1>")
+;; body "<h1>Hi</h1>", Content-Type text/html; charset=utf-8
 ```
 
 Send with `emit-response`:

@@ -309,7 +309,21 @@ A struct is a Map with a fixed set of keys and a global name. `defstruct` also d
   (assoc x :a 12))            ; Evaluates to (my-struct 12 2 3)
 ```
 
-Internally, Structs are PHP classes (one property per key). Faster than Maps.
+Internally, Structs are PHP classes (one property per key). Faster than Maps. Every struct implements `\Countable`, `\ArrayAccess`, and `\IteratorAggregate`, so PHP code can `count($s)` and read fields by string offset (`$s['name']`) as well as by keyword.
+
+Expose PHP magic methods (`__invoke`, `__toString`, `__get`, ...) through a `:php` block. The first arg binds to `$this`; read fields with `(get this :field)`.
+
+```phel
+(defstruct multiplier [factor]
+  :php
+  (__invoke   [this x] (* x (get this :factor)))
+  (__toString [this]   (str "x" (get this :factor))))
+
+(let [m (multiplier 3)]
+  (m 14)) ; => 42  (PHP calls __invoke)
+```
+
+A `:php` block coexists with regular interface implementations. A custom `__invoke` must take exactly one call argument or be variadic (a struct is already callable as a key lookup), else the compiler rejects it.
 
 ## Sets
 

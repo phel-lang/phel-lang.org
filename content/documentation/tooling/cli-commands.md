@@ -90,12 +90,9 @@ return (new \Phel\Config\PhelConfig())
 Formats files. Accepts relative or absolute paths.
 
 ```bash
-vendor/bin/phel format
-# Usage:
-#   format <paths>...
-# 
-# Arguments:
-#   paths                 The file paths that you want to format.
+vendor/bin/phel format            # formats src and tests by default
+vendor/bin/phel format src/foo.phel
+vendor/bin/phel format --dry-run  # report files that would change, exit non-zero if any
 ```
 
 [Configuration](/documentation/configuration/) in `phel-config.php`:
@@ -105,7 +102,7 @@ return (new PhelConfig())
     ->withFormatDirs(['src', 'tests']);
 ```
 
-Aligns key/value pairs in `cond`, `case`, `condp`, and bindings of `let`/`loop`/`binding`/`for`/`foreach`/`dofor`/`if-let`/`when-let`.
+Indents definition and body forms (`defstruct`, `defprotocol`, `defmethod`, `reify`, `doseq`, `letfn`, ...) cljfmt-style, and collapses consecutive blank lines to one.
 
 ## Read-eval-print loop
 
@@ -296,24 +293,19 @@ vendor/bin/phel api-daemon
 
 ## Agent install
 
-Writes skill/recipe files for AI coding assistants: Claude Code, Cursor, Codex, Gemini, Copilot, Aider. Skills are stamped with `<!-- phel-agents vX.Y.Z -->` from `VERSION`; re-install is idempotent.
+Writes skill/recipe files for AI coding assistants: Claude Code, Cursor, Codex, Gemini, Copilot, Aider. Copies a per-platform skill file plus the shared `.agents/` docs tree. Re-install is idempotent; existing files are backed up to `.pre-phel.bak` unless `--force`.
 
 ```bash
 vendor/bin/phel agent-install              # pick platform interactively
 vendor/bin/phel agent-install claude       # single platform
-vendor/bin/phel agent-install --all        # all platforms
+vendor/bin/phel agent-install --all        # every platform
 vendor/bin/phel agent-install --auto       # only platforms detected in project
-vendor/bin/phel agent-install --check      # report installed vs current; exits 1 on drift
-vendor/bin/phel agent-install --list       # enumerate platforms, sources, targets, state
 vendor/bin/phel agent-install --uninstall  # remove skill files, restore .pre-phel.bak
-#   The shared .agents/ docs tree is copied by default; pass --no-docs to skip it.
-#   --with-examples    Also copy example projects into .agents/examples/ (excluded by default)
-#   --no-docs          Skip the .agents/ docs tree
-#   --dry-run          Show what would be written
-#   --force            Overwrite existing files
+#   --no-docs          Skip the .agents/ docs tree (copied by default)
+#   --with-examples    Also copy example projects into .agents/examples/
+#   --dry-run          Show what would be written, change nothing
+#   --force            Overwrite without .pre-phel.bak backups
 ```
-
-`phel doctor` surfaces installed agent skill versions and flags stale ones.
 
 ## Profile
 
