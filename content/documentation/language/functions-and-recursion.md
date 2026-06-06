@@ -134,7 +134,7 @@ Equivalent, but `defn-` is more concise.
 
 ### Defn metadata shortcuts
 
-Tag a `defn` with metadata to wrap the body automatically (added in 0.37):
+Tag a `defn` with metadata to wrap the body automatically:
 
 <!-- phel-test: skip -->
 ```phel
@@ -155,7 +155,7 @@ Tag a `defn` with metadata to wrap the body automatically (added in 0.37):
 
 ### Return and parameter types (`:tag`)
 
-Annotate types with `:tag` metadata (added in 0.37). The compiler emits PHP type declarations and runs static checks at compile time:
+Annotate types with `:tag` metadata. The compiler emits PHP type declarations and runs static checks at compile time:
 
 ```phel
 (defn ^int add [^int a ^int b] (+ a b))

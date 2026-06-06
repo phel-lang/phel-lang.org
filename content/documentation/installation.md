@@ -208,14 +208,33 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 </div>
 </details>
 
-## Upgrading to 0.41
+## Upgrading to 0.42
 
 ```bash
-composer require phel-lang/phel-lang:^0.41
+composer require phel-lang/phel-lang:^0.42
 ./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
 Always clear the cache after upgrading: compiled PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects too.
+
+Behaviour changes in 0.42:
+
+- Structs print with a `.` separator instead of `\` (e.g. `(my.ns.point 1 2)`). Snapshot tests or code that parses struct output must match the new form.
+- `str/index-of` returns `nil` for an empty search string instead of throwing a PHP `ValueError`.
+- Lexer columns are counted in code points, so error locations in multibyte source point at the right column.
+- `if-let`, `when-let`, `if-some`, `when-first` are now hygienic: a user binding named like the macros' internal temporary no longer collides.
+
+New in 0.42 (richer typed PHP interop, all opt-in):
+
+- `phel.reflect`: read PHP 8 attributes (`class-attributes` / `method-attributes` / ...) and bridge native enums (`enum->keyword` / `keyword->enum` / `enum-values`).
+- `defenum` native backed enums and `defexception` with an optional parent class.
+- `php/ref` passes a local by reference into `php/->` / `php/::` and plain PHP calls like `preg_match` / `sort`.
+- `hydrate` / `bean` bridge a Phel map and a typed PHP object both ways.
+- PHP 8 named arguments in `php/new` / `php/->` / `php/::` via the `:&` marker, e.g. `(php/new \App\Mailer :& :host "smtp")`.
+- `iterator-seq` builds a lazy seq over any PHP `Traversable`.
+- `defstruct` `:php` blocks declare inline PHP magic methods; `phel format` and `phel.http` JSON bodies / response builders round it out.
+
+See the [0.42 release notes](/releases/0-42-life-php-everything/) for the full list.
 
 Breaking changes in 0.41:
 
