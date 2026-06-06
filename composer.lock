@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d7f10b4578063c6497b1c38fa46c0e0b",
+    "content-hash": "7deb33a04ed5a3507ddd3231a0651f97",
     "packages": [
         {
             "name": "amphp/amp",
@@ -242,16 +242,16 @@
         },
         {
             "name": "phel-lang/phel-lang",
-            "version": "v0.41.0",
+            "version": "v0.42.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "8ba7e55096ff7dd08ea2a2640f85367c57e778f5"
+                "reference": "6a9f875a8975790ec3bfa082e2f5e93fccf78661"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/8ba7e55096ff7dd08ea2a2640f85367c57e778f5",
-                "reference": "8ba7e55096ff7dd08ea2a2640f85367c57e778f5",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/6a9f875a8975790ec3bfa082e2f5e93fccf78661",
+                "reference": "6a9f875a8975790ec3bfa082e2f5e93fccf78661",
                 "shasum": ""
             },
             "require": {
@@ -259,7 +259,7 @@
                 "gacela-project/gacela": "^1.14",
                 "php": ">=8.4",
                 "symfony/console": "^6.0|^7.0|^8.0",
-                "symfony/routing": "^7.3"
+                "symfony/routing": "^7.3|^8.0"
             },
             "require-dev": {
                 "ergebnis/composer-normalize": "^2.50",
@@ -267,10 +267,10 @@
                 "friendsofphp/php-cs-fixer": "^3.94",
                 "phpbench/phpbench": "^1.6",
                 "phpstan/phpstan": "^2.1",
-                "phpunit/phpunit": "^10.5",
-                "psalm/plugin-phpunit": "^0.19",
+                "phpunit/phpunit": "^11.0|^12.0|^13.0",
+                "psalm/plugin-phpunit": "^0.19|^0.20",
                 "rector/rector": "^2.3",
-                "symfony/var-dumper": "^7.4",
+                "symfony/var-dumper": "^7.4|^8.0",
                 "vimeo/psalm": "^6.16"
             },
             "bin": [
@@ -310,7 +310,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phel-lang/phel-lang/issues",
-                "source": "https://github.com/phel-lang/phel-lang/tree/v0.41.0"
+                "source": "https://github.com/phel-lang/phel-lang/tree/v0.42.0"
             },
             "funding": [
                 {
@@ -318,7 +318,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-06-01T09:54:22+00:00"
+            "time": "2026-06-06T09:43:55+00:00"
         },
         {
             "name": "psr/container",
@@ -943,34 +943,29 @@
         },
         {
             "name": "symfony/routing",
-            "version": "v7.4.13",
+            "version": "v8.0.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/routing.git",
-                "reference": "3a162171bb008e5e0f15dce6581373a4c0e8390d"
+                "reference": "18e6213e536842285dfdd29604e43ac8f784d17d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/routing/zipball/3a162171bb008e5e0f15dce6581373a4c0e8390d",
-                "reference": "3a162171bb008e5e0f15dce6581373a4c0e8390d",
+                "url": "https://api.github.com/repos/symfony/routing/zipball/18e6213e536842285dfdd29604e43ac8f784d17d",
+                "reference": "18e6213e536842285dfdd29604e43ac8f784d17d",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.2",
+                "php": ">=8.4",
                 "symfony/deprecation-contracts": "^2.5|^3"
-            },
-            "conflict": {
-                "symfony/config": "<6.4",
-                "symfony/dependency-injection": "<6.4",
-                "symfony/yaml": "<6.4"
             },
             "require-dev": {
                 "psr/log": "^1|^2|^3",
-                "symfony/config": "^6.4|^7.0|^8.0",
-                "symfony/dependency-injection": "^6.4|^7.0|^8.0",
-                "symfony/expression-language": "^6.4|^7.0|^8.0",
-                "symfony/http-foundation": "^6.4|^7.0|^8.0",
-                "symfony/yaml": "^6.4|^7.0|^8.0"
+                "symfony/config": "^7.4|^8.0",
+                "symfony/dependency-injection": "^7.4|^8.0",
+                "symfony/expression-language": "^7.4|^8.0",
+                "symfony/http-foundation": "^7.4|^8.0",
+                "symfony/yaml": "^7.4|^8.0"
             },
             "type": "library",
             "autoload": {
@@ -1004,7 +999,7 @@
                 "url"
             ],
             "support": {
-                "source": "https://github.com/symfony/routing/tree/v7.4.13"
+                "source": "https://github.com/symfony/routing/tree/v8.0.13"
             },
             "funding": [
                 {
@@ -1024,7 +1019,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-24T11:20:33+00:00"
+            "time": "2026-05-24T11:21:57+00:00"
         },
         {
             "name": "symfony/service-contracts",
