@@ -78,7 +78,7 @@ Keep maps as your working representation. At the edge where a typed object is un
 ```phel
 ;; class App\Point { public int $x; public int $y; }
 (def p (hydrate "App\\Point" {:x 1 :y 2})) ; => App\Point instance
-(bean p)                                    ; => {:x 1 :y 2}
+(bean p)                                    ; => {:x 1, :y 2}
 ```
 
 ## Typed and annotated output
@@ -95,14 +95,21 @@ When generated PHP must satisfy a framework, opt-in metadata enriches it. `^{:ta
 
 ## Native enums and exceptions
 
-`defenum` defines a native PHP backed enum (handy for Doctrine/Symfony columns) plus a `Name?` predicate. `defexception` defines an exception extending a chosen parent, so framework `catch` blocks match it by type:
+`defenum` compiles to a native PHP backed enum (handy for Doctrine/Symfony columns), defined once and consumed from PHP or bridged to keywords with `phel.reflect`. It also defines a `Status?` predicate.
 
-<!-- phel-test: skip -->
 ```phel
 (defenum Status :active "active" :inactive "inactive")
-(Status? Status/active) ; => true
+;; emits: enum Status: string { case active = "active"; case inactive = "inactive"; }
+```
 
+`defexception` defines an exception extending a chosen parent, so framework `catch` blocks match it by type:
+
+```phel
 (defexception NotFound \RuntimeException)
+
+(try
+  (throw (NotFound "missing"))
+  (catch \RuntimeException e (php/-> e (getMessage)))) ; => "missing"
 ```
 
 ## Catching PHP exceptions

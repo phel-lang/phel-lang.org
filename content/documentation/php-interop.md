@@ -310,6 +310,67 @@ $x->name = "foo";
 **Note:** This mutates the PHP object. When possible, use Phel's immutable data structures instead.
 {% end %}
 
+## Type conversions
+
+Phel values and PHP values cross the boundary automatically for scalars (int, float, string, bool, nil). Collections differ: Phel uses immutable vectors/maps, PHP uses arrays. Convert explicitly when a library needs one or the other.
+
+| Function | Direction | Example | Result |
+|---|---|---|---|
+| `to-php-array` | Phel vector/map to PHP array | `(to-php-array [1 2 3])` | `<PHP-Array [1, 2, 3]>` |
+| `phel->php` | deep Phel to PHP (nested) | `(phel->php {:a 1 :b 2})` | `<PHP-Array [a:1, b:2]>` |
+| `php->phel` | deep PHP to Phel (nested) | `(php->phel (php/array 1 2 3))` | `[1 2 3]` |
+| `php-array-to-map` | PHP array to Phel map | `(php-array-to-map #php {"a" 1 "b" 2})` | `{"a" 1, "b" 2}` |
+
+```phel
+(to-php-array [1 2 3])              ; => <PHP-Array [1, 2, 3]>
+(php->phel (php/array 1 2 3))       ; => [1 2 3]
+(php-array-to-map #php {"a" 1})     ; => {"a" 1}
+(phel->php {:a 1})                  ; => <PHP-Array [a:1]>
+```
+
+Use `#php [...]` and `#php {...}` reader macros to write PHP array literals directly.
+
+## Checking types
+
+`php/instanceof` tests an object against a PHP class or interface:
+
+```phel
+(php/instanceof (php/new \DateTime) \DateTimeInterface) ; => true
+```
+
+For Phel's own values use the core predicates (`int?`, `string?`, `map?`, `vector?`, ...).
+
+## PHP functions as values
+
+A `php/`-prefixed function is a first-class value. Bind it, pass it, or spread arguments into it with `apply`:
+
+```phel
+(let [upcase php/strtoupper]
+  (map upcase ["a" "b"]))        ; => @["A" "B"]
+
+(apply php/max [3 7 2])          ; => 7
+```
+
+Capture a namespaced PHP function into a Phel alias the same way:
+
+<!-- phel-test: skip -->
+```phel
+(def trap-signal php/\Amp.trapSignal)
+(trap-signal [2 15])
+```
+
+## Magic methods on structs
+
+A `defstruct` is a real PHP class, so it can expose magic methods (`__invoke`, `__toString`, `__get`, ...) through an inline `:php` block. See [Structs](/documentation/language/data-structures/#structs) for the full form.
+
+```phel
+(defstruct money [cents]
+  :php
+  (__toString [this] (str "$" (/ (get this :cents) 100))))
+
+(php/strval (money 500)) ; => "$5"
+```
+
 ## Get PHP array value
 
 <!-- phel-test: skip -->
@@ -566,14 +627,61 @@ To read PHP 8 attributes and bridge native enums, see `phel.reflect`
 
 ## Native enums and exceptions
 
-`defenum` defines a native PHP backed enum (e.g. for Doctrine/Symfony columns) plus a `Name?` predicate. `defexception` defines an exception extending a chosen parent, so framework `catch` blocks match it by type.
+`defenum` compiles to a native PHP backed enum (e.g. for Doctrine/Symfony columns), plus a `Name?` predicate. The enum is a real PHP type: consume it from PHP, reference it by full name (`\my\ns\Status`), or bridge cases to keywords with `phel.reflect` (see [Reflection](#reflection-attributes-and-enums)).
+
+```phel
+(defenum Status :active "active" :inactive "inactive")
+;; emits: enum Status: string { case active = "active"; case inactive = "inactive"; }
+```
+
+`defexception` defines an exception extending a chosen parent, so framework `catch` blocks match it by type:
+
+```phel
+(defexception NotFound \RuntimeException)
+
+(try
+  (throw (NotFound "missing"))
+  (catch \RuntimeException e (php/-> e (getMessage)))) ; => "missing"
+```
+
+## Reflection: attributes and enums
+
+`phel.reflect` reads PHP 8 attributes and bridges native enums (including `defenum` output) to keywords and back. Pass classes/enums by full name.
+
+```phel
+(ns my-app
+  (:require phel\reflect :as reflect))
+```
+
+Attributes come back as `{:name :args}` maps:
+
+| Function | Reads |
+|---|---|
+| `class-attributes` | attributes on a class |
+| `method-attributes` | attributes on a method |
+| `property-attributes` | attributes on a property |
 
 <!-- phel-test: skip -->
 ```phel
-(defenum Status :active "active" :inactive "inactive")
-(Status? Status/active) ; => true
+;; #[Tag('x')] class Thing {}
+(reflect/class-attributes \Demo\Thing)
+; => [{:name "Demo\\Tag" :args {0 "x"}}]
+```
 
-(defexception NotFound \RuntimeException)
+Enum bridge:
+
+| Function | Does |
+|---|---|
+| `enum-values` | all cases as keywords |
+| `enum->keyword` | one case to its keyword |
+| `keyword->enum` | keyword back to the case |
+
+<!-- phel-test: skip -->
+```phel
+;; enum Suit: string { case Hearts = 'H'; case Spades = 'S'; }
+(reflect/enum-values \Demo\Suit)               ; => [:Hearts :Spades]
+(reflect/enum->keyword (php/:: \Demo\Suit Hearts)) ; => :Hearts
+(reflect/keyword->enum \Demo\Suit :Spades)     ; => Suit::Spades
 ```
 
 ## Catching PHP exceptions
