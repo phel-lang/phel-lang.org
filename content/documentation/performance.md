@@ -143,4 +143,5 @@ php -d memory_limit=-1 ./vendor/bin/phel test
 - [Configuration](/documentation/configuration/) - cache flags and the full `phel-config.php` reference.
 - [CLI Commands](/documentation/tooling/cli-commands/#profile) - `phel profile` and `phel cache:clear`.
 - [Functions and Recursion](/documentation/language/functions-and-recursion/) - the full story on `:tag`, `^:memoize`, and `recur`.
+- [Deployment](/documentation/deployment/) - worker runtimes (FrankenPHP, RoadRunner) that drop per-request boot cost in production.
 - PHP manual: [opcache configuration](https://www.php.net/manual/en/opcache.configuration.php).

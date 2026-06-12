@@ -4,7 +4,7 @@ weight = 80
 description = "Deploy Phel apps on plain PHP-FPM or keep namespaces warm across requests with FrankenPHP and RoadRunner worker runtimes."
 +++
 
-PHP is **shared-nothing** by default: every request boots a fresh process, so a Phel namespace does not persist between requests. [`phel build`](/documentation/tooling/cli-commands/) compiles your namespaces to PHP ahead of time and opcache caches that bytecode, so nothing re-parses per request. But each request still re-runs every loaded namespace's top-level forms to register its `def`s.
+PHP is **shared-nothing** by default: every request boots a fresh process, so a Phel namespace does not persist between requests. [`phel build`](/documentation/tooling/cli-commands/) compiles your namespaces to PHP ahead of time and opcache caches that bytecode, so nothing re-parses per request (see [Performance](/documentation/performance/) for the opcache and compiled-code cache setup). But each request still re-runs every loaded namespace's top-level forms to register its `def`s.
 
 A **worker runtime** keeps the PHP process alive across requests: namespaces load **once** at boot and in-memory state survives between requests, much closer to the JVM/Clojure model.
 
@@ -55,4 +55,4 @@ Same shape: require the built entry point once, then handle requests in the work
 
 ## When you do not need a worker runtime
 
-Plain PHP-FPM with opcache is fine for most apps. Reach for a worker runtime when boot cost or per-request namespace registration shows up in profiling, or when you want persistent in-memory state (caches, connection pools) across requests.
+Plain PHP-FPM with opcache is fine for most apps. Reach for a worker runtime when boot cost or per-request namespace registration shows up in profiling, or when you want persistent in-memory state (caches, connection pools) across requests. See [Performance](/documentation/performance/) for opcache tuning and the compiled-code cache that cut that boot cost.
