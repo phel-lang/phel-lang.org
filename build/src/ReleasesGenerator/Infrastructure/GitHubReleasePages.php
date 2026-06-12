@@ -92,14 +92,25 @@ final readonly class GitHubReleasePages
 
     private function fetchReleasesPage(string $url): array
     {
+        $headers = [
+            'User-Agent: Phel-Website-Generator',
+            'Accept: application/vnd.github+json',
+            'X-GitHub-Api-Version: 2022-11-28',
+        ];
+
+        // Authenticate when a token is available (GitHub Actions sets GITHUB_TOKEN).
+        // Lifts the rate limit from 60 to 5000 req/hr, which is why unauthenticated
+        // CI runs hit HTTP 403 on the shared runner IPs.
+        $token = getenv('GITHUB_TOKEN') ?: getenv('GH_TOKEN');
+        if (is_string($token) && $token !== '') {
+            $headers[] = 'Authorization: Bearer ' . $token;
+        }
+
         $context = stream_context_create([
             'http' => [
                 'method' => 'GET',
-                'header' => [
-                    'User-Agent: Phel-Website-Generator',
-                    'Accept: application/vnd.github+json',
-                    'X-GitHub-Api-Version: 2022-11-28',
-                ],
+                'header' => $headers,
+                'ignore_errors' => true,
             ],
         ]);
 
@@ -109,6 +120,13 @@ final readonly class GitHubReleasePages
             throw new RuntimeException("Failed to fetch releases from GitHub API: {$url}");
         }
 
+        $status = $this->statusCodeFromHeaders($http_response_header ?? []);
+        if ($status !== 0 && $status >= 400) {
+            throw new RuntimeException(
+                "GitHub API returned HTTP {$status} for {$url}. Response: " . substr($response, 0, 500),
+            );
+        }
+
         $releases = json_decode($response, true, 512, JSON_THROW_ON_ERROR);
 
         if (!is_array($releases)) {
@@ -116,6 +134,23 @@ final readonly class GitHubReleasePages
         }
 
         return $releases;
+    }
+
+    /**
+     * @param list<string> $responseHeaders
+     */
+    private function statusCodeFromHeaders(array $responseHeaders): int
+    {
+        // The status line (e.g. "HTTP/1.1 403 Forbidden") is the first header;
+        // on redirects the last status line wins.
+        $status = 0;
+        foreach ($responseHeaders as $header) {
+            if (preg_match('#^HTTP/\S+\s+(\d{3})#', $header, $matches) === 1) {
+                $status = (int) $matches[1];
+            }
+        }
+
+        return $status;
     }
 
     /**

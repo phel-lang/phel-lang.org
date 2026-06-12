@@ -22,6 +22,8 @@ jobs:
         run: composer install
 
       - name: Generate API Documentation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: composer build
 
       - name: Setup Node.js

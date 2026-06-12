@@ -60,6 +60,8 @@ jobs:
         run: composer install --no-interaction --no-ansi --no-progress
 
       - name: Generate API documentation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: composer build
 
       - name: Setup Node.js
