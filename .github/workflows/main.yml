@@ -56,15 +56,19 @@ jobs:
           set -euo pipefail
           sudo apt-get update && sudo apt-get install -y lftp
 
-          # Fail the lftp session on any command error, retry transient network errors.
+          # Run the mirror. Don't let set -e abort before the diagnostics below run;
+          # capture lftp's real exit code via PIPESTATUS instead.
+          set +e
           lftp -c "
             set cmd:fail-exit yes;
             set net:max-retries 3;
             set net:timeout 30;
             set mirror:parallel-transfer-count 1;
-            open -u \"\$FTP_USERNAME\",\"\$FTP_PASSWORD\" \"\$FTP_HOST\";
-            mirror --reverse --delete --depth-first --overwrite --verbose public/ \"\$FTP_TARGET\";
+            open -u \"$FTP_USERNAME\",\"$FTP_PASSWORD\" \"$FTP_HOST\";
+            mirror --reverse --delete --depth-first --overwrite --verbose public/ \"$FTP_TARGET\";
           " 2>&1 | tee lftp.log
+          lftp_rc=${PIPESTATUS[0]}
+          set -e
 
           # lftp's mirror can report per-file failures (e.g. 550 - cannot create
           # directory, usually disk quota / permissions on the server) without a
@@ -72,5 +76,10 @@ jobs:
           # partial deploy never passes silently.
           if grep -E "Access failed|^(mkdir|chmod|put|get): |[Ff]atal error|55[0-9]" lftp.log; then
             echo "::error::LFTP deploy reported server errors (5xx). Likely disk quota or write permissions on the FTP host. Deploy is incomplete - failing the job."
+            exit 1
+          fi
+
+          if [ "$lftp_rc" -ne 0 ]; then
+            echo "::error::LFTP exited with code $lftp_rc. Deploy failed."
             exit 1
           fi
