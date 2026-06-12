@@ -198,6 +198,84 @@ if ($value < 0) {
 Cleaner than nested `if`. Use `:else` as a default.
 {% end %}
 
+For destructuring-by-shape (matching the structure of vectors and maps, not just running predicates), see [Match](#match) below.
+
+## Match
+
+`match` lives in `phel.match` and dispatches by _shape_: it destructures the subject and binds names in one step. It expands to nested `cond` + `let` at compile time, so there is no runtime overhead beyond the checks you write.
+
+```phel
+(ns my-app.main (:require phel.match :refer [match]))
+
+(defn describe [x]
+  (match [x]
+    [0]                   "zero"
+    [[a b]]               (str "pair " a " / " b)
+    [{:type :err :msg m}] (str "error: " m)
+    [(n :guard pos?)]     "positive"
+    :else                 "other"))
+
+(describe 0)                        ; => "zero"
+(describe [1 2])                    ; => "pair 1 / 2"
+(describe {:type :err :msg "boom"}) ; => "error: boom"
+(describe 5)                        ; => "positive"
+```
+
+The subject is a vector of one or more targets; every pattern is a vector whose length must equal the target count.
+
+### Pattern kinds
+
+| Pattern | Matches |
+| --- | --- |
+| `42`, `:key`, `"s"` | literal equality |
+| `_` | wildcard (matches anything, binds nothing) |
+| `sym` | binds the target to `sym` |
+| `[a b c]` | a vector of exactly 3 elements, recursively matched |
+| `[head & tail]` | a vector, binding the remaining slice to `tail` |
+| `{:k sym}` | a map with key `:k`, binding its value to `sym` |
+| `(pat :as name)` | matches `pat`, also binds the whole subject to `name` |
+| `(pat :guard pred)` | matches `pat`, then requires `(pred subject)` truthy |
+| `(:or alt1 alt2 ...)` | any alternative matches (literal/structural only, no bindings) |
+
+### Guards
+
+A `:guard` adds a runtime predicate on top of a structural pattern:
+
+```phel
+(ns my-app.main (:require phel.match :refer [match]))
+
+(defn sign [n]
+  (match [n]
+    [(x :guard neg?)] "negative"
+    [(x :guard pos?)] "positive"
+    :else             "zero"))
+
+(sign -3) ; => "negative"
+(sign 7)  ; => "positive"
+(sign 0)  ; => "zero"
+```
+
+### Rest binding
+
+End a vector pattern with `& rest` to capture the remaining slice:
+
+```phel
+(ns my-app.main (:require phel.match :refer [match]))
+
+(match [[10 20 30]]
+  [[head & tail]] (str head ":" (count tail))) ; => "10:2"
+```
+
+### Pitfalls
+
+* Each pattern vector's length must equal the target count.
+* `:else` must be the final clause.
+* `:or` alternatives may not introduce bindings; they are literal or structural only.
+* Nested patterns bind left-to-right; a later binding shadows an earlier one with the same name.
+* A `:guard` predicate runs against the raw value. Numeric predicates coerce non-numbers, so `(pos? [1 2])` is truthy. Put literal and structural patterns _before_ an open numeric guard.
+
+See also [`phel.schema`](/documentation/reference/api/schema/) for shapes reusable across validation and matching, and `case`/`cond`/`condp` above for simpler dispatch without destructuring. Full API: [match reference](/documentation/reference/api/match/).
+
 ## Loop
 
 <!-- phel-test: skip -->
@@ -501,6 +579,7 @@ For catching PHP exceptions, structured errors with `ex-info`/`ex-data`, excepti
 
 ## Next steps
 
+- [Match reference](/documentation/reference/api/match/) - all `match` pattern kinds and the full API
 - [Error handling](/documentation/language/error-handling/) - throw, catch, and structured errors in depth
 - [Functions and recursion](/documentation/language/functions-and-recursion/) - `loop`/`recur` and tail calls
 - [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding
