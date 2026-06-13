@@ -92,6 +92,14 @@ Level 2 trade-offs:
 - Tail-call rewriting eliminates per-iteration PHP stack frames (deep self-recursion no longer overflows) at the cost of a shorter stack trace inside the loop.
 - Changing the level invalidates the compiled-code cache and the incremental `phel build` output, so the next run recompiles everything once.
 
+### Spot build bloat
+
+`phel build --report` prints a per-namespace breakdown after the build: namespace count, each namespace's compiled size, the total, the fresh/cached split, and build time. Use it to catch a namespace that compiles much larger than expected and to confirm CI builds hit the cache.
+
+```bash
+vendor/bin/phel build --report
+```
+
 ## Faster functions
 
 A few language features pay off in hot paths. They are covered in full under [Functions and Recursion](/documentation/language/functions-and-recursion/#return-and-parameter-types-tag); the performance angle:

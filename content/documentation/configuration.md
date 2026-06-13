@@ -58,6 +58,7 @@ return (new \Phel\Config\PhelConfig())
     ->withEnableCompiledCodeCache(true)
     ->withEnableAsserts(true)
     ->withWarnDeprecations(false)
+    ->withOptimizationLevel(0)
     ->withMainPhelNamespace('your-ns.index')
     ->withMainPhpPath('out/index.php')
     ->withBuildDestDir('out')
@@ -85,17 +86,20 @@ return (new \Phel\Config\PhelConfig())
 | `withEnableCompiledCodeCache`          | Compiled-code cache for tests/builds. Default `true`.                                                  |
 | `withEnableAsserts`                    | Toggle runtime `assert` checks.                                                                        |
 | `withWarnDeprecations`                 | Emit warnings on deprecated APIs.                                                                      |
+| `withOptimizationLevel`                | Compiler optimization level (`0` = off, `2` = inline + tail-call rewrite). See [Performance](/documentation/performance/#optimization-levels). |
 | `withMainPhelNamespace`                | Entry ns for `phel build`.                                                                             |
 | `withMainPhpPath`                      | Generated PHP entry path.                                                                              |
 | `withBuildDestDir`                     | Output directory for `phel build`.                                                                     |
 | `withExportFromDirectories`            | Source dirs scanned by `phel export`.                                                                  |
 | `withExportNamespacePrefix`            | PHP namespace prefix for exported wrappers.                                                            |
 | `withExportTargetDirectory`            | Output dir for `phel export`. See [PHP Interop](/documentation/php-interop/#calling-phel-from-php).    |
-| `withBuildConfig` / `withExportConfig` | Replace nested config objects wholesale (rarely needed).                                               |
+| `withBuildConfig` / `withExportConfig` | Tune the nested build/export config. Pass a configurator closure to adjust it in place, or a config object to replace it wholesale. |
 
 </details>
 
 > **Note:** Old `setX()` setters are deprecated and emit notices. Use the `withX()` chain, the API is immutable.
+
+To see the merged result of all of this (and which file each value came from), run `phel config`. See [CLI commands](/documentation/tooling/cli-commands/#inspect-configuration).
 
 ## Next steps
 

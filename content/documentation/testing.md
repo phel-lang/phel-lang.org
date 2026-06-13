@@ -267,6 +267,36 @@ Run namespaces across subprocess workers to speed up large suites:
 
 Auto-disabled for `--reporter=tap`, `--list`, and when a profiler hook is installed.
 
+### Watch mode
+
+Re-run the selected tests on every change to a `.phel` file or `phel-config.php` under the project source and test directories. Combine it with selectors to tighten the loop to what you are working on:
+
+```bash
+./vendor/bin/phel test --watch
+./vendor/bin/phel test --watch --ns=my-app.users.*   # only this namespace
+```
+
+Press `Ctrl+C` to stop. A failed `=` assertion prints an expected/actual diff with a caret at the first difference, and `FAIL`/`ERROR` headlines carry the failing `deftest` name and location (`FAIL my-test (file.phel:4)`).
+
+### Re-run failures
+
+After a run, re-run only the tests that failed instead of the whole suite. The failing set is read from `<phel-dir>/last-failed.txt`:
+
+```bash
+./vendor/bin/phel test --last-failed
+./vendor/bin/phel test --last-failed --repeat=20   # hammer the flaky ones
+```
+
+### Coverage
+
+Collect line coverage mapped back to your `.phel` sources. Requires the `pcov` or `xdebug` extension (you get a clear error otherwise), and runs serially: `--parallel` is disabled for the run. Only project source files count; vendor and core are excluded.
+
+```bash
+./vendor/bin/phel test --coverage                      # per-file + total %, as text
+./vendor/bin/phel test --coverage=clover \
+  --coverage-output=coverage.xml                       # Clover XML for CI (Codecov etc.)
+```
+
 {% php_note() %}
 Test command similar to PHPUnit:
 
