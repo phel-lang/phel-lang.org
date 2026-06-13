@@ -147,11 +147,11 @@ Run a file or namespace:
 vendor/bin/phel run
 # Usage:
 #   run [options] [--] <path> [<argv>...]
-# 
+#
 # Arguments:
 #   path                  The file path that you want to run.
 #   argv                  Optional arguments
-# 
+#
 # Options:
 #   -t, --with-time       With time awareness
 ```
