@@ -112,14 +112,14 @@ Because the pipeline is lazy, you can compose transformations over a data source
 
 These return lazy sequences, so you rarely need to write `lazy-seq` yourself:
 
-- `range` — lazy sequence of numbers
-- `iterate` — infinite sequence by repeatedly applying a function
-- `repeat` — infinite sequence of a repeated value
-- `cycle` — infinite sequence by cycling through a collection
-- `map` — lazy transformation
-- `filter` — lazy filtering
-- `take` — first `n` elements (realizes them)
-- `drop` — skips first `n` elements (stays lazy)
+- `range`: lazy sequence of numbers
+- `iterate`: infinite sequence by repeatedly applying a function
+- `repeat`: infinite sequence of a repeated value
+- `cycle`: infinite sequence by cycling through a collection
+- `map`: lazy transformation
+- `filter`: lazy filtering
+- `take`: first `n` elements (realizes them)
+- `drop`: skips first `n` elements (stays lazy)
 
 ```phel
 (println (take 10 (iterate (fn [x] (* 2 x)) 1)))
@@ -176,7 +176,7 @@ Force a lazy sequence when you need all of it:
 (println (last (range 1000000)))
 ```
 
-**2. Lazy sequences in tests** — realize before asserting, otherwise you compare against an unrealized thunk:
+**2. Lazy sequences in tests**: realize before asserting, otherwise you compare against an unrealized thunk:
 
 ```phel skip
 (is (= expected (doall lazy-result)))  ; force realization
@@ -207,7 +207,7 @@ Force a lazy sequence when you need all of it:
 
 ## Further reading
 
-- [Cheat sheet — lazy sequences](/documentation/reference/cheat-sheet/#lazy-sequences) for a one-screen reference, including lazy file I/O (`line-seq`, `file-seq`, `csv-seq`).
+- [Cheat sheet: lazy sequences](/documentation/reference/cheat-sheet/#lazy-sequences) for a one-screen reference, including lazy file I/O (`line-seq`, `file-seq`, `csv-seq`).
 - [Data structures](/documentation/language/data-structures/) for the sequence functions that consume and transform these collections.
 - [Cookbook](/documentation/guides/cookbook/) for lazy pipelines applied to real tasks.
-- [Clojure: lazy sequences](https://clojure.org/reference/sequences) — the model Phel follows.
+- [Clojure: lazy sequences](https://clojure.org/reference/sequences): the model Phel follows.
