@@ -208,14 +208,29 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 </div>
 </details>
 
-## Upgrading to 0.42
+## Upgrading to 0.44
 
 ```bash
-composer require phel-lang/phel-lang:^0.42
+composer require phel-lang/phel-lang:^0.44
 ./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
 Always clear the cache after upgrading: compiled PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects too.
+
+Behaviour changes in 0.44:
+
+- Requires `gacela-project/gacela: ^1.15`. Editing `phel-config.php` takes effect immediately again (the stale merged-config cache is cleared on change).
+- `phel test` exit codes are stricter: it no longer exits `0` when nothing ran, bad paths/selectors fail loudly, and `--list` no longer appends a false `No tests matched`. CI relying on the old lenient codes may start failing as intended.
+- `await-all` (and `pmap`, built on it) now return results in input order instead of completion order. Code that tolerated shuffled concurrent results sees deterministic ordering now.
+- The docs doctest harness (`composer test-docs`, `tests/doctest/`) was removed; user-facing guides now live on [phel-lang.org](https://phel-lang.org/documentation/).
+
+New in 0.44 (config tooling + sharper test runner): `phel config` prints the merged config with provenance, `phel test --coverage` and `--watch`, `phel build --report`, `phel init --template=<name>`, optimization levels (`phel build -O <level>`), LSP PHP interop, and a REPL reload workflow (`(reload!)`, `(run-tests ...)`). See the [0.44 release notes](/releases/0-44-feedback-loop/).
+
+Behaviour changes in 0.43:
+
+- A `never` / `void` / `null` `:tag` return on a value-returning function is now a compile error instead of a load-time fatal (`mixed`, `?T`, and union/intersection tags still pass).
+
+New in 0.43 (typed PHP interop): `php/callable` first-class callables, `defstruct ^:php/readonly` fields, `defenum` methods + interfaces, `^:php/override` (`#[\Override]`), and `definterface` typed class constants. See the [0.43 release notes](/releases/0-43-first-class-callable/).
 
 Behaviour changes in 0.42:
 
@@ -234,7 +249,7 @@ New in 0.42 (richer typed PHP interop, all opt-in):
 - `iterator-seq` builds a lazy seq over any PHP `Traversable`.
 - `defstruct` `:php` blocks declare inline PHP magic methods; `phel format` and `phel.http` JSON bodies / response builders round it out.
 
-See the [0.42 release notes](/releases/0-42-life-php-everything/) for the full list.
+See the [0.42 release notes](/releases/0-42-life-everything/) for the full list.
 
 Breaking changes in 0.41:
 
