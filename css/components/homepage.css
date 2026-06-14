@@ -803,6 +803,11 @@
   flex-wrap: wrap;
 }
 
+/* Separate the "Phel by example" heading from the CTA buttons above it */
+.homepage-cta + h2 {
+  margin-top: var(--space-2xl);
+}
+
 .homepage-cta-button {
   display: inline-flex;
   align-items: center;
