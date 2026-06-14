@@ -70,6 +70,15 @@
       color: #ffffff;
     }
     .toolbar button.secondary:disabled { cursor: not-allowed; }
+    .toolbar select {
+      font: inherit;
+      padding: 0.4rem 0.6rem;
+      border-radius: 0.375rem;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--fg);
+      cursor: pointer;
+    }
     .toolbar .status { font-size: 0.85rem; color: var(--muted); }
     .dlbar {
       width: 160px;
@@ -131,6 +140,14 @@
     <div class="toolbar">
       <button id="run" disabled>Loading runtime…</button>
       <button id="share" class="secondary" type="button" title="Copy a shareable link to this code">Share</button>
+      <select id="examples" title="Load an example snippet">
+        <option value="" selected>Examples…</option>
+        <option value="sequences">Sequences</option>
+        <option value="destructuring">Destructuring</option>
+        <option value="macros">Macros</option>
+        <option value="interop">PHP interop</option>
+        <option value="data">Data structures</option>
+      </select>
       <progress id="dlbar" class="dlbar" max="100" value="0" hidden></progress>
       <span class="status" id="status">Downloading Phel WASM bundle (~80 MB, cached after first load)</span>
     </div>
@@ -202,6 +219,61 @@
       }
       clearTimeout(shareResetTimer);
       shareResetTimer = setTimeout(() => { shareBtn.textContent = original; }, 1500);
+    });
+
+    // --- Example snippets ----------------------------------------------------
+    // Each snippet is self-contained and verified against the Phel runtime.
+    const EXAMPLES = {
+      sequences: `(ns repl\\sequences)
+
+# map, filter and reduce over a vector
+(def nums [1 2 3 4 5 6])
+
+(println "doubled:" (map |(* 2 $) nums))
+(println "evens:" (filter even? nums))
+(println "sum:" (reduce + 0 nums))
+`,
+      destructuring: `(ns repl\\destructuring)
+
+# Destructure vectors and maps in let bindings
+(let [[a b & rest] [1 2 3 4 5]
+      {:name name :role role} {:name "Ada" :role "pioneer"}]
+  (println a b rest)
+  (println name "the" role))
+`,
+      macros: `(ns repl\\macros)
+
+# Define a macro: unless is the inverse of if
+(defmacro unless [test & body]
+  \`(if ,test nil (do ,@body)))
+
+(unless false
+  (println "this runs because the test is false"))
+`,
+      interop: `(ns repl\\interop)
+
+# Call PHP functions directly via the php/ prefix
+(println (php/strtoupper "phel runs on php"))
+(println (php/array_sum (php/array 1 2 3 4)))
+`,
+      data: `(ns repl\\data)
+
+# Maps, keywords and threading
+(def user {:name "Grace" :langs ["phel" "php"]})
+
+(println (get user :name))
+(println (-> user :langs count))
+`,
+    };
+
+    const examplesEl = document.getElementById('examples');
+    examplesEl.addEventListener('change', () => {
+      const code = EXAMPLES[examplesEl.value];
+      if (code) {
+        editorEl.value = code;
+        try { localStorage.setItem(STORAGE_KEY, code); } catch (_) {}
+      }
+      examplesEl.value = '';
     });
 
     // --- Download progress for the ~80 MB runtime bundle ---------------------
