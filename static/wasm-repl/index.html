@@ -427,12 +427,15 @@
           showResult('', 'normal');
           setLoading(true);
 
+          const t0 = performance.now();
           const ret = ccall('phpw_with_args', 'string', ['string', 'string', 'string'], [
             '/app/src/wasm-entry/entry-point.php',
           ]);
+          const elapsed = Math.max(1, Math.round(performance.now() - t0));
 
           const hasError = errBuffer.some((line) => !isDeprecatedNotice(line) && line.trim().length > 0);
           const kind = hasError ? 'error' : 'normal';
+          statusEl.textContent = hasError ? `Finished with errors in ${elapsed} ms` : `Ran in ${elapsed} ms`;
           const filtered = buffer.filter((line) => !isDeprecatedNotice(line));
           const text = filtered.join('');
           if (text.trim().length > 0) {
@@ -448,6 +451,7 @@
         } catch (e) {
           console.error('[phel-wasm] run failed:', e);
           showResult(String(e), 'error');
+          statusEl.textContent = 'Run failed. Check console.';
         } finally {
           isRunning = false;
           setLoading(false);
