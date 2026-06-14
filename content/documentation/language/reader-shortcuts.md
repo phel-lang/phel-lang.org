@@ -194,7 +194,7 @@ Type hints use the same syntax: `^int`, `^"?int"`, `^{:tag "\\Foo\\Bar"}`. See [
 
 ## See also
 
-- [Basic Types](/documentation/language/basic-types) — tagged literals, regex literals, deref, and comments in depth
-- [Functions and Recursion](/documentation/language/functions-and-recursion) — the `#(...)` shorthand and typed defns
-- [Macros](/documentation/language/macros) — quasiquote and auto-gensym hygiene in practice
-- [Cheat Sheet](/documentation/reference/cheat-sheet) — the one-page syntax overview
+- [Basic Types](/documentation/language/basic-types): tagged literals, regex literals, deref, and comments in depth
+- [Functions and Recursion](/documentation/language/functions-and-recursion): the `#(...)` shorthand and typed defns
+- [Macros](/documentation/language/macros): quasiquote and auto-gensym hygiene in practice
+- [Cheat Sheet](/documentation/reference/cheat-sheet): the one-page syntax overview

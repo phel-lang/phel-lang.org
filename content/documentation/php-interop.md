@@ -749,8 +749,8 @@ class MyExistingClass {
 
   public function myExistingMethod(...$arguments) {
     return $this->callPhel(
-        'my.phel.namespace', 
-        'phel-function-name', 
+        'my.phel.namespace',
+        'phel-function-name',
         ...$arguments
     );
   }

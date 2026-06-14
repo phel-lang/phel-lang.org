@@ -40,7 +40,7 @@ Variadic functions use `&`:
 (fn [a b c &]) ; A variadic function with extra arguments ignored
 
 (fn ; A multi-arity function
-  ([] "hi") 
+  ([] "hi")
   ([name] (str "hi " name))
   ([greeting name & rest] (str greeting " " name rest)))
 ```
@@ -124,8 +124,8 @@ Private functions don't export from the namespace. Two forms:
   {:private true}
   [a b]
   (+ a b))
-  
-(defn- my-private-add-function 
+
+(defn- my-private-add-function
   [a b]
   (+ a b))
 ```

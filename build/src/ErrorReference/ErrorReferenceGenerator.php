@@ -12,7 +12,7 @@ use Phel\Shared\Exceptions\ErrorCode;
  * with curated cause/fix prose. If Phel adds a code without prose here, generation
  * fails, forcing the docs to be updated alongside the bump.
  *
- * @psalm-type TEntry = array{meaning: string, cause: string, fix: string}
+ * @psalm-type TEntry = array{meaning: string, cause: string, fix: string, learnMore?: string}
  */
 final class ErrorReferenceGenerator
 {
@@ -55,6 +55,7 @@ final class ErrorReferenceGenerator
             'meaning' => 'A macro threw while expanding.',
             'cause' => 'The macro received arguments it did not expect, or its own body raised during expansion.',
             'fix' => 'Check the arguments at the call site and inspect the expansion with `(macroexpand \'(your-form ...))`.',
+            'learnMore' => '[Macros](/documentation/language/macros/).',
         ],
         'PHEL006' => [
             'meaning' => 'An inline-expanded function failed to expand.',
@@ -70,16 +71,19 @@ final class ErrorReferenceGenerator
             'meaning' => 'A binding vector is invalid.',
             'cause' => 'An odd number of binding forms in `let`/`loop`, or a binding target that cannot be destructured.',
             'fix' => 'Provide an even number of `name value` pairs and use valid destructuring targets (symbols, vectors, maps).',
+            'learnMore' => '[Destructuring](/documentation/language/destructuring/), [Global and local bindings](/documentation/language/global-and-local-bindings/).',
         ],
         'PHEL009' => [
             'meaning' => 'An interface or protocol definition (or its implementation) is invalid.',
             'cause' => 'A malformed `definterface`/`defprotocol`, or trying to implement a `defprotocol` inline in `defstruct` (only `definterface` can be implemented inline).',
             'fix' => 'Use `definterface` for inline implementation, or `defprotocol` plus `extend-type` per struct.',
+            'learnMore' => '[Interfaces](/documentation/language/interfaces/).',
         ],
         'PHEL010' => [
             'meaning' => '`recur` was used incorrectly.',
             'cause' => '`recur` appeared outside a `loop`/`fn` tail position, or with an argument count that does not match the recursion point.',
             'fix' => 'Use `recur` only in tail position, with as many arguments as the enclosing `loop`/`fn` binds.',
+            'learnMore' => '[Functions and recursion](/documentation/language/functions-and-recursion/).',
         ],
         'PHEL011' => [
             'meaning' => 'A value that is not a function was called.',
@@ -227,6 +231,9 @@ final class ErrorReferenceGenerator
                 $out .= "{$entry['meaning']}\n\n";
                 $out .= "**Common cause:** {$entry['cause']}\n\n";
                 $out .= "**Fix:** {$entry['fix']}\n";
+                if (isset($entry['learnMore'])) {
+                    $out .= "\n**Learn more:** {$entry['learnMore']}\n";
+                }
             }
         }
 

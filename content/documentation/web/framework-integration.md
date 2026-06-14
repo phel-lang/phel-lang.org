@@ -240,8 +240,8 @@ Phel models data as immutable values, not mutable identity-tracked objects. An O
 
 Two small libraries cover it:
 
-- [phel-sql](https://github.com/phel-lang/phel-sql) — HoneySQL-style. Map in, `[sql params]` out. No driver.
-- [phel-pdo](https://github.com/phel-lang/phel-pdo) — runs `[sql params]`, returns rows as maps.
+- [phel-sql](https://github.com/phel-lang/phel-sql): HoneySQL-style. Map in, `[sql params]` out. No driver.
+- [phel-pdo](https://github.com/phel-lang/phel-pdo): runs `[sql params]`, returns rows as maps.
 
 ```phel skip
 (ns shop.catalog
@@ -315,16 +315,16 @@ Every struct already implements `\Countable`, `\ArrayAccess`, and `\IteratorAggr
 
 Two related forms help framework integration:
 
-- `(defenum Status :active "active" :inactive "inactive")` — a native PHP backed enum (Doctrine/Symfony columns) plus a `Status?` predicate. An enum can implement interfaces and carry methods, reusing `defstruct`'s inline-impl machinery.
-- `(defexception NotFound \RuntimeException)` — an exception extending a chosen parent, so framework `catch` blocks match by type.
+- `(defenum Status :active "active" :inactive "inactive")`: a native PHP backed enum (Doctrine/Symfony columns) plus a `Status?` predicate. An enum can implement interfaces and carry methods, reusing `defstruct`'s inline-impl machinery.
+- `(defexception NotFound \RuntimeException)`: an exception extending a chosen parent, so framework `catch` blocks match by type.
 
 For the full semantics of typed emission, native enums, and exceptions, see [Native enums and exceptions](/documentation/php-interop/#native-enums-and-exceptions) and the rest of the [PHP Interop](/documentation/php-interop/) reference.
 
 ### Controllers, transactions, migrations
 
-- **Routes/commands:** an exported `defn` can carry `^{:php/attr [:Symfony.Component.Routing.Attribute/Route "/products/{id}"]}`, so `phel export` emits the `#[Route]` on the generated wrapper — no hand-written controller shim.
+- **Routes/commands:** an exported `defn` can carry `^{:php/attr [:Symfony.Component.Routing.Attribute/Route "/products/{id}"]}`, so `phel export` emits the `#[Route]` on the generated wrapper: no hand-written controller shim.
 - **Transactions:** wrap writes with phel-pdo's transaction helpers; keep the pure work outside the transaction and only the effect inside.
-- **Migrations:** stay in PHP-land — reuse `doctrine/migrations` or your framework's tool. Phel does not need its own.
+- **Migrations:** stay in PHP-land: reuse `doctrine/migrations` or your framework's tool. Phel does not need its own.
 
 ## Notes
 

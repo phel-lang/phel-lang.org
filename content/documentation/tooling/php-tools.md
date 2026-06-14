@@ -19,7 +19,7 @@ Any PHP function via `php/` prefix:
 ;; int(4)
 ```
 
-```phel 
+```phel
 ;; Directly dumping the result of a function
 (php/var_dump (+ 3 3))
 ;; OUTPUT:

@@ -26,7 +26,7 @@ A symbol could not be resolved to a definition in the current scope.
 
 **Common cause:** A typo, a missing `(:require ...)` for the namespace the symbol lives in, an alias that does not match, or using a binding before it is defined.
 
-**Fix:** Check the spelling, require the namespace (e.g. `(:require phel.string :as str)` for `str/...`), or move the definition above its first use. The error message suggests near matches.
+**Fix:** Check the spelling, require the namespace (e.g. `(:require phel\string :as str)` for `str/...`), or move the definition above its first use. The error message suggests near matches.
 
 ### PHEL002 : Arity error
 
