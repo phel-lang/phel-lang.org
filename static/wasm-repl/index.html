@@ -14,6 +14,7 @@
       --accent-strong: #7e22ce;
       --panel: #f8fafc;
       --code-bg: #f8fafc;
+      --error: #dc2626;
     }
     @media (prefers-color-scheme: dark) {
       :root {
@@ -23,6 +24,7 @@
         --border: rgba(255, 255, 255, 0.12);
         --panel: #111827;
         --code-bg: #0b1220;
+        --error: #f87171;
       }
     }
     * { box-sizing: border-box; }
@@ -126,6 +128,32 @@
       #editor { border-right: 0; border-bottom: 1px solid var(--border); }
     }
     #editor:focus { box-shadow: inset 0 0 0 2px var(--accent); }
+    .outpane {
+      position: relative;
+      min-height: 0;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    .outbar {
+      position: absolute;
+      top: 0.4rem;
+      right: 0.6rem;
+      display: flex;
+      gap: 0.35rem;
+      z-index: 1;
+    }
+    .outbar button {
+      font: inherit;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0.3rem;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: var(--muted);
+      cursor: pointer;
+      opacity: 0.85;
+    }
+    .outbar button:hover { color: var(--fg); opacity: 1; }
     #output {
       background: var(--bg);
       white-space: pre-wrap;
@@ -133,6 +161,7 @@
       margin: 0;
     }
     #output.muted { color: var(--muted); }
+    #output.error { color: var(--error); }
   </style>
 </head>
 <body>
@@ -164,7 +193,13 @@
 
 (print (greet my-name))
 </textarea>
-      <pre id="output" class="muted">Output appears here.</pre>
+      <div class="outpane">
+        <div class="outbar">
+          <button id="copyOut" type="button" title="Copy output">Copy</button>
+          <button id="clearOut" type="button" title="Clear output">Clear</button>
+        </div>
+        <pre id="output" class="muted">Output appears here.</pre>
+      </div>
     </div>
   </div>
 
@@ -172,11 +207,14 @@
     import php from "./build/php-web.mjs";
 
     const buffer = [];
+    const errBuffer = [];
     let isRunning = false;
     const editorEl = document.getElementById('editor');
     const outputEl = document.getElementById('output');
     const runBtn = document.getElementById('run');
     const shareBtn = document.getElementById('share');
+    const copyOutBtn = document.getElementById('copyOut');
+    const clearOutBtn = document.getElementById('clearOut');
     const statusEl = document.getElementById('status');
 
     const isDeprecatedNotice = (s) => /^Deprecated:.*\bon line \d+\s*$/.test(s);
@@ -338,22 +376,38 @@
       runBtn.textContent = loading ? 'Running…' : 'Run';
     }
 
-    function showResult(text, muted) {
+    // kind: 'normal' (default), 'muted' (placeholder/info), 'error' (red)
+    function showResult(text, kind) {
       outputEl.textContent = text;
-      outputEl.classList.toggle('muted', !!muted);
+      outputEl.classList.toggle('muted', kind === 'muted');
+      outputEl.classList.toggle('error', kind === 'error');
     }
+
+    let copyResetTimer;
+    copyOutBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(outputEl.textContent || '');
+        copyOutBtn.textContent = 'Copied!';
+        clearTimeout(copyResetTimer);
+        copyResetTimer = setTimeout(() => { copyOutBtn.textContent = 'Copy'; }, 1500);
+      } catch (_) {}
+    });
+
+    clearOutBtn.addEventListener('click', () => {
+      showResult('Output appears here.', 'muted');
+    });
 
     let runtime;
     try {
       runtime = await php({
         print(data) { buffer.push(data); },
-        printErr(data) { buffer.push(data); console.warn('[phel-wasm:stderr]', data); },
+        printErr(data) { buffer.push(data); errBuffer.push(data); console.warn('[phel-wasm:stderr]', data); },
       });
     } catch (e) {
       console.error('[phel-wasm] runtime init failed:', e);
       dlbar.hidden = true;
       statusEl.textContent = 'Failed to load runtime. Check console.';
-      showResult(String(e), true);
+      showResult(String(e), 'error');
     }
 
     if (runtime) {
@@ -368,29 +422,32 @@
         try {
           FS.writeFile('/app/src/test.phel', editorEl.value);
           buffer.length = 0;
+          errBuffer.length = 0;
           isRunning = true;
-          showResult('', false);
+          showResult('', 'normal');
           setLoading(true);
 
           const ret = ccall('phpw_with_args', 'string', ['string', 'string', 'string'], [
             '/app/src/wasm-entry/entry-point.php',
           ]);
 
+          const hasError = errBuffer.some((line) => !isDeprecatedNotice(line) && line.trim().length > 0);
+          const kind = hasError ? 'error' : 'normal';
           const filtered = buffer.filter((line) => !isDeprecatedNotice(line));
           const text = filtered.join('');
           if (text.trim().length > 0) {
-            showResult(text, false);
+            showResult(text, kind);
           } else if (buffer.length > 0) {
-            showResult(buffer.join(''), false);
+            showResult(buffer.join(''), kind);
           } else if (typeof ret === 'string' && ret.length > 0) {
-            showResult(ret, false);
+            showResult(ret, kind);
           } else {
-            showResult('(no output: buffer empty, ret=' + JSON.stringify(ret) + ')', true);
+            showResult('(no output: buffer empty, ret=' + JSON.stringify(ret) + ')', 'muted');
           }
           console.debug('[phel-wasm] buffer:', buffer, 'ret:', ret);
         } catch (e) {
           console.error('[phel-wasm] run failed:', e);
-          showResult(String(e), true);
+          showResult(String(e), 'error');
         } finally {
           isRunning = false;
           setLoading(false);
