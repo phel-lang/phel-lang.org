@@ -120,7 +120,6 @@
   <div class="app">
     <div class="toolbar">
       <button id="run" disabled>Loading runtime…</button>
-      <button id="test" disabled type="button" style="background:#374151;border-color:#374151">Test PHP</button>
       <progress id="dlbar" class="dlbar" max="100" value="0" hidden></progress>
       <span class="status" id="status">Downloading Phel WASM bundle (~80 MB, cached after first load)</span>
     </div>
@@ -235,35 +234,11 @@
 
     if (runtime) {
       const { ccall, FS } = runtime;
-      try { FS.writeFile('/app/test.php', "<?php echo 'hello world';"); } catch (_) {}
 
       dlbar.hidden = true;
       runBtn.disabled = false;
       runBtn.textContent = 'Run';
-      const testBtn = document.getElementById('test');
-      testBtn.disabled = false;
       statusEl.textContent = 'Ready. Edit code on the left, click Run.';
-
-      testBtn.addEventListener('click', () => {
-        try {
-          buffer.length = 0;
-          showResult('', false);
-          const ret = ccall('phpw_with_args', 'string', ['string', 'string', 'string'], [
-            '/app/test.php',
-          ]);
-          const text = buffer.join('');
-          showResult(
-            'Test PHP result:\n' +
-            '  buffer.length=' + buffer.length + '\n' +
-            '  buffer=' + JSON.stringify(buffer) + '\n' +
-            '  ret=' + JSON.stringify(ret),
-            false
-          );
-        } catch (e) {
-          console.error('[phel-wasm:test] failed:', e);
-          showResult('Test PHP threw: ' + String(e), true);
-        }
-      });
 
       runBtn.addEventListener('click', () => {
         try {
