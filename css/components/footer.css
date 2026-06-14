@@ -97,7 +97,7 @@
 /* Footer Links Section */
 .footer-links {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, 1fr);
   gap: var(--space-xl);
 }
 
@@ -246,7 +246,7 @@
   }
 
   .footer-column {
-    margin-top: calc(1.5em + var(--space-lg) + var(--space-md));
+    margin-top: 0;
   }
 
   .footer-bottom {
