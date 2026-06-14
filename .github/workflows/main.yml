@@ -4,6 +4,13 @@ on:
       - master
   workflow_dispatch:
 
+# Serialize deploys: the FTP mirror is last-writer-wins, so parallel runs from
+# back-to-back merges can clobber newer content. Queue runs instead of cancelling
+# so every push still ships, in order.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
