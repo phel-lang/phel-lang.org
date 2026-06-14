@@ -60,6 +60,16 @@
       border-color: var(--accent-strong);
     }
     .toolbar button:disabled { opacity: 0.6; cursor: progress; }
+    .toolbar button.secondary {
+      background: transparent;
+      color: var(--accent);
+    }
+    .toolbar button.secondary:hover:not(:disabled),
+    .toolbar button.secondary:focus-visible:not(:disabled) {
+      background: var(--accent);
+      color: #ffffff;
+    }
+    .toolbar button.secondary:disabled { cursor: not-allowed; }
     .toolbar .status { font-size: 0.85rem; color: var(--muted); }
     .dlbar {
       width: 160px;
@@ -120,6 +130,7 @@
   <div class="app">
     <div class="toolbar">
       <button id="run" disabled>Loading runtime…</button>
+      <button id="share" class="secondary" type="button" title="Copy a shareable link to this code">Share</button>
       <progress id="dlbar" class="dlbar" max="100" value="0" hidden></progress>
       <span class="status" id="status">Downloading Phel WASM bundle (~80 MB, cached after first load)</span>
     </div>
@@ -148,9 +159,50 @@
     const editorEl = document.getElementById('editor');
     const outputEl = document.getElementById('output');
     const runBtn = document.getElementById('run');
+    const shareBtn = document.getElementById('share');
     const statusEl = document.getElementById('status');
 
     const isDeprecatedNotice = (s) => /^Deprecated:.*\bon line \d+\s*$/.test(s);
+
+    // --- Persistence + shareable links ---------------------------------------
+    // Editor content survives reloads (localStorage) and can be shared via a
+    // URL hash (#code=<base64>). A hash, when present, wins over local storage
+    // so a shared link always shows the sender's code.
+    const STORAGE_KEY = 'phel-repl-code';
+    const encodeCode = (s) => btoa(unescape(encodeURIComponent(s)));
+    const decodeCode = (s) => decodeURIComponent(escape(atob(s)));
+
+    function restoreCode() {
+      const hashMatch = /[#&]code=([^&]+)/.exec(location.hash);
+      if (hashMatch) {
+        try { editorEl.value = decodeCode(decodeURIComponent(hashMatch[1])); return; }
+        catch (_) { /* fall through to storage/default */ }
+      }
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved != null) editorEl.value = saved;
+      } catch (_) {}
+    }
+    restoreCode();
+
+    editorEl.addEventListener('input', () => {
+      try { localStorage.setItem(STORAGE_KEY, editorEl.value); } catch (_) {}
+    });
+
+    let shareResetTimer;
+    shareBtn.addEventListener('click', async () => {
+      const url = location.origin + location.pathname + '#code=' + encodeURIComponent(encodeCode(editorEl.value));
+      const original = shareBtn.textContent;
+      try {
+        await navigator.clipboard.writeText(url);
+        shareBtn.textContent = 'Copied!';
+      } catch (_) {
+        location.hash = 'code=' + encodeURIComponent(encodeCode(editorEl.value));
+        shareBtn.textContent = 'Link in URL';
+      }
+      clearTimeout(shareResetTimer);
+      shareResetTimer = setTimeout(() => { shareBtn.textContent = original; }, 1500);
+    });
 
     // --- Download progress for the ~80 MB runtime bundle ---------------------
     // Emscripten fetches the runtime via fetch() or XHR with no built-in UI, so
