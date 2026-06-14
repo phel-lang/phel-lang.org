@@ -86,6 +86,25 @@ This starts an [nREPL](https://nrepl.org/) server (Bencode over TCP) that nREPL-
 
 Defaults are port `7888` and host `127.0.0.1`. Override either with the flags above. The server is also listed under [CLI commands](/documentation/tooling/cli-commands/#nrepl) alongside the other tooling entry points.
 
+Two nREPL ops back the [REPL-driven workflow](/documentation/tooling/repl/#reload-changed-code): `reload` (with an `all` param to force a full reload) and `run-tests` (an `ns` param plus an optional `var`). Bind them to editor commands for "reload changed namespaces" and "run the test under the cursor".
+
+## Language Server (LSP)
+
+For editors that speak the Language Server Protocol rather than nREPL, Phel ships an LSP server (v3.17 over stdio, JSON-RPC with `Content-Length` framing):
+
+```bash
+vendor/bin/phel lsp
+```
+
+It provides hover, go-to-definition, find-references, completion, document and workspace symbols, rename, formatting, and debounced diagnostics. On top of Phel symbols, completion is PHP-interop-aware:
+
+- instance methods and properties after `(php/-> receiver ...)`
+- static methods and constants after `(php/:: Class ...)`
+- class names in `(php/new ...)` and `\Fully\Qualified` positions
+- global functions after the `php/` prefix
+
+Hover shows the reflected signature for PHP methods, functions, and classes, and signature help fires inside `(php/new ...)` and method calls. The receiver's type is inferred from `:tag` metadata, an inline `(php/new \Foo)`, or a local `(php/new ...)` binding; when the type is unknown, completion simply does nothing rather than emitting noise or false diagnostics.
+
 ## Next steps
 
 - [REPL](/documentation/tooling/repl/) - the interactive loop your editor connects to

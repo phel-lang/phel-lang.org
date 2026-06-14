@@ -236,6 +236,14 @@ user:2> (test-ns 'my.app.tests)
 ; Runs all tests in the namespace and prints results
 ```
 
+`phel.repl` also exposes `run-tests` and `run-test`, which load the namespace first if needed: `run-tests` takes one or more namespace symbols, `run-test` a single fully qualified test symbol:
+
+<!-- phel-test: skip -->
+```phel
+user:3> (run-tests 'my-app.users-test 'my-app.handlers-test)
+user:4> (run-test 'my-app.users-test/creates-a-user)
+```
+
 See also [Testing](/documentation/testing/) for `reset-stats`, `get-stats`, and `restore-stats`.
 
 ## Auto-injected utilities
@@ -287,6 +295,21 @@ user:8> (fizzbuzz 7)
 user:9> (map fizzbuzz (range 1 16))
 @[1 2 "Fizz" 4 "Buzz" "Fizz" 7 8 "Fizz" "Buzz" 11 "Fizz" 13 14 "FizzBuzz"]
 ```
+
+### Reload changed code
+
+Edit files in your editor and pull the changes into the running REPL without restarting it. `(reload!)` re-evaluates only project namespaces whose source changed since the last load, plus their dependents, in dependency order:
+
+<!-- phel-test: skip -->
+```phel
+user:1> (reload!)
+; => @[my-app.users my-app.handlers]   ; reloaded the changed ns and what depends on it
+
+user:2> (reload-all!)
+; => force-reloads every loaded project namespace, ignoring mtimes
+```
+
+`reload!`, `reload-all!`, `run-tests`, and `run-test` live in `phel.repl` and load automatically in the REPL and over nREPL. Editors can bind the matching nREPL ops `reload` (with an `all` param) and `run-tests` (an `ns` plus optional `var` param) to "reload changed" and "run the test under the cursor".
 
 ### Explore PHP interop
 

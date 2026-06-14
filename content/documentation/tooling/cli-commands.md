@@ -31,6 +31,8 @@ vendor/bin/phel init
 #       --dry-run         Show what would be created without writing anything
 #       --no-gitignore    Skip generating .gitignore
 #       --no-tests        Skip generating a test file
+#   -t, --template[=NAME] Scaffold from a bundled example; omit the value to list
+#       --list-templates  List available project templates and exit
 ```
 
 Defaults to **Flat** layout (`src/`, `tests/`). `--nested` for `src/phel/`. `--minimal` for a single root file.
@@ -46,6 +48,17 @@ vendor/bin/phel init my-app --nested
 vendor/bin/phel init my-app --dry-run
 ```
 
+Scaffold from a bundled, runnable example instead of a bare skeleton. The template's namespaces, `composer.json`, and entry points are renamed to your project name. Composes with `--dry-run` and `--force`.
+
+```bash
+# List the bundled templates
+vendor/bin/phel init --list-templates
+# http-json-api, todo-app, cli-wordcount
+
+# Scaffold a project from a template
+vendor/bin/phel init my-api --template=http-json-api
+```
+
 ## Build the project
 
 ```bash
@@ -56,9 +69,21 @@ vendor/bin/phel build
 # Options:
 #       --cache|--no-cache            Enable cache
 #       --source-map|--no-source-map  Enable source maps
+#   -O, --optimization-level=LEVEL    Override configured level (0 = off, 2 = inline + tail-call rewrite)
+#       --report                      Print a build report (namespaces, sizes, time)
 ```
 
 Compiles Phel to PHP, writing to the configured main path (entry point `out/index.php`). Run the resulting PHP directly. Skips recompilation, improving runtime.
+
+```bash
+# Build with optimizations on (inlining + self-recursive tail-call rewriting)
+vendor/bin/phel build -O 2
+
+# Print a build summary to spot bloat and verify CI builds
+vendor/bin/phel build --report
+```
+
+`-O` overrides the level set via `withOptimizationLevel(...)` in `phel-config.php`. See [Performance](/documentation/performance/) for what each level does. `--report` prints namespace count, per-namespace compiled size, total size, the fresh/cached breakdown, and build time.
 
 [Configuration](/documentation/configuration/) in `phel-config.php`:
 ```php
@@ -122,11 +147,11 @@ Run a file or namespace:
 vendor/bin/phel run
 # Usage:
 #   run [options] [--] <path> [<argv>...]
-# 
+#
 # Arguments:
 #   path                  The file path that you want to run.
 #   argv                  Optional arguments
-# 
+#
 # Options:
 #   -t, --with-time       With time awareness
 ```
@@ -165,9 +190,29 @@ vendor/bin/phel test
 #       --seed=INT          Seed used for randomized order.
 #       --random-order      Run tests in random order (uses --seed if given).
 #       --parallel=N        Run namespaces in subprocess workers: int, "auto" (capped at 8), or "max".
+#       --watch             Re-run selected tests on every .phel / phel-config.php change.
+#       --last-failed       Re-run only tests that failed on the previous run.
+#       --slowest=N         Print the N slowest tests after the summary (0 disables).
+#       --stack-trace       Print the full PHP stack trace for each errored test.
+#       --coverage[=FORMAT] Collect line coverage (text|clover) via pcov or xdebug.
+#       --coverage-output=PATH  Write the coverage report to a file (use with --coverage=clover for CI).
 ```
 
 Test selectors and reporters: see [Testing](/documentation/testing/).
+
+```bash
+# Re-run on every change while you work
+vendor/bin/phel test --watch
+
+# Re-run only what failed last time
+vendor/bin/phel test --last-failed
+
+# Line coverage as text, or Clover XML for CI
+vendor/bin/phel test --coverage
+vendor/bin/phel test --coverage=clover --coverage-output=coverage.xml
+```
+
+`--coverage` needs pcov or xdebug and runs serially (it disables `--parallel` for that run). Only project source files count; vendor and core are excluded.
 
 [Configuration](/documentation/configuration/) in `phel-config.php`:
 ```php
@@ -274,6 +319,8 @@ LSP v3.17 over stdio. Supports hover, definition, references, completion, docume
 vendor/bin/phel lsp
 ```
 
+PHP interop is completion-aware: instance methods/properties after `(php/-> receiver ...)`, static methods/constants after `(php/:: Class ...)`, class names in `(php/new ...)` and `\Fully\Qualified` positions, and global functions after `php/`. Hover shows the reflected signature for PHP methods, functions, and classes; signature help fires inside `(php/new ...)` and method calls. Receiver types come from `:tag` metadata, an inline `(php/new \Foo)`, or a local `(php/new ...)` binding; an unknown type degrades to no completion with no spurious diagnostics. See [Editor support](/documentation/tooling/editor-support/).
+
 
 ## Analyze and index
 
@@ -318,6 +365,27 @@ vendor/bin/phel profile path/to/file.phel
 #   --output=PATH     Write report to PATH
 ```
 
+
+## Inspect configuration
+
+Print the effective configuration and where each part comes from. Useful when a `phel-config.php`, a `phel-config-local.php` override, or the `PHEL_DIR` env var is not taking effect as you expect.
+
+```bash
+vendor/bin/phel config
+# Sources:
+#  - project root: /path/to/project
+#  - phel-config.php: not found, using auto-detected defaults
+#  - phel-config-local.php: not present
+#  - PHEL_DIR env: (unset)
+#
+# Effective config:
+# { "src-dirs": ["src"], "test-dirs": ["tests"], ... }
+
+# Machine-readable: just the effective config as JSON
+vendor/bin/phel config --json
+```
+
+See [Configuration](/documentation/configuration/) for every setter.
 
 ## Clear caches
 
