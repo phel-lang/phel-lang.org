@@ -458,16 +458,65 @@
         }
       });
 
+      // --- Editor key handling: indentation, run shortcut, bracket pairing --
+      const PAIRS = { '(': ')', '[': ']', '{': '}', '"': '"' };
+      const CLOSERS = new Set([')', ']', '}', '"']);
+
+      // Programmatic edits don't fire 'input', so dispatch it to keep autosave
+      // (and any other input listeners) in sync.
+      function setEditor(value, caretStart, caretEnd) {
+        editorEl.value = value;
+        editorEl.selectionStart = caretStart;
+        editorEl.selectionEnd = caretEnd == null ? caretStart : caretEnd;
+        editorEl.dispatchEvent(new Event('input'));
+      }
+
       editorEl.addEventListener('keydown', (e) => {
+        const start = editorEl.selectionStart;
+        const end = editorEl.selectionEnd;
+        const val = editorEl.value;
+
         if (e.key === 'Tab') {
           e.preventDefault();
-          const start = editorEl.selectionStart;
-          const end = editorEl.selectionEnd;
-          editorEl.value = editorEl.value.slice(0, start) + '  ' + editorEl.value.slice(end);
-          editorEl.selectionStart = editorEl.selectionEnd = start + 2;
-        } else if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+          setEditor(val.slice(0, start) + '  ' + val.slice(end), start + 2);
+          return;
+        }
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
           e.preventDefault();
           runBtn.click();
+          return;
+        }
+        if (e.metaKey || e.ctrlKey || e.altKey) return;
+
+        // Open bracket/quote: auto-close, wrapping any selected text.
+        if (PAIRS[e.key]) {
+          const open = e.key;
+          // A quote right before an identical quote skips over instead of nesting.
+          if (open === '"' && start === end && val[start] === '"') {
+            e.preventDefault();
+            setEditor(val, start + 1);
+            return;
+          }
+          e.preventDefault();
+          const inner = val.slice(start, end);
+          setEditor(val.slice(0, start) + open + inner + PAIRS[open] + val.slice(end), start + 1, end + 1);
+          return;
+        }
+
+        // Typing a closer right before the same closer just steps over it.
+        if (start === end && CLOSERS.has(e.key) && val[start] === e.key) {
+          e.preventDefault();
+          setEditor(val, start + 1);
+          return;
+        }
+
+        // Backspace between an empty pair removes both characters.
+        if (e.key === 'Backspace' && start === end && start > 0) {
+          const prev = val[start - 1];
+          if (PAIRS[prev] && PAIRS[prev] === val[start]) {
+            e.preventDefault();
+            setEditor(val.slice(0, start - 1) + val.slice(start + 1), start - 1);
+          }
         }
       });
     }
