@@ -61,6 +61,20 @@
     }
     .toolbar button:disabled { opacity: 0.6; cursor: progress; }
     .toolbar .status { font-size: 0.85rem; color: var(--muted); }
+    .dlbar {
+      width: 160px;
+      height: 0.65rem;
+      flex: 0 0 auto;
+      accent-color: var(--accent);
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      overflow: hidden;
+      background: var(--panel);
+    }
+    .dlbar[hidden] { display: none; }
+    .dlbar::-webkit-progress-bar { background: var(--panel); }
+    .dlbar::-webkit-progress-value { background: var(--accent); }
+    .dlbar::-moz-progress-bar { background: var(--accent); }
     .panes {
       flex: 1 1 auto;
       display: grid;
@@ -107,6 +121,7 @@
     <div class="toolbar">
       <button id="run" disabled>Loading runtime…</button>
       <button id="test" disabled type="button" style="background:#374151;border-color:#374151">Test PHP</button>
+      <progress id="dlbar" class="dlbar" max="100" value="0" hidden></progress>
       <span class="status" id="status">Downloading Phel WASM bundle (~80 MB, cached after first load)</span>
     </div>
     <div class="panes">
@@ -138,6 +153,63 @@
 
     const isDeprecatedNotice = (s) => /^Deprecated:.*\bon line \d+\s*$/.test(s);
 
+    // --- Download progress for the ~80 MB runtime bundle ---------------------
+    // Emscripten fetches the runtime via fetch() or XHR with no built-in UI, so
+    // we wrap both transports to surface real byte progress instead of a static
+    // "Loading…" label. Only sizable downloads are tracked; the small .wasm is
+    // left untouched so WebAssembly.instantiateStreaming keeps working.
+    const dlbar = document.getElementById('dlbar');
+    const BIG_DOWNLOAD = 4 * 1024 * 1024;
+    const toMB = (b) => (b / (1024 * 1024)).toFixed(1);
+
+    function reportProgress(loaded, total) {
+      if (total) {
+        const pct = Math.min(100, Math.round((loaded / total) * 100));
+        dlbar.hidden = false;
+        dlbar.value = pct;
+        if (pct >= 100) {
+          dlbar.hidden = true;
+          statusEl.textContent = 'Initializing runtime…';
+        } else {
+          statusEl.textContent = `Downloading Phel runtime: ${toMB(loaded)} / ${toMB(total)} MB (${pct}%)`;
+        }
+      } else {
+        dlbar.hidden = true;
+        statusEl.textContent = `Downloading Phel runtime: ${toMB(loaded)} MB…`;
+      }
+    }
+
+    const _fetch = window.fetch.bind(window);
+    window.fetch = async (...args) => {
+      const url = (typeof args[0] === 'string' ? args[0] : (args[0] && args[0].url)) || '';
+      const res = await _fetch(...args);
+      // leave .wasm to instantiateStreaming, only meter large data downloads
+      if (/\.wasm(\?|$)/.test(url) || !res.body || !res.ok) return res;
+      const total = Number(res.headers.get('content-length')) || 0;
+      if (total && total < BIG_DOWNLOAD) return res;
+      const reader = res.body.getReader();
+      let loaded = 0;
+      const stream = new ReadableStream({
+        async pull(controller) {
+          const { done, value } = await reader.read();
+          if (done) { controller.close(); return; }
+          loaded += value.byteLength;
+          if (total >= BIG_DOWNLOAD || (!total && loaded >= BIG_DOWNLOAD)) reportProgress(loaded, total);
+          controller.enqueue(value);
+        },
+        cancel(reason) { return reader.cancel(reason); },
+      });
+      return new Response(stream, { status: res.status, statusText: res.statusText, headers: res.headers });
+    };
+
+    const _xhrOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (...openArgs) {
+      this.addEventListener('progress', (e) => {
+        if (e.lengthComputable && e.total >= BIG_DOWNLOAD) reportProgress(e.loaded, e.total);
+      });
+      return _xhrOpen.apply(this, openArgs);
+    };
+
     function setLoading(loading) {
       runBtn.disabled = loading;
       runBtn.textContent = loading ? 'Running…' : 'Run';
@@ -156,6 +228,7 @@
       });
     } catch (e) {
       console.error('[phel-wasm] runtime init failed:', e);
+      dlbar.hidden = true;
       statusEl.textContent = 'Failed to load runtime. Check console.';
       showResult(String(e), true);
     }
@@ -164,6 +237,7 @@
       const { ccall, FS } = runtime;
       try { FS.writeFile('/app/test.php', "<?php echo 'hello world';"); } catch (_) {}
 
+      dlbar.hidden = true;
       runBtn.disabled = false;
       runBtn.textContent = 'Run';
       const testBtn = document.getElementById('test');
