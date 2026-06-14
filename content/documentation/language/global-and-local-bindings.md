@@ -1,11 +1,15 @@
 +++
 title = "Global and local bindings"
-weight = 5
+weight = 3
+description = "Bind values to names with def and let, rebind dynamic vars with binding, and manage mutable state with atoms"
 aliases = ["/documentation/global-and-local-bindings"]
 +++
 
+How you name things in Phel: `def` for globals, `let` for locals, `binding` for dynamic vars, and `atom` for the rare mutable state.
+
 ## Definition (def)
 
+<!-- phel-test: skip -->
 ```phel
 (def name meta? value)
 ```
@@ -27,6 +31,7 @@ Attach metadata: a Keyword, String, or Map.
 
 ## Local bindings (let)
 
+<!-- phel-test: skip -->
 ```phel
 (let [bindings*] expr*)
 ```
@@ -71,6 +76,7 @@ $x = 10;  // Can reassign
 
 Vars must be tagged `^:dynamic` at their `def`, otherwise `binding` throws. To swap a non-dynamic var for the duration of an expression (e.g. mocking), use `with-redefs`.
 
+<!-- phel-test: skip -->
 ```phel
 ;; Example 1: Simple binding demonstration
 (def ^:dynamic *config* "production")
@@ -130,9 +136,15 @@ Vars must be tagged `^:dynamic` at their `def`, otherwise `binding` throws. To s
 `with-bindings` rebinds dynamic vars from a `Var -> value` map:
 
 ```phel
+(def ^:dynamic *db-host* "production-db")
+(def ^:dynamic *db-port* 5432)
+
+(defn connect []
+  (str "Connecting to " *db-host* ":" *db-port*))
+
 (with-bindings {#'*db-host* "test-db"
                 #'*db-port* 3306}
-  (connect))
+  (connect))  ; => "Connecting to test-db:3306"
 ```
 
 {% php_note() %}
@@ -162,6 +174,7 @@ Useful for testing code with global state or external systems.
 
 ## Atoms
 
+<!-- phel-test: skip -->
 ```phel
 (atom value)
 ```
@@ -228,4 +241,10 @@ $count++;
 
 Prefer immutable data structures. Atoms mainly for PHP interop or app state.
 {% end %}
+
+## Next steps
+
+- [Control flow](/documentation/language/control-flow/) - branch and loop over your bindings
+- [Functions and recursion](/documentation/language/functions-and-recursion/) - define and compose behavior
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding
 

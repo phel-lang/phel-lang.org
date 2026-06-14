@@ -1,24 +1,32 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const container = document.getElementById('animated-repl');
   if (!container) return;
 
-  const lines = [
-    { type: 'shell', text: 'docker run -it --rm phellang/repl', delay: 40 },
-    { type: 'output', text: 'Welcome to the Phel Repl', delay: 0 },
-    { type: 'output', text: 'Type "exit" or press Ctrl-D to exit.', delay: 0 },
-    { type: 'prompt', text: '(+ 1 2 3)', delay: 60 },
-    { type: 'result', text: '6', delay: 0 },
-    { type: 'prompt', text: '(def name "World")', delay: 50 },
-    { type: 'result', text: "#'user/name", delay: 0 },
-    { type: 'prompt', text: '(str "Hello, " name "!")', delay: 45 },
-    { type: 'result', text: '"Hello, World!"', delay: 0 },
-    { type: 'prompt', text: '(defn greet [who] (str "Hi, " who "!"))', delay: 40 },
-    { type: 'result', text: "#'user/greet", delay: 0 },
-    { type: 'prompt', text: '(greet "PHP developer")', delay: 50 },
-    { type: 'result', text: '"Hi, PHP developer!"', delay: 0 },
-    { type: 'prompt', text: '(->> (range 1 6) (map (fn [x] (* x x))) (reduce +))', delay: 35 },
-    { type: 'result', text: '55', delay: 0 },
+  // Prompt/result pairs are generated from REAL `phel repl` output at build
+  // time (build/generate-repl-showcase.php) so the demo can never drift from
+  // what Phel actually prints. A tiny static fallback keeps the homepage from
+  // going blank if the data file fails to load.
+  const fallback = [
+    { prompt: '(map inc [1 2 3])', result: '@[2 3 4]' },
+    { prompt: '(greet "phel")', result: '"hello, phel"' },
   ];
+
+  let pairs = fallback;
+  try {
+    const res = await fetch('/animated-repl-data.json', { cache: 'no-cache' });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) pairs = data;
+    }
+  } catch (_) {
+    // keep fallback
+  }
+
+  const lines = [];
+  for (const { prompt, result } of pairs) {
+    lines.push({ type: 'prompt', text: prompt, delay: 30 });
+    lines.push({ type: 'result', text: result, delay: 0 });
+  }
 
   const terminal = document.createElement('div');
   terminal.className = 'terminal';
@@ -75,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     for (let i = 0; i < text.length; i++) {
       lineEl.textContent += text[i];
-      await sleep(charDelay + Math.random() * 20);
+      await sleep(charDelay + Math.random() * 14);
     }
   }
 
@@ -94,20 +102,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (line.delay > 0) {
         const textSpan = document.createElement('span');
         div.appendChild(textSpan);
-        await sleep(300);
+        await sleep(100);
         await typeLine(textSpan, line.text, line.delay);
-        await sleep(400);
+        await sleep(140);
       } else {
         const textSpan = document.createElement('span');
         textSpan.textContent = line.text;
         div.appendChild(textSpan);
-        await sleep(100);
+        await sleep(40);
       }
 
       body.scrollTop = body.scrollHeight;
     }
 
-    await sleep(1000);
+    await sleep(400);
     const replay = document.createElement('div');
     replay.className = 'terminal-replay';
     replay.innerHTML = '<button class="terminal-replay-btn" title="Replay">&#8635; Replay</button>';
@@ -121,14 +129,5 @@ document.addEventListener('DOMContentLoaded', () => {
     isRunning = false;
   }
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting && !isRunning) {
-        observer.disconnect();
-        run();
-      }
-    });
-  }, { threshold: 0.3 });
-
-  observer.observe(container);
+  run();
 });

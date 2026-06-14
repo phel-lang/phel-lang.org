@@ -22,6 +22,7 @@
   max-width: 680px;
   margin: 2rem auto;
   border: 1px solid var(--t-header-border);
+  text-align: left;
 }
 
 .dark .terminal {
@@ -73,7 +74,7 @@
 .terminal-body {
   background: var(--t-body-bg);
   padding: 1rem 1.25rem;
-  min-height: 280px;
+  min-height: 320px;
   line-height: 1.6;
 }
 

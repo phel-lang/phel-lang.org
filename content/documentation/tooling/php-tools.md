@@ -1,10 +1,11 @@
 +++
 title = "PHP Debugging Tools"
 weight = 7
+description = "Debug Phel with PHP tools: var_dump, Symfony VarDumper dump/dd, inspecting compiled PHP, and error reporting"
 aliases = ["/documentation/tooling/php-tools"]
 +++
 
-Phel compiles to PHP, so PHP debugging functions work. Pairs with Phel's built-in helpers.
+Phel compiles to PHP, so every PHP debugging function is available through the `php/` prefix. Reach for these alongside Phel's built-in [REPL helpers](/documentation/tooling/repl/#debug-helpers).
 
 ## Native var_dump()
 
@@ -15,14 +16,14 @@ Any PHP function via `php/` prefix:
 (def v (+ 2 2))
 (php/var_dump v)
 ;; OUTPUT:
-int(4)
+;; int(4)
 ```
 
-```phel 
+```phel
 ;; Directly dumping the result of a function
 (php/var_dump (+ 3 3))
 ;; OUTPUT:
-int(6)
+;; int(6)
 ```
 
 `(php/die)` halts execution so you can inspect at leisure.
@@ -40,7 +41,7 @@ Use [Symfony VarDumper](https://symfony.com/doc/current/components/var_dumper.ht
 
 ```json
 "require-dev": {
-    "symfony/var-dumper": "^6.4|^7.0"
+    "symfony/var-dumper": "^7.4"
 },
 ```
 
@@ -54,7 +55,8 @@ Use [Symfony VarDumper](https://symfony.com/doc/current/components/var_dumper.ht
 
 `dd()` dumps and halts:
 
-```phel 
+<!-- phel-test: skip -->
+```phel
 (php/dd (+ 5 5))
 ;; OUTPUT:
 10
@@ -70,6 +72,7 @@ Use [Symfony VarDumper](https://symfony.com/doc/current/components/var_dumper.ht
 
 ### Best practices
 
+<!-- phel-test: skip -->
 ```phel
 ;; Use dump() during development
 (defn process-user [user]

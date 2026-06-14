@@ -183,7 +183,10 @@ Or combined with options maps, the standard Clojure pattern for functions with m
                headers {}
                timeout 30}
         :as   opts}]
-  ...)
+  {:url url :method method :headers headers :timeout timeout :opts opts})
+
+(make-request "/users" {:method "POST"})
+; => {:url "/users" :method "POST" :headers {} :timeout 30 :opts {:method "POST"}}
 ```
 
 The caller gets a single map, the body gets individual names *and* the full map if it needs to pass the options along untouched.

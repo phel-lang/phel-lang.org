@@ -1,11 +1,15 @@
 +++
 title = "Control flow"
 weight = 4
+description = "Branch, loop, and build collections with if, cond, case, loop/recur, for, and thread macros like cond->"
 aliases = ["/documentation/control-flow"]
 +++
 
+Everything that decides what runs next: conditionals (`if`, `cond`, `case`), iteration (`loop`/`recur`, `foreach`, `for`), and conditional threading.
+
 ## If
 
+<!-- phel-test: skip -->
 ```phel
 (if test then else?)
 ```
@@ -46,6 +50,7 @@ Only `false` and `nil` are falsy. Everything else truthy. PHP equivalent: `test 
 
 ## Case
 
+<!-- phel-test: skip -->
 ```phel
 (case test & pairs)
 ```
@@ -116,6 +121,7 @@ No `break`, no fall-through.
 
 ## Cond
 
+<!-- phel-test: skip -->
 ```phel
 (cond & pairs)
 ```
@@ -192,14 +198,94 @@ if ($value < 0) {
 Cleaner than nested `if`. Use `:else` as a default.
 {% end %}
 
+For destructuring-by-shape (matching the structure of vectors and maps, not just running predicates), see [Match](#match) below.
+
+## Match
+
+`match` lives in `phel.match` and dispatches by _shape_: it destructures the subject and binds names in one step. It expands to nested `cond` + `let` at compile time, so there is no runtime overhead beyond the checks you write.
+
+```phel
+(ns my-app.main (:require phel.match :refer [match]))
+
+(defn describe [x]
+  (match [x]
+    [0]                   "zero"
+    [[a b]]               (str "pair " a " / " b)
+    [{:type :err :msg m}] (str "error: " m)
+    [(n :guard pos?)]     "positive"
+    :else                 "other"))
+
+(describe 0)                        ; => "zero"
+(describe [1 2])                    ; => "pair 1 / 2"
+(describe {:type :err :msg "boom"}) ; => "error: boom"
+(describe 5)                        ; => "positive"
+```
+
+The subject is a vector of one or more targets; every pattern is a vector whose length must equal the target count.
+
+### Pattern kinds
+
+| Pattern | Matches |
+| --- | --- |
+| `42`, `:key`, `"s"` | literal equality |
+| `_` | wildcard (matches anything, binds nothing) |
+| `sym` | binds the target to `sym` |
+| `[a b c]` | a vector of exactly 3 elements, recursively matched |
+| `[head & tail]` | a vector, binding the remaining slice to `tail` |
+| `{:k sym}` | a map with key `:k`, binding its value to `sym` |
+| `(pat :as name)` | matches `pat`, also binds the whole subject to `name` |
+| `(pat :guard pred)` | matches `pat`, then requires `(pred subject)` truthy |
+| `(:or alt1 alt2 ...)` | any alternative matches (literal/structural only, no bindings) |
+
+### Guards
+
+A `:guard` adds a runtime predicate on top of a structural pattern:
+
+```phel
+(ns my-app.main (:require phel.match :refer [match]))
+
+(defn sign [n]
+  (match [n]
+    [(x :guard neg?)] "negative"
+    [(x :guard pos?)] "positive"
+    :else             "zero"))
+
+(sign -3) ; => "negative"
+(sign 7)  ; => "positive"
+(sign 0)  ; => "zero"
+```
+
+### Rest binding
+
+End a vector pattern with `& rest` to capture the remaining slice:
+
+```phel
+(ns my-app.main (:require phel.match :refer [match]))
+
+(match [[10 20 30]]
+  [[head & tail]] (str head ":" (count tail))) ; => "10:2"
+```
+
+### Pitfalls
+
+* Each pattern vector's length must equal the target count.
+* `:else` must be the final clause.
+* `:or` alternatives may not introduce bindings; they are literal or structural only.
+* Nested patterns bind left-to-right; a later binding shadows an earlier one with the same name.
+* A `:guard` predicate runs against the raw value. Numeric predicates coerce non-numbers, so `(pos? [1 2])` is truthy. Put literal and structural patterns _before_ an open numeric guard.
+
+See also [`phel.schema`](/documentation/reference/api/schema/) for shapes reusable across validation and matching, and `case`/`cond`/`condp` above for simpler dispatch without destructuring. Full API: [match reference](/documentation/reference/api/match/).
+
 ## Loop
 
+<!-- phel-test: skip -->
 ```phel
 (loop [bindings*] expr*)
 ```
 
 Creates a lexical context with bindings and a recursion point at the top.
 
+<!-- phel-test: skip -->
 ```phel
 (recur expr*)
 ```
@@ -272,6 +358,7 @@ Critical for FP patterns in PHP.
 
 ## Foreach
 
+<!-- phel-test: skip -->
 ```phel
 (foreach [value valueExpr] expr*)
 (foreach [key value valueExpr] expr*)
@@ -318,6 +405,7 @@ foreach (["a" => 1, "b" => 2] as $k => $v) {
 
 `for` builds collections from existing ones. Combines `foreach`, `let`, `if`, `reduce`.
 
+<!-- phel-test: skip -->
 ```phel
 (for head body+)
 ```
@@ -349,11 +437,11 @@ Modifiers (form `:modifier argument`):
 (for [[k v] :pairs {:a 1 :b 2 :c 3}] [v k]) ; Evaluates to [[1 :a] [2 :b] [3 :c]]
 (for [[k v] :pairs [1 2 3]] [k v]) ; Evaluates to [[0 1] [1 2] [2 3]]
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}]]
-  (assoc m k (inc v))) ; Evaluates to {:a 2 :b 3 :c 4}
+  (assoc m k (inc v))) ; Evaluates to {:a 2, :b 3, :c 4}
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}] :let [x (inc v)]]
-  (assoc m k x)) ; Evaluates to {:a 2 :b 3 :c 4}
+  (assoc m k x)) ; Evaluates to {:a 2, :b 3, :c 4}
 (for [[k v] :pairs {:a 1 :b 2 :c 3} :when (contains-value? [:a :c] k) :reduce [acc {}]]
-    (assoc acc k v)) ; Evaluates to {:a 1 :c 3}
+    (assoc acc k v)) ; Evaluates to {:a 1, :c 3}
 
 (for [x :in [2 2 2 3 3 4 5 6 6] :while (even? x)] x) ; Evaluates to [2 2 2]
 (for [x :in [2 2 2 3 3 4 5 6 6] :when (even? x)] x) ; Evaluates to [2 2 2 4 6 6]
@@ -386,6 +474,7 @@ Like Clojure `for` (`:let`, `:when`, nesting). `:reduce` is a Phel extension.
 
 ## Do
 
+<!-- phel-test: skip -->
 ```phel
 (do expr*)
 ```
@@ -410,6 +499,7 @@ Like `for` but for side-effects. Returns `nil` like `foreach`.
 
 ### cond->
 
+<!-- phel-test: skip -->
 ```phel
 (cond-> expr & clauses)
 ```
@@ -434,6 +524,7 @@ Threads expression through each form whose test is truthy (thread-first). Skips 
 
 ### cond->>
 
+<!-- phel-test: skip -->
 ```phel
 (cond->> expr & clauses)
 ```
@@ -444,21 +535,23 @@ Like `cond->` but threads as last arg (thread-last).
 (cond->> [1 2 3 4 5]
   true (map inc)
   false (filter odd?)
-  true (take 3))  ; => (2 3 4)
+  true (take 3))  ; => @[2 3 4]
 
 ;; Only applies (map inc) and (take 3), skips (filter odd?)
 ```
 
 ## Exceptions
 
+<!-- phel-test: skip -->
 ```phel
 (throw expr)
 ```
 
 Evaluates _expr_ and throws it. Must implement PHP `Throwable`.
 
-## Try, catch, finally
+## Try, catch, and finally
 
+<!-- phel-test: skip -->
 ```phel
 (try expr* catch-clause* finally-clause?)
 ```
@@ -469,7 +562,7 @@ Evaluates expressions. No exception: returns last value. Matching _catch-clause_
 (try) ; Evaluates to nil
 
 (try
-  (throw (php/new Exception))
+  (throw (Exception.))
   (catch Exception e "error")) ; Evaluates to "error"
 
 (try
@@ -477,60 +570,16 @@ Evaluates expressions. No exception: returns last value. Matching _catch-clause_
   (finally (print "test"))) ; Evaluates to 2 and prints "test"
 
 (try
-  (throw (php/new Exception))
+  (throw (Exception.))
   (catch Exception e "error")
   (finally (print "test"))) ; Evaluates to "error" and prints "test"
 ```
 
-## Structured exceptions
+For catching PHP exceptions, structured errors with `ex-info`/`ex-data`, exception chaining, and guidance on when to throw, see [Error handling](/documentation/language/error-handling/).
 
-Exceptions carrying data maps, inspired by Clojure's `ex-info`. Useful for attaching context beyond a message.
+## Next steps
 
-### Creating with `ex-info`
-
-```phel
-(ex-info message data)
-(ex-info message data cause)
-```
-
-Exception with message, data map, optional cause:
-
-```phel
-(throw (ex-info "User not found" {:user-id 42 :status 404}))
-
-; With a cause (chaining exceptions)
-(try
-  (do-something-risky)
-  (catch Exception e
-    (throw (ex-info "Operation failed" {:step "processing"} e))))
-```
-
-### Inspecting
-
-Use `ex-data`, `ex-message`, `ex-cause`:
-
-```phel
-(def err (ex-info "Validation failed" {:field :email :reason "invalid format"}))
-
-(ex-message err)  ; => "Validation failed"
-(ex-data err)     ; => {:field :email :reason "invalid format"}
-(ex-cause err)    ; => nil (no cause provided)
-```
-
-### Example: error handling with data
-
-```phel
-(defn find-user [id]
-  (let [user (db-lookup id)]
-    (if (nil? user)
-      (throw (ex-info "User not found" {:user-id id :status 404}))
-      user)))
-
-(try
-  (find-user 42)
-  (catch Exception e
-    (let [data (ex-data e)]
-      (case (:status data)
-        404 (println "Not found:" (ex-message e))
-        403 (println "Forbidden:" (ex-message e))))))
-```
+- [Match reference](/documentation/reference/api/match/) - all `match` pattern kinds and the full API
+- [Error handling](/documentation/language/error-handling/) - throw, catch, and structured errors in depth
+- [Functions and recursion](/documentation/language/functions-and-recursion/) - `loop`/`recur` and tail calls
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

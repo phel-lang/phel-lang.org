@@ -1,4 +1,4 @@
-/* API Recent — same disclosure-card aesthetic as `.dev-note`
+/* API Recent - same disclosure-card aesthetic as `.dev-note`
    and `.api-namespace-toc`, but always expanded (no <details>). */
 .api-recent {
   margin: 0 0 var(--space-lg);
@@ -286,14 +286,128 @@ ul.api-recent__list > li:before {
   display: none;
 }
 
+/* Sub-namespaces section on namespace pages */
+.api-subnamespaces {
+  margin: var(--space-2xl) 0;
+}
+
+.api-subnamespaces__title {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-light-text-secondary);
+  margin: 0 0 var(--space-md);
+}
+
+ul.api-subnamespaces__list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-sm);
+  padding: 0;
+  margin: 0;
+}
+
+@media (min-width: 640px) {
+  ul.api-subnamespaces__list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1040px) {
+  ul.api-subnamespaces__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+ul.api-subnamespaces__list > li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+ul.api-subnamespaces__list > li::before {
+  content: none;
+  display: none;
+}
+
+.api-subnamespaces__list a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
+  background: var(--color-light-surface);
+  border: 1px solid var(--color-light-border);
+  border-radius: var(--radius-md);
+  color: var(--color-light-text-primary);
+  text-decoration: none;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.api-subnamespaces__list a::after {
+  display: none;
+}
+
+.api-subnamespaces__list a:hover {
+  border-color: var(--color-light-link);
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+}
+
+.api-subnamespaces__name code {
+  font-size: var(--text-sm);
+}
+
+.api-subnamespaces__count {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-light-text-muted);
+  padding: 2px 8px;
+  background: var(--color-light-bg);
+  border-radius: var(--radius-sm);
+}
+
+.dark .api-subnamespaces__title {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .api-subnamespaces__list a {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+  color: var(--color-dark-text-primary);
+}
+
+.dark .api-subnamespaces__list a:hover {
+  border-color: var(--color-dark-text-accent);
+}
+
+.dark .api-subnamespaces__count {
+  background: var(--color-dark-bg);
+  color: var(--color-dark-text-muted);
+}
+
 /* API Namespace Grid (index landing page) */
 ul.api-namespace-grid {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: 1fr;
   gap: var(--space-md);
   padding: 0;
   margin: var(--space-2xl) 0;
+}
+
+@media (min-width: 640px) {
+  ul.api-namespace-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1040px) {
+  ul.api-namespace-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
 ul.api-namespace-grid > li {
@@ -391,7 +505,7 @@ ul.api-namespace-grid > li::before {
   font-weight: 600;
 }
 
-/* Per-namespace function TOC — same disclosure pattern as `.dev-note`. */
+/* Per-namespace function TOC - same disclosure pattern as `.dev-note`. */
 .api-namespace-toc {
   margin: var(--space-lg) 0 var(--space-2xl);
   border-radius: var(--radius-lg);
@@ -494,7 +608,7 @@ ul.api-namespace-toc__list > li::before {
   line-height: var(--leading-relaxed);
 }
 
-/* API Footer — same surface card as `.dev-note` and `.api-namespace-toc`. */
+/* API Footer - same surface card as `.dev-note` and `.api-namespace-toc`. */
 .api-footer {
   margin-top: var(--space-lg);
   padding: var(--space-md) var(--space-lg);

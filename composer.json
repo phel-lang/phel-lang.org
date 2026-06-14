@@ -11,8 +11,8 @@
     "require": {
         "php": ">=8.4",
         "ext-json": "*",
-        "phel-lang/phel-lang": "^0.37",
-        "gacela-project/gacela": "^1.14"
+        "phel-lang/phel-lang": "^0.44",
+        "gacela-project/gacela": "^1.15"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest",
@@ -41,9 +41,12 @@
             "php build/api-page.php",
             "php build/api-search.php",
             "php build/api-json.php",
-            "php build/generate-releases.php"
+            "php build/generate-releases.php",
+            "php build/generate-repl-showcase.php",
+            "php build/generate-error-reference.php"
         ],
         "test": "./vendor/bin/phpunit",
+        "test:snippets": "php build/run-doc-snippets.php",
         "post-update-cmd": [
             "php build/update-phel-version.php"
         ]

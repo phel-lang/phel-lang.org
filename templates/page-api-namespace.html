@@ -8,12 +8,15 @@
     <h2 class="api-ns-rail__title">Namespaces</h2>
     <ol class="api-ns-rail__list">
     {% for ns_page in api_section.pages %}
-        <li class="api-ns-rail__item{% if ns_page.permalink == page.permalink %} is-active{% endif %}">
+        {% if ns_page.title is not containing(".") %}
+        {% set active = ns_page.permalink == page.permalink or page.title is starting_with(ns_page.title ~ ".") %}
+        <li class="api-ns-rail__item{% if active %} is-active{% endif %}">
             <a href="{{ ns_page.permalink | safe }}">
                 <span class="api-ns-rail__name">{{ ns_page.title }}</span>
                 <span class="api-ns-rail__count">{{ ns_page.extra.fn_count | default(value=0) }}</span>
             </a>
         </li>
+        {% endif %}
     {% endfor %}
     </ol>
 </nav>
@@ -24,6 +27,30 @@
     {% include "partials/breadcrumb.html" %}
 
     <h1><code>{{ page.title }}</code></h1>
+
+    {% if page.title is not containing(".") %}
+    {% set_global sub_namespaces = [] %}
+    {% for ns_page in api_section.pages %}
+        {% if ns_page.title is starting_with(page.title ~ ".") %}
+        {% set_global sub_namespaces = sub_namespaces | concat(with=ns_page) %}
+        {% endif %}
+    {% endfor %}
+    {% if sub_namespaces | length > 0 %}
+    <section class="api-subnamespaces" aria-label="Sub-namespaces">
+        <h2 class="api-subnamespaces__title">Sub-namespaces</h2>
+        <ul class="api-subnamespaces__list">
+        {% for sub in sub_namespaces %}
+            <li>
+                <a href="{{ sub.permalink | safe }}">
+                    <span class="api-subnamespaces__name"><code>{{ sub.title }}</code></span>
+                    <span class="api-subnamespaces__count">{{ sub.extra.fn_count | default(value=0) }}</span>
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+    {% endif %}
 
     {% if page.toc and page.toc | length > 0 %}
     <details class="api-namespace-toc">

@@ -1,8 +1,11 @@
 +++
 title = "Basic Types"
 weight = 1
+description = "Phel's primitive values: nil, booleans, numbers, strings, keywords, plus truthiness, equality, and reader literals"
 aliases = ["/documentation/basic-types", "/documentation/arithmetic", "/documentation/truth-and-boolean-operations"]
 +++
+
+The building blocks of every Phel program: literals, numbers, strings, keywords, and the truthiness rules that differ from PHP.
 
 ## Nil, true, false
 
@@ -38,6 +41,7 @@ Only `false` and `nil` are falsy. `0`, `""`, `[]` truthy.
 
 Names functions and variables:
 
+<!-- phel-test: skip -->
 ```phel
 symbol
 snake_case_symbol
@@ -113,16 +117,16 @@ Integers, floats, ratios, big integers, big decimals. Integers and floats wrap P
 024_71 ; octal number with underscores
 ```
 
-### Ratios, BigInteger, BigDecimal
+### Ratios, BigInt, BigDecimal
 
 ```phel
-1/2          ; Rational
--3/4         ; Rational
-(/ 10 3)     ; => 10/3 (int / int with non-integer result returns Rational)
+1/2          ; Ratio
+-3/4         ; Ratio
+(/ 10 3)     ; => 10/3 (int / int with non-integer result returns Ratio)
 (numerator 1/2)    ; => 1
 (denominator 1/2)  ; => 2
 
-(bigint "100000000000000000000")  ; BigInteger from string
+(bigint "100000000000000000000")  ; BigInt from string
 (bigint? 1N)                       ; predicate
 
 1.5M         ; BigDecimal literal (M suffix)
@@ -131,7 +135,7 @@ Integers, floats, ratios, big integers, big decimals. Integers and floats wrap P
 (bigdec? 1.5M)  ; => true
 ```
 
-Auto-promoting variants `+'`, `-'`, `*'`, `inc'`, `dec'` widen to BigInteger on overflow instead of wrapping.
+Auto-promoting variants `+'`, `-'`, `*'`, `inc'`, `dec'` widen to BigInt on overflow instead of wrapping.
 
 ## Arithmetic operators
 
@@ -174,12 +178,12 @@ Operators take zero, one, or many args:
 (* 2 3 4) ; => 24
 
 (/) ; => 1
-(/ 2) ; => 1/2 (reciprocal as Rational)
+(/ 2) ; => 1/2 (reciprocal as Ratio)
 (/ 24 4 2) ; => 3
-(/ 10 3)   ; => 10/3 (Rational, exact)
+(/ 10 3)   ; => 10/3 (Ratio, exact)
 ```
 
-`(/ int int)` with a non-integer result returns a `Rational`, not a float. Coerce with `float` or `(/ 10.0 3)` if you need a float.
+`(/ int int)` with a non-integer result returns a `Ratio`, not a float. Coerce with `float` or `(/ 10.0 3)` if you need a float.
 
 {% php_note() %}
 Variadic operators are more flexible than PHP's:
@@ -207,7 +211,7 @@ Other numerics:
 - `quot`, `rem`, `mod`: integer quotient, remainder, modulo. `%` aliases `rem`.
 - `floor`, `ceil`, `round`, `sqrt`: math primitives.
 - `**`: power.
-- `+'`, `-'`, `*'`, `inc'`, `dec'`: auto-promote to `BigInteger` on overflow.
+- `+'`, `-'`, `*'`, `inc'`, `dec'`: auto-promote to `BigInt` on overflow.
 - `numerator`, `denominator`, `rationalize`, `ratio?`.
 - `bigint`, `biginteger`, `bigint?`; `bigdec`, `bigdec?` / `decimal?`.
 
@@ -334,20 +338,23 @@ Strings are iterable: work with `map`, `filter`, `count`, `frequencies`, `foreac
 
 ```phel
 (count "hello")             ; => 5
-(frequencies "abracadabra") ; => {"a" 5 "b" 2 "r" 2 "c" 1 "d" 1}
+(frequencies "abracadabra") ; => {a 5, b 2, r 2, c 1, d 1}
 (seq "abc")                 ; => [a b c]
 ```
 
 {% php_note() %}
-PHP strings internally. All PHP string functions work:
+PHP strings internally. Use `phel.string` for idiomatic string operations:
 
 ```phel
-(php/strlen "hello")                 ; => 5
-(php/strtoupper "hello")             ; => "HELLO"
-(php/str_replace "o" "0" "hello")    ; => "hell0"
+(ns example
+  (:require phel.string :as str))
+
+(count "hello")                      ; => 5
+(str/upper-case "hello")             ; => "HELLO"
+(str/replace "hello" "o" "0")        ; => "hell0"
 ```
 
-Same as PHP double-quoted strings, except `$` doesn't need escaping.
+All PHP string functions also available via `php/` prefix. Same as PHP double-quoted strings, except `$` doesn't need escaping.
 {% end %}
 
 ## Lists
@@ -429,8 +436,8 @@ Persistent FIFO queues with amortised O(1) `push`, `peek`, `pop`:
 (def q (queue 1 2 3))
 (queue? q)        ; => true
 (peek q)          ; => 1
-(push q 4)        ; => queue 1 2 3 4
-(pop q)           ; => queue 2 3
+(push q 4)        ; => <-(1 2 3 4)-<
+(pop q)           ; => <-(2 3)-<
 ```
 
 ## Map entries
@@ -469,6 +476,7 @@ Register with `register-tag`:
 
 In any source file:
 
+<!-- phel-test: skip -->
 ```phel
 #money [100 "EUR"]   ; => {:amount 100 :currency "EUR"}
 ```
@@ -528,8 +536,10 @@ Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some det
 #(apply + %&)  ; Same as (fn [& xs] (apply + xs))
 
 ; Using with higher-order functions
-(map #(* % 2) [1 2 3])        ; => [2 4 6]
-(filter #(> % 3) [1 5 2 8])   ; => [5 8]
+(map #(* % 2) [1 2 3])        ; => @[2 4 6]
+(filter #(> % 3) [1 5 2 8])   ; => @[5 8]
+
+(def users [{:name "Alice" :age 30} {:name "Bob" :age 25}])
 (sort-by #(get % :age) users)  ; Sort users by age
 ```
 
@@ -686,3 +696,9 @@ All comparison operators accept multiple arguments:
 (not false) ; => true
 (not nil)   ; => true
 ```
+
+## Next steps
+
+- [Data structures](/documentation/language/data-structures/) - lists, vectors, maps, and sets in depth
+- [Control flow](/documentation/language/control-flow/) - put truthiness to work with `if`, `cond`, and `case`
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

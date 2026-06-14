@@ -1,6 +1,7 @@
 +++
 title = "Destructuring"
-weight = 8
+weight = 6
+description = "Bind names to values inside vectors, lists, and maps by shape in let, function params, and loop"
 aliases = ["/documentation/destructuring"]
 +++
 
@@ -54,7 +55,7 @@ More powerful than PHP `list()` or array unpacking:
 
 // Phel - full destructuring with nesting and rest
 (let [[a [b c] & rest] [1 [2 3] 4 5 6]]
-  // a = 1, b = 2, c = 3, rest = (4 5 6)
+  // a = 1, b = 2, c = 3, rest = [4 5 6]
   )
 ```
 
@@ -141,7 +142,7 @@ Sequential in params:
   (php/sqrt (+ (* (- x2 x1) (- x2 x1))
                (* (- y2 y1) (- y2 y1)))))
 
-(distance [0 0] [3 4]) ; => 5.0
+(distance [0 0] [3 4]) ; => 5
 ```
 
 ## In `loop`
@@ -155,3 +156,9 @@ Loop bindings:
     acc
     (recur tail (+ acc head)))) ; => 15
 ```
+
+## Next steps
+
+- [Functions and recursion](/documentation/language/functions-and-recursion/) - destructure function arguments
+- [Data structures](/documentation/language/data-structures/) - the collections you destructure
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

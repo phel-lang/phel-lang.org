@@ -1,12 +1,11 @@
 +++
 title = "Data structures"
-weight = 7
+weight = 2
+description = "Phel's persistent collections: lists, vectors, maps, sets, structs, plus core functions like conj, assoc, get-in, and into"
 aliases = ["/documentation/data-structures"]
 +++
 
-Four main data structures: **Lists**, **Vectors**, **Maps**, **Sets**.
-
-All **persistent** (immutable). Modifications return a new version sharing structure with the old. The original is unchanged.
+Phel's four core collections are lists, vectors, maps, and sets. All are **persistent** (immutable): an operation returns a new version that shares structure with the old one, and the original never changes.
 
 {% php_note() %}
 "Copy-on-write" for collections. Prevents bugs from unexpected mutations.
@@ -103,8 +102,8 @@ Key-value pairs in any order. Each key once. Any value implementing `HashableInt
 Create with braces or `hash-map`:
 
 ```phel
-{:key1 value1 :key2 value2}          ; A new hash-map using shortcut syntax
-(hash-map :key1 value1 :key2 value2) ; A new hash-map using the function
+{:key1 "value1" :key2 "value2"}          ; A new hash-map using shortcut syntax
+(hash-map :key1 "value1" :key2 "value2") ; A new hash-map using the function
 
 ;; Any type can be a key
 {[1 2] "vector-key" :keyword "keyword-key" "string" "string-key"}
@@ -283,16 +282,16 @@ $config['theme'] = 'light';  // Overwrites in place
 
 Phel matches Clojure's names:
 
-| Function | Behavior | Clojure Compatible? |
-|----------|----------|---------------------|
-| `conj` | Add element (type-specific) | ✓ Yes |
-| `assoc` | Associate key with value | ✓ Yes |
-| `dissoc` | Dissociate key | ✓ Yes |
-| `get` | Get value by key | ✓ Yes |
-| `get-in` | Get nested value | ✓ Yes |
-| `assoc-in` | Set nested value | ✓ Yes |
-| `update` | Update with function | ✓ Yes |
-| `update-in` | Update nested with function | ✓ Yes |
+| Function    | Behavior                    | Clojure Compatible?  |
+|-------------|-----------------------------|----------------------|
+| `conj`      | Add element (type-specific) | ✓ Yes                |
+| `assoc`     | Associate key with value    | ✓ Yes                |
+| `dissoc`    | Dissociate key              | ✓ Yes                |
+| `get`       | Get value by key            | ✓ Yes                |
+| `get-in`    | Get nested value            | ✓ Yes                |
+| `assoc-in`  | Set nested value            | ✓ Yes                |
+| `update`    | Update with function        | ✓ Yes                |
+| `update-in` | Update nested with function | ✓ Yes                |
 
 **Migration:** `push`, `put`, `unset` deprecated. Use `conj`, `assoc`, `dissoc`.
 
@@ -310,7 +309,21 @@ A struct is a Map with a fixed set of keys and a global name. `defstruct` also d
   (assoc x :a 12))            ; Evaluates to (my-struct 12 2 3)
 ```
 
-Internally, Structs are PHP classes (one property per key). Faster than Maps.
+Internally, Structs are PHP classes (one property per key). Faster than Maps. Every struct implements `\Countable`, `\ArrayAccess`, and `\IteratorAggregate`, so PHP code can `count($s)` and read fields by string offset (`$s['name']`) as well as by keyword.
+
+Expose PHP magic methods (`__invoke`, `__toString`, `__get`, ...) through a `:php` block. The first arg binds to `$this`; read fields with `(get this :field)`.
+
+```phel
+(defstruct multiplier [factor]
+  :php
+  (__invoke   [this x] (* x (get this :factor)))
+  (__toString [this]   (str "x" (get this :factor))))
+
+(let [m (multiplier 3)]
+  (m 14)) ; => 42  (PHP calls __invoke)
+```
+
+A `:php` block coexists with regular interface implementations. A custom `__invoke` must take exactly one call argument or be variadic (a struct is already callable as a key lookup), else the compiler rejects it.
 
 ## Sets
 
@@ -417,7 +430,7 @@ All data structures are callable:
 ;; Practical use with map
 (def users [{:name "Alice" :age 30}
             {:name "Bob" :age 25}])
-(map :name users)  ; Evaluates to ["Alice" "Bob"]
+(map :name users)  ; Evaluates to @["Alice" "Bob"]
 ```
 
 ## Example: working with user data
@@ -550,7 +563,7 @@ All data structures are callable:
 ; Three-argument form: apply a transducer during transfer
 (into [] (map inc) [1 2 3])           ; => [2 3 4]
 (into #{} (filter odd?) [1 2 3 4 5])  ; => #{1 3 5}
-(into {} (map (fn [[k v]] [k (* v 2)])) {:a 1 :b 2})
+(into {} (map (fn [[k v]] [k (* v 2)])) (pairs {:a 1 :b 2}))
 ; => {:a 2 :b 4}
 ```
 
@@ -585,11 +598,11 @@ Common transducer producers:
 (into [] (interpose :sep) [1 2 3])            ; => [1 :sep 2 :sep 3]
 ```
 
-`completing` adapts a reducing function for `transduce`:
+`completing` adapts a plain 2-arity reducing function into a full reducing function with 0-arity init and 1-arity completion (defaults to `identity`):
 
 ```phel
-(def my-rf (completing conj count))
-(transduce (map inc) my-rf [1 2 3])  ; => 3
+(def my-rf (completing conj))
+(transduce (map inc) my-rf [1 2 3])  ; => [2 3 4]
 ```
 
 `cat` concatenates inner collections:
@@ -620,6 +633,9 @@ Common transducer producers:
 `postwalk` applies bottom-up (children first). `prewalk` applies top-down:
 
 ```phel
+(ns example
+  (:require phel.walk :refer [postwalk prewalk]))
+
 ;; Double every number in a nested structure
 (postwalk #(if (number? %) (* % 2) %)
           {:a 1 :b [2 3] :c {:d 4}})
@@ -636,6 +652,9 @@ Common transducer producers:
 Replace values via map lookup:
 
 ```phel
+(ns example
+  (:require phel.walk :refer [postwalk-replace]))
+
 (postwalk-replace {:a :alpha :b :beta}
                   [:a {:b :c}])
 ;; => [:alpha {:beta :c}]
@@ -646,9 +665,18 @@ Replace values via map lookup:
 Convert map keys between keywords and strings. Useful for PHP arrays or JSON:
 
 ```phel
+(ns example
+  (:require phel.walk :refer [keywordize-keys stringify-keys]))
+
 (keywordize-keys {"name" "Alice" "age" 30})
 ;; => {:name "Alice" :age 30}
 
 (stringify-keys {:name "Alice" :age 30})
 ;; => {"name" "Alice" "age" 30}
 ```
+
+## Next steps
+
+- [Destructuring](/documentation/language/destructuring/) - pull values out of collections by shape
+- [Control flow](/documentation/language/control-flow/) - iterate and build collections with `for` and `loop`
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

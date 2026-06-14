@@ -1,10 +1,11 @@
 +++
 title = "Cookbook"
 weight = 4
+description = "Runnable Phel recipes for files, JSON, HTTP, dates, error handling, schemas, state, and data-transformation pipelines"
 aliases = ["/documentation/cookbook", "/documentation/one-liners"]
 +++
 
-Recipes for common tasks. Each example self-contained.
+Practical, self-contained Phel recipes for everyday tasks. Copy one, adapt it, ship it.
 
 ## Read and process a CSV file
 
@@ -21,10 +22,11 @@ Read CSV into a vector of maps, headers as keys.
       (do
         (println (str "Error: cannot open " filepath))
         [])
-      (let [headers (php/fgetcsv handle)
+      ;; Pass the escape arg explicitly ("") -- PHP 8.4 deprecates its implicit default
+      (let [headers (php/fgetcsv handle nil "," "\"" "")
             header-keys (for [h :in headers] (keyword h))]
         (loop [rows []]
-          (let [line (php/fgetcsv handle)]
+          (let [line (php/fgetcsv handle nil "," "\"" "")]
             (if (= false line)
               (do
                 (php/fclose handle)
@@ -59,14 +61,13 @@ Read CSV into a vector of maps, headers as keys.
 CLI script that reads args, parses flags, produces output.
 
 ```phel
-(ns cookbook.cli-tool)
+(ns cookbook.cli-tool
+  (:require phel.string :as str))
 
-;; Access command-line arguments via PHP's $argv
-;; When running: vendor/bin/phel run src/cli-tool.phel --name Alice --greeting Hi
-(def args (let [argv (php/aget php/$_SERVER "argv")]
-            ;; Skip the first two args (phel binary and script path)
-            (for [i :range [2 (php/count argv)]]
-              (php/aget argv i))))
+;; `argv` (in phel.core) holds the user arguments, excluding the program name.
+;; `*program*` holds the script path. When running:
+;;   vendor/bin/phel run src/cli-tool.phel --name Alice --greeting Hi
+;; argv is ["--name" "Alice" "--greeting" "Hi"].
 
 ;; Parse flags into a map of --key value pairs
 (defn parse-flags [flag-args]
@@ -76,15 +77,15 @@ CLI script that reads args, parses flags, produces output.
       flags
       (let [current (first remaining)
             rest-args (rest remaining)]
-        (if (php/str_starts_with current "--")
-          (let [k (keyword (php/substr current 2))
+        (if (str/starts-with? current "--")
+          (let [k (keyword (str/subs current 2))
                 v (first rest-args)]
             (recur (rest rest-args) (assoc flags k v)))
           (recur rest-args flags))))))
 
 ;; Build the tool
 (defn run []
-  (let [flags (parse-flags args)
+  (let [flags (parse-flags argv)
         who (get flags :name "World")
         greeting (get flags :greeting "Hello")
         repeat-count (php/intval (get flags :repeat "1"))]
@@ -124,7 +125,7 @@ GET request via `phel.http-client`. Parse JSON via `phel.json`.
   (try
     (json/decode json-string)
     (catch JsonException e
-      {:error (php/-> e (getMessage))})))
+      {:error (.getMessage e)})))
 
 ;; Fetch data from a JSON API
 (defn fetch-json [url]
@@ -160,12 +161,26 @@ GET request via `phel.http-client`. Parse JSON via `phel.json`.
 
 `html` module: nested elements, attributes, dynamic content.
 
+`html` is a macro: it walks the literal hiccup at compile time and splices any
+`(for ...)` it finds **inline**. So build the whole page in a single `html` call
+with the loops written in place. Plain element helpers (no embedded loop) like
+`user-card` below still compose -- they return a single element vector that an
+inline `for` can emit.
+
 ```phel
 (ns cookbook.html-generator
   (:require phel.html :refer [html doctype raw-string]))
 
-;; Generate a simple page layout
-(defn page [title & body]
+;; A reusable component: takes data, returns a single element vector (no `for`).
+(defn user-card [user]
+  [:div {:class "card"}
+    [:h3 (get user :name)]
+    [:p (str "Email: " (get user :email))]
+    [:span {:class [:badge (if (get user :active) "active" "inactive")]}
+      (if (get user :active) "Active" "Inactive")]])
+
+;; Render the whole page in one `html` call so every `for` stays inline.
+(defn render-page [title users links]
   (html
     (doctype :html5)
     [:html {:lang "en"}
@@ -182,22 +197,13 @@ GET request via `phel.http-client`. Parse JSON via `phel.json`.
         ")]]
       [:body
         [:h1 title]
-        body]]))
-
-;; Generate a user card component
-(defn user-card [user]
-  [:div {:class "card"}
-    [:h3 (get user :name)]
-    [:p (str "Email: " (get user :email))]
-    [:span {:class [:badge (if (get user :active) "active" "inactive")]}
-      (if (get user :active) "Active" "Inactive")]])
-
-;; Generate a navigation bar
-(defn nav [links]
-  [:nav
-    [:ul {:style {:list-style "none" :display "flex" :gap "1rem" :padding "0"}}
-      (for [link :in links]
-        [:li [:a {:href (get link :url)} (get link :label)]])]])
+        [:nav
+          [:ul {:style {:list-style "none" :display "flex" :gap "1rem" :padding "0"}}
+            (for [link :in links]
+              [:li [:a {:href (get link :url)} (get link :label)]])]]
+        [:p (str "Total users: " (count users))]
+        (for [user :in users]
+          (user-card user))]]))
 
 ;; Build a complete page with dynamic content
 (def users
@@ -210,14 +216,7 @@ GET request via `phel.http-client`. Parse JSON via `phel.json`.
    {:label "Users" :url "/users"}
    {:label "About" :url "/about"}])
 
-(def output
-  (page "User Directory"
-    (nav links)
-    [:p (str "Total users: " (count users))]
-    (for [user :in users]
-      (user-card user))))
-
-(println output)
+(println (render-page "User Directory" users links))
 ```
 
 **See also:** [HTML Rendering](/documentation/web/html-rendering)
@@ -228,72 +227,58 @@ PHP DateTime via interop: create, format, compare.
 
 ```phel
 (ns cookbook.dates
-  (:use DateTimeImmutable)
-  (:use DateInterval)
-  (:use DateTimeZone))
+  (:use DateTimeImmutable DateInterval DateTimeZone))
 
-;; Create dates -- `(new ClassName args)` shorthand for `(php/new ClassName args)`
-(def now (new DateTimeImmutable))
-(def specific-date (new DateTimeImmutable "2024-06-15"))
+;; Create dates - ClassName. is a shorthand constructor
+(def now (DateTimeImmutable.))
+(def specific-date (DateTimeImmutable. "2024-06-15"))
 (def from-format
   (DateTimeImmutable/createFromFormat "d/m/Y" "25/12/2024"))
 
-;; Tagged literal form
-(def tagged #inst "2024-06-15T00:00:00Z")
+;; Format dates - .method is shorthand for (php/-> obj (method ...))
+(println (.format now "Y-m-d H:i:s"))       ; 2024-03-10 14:30:00
+(println (.format now "l, F j, Y"))         ; Sunday, March 10, 2024
+(println (.format specific-date "D, M j"))  ; Sat, Jun 15
 
-;; Format dates
-(println (php/-> now (format "Y-m-d H:i:s")))       ; 2024-03-10 14:30:00
-(println (php/-> now (format "l, F j, Y")))         ; Sunday, March 10, 2024
-(println (php/-> specific-date (format "D, M j")))  ; Sat, Jun 15
+;; Date arithmetic
+(def tomorrow (.modify now "+1 day"))
+(def next-week (.modify now "+7 days"))
+(def three-months-later (.add now (DateInterval. "P3M")))
 
-;; Date arithmetic -- add and subtract intervals
-(def tomorrow
-  (php/-> now (modify "+1 day")))
-(def next-week
-  (php/-> now (modify "+7 days")))
-(def three-months-later
-  (php/-> now (add (DateInterval. "P3M"))))
-
-(println (str "Tomorrow: " (php/-> tomorrow (format "Y-m-d"))))
-(println (str "Next week: " (php/-> next-week (format "Y-m-d"))))
-(println (str "In 3 months: " (php/-> three-months-later (format "Y-m-d"))))
+(println (str "Tomorrow: "   (.format tomorrow "Y-m-d")))
+(println (str "Next week: "  (.format next-week "Y-m-d")))
+(println (str "In 3 months: " (.format three-months-later "Y-m-d")))
 
 ;; Compare dates
-(defn date-before? [a b]
-  (< (php/-> a (getTimestamp)) (php/-> b (getTimestamp))))
-
-(defn date-after? [a b]
-  (> (php/-> a (getTimestamp)) (php/-> b (getTimestamp))))
+(defn date-before? [a b] (< (.getTimestamp a) (.getTimestamp b)))
+(defn date-after?  [a b] (> (.getTimestamp a) (.getTimestamp b)))
 
 (println (str "Tomorrow is after today: " (date-after? tomorrow now)))  ; true
 
-;; Calculate the difference between two dates.
-;; `(php/-> obj -prop)` reads a PHP public property (note the leading dash).
+;; Calculate difference - `.-days` reads a PHP public property
 (defn days-between [date1 date2]
-  (let [interval (php/-> date1 (diff date2))]
-    (php/-> interval -days)))
+  (.-days (.diff date1 date2)))
 
 (def start (DateTimeImmutable. "2024-01-01"))
-(def end (DateTimeImmutable. "2024-12-31"))
+(def end   (DateTimeImmutable. "2024-12-31"))
 (println (str "Days in 2024: " (days-between start end)))  ; 365
 
 ;; Work with time zones
-(def utc-now (DateTimeImmutable. "now" (DateTimeZone. "UTC")))
-(def tokyo-now
-  (php/-> utc-now (setTimezone (DateTimeZone. "Asia/Tokyo"))))
+(def utc-now   (DateTimeImmutable. "now" (DateTimeZone. "UTC")))
+(def tokyo-now (.setTimezone utc-now (DateTimeZone. "Asia/Tokyo")))
 
-(println (str "UTC:   " (php/-> utc-now (format "H:i:s"))))
-(println (str "Tokyo: " (php/-> tokyo-now (format "H:i:s"))))
+(println (str "UTC:   " (.format utc-now   "H:i:s")))
+(println (str "Tokyo: " (.format tokyo-now "H:i:s")))
 
 ;; Utility: human-readable relative time
 (defn time-ago [date]
-  (let [seconds (- (php/-> (DateTimeImmutable.) (getTimestamp))
-                   (php/-> date (getTimestamp)))]
+  (let [seconds (- (.getTimestamp (DateTimeImmutable.))
+                   (.getTimestamp date))]
     (cond
-      (< seconds 60) "just now"
-      (< seconds 3600) (str (php/intval (/ seconds 60)) " minutes ago")
+      (< seconds 60)    "just now"
+      (< seconds 3600)  (str (php/intval (/ seconds 60)) " minutes ago")
       (< seconds 86400) (str (php/intval (/ seconds 3600)) " hours ago")
-      :else (str (php/intval (/ seconds 86400)) " days ago"))))
+      :else             (str (php/intval (/ seconds 86400)) " days ago"))))
 ```
 
 **See also:** [PHP Interop](/documentation/php-interop)
@@ -338,21 +323,16 @@ Read, write, list, exist checks via PHP interop.
 
 ;; List directory contents, excluding . and ..
 (defn list-dir [path]
-  (if (not (directory? path))
-    []
-    (let [entries (php/scandir path)]
-      (for [i :range [0 (php/count entries)]
-            :let [entry (php/aget entries i)]
-            :when (and (not= entry ".") (not= entry ".."))]
-        entry))))
+  (when (directory? path)
+    (for [entry :in (php/scandir path)
+          :when (and (not= entry ".") (not= entry ".."))]
+      entry)))
 
 ;; List files matching a pattern
 (defn glob-files [pattern]
   (let [matches (php/glob pattern)]
-    (if (= false matches)
-      []
-      (for [i :range [0 (php/count matches)]]
-        (php/aget matches i)))))
+    (if (= false matches) []
+      (for [f :in matches] f))))
 
 ;; Get file info
 (defn file-info [path]
@@ -398,7 +378,8 @@ Read, write, list, exist checks via PHP interop.
 Filter, transform, group via threading macros and collection functions.
 
 ```phel
-(ns cookbook.data-pipeline)
+(ns cookbook.data-pipeline
+  (:require phel.string :as str))
 
 ;; Sample dataset: a vector of user maps
 (def users
@@ -413,10 +394,10 @@ Filter, transform, group via threading macros and collection functions.
 ;; Pipeline: get active users, uppercase names, sort by age, group by role
 (def result
   (->> users
-       (filter :active)                                       ; keep only active users
-       (map #(assoc % :name (php/strtoupper (get % :name))))  ; uppercase names
-       (sort-by :age)                                         ; sort by age ascending
-       (group-by :role)))                                     ; group into a map by role
+       (filter :active)                                          ; keep only active users
+       (map #(update % :name str/upper-case))                   ; uppercase names
+       (sort-by :age)                                           ; sort by age ascending
+       (group-by :role)))                                       ; group into a map by role
 
 ;; result =>
 ;; {"engineer" [{:name "ALICE"   :age 32 ...}
@@ -427,26 +408,29 @@ Filter, transform, group via threading macros and collection functions.
 
 ;; Print a summary report. A 3-element `foreach` binds key and value of a map.
 (foreach [role members result]
-  (println (str "== " (php/strtoupper role) " (" (count members) ") =="))
+  (println (str "== " (str/upper-case role) " (" (count members) ") =="))
   (foreach [m members]
-    (println (str "  " (get m :name) " (age " (get m :age) ")"))))
+    (println (str "  " (:name m) " (age " (:age m) ")"))))
 
 ;; More pipeline examples:
 
 ;; Average age of active users.
-;; (/ int int) returns a Rational when not evenly divisible.
+;; (/ int int) returns a Ratio when not evenly divisible.
 (def avg-age
   (let [active (filter :active users)
         total-age (reduce + 0 (map :age active))]
     (/ total-age (count active))))
 (println (str "Average age of active users: " avg-age))
 
-;; Find the oldest user per role
+;; Find the oldest user per role.
+;; `pairs` turns the grouped map into [key value] tuples -- iterating a map
+;; directly (map/reduce) walks its *values* only, not key/value pairs.
 (def oldest-per-role
   (->> users
        (group-by :role)
+       pairs
        (map (fn [[role members]]
-              [role (get (last (sort-by :age members)) :name)]))
+              [role (:name (last (sort-by :age members)))]))
        (into {})))
 
 ;; Count users by status
@@ -540,7 +524,7 @@ Persistent KV store backed by JSON. Get, put, delete, list keys.
 
 (println (str "User 1: " (store-get :user-1)))             ; Alice
 (println (str "User 3: " (store-get :user-3 "unknown")))   ; unknown
-(println (str "Keys: " (store-keys)))                       ; (:user-1 :user-2 :config-theme)
+(println (str "Keys: " (store-keys)))                       ; [:user-1 :user-2 :config-theme]
 
 (store-delete :user-2)
 (println (str "Has :user-2? " (store-has? :user-2)))       ; false
@@ -553,7 +537,7 @@ Persistent KV store backed by JSON. Get, put, delete, list keys.
     (store-save path updated)
     updated))
 
-(store-put-many [[:lang "phel"] [:version "0.37"] [:status "awesome"]])
+(store-put-many [[:lang "phel"] [:version "0.41"] [:status "awesome"]])
 (println (str "All keys: " (store-keys)))
 ```
 
@@ -564,33 +548,32 @@ Persistent KV store backed by JSON. Get, put, delete, list keys.
 Protocols define polymorphic behavior, extendable to any type. More flexible than PHP interfaces.
 
 ```phel
-(ns cookbook.protocols)
+(ns cookbook.protocols
+  (:require phel.string :as str))
 
 ;; Define a protocol for rendering things as HTML
 (defprotocol Renderable
   (render-html [this]))
 
-;; Define some structs
 (defstruct paragraph [text])
 (defstruct heading [level text])
 (defstruct link [url label])
 
-;; Extend each struct to implement Renderable
 (extend-type paragraph
   Renderable
   (render-html [this]
-    (str "<p>" (get this :text) "</p>")))
+    (str "<p>" (:text this) "</p>")))
 
 (extend-type heading
   Renderable
   (render-html [this]
-    (let [lvl (get this :level)]
-      (str "<h" lvl ">" (get this :text) "</h" lvl ">"))))
+    (let [lvl (:level this)]
+      (str "<h" lvl ">" (:text this) "</h" lvl ">"))))
 
 (extend-type link
   Renderable
   (render-html [this]
-    (str "<a href=\"" (get this :url) "\">" (get this :label) "</a>")))
+    (str "<a href=\"" (:url this) "\">" (:label this) "</a>")))
 
 ;; Render a collection of mixed elements
 (def page-elements
@@ -600,9 +583,7 @@ Protocols define polymorphic behavior, extendable to any type. More flexible tha
    (paragraph "Protocols make this extensible.")])
 
 (def html-output
-  (->> page-elements
-       (map render-html)
-       (apply str)))
+  (str/join "" (map render-html page-elements)))
 
 (println html-output)
 ;; => <h1>Welcome</h1><p>This is a Phel-powered page.</p>...
@@ -659,22 +640,22 @@ Compose pipelines without intermediate collections. Faster, less memory than cha
 (println (str "Unique: " unique-slow-paths))
 ;; => #{"/api/users" "/api/posts"}
 
-;; Compute average response time of API calls using transduce
+;; Compute average response time of API calls. The reducing step accumulates
+;; a running [sum count]; divide once afterwards. (`transduce` already wraps the
+;; reducing fn, so a `completing` finalizer here would be ignored.)
 (defn avg-transducer [xf coll]
-  (let [result (transduce xf
-                 (completing
-                   (fn [[sum cnt] ms] [(+ sum ms) (inc cnt)])
-                   (fn [[sum cnt]] (/ sum cnt)))
-                 [0 0]
-                 coll)]
-    result))
+  (let [[sum cnt] (transduce xf
+                    (fn [[sum cnt] x] [(+ sum x) (inc cnt)])
+                    [0 0]
+                    coll)]
+    (if (zero? cnt) 0 (/ (php/floatval sum) cnt))))
 
 (def avg-api-ms
   (avg-transducer
     (comp (filter #(= :api-call (get % :type)))
           (map :ms))
     events))
-(println (str "Avg API response: " avg-api-ms "ms"))
+(println (str "Avg API response: " avg-api-ms "ms"))  ; => 237.5ms
 
 ;; Use cat to flatten nested collections
 (def nested [[1 2 3] [4 5] [6]])
@@ -749,7 +730,7 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
 
 ;; Extract all successive matches with `re-seq` (lazy sequence of matches).
 (re-seq #"\b[A-Z][a-z]+" "Alice met Bob and Charlie")
-;; => @["Alice" "Bob" "Charlie"]
+;; => ["Alice" "Bob" "Charlie"]
 ```
 
 **See also:** [Cheat Sheet -- Regular Expressions](/documentation/reference/cheat-sheet/#regular-expressions)
@@ -816,26 +797,49 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
 
 ## Pattern matching with `phel.match`
 
-`match` macro: literal, vector, map, wildcard, `:as`, `:guard`, `:or`, rest-binding patterns.
+`match` takes a **vector of targets** and clauses of `[pattern-vector expr]`.
+Each pattern vector must have the same length as the target vector. A trailing
+`:else` is the default. Pattern elements: literals, `_` wildcard, bare symbols
+(bindings), nested vectors with optional `& rest`, map patterns `{:k p}`,
+`(inner :guard pred)`, `(inner :as name)`, and `(:or a b ...)`.
 
 ```phel
 (ns cookbook.match
   (:require phel.match :refer [match]))
 
-(defn describe [x]
-  (match x
-    0              "zero"
-    [_ _]          "pair"
-    [_ _ & rest]   (str "tuple+" (count rest))
-    {:type :error :msg m} (str "error: " m)
-    (:or "hi" "hello")    "greeting"
-    (:guard n #(php/is_int %)) (str "int " n)
-    _              "other"))
+;; Multiple targets: classify a 2D point.
+(defn classify [x y]
+  (match [x y]
+    [0 0]                             "origin"
+    [_ 0]                             "on the x-axis"
+    [0 _]                             "on the y-axis"
+    [(a :guard pos?) (b :guard pos?)] "first quadrant"
+    [a b]                             (str "point (" a ", " b ")")
+    :else                             "unknown"))
 
-(describe 0)                        ; => "zero"
-(describe [1 2])                    ; => "pair"
-(describe [1 2 3 4])                ; => "tuple+2"
+(classify 0 0)   ; => "origin"
+(classify 5 0)   ; => "on the x-axis"
+(classify 3 4)   ; => "first quadrant"
+(classify -1 4)  ; => "point (-1, 4)"
+
+;; Single target: wrap one value in a 1-element target vector and match its
+;; shape with nested patterns.
+(defn describe [v]
+  (match [v]
+    [0]                     "zero"
+    [[_ _]]                 "pair"
+    [[_ _ & rest]]          (str "tuple+" (count rest))
+    [{:type :error :msg m}] (str "error: " m)
+    [(:or "hi" "hello")]    "greeting"
+    [(n :guard int?)]       (str "int " n)
+    :else                   "other"))
+
+(describe 0)                       ; => "zero"
+(describe [1 2])                   ; => "pair"
+(describe [1 2 3 4])               ; => "tuple+2"
 (describe {:type :error :msg "x"}) ; => "error: x"
+(describe "hello")                 ; => "greeting"
+(describe 99)                      ; => "int 99"
 ```
 
 ## Schemas with `phel.schema`
@@ -863,11 +867,30 @@ Validate, coerce, generate data from declarative schemas. Kinds: `:vector`, `:se
 ; => {:id 42 :name "Bob" :role :user :tags #{:a}}
 ```
 
-Instrument a function to check args/return at call sites:
+Wrap a function so its args/return are checked on every call. `instrument!`
+takes a name, the function, and a `[:=> [arg-schemas] ret-schema]` schema, and
+returns the wrapped function:
 
 ```phel
+(ns cookbook.schema-instrument
+  (:require phel.schema :as s))
+
+(def User
+  [:map
+   [:id   :int]
+   [:name :string]])
+
 (defn greet [u] (str "Hi " (:name u)))
-(s/instrument! `greet [:=> [User] :string])
+(def greet! (s/instrument! :greet greet [:=> [User] :string]))
+
+(greet! {:id 1 :name "Alice"})   ; => "Hi Alice"
+```
+
+Calling it with an argument that fails the schema throws:
+
+<!-- phel-test: skip -->
+```phel
+(greet! {:id "x" :name "Alice"}) ; throws: argument 0 failed schema
 ```
 
 ## Async with `phel.async`
@@ -903,14 +926,18 @@ Or from the shell: `vendor/bin/phel watch src/`.
 
 ## Property Tests with `phel.test.gen`
 
+`defspec` takes a name, an options map (`:num-tests`, `:size`, `:seed`,
+`:shrink?`), a generator producing the property's arguments, and a property
+function that returns truthy on success:
+
 ```phel
 (ns cookbook.gen-tests
-  (:require phel.test :refer [deftest is defspec])
-  (:require phel.test.gen :as gen))
+  (:require phel.test :refer [deftest is])
+  (:require phel.test.gen :as gen :refer [defspec]))
 
-(defspec addition-commutes
-  [a (gen/int) b (gen/int)]
-  (is (= (+ a b) (+ b a))))
+(defspec addition-commutes {:num-tests 100}
+  (gen/tuple gen/int gen/int)
+  (fn [a b] (= (+ a b) (+ b a))))
 ```
 
 Failing cases shrink automatically; the reported seed makes them reproducible.
@@ -1074,9 +1101,8 @@ Character frequencies:
 Index a collection by key:
 
 ```phel
-(reduce (fn [acc item] (assoc acc (get item :id) item))
-        {}
-        [{:id 1 :name "Alice"} {:id 2 :name "Bob"}])
+(let [coll [{:id 1 :name "Alice"} {:id 2 :name "Bob"}]]
+  (zipmap (map :id coll) coll))
 ;; => {1 {:id 1 :name "Alice"} 2 {:id 2 :name "Bob"}}
 ```
 
@@ -1095,6 +1121,7 @@ Group and count:
 (->> [{:role "admin"} {:role "user"} {:role "admin"}
       {:role "user"} {:role "user"}]
      (group-by :role)
+     pairs                          ; map -> [key value] tuples
      (map (fn [[k v]] [k (count v)])))
 ;; => @[["admin" 2] ["user" 3]]
 ```
@@ -1122,6 +1149,7 @@ Sum values by category:
 ```phel
 (->> [{:cat "a" :v 10} {:cat "b" :v 20} {:cat "a" :v 30}]
      (group-by :cat)
+     pairs                          ; map -> [key value] tuples
      (reduce (fn [acc [k items]]
                (assoc acc k (reduce + 0 (map :v items))))
              {}))
@@ -1132,7 +1160,7 @@ Frequency-sorted leaderboard:
 
 ```phel
 (->> (frequencies [:alice :bob :alice :carol :bob :alice])
-     pairs
+     (into [])
      (sort-by second)
      reverse)
 ;; => [[:alice 3] [:bob 2] [:carol 1]]
@@ -1200,3 +1228,9 @@ Diamond pattern (width 5):
      (phel.string/join "\n"))
 ;; => "  *\n ***\n*****\n ***\n  *"
 ```
+
+## Next steps
+
+- [Rosetta Stone (PHP to Phel)](/documentation/guides/rosetta-stone/) - look up the Phel form for a PHP idiom
+- [Data structures](/documentation/language/data-structures/) - the collections behind these recipes
+- [PHP interop](/documentation/php-interop/) - call any PHP function from Phel

@@ -31,6 +31,9 @@ cache/
 /static/api.json
 /static/api_search.json
 
+# Agent doc (generated from content/documentation/reference/agentic-coding.md)
+/static/agentic-coding.md
+
 # CSS files (generated)
 /css/tailwind.entry.css
 /static/tailwind.css

@@ -1,6 +1,7 @@
 +++
 title = "Coming from Clojure"
 weight = 2
+description = "What transfers from Clojure to Phel, what differs, and what Phel adds, with a side-by-side form mapping"
 aliases = ["/documentation/coming-from-clojure"]
 +++
 
@@ -32,6 +33,8 @@ Clojure intuition carries over.
 **Threading macros:** `->`, `->>`, `as->` work as in Clojure:
 
 ```phel
+(def users [{:name "Alice" :active true} {:name "Bob" :active false}])
+
 (->> users
      (filter :active)
      (map :name)
@@ -71,7 +74,7 @@ Clojure intuition carries over.
 
 **REPL:** supports `doc`, inline `require`, multiline. See [REPL](/documentation/tooling/repl).
 
-**Macros:** `defmacro`, quote, syntax-quote, unquote, unquote-splicing. `defn` is a macro. See [Macros](/documentation/language/macros).
+**Macros:** `defmacro`, quote, syntax-quote, unquote, unquote-splicing. `defn` is a macro. `defn` supports metadata shorthands: `^:memoize` wraps the body in `memoize`; `^:async` wraps in `async` returning `Amp\Future`. See [Macros](/documentation/language/macros).
 
 Reference: [Data Structures](/documentation/language/data-structures), [Functions and Recursion](/documentation/language/functions-and-recursion).
 
@@ -85,10 +88,10 @@ Compiles to PHP, runs on PHP. No JVM, classpath, JARs. Dependency manager is Com
 
 ### Protocols
 
-Phel supports Clojure-style protocols with `defprotocol` and `extend-type`. You can also use `definterface` and `defstruct` for simpler cases:
+Phel supports Clojure-style protocols with `defprotocol` and `extend-type`. Use `definterface` + `defstruct` for simpler cases where you control the type:
 
 ```phel
-(defprotocol Greetable
+(definterface Greetable
   (greet [this]))
 
 (defstruct person [name]
@@ -108,6 +111,54 @@ Phel supports Clojure-style `defmulti` / `defmethod` with hierarchy-aware dispat
 (defmulti area :shape)
 (defmethod area :circle [{:radius r}] (* 3.14159 r r))
 (defmethod area :rectangle [{:width w :height h}] (* w h))
+```
+
+### Type tags and inference
+
+`:tag` metadata emits PHP type declarations. Phel also infers return types from primitive operations:
+
+<!-- phel-test: skip -->
+```phel
+;; Explicit tags
+(defn ^int add [^int a ^int b]
+  (+ a b))
+;; Compiles to: function add(int $a, int $b): int { ... }
+
+;; Nullable type
+(defn ^"?string" find-name [^int id]
+  ...)
+
+;; ^:memoize wraps the body in memoize automatically
+(defn ^:memoize expensive [x]
+  (compute x))
+
+;; ^:async wraps the body in async, returning Amp\Future
+(defn ^:async fetch [url]
+  ...)
+```
+
+Inferred tags from tail primitive ops propagate to the PHP signature - you often don't need to annotate at all.
+
+### Numeric tower
+
+Phel ships `BigInt`, `BigDecimal`, and `Ratio` as first-class types:
+
+```phel
+1N          ; BigInt literal
+1.5M        ; BigDecimal literal
+1/2         ; Ratio literal (not a float, exact ratio)
+
+(/ 1 2)     ; => 1/2  (Ratio, exact)
+(/ 1.0 2)   ; => 0.5  (float)
+(+ 1N 2N)   ; => 3    (BigInt)
+
+;; PHP ints auto-promote to BigInt on overflow
+(* 9999999999999999999N 2N) ; stays exact
+
+;; Constructors and predicates
+(bigint 42)    ; => 42
+(bigdec "1.5") ; => 1.5M
+(ratio? 1/2)   ; => true
 ```
 
 ### Atoms only, no agents/refs/STM
@@ -130,7 +181,7 @@ No `clojure.spec`. Phel ships `phel.schema` for validation, coercion, and genera
 
 ### Truthiness
 
-Same as Clojure: only `false` and `nil` falsy. `0`, `""`, `[]` truthy. Differs from PHP. See [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations).
+Same as Clojure: only `false` and `nil` falsy. `0`, `""`, `[]` truthy. Differs from PHP. See [Truthiness](/documentation/language/basic-types/#truthiness).
 
 ### Reader conditionals
 
@@ -205,6 +256,8 @@ Keywords act as functions on maps in both: `(:name user)`.
 
 ```phel
 ;; Phel
+(def name "Alice")
+(def age 30)
 (str "Hello, " name "!")
 (format "Hello, %s! You are %d." name age)
 ```
@@ -245,7 +298,7 @@ Both use `{}`. Keyword keys idiomatic:
 
 ```phel
 ;; Phel
-{:name "Alice" :age 30}
+(def user {:name "Alice" :age 30})
 (get user :name)
 (:name user)
 (assoc user :role :admin)
@@ -309,58 +362,17 @@ Use `;` and `;;`. Legacy `#` line and `#| ... |#` block comments still read but 
 
 ## PHP interop
 
-Phel's equivalent of Clojure's Java interop. `php/` prefix unlocks the PHP ecosystem.
+Phel's equivalent of Clojure's Java interop: the `php/` prefix unlocks the whole PHP ecosystem, and the Clojure-style shorthands carry over.
 
-### Calling PHP functions
+| Clojure                   | Phel                                                            |
+|---------------------------|-----------------------------------------------------------------|
+| `(Math/pow 2 10)`         | `(php/pow 2 10)` (any PHP function via `php/`)                   |
+| `(Classname. args)`       | `(php/new Classname args)`                                      |
+| `(.method obj args)`      | `(php/-> obj (method args))` or `(.method obj args)`            |
+| `(Classname/method args)` | `(php/:: Classname (method args))` or `(Classname/method args)` |
+| array element             | `(php/aget arr key)` (PHP arrays, not Phel data structures)     |
 
-```phel
-(php/strlen "hello")             ; => 5
-(php/array_reverse [3 1 2])     ; PHP array_reverse
-(php/date "Y-m-d")              ; => "2024-01-15"
-(php/json_encode (to-php-array {:a 1}))
-```
-
-### Creating objects
-
-```phel
-(ns my.app
-  (:use DateTimeImmutable)
-  (:use PDO))
-
-(def now (php/new DateTimeImmutable))
-(def db (php/new PDO "sqlite::memory:"))
-```
-
-### Method calls
-
-```phel
-;; Instance methods
-(php/-> now (format "Y-m-d"))
-
-;; Chaining (like Clojure's doto but for methods)
-(php/-> (php/new DateTimeImmutable "2024-01-15")
-        (modify "+1 month")
-        (format "Y-m-d"))
-```
-
-### Static methods and constants
-
-```phel
-(php/:: DateTimeImmutable ATOM)
-(php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2024-03-22"))
-```
-
-### PHP array access
-
-For PHP arrays (not Phel data structures), use `php/aget`, `php/aset`:
-
-```phel
-(def config (php/json_decode (php/file_get_contents "config.json") true))
-(php/aget config "database")
-(php/aget-in config ["database" "host"])
-```
-
-Full interop reference: [PHP Interop](/documentation/php-interop).
+See [PHP Interop](/documentation/php-interop/) for the full reference: functions, objects, method and static calls, constants, and PHP-array access.
 
 ## What you'll miss (and workarounds)
 
@@ -379,7 +391,8 @@ Use Composer. `composer.json` replaces `deps.edn`:
 ```json
 {
   "require": {
-    "phel-lang/phel-lang": "^0.37"
+    "phel-lang/phel-lang": "^0.44",
+    "php": ">=8.4"
   }
 }
 ```
@@ -412,28 +425,39 @@ Many orgs already run PHP. Bring FP/Lisp into environments where the JVM isn't a
 
 ## Quick reference: Clojure to Phel
 
-| Clojure | Phel | Notes |
-|---------|------|-------|
-| `(ns foo.bar)` | `(ns foo.bar)` | Same separator. PHP FQNs use `.` |
-| `(:require [foo.bar :as b])` | `(:require foo.bar :as b)` | No vector wrapping required |
-| `#(* % 2)` | `#(* % 2)` | Same. `|(* $ 2)` legacy |
-| `(atom 0)` | `(atom 0)` | Same |
-| `@my-atom` | `@my-atom` | Same |
-| `(reset! a v)` | `(reset! a v)` | Same |
-| `(swap! a f)` | `(swap! a f)` | Same |
-| `#'sym` / `(var sym)` | `#'sym` / `(var sym)` | First-class `Var` handle |
-| `(alter-var-root #'v f)` | `(alter-var-root #'v f)` | Same |
-| `(with-redefs [v x] ...)` | `(with-redefs [v x] ...)` | Same. Works for non-dynamic vars |
-| `(binding [*x* v] ...)` | `(binding [*x* v] ...)` | Var must be `^:dynamic` |
-| `(.method obj)` | `(php/-> obj (method))` | Instance method |
-| `(Class/static)` | `(php/:: Class (static))` | Static method |
-| `(new Class)` | `(php/new Class)` | Instantiation |
-| `(defprotocol P)` | `(defprotocol P)` | Same |
-| `(defrecord R)` | `(defrecord R)` or `(defstruct R)` | Both available |
-| `(lazy-seq ...)` | `(lazy-seq ...)` | Same |
-| `#?(:clj x :default y)` | `#?(:phel x :default y)` | Reader conditionals |
-| `(ex-info msg data)` | `(ex-info msg data)` | Same |
-| `(transduce xf f coll)` | `(transduce xf f coll)` | Same |
-| `;; comment` | `;; comment` | `;` and `;;` standard |
+| Clojure                      | Phel                                                      | Notes                                  |
+|------------------------------|-----------------------------------------------------------|----------------------------------------|
+| `(ns foo.bar)`               | `(ns foo.bar)`                                            | Same separator. PHP FQNs use `.`       |
+| `(:require [foo.bar :as b])` | `(:require foo.bar :as b)`                                | No vector wrapping required            |
+| `#(* % 2)`                   | `#(* % 2)`                                                | Same. `\|(* $ 2)` legacy, deprecated   |
+| `(atom 0)`                   | `(atom 0)`                                                | Same                                   |
+| `@my-atom`                   | `@my-atom`                                                | Same                                   |
+| `(reset! a v)`               | `(reset! a v)`                                            | Same (`set!` alias removed in 0.36)    |
+| `(swap! a f)`                | `(swap! a f)`                                             | Same                                   |
+| `#'sym` / `(var sym)`        | `#'sym` / `(var sym)`                                     | First-class `Var` handle               |
+| `(alter-var-root #'v f)`     | `(alter-var-root #'v f)`                                  | Same                                   |
+| `(with-redefs [v x] ...)`    | `(with-redefs [v x] ...)`                                 | Same. Works for non-dynamic vars       |
+| `(binding [*x* v] ...)`      | `(binding [*x* v] ...)`                                   | Var must be `^:dynamic`                |
+| `(.method obj)`              | `(.method obj)` or `(php/-> obj (method))`                | Both forms work                        |
+| `(Class/staticMethod)`       | `(Class/staticMethod)` or `(php/:: Class (staticMethod))` | Both forms work                        |
+| `(new Class)`                | `(Class.)` or `(php/new Class)`                           | `ClassName.` shorthand                 |
+| `^int` tag                   | `^int` tag                                                | Emits PHP type declaration             |
+| `(memoize f)`                | `^:memoize` on `defn`                                     | Metadata shorthand                     |
+| `(defprotocol P)`            | `(defprotocol P)`                                         | Same                                   |
+| `(defrecord R)`              | `(defrecord R)` or `(defstruct R)`                        | Both available                         |
+| `(lazy-seq ...)`             | `(lazy-seq ...)`                                          | Same                                   |
+| `1N` / `1.5M` / `1/2`        | `1N` / `1.5M` / `1/2`                                     | BigInt / BigDecimal / Ratio            |
+| `(/ 1 2)` → `1/2` (Ratio)    | `(/ 1 2)` → `1/2` (Ratio)                                 | Same; use `(/ 1.0 2)` for float        |
+| `#"regex"`                   | `#"regex"`                                                | Regex literal; `re-find`, `re-matches` |
+| `#?(:clj x :default y)`      | `#?(:phel x :default y)`                                  | Reader conditionals                    |
+| `(ex-info msg data)`         | `(ex-info msg data)`                                      | Same                                   |
+| `(transduce xf f coll)`      | `(transduce xf f coll)`                                   | Same                                   |
+| `;; comment`                 | `;; comment`                                              | `;` and `;;` standard                  |
 
 Welcome to the PHP side of Lisp. The parentheses are the same; the runtime just happens to be PHP.
+
+## Next steps
+
+- [Rosetta Stone: PHP to Phel](/documentation/guides/rosetta-stone/) - the PHP angle on the same forms
+- [Cookbook](/documentation/guides/cookbook/) - copy-paste recipes to get productive fast
+- [PHP interop](/documentation/php-interop/) - the full interop reference

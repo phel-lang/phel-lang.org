@@ -119,6 +119,11 @@ Use `get-in` to grab `:treasure` from this nested structure:
 {% end %}
 {% solution() %}
 ```phel
+(def dungeon {:description "dark cave"
+              :rooms [{:contents :monster}
+                      nil
+                      {:contents [:trinket :treasure]}]})
+
 (get-in dungeon [:rooms 2 :contents 1])
 ; => :treasure
 ```

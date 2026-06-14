@@ -6,6 +6,7 @@
 If you only fetch one URL, fetch the agent reference:
 
 - [Agentic Coding (single-page reference)](https://phel-lang.org/documentation/reference/agentic-coding/)
+- [Agentic Coding (raw markdown)](https://phel-lang.org/agentic-coding.md): same content, no HTML chrome. Preferred for direct ingest.
 
 ## Onboarding
 

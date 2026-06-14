@@ -1,0 +1,22 @@
+[
+    {
+        "prompt": "(map inc [1 2 3])",
+        "result": "@[2 3 4]"
+    },
+    {
+        "prompt": "(->> (range 1 6) (filter odd?) (reduce +))",
+        "result": "9"
+    },
+    {
+        "prompt": "(defn greet [name] (str \"hello, \" name))",
+        "result": "#'user/greet"
+    },
+    {
+        "prompt": "(greet \"phel\")",
+        "result": "\"hello, phel\""
+    },
+    {
+        "prompt": "(->> (range 1 11) (map (fn [x] (* x x))) (reduce +))",
+        "result": "385"
+    }
+]

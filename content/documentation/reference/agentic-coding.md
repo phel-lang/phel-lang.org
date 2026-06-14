@@ -9,6 +9,32 @@ Single-page reference for AI agents (Claude Code, Codex, Cursor, Copilot, Aider,
 
 Load this one if you can only load one doc into an agent's context.
 
+<div class="agent-doc-cta">
+  <a href="/agentic-coding.md" class="btn btn-primary btn-lg" download>
+    <span aria-hidden="true">⤓</span> Download raw markdown
+  </a>
+  <span class="agent-doc-cta__hint">For agents and scripts: <code>curl https://phel-lang.org/agentic-coding.md</code>. Same body, no HTML chrome.</span>
+</div>
+
+## TL;DR for agents
+
+Truncation-safe rules. Code form first, reason second. Verify with `phel doc` before deviating.
+
+| Use                                                                              | Avoid                                                         | Why                                                            |
+|----------------------------------------------------------------------------------|---------------------------------------------------------------|----------------------------------------------------------------|
+| `phel doc <fn>`, grep `vendor/phel-lang/phel-lang/src/phel/core/`                | inventing names                                               | Hallucinated symbols compile then fail at runtime.             |
+| `phel.string` (alias `str`)                                                      | `phel.str`, `clojure.string`, `php/strtoupper`, `php/explode` | `phel.str` removed. Phel string fns return Phel values.        |
+| `(ns app.main)` (≥2 segments, file mirrors path under `src/`)                    | `(ns main)`                                                   | Single-segment ns exports invalid PHP under `phel build`.      |
+| `argv` (vector of strings)                                                       | `*argv*` (pre-0.39), `php/$argv`                              | Symbol renamed in 0.39. `php/$argv` is `nil` under `phel run`. |
+| `for` for data, `foreach`/`doseq` for effects                                    | `for` with side effects                                       | `for` returns a vector. `foreach` returns `nil`.               |
+| `recur` in tail of `loop`/`fn`                                                   | `recur` anywhere else                                         | Non-tail `recur` errors at compile time.                       |
+| `vec` (PHP→Phel), `to-php-array` (Phel→PHP)                                      | treating PHP arrays as Phel collections                       | Different types. Mixing breaks `count`, `map`, etc.            |
+| `#php {"k" "v"}` for PHP assoc                                                   | `{:k "v"}` as a PHP array                                     | Phel maps are not PHP arrays.                                  |
+| `(:x p)` or `(get p :x)` for records                                             | `(.-x p)`                                                     | Record fields are protected PHP properties.                    |
+| `false`, `nil` only as falsy                                                     | assuming `0`, `""`, `[]`, `{}` falsy                          | All four are truthy.                                           |
+| `(when-not *build-mode* ...)` around top-level effects                           | unguarded top-level effects                                   | `phel build` evaluates top level; effects fire at build time.  |
+| Verify Clojure-looking forms first ([Phel is not Clojure](#phel-is-not-clojure)) | porting Clojure code blindly                                  | PHP target, not JVM. Different stdlib, different concurrency.  |
+
 ## What Phel is
 
 Functional Lisp that compiles to PHP. Runs on any PHP 8.4+, ships via Composer, full PHP interop.
@@ -18,12 +44,10 @@ Functional Lisp that compiles to PHP. Runs on any PHP 8.4+, ships via Composer, 
 - Compiles to plain PHP. No separate runtime, no JVM.
 - Source: `.phel`. Config: `phel-config.php`.
 
-## Verify before you generate
-
-Verify against the install before suggesting code:
+## CLI cheat sheet
 
 ```bash
-vendor/bin/phel doc <fn>          # function signature + docstring
+vendor/bin/phel doc <fn>           # function signature + docstring
 vendor/bin/phel eval '<expr>'      # one-shot eval
 vendor/bin/phel repl               # full REPL
 vendor/bin/phel test [path]        # run tests
@@ -32,8 +56,6 @@ vendor/bin/phel build              # compile to PHP
 vendor/bin/phel format <file>      # rewrite formatting
 vendor/bin/phel doctor             # env + extension check
 ```
-
-Uncertain function name? Run `phel doc` or grep `vendor/phel-lang/phel-lang/src/php/Lang/` and `vendor/phel-lang/phel-lang/src/phel/core/`. Don't invent function names.
 
 ## Installed agent skills
 
@@ -75,6 +97,7 @@ vendor/bin/phel agent-install --all     # every adapter
 
 ## Core Forms
 
+<!-- phel-test: skip -->
 ```phel
 (def x 42)                         ; global binding
 (def- secret 7)                    ; private binding
@@ -99,7 +122,7 @@ vendor/bin/phel agent-install --all     # every adapter
 (loop [acc 0 n 10]
   (if (zero? n) acc (recur (+ acc n) (dec n))))
 
-(for   [x :in xs :when (odd? x)] (* x x))   ; lazy comprehension
+(for   [x :in xs :when (odd? x)] (* x x))   ; comprehension, returns vector
 (foreach [x xs] (println x))               ; side effects, returns nil
 (dotimes [i 5] (println i))
 
@@ -118,8 +141,9 @@ vendor/bin/phel agent-install --all     # every adapter
 
 ## Namespaces
 
+File `src/my-app/users.phel`:
+
 ```phel
-;; src/my-app/users.phel
 (ns my-app.users
   (:require phel.string :as str)
   (:require phel.html :as h)
@@ -136,6 +160,7 @@ Rules:
 
 ## PHP Interop
 
+<!-- phel-test: skip -->
 ```phel
 (php/strlen "hi")                          ; call PHP function
 (php/new DateTimeImmutable "2024-01-15")   ; construct
@@ -153,6 +178,8 @@ Class/CONST
 
 ;; Convert PHP array back to Phel collection:
 (vec (php/explode "," "a,b,c"))            ; => ["a" "b" "c"]
+;; Or with phel.string (returns Phel vector directly):
+;; (phel.string/split "a,b,c" #",")
 
 ;; Catch PHP exceptions:
 (try (risky)
@@ -164,7 +191,8 @@ Class/CONST
 ```phel
 (defrecord Point [x y])
 (def p (->Point 1 2))
-(get p :x)                         ; => 1     (use get, not .-x)
+(:x p)                             ; => 1     (keyword-as-fn: preferred)
+(get p :x)                         ; => 1     (also valid)
 (map->Point {:x 1 :y 2})           ; => (point 1 2)
 
 (defprotocol Drawable
@@ -178,20 +206,21 @@ Class/CONST
 (defmethod area :rect   [{:w w :h h}] (* w h))
 ```
 
-## Truthiness, equality, comments
+## Equality and comments
 
-- Only `false` and `nil` are falsy. `0`, `""`, `[]`, `{}` are all truthy.
 - `=` is value equality across all types. `identical?` is reference equality.
 - Comments: `;` inline, `;;` standalone, `#_` discards the next form, `(comment ...)` ignores its body.
 
 ```phel
-(if 0 "truthy" "falsy")            ; => "truthy"
 (= [1 2] [1 2])                    ; => true
 #_(this-form-is-skipped)
 ```
 
+Truthiness is in the [TL;DR](#tl-dr-for-agents).
+
 ## Tests
 
+<!-- phel-test: skip -->
 ```phel
 (ns my-app.users-test
   (:require phel.test :refer [deftest is])
@@ -204,20 +233,32 @@ Class/CONST
 
 Run with `vendor/bin/phel test`.
 
-## Common gotchas
+## Other gotchas
 
-Most failure modes agents hit:
+Beyond the TL;DR:
 
-1. **CLI args:** use `*argv*` (vector of strings, post-script-path). `php/$argv` is `null` under `phel run`.
-2. **`for` vs `foreach`:** `for` builds a lazy sequence. `foreach` (or `doseq`) for side-effects (logging, IO).
-3. **`transduce` with `max`/`min`:** no zero-arity. Wrap and pass init: `(transduce xf (fn [a b] (max a b)) 0 coll)`.
-4. **Top-level side-effects break `phel build`:** guard with `(when-not *build-mode* ...)`.
-5. **Record access by keyword:** `(get p :x)`, not `(.-x p)`.
-6. **PHP arrays aren't Phel collections:** convert with `vec` or `to-php-array`. No `to-vec`/`to-list`.
-7. **Namespaces need ≥2 segments:** `(ns app.main)`, not `(ns main)`.
-8. **String module:** `phel.string` (renamed from `phel.str`).
-9. **PHP assoc literal:** `#php {"k" "v"}`, not `{:k "v"}`. Phel maps aren't PHP arrays.
-10. **`recur` only in tail position** of `loop` or `fn`.
+- **`transduce` with `max`/`min`:** no zero-arity. Pass init: `(transduce xf (fn [a b] (max a b)) 0 coll)`.
+- **No `to-vec` / `to-list` functions.** Use `vec` (PHP array to Phel vector) or `to-php-array` (Phel to PHP).
+- **`recur` arity must match `loop` bindings.** Mismatched arg count errors at compile time.
+- **`#` line comments are deprecated.** Use `;` or `;;`.
+
+## Phel is not Clojure
+
+Agents trained on Clojure data hallucinate Clojure-only forms in Phel code. Phel is Lisp-on-PHP, not Lisp-on-JVM. Verify with `phel doc <name>` before using anything that "sounds Clojure".
+
+Known differences:
+
+- **Strings module:** `phel.string`, not `clojure.string`. Some function names match, some don't. Check each.
+- **Interop is PHP, not Java.** `(php/new Class arg)`, `(.method obj)`, `(Class/method)`, `Class/CONST`. No `Class/.method`, no `Class.`, no JVM.
+- **Records:** field access by keyword `(:x p)`. No `.-field` on records.
+- **Numbers:** PHP `int`/`float`, plus Phel `:ratio` (`(/ 1 3)` => `1/3`) and `:bigint` (auto-promoted on overflow). No `BigDecimal`.
+- **Reader conditionals use `:phel`/`:default`,** not `:clj`/`:cljs`. Example: `#?(:phel "phel" :default "other")`.
+- **Concurrency primitives are fiber-based.** `atom`, `future`, `promise`, `pmap`, `async`/`await`, `await-all`, `await-any` all exist (see `phel/core/async.phel`). `ref`, `agent`, STM do not. Verify each with `phel doc`.
+- **No `clojure.*` namespaces.** `clojure.set`, `clojure.walk`, `clojure.spec`, `clojure.test.check`, `core.match`: none. Phel modules live under `phel.*` (`phel.string`, `phel.html`, `phel.test`, etc).
+- **`phel.test`, not `clojure.test`.** Uses `deftest` + `is`.
+- **Type tags emit PHP declarations**, not Java. `^int`, `^string`, `^"?int"` on `defn` params/return.
+
+When in doubt: run `phel doc <name>`. If it errors, it does not exist; do not generate code that calls it.
 
 ## Project layout
 
@@ -236,23 +277,23 @@ Minimal `phel-config.php`:
 
 ```php
 <?php
-return \Phel\Config\PhelConfig::forProject('my-app.main');
+return \Phel\Config\PhelConfig::forProject(\Phel\Config\ProjectLayout::Flat, 'my-app.main');
 ```
 
 Full options: [Configuration](/documentation/configuration).
 
-## Authoring guidelines for agents
+## Idiomatic style for agents
 
-When generating Phel code:
+TL;DR covers what must not break. These shape what good Phel looks like:
 
-1. **Verify, don't invent.** Run `phel doc <fn>` or grep `src/phel/core/` before using an uncertain name.
-2. **Prefer pure functions.** Push side-effects to the edge. Use `atom` only for shared mutable state.
-3. **Thread, don't nest.** `(->> xs (filter f) (map g) (reduce h 0))` beats deep nesting.
-4. **Right comprehension:** `for` returns data, `foreach` runs effects, `dotimes` repeats, `loop`/`recur` accumulates.
-5. **Stay immutable.** `(conj v x)` returns a new vector. Rebind, don't expect mutation.
-6. **Comment style:** `;` inline, `;;` standalone. `#` line comments deprecated.
-7. **No em-dashes** in docstrings or generated site docs. Prefer commas, colons, periods, parentheses.
-8. **Conventional commits.** `feat:`, `fix:`, `refactor:`, `chore:`, `docs:`, `test:`. No AI/LLM authorship references.
+1. **Prefer pure functions.** Push side-effects to the edge. Use `atom` only for shared mutable state.
+2. **Thread, don't nest.** `(->> xs (filter f) (map g) (reduce h 0))` beats deep nesting.
+3. **Stay immutable.** `(conj v x)` returns a new vector. Rebind, don't expect mutation.
+4. **Interop shorthands.** `(.method obj)`, `(.-prop obj)`, `(Class/method)`, `(ClassName.)`. Shorter, idiomatic.
+5. **`^:memoize` for caching.** `(defn ^:memoize f [x] ...)` beats a manual `static $cache` pattern.
+6. **Type tags emit PHP declarations.** `^int`, `^string`, `^"?int"` on `defn` params/return = free PHP type hints.
+7. **No em-dashes** in docstrings or generated site docs. Use commas, colons, periods, parentheses.
+8. **Conventional commits.** `feat:`, `fix:`, `ref:`, `chore:`, `docs:`, `test:`. No AI/LLM authorship references.
 
 ## Where to look next
 

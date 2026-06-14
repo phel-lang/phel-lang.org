@@ -1,11 +1,15 @@
 +++
 title = "Functions and Recursion"
-weight = 6
+weight = 5
+description = "Define functions with fn and defn, use multi-arity and variadics, recurse safely with recur, and dispatch with multimethods"
 aliases = ["/documentation/functions-and-recursion"]
 +++
 
+Define and compose behavior: anonymous and named functions, multiple arities, tail-safe recursion with `recur`, and runtime polymorphism with multimethods.
+
 ## Anonymous function (fn)
 
+<!-- phel-test: skip -->
 ```phel
 (fn [params*] expr*)
 
@@ -36,7 +40,7 @@ Variadic functions use `&`:
 (fn [a b c &]) ; A variadic function with extra arguments ignored
 
 (fn ; A multi-arity function
-  ([] "hi") 
+  ([] "hi")
   ([name] (str "hi " name))
   ([greeting name & rest] (str greeting " " name rest)))
 ```
@@ -53,8 +57,8 @@ Shorter form omits the parameter list, naming params by position:
 #(apply + %&)  ; Same as (fn [& xs] (apply + xs))
 
 ; Using with higher-order functions
-(map #(* % 2) [1 2 3])        ; => [2 4 6]
-(filter #(> % 3) [1 5 2 8])   ; => [5 8]
+(map #(* % 2) [1 2 3])        ; => @[2 4 6]
+(filter #(> % 3) [1 5 2 8])   ; => @[5 8]
 ```
 
 > **Legacy:** `|(...)` with `$` / `$1` / `$&` still reads. Prefer `#(...)` with `%` (matches Clojure).
@@ -76,6 +80,7 @@ array_map(fn($x) => $x * 2, $array);
 
 ## Global functions
 
+<!-- phel-test: skip -->
 ```phel
 (defn name docstring? attributes? [params*] expr*)
 
@@ -113,13 +118,14 @@ Private functions don't export from the namespace. Two forms:
 1. `{:private true}` attribute
 2. `defn-` shorthand
 
+<!-- phel-test: skip -->
 ```phel
 (defn my-private-add-function
   {:private true}
   [a b]
   (+ a b))
-  
-(defn- my-private-add-function 
+
+(defn- my-private-add-function
   [a b]
   (+ a b))
 ```
@@ -128,10 +134,11 @@ Equivalent, but `defn-` is more concise.
 
 ### Defn metadata shortcuts
 
-Tag a `defn` with metadata to wrap the body automatically (added in 0.37):
+Tag a `defn` with metadata to wrap the body automatically:
 
+<!-- phel-test: skip -->
 ```phel
-;; Memoize results — keep every (args -> value) pair forever
+;; Memoize results - keep every (args -> value) pair forever
 (defn ^:memoize fib [n]
   (if (< n 2) n (+ (fib (dec n)) (fib (- n 2)))))
 
@@ -139,7 +146,7 @@ Tag a `defn` with metadata to wrap the body automatically (added in 0.37):
 (defn ^{:memoize-lru 128} expensive [k]
   (slow-lookup k))
 
-;; Wrap body in (async ...) — returns Amp\Future
+;; Wrap body in (async ...) - returns Amp\Future
 (defn ^:async fetch [url]
   (http/get url))
 ```
@@ -148,7 +155,7 @@ Tag a `defn` with metadata to wrap the body automatically (added in 0.37):
 
 ### Return and parameter types (`:tag`)
 
-Annotate types with `:tag` metadata (added in 0.37). The compiler emits PHP type declarations and runs static checks at compile time:
+Annotate types with `:tag` metadata. The compiler emits PHP type declarations and runs static checks at compile time:
 
 ```phel
 (defn ^int add [^int a ^int b] (+ a b))
@@ -161,7 +168,7 @@ Annotate types with `:tag` metadata (added in 0.37). The compiler emits PHP type
 
 Reader shorthands: `^int`, `^"?int"`, `^"\\Foo\\Bar"`, `^{:tag "..."}`.
 
-Tag inference fills in return types from tail primitive ops, tail calls to tagged globals or pure PHP builtins, and parameter types from primitive body uses — inferred tags persist in def metadata and graft onto compiled PHP signatures for single-arity `defn`. Mismatches surface at compile time.
+Tag inference fills in return types from tail primitive ops, tail calls to tagged globals or pure PHP builtins, and parameter types from primitive body uses - inferred tags persist in def metadata and graft onto compiled PHP signatures for single-arity `defn`. Mismatches surface at compile time.
 
 ## Recursion
 
@@ -280,6 +287,7 @@ Dispatch function can be anything, not just a keyword:
 
 ## Apply functions
 
+<!-- phel-test: skip -->
 ```phel
 (apply f expr*)
 ```
@@ -320,3 +328,9 @@ function addToArray(&$arr) {
 
 **Note:** Prefer immutable data structures over mutating PHP arrays.
 {% end %}
+
+## Next steps
+
+- [Destructuring](/documentation/language/destructuring/) - bind function params by shape
+- [Macros](/documentation/language/macros/) - go beyond functions with compile-time code
+- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

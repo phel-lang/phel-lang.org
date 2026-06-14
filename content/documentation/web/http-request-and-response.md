@@ -1,8 +1,11 @@
 +++
 title = "Request and Response"
 weight = 1
+description = "Read an HTTP request from PHP globals and build, then emit, a response with the phel.http namespace"
 aliases = ["/documentation/http-request-and-response"]
 +++
+
+The `phel.http` namespace gives you one struct for the incoming request and one for the response you send back. This page shows how to read a request, build a response, and emit it.
 
 ## HTTP request
 
@@ -15,7 +18,7 @@ Request struct:
   method            ; HTTP Method ("GET", "POST", ...)
   uri               ; uri struct (defined below)
   headers           ; Map of all headers. Keys are keywords, Values are string
-  parsed-body       ; The parsed body ($_POST), when available otherwise nil
+  parsed-body       ; Parsed body: $_POST form data, or a decoded JSON body, otherwise nil
   query-params      ; Map with all query parameters ($_GET)
   cookie-params     ; Map with all cookie parameters ($_COOKIE)
   server-params     ; Map with all server parameters ($_SERVER)
@@ -45,9 +48,10 @@ Request struct:
 
 Import `phel.http`, call `request-from-globals`:
 
+<!-- phel-test: skip -->
 ```phel
 (ns my-namespace
-  (:require phel.http))
+  (:require phel.http :as http))
 
 (http/request-from-globals) ; Evaluates to a request struct
 ```
@@ -74,11 +78,24 @@ Two helpers create responses:
 
 ;; Create response from map
 (http/response-from-map {:status 200 :body "Test"})
-;; Evaluates to (response 200 {} "Test" "1.1" "OK")
+;; Evaluates to (phel.http.response 200 {} Test 1.1 OK)
 
 ;; Create response from string
 (http/response-from-string "Hello World")
-;; Evaluates to (response 200 {} "Hello World" "1.1" "OK")
+;; Evaluates to (phel.http.response 200 {} Hello World 1.1 OK)
+```
+
+`json-response` and `html-response` set the `Content-Type` header for you:
+
+```phel
+(ns my-namespace
+  (:require phel.http))
+
+(http/json-response 200 {:message "pong"})
+;; body "{\"message\":\"pong\"}", Content-Type application/json
+
+(http/html-response 200 "<h1>Hi</h1>")
+;; body "<h1>Hi</h1>", Content-Type text/html; charset=utf-8
 ```
 
 Send with `emit-response`:
@@ -92,6 +109,35 @@ Send with `emit-response`:
   (http/emit-response rsp))
 ```
 
-## HTTP router
+## End to end
 
-Phel router on top of Symfony routing: [phel-lang/router](https://github.com/phel-lang/router).
+A minimal web entry point reads the request, branches on method and path, builds a response, and emits it. Here `get-in` reads the path from the nested `uri` struct.
+
+<!-- phel-test: skip -->
+```phel
+(ns my-app
+  (:require phel.http :as http)
+  (:require phel.html :refer [html]))
+
+(defn handle [request]
+  (let [method (get request :method)
+        path   (get-in request [:uri :path])]
+    (cond
+      (and (= method "GET") (= path "/"))
+      (http/response-from-map {:status 200 :body (html [:h1 "Home"])})
+
+      (http/response-from-map {:status 404 :body "Not found"}))))
+
+;; Wire it up: read globals, handle, emit.
+(-> (http/request-from-globals)
+    (handle)
+    (http/emit-response))
+```
+
+Branching by hand stays readable for a few routes. Once you have more than a handful, reach for the [router](/documentation/web/routing/), which matches method and path for you and keeps handlers separate. The `:body` here comes from [HTML rendering](/documentation/web/html-rendering/).
+
+## Next steps
+
+- [Routing](/documentation/web/routing/) - match a request to a handler without hand-written `cond`
+- [HTML rendering](/documentation/web/html-rendering/) - build the response body from Phel data structures
+- [http API reference](/documentation/reference/api/http/) - every request and response helper

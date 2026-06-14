@@ -183,6 +183,10 @@ Sort a list of people by age:
 {% end %}
 {% solution() %}
 ```phel
+(def people [{:name "Charlie" :age 30}
+             {:name "Ada" :age 36}
+             {:name "Bob" :age 25}])
+
 (sort-by :age people)
 ;; => [{:name "Bob" :age 25} {:name "Charlie" :age 30} {:name "Ada" :age 36}]
 ```
@@ -199,6 +203,10 @@ Use `update-in` to bump the balance from `3` to `4`:
 {% end %}
 {% solution() %}
 ```phel
+(def data {:shops [:shop-1]
+           :customers [{:id "Bob"
+                        :account {:balance 3}}]})
+
 (update-in data [:customers 0 :account :balance] inc)
 ;; => {:shops [:shop-1] :customers [{:id "Bob" :account {:balance 4}}]}
 ```
@@ -237,6 +245,7 @@ Use `group-by` to split numbers into evens and odds:
 
 {% question(difficulty="hard") %}
 Define `area` so it accepts a map `{:width w :height h}` and returns `w * h`. Use destructuring in the parameter list:
+<!-- phel-test: skip -->
 ```phel
 (area {:width 5 :height 3}) ; => 15
 ```
@@ -253,6 +262,7 @@ Learn more: [Destructuring](/documentation/language/destructuring)
 
 {% question(difficulty="hard") %}
 Define `combine` that merges a vector of maps into one:
+<!-- phel-test: skip -->
 ```phel
 (combine [{:a 1 :b 2} {:c 3} {:d 4 :e 5}])
 ;; => {:a 1 :b 2 :c 3 :d 4 :e 5}

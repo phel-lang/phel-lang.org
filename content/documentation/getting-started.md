@@ -1,6 +1,7 @@
 +++
 title = "Getting Started"
 weight = 1
+description = "Go from zero to a live Phel REPL in under a minute, then tour your first project."
 +++
 
 Phel is a Lisp that compiles to PHP. Persistent data structures, immutability by default, macros. Runs on your existing PHP runtime.
@@ -49,7 +50,7 @@ Try a few expressions:
 >>> xs
 [1 2 3]                    ; original vector is unchanged
 >>> (map inc xs)
-(2 3 4)
+@[2 3 4]
 >>> (php/date "Y-m-d")      ; call any PHP function
 "2026-04-21"
 ```

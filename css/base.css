@@ -414,13 +414,13 @@ table td:not(:first-child) {
 
 @media (max-width: 768px) {
   table {
+    width: 100%;
     max-width: 100%;
+    table-layout: fixed;
     border-radius: var(--radius-lg);
     overflow: hidden;
-    display: block;
-    overflow-x: auto;
+    word-break: break-word;
   }
-
 }
 
 th {
