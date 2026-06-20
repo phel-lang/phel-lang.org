@@ -242,16 +242,16 @@
         },
         {
             "name": "phel-lang/phel-lang",
-            "version": "v0.45.0",
+            "version": "v0.45.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "661007549b2e3bda9b5d7de018282d12088979fa"
+                "reference": "c9bc0e93bf13dc1162b7469f2f222b69cc1e6653"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/661007549b2e3bda9b5d7de018282d12088979fa",
-                "reference": "661007549b2e3bda9b5d7de018282d12088979fa",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/c9bc0e93bf13dc1162b7469f2f222b69cc1e6653",
+                "reference": "c9bc0e93bf13dc1162b7469f2f222b69cc1e6653",
                 "shasum": ""
             },
             "require": {
@@ -312,7 +312,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phel-lang/phel-lang/issues",
-                "source": "https://github.com/phel-lang/phel-lang/tree/v0.45.0"
+                "source": "https://github.com/phel-lang/phel-lang/tree/v0.45.1"
             },
             "funding": [
                 {
@@ -320,7 +320,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-06-20T13:26:52+00:00"
+            "time": "2026-06-20T13:45:49+00:00"
         },
         {
             "name": "psr/container",
