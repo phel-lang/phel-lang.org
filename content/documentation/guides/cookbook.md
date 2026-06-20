@@ -64,10 +64,10 @@ CLI script that reads args, parses flags, produces output.
 (ns cookbook.cli-tool
   (:require phel.string :as str))
 
-;; `argv` (in phel.core) holds the user arguments, excluding the program name.
+;; `*argv*` (in phel.core) holds the user arguments, excluding the program name.
 ;; `*program*` holds the script path. When running:
 ;;   vendor/bin/phel run src/cli-tool.phel --name Alice --greeting Hi
-;; argv is ["--name" "Alice" "--greeting" "Hi"].
+;; *argv* is ["--name" "Alice" "--greeting" "Hi"].
 
 ;; Parse flags into a map of --key value pairs
 (defn parse-flags [flag-args]
@@ -85,7 +85,7 @@ CLI script that reads args, parses flags, produces output.
 
 ;; Build the tool
 (defn run []
-  (let [flags (parse-flags argv)
+  (let [flags (parse-flags *argv*)
         who (get flags :name "World")
         greeting (get flags :greeting "Hello")
         repeat-count (php/intval (get flags :repeat "1"))]

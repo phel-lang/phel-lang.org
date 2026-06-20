@@ -208,14 +208,22 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 </div>
 </details>
 
-## Upgrading to 0.44
+## Upgrading to 0.45
 
 ```bash
-composer require phel-lang/phel-lang:^0.44
+composer require phel-lang/phel-lang:^0.45
 ./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
 Always clear the cache after upgrading: compiled PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects too.
+
+Behaviour changes in 0.45:
+
+- **Breaking**: the runtime CLI-args var is now `*argv*` (earmuffed), matching `*program*` and Clojure's `*command-line-args*`. The old `argv` name was removed: replace `argv` with `*argv*` in scripts that read command-line arguments.
+- CLI flag renames with deprecated aliases kept: `index --output`/`-o` (was `--out`), `config --format=json` (was `--json`). The old flags still work but warn on stderr.
+- Overflowing constant int arithmetic (`+`/`-`/`*`) now folds to `BigInt` like the runtime instead of `float`. Float printing is consistent across `str`/`print`/REPL (integer floats keep `.0`).
+
+New in 0.45 (warm boot): the PHAR ships `phel.core` precompiled, cutting cold-start `run`/`test`/`eval` from ~1.2s to ~0.2s; a native-int arithmetic fast path (~1.8-8x per op); shell completion (`bash`/`zsh`/`fish`) plus CLI short aliases (`r` run, `t` test, `b` build, `e` eval); REPL/nREPL autocompletion of special forms and native symbols; and `phel doctor` OPcache reporting. See the [0.45 release notes](/releases/0-45-warm-boot/).
 
 Behaviour changes in 0.44:
 
