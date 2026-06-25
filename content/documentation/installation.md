@@ -208,14 +208,23 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 </div>
 </details>
 
-## Upgrading to 0.45
+## Upgrading to 0.46
 
 ```bash
-composer require phel-lang/phel-lang:^0.45
+composer require phel-lang/phel-lang:^0.46
 ./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
 Always clear the cache after upgrading: compiled PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects too.
+
+Behaviour changes in 0.46:
+
+- **Breaking**: the deprecated `PhelConfig` `setX()` setters and `useLayout()`/`useNestedLayout()`/`useFlatLayout()` were removed, along with the `setX()` shims on `PhelBuildConfig`/`PhelExportConfig`. Use the `with*()` methods in `phel-config.php` instead.
+- A broken `phel-config.php` now fails with a clear error naming the file and expected structure (exit code 1) instead of an uncaught exception stack trace.
+- `phel build` now exits non-zero when compilation aborts, instead of printing errors while exiting `0`. CI relying on the old exit code may start failing as intended.
+- The incremental build cache now cascades recompiles to dependent namespaces when a required namespace changes, preventing stale output reuse.
+
+New in 0.46 (native path): config validation in `phel config` and `phel doctor` (relative paths, source/test dirs, optimization levels, types); `phel build --timing` for per-phase compile durations; `phel init` scaffolds configs with `declare(strict_types=1);`; an optional intermediate compile cache via `withEnableIntermediateCache()`; and a more resilient LSP that stays alive during idle periods and lists symbols from unsaved buffer edits. See the [0.46 release notes](/releases/0-46-native-path/).
 
 Behaviour changes in 0.45:
 
