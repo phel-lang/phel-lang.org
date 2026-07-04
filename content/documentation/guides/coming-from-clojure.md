@@ -391,7 +391,7 @@ Use Composer. `composer.json` replaces `deps.edn`:
 ```json
 {
   "require": {
-    "phel-lang/phel-lang": "^0.46",
+    "phel-lang/phel-lang": "^0.47",
     "php": ">=8.4"
   }
 }

@@ -208,14 +208,23 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 </div>
 </details>
 
-## Upgrading to 0.46
+## Upgrading to 0.47
 
 ```bash
-composer require phel-lang/phel-lang:^0.46
+composer require phel-lang/phel-lang:^0.47
 ./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
 Always clear the cache after upgrading: compiled PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects too.
+
+Behaviour changes in 0.47:
+
+- No breaking changes. Existing code compiles as before.
+- `phel test` now prints structural diffs (`+`/`-`/`~`) for any collection that differs, not just the first few entries, so assertion failures point straight at the mismatch.
+- `phel compile` prints folded values to stderr when a form emits no PHP output, making constant folding visible instead of silent.
+- New projects scaffold with optimization level 2 enabled in `phel-config.php`. Existing configs are untouched.
+
+New in 0.47: LSP signature help now covers plain Phel calls like `(map f xs)` (arity, parameter names, docstring); nREPL eval responses carry per-session `*1`/`*2`/`*3` value history so Calva and Conjure show the last three results; the REPL's `(doc sym)` renders function examples under an `Example:` heading; runtime errors name the `.phel` location instead of a compiled temp path; and startup is about 30% faster via OPcache re-execution. See the [0.47 release notes](/releases/0-47-clear-signals/).
 
 Behaviour changes in 0.46:
 

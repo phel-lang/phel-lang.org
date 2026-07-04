@@ -82,6 +82,7 @@ Module `main` imports `util`:
 
 Use aliases to avoid collisions:
 
+<!-- phel-test: skip -->
 ```phel
 (ns hello-world.main
   (:require hello-world.util :as utilities))
@@ -183,6 +184,7 @@ Fully qualified: namespace, `/`, keyword name.
 
 `ns` aliases also work:
 
+<!-- phel-test: skip -->
 ```phel
 (ns foobar
   (:require abc.xyz :as bar))
