@@ -17,7 +17,7 @@ Phel installs as a Composer package and compiles to plain PHP. Your framework ne
 2. Mark public functions with `{:export true}`.
 3. Create one main namespace (`app.main`) that `:require`s every feature namespace. Loading it registers all exported functions at once.
 4. Export PHP wrappers under your framework's `App\` PSR-4 root via `phel export`.
-5. In production, run `phel build` at deploy and `require 'build/app/main.php'` at boot. In development, `\Phel::run($root, 'app.main')` compiles on first call.
+5. In production, run `phel build` at deploy and `require 'build/app/main.php'` at boot; in development, `\Phel::run($root, 'app.main')` compiles on first call. One [load guard](/documentation/deployment/#loading-phel-prod-vs-dev) picks the right path.
 
 Namespaces need at least two segments (`shop.pricing`, not `pricing`); a single-segment namespace exports invalid PHP.
 
@@ -99,7 +99,7 @@ return PhelConfig::forProject()
     ->withExportTargetDirectory(__DIR__ . '/app/PhelGenerated');
 ```
 
-A service provider loads the main namespace once, so all wrappers are ready:
+A service provider runs the [load guard](/documentation/deployment/#loading-phel-prod-vs-dev) once, with Laravel's `base_path()` as the root, so all wrappers are ready:
 
 ```php
 namespace App\Providers;
@@ -172,7 +172,7 @@ return PhelConfig::forProject()
 
 The default `App\ → src/` PSR-4 mapping covers `App\PhelGenerated\`.
 
-Hook the load into the kernel `boot()`:
+Hook the same [load guard](/documentation/deployment/#loading-phel-prod-vs-dev) into the kernel `boot()`, with `getProjectDir()` as the root:
 
 ```php
 private static bool $phelLoaded = false;
@@ -214,7 +214,7 @@ return PhelConfig::forProject(mainNamespace: 'app.main')
     ->withBuildDestDir('build');
 ```
 
-Entry script:
+Entry script, applying the [load guard](/documentation/deployment/#loading-phel-prod-vs-dev) with `__DIR__` as the root:
 
 ```php
 <?php
@@ -330,10 +330,9 @@ For the full semantics of typed emission, native enums, and exceptions, see [Nat
 
 - Namespace path matches directory: `phel/shop/pricing.phel` maps to `(ns shop.pricing)`.
 - Hyphens become camelCase: `(ns my-lib.core)` maps to `App\PhelGenerated\MyLib\Core`; `apply-discount` to `applyDiscount`.
-- Prod path (`require build/app/main.php`): self-contained, no Gacela bootstrap, no compiler. Just `\Phel::addDefinition()` calls.
-- Dev path (`\Phel::run()`) boots Gacela and compiles to temp files on first call. Guard it with a static flag; never call it from Laravel's `register()` or a per-request hot path.
+- Prod vs dev load, the run-once rule, and committing `build/`: see [Loading Phel: prod vs dev](/documentation/deployment/#loading-phel-prod-vs-dev).
+- Load Phel in Laravel's `boot()`, never `register()` or any per-request hot path.
 - `withBuildDestDir()` is relative to the project root.
-- Commit `build/` in the deploy artifact, or run `phel build` in CI. Skip committing it in dev so `is_file()` is false and `\Phel::run()` kicks in.
 - Add `vendor/bin/phel test` to CI alongside `phpunit`.
 
 ## Next steps
