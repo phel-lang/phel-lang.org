@@ -844,54 +844,7 @@ Each pattern vector must have the same length as the target vector. A trailing
 
 ## Schemas with `phel.schema`
 
-Validate, coerce, generate data from declarative schemas. Kinds: `:vector`, `:set`, `:map`, `:map-of`, `:tuple`, `:enum`, `:and`, `:or`, `:maybe`, `:re`, `:fn`, `:ref`, function schemas `[:=> args ret]`.
-
-```phel
-(ns cookbook.schema
-  (:require phel.schema :as s))
-
-(def User
-  [:map
-   [:id    :int]
-   [:name  :string]
-   [:role  [:enum :admin :user]]
-   [:tags  [:set :keyword]]])
-
-(s/validate User {:id 1 :name "Alice" :role :admin :tags #{:beta}})
-; => true
-
-(s/explain User {:id "bad" :name 1 :role :guest :tags []})
-; => {:errors [...]}
-
-(s/coerce User {:id "42" :name "Bob" :role "user" :tags ["a"]})
-; => {:id 42 :name "Bob" :role :user :tags #{:a}}
-```
-
-Wrap a function so its args/return are checked on every call. `instrument!`
-takes a name, the function, and a `[:=> [arg-schemas] ret-schema]` schema, and
-returns the wrapped function:
-
-```phel
-(ns cookbook.schema-instrument
-  (:require phel.schema :as s))
-
-(def User
-  [:map
-   [:id   :int]
-   [:name :string]])
-
-(defn greet [u] (str "Hi " (:name u)))
-(def greet! (s/instrument! :greet greet [:=> [User] :string]))
-
-(greet! {:id 1 :name "Alice"})   ; => "Hi Alice"
-```
-
-Calling it with an argument that fails the schema throws:
-
-<!-- phel-test: skip -->
-```phel
-(greet! {:id "x" :name "Alice"}) ; throws: argument 0 failed schema
-```
+Validate, coerce, and generate data from declarative schemas built out of plain Phel data, and wrap functions with `instrument!` to check args and returns on every call. See the [Schema Validation guide](/documentation/guides/schema/) for the full reference.
 
 ## Async with `phel.async`
 
