@@ -524,26 +524,7 @@ Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some det
 
 ## Anonymous function shorthand
 
-`#(...)` defines anonymous functions inline. `%` placeholders:
-
-- `%` or `%1` refers to the first argument
-- `%2`, `%3`, etc. refer to subsequent arguments
-- `%&` captures remaining variadic arguments
-
-```phel
-#(+ 6 %)       ; Same as (fn [x] (+ 6 x))
-#(+ %1 %2)     ; Same as (fn [a b] (+ a b))
-#(apply + %&)  ; Same as (fn [& xs] (apply + xs))
-
-; Using with higher-order functions
-(map #(* % 2) [1 2 3])        ; => @[2 4 6]
-(filter #(> % 3) [1 5 2 8])   ; => @[5 8]
-
-(def users [{:name "Alice" :age 30} {:name "Bob" :age 25}])
-(sort-by #(get % :age) users)  ; Sort users by age
-```
-
-> **Note:** Older `|(...)` form with `$` placeholders is deprecated. See [Functions and Recursion](/documentation/language/functions-and-recursion).
+`#(...)` defines an inline anonymous function, using `%`/`%1`/`%2`/`%&` for positional arguments — `#(* % 2)` is the same as `(fn [x] (* x 2))`. Full rules and the deprecated `|(...)` form live in [Functions and Recursion](/documentation/language/functions-and-recursion/#anonymous-function-fn).
 
 ## Deref shorthand
 
