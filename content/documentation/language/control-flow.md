@@ -292,7 +292,7 @@ Creates a lexical context with bindings and a recursion point at the top.
 
 Evaluates expressions and rebinds at the recursion point. Recursion point is a `fn` or `loop`. Arities must match exactly.
 
-`recur` compiles to a PHP `while` loop, avoiding _Maximum function nesting level_ errors.
+`recur` compiles to a PHP `while` loop, avoiding _Maximum function nesting level_ errors. Using `recur` for tail-recursive functions and the tail-call story are covered in [Functions and Recursion](/documentation/language/functions-and-recursion/#recursion).
 
 ```phel
 ;; Basic loop example - sum numbers from 1 to 10
@@ -301,16 +301,6 @@ Evaluates expressions and rebinds at the recursion point. Recursion point is a `
   (if (= cnt 0)
     sum
     (recur (+ cnt sum) (dec cnt))))  ; => 55
-
-;; Recursion in a function
-(defn factorial [n]
-  (loop [acc 1
-         n n]
-    (if (<= n 1)
-      acc
-      (recur (* acc n) (dec n)))))
-
-(factorial 5)  ; => 120
 
 ;; Finding an element in a vector
 (defn find-index [pred coll]
@@ -335,26 +325,6 @@ Evaluates expressions and rebinds at the recursion point. Recursion point is a `
 
 (reverse-vec [1 2 3 4])  ; => [4 3 2 1]
 ```
-
-{% php_note() %}
-TCO not in PHP natively:
-
-```php
-// PHP - recursive functions can cause stack overflow
-function countdown($n) {
-    if ($n === 0) return 0;
-    return countdown($n - 1);  // Stack overflow for large n!
-}
-
-// Phel - recur compiles to a while loop (safe for any n)
-(loop [n 1000000]
-  (if (= n 0)
-    0
-    (recur (dec n))))  ; No stack overflow!
-```
-
-Critical for FP patterns in PHP.
-{% end %}
 
 ## Foreach
 
