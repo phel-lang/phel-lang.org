@@ -803,8 +803,9 @@
   flex-wrap: wrap;
 }
 
-/* Separate the "Phel by example" heading from the CTA buttons above it */
-.homepage-cta + h2 {
+/* Separate the "Phel by example" heading from the CTA buttons above it.
+   Must out-specify `.homepage-section--alt > h2 { margin-top: 0 }`. */
+.homepage-section--alt .homepage-cta + h2 {
   margin-top: var(--space-2xl);
 }
 
