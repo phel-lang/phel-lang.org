@@ -105,7 +105,7 @@ A struct can implement many. List each followed by its methods:
 
 ### Calling other methods on same struct
 
-Interface dispatch routes through the generated function, not through `this` directly. To call another interface method on the same struct from within a method body, use the PHP method call syntax via `php/-> this`:
+Interface dispatch routes through the generated function, not through `this` directly. To call another interface method on the same struct from within a method body, use the [PHP method-call operator](/documentation/language/error-handling/#catching-php-exceptions) `php/->` on `this`:
 
 ```phel
 (definterface Describable

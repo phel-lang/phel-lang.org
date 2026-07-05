@@ -129,10 +129,10 @@ These return lazy sequences, so you rarely need to write `lazy-seq` yourself:
 ; [:a :b :c :a :b :c :a]
 
 (println (->> (range 100)
-              (filter even?)
-              (map (fn [x] (* x x)))
+              (map inc)
+              (filter odd?)
               (take 5)))
-; [0 4 16 36 64]
+; [1 3 5 7 9]
 ```
 
 ## Performance

@@ -102,20 +102,17 @@ Simple, doesn't cover all `defn` features, but shows the basics.
 ```
 
 {% clojure_note() %}
-Quasiquote syntax is identical to Clojure:
-- `` ` `` for quasiquote (syntax-quote)
-- `~` for unquote
-- `~@` for unquote-splicing
+Same quasiquote/unquote/splicing tokens as Clojure.
 {% end %}
 
 ## Expanding macros
 
 To see what a macro produces, expand it without running it. `macroexpand-1` does a single expansion step; `macroexpand` keeps expanding until the top form is no longer a macro call. Quote the form so it stays code.
 
-```phel
-(defmacro unless [test then else]
-  `(if (not ~test) ~then ~else))
+Expanding the `unless` macro from [Why macros](#why-macros):
 
+<!-- phel-test: skip -->
+```phel
 (macroexpand-1 '(unless false "yes" "no"))
 ; => (if (phel.core/not false) "yes" "no")
 
