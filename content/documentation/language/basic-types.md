@@ -17,25 +17,7 @@ true
 false
 ```
 
-Only `false` and `nil` are falsy. `0`, `""`, `[]` truthy.
-
-```phel
-;; Truthiness examples
-(if nil "yes" "no")   ; => "no"  (nil is falsy)
-(if false "yes" "no") ; => "no"  (false is falsy)
-(if 0 "yes" "no")     ; => "yes" (0 is truthy!)
-(if "" "yes" "no")    ; => "yes" (empty string is truthy!)
-(if [] "yes" "no")    ; => "yes" (empty vector is truthy!)
-```
-
-{% php_note() %}
-`nil` = PHP `null`. `true`/`false` same. But truthiness differs:
-
-**PHP**: `0`, `""`, `[]`, `null`, `false` falsy.
-**Phel**: only `false`, `nil` falsy.
-
-`if (0)` in PHP is false, but `(if 0 ...)` in Phel is true.
-{% end %}
+Only `false` and `nil` are falsy — `0`, `""`, and `[]` are all truthy (unlike PHP, where they are falsy). See [Truthiness](#truthiness) for the predicates and the full PHP comparison.
 
 ## Symbol
 
@@ -399,23 +381,7 @@ Whitespace-separated key/value pairs in braces. Even count: key1, value1, key2, 
 ```
 
 {% php_note() %}
-Unlike PHP associative arrays, Phel maps:
-- **Any type** as keys: vectors, lists, other maps
-- **Immutable**: operations return new maps
-- **Not** PHP arrays internally
-
-```php
-// PHP: mutable
-$map = ['name' => 'Alice'];
-$map['name'] = 'Bob';  // Mutates in place
-```
-
-```phel
-;; Phel: immutable
-(def map {:name "Alice"})
-(def new-map (assoc map :name "Bob"))  ; Returns new map
-;; map is still {:name "Alice"}
-```
+Unlike PHP associative arrays, Phel map keys can be **any type** (vectors, lists, other maps), maps are **immutable** (operations return new maps), and they are **not** PHP arrays internally. Worked comparison in [Data structures → Immutability](/documentation/language/data-structures/#immutability-vs-php-mutability).
 {% end %}
 
 ## Sets
@@ -528,15 +494,7 @@ Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some det
 
 ## Deref shorthand
 
-`@` is shorthand for `(deref ...)`. Dereferences atoms and other reference types:
-
-```phel
-(def counter (atom 0))
-
-@counter              ; Same as (deref counter) => 0
-(swap! counter inc)
-@counter              ; => 1
-```
+`@x` is shorthand for `(deref x)`, reading the current value of an atom or other reference type. Atom mechanics (`swap!`, `reset!`, the `!` convention) live in [Global and local bindings](/documentation/language/global-and-local-bindings/#atoms).
 
 ## Comments
 
