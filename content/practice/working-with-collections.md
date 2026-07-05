@@ -210,7 +210,7 @@ Use `update-in` to bump the balance from `3` to `4`:
 (update-in data [:customers 0 :account :balance] inc)
 ;; => {:shops [:shop-1] :customers [{:id "Bob" :account {:balance 4}}]}
 ```
-`update-in` walks into a nested structure and applies a function at the path. Pure - the original data stays put.
+`update-in` walks into a nested structure and applies a function at the path.
 
 Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}

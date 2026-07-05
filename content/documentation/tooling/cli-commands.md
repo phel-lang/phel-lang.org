@@ -101,14 +101,7 @@ Exports definitions with `{:export true}` metadata as PHP classes. Generates one
 vendor/bin/phel export
 ```
 
-[Configuration](/documentation/configuration/) in `phel-config.php`:
-```php
-<?php
-return (new \Phel\Config\PhelConfig())
-    ->withExportFromDirectories(['src'])
-    ->withExportNamespacePrefix('PhelGenerated')
-    ->withExportTargetDirectory('src/PhelGenerated');
-```
+Configure the export dirs, namespace prefix, and target directory in `phel-config.php`; see [Configuration](/documentation/configuration/#full-reference).
 
 ## Format phel files
 
@@ -198,21 +191,7 @@ vendor/bin/phel test
 #       --coverage-output=PATH  Write the coverage report to a file (use with --coverage=clover for CI).
 ```
 
-Test selectors and reporters: see [Testing](/documentation/testing/).
-
-```bash
-# Re-run on every change while you work
-vendor/bin/phel test --watch
-
-# Re-run only what failed last time
-vendor/bin/phel test --last-failed
-
-# Line coverage as text, or Clover XML for CI
-vendor/bin/phel test --coverage
-vendor/bin/phel test --coverage=clover --coverage-output=coverage.xml
-```
-
-`--coverage` needs pcov or xdebug and runs serially (it disables `--parallel` for that run). Only project source files count; vendor and core are excluded.
+See [Testing](/documentation/testing/) for what each flag does.
 
 [Configuration](/documentation/configuration/) in `phel-config.php`:
 ```php
@@ -220,8 +199,6 @@ vendor/bin/phel test --coverage=clover --coverage-output=coverage.xml
 return (new PhelConfig())
     ->withTestDirs(['tests']);
 ```
-
-Use `filter` to run matching tests only.
 
 ## Evaluate an expression
 
@@ -303,23 +280,23 @@ From Phel code, use `phel.watch`:
 
 ## nREPL
 
-Bencode-over-TCP nREPL server. Ops: `eval`, `clone`, `close`, `describe`, `load-file`, `interrupt`, `completions`, `lookup`, `info`, `eldoc`.
+Bencode-over-TCP nREPL server for editor inline eval.
 
 ```bash
 vendor/bin/phel nrepl --port=7888 --host=127.0.0.1
 ```
 
-Connect from any nREPL-aware editor.
+See [Editor support](/documentation/tooling/editor-support/#nrepl-and-editor-integration) for supported ops and connecting your editor.
 
 ## LSP
 
-LSP v3.17 over stdio. Supports hover, definition, references, completion, document/workspace symbols, rename, formatting, debounced diagnostics.
+LSP v3.17 over stdio.
 
 ```bash
 vendor/bin/phel lsp
 ```
 
-PHP interop is completion-aware: instance methods/properties after `(php/-> receiver ...)`, static methods/constants after `(php/:: Class ...)`, class names in `(php/new ...)` and `\Fully\Qualified` positions, and global functions after `php/`. Hover shows the reflected signature for PHP methods, functions, and classes; signature help fires inside `(php/new ...)` and method calls. Receiver types come from `:tag` metadata, an inline `(php/new \Foo)`, or a local `(php/new ...)` binding; an unknown type degrades to no completion with no spurious diagnostics. See [Editor support](/documentation/tooling/editor-support/).
+See [Editor support](/documentation/tooling/editor-support/#language-server-lsp) for supported features and PHP-interop-aware completion.
 
 
 ## Analyze and index

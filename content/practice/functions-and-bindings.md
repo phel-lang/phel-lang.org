@@ -124,9 +124,9 @@ Create an anonymous function that adds 10 to a number. Call it with `5`. Try bot
 (#(+ % 10) 5)
 ; => 15
 ```
-Anonymous functions shine when you need a one-off (think `map`, `filter`). The `#()` shortcut uses `%` for the first argument, `%2` for the second, and so on.
+Anonymous functions shine when you need a one-off (think `map`, `filter`).
 
-Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
+Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion/#anonymous-function-fn)
 {% end %}
 
 {% question(difficulty="medium") %}
@@ -185,7 +185,6 @@ Implement `factorial` using recursion.
     1
     (* n (factorial (dec n)))))
 ```
-Classic recursion: shrink the problem on every call until you hit the base case (`n <= 1`). For huge `n` you'd reach for `loop`/`recur` (next section) to avoid blowing the stack.
 
 Learn more: [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}

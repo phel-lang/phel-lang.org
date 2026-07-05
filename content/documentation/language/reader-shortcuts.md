@@ -44,31 +44,13 @@ Quasiquote is like quote but allows selective evaluation inside it: unquote (`~`
 
 ### Auto-gensym `name#`
 
-Inside a quasiquote, a symbol ending in `#` expands to a fresh, unique name. Every occurrence of the same `name#` within one quasiquote shares that generated name, which gives hygienic macros without an explicit `gensym` call:
-
-```phel skip
-(defmacro time [expr]
-  `(let [start# (php/microtime true)
-         ret#   ~expr]
-     (println "Elapsed:" (- (php/microtime true) start#) "secs")
-     ret#))
-```
-
-Each expansion produces a fresh pair such as `start__123__auto__` / `ret__124__auto__`, so generated bindings cannot collide with the caller's locals. See [Macros](/documentation/language/macros) for the full story on hygiene.
+Inside a quasiquote, a symbol ending in `#` expands to a fresh, unique name, and the same `name#` maps to that one generated name throughout the template — hygienic macros without an explicit `gensym`. See [Macros](/documentation/language/macros/#hygiene-and-gensym) for the full story.
 
 > **Deprecated:** `name$` as an auto-gensym suffix. Use `name#`.
 
 ## Reader conditionals `#?()` and `#?@()`
 
-Resolved while reading. `#?()` picks one form by platform key; `#?@()` splices a collection and is only valid inside another collection. Phel selects the `:phel` branch and falls back to `:default`:
-
-```phel
-#?(:phel (php/microtime) :clj 99)  ; => the (php/microtime) value in Phel
-#?(:clj 99 :default 0)             ; => 0
-[1 #?@(:phel [2 3]) 4]             ; => [1 2 3 4]
-```
-
-These let one `.cljc` file compile under both Phel and Clojure. The `:clj` branch is never read by Phel, so it does not need to be valid Phel.
+Resolved while reading: `#?()` picks one form by platform key (Phel selects `:phel`, falling back to `:default`), and `#?@()` splices a platform-specific collection into its enclosing collection — so one `.cljc` file can compile under both Phel and Clojure. See [Reader Conditionals](/documentation/language/reader-conditionals/) for the full treatment.
 
 ## Deref `@`
 

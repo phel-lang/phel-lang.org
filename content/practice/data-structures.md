@@ -165,7 +165,7 @@ Use `conj` to append `4` to `[1 2 3]`. Verify the original length didn't change.
 (count more-nums) ; => 4
 more-nums         ; => [1 2 3 4]
 ```
-Same immutability story: `conj` returns a new vector, the original stays put.
+Immutable, like `assoc` above: `conj` returns a new vector, the original stays put.
 
 Learn more: [Data Structures](/documentation/language/data-structures)
 {% end %}

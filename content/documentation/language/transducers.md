@@ -197,21 +197,7 @@ Wrap the step result in `reduced` to stop the pipeline. This `take-until` keeps 
 
 ## Transducers vs lazy sequences
 
-Every dual-purpose function has two modes:
-
-```phel
-(ns example\two-modes)
-
-; With collection: returns a lazy sequence
-(map inc [1 2 3])   ; => (2 3 4)
-(filter even? [1 2 3 4])   ; => (2 4)
-
-; Without collection: returns a transducer (a function)
-(fn? (map inc))   ; => true
-(fn? (filter even?))   ; => true
-```
-
-**When to use which:**
+Each [dual-purpose function](#transducer-producing-functions) works both ways — with a collection it returns a lazy sequence, without one it returns a transducer. When to use which:
 
 - **Lazy sequences** for simple linear pipelines; compose with `->>`.
 - **Transducers** to avoid intermediates in multi-step pipelines, to reuse one transformation across multiple sources or destinations, or to reduce into something that isn't a sequence (sums, maps, side effects).

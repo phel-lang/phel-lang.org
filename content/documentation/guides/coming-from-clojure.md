@@ -41,15 +41,7 @@ Clojure intuition carries over.
      (into #{}))
 ```
 
-**Destructuring:** sequential and associative work in `let`, `fn`, `defn`, `loop`:
-
-```phel
-(let [[a b & rest] [1 2 3 4 5]]
-  rest) ; => [3 4 5]
-
-(let [{:name name :age age} {:name "Alice" :age 30}]
-  (str name " is " age)) ; => "Alice is 30"
-```
+**Destructuring:** sequential and associative work in `let`, `fn`, `defn`, `loop`, same as Clojure. See [Destructuring](/documentation/reference/cheat-sheet/#destructuring).
 
 **Higher-order functions:** `map`, `filter`, `reduce`, `some`, `every?`, `comp`, `partial`, `apply`, etc.:
 
@@ -59,16 +51,7 @@ Clojure intuition carries over.
 (reduce + 0 [1 2 3 4 5])   ; => 15
 ```
 
-**Lazy sequences:** full support. `map`, `filter`, `take`, `drop`, `concat`, `mapcat`, `interleave`, `partition` return lazy seqs. Infinite seqs work:
-
-```phel
-(take 5 (iterate inc 0))       ; => @[0 1 2 3 4]
-(take 7 (cycle [1 2 3]))       ; => @[1 2 3 1 2 3 1]
-(take 5 (repeatedly #(php/rand 1 100)))
-(->> (range) (filter even?) (take 5)) ; => @[0 2 4 6 8]
-```
-
-`lazy-seq`, `lazy-cat` build custom lazy seqs. `doall`, `dorun`, `realized?` control realization. Lazy file I/O via `line-seq`, `file-seq`, `read-file-lazy`, `csv-seq`.
+**Lazy sequences:** full support, including infinite seqs, custom `lazy-seq`/`lazy-cat`, realization control (`doall`, `dorun`, `realized?`), and lazy file I/O. See [Lazy sequences](/documentation/reference/cheat-sheet/#lazy-sequences).
 
 **Namespaces:** `:require` for Phel modules, `:as` and `:refer` like Clojure.
 
@@ -115,29 +98,7 @@ Phel supports Clojure-style `defmulti` / `defmethod` with hierarchy-aware dispat
 
 ### Type tags and inference
 
-`:tag` metadata emits PHP type declarations. Phel also infers return types from primitive operations:
-
-<!-- phel-test: skip -->
-```phel
-;; Explicit tags
-(defn ^int add [^int a ^int b]
-  (+ a b))
-;; Compiles to: function add(int $a, int $b): int { ... }
-
-;; Nullable type
-(defn ^"?string" find-name [^int id]
-  ...)
-
-;; ^:memoize wraps the body in memoize automatically
-(defn ^:memoize expensive [x]
-  (compute x))
-
-;; ^:async wraps the body in async, returning Amp\Future
-(defn ^:async fetch [url]
-  ...)
-```
-
-Inferred tags from tail primitive ops propagate to the PHP signature - you often don't need to annotate at all.
+`:tag` metadata emits PHP type declarations: `(defn ^int add [^int a ^int b] ...)` compiles to `function add(int $a, int $b): int`, and `^"?string"` marks a nullable type. Phel also infers return types from tail primitive ops, so you often don't need to annotate at all. See [Functions](/documentation/reference/cheat-sheet/#functions) for the tag and metadata shorthands (`^:memoize`, `^:async`).
 
 ### Numeric tower
 
@@ -163,21 +124,11 @@ Phel ships `BigInt`, `BigDecimal`, and `Ratio` as first-class types:
 
 ### Atoms only, no agents/refs/STM
 
-`atom` is the only mutable primitive. Works like Clojure's:
-
-```phel
-(def counter (atom 0))
-(swap! counter inc)   ; counter is now 1
-(deref counter)       ; => 1
-@counter              ; => 1 (shorthand)
-(reset! counter 42)   ; direct reset
-```
-
-No agents, refs, STM. See [Global and Local Bindings](/documentation/language/global-and-local-bindings).
+`atom` is the only mutable primitive; `atom`, `swap!`, `reset!`, and `deref`/`@` work exactly like Clojure's. No agents, refs, STM. See [Global and Local Bindings](/documentation/language/global-and-local-bindings).
 
 ### No spec
 
-No `clojure.spec`. Phel ships `phel.schema` for validation, coercion, and generation. See the schema recipe in the [Cookbook](/documentation/guides/cookbook/).
+No `clojure.spec`. Phel ships `phel.schema` for validation, coercion, and generation. See the [Schema Validation guide](/documentation/guides/schema/).
 
 ### Truthiness
 
@@ -359,20 +310,6 @@ Use `;` and `;;`. Legacy `#` line and `#| ... |#` block comments still read but 
 #_(comment (+ 1 2))  ; skip the next form
 (comment (+ 1 2))
 ```
-
-## PHP interop
-
-Phel's equivalent of Clojure's Java interop: the `php/` prefix unlocks the whole PHP ecosystem, and the Clojure-style shorthands carry over.
-
-| Clojure                   | Phel                                                            |
-|---------------------------|-----------------------------------------------------------------|
-| `(Math/pow 2 10)`         | `(php/pow 2 10)` (any PHP function via `php/`)                   |
-| `(Classname. args)`       | `(php/new Classname args)`                                      |
-| `(.method obj args)`      | `(php/-> obj (method args))` or `(.method obj args)`            |
-| `(Classname/method args)` | `(php/:: Classname (method args))` or `(Classname/method args)` |
-| array element             | `(php/aget arr key)` (PHP arrays, not Phel data structures)     |
-
-See [PHP Interop](/documentation/php-interop/) for the full reference: functions, objects, method and static calls, constants, and PHP-array access.
 
 ## What you'll miss (and workarounds)
 

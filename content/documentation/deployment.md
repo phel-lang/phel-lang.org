@@ -20,6 +20,22 @@ require __DIR__ . '/build/app/main.php'; // loads Phel namespaces ONCE
 
 To produce that entry point, see [`phel build`](/documentation/tooling/cli-commands/) and configure `withMainPhelNamespace` / `withMainPhpPath` in [`phel-config.php`](/documentation/configuration/). To expose Phel functions to the PHP worker, mark them `{:export true}` and run [`phel export`](/documentation/tooling/cli-commands/), which generates one PHP class per namespace.
 
+## Loading Phel: prod vs dev
+
+One boot hook covers both environments if you guard the load. In production the built file exists and you `require` it; in development it does not, so you fall back to `\Phel::run()`, which boots Gacela and compiles on first call:
+
+```php
+$built = $root . '/build/app/main.php';
+
+if (is_file($built)) {
+    require $built;                // prod: precompiled, self-contained \Phel::addDefinition() calls, no Gacela, no compiler
+} else {
+    \Phel::run($root, 'app.main'); // dev: boots Gacela and compiles to temp files on first call
+}
+```
+
+`$root` is the project root your framework already knows (`base_path()`, `getProjectDir()`, `__DIR__`). Run this **once** per process, behind a static flag, never in a per-request hot path. Commit `build/` in the deploy artifact (or run `phel build` in CI); skip committing it in dev so `is_file()` is false and `\Phel::run()` takes over. Framework hooks (Laravel, Symfony, framework-less) wire this into their kernels in [Framework Integration](/documentation/web/framework-integration/).
+
 ## FrankenPHP
 
 `worker.php`:

@@ -17,25 +17,7 @@ true
 false
 ```
 
-Only `false` and `nil` are falsy. `0`, `""`, `[]` truthy.
-
-```phel
-;; Truthiness examples
-(if nil "yes" "no")   ; => "no"  (nil is falsy)
-(if false "yes" "no") ; => "no"  (false is falsy)
-(if 0 "yes" "no")     ; => "yes" (0 is truthy!)
-(if "" "yes" "no")    ; => "yes" (empty string is truthy!)
-(if [] "yes" "no")    ; => "yes" (empty vector is truthy!)
-```
-
-{% php_note() %}
-`nil` = PHP `null`. `true`/`false` same. But truthiness differs:
-
-**PHP**: `0`, `""`, `[]`, `null`, `false` falsy.
-**Phel**: only `false`, `nil` falsy.
-
-`if (0)` in PHP is false, but `(if 0 ...)` in Phel is true.
-{% end %}
+Only `false` and `nil` are falsy — `0`, `""`, and `[]` are all truthy (unlike PHP, where they are falsy). See [Truthiness](#truthiness) for the predicates and the full PHP comparison.
 
 ## Symbol
 
@@ -399,23 +381,7 @@ Whitespace-separated key/value pairs in braces. Even count: key1, value1, key2, 
 ```
 
 {% php_note() %}
-Unlike PHP associative arrays, Phel maps:
-- **Any type** as keys: vectors, lists, other maps
-- **Immutable**: operations return new maps
-- **Not** PHP arrays internally
-
-```php
-// PHP: mutable
-$map = ['name' => 'Alice'];
-$map['name'] = 'Bob';  // Mutates in place
-```
-
-```phel
-;; Phel: immutable
-(def map {:name "Alice"})
-(def new-map (assoc map :name "Bob"))  ; Returns new map
-;; map is still {:name "Alice"}
-```
+Unlike PHP associative arrays, Phel map keys can be **any type** (vectors, lists, other maps), maps are **immutable** (operations return new maps), and they are **not** PHP arrays internally. Worked comparison in [Data structures → Immutability](/documentation/language/data-structures/#immutability-vs-php-mutability).
 {% end %}
 
 ## Sets
@@ -524,38 +490,11 @@ Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some det
 
 ## Anonymous function shorthand
 
-`#(...)` defines anonymous functions inline. `%` placeholders:
-
-- `%` or `%1` refers to the first argument
-- `%2`, `%3`, etc. refer to subsequent arguments
-- `%&` captures remaining variadic arguments
-
-```phel
-#(+ 6 %)       ; Same as (fn [x] (+ 6 x))
-#(+ %1 %2)     ; Same as (fn [a b] (+ a b))
-#(apply + %&)  ; Same as (fn [& xs] (apply + xs))
-
-; Using with higher-order functions
-(map #(* % 2) [1 2 3])        ; => @[2 4 6]
-(filter #(> % 3) [1 5 2 8])   ; => @[5 8]
-
-(def users [{:name "Alice" :age 30} {:name "Bob" :age 25}])
-(sort-by #(get % :age) users)  ; Sort users by age
-```
-
-> **Note:** Older `|(...)` form with `$` placeholders is deprecated. See [Functions and Recursion](/documentation/language/functions-and-recursion).
+`#(...)` defines an inline anonymous function, using `%`/`%1`/`%2`/`%&` for positional arguments — `#(* % 2)` is the same as `(fn [x] (* x 2))`. Full rules and the deprecated `|(...)` form live in [Functions and Recursion](/documentation/language/functions-and-recursion/#anonymous-function-fn).
 
 ## Deref shorthand
 
-`@` is shorthand for `(deref ...)`. Dereferences atoms and other reference types:
-
-```phel
-(def counter (atom 0))
-
-@counter              ; Same as (deref counter) => 0
-(swap! counter inc)
-@counter              ; => 1
-```
+`@x` is shorthand for `(deref x)`, reading the current value of an atom or other reference type. Atom mechanics (`swap!`, `reset!`, the `!` convention) live in [Global and local bindings](/documentation/language/global-and-local-bindings/#atoms).
 
 ## Comments
 

@@ -139,22 +139,7 @@ Remove with `dissoc`:
 ```
 
 {% php_note() %}
-Like PHP assoc arrays, with two differences:
-
-1. **Any type as a key**: vectors, lists, other maps
-2. **Immutable**: "updating" returns a new map
-
-```phel
-;; PHP: $arr = ['name' => 'Alice', 'age' => 30];
-;; Phel:
-{:name "Alice" :age 30}
-
-;; PHP: $arr['age'] = 31;
-;; Phel:
-(assoc {:name "Alice" :age 30} :age 31)
-;; => {:name "Alice" :age 31}
-;; Original map is unchanged!
-```
+Like PHP associative arrays, but with two differences: keys can be **any type** (vectors, lists, other maps), and maps are **immutable** — "updating" with `assoc` returns a new map and leaves the original untouched. Worked comparison in [Immutability vs PHP mutability](#immutability-vs-php-mutability) below.
 {% end %}
 
 ## Working with collections

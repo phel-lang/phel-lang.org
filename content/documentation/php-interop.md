@@ -761,18 +761,7 @@ class MyExistingClass {
 
 `phel export` generates a wrapper class for all Phel functions marked *export*.
 
-Add config to `phel-config.php` first:
-
-```php
-<?php
-return (new \Phel\Config\PhelConfig())
-    ->withExportFromDirectories(['src'])
-    ->withExportNamespacePrefix('PhelGenerated')
-    ->withExportTargetDirectory('src/PhelGenerated')
-;
-```
-
-Option details: [Configuration](/documentation/configuration/).
+Set the `withExportFromDirectories`, `withExportNamespacePrefix`, and `withExportTargetDirectory` options in `phel-config.php` first: see [Configuration](/documentation/configuration/#full-reference).
 
 Mark a function exported with metadata:
 
@@ -787,20 +776,7 @@ Mark a function exported with metadata:
 
 ### Typed and annotated output
 
-When the generated PHP must satisfy a framework's type expectations, opt-in metadata enriches it. Untagged forms are unchanged.
-
-| Metadata | On | Emits |
-|---|---|---|
-| `^{:tag T}` | struct field, interface param/return | typed signature; `(a b)` = union `a\|b`, `[a b]` = intersection `a&b` |
-| `^{:php/attr [...]}` | struct/interface name, field, method, param, exported `defn` | PHP 8 `#[Attr]` |
-| `^{:php/doc "..."}` | struct/interface name, field, method | PHPDoc block (phpstan/psalm) |
-| `^{:php/json true}` / `^{:php/stringable true}` | struct name | implements `\JsonSerializable` / `\Stringable` |
-
-```phel
-(defstruct ^{:php/attr [:ORM/Entity] :php/json true} product
-  [^{:tag int :php/attr [:ORM/Id]} id
-   ^{:tag string} name])
-```
+When the generated PHP must satisfy a framework's type expectations, opt-in metadata (`^{:tag T}`, `^{:php/attr [...]}`, `^{:php/doc "..."}`, `^:php/readonly`, and more) enriches it; untagged forms are unchanged. For the full metadata table and a Doctrine-entity `defstruct` example, see [Typed PHP from Phel definitions](/documentation/web/framework-integration/#typed-php-from-phel-definitions).
 
 ## Next steps
 

@@ -147,6 +147,5 @@ Toggle checking globally with `set-schema-check!`, inspect it with `schema-check
 
 ## See also
 
-- [Cookbook](/documentation/guides/cookbook) has copy-paste schema and instrumentation recipes.
 - [Coming from Clojure](/documentation/guides/coming-from-clojure) maps `schema` against the Clojure ecosystem.
 - `phel.test.gen` drives property-based testing from the same schemas via `generate` and `schema->gen`.
