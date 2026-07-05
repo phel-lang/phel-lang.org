@@ -11,12 +11,13 @@ Phel is a functional Lisp that compiles to PHP: persistent data structures, immu
 
 ## New here? Start here
 
-1. [Getting Started](/documentation/getting-started/) - zero to a live REPL in under a minute
-2. [Installation](/documentation/installation/) - Composer, PHAR, Docker, or Nix
-3. [Basic Types](/documentation/language/basic-types/) then [Data Structures](/documentation/language/data-structures/) - the core you use everywhere
-4. [Cheat Sheet](/documentation/reference/cheat-sheet/) - keep it open while you code
-5. [Cookbook](/documentation/guides/cookbook/) - copy-paste recipes for real tasks
-6. [Build a Web App](/documentation/guides/build-a-web-app/) - a complete guestbook, end to end
+1. [Phel in 5 Minutes](/documentation/phel-in-5-minutes/) - never seen a Lisp? Learn to read Phel, no install needed
+2. [Getting Started](/documentation/getting-started/) - zero to a live REPL in under a minute
+3. [Installation](/documentation/installation/) - Composer, PHAR, Docker, or Nix
+4. [Basic Types](/documentation/language/basic-types/) then [Data Structures](/documentation/language/data-structures/) - the core you use everywhere
+5. [Cheat Sheet](/documentation/reference/cheat-sheet/) - keep it open while you code
+6. [Cookbook](/documentation/guides/cookbook/) - copy-paste recipes for real tasks
+7. [Build a Web App](/documentation/guides/build-a-web-app/) - a complete guestbook, end to end
 
 Coming from another language? Jump to [Rosetta Stone: PHP to Phel](/documentation/guides/rosetta-stone/) or [Coming from Clojure](/documentation/guides/coming-from-clojure/).
 

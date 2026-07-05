@@ -1,6 +1,6 @@
 +++
 title = "Getting Started"
-weight = 1
+weight = 2
 description = "Go from zero to a live Phel REPL in under a minute, then tour your first project."
 +++
 

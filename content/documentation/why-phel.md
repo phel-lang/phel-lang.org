@@ -1,6 +1,6 @@
 +++
 title = "Why Phel?"
-weight = 3
+weight = 4
 description = "Honest answers for PHP developers: why a Lisp on PHP, what it costs, and where it fits."
 +++
 

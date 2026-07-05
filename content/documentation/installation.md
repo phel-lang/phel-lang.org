@@ -1,6 +1,6 @@
 +++
 title = "Installation"
-weight = 2
+weight = 3
 description = "Install Phel via Composer, PHAR, Docker, or Nix, then verify with phel doctor."
 +++
 
