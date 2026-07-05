@@ -15,13 +15,7 @@ Zero to live REPL in under a minute.
 
 No extra runtime. No JVM.
 
-> **No PHP installed?** One-line Docker REPL:
->
-> ```bash
-> docker run --rm -it php:8.4-cli sh -c "curl -sL https://phel-lang.org/phar -o /tmp/phel.phar && php /tmp/phel.phar repl"
-> ```
->
-> See [Installation, Docker](/documentation/installation/#docker-no-php-required) for a `phel` alias and Composer workflows.
+> **No PHP installed?** Run a REPL in a single Docker command — see [Installation → Docker](/documentation/installation/#docker-no-php-required).
 
 ## 60-second quick start
 
@@ -130,26 +124,11 @@ example-app/
 
 All commands as `vendor/bin/phel <cmd>` (e.g. `vendor/bin/phel repl`). Skeleton wires `composer repl`, `composer dev`, `composer test`, `composer build` as shortcuts.
 
-## Initialize without the skeleton
-
-Minimal setup? Add Phel to any Composer project:
-
-```bash
-mkdir my-app && cd my-app
-composer require phel-lang/phel-lang
-vendor/bin/phel init my-app
-vendor/bin/phel repl
-```
-
-`phel init` creates `phel-config.php`, a `src/` namespace, matching test file.
-
 ## Verify setup
 
-```bash
-vendor/bin/phel doctor
-```
+Tooling misbehaving? Run `vendor/bin/phel doctor` — it reports missing extensions, cache permissions, and layout problems. Full breakdown in [Installation → Verify install](/documentation/installation/#verify-install).
 
-Checks PHP extensions (`json`, `mbstring`, `readline`), cache dir permissions, source layout. Run when tooling misbehaves.
+Adding Phel to an existing project instead of the skeleton? See [Installation → Add to an existing project](/documentation/installation/#add-to-an-existing-project).
 
 ## Your first 30 minutes
 
