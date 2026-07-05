@@ -82,30 +82,6 @@ Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
 
 {% question(difficulty="medium") %}
-Define `grade` mapping a score to a letter (A >= 90, B >= 80, C >= 70, F otherwise) with `cond`.
-<!-- phel-test: skip -->
-```phel
-(grade 95) ; => "A"
-(grade 82) ; => "B"
-(grade 71) ; => "C"
-(grade 55) ; => "F"
-```
-{% end %}
-{% solution() %}
-```phel
-(defn grade [score]
-  (cond
-    (>= score 90) "A"
-    (>= score 80) "B"
-    (>= score 70) "C"
-    "F"))
-```
-`cond` checks each condition in order and returns the value beside the first truthy one. A trailing standalone value acts as the default.
-
-Learn more: [Control Flow](/documentation/language/control-flow)
-{% end %}
-
-{% question(difficulty="medium") %}
 Define `day-type` that classifies days using `case`:
 <!-- phel-test: skip -->
 ```phel
@@ -147,7 +123,7 @@ Pick the right tool. Write `describe-temp` for ranges:
     (>= degrees 0)  "cold"
     "freezing"))
 ```
-`cond` wins here because we're testing **ranges**, not exact values. Rule of thumb: `if` for one binary choice, `case` for exact constants, `cond` for multiple range conditions.
+`cond` wins here because we're testing **ranges**, not exact values.
 
 Learn more: [Control Flow](/documentation/language/control-flow)
 {% end %}
