@@ -106,17 +106,14 @@ Putting it together: read the request, let the router pick and run a handler, em
 <!-- phel-test: skip -->
 ```phel
 (ns my-app
-  (:require phel.http :as http)
   (:require phel.router :as router))
 
 (def app
   (router/handler (router/router routes)
     {:not-found (fn [_] {:status 404 :body "Not found"})}))
-
-(-> (http/request-from-globals)
-    (app)
-    (http/emit-response))
 ```
+
+`app` is an ordinary handler; run it at your entry point through the request→emit pipeline shown in [End to end](/documentation/web/http-request-and-response/#end-to-end).
 
 The flow is: request (from [Request and Response](/documentation/web/http-request-and-response/)) -> route match -> handler -> response -> [HTML rendering](/documentation/web/html-rendering/) for the body -> emit.
 

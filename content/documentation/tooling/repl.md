@@ -309,7 +309,7 @@ user:2> (reload-all!)
 ; => force-reloads every loaded project namespace, ignoring mtimes
 ```
 
-`reload!`, `reload-all!`, `run-tests`, and `run-test` live in `phel.repl` and load automatically in the REPL and over nREPL. Editors can bind the matching nREPL ops `reload` (with an `all` param) and `run-tests` (an `ns` plus optional `var` param) to "reload changed" and "run the test under the cursor".
+`reload!`, `reload-all!`, `run-tests`, and `run-test` live in `phel.repl` and load automatically in the REPL and over nREPL. Editors can bind the matching nREPL ops to editor commands: see [Editor Support](/documentation/tooling/editor-support/#nrepl-and-editor-integration).
 
 ### Explore PHP interop
 
@@ -410,23 +410,7 @@ Collect tapped values during a test:
 
 ### PHP native inspection
 
-Phel values are PHP objects, so PHP inspection functions work via `php/`:
-
-```phel
-(php/var_dump (+ 2 2))
-;; int(4)
-
-;; print_r expects a native PHP array, so convert first:
-(php/print_r (php/array 1 2 3))
-;; Array
-;; (
-;;     [0] => 1
-;;     [1] => 2
-;;     [2] => 3
-;; )
-```
-
-For richer output, [Symfony VarDumper](/documentation/tooling/php-tools/) via `(php/dump ...)` and `(php/dd ...)`.
+Phel values are PHP objects, so every PHP inspection function works via `php/`: `(php/var_dump x)`, `(php/print_r ...)`, and Symfony VarDumper's `(php/dump ...)` / `(php/dd ...)`. See [PHP Debugging Tools](/documentation/tooling/php-tools/) for examples and setup.
 
 ## Tips
 
