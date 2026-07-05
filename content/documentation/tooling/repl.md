@@ -231,8 +231,8 @@ user:2> (load-file "src/my/app.phel")
 Run tests for a namespace from the REPL:
 
 ```phel
-user:1> (require phel.test :refer [test-ns])
-user:2> (test-ns 'my.app.tests)
+user:1> (require phel.repl :refer [test-ns])
+user:2> (test-ns "my-app.tests")
 ; Runs all tests in the namespace and prints results
 ```
 
