@@ -315,6 +315,7 @@ See [Data Structures](/documentation/language/data-structures/#walking-data-stru
     (map + (fibs) (rest (fibs)))))))
 
 (doall (take 8 (fibs)))           ; => [0 1 1 2 3 5 8 13]
+(dorun (map println [1 2 3]))     ; => nil (realize for side effects only)
 (realized? (lazy-seq [1 2 3]))    ; => false
 ```
 

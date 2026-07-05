@@ -86,7 +86,7 @@ This starts an [nREPL](https://nrepl.org/) server (Bencode over TCP) that nREPL-
 
 Defaults are port `7888` and host `127.0.0.1`. Override either with the flags above. The server is also listed under [CLI commands](/documentation/tooling/cli-commands/#nrepl) alongside the other tooling entry points.
 
-Two nREPL ops back the [REPL-driven workflow](/documentation/tooling/repl/#reload-changed-code): `reload` (with an `all` param to force a full reload) and `run-tests` (an `ns` param plus an optional `var`). Bind them to editor commands for "reload changed namespaces" and "run the test under the cursor".
+The server implements the standard ops — `eval`, `clone`, `close`, `describe`, `load-file`, `interrupt`, `completions`, `lookup`, `info`, `eldoc` — so stock nREPL clients work unmodified. Two Phel-specific ops back the [REPL-driven workflow](/documentation/tooling/repl/#reload-changed-code): `reload` (with an `all` param to force a full reload) and `run-tests` (an `ns` param plus an optional `var`). Bind them to editor commands for "reload changed namespaces" and "run the test under the cursor".
 
 ## Language Server (LSP)
 
