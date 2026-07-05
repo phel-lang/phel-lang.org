@@ -223,7 +223,8 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 <p class="homepage-tab-caption">Try without installing anything. Drops you into a REPL.</p>
 
 ```bash
-docker run -it --rm phellang/repl
+docker run --rm -it php:8.4-cli sh -c \
+  "curl -sL https://phel-lang.org/phar -o /tmp/phel.phar && php /tmp/phel.phar repl"
 ```
 
   </div>
