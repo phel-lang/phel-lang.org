@@ -208,6 +208,24 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 </div>
 </details>
 
+## Upgrading to 0.48
+
+```bash
+composer require phel-lang/phel-lang:^0.48
+./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
+```
+
+Always clear the cache after upgrading: compiled PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects too.
+
+Behaviour changes in 0.48:
+
+- No breaking changes. Existing code compiles as before.
+- The compiled-code cache key now hashes only the `.phel` source, so a compiler-only upgrade no longer serves stale PHP; the cache index format bumped and invalidates old entries once on first run.
+- `phel` no longer fatals in read-only / unwritable environments — caches degrade quietly and CLI commands report a clear error instead of aborting when a target file can't be written.
+- Squaring (`(** x 2)`) and `reduce` over a typed vector now compile to native PHP; startup and emitted code shrink further via constant-slot sharing and leaner location metadata.
+
+New in 0.48: new core fns — `trampoline`, `reductions`, `subvec`, `with-open`, `reduce-kv`, `gcd`, `lcm`, `arity`, `variadic?`, `inspect`, and `dbg`; a stepping debugger via `(break)` that opens a sub-REPL over the captured locals (`(continue)` or EOF resumes, so non-interactive runs never hang); `phel test --coverage=html` for a self-contained line-colored coverage report; and `phel export` stubs that carry native parameter/return types from `:tag` metadata. See the [0.48 release notes](/releases/0-48-step-into/).
+
 ## Upgrading to 0.47
 
 ```bash
