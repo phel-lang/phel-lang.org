@@ -302,8 +302,19 @@ echo "XDebug is working!\n";
 
 Run it, verify the debugger connects.
 
+The same hard breakpoint from Phel code (no-op when Xdebug isn't loaded):
+
+<!-- phel-test: skip -->
+```phel
+(when (php/function_exists "xdebug_break")
+  (php/xdebug_break))
+```
+
+> **No Xdebug at hand?** Phel's built-in [`(break)`](/documentation/debugging/#break-a-repl-breakpoint-in-your-code) pauses execution in a sub-REPL with all lexical locals in scope — no extension or editor setup required.
+
 ## Next steps
 
+- [Debugging](/documentation/debugging/) - the full debugging workflow: `dbg`, `tap>`, stack traces, profiling
 - [Editor support](/documentation/tooling/editor-support/) - install the VS Code Phel extension used above
 - [PHP debugging tools](/documentation/tooling/php-tools/) - lighter-weight `var_dump`/`dump` debugging
 - [Configuration](/documentation/configuration/) - `withKeepGeneratedTempFiles` and other dev settings
