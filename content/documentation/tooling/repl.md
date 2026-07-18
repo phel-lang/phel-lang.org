@@ -354,6 +354,8 @@ Stdlib ships helpers for inspecting values during development.
 
 Routes debug values to handlers. `tap>` invokes every function registered via `add-tap`.
 
+Since 0.49 the REPL registers `phel.repl/print-tap` on startup, so `(tap> x)` prints `tap> x` at the prompt with no setup; run `(remove-tap phel.repl/print-tap)` to silence it.
+
 `tap>` sends a value to every registered handler and returns `true`:
 
 ```phel
@@ -422,6 +424,7 @@ Phel values are PHP objects, so every PHP inspection function works via `php/`: 
 
 ## Next steps
 
+- [Debugging](/documentation/debugging/) - the full debugging workflow: `dbg`, stack traces, Xdebug, profiling
 - [CLI commands](/documentation/tooling/cli-commands/) - run, test, and build from the terminal
 - [Editor support](/documentation/tooling/editor-support/) - get the same eval loop inside your editor via `phel nrepl`
 - [Testing](/documentation/testing/) - run and inspect tests from the REPL

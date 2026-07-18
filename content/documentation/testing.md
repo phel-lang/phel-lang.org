@@ -483,3 +483,4 @@ Opt out of shrinking with `^:no-shrink` metadata or `:shrink? false`.
 - [Configuration](/documentation/configuration/): point `withTestDirs` at your test folders.
 - [CLI Commands](/documentation/tooling/cli-commands): the full `phel test` flag list.
 - [phel.test API](/documentation/reference/api/test): every assertion and helper.
+- [Debugging](/documentation/debugging/): find the bug before you pin it with a test.
