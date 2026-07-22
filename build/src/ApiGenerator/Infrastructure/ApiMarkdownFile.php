@@ -22,11 +22,6 @@ final readonly class ApiMarkdownFile
         $files = $this->apiMarkdownGenerator->generate();
 
         $apiDir = $this->appRootDir . '/../content/documentation/reference/api';
-        $legacyFile = $this->appRootDir . '/../content/documentation/reference/api.md';
-
-        if (file_exists($legacyFile)) {
-            unlink($legacyFile);
-        }
 
         $this->resetDirectory($apiDir);
 
