@@ -187,6 +187,8 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 (partial + 10)                     ; => fn that adds 10
 (comp inc inc)                     ; => fn that increments twice
 (identity 42)                      ; => 42
+(some-fn pos? even?)               ; => fn: true if any predicate passes
+(every-pred pos? even?)            ; => fn: true only if every predicate passes
 (memoize expensive-fn)             ; => cached version of fn
 (memoize-lru expensive-fn 100)     ; => cached with max 100 entries
 
@@ -238,6 +240,10 @@ See [Control Flow](/documentation/language/control-flow).
       :when (even? x)] x)         ; => [2 4]
 
 (dotimes [i 3] (print i))         ; prints 0, 1, 2
+
+(def n (atom 0))
+(while (< @n 3) (swap! n inc))    ; side-effects while test is truthy
+@n                                 ; => 3
 ```
 
 See [Functions and Recursion](/documentation/language/functions-and-recursion), [Control Flow](/documentation/language/control-flow).
@@ -249,6 +255,8 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 
 (map inc [1 2 3])                  ; => @[2 3 4]
 (filter even? [1 2 3 4])          ; => @[2 4]
+(mapv inc [1 2 3])                 ; => [2 3 4] (eager, returns a vector)
+(filterv even? [1 2 3 4])         ; => [2 4] (eager, returns a vector)
 (reduce + 0 [1 2 3])              ; => 6
 (sort [3 1 2])                    ; => [1 2 3]
 (sort-by :age [{:age 30} {:age 20}])  ; sort by key
@@ -259,11 +267,15 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 (contains? {:a 1} :a)             ; => true
 (some even? [1 3 4])              ; => true
 (every? pos? [1 2 3])             ; => true
+(bounded-count 3 [1 2 3 4 5])     ; => 5 (walks at most 3 of a non-counted? seq)
 (into #{} [1 2 1 3])              ; => #{1 2 3}
 (vec '(1 2 3))                     ; => [1 2 3] (coerce to vector)
 (subset? #{1 2} #{1 2 3})         ; => true
 (superset? #{1 2 3} #{1 2})       ; => true
 (distinct [1 2 1 3 2])            ; => @[1 2 3]
+(distinct? 1 2 3)                  ; => true (no two arguments are =)
+(splitv-at 2 [1 2 3 4 5])         ; => [[1 2] [3 4 5]] (eager split)
+(map-invert {:a 1 :b 2})          ; => {1 :a, 2 :b} (swap keys and values)
 (flatten [[1 2] [3 [4]]])         ; => @[1 2 3 4]
 (reverse [1 2 3])                  ; => [3 2 1]
 (concat [1 2] [3 4])              ; => @[1 2 3 4]
@@ -272,6 +284,23 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 ```
 
 See [Data Structures](/documentation/language/data-structures).
+
+## Sorted collections & set relations
+
+```phel
+(def sm (sorted-map 1 :a 3 :b 5 :c))
+(subseq sm >= 3)                   ; => @[[3 :b] [5 :c]] (ascending range query)
+(rsubseq sm <= 3)                  ; => @[[3 :b] [1 :a]] (descending)
+
+;; Relational helpers over sets of maps, in the spirit of clojure.set
+(def rel #{{:id 1 :role :admin} {:id 2 :role :user}})
+(select #(= (:role %) :admin) rel) ; => #{{:id 1 :role :admin}}
+(project rel [:role])              ; => #{{:role :admin} {:role :user}}
+(rename rel {:role :kind})         ; => rows with :role renamed to :kind
+(index rel [:role])                ; => map of {:role X} -> set of matching rows
+```
+
+`subseq` and `rsubseq` are lazy and honor the collection's comparator, so they only walk the matching range.
 
 ## Walking data structures
 
@@ -302,6 +331,9 @@ See [Data Structures](/documentation/language/data-structures/#walking-data-stru
 (take-while pos? [3 2 1 0 -1])   ; => @[3 2 1]
 (drop-while pos? [3 2 1 0 -1])   ; => @[0 -1]
 (partition 2 [1 2 3 4 5 6])       ; => @[[1 2] [3 4] [5 6]]
+(partition 2 1 [1 2 3 4])         ; => @[[1 2] [2 3] [3 4]] (sliding window)
+(partition-all 2 [1 2 3])         ; => @[[1 2] [3]] (keeps the short tail)
+(random-sample 0.5 (range 100))   ; keeps each item with probability 0.5
 (interleave [:a :b :c] [1 2 3])  ; => @[:a 1 :b 2 :c 3]
 
 ;; Lazy filtering + transformation
@@ -413,6 +445,10 @@ Requires `(:require phel.string :as str)`:
 @counter                           ; => 42
 (swap! counter inc)                ; apply function, counter is now 43
 (swap! counter + 10)               ; counter is now 53
+
+(compare-and-set! counter 53 100)  ; => true (set only if current value matches)
+(swap-vals! counter inc)           ; => [100 101] (returns [old new])
+(reset-vals! counter 0)            ; => [101 0] (returns [old new])
 
 ;; Watchers: react to state changes
 (add-watch counter :logger
@@ -702,6 +738,11 @@ See [Testing](/documentation/testing).
 (rem 10 3)                         ; => 1 (remainder)
 (mod -10 3)                        ; => 2 (modulo, always non-negative)
 (** 2 10)                          ; => 1024
+
+(bit-and 2r1100 2r1010)            ; => 8
+(bit-and-not 2r1111 2r0101)       ; => 10 (and with the complement)
+(bit-shift-right -8 1)             ; => -4 (arithmetic, sign-preserving)
+(unsigned-bit-shift-right -1 60)  ; => 15 (logical, zero-fills)
 ```
 
 Integer division (`/`) returns a `Ratio` when not evenly divisible. Use `float` or `(/ 10.0 3)` if you need a float.
@@ -714,9 +755,25 @@ Integer division (`/`) returns a `Ratio` when not evenly divisible. Use `float` 
 (parse-boolean "true")             ; => true
 (abs -5)                           ; => 5
 (inf? php/INF)                     ; => true
+(infinite? php/INF)                ; => true (alias for inf?)
 (nan? (php/log -1))                ; => true
+(rational? 1/2)                    ; => true (integers, Ratio, BigDecimal)
+(rational? 1.5)                    ; => false
 (random-uuid)                      ; => "550e8400-e29b-..." (random UUID string)
 ```
+
+## Printing
+
+`print`/`println` render values for humans; the `pr` family renders them so the reader can read them back (strings quoted and escaped).
+
+```phel
+(pr-str "hi")                      ; => "\"hi\""
+(prn-str [1 "a"])                  ; => "[1 \"a\"]\n" (pr-str plus newline)
+(println-str 1 2)                  ; => "1 2\n"
+(str "hi")                         ; => "hi" (no quoting)
+```
+
+`pr` and `prn` write the same output to stdout instead of returning it.
 
 ## Serialization (EDN & Transit)
 
@@ -765,6 +822,26 @@ Integer division (`/`) returns a `Ratio` when not evenly divisible. Use `float` 
 (load-file "src/my-module.phel")  ; load and evaluate a file
 (test-ns "my-app.tests")          ; run tests in a namespace (name as string)
 ```
+
+## Debugging
+
+<!-- phel-test: skip -->
+```phel
+(dbg (* w h))                      ; print [file:line] form => value to stderr, return value
+(dbg)                              ; "reached here" marker, returns nil
+(inspect x)                        ; print a structural view of any value
+(break)                            ; pause and open a sub-REPL over the local bindings
+
+(add-tap println)                  ; attach an inspector
+(tap> {:event :login})            ; send a value to every tap (printed in the REPL by default)
+
+;; phel.trace: log every call, including recursive ones, to stderr
+(ns my-app.core (:require phel.trace :refer [deftrace dotrace]))
+(deftrace fact [n] (if (< n 2) 1 (* n (fact (dec n)))))
+(dotrace [parse-row normalize] (process-file "in.csv"))
+```
+
+See [Debugging](/documentation/debugging).
 
 ## Next steps
 
