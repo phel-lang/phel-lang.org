@@ -8,9 +8,6 @@ use Gacela\Framework\AbstractProvider;
 use Gacela\Framework\Container\Container;
 use Phel\Api\ApiFacade;
 
-/**
- * @method Factory getFactory()
- */
 final class DependencyProvider extends AbstractProvider
 {
     public const string FACADE_PHEL_API = 'FACADE_PHEL_API';

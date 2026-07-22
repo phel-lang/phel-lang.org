@@ -8,9 +8,6 @@ use Gacela\Framework\AbstractProvider;
 use Gacela\Framework\Container\Container;
 use Phel\Console\ConsoleFacade;
 
-/**
- * @method Factory getFactory()
- */
 final class DependencyProvider extends AbstractProvider
 {
     public const string FACADE_PHEL_CONSOLE = 'FACADE_PHEL_CONSOLE';
