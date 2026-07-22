@@ -6,6 +6,7 @@ namespace PhelWeb\ApiGenerator\Application;
 
 use Phel\Shared\Facade\ApiFacadeInterface;
 use PhelWeb\Shared\Text\ZolaAnchor;
+use RuntimeException;
 
 /**
  * Builds static/api_search.json, consumed by the client-side search in
@@ -108,15 +109,14 @@ final readonly class ApiSearchGenerator
         $result = [];
         $documentationPath = __DIR__ . '/../../../../content/documentation';
 
-        if (!is_dir($documentationPath)) {
-            error_log("Documentation path not found: " . $documentationPath);
-            return [];
-        }
-
-        $files = scandir($documentationPath);
+        // A missing/unreadable directory here used to be logged and skipped, which
+        // shipped a search index silently missing every documentation entry.
+        $files = is_dir($documentationPath) ? scandir($documentationPath) : false;
         if ($files === false) {
-            error_log("Could not scan documentation directory: " . $documentationPath);
-            return [];
+            throw new RuntimeException(
+                "Cannot read the documentation directory: {$documentationPath}. "
+                . 'Refusing to write a search index without the documentation entries.',
+            );
         }
 
         foreach ($files as $file) {

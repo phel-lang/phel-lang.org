@@ -56,8 +56,8 @@ final readonly class ApiMarkdownGenerator
     {
         $slug = strtolower($namespace);
         $slug = str_replace(['\\', '/', '_'], '-', $slug);
-        $slug = preg_replace('/[^a-z0-9-]/', '-', $slug) ?? '';
-        $slug = preg_replace('/-+/', '-', $slug) ?? '';
+        $slug = preg_replace('/[^a-z0-9-]/', '-', $slug);
+        $slug = preg_replace('/-+/', '-', $slug);
         return trim($slug, '-');
     }
 
