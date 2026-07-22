@@ -44,13 +44,13 @@ Quasiquote is like quote but allows selective evaluation inside it: unquote (`~`
 
 ### Auto-gensym `name#`
 
-Inside a quasiquote, a symbol ending in `#` expands to a fresh, unique name, and the same `name#` maps to that one generated name throughout the template — hygienic macros without an explicit `gensym`. See [Macros](/documentation/language/macros/#hygiene-and-gensym) for the full story.
+Inside a quasiquote, a symbol ending in `#` expands to a fresh, unique name, and the same `name#` maps to that one generated name throughout the template: hygienic macros without an explicit `gensym`. See [Macros](/documentation/language/macros/#hygiene-and-gensym) for the full story.
 
 > **Deprecated:** `name$` as an auto-gensym suffix. Use `name#`.
 
 ## Reader conditionals `#?()` and `#?@()`
 
-Resolved while reading: `#?()` picks one form by platform key (Phel selects `:phel`, falling back to `:default`), and `#?@()` splices a platform-specific collection into its enclosing collection — so one `.cljc` file can compile under both Phel and Clojure. See [Reader Conditionals](/documentation/language/reader-conditionals/) for the full treatment.
+Resolved while reading: `#?()` picks one form by platform key (Phel selects `:phel`, falling back to `:default`), and `#?@()` splices a platform-specific collection into its enclosing collection, so one `.cljc` file can compile under both Phel and Clojure. See [Reader Conditionals](/documentation/language/reader-conditionals/) for the full treatment.
 
 ## Deref `@`
 

@@ -50,7 +50,7 @@ With no argument, `dbg` prints just `[file:line]` as a "reached here" marker and
   (handle x))
 ```
 
-Output goes to stderr, so it never mixes with your program's stdout — pipe-friendly scripts stay clean, and you can silence debugging with `2>/dev/null`. In tests, redefine the underlying `dbg-write` function with `with-redefs` to capture the output.
+Output goes to stderr, so it never mixes with your program's stdout: pipe-friendly scripts stay clean, and you can silence debugging with `2>/dev/null`. In tests, redefine the underlying `dbg-write` function with `with-redefs` to capture the output.
 
 For big nested structures, reach for `phel.pprint`:
 
@@ -79,7 +79,7 @@ Since 0.49 the REPL registers a printing tap on startup, so `(tap> x)` is visibl
 
 *Available since 0.49.*
 
-When you need to see *how* a function is being called — argument flow, recursion shape, call order — instrument it with `phel.trace` (inspired by `clojure.tools.trace`). `deftrace` defines a function whose every call, including recursive ones, prints its arguments and result to stderr:
+When you need to see *how* a function is being called (argument flow, recursion shape, call order), instrument it with `phel.trace` (inspired by `clojure.tools.trace`). `deftrace` defines a function whose every call, including recursive ones, prints its arguments and result to stderr:
 
 <!-- phel-test: skip -->
 ```phel
@@ -98,7 +98,7 @@ When you need to see *how* a function is being called — argument flow, recursi
 ;; TRACE t1: => 6
 ```
 
-To trace an *existing* function without touching its definition, wrap a body in `dotrace` — the named globals are traced inside the body and restored afterwards:
+To trace an *existing* function without touching its definition, wrap a body in `dotrace`: the named globals are traced inside the body and restored afterwards:
 
 <!-- phel-test: skip -->
 ```phel
@@ -137,7 +137,7 @@ How to read it:
 
 - Each `#N file.phel:line : (fn args...)` frame is **your code** (or a core fn your code called), with real Phel file and line numbers plus the actual arguments.
 - Runs of PHP-native frames (runtime internals, vendor code) are collapsed into `... N internal frames`. The full unfiltered PHP trace is always written to the error log if you need it.
-- Many common failures come with an actionable `hint:` line after the trace — for example, calling something that isn't callable, wrong argument counts, or an undefined symbol suggesting a missing `(:require ...)`.
+- Many common failures come with an actionable `hint:` line after the trace, for example calling something that isn't callable, wrong argument counts, or an undefined symbol suggesting a missing `(:require ...)`.
 
 ## Debug in the REPL
 
@@ -166,19 +166,19 @@ type an expression to eval it with locals in scope; (continue) to resume
 break>
 ```
 
-At the `break>` prompt you can evaluate any expression against the captured locals — call functions on them, check invariants, reproduce the bug in place. Commands:
+At the `break>` prompt you can evaluate any expression against the captured locals: call functions on them, check invariants, reproduce the bug in place. Commands:
 
-- `(continue)`, `continue`, or `c` — resume execution
-- `:locals` or `l` — reprint the captured locals
-- `Ctrl-D` (EOF) — resume
+- `(continue)`, `continue`, or `c`: resume execution
+- `:locals` or `l`: reprint the captured locals
+- `Ctrl-D` (EOF): resume
 
 `(break)` is safe to leave in code that runs non-interactively: when there is no terminal attached (CI, pipes, parallel test workers, cron) it prints `--- breakpoint skipped ---` and resumes immediately instead of hanging.
 
 ## Step debugging with Xdebug
 
-For IDE breakpoints, watches, and call-stack inspection, Phel supports [Xdebug](https://xdebug.org/). With the VS Code Phel extension you set breakpoints **directly in `.phel` files** — they're mapped to the compiled PHP automatically, traces show Phel locations, and Phel data structures render natively. Other editors (PhpStorm, Emacs, Neovim) attach to the compiled PHP output.
+For IDE breakpoints, watches, and call-stack inspection, Phel supports [Xdebug](https://xdebug.org/). With the VS Code Phel extension you set breakpoints **directly in `.phel` files**: they're mapped to the compiled PHP automatically, traces show Phel locations, and Phel data structures render natively. Other editors (PhpStorm, Emacs, Neovim) attach to the compiled PHP output.
 
-You can also trigger a hard breakpoint from code — the Xdebug counterpart of `(break)` — which halts the connected debugger exactly at that line, and is a no-op when Xdebug isn't loaded:
+You can also trigger a hard breakpoint from code (the Xdebug counterpart of `(break)`), which halts the connected debugger exactly at that line, and is a no-op when Xdebug isn't loaded:
 
 <!-- phel-test: skip -->
 ```phel
@@ -190,7 +190,7 @@ Setup, editor configs, and troubleshooting: [Xdebug Setup](/documentation/toolin
 
 ## Inspect the compiled PHP
 
-When you want to understand what your Phel actually becomes — macro expansion questions, interop surprises, performance curiosity — ask the compiler directly:
+When you want to understand what your Phel actually becomes (macro expansion questions, interop surprises, performance curiosity), ask the compiler directly:
 
 ```bash
 phel compile '(defn double [x] (* x 2))'
@@ -225,7 +225,7 @@ reports per-function call counts and self/total timings, plus compile-time phase
 
 - `phel watch` reloads namespaces when files change, so print-debugging iterations don't pay startup cost.
 - `phel test --filter <name>` reruns just the failing test while you bisect.
-- PHP-side tools work too: `(php/var_dump x)`, Symfony VarDumper's `(php/dump x)` / `(php/dd x)` — see [PHP Debugging Tools](/documentation/tooling/php-tools/).
+- PHP-side tools work too: `(php/var_dump x)`, Symfony VarDumper's `(php/dump x)` / `(php/dd x)`: see [PHP Debugging Tools](/documentation/tooling/php-tools/).
 
 ## Next steps
 

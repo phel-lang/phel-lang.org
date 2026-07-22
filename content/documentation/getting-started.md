@@ -15,7 +15,7 @@ Zero to live REPL in under a minute.
 
 No extra runtime. No JVM.
 
-> **No PHP installed?** Run a REPL in a single Docker command — see [Installation → Docker](/documentation/installation/#docker-no-php-required).
+> **No PHP installed?** Run a REPL in a single Docker command: see [Installation → Docker](/documentation/installation/#docker-no-php-required).
 
 ## 60-second quick start
 
@@ -126,7 +126,7 @@ All commands as `vendor/bin/phel <cmd>` (e.g. `vendor/bin/phel repl`). Skeleton 
 
 ## Verify setup
 
-Tooling misbehaving? Run `vendor/bin/phel doctor` — it reports missing extensions, cache permissions, and layout problems. Full breakdown in [Installation → Verify install](/documentation/installation/#verify-install).
+Tooling misbehaving? Run `vendor/bin/phel doctor`: it reports missing extensions, cache permissions, and layout problems. Full breakdown in [Installation → Verify install](/documentation/installation/#verify-install).
 
 Adding Phel to an existing project instead of the skeleton? See [Installation → Add to an existing project](/documentation/installation/#add-to-an-existing-project).
 

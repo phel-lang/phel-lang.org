@@ -17,7 +17,7 @@ true
 false
 ```
 
-Only `false` and `nil` are falsy — `0`, `""`, and `[]` are all truthy (unlike PHP, where they are falsy). See [Truthiness](#truthiness) for the predicates and the full PHP comparison.
+Only `false` and `nil` are falsy: `0`, `""`, and `[]` are all truthy (unlike PHP, where they are falsy). See [Truthiness](#truthiness) for the predicates and the full PHP comparison.
 
 ## Symbol
 
@@ -490,7 +490,7 @@ Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some det
 
 ## Anonymous function shorthand
 
-`#(...)` defines an inline anonymous function, using `%`/`%1`/`%2`/`%&` for positional arguments — `#(* % 2)` is the same as `(fn [x] (* x 2))`. Full rules and the deprecated `|(...)` form live in [Functions and Recursion](/documentation/language/functions-and-recursion/#anonymous-function-fn).
+`#(...)` defines an inline anonymous function, using `%`/`%1`/`%2`/`%&` for positional arguments: `#(* % 2)` is the same as `(fn [x] (* x 2))`. Full rules and the deprecated `|(...)` form live in [Functions and Recursion](/documentation/language/functions-and-recursion/#anonymous-function-fn).
 
 ## Deref shorthand
 

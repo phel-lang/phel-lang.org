@@ -310,7 +310,7 @@ The same hard breakpoint from Phel code (no-op when Xdebug isn't loaded):
   (php/xdebug_break))
 ```
 
-> **No Xdebug at hand?** Phel's built-in [`(break)`](/documentation/debugging/#break-a-repl-breakpoint-in-your-code) pauses execution in a sub-REPL with all lexical locals in scope — no extension or editor setup required.
+> **No Xdebug at hand?** Phel's built-in [`(break)`](/documentation/debugging/#break-a-repl-breakpoint-in-your-code) pauses execution in a sub-REPL with all lexical locals in scope: no extension or editor setup required.
 
 ## Next steps
 

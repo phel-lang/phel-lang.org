@@ -246,7 +246,7 @@ php phel.phar repl
 <div class="faq">
   <details class="faq-item">
     <summary class="faq-q">Is Phel production-ready?</summary>
-    <div class="faq-a">Phel is pre-1.0, but the core language and tooling are stable and tested — a good fit for side projects, CLI apps, internal tools, and prototypes. Breaking changes can still land between minor releases, so it isn't LTS-grade enterprise-stable yet. Full picture in <a href="/documentation/why-phel/#is-phel-production-ready">Why Phel</a>; track the <a href="/releases/">release notes</a> if you depend on it.</div>
+    <div class="faq-a">Phel is pre-1.0, but the core language and tooling are stable and tested: a good fit for side projects, CLI apps, internal tools, and prototypes. Breaking changes can still land between minor releases, so it isn't LTS-grade enterprise-stable yet. Full picture in <a href="/documentation/why-phel/#is-phel-production-ready">Why Phel</a>; track the <a href="/releases/">release notes</a> if you depend on it.</div>
   </details>
   <details class="faq-item">
     <summary class="faq-q">Can I call PHP libraries from Phel?</summary>
