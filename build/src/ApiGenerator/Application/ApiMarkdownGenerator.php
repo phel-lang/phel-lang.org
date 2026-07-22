@@ -172,10 +172,10 @@ final readonly class ApiMarkdownGenerator
         }
 
         // Handle exceptional documentation blocks
-        $input = preg_replace('/```phel/', '```clojure', $fn->doc);
+        $input = preg_replace('/```phel/', '```clojure', $fn->doc) ?? $fn->doc;
         if ($fn->name === 'with-mock-wrapper' || $fn->name === 'with-mocks') {
-            $input = preg_replace('/^[ \t]+/m', '', $input);
-            $input = preg_replace('/(?<!\n)\n(```phel)/', "\n\n$1", $input);
+            $input = preg_replace('/^[ \t]+/m', '', $input) ?? $input;
+            $input = preg_replace('/(?<!\n)\n(```phel)/', "\n\n$1", $input) ?? $input;
         }
 
         $lines[] = $input;
@@ -203,7 +203,7 @@ final readonly class ApiMarkdownGenerator
 
         $message = sprintf(
             '<small><span style="color: red; font-weight: bold;">Deprecated</span>: %s',
-            $fn->meta['deprecated'],
+            (string) $fn->meta['deprecated'],
         );
 
         if (isset($fn->meta['superseded-by'])) {
@@ -233,7 +233,7 @@ final readonly class ApiMarkdownGenerator
             '**Example:**',
             '',
             '```clojure',
-            $fn->meta['example'],
+            (string) $fn->meta['example'],
             '```',
         ];
     }
@@ -274,11 +274,22 @@ final readonly class ApiMarkdownGenerator
     }
 
     /**
+     * `:see-also` is authored as a Phel vector, so at runtime it arrives as a
+     * PersistentVector of function-name strings. Tests feed the equivalent
+     * shape with Symbol elements, hence the Stringable half of the union.
+     *
+     * @param iterable<string|\Stringable> $seeAlso
+     *
      * @return list<string>
      */
-    private function extractFunctionNames(mixed $seeAlso): array
+    private function extractFunctionNames(iterable $seeAlso): array
     {
-        return iterator_to_array($seeAlso);
+        $names = [];
+        foreach ($seeAlso as $name) {
+            $names[] = (string) $name;
+        }
+
+        return $names;
     }
 
     /**

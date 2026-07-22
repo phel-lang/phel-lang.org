@@ -233,9 +233,9 @@ final readonly class GitHubReleasePagesGenerator
 
         $body = preg_replace_callback(
             '#https://github\.com/phel-lang/phel-lang/compare/(v[\d.]+)\.\.\.(v[\d.]+)#',
-            fn(array $matches): string => "[{$matches[1]}...{$matches[2]}]({$matches[0]})",
+            static fn(array $matches): string => "[{$matches[1]}...{$matches[2]}]({$matches[0]})",
             $body,
-        );
+        ) ?? $body;
 
         return EmDash::strip($body);
     }
@@ -246,7 +246,7 @@ final readonly class GitHubReleasePagesGenerator
             '/(?<![\w`\/\[])@([A-Za-z0-9](?:[A-Za-z0-9-]{0,38}))(?![\w-])/',
             static fn(array $m): string => "[@{$m[1]}](https://github.com/{$m[1]})",
             $body,
-        );
+        ) ?? $body;
     }
 
     private function formatPrReferences(string $body): string
@@ -258,11 +258,11 @@ final readonly class GitHubReleasePagesGenerator
                     '/#(\d+)/',
                     static fn(array $m): string => "[#{$m[1]}](https://github.com/phel-lang/phel-lang/pull/{$m[1]})",
                     $matches[1],
-                );
+                ) ?? $matches[1];
                 return "({$refs})";
             },
             $body,
-        );
+        ) ?? $body;
     }
 
     private function extractDescription(string $body): string
@@ -279,7 +279,7 @@ final readonly class GitHubReleasePagesGenerator
 
     private function removeBlockquotes(string $body): string
     {
-        return preg_replace('/^>\s*/m', '', $body);
+        return preg_replace('/^>\s*/m', '', $body) ?? $body;
     }
 
     private function buildDescriptionFromLines(string $body): string
@@ -344,8 +344,7 @@ final readonly class GitHubReleasePagesGenerator
         }
 
         $units = ['B', 'KB', 'MB', 'GB'];
-        $power = floor(log($bytes, 1024));
-        $power = min($power, count($units) - 1);
+        $power = (int) min(floor(log($bytes, 1024)), count($units) - 1);
 
         return round($bytes / (1024 ** $power), 2) . ' ' . $units[$power];
     }

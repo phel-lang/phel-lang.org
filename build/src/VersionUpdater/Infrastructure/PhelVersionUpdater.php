@@ -18,15 +18,15 @@ final readonly class PhelVersionUpdater
 
     public function update(): void
     {
-        $configContent = file_get_contents($this->configFile);
+        $configContent = (string) file_get_contents($this->configFile);
 
         $fullVersion = $this->consoleFacade->getVersion();
-        $phelVersion = preg_replace('/-.*$/', '', $fullVersion);
+        $phelVersion = preg_replace('/-.*$/', '', $fullVersion) ?? $fullVersion;
         $updatedContent = preg_replace(
             self::REGEX_PHEL_VERSION_FINDER,
             'phel_version = "' . $phelVersion . '"',
             $configContent
-        );
+        ) ?? $configContent;
 
         if ($updatedContent !== $configContent) {
             file_put_contents($this->configFile, $updatedContent);
