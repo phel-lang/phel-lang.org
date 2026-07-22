@@ -208,6 +208,27 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 </div>
 </details>
 
+## Upgrading to 0.49
+
+```bash
+composer require phel-lang/phel-lang:^0.49
+./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
+```
+
+Always clear the cache after upgrading: compiled PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects too.
+
+Behaviour changes in 0.49:
+
+- No breaking changes. Existing code compiles as before.
+- `partition` and `partition-all` accept Clojure's extra arities (`[n step coll]`, plus `[n step pad coll]` for `partition`); the `[n coll]` form is unchanged.
+- Sorted maps and sorted sets treat `NaN` as equal to itself and ordered after every number, matching Clojure's `compare`. `(count (sorted-set NAN NAN))` is now `1` instead of `2`.
+- `pr`/`prn` print char literals like `\A` as one-char strings (`"A"`).
+- Multi-arity functions emit fixed-arity `invokeArityN` methods, so build-mode calls with a known arity skip variadic dispatch (roughly 1.5-2x faster per call).
+- Optional `PhelConfig::withStripSymbolMeta()` drops symbol metadata from compiled artifacts (-28% size, -40% cold require). With it on, `phel doc` and `(meta ...)` over built defs return nil, and toggling forces a full recompile.
+- `PhelConfig::withAppModulePaths()` scopes Gacela module discovery, so `phel list:modules` and `phel cache:warm` no longer fatal on classes that cannot load standalone. Defaults to the previous whole-root walk.
+
+New in 0.49: 20 new core fns, including `every-pred`, `mapv`, `filterv`, `while`, `distinct?`, `bounded-count`, `map-invert`, `random-sample`, the `pr`/`prn`/`pr-str`/`prn-str` family, the completed atom API (`compare-and-set!`, `swap-vals!`, `reset-vals!`), `clojure.set`-style relational helpers (`select`, `project`, `rename`, `index`), and `subseq`/`rsubseq` over sorted collections; a new `phel\trace` namespace (`trace`, `trace-fn`, `deftrace`, `dotrace`) in the spirit of `clojure.tools.trace`; and `(tap> x)` printing out of the box in the REPL. See the [0.49 release notes](/releases/0-49-arity-lane/).
+
 ## Upgrading to 0.48
 
 ```bash
@@ -225,15 +246,6 @@ Behaviour changes in 0.48:
 - Squaring (`(** x 2)`) and `reduce` over a typed vector now compile to native PHP; startup and emitted code shrink further via constant-slot sharing and leaner location metadata.
 
 New in 0.48: new core fns — `trampoline`, `reductions`, `subvec`, `with-open`, `reduce-kv`, `gcd`, `lcm`, `arity`, `variadic?`, `inspect`, and `dbg`; a stepping debugger via `(break)` that opens a sub-REPL over the captured locals (`(continue)` or EOF resumes, so non-interactive runs never hang); `phel test --coverage=html` for a self-contained line-colored coverage report; and `phel export` stubs that carry native parameter/return types from `:tag` metadata. See the [0.48 release notes](/releases/0-48-step-into/).
-
-## Upgrading to 0.47
-
-```bash
-composer require phel-lang/phel-lang:^0.47
-./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
-```
-
-Always clear the cache after upgrading: compiled PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects too.
 
 Behaviour changes in 0.47:
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhelWebTests\FileGenerator\Domain;
 
-use Phel\Api\Transfer\PhelFunction;
+use Phel\Shared\Api\PhelFunction;
 use Phel\Shared\Facade\ApiFacadeInterface;
 use PHPUnit\Framework\TestCase;
 use PhelWeb\ApiGenerator\Application\ApiMarkdownGenerator;

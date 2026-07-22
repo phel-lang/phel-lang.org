@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9bbf6b7f717cf188d4813145e9ccbf55",
+    "content-hash": "7af9bd8751ea791057fe5a31a031996f",
     "packages": [
         {
             "name": "amphp/amp",
@@ -89,16 +89,16 @@
         },
         {
             "name": "gacela-project/container",
-            "version": "0.8.1",
+            "version": "0.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gacela-project/container.git",
-                "reference": "6251aaf6973ab7ddc41f596a18a8ea9334582a1b"
+                "reference": "db13556a11f6892c852ef0f26a9915aee2a3ba4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gacela-project/container/zipball/6251aaf6973ab7ddc41f596a18a8ea9334582a1b",
-                "reference": "6251aaf6973ab7ddc41f596a18a8ea9334582a1b",
+                "url": "https://api.github.com/repos/gacela-project/container/zipball/db13556a11f6892c852ef0f26a9915aee2a3ba4e",
+                "reference": "db13556a11f6892c852ef0f26a9915aee2a3ba4e",
                 "shasum": ""
             },
             "require": {
@@ -125,8 +125,8 @@
             ],
             "authors": [
                 {
-                    "name": "Jose Maria Valera Reales",
-                    "email": "chemaclass@outlook.es",
+                    "name": "Jose M. Valera Reales",
+                    "email": "gacela@chemaclass.com",
                     "homepage": "https://chemaclass.com"
                 },
                 {
@@ -144,8 +144,8 @@
                 "resolver"
             ],
             "support": {
-                "issues": "https://github.com/gacela-project/resolver/issues",
-                "source": "https://github.com/gacela-project/container/tree/0.8.1"
+                "issues": "https://github.com/gacela-project/container/issues",
+                "source": "https://github.com/gacela-project/container/tree/0.10.0"
             },
             "funding": [
                 {
@@ -153,24 +153,24 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-06-05T11:50:32+00:00"
+            "time": "2026-07-19T22:59:58+00:00"
         },
         {
             "name": "gacela-project/gacela",
-            "version": "1.16.0",
+            "version": "1.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gacela-project/gacela.git",
-                "reference": "96dfcf6d9a6fceffc9452aff2f0658e472a136fd"
+                "reference": "d4f91871da18de2cdcc651c571d3932489436411"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gacela-project/gacela/zipball/96dfcf6d9a6fceffc9452aff2f0658e472a136fd",
-                "reference": "96dfcf6d9a6fceffc9452aff2f0658e472a136fd",
+                "url": "https://api.github.com/repos/gacela-project/gacela/zipball/d4f91871da18de2cdcc651c571d3932489436411",
+                "reference": "d4f91871da18de2cdcc651c571d3932489436411",
                 "shasum": ""
             },
             "require": {
-                "gacela-project/container": "^0.8.1",
+                "gacela-project/container": "^0.10.0",
                 "php": ">=8.1"
             },
             "require-dev": {
@@ -193,6 +193,7 @@
                 "gacela-project/gacela-env-config-reader": "Allows to read .env config files",
                 "gacela-project/gacela-yaml-config-reader": "Allows to read yml/yaml config files",
                 "gacela-project/phpstan-extension": "A set of phpstan rules for Gacela",
+                "phpunit/phpunit": "Allows to extend Gacela\\Framework\\Testing\\GacelaTestCase in your tests",
                 "symfony/console": "Allows to use vendor/bin/gacela script"
             },
             "bin": [
@@ -230,7 +231,7 @@
             ],
             "support": {
                 "issues": "https://github.com/gacela-project/gacela/issues",
-                "source": "https://github.com/gacela-project/gacela/tree/1.16.0"
+                "source": "https://github.com/gacela-project/gacela/tree/1.18.0"
             },
             "funding": [
                 {
@@ -238,25 +239,25 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-07-15T05:36:26+00:00"
+            "time": "2026-07-20T05:33:57+00:00"
         },
         {
             "name": "phel-lang/phel-lang",
-            "version": "v0.48.0",
+            "version": "v0.49.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "be80623d39b37f237a41a9c8781c9ac7803ab77c"
+                "reference": "6364aa687ebdc64a40215575f199b8196476f1b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/be80623d39b37f237a41a9c8781c9ac7803ab77c",
-                "reference": "be80623d39b37f237a41a9c8781c9ac7803ab77c",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/6364aa687ebdc64a40215575f199b8196476f1b5",
+                "reference": "6364aa687ebdc64a40215575f199b8196476f1b5",
                 "shasum": ""
             },
             "require": {
                 "amphp/amp": "^3.1",
-                "gacela-project/gacela": "^1.16",
+                "gacela-project/gacela": "^1.18",
                 "php": ">=8.4",
                 "symfony/console": "^6.0|^7.0|^8.0",
                 "symfony/polyfill-mbstring": "^1.30",
@@ -314,7 +315,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phel-lang/phel-lang/issues",
-                "source": "https://github.com/phel-lang/phel-lang/tree/v0.48.0"
+                "source": "https://github.com/phel-lang/phel-lang/tree/v0.49.0"
             },
             "funding": [
                 {
@@ -322,7 +323,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-07-15T10:16:17+00:00"
+            "time": "2026-07-22T20:38:45+00:00"
         },
         {
             "name": "psr/container",
@@ -4026,5 +4027,5 @@
     "platform-overrides": {
         "php": "8.4"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }

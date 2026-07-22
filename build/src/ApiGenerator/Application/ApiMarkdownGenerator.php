@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace PhelWeb\ApiGenerator\Application;
 
-use Phel\Api\Transfer\PhelFunction;
+use Phel\Shared\Api\PhelFunction;
 use Phel\Shared\Facade\ApiFacadeInterface;
 
 final readonly class ApiMarkdownGenerator
