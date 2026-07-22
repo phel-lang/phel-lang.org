@@ -8,6 +8,9 @@ use PhelWeb\ReleasesGenerator\Application\GitHubReleasePagesGenerator;
 use PhelWeb\ReleasesGenerator\Domain\Release;
 use RuntimeException;
 
+/**
+ * @psalm-import-type TGitHubReleasePayload from Release
+ */
 final readonly class GitHubReleasePages
 {
     private const string GITHUB_API_URL = 'https://api.github.com/repos/phel-lang/phel-lang/releases';
@@ -35,7 +38,7 @@ final readonly class GitHubReleasePages
     }
 
     /**
-     * @param list<array<string, mixed>> $rawReleases
+     * @param list<TGitHubReleasePayload> $rawReleases
      * @return list<Release>
      */
     private function mapToReleases(array $rawReleases): array
@@ -75,6 +78,9 @@ final readonly class GitHubReleasePages
         }
     }
 
+    /**
+     * @return list<TGitHubReleasePayload>
+     */
     private function fetchAllReleases(): array
     {
         $allReleases = [];
@@ -90,6 +96,9 @@ final readonly class GitHubReleasePages
         return $allReleases;
     }
 
+    /**
+     * @return list<TGitHubReleasePayload>
+     */
     private function fetchReleasesPage(string $url): array
     {
         $headers = [

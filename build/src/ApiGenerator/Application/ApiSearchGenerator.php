@@ -5,7 +5,36 @@ declare(strict_types=1);
 namespace PhelWeb\ApiGenerator\Application;
 
 use Phel\Shared\Facade\ApiFacadeInterface;
+use PhelWeb\Shared\Text\ZolaAnchor;
 
+/**
+ * Builds static/api_search.json, consumed by the client-side search in
+ * static/search.js.
+ *
+ * The index holds two deliberately different kinds of entry. They share only
+ * `id` and `type` (the discriminator the frontend switches on) and are NOT
+ * interchangeable: an API entry describes one Phel function and carries its
+ * signatures, a documentation entry describes a whole markdown page and
+ * carries a prose excerpt. They are kept as separate shapes on purpose.
+ *
+ * @psalm-type TApiSearchItem = array{
+ *     id: string,
+ *     name: string,
+ *     signatures: list<string>,
+ *     desc: string,
+ *     anchor: string,
+ *     namespace: string,
+ *     path: string,
+ *     type: 'api',
+ * }
+ * @psalm-type TDocSearchItem = array{
+ *     id: string,
+ *     title: string,
+ *     content: string,
+ *     url: string,
+ *     type: 'documentation',
+ * }
+ */
 final readonly class ApiSearchGenerator
 {
     public function __construct(
@@ -15,12 +44,7 @@ final readonly class ApiSearchGenerator
     }
 
     /**
-     * @return array<string, array{
-     *     fnName: string,
-     *     fnSignature: string,
-     *     desc: string,
-     *     anchor: string,
-     * }>
+     * @return list<TApiSearchItem|TDocSearchItem>
      */
     public function generateSearchIndex(): array
     {
@@ -38,7 +62,7 @@ final readonly class ApiSearchGenerator
         $groupedPhelFns = $this->apiFacade->getPhelFunctions();
 
         foreach ($groupedPhelFns as $fn) {
-            $base = $this->headingAnchor($fn->nameWithNamespace());
+            $base = ZolaAnchor::fromHeading($fn->nameWithNamespace());
             $anchorAppearances[$base] ??= 0;
             $count = $anchorAppearances[$base]++;
             $anchor = $count === 0 ? $base : $base . '-' . $count;
@@ -67,20 +91,6 @@ final readonly class ApiSearchGenerator
     }
 
     /**
-     * Mirrors Zola's default heading-anchor slugifier: lowercase, replace any
-     * non-alphanumeric/dash character with `-`, collapse runs, trim.
-     * Disambiguation suffixes (`-1`, `-2`, ...) are layered on top by the
-     * caller, the same way Zola handles repeated heading text.
-     */
-    private function headingAnchor(string $text): string
-    {
-        $text = strtolower($text);
-        $text = preg_replace('/[^a-z0-9-]/', '-', $text) ?? '';
-        $text = preg_replace('/-+/', '-', $text) ?? '';
-        return trim($text, '-');
-    }
-
-    /**
      * Transforms links `[printf](https://...)` into `<i>printf</i>`.
      */
     private function formatDescription(string $desc): string
@@ -91,7 +101,7 @@ final readonly class ApiSearchGenerator
     /**
      * Generate search index items for documentation files
      *
-     * @return array<array{id: string, title: string, content: string, url: string, type: string}>
+     * @return list<TDocSearchItem>
      */
     private function generateDocumentationSearchItems(): array
     {

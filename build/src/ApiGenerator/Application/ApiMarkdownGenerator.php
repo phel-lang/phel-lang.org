@@ -6,6 +6,8 @@ namespace PhelWeb\ApiGenerator\Application;
 
 use Phel\Shared\Api\PhelFunction;
 use Phel\Shared\Facade\ApiFacadeInterface;
+use PhelWeb\Shared\Text\EmDash;
+use PhelWeb\Shared\Text\ZolaAnchor;
 
 final readonly class ApiMarkdownGenerator
 {
@@ -39,21 +41,17 @@ final readonly class ApiMarkdownGenerator
         }
 
         foreach ($files as $key => $lines) {
-            $files[$key] = array_map($this->stripEmDash(...), $lines);
+            $files[$key] = array_map(EmDash::strip(...), $lines);
         }
 
         return $files;
     }
 
-    private function stripEmDash(string $text): string
-    {
-        return str_replace(
-            [' &mdash; ', ' &mdash;', '&mdash; ', '&mdash;', ' — ', ' —', '— ', '—'],
-            [', ',        ',',        ', ',        ',',       ', ', ',',  ', ', ','],
-            $text,
-        );
-    }
-
+    /**
+     * URL path segment for a namespace page. Distinct concept from a heading
+     * anchor (see ZolaAnchor), even though the two currently normalise the
+     * same way.
+     */
     public function namespaceSlug(string $namespace): string
     {
         $slug = strtolower($namespace);
@@ -307,22 +305,14 @@ final readonly class ApiMarkdownGenerator
         $target = $functionMap[$name] ?? null;
 
         if ($target === null) {
-            return '#' . $this->sanitizeAnchor($name);
+            return '#' . ZolaAnchor::fromHeading($name);
         }
 
-        $anchor = $this->sanitizeAnchor($target->nameWithNamespace());
+        $anchor = ZolaAnchor::fromHeading($target->nameWithNamespace());
         if ($target->namespace === $currentNamespace) {
             return '#' . $anchor;
         }
 
         return '/documentation/reference/api/' . $this->namespaceSlug($target->namespace) . '/#' . $anchor;
-    }
-
-    private function sanitizeAnchor(string $text): string
-    {
-        $text = strtolower($text);
-        $text = preg_replace('/[^a-z0-9-]/', '-', $text);
-        $text = preg_replace('/-+/', '-', $text);
-        return trim($text, '-');
     }
 }

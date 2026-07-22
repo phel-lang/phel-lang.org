@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhelWeb\ReleasesGenerator\Application;
 
 use PhelWeb\ReleasesGenerator\Domain\Release;
+use PhelWeb\Shared\Text\EmDash;
 use RuntimeException;
 
 final readonly class GitHubReleasePagesGenerator
@@ -236,16 +237,7 @@ final readonly class GitHubReleasePagesGenerator
             $body,
         );
 
-        return $this->stripEmDash($body);
-    }
-
-    private function stripEmDash(string $text): string
-    {
-        return str_replace(
-            [' &mdash; ', ' &mdash;', '&mdash; ', '&mdash;', ' — ', ' —', '— ', '—'],
-            [', ',        ',',        ', ',        ',',       ', ', ',',  ', ', ','],
-            $text,
-        );
+        return EmDash::strip($body);
     }
 
     private function formatContributorMentions(string $body): string

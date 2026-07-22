@@ -4,6 +4,25 @@ declare(strict_types=1);
 
 namespace PhelWeb\ReleasesGenerator\Domain;
 
+/**
+ * One published GitHub release, normalised from the REST payload.
+ *
+ * The raw payload shape is declared once here (and once on Asset) and imported
+ * wherever it travels, so the GitHub contract is described in a single place
+ * rather than restated as a bare `array` at every hop.
+ *
+ * @psalm-import-type TGitHubAssetPayload from Asset
+ *
+ * @psalm-type TGitHubReleasePayload = array{
+ *     tag_name: string,
+ *     name: string,
+ *     body: string,
+ *     published_at: string,
+ *     html_url: string,
+ *     assets: list<TGitHubAssetPayload>,
+ *     ...
+ * }
+ */
 final readonly class Release
 {
     /**
@@ -19,6 +38,9 @@ final readonly class Release
     ) {
     }
 
+    /**
+     * @param TGitHubReleasePayload $data Raw release entry from GET /repos/{owner}/{repo}/releases
+     */
     public static function fromArray(array $data): self
     {
         $assets = array_map(
