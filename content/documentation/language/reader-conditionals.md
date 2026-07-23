@@ -2,6 +2,9 @@
 title = "Reader Conditionals"
 weight = 14
 description = "Write platform-specific code in shared .cljc source files with #?() and #?@(), resolved at parse time using :phel and :default keys"
+
+[extra]
+difficulty = "advanced"
 +++
 
 Reader conditionals let one source file hold platform-specific code. They resolve during the **parsing phase**, before compilation, so the analyzer and emitter only ever see the selected form. Phel picks the `:phel` branch, ignores other platforms (`:clj`, `:cljs`, ...), and falls back to `:default` when present.

@@ -3,6 +3,9 @@ title = "Macros"
 weight = 10
 description = "Write compile-time code that rewrites code: defmacro, quasiquote, macroexpand, gensym hygiene, and when a macro is worth it"
 aliases = ["/documentation/macros"]
+
+[extra]
+difficulty = "advanced"
 +++
 
 Macros are compile-time callables. They receive unevaluated code as data, transform it, and return new code for the compiler to process. This lets you add new syntax that functions cannot express.

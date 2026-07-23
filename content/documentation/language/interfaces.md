@@ -3,6 +3,9 @@ title = "Interfaces"
 weight = 9
 description = "Define contracts with definterface, implement them in structs, extend types with protocols, and dispatch via hierarchies"
 aliases = ["/documentation/interfaces"]
+
+[extra]
+difficulty = "advanced"
 +++
 
 Interfaces define contracts: sets of methods that structs implement. They map directly to PHP interfaces. Protocols and hierarchies extend the same idea to types you do not control.

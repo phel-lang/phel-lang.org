@@ -3,6 +3,9 @@ title = "Namespaces"
 weight = 8
 description = "Declare namespaces with ns, require Phel modules and PHP classes, and use aliases, :refer, and namespaced keywords"
 aliases = ["/documentation/namespaces"]
+
+[extra]
+difficulty = "intermediate"
 +++
 
 How Phel organizes code across files: every file declares a namespace with `ns`, then pulls in Phel modules and PHP classes through requires.

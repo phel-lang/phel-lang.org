@@ -3,6 +3,9 @@ title = "Error handling"
 weight = 7
 description = "Throw and catch exceptions, handle PHP exceptions, attach data with ex-info, and decide when to throw vs return nil"
 aliases = ["/documentation/error-handling"]
+
+[extra]
+difficulty = "intermediate"
 +++
 
 How Phel signals and recovers from failures: `throw` to raise, `try`/`catch`/`finally` to handle, and `ex-info` to carry structured data with an error. Phel uses PHP's exception machinery, so any PHP `Throwable` works here.

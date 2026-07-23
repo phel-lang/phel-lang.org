@@ -2,6 +2,9 @@
 title = "Numeric Tower"
 weight = 15
 description = "Phel's five numeric shapes (int, BigInt, Ratio, BigDecimal, float), when each appears, and how arithmetic dispatches across them"
+
+[extra]
+difficulty = "intermediate"
 +++
 
 Phel numbers are not a single type. Arithmetic, comparisons, and predicates dispatch across **five scalar shapes**, picking the most precise representation that fits. This page explains each shape and the rules that govern how they interact.

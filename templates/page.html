@@ -6,6 +6,16 @@
     {% set crumb_page = page %}
     {% include "partials/breadcrumb.html" %}
     <h1>{{page.title}}</h1>
+    {% if page.path is starting_with("/documentation/") %}
+        <div class="page-meta">
+            {% if page.extra.difficulty is defined %}
+                <span class="page-meta__badge page-meta__badge--{{ page.extra.difficulty }}">{{ page.extra.difficulty | title }}</span>
+            {% endif %}
+            {% if page.reading_time %}
+                <span class="page-meta__readtime">{{ page.reading_time }} min read</span>
+            {% endif %}
+        </div>
+    {% endif %}
     {% set show_toc = page.path is starting_with("/documentation/") and page.toc and page.toc | length >= 2 %}
     {% if show_toc %}
         {% include "page/table-of-content-mobile.html" %}

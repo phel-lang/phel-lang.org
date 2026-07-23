@@ -3,6 +3,9 @@ title = "Destructuring"
 weight = 6
 description = "Bind names to values inside vectors, lists, and maps by shape in let, function params, and loop"
 aliases = ["/documentation/destructuring"]
+
+[extra]
+difficulty = "intermediate"
 +++
 
 Destructuring binds names to values inside data structures. Describe the shape, Phel binds the pieces.
