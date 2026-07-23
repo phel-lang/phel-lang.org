@@ -7,6 +7,8 @@ aliases = ["/documentation/error-handling"]
 
 How Phel signals and recovers from failures: `throw` to raise, `try`/`catch`/`finally` to handle, and `ex-info` to carry structured data with an error. Phel uses PHP's exception machinery, so any PHP `Throwable` works here.
 
+> This page is the canonical guide to handling errors in your code. Chasing a specific `[PHEL...]` compiler error code instead? See the [Error Reference](/documentation/reference/errors/).
+
 ## Throwing
 
 <!-- phel-test: skip -->

@@ -5,6 +5,8 @@ weight = 4
 
 Decisions and loops without mutable variables. Each tool here fits a different shape of problem - learn when to reach for which.
 
+> **Concept reference:** these exercises practice [Control Flow](/documentation/language/control-flow/). Read that page for the full theory.
+
 {% question(difficulty="easy") %}
 Define `absolute` returning the absolute value of a number using `if`.
 <!-- phel-test: skip -->

@@ -11,6 +11,8 @@ If you have read the [immutability post](/blog/immutability-in-phel) you already
 
 PHP gives you array unpacking (`[$a, $b] = [1, 2]`) and keyed destructuring (`['name' => $name] = $data`). Phel gives you a tiny pattern language that works in `let`, function parameters, and `loop` bindings, with nesting, defaults, rest capture, and aliasing.
 
+> **Canonical reference:** this is a narrative deep dive. For the concise language reference on destructuring, see [Destructuring](/documentation/language/destructuring/).
+
 ## The shape is the code
 
 The rule is one line: **write the shape of the data on the left, put the data on the right**. Phel walks both together and binds names wherever you wrote a symbol.

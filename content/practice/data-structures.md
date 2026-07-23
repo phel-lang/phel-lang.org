@@ -5,6 +5,8 @@ weight = 2
 
 Phel ships with four go-to collections: vectors, maps, sets, and lists. They share two superpowers - **immutability** (every "change" returns a new value) and **structural sharing** (so it stays fast). Let's meet them.
 
+> **Concept reference:** these exercises practice [Data Structures](/documentation/language/data-structures/). Read that page for the full theory.
+
 {% question(difficulty="easy") %}
 Build a vector with the elements `2`, `"nice"`, and `true`.
 {% end %}

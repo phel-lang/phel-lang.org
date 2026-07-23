@@ -7,6 +7,8 @@ aliases = ["/documentation/cookbook", "/documentation/one-liners"]
 
 Practical, self-contained Phel recipes for everyday tasks. Copy one, adapt it, ship it.
 
+> **Recipes, not concepts.** Each entry is a task-oriented snippet. For the language concepts behind them, see the [Language](/documentation/language/) section; for quick syntax lookup, the [Cheat Sheet](/documentation/reference/cheat-sheet/).
+
 ## Read and process a CSV file
 
 Read CSV into a vector of maps, headers as keys.

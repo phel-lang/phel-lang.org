@@ -8,6 +8,8 @@ If you have played with [threading macros](/blog/threading-macros) or [pattern m
 
 PHP developers sometimes reach for `eval()` or code generation tools when they need to produce code dynamically. Clojure developers know a better way: macros. Phel brings that same power to the PHP ecosystem, letting you extend the language at compile time instead of juggling strings at runtime.
 
+> **Canonical reference:** this is a narrative walkthrough. For the concise language reference on macros, see [Macros](/documentation/language/macros/).
+
 ## Functions vs macros: when code is data
 
 Regular functions receive values and return values. Macros receive *code* and return *code*. The transformation happens at compile time, so there is zero runtime cost.
