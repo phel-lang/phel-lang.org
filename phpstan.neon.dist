@@ -1,0 +1,28 @@
+parameters:
+    level: 8
+    paths:
+        - build/src
+        - build/api-page.php
+        - build/api-search.php
+        - build/api-json.php
+        - build/generate-releases.php
+        - build/generate-repl-showcase.php
+        - build/generate-error-reference.php
+        - build/run-doc-snippets.php
+        - build/update-phel-version.php
+    ignoreErrors:
+        # Intentional guard: fires when a future phel release adds an ErrorCode
+        # case with no curated entry. PHPStan proves it always exists today.
+        -
+            identifier: isset.offset
+            path: build/src/ErrorReference/ErrorReferenceGenerator.php
+        # $http_response_header superglobal: populated by the preceding
+        # file_get_contents; PHPStan cannot see it and flags the defensive ?? [].
+        -
+            identifier: nullCoalesce.variable
+            path: build/src/ReleasesGenerator/Infrastructure/GitHubReleasePages.php
+        # json_decode yields mixed; the list<TGitHubReleasePayload> is an
+        # intentional external-boundary assertion PHPStan cannot verify.
+        -
+            identifier: return.type
+            path: build/src/ReleasesGenerator/Infrastructure/GitHubReleasePages.php

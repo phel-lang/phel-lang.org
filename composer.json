@@ -17,7 +17,8 @@
     "require-dev": {
         "roave/security-advisories": "dev-latest",
         "phpunit/phpunit": "^10.5",
-        "symfony/var-dumper": "^7.4"
+        "symfony/var-dumper": "^7.4",
+        "phpstan/phpstan": "^2.2"
     },
     "autoload": {
         "psr-4": {
@@ -47,6 +48,7 @@
         ],
         "test": "./vendor/bin/phpunit",
         "test:snippets": "php build/run-doc-snippets.php",
+        "phpstan": "phpstan analyse",
         "post-update-cmd": [
             "php build/update-phel-version.php"
         ]

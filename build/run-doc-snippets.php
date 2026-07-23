@@ -120,6 +120,9 @@ $startProc = static function (array $job) use ($cmd, $tmpDir): array {
     $env = getenv();
     $env['TMPDIR'] = $procTmp;
     $proc = proc_open($cmd($job['file']), $descriptor, $pipes, $procTmp, $env);
+    if (!is_resource($proc)) {
+        throw new RuntimeException("Failed to start snippet process for {$job['file']}");
+    }
     stream_set_blocking($pipes[1], false);
     stream_set_blocking($pipes[2], false);
     return ['job' => $job, 'proc' => $proc, 'pipes' => $pipes, 'out' => '', 'err' => ''];

@@ -95,7 +95,7 @@ final readonly class ApiSearchGenerator
      */
     private function formatDescription(string $desc): string
     {
-        return preg_replace('/\[(.*?)\]\((.*?)\)/', '<i>$1</i>', $desc);
+        return preg_replace('/\[(.*?)\]\((.*?)\)/', '<i>$1</i>', $desc) ?? $desc;
     }
 
     /**
