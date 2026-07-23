@@ -4,6 +4,8 @@ weight = 3
 description = "Every Phel compiler error code (PHEL001-PHEL310), what it means, and how to fix it."
 +++
 
+> This page is the canonical index of compiler error **codes**. To learn how to `throw`, `catch`, and attach data to errors in your own code, see [Error handling](/documentation/language/error-handling/).
+
 Phel compiler errors are tagged with a stable code like `[PHEL001]`. The code
 survives wording changes, so it is the reliable thing to search for. An error
 prints as the code, a message, the source location, a snippet of the offending

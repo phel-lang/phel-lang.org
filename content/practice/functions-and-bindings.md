@@ -5,6 +5,8 @@ weight = 3
 
 Functions and names are the bread and butter of any Phel program. You'll learn to bind values, define functions, scope locals, destructure inputs, and build closures that remember.
 
+> **Concept reference:** these exercises practice [Functions and Recursion](/documentation/language/functions-and-recursion/) and [Global and Local Bindings](/documentation/language/global-and-local-bindings/). Read those pages for the full theory.
+
 {% question(difficulty="easy") %}
 Use `def` to bind the name `greeting` to `"Hello, Phel!"`. Then evaluate `greeting`.
 {% end %}

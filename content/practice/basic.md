@@ -5,6 +5,8 @@ weight = 1
 
 Welcome to Phel! These exercises ease you into prefix notation, basic types, and the REPL feel. Fire up the [Phel REPL](/documentation/tooling/repl) and try each one before peeking at the solution.
 
+> **Concept reference:** these exercises practice [Basic Types](/documentation/language/basic-types/). Read that page for the full theory.
+
 {% question(difficulty="easy") %}
 Compute `1 + 1`.
 {% end %}

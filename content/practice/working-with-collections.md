@@ -5,6 +5,8 @@ weight = 5
 
 This is where Phel sings. `map`, `filter`, `reduce`, threading macros, list comprehensions, and destructuring turn data wrangling into a readable pipeline.
 
+> **Concept reference:** these exercises practice [Data Structures](/documentation/language/data-structures/) and [Lazy Sequences](/documentation/language/lazy-sequences/). Read those pages for the full theory.
+
 {% question(difficulty="medium") %}
 Increment every number in `[4 7 9 10]`. Use `map`.
 {% end %}
