@@ -3,6 +3,9 @@ title = "Cookbook"
 weight = 4
 description = "Runnable Phel recipes for files, JSON, HTTP, dates, error handling, schemas, state, and data-transformation pipelines"
 aliases = ["/documentation/cookbook", "/documentation/one-liners"]
+
+[extra]
+scripts = ["cookbook-filter.js"]
 +++
 
 Practical, self-contained Phel recipes for everyday tasks. Copy one, adapt it, ship it.
