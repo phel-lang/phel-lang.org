@@ -3,6 +3,9 @@ title = "Basic Types"
 weight = 1
 description = "Phel's primitive values: nil, booleans, numbers, strings, keywords, plus truthiness, equality, and reader literals"
 aliases = ["/documentation/basic-types", "/documentation/arithmetic", "/documentation/truth-and-boolean-operations"]
+
+[extra]
+difficulty = "beginner"
 +++
 
 The building blocks of every Phel program: literals, numbers, strings, keywords, and the truthiness rules that differ from PHP.

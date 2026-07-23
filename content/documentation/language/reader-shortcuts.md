@@ -2,6 +2,9 @@
 title = "Reader Shortcuts"
 weight = 13
 description = "Compact catalog of the reader macros and special syntax the Phel reader expands at read time: literals, quote/quasiquote, tagged literals, anonymous functions, reader conditionals, and metadata."
+
+[extra]
+difficulty = "intermediate"
 +++
 
 The **reader** turns source text into Phel data before the compiler sees it. Along the way it expands a handful of single-character and `#`-prefixed shortcuts into ordinary forms. Knowing what each one desugars to makes unfamiliar code readable: every shortcut on this page is just a shorter spelling of a regular call or form.

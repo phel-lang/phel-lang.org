@@ -3,6 +3,9 @@ title = "Functions and Recursion"
 weight = 5
 description = "Define functions with fn and defn, use multi-arity and variadics, recurse safely with recur, and dispatch with multimethods"
 aliases = ["/documentation/functions-and-recursion"]
+
+[extra]
+difficulty = "intermediate"
 +++
 
 Define and compose behavior: anonymous and named functions, multiple arities, tail-safe recursion with `recur`, and runtime polymorphism with multimethods.

@@ -2,6 +2,9 @@
 title = "Transducers"
 weight = 12
 description = "Build composable, allocation-free transformation pipelines that decouple the transformation from the consumer, and write your own custom transducers"
+
+[extra]
+difficulty = "advanced"
 +++
 
 Transducers are composable transformation pipelines that decouple *what* you do to a sequence of values (map, filter, take) from *how* you consume the result (build a vector, sum, write to a file). They turn one reducing function into another, fusing every step into a single pass with no intermediate collections.

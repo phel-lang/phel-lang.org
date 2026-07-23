@@ -3,6 +3,9 @@ title = "Control flow"
 weight = 4
 description = "Branch, loop, and build collections with if, cond, case, loop/recur, for, and thread macros like cond->"
 aliases = ["/documentation/control-flow"]
+
+[extra]
+difficulty = "beginner"
 +++
 
 Everything that decides what runs next: conditionals (`if`, `cond`, `case`), iteration (`loop`/`recur`, `foreach`, `for`), and conditional threading.

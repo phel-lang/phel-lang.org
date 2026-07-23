@@ -348,3 +348,67 @@ h6:hover .zola-anchor {
 .dark .agent-doc-cta__hint {
   color: var(--color-dark-text-secondary);
 }
+
+/* Page meta: difficulty badge + estimated read time (see templates/page.html). */
+.page-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin: -0.25rem 0 1.5rem;
+  font-size: var(--text-sm);
+}
+
+.page-meta__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  font-weight: 600;
+  line-height: 1.6;
+  border: 1px solid transparent;
+}
+
+.page-meta__badge--beginner {
+  background: #e7f6ec;
+  color: #1a7f43;
+  border-color: #b7e4c7;
+}
+
+.page-meta__badge--intermediate {
+  background: #fdf3e0;
+  color: #9a6a00;
+  border-color: #f5d99a;
+}
+
+.page-meta__badge--advanced {
+  background: #fbe9e9;
+  color: #b23434;
+  border-color: #f2c4c4;
+}
+
+.page-meta__readtime {
+  color: var(--color-light-text-secondary);
+}
+
+.dark .page-meta__badge--beginner {
+  background: rgba(45, 168, 96, 0.16);
+  color: #6ee7a0;
+  border-color: rgba(45, 168, 96, 0.4);
+}
+
+.dark .page-meta__badge--intermediate {
+  background: rgba(214, 158, 46, 0.16);
+  color: #f2c368;
+  border-color: rgba(214, 158, 46, 0.4);
+}
+
+.dark .page-meta__badge--advanced {
+  background: rgba(214, 78, 78, 0.16);
+  color: #f19595;
+  border-color: rgba(214, 78, 78, 0.4);
+}
+
+.dark .page-meta__readtime {
+  color: var(--color-dark-text-secondary);
+}

@@ -3,6 +3,9 @@ title = "Data structures"
 weight = 2
 description = "Phel's persistent collections: lists, vectors, maps, sets, structs, plus core functions like conj, assoc, get-in, and into"
 aliases = ["/documentation/data-structures"]
+
+[extra]
+difficulty = "beginner"
 +++
 
 Phel's four core collections are lists, vectors, maps, and sets. All are **persistent** (immutable): an operation returns a new version that shares structure with the old one, and the original never changes.

@@ -2,6 +2,9 @@
 title = "Async & Concurrency"
 weight = 16
 description = "Run work concurrently with Phel's two fiber-based layers: top-level promises and futures, plus an AMPHP event loop for timers, IO, and fan-out"
+
+[extra]
+difficulty = "advanced"
 +++
 
 Phel ships two concurrency layers built on PHP fibers. Both let independent work overlap on a single thread; neither parallelizes CPU work across cores. Pick the layer that matches your context, then reach for the [async API reference](/documentation/reference/api/async/) for the full signature of every function.

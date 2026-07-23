@@ -3,6 +3,9 @@ title = "Global and local bindings"
 weight = 3
 description = "Bind values to names with def and let, rebind dynamic vars with binding, and manage mutable state with atoms"
 aliases = ["/documentation/global-and-local-bindings"]
+
+[extra]
+difficulty = "beginner"
 +++
 
 How you name things in Phel: `def` for globals, `let` for locals, `binding` for dynamic vars, and `atom` for the rare mutable state.
