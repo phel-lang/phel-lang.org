@@ -34,6 +34,31 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
   </div>
 </section>
 
+<section class="homepage-section">
+
+## Choose your path
+
+<div class="section-page-list">
+  <a href="/documentation/phel-in-5-minutes/" class="section-page-card">
+    <h3 class="section-page-card__title">New to Lisp</h3>
+    <p class="section-page-card__desc">Never seen syntax like this? Learn to read Phel in five minutes, no install needed.</p>
+  </a>
+  <a href="/documentation/guides/rosetta-stone/" class="section-page-card">
+    <h3 class="section-page-card__title">Coming from PHP</h3>
+    <p class="section-page-card__desc">Map everyday PHP to its Phel equivalent, side by side.</p>
+  </a>
+  <a href="/documentation/guides/coming-from-clojure/" class="section-page-card">
+    <h3 class="section-page-card__title">Coming from Clojure</h3>
+    <p class="section-page-card__desc">Know Clojure? See what carries over and what changes on the PHP runtime.</p>
+  </a>
+  <a href="/documentation/reference/api/" class="section-page-card">
+    <h3 class="section-page-card__title">Just the API</h3>
+    <p class="section-page-card__desc">Skip the prose. Jump straight to every function in every namespace.</p>
+  </a>
+</div>
+
+</section>
+
 <section class="homepage-section homepage-section--alt">
 
 ## Phel by example
