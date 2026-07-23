@@ -2,6 +2,9 @@
 title = "PHP Interop"
 weight = 50
 description = "Call PHP functions, build objects, work with PHP arrays, and catch PHP exceptions from Phel."
+
+[extra]
+scripts = ["interop-filter.js"]
 +++
 
 ## Globals and constants
