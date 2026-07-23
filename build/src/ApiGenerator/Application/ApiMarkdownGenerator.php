@@ -171,7 +171,8 @@ final readonly class ApiMarkdownGenerator
             $lines[] = $deprecation;
         }
 
-        // Handle exceptional documentation blocks
+        // Render doc fences as clojure so Zola highlights them. with-mock-wrapper
+        // and with-mocks ship indented doc blocks that need de-indenting first.
         $input = preg_replace('/```phel/', '```clojure', $fn->doc) ?? $fn->doc;
         if ($fn->name === 'with-mock-wrapper' || $fn->name === 'with-mocks') {
             $input = preg_replace('/^[ \t]+/m', '', $input) ?? $input;

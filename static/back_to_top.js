@@ -1,4 +1,3 @@
-// Get the button:
 let mybutton = document.getElementById("back-to-top-button");
 
 // Track last scroll position for detecting scroll direction

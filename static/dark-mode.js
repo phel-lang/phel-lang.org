@@ -12,7 +12,6 @@
     }
   }
 
-  // Toggle dark mode
   function toggleDarkMode() {
     const isDark = document.documentElement.classList.contains('dark');
 

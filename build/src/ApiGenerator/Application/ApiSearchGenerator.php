@@ -85,7 +85,6 @@ final readonly class ApiSearchGenerator
             ];
         }
 
-        // Add documentation files to search index
         $documentationItems = $this->generateDocumentationSearchItems();
 
         return array_merge($result, $documentationItems);
@@ -100,7 +99,8 @@ final readonly class ApiSearchGenerator
     }
 
     /**
-     * Generate search index items for documentation files
+     * Only the top-level content/documentation/*.md pages are indexed here;
+     * nested sections come from Zola's own search_index.en.js.
      *
      * @return list<TDocSearchItem>
      */
@@ -125,7 +125,7 @@ final readonly class ApiSearchGenerator
             }
 
             $filePath = $documentationPath . '/' . $file;
-            $content = file_get_contents($filePath);
+            $content = (string) file_get_contents($filePath);
 
             // Extract title from frontmatter
             $title = pathinfo($file, PATHINFO_FILENAME);
@@ -134,7 +134,7 @@ final readonly class ApiSearchGenerator
             }
 
             // Remove frontmatter
-            $content = preg_replace('/\+\+\+.*?\+\+\+/s', '', $content);
+            $content = preg_replace('/\+\+\+.*?\+\+\+/s', '', $content) ?? $content;
 
             // Extract code blocks content (preserves important terms like SrcDirs, :pairs, etc.)
             preg_match_all('/```\w*\n?([\s\S]*?)```/', $content, $codeBlocks);
@@ -142,23 +142,22 @@ final readonly class ApiSearchGenerator
             if (!empty($codeBlocks[1])) {
                 $codeContent = implode(' ', $codeBlocks[1]);
                 // Clean code content: remove extra whitespace but preserve all characters
-                $codeContent = preg_replace('/\s+/', ' ', trim($codeContent));
+                $codeContent = preg_replace('/\s+/', ' ', trim($codeContent)) ?? trim($codeContent);
             }
 
             // Remove code blocks from main content
-            $content = preg_replace('/```[\s\S]*?```/', ' ', $content);
+            $content = preg_replace('/```[\s\S]*?```/', ' ', $content) ?? $content;
 
             // Remove markdown formatting but preserve colons (:) for keywords like :pairs, :keys
             // Remove: # (headers), ` (backticks), * (bold/italic), [] (links), () (links)
-            $content = preg_replace('/[#`*\[\]()]/', ' ', $content);
+            $content = preg_replace('/[#`*\[\]()]/', ' ', $content) ?? $content;
 
             // Clean up whitespace
-            $content = preg_replace('/\s+/', ' ', trim($content));
+            $content = preg_replace('/\s+/', ' ', trim($content)) ?? trim($content);
 
             // Combine code content with main content (code first for better matching)
             $content = trim($codeContent . ' ' . $content);
 
-            // Increase content length for search index to capture more content
             $content = substr($content, 0, 200);
 
             $result[] = [

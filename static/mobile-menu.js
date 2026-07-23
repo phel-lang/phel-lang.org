@@ -1,4 +1,3 @@
-// Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
   const menuToggle = document.getElementById('mobile-menu-toggle');
   const menuOverlay = document.getElementById('mobile-menu-overlay');

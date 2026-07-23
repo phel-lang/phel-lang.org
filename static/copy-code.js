@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
       wrapper.appendChild(pre);
     }
 
-    // Create copy button element
     const copyButton = document.createElement('button');
     copyButton.className = 'copy-code-button';
     copyButton.setAttribute('aria-label', 'Copy code to clipboard');
@@ -22,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
       </svg>
     `;
 
-    // Add button to wrapper
     pre.parentElement.appendChild(copyButton);
 
     // Handle copy
@@ -39,10 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
       try {
         await navigator.clipboard.writeText(text);
 
-        // Add copied state
         copyButton.classList.add('copied');
-
-        // Change icon to checkmark
         copyButton.innerHTML = `
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="20 6 9 17 4 12"></polyline>
