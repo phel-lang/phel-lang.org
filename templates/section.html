@@ -6,17 +6,11 @@
 <div class="page">
     {% block content %}
     <div class="page__content" style="max-width: 800px; margin: 0 auto; padding: 0 20px;">
+        {# The documentation landing curates its own navigation in the body
+           (Pick your path, New here? Start here, Browse by section), and the
+           full page tree is in the left sidebar. An auto-generated page list
+           here just duplicates both, so it is intentionally omitted. #}
         {{ section.content | safe }}
-        
-        {% if section.pages %}
-        <ul>
-            {% for page in section.pages %}
-            <li>
-                <a href="{{ page.path }}">{{ page.title }}</a>
-            </li>
-            {% endfor %}
-        </ul>
-        {% endif %}
     </div>
     {% endblock %}
 </div>
