@@ -34,6 +34,9 @@ cache/
 # Agent doc (generated from content/documentation/reference/agentic-coding.md)
 /static/agentic-coding.md
 
+# Full-content LLM bundle (generated from curated content pages)
+/static/llms-full.txt
+
 # CSS files (generated)
 /css/tailwind.entry.css
 /static/tailwind.css
