@@ -28,6 +28,10 @@ Phel is a functional Lisp that compiles to PHP: persistent data structures, immu
     <h3 class="section-page-card__title">Just the API</h3>
     <p class="section-page-card__desc">Skip the prose. Jump straight to every function in every namespace.</p>
   </a>
+  <a href="/documentation/reference/agent-setup/" class="section-page-card">
+    <h3 class="section-page-card__title">Coding with AI</h3>
+    <p class="section-page-card__desc">Pairing with Claude Code, Cursor, or Copilot? One command wires your agent to Phel.</p>
+  </a>
 </div>
 
 ## New here? Start here
