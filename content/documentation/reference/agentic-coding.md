@@ -9,6 +9,8 @@ Single-page reference for AI agents (Claude Code, Codex, Cursor, Copilot, Aider,
 
 Load this one if you can only load one doc into an agent's context.
 
+> **Want this installed as a skill in your tool?** [Agent Setup](/documentation/reference/agent-setup/) wires Claude Code, Cursor, Copilot, Codex, Gemini, or Aider to Phel with one `phel agent-install` command.
+
 <div class="agent-doc-cta">
   <a href="/agentic-coding.md" class="btn btn-primary btn-lg" download>
     <span aria-hidden="true">⤓</span> Download raw markdown
