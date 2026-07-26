@@ -291,6 +291,8 @@
   height: 20px;
   stroke: currentColor;
   stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   fill: none;
 } /* Meta pills strip (version, requires, license, source) */
 .phel-meta {
