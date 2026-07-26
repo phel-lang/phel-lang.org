@@ -9,14 +9,14 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
     <p class="homepage-hero-lede">Phel compiles a Lisp dialect to PHP. Macros, persistent data structures, and REPL-driven development on any PHP host.</p>
     <div class="homepage-hero-actions">
       <a href="#try-it-in-30-seconds" class="homepage-cta-button homepage-cta-primary">
-        <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+        <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5.2 18.6 12 7 18.8Z"></path></svg>
         Quick start
       </a>
       <a href="/documentation/" class="homepage-cta-button homepage-cta-secondary">
-        <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-        Read docs
+        <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H18a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H6.5A1.5 1.5 0 0 0 5 19.5z"></path><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19"></path><path d="M9 7.5h6"></path><path d="M9 11h4"></path></svg>
+        Documentation
       </a>
-      <a href="/practice/basic" class="homepage-hero-link">Practice exercises <span aria-hidden="true">&rarr;</span></a>
+      <a href="/practice/" class="homepage-hero-link">Practice <span aria-hidden="true">&rarr;</span></a>
     </div>
   </div>
   <div class="homepage-hero-aside">
