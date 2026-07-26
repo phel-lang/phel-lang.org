@@ -72,10 +72,11 @@
   filter: brightness(0) invert(1);
 }
 
-/* Dark blockquote */
+/* Dark blockquote: the dark tint is nearly the card surface, so the blue
+   left edge carries the distinction from `.dev-note` here. */
 .dark blockquote {
-  background: var(--color-dark-surface);
-  border-color: var(--color-dark-border);
+  background: var(--color-dark-blockquote-bg);
+  border-color: var(--color-dark-blockquote-border);
   color: var(--color-dark-text-secondary);
 }
 
@@ -104,20 +105,24 @@
 
 /* Dark tables */
 .dark table {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
   box-shadow: var(--shadow-dark-sm);
 }
 
 .dark th {
-  background: var(--color-dark-bg-secondary);
+  background: var(--color-dark-table-header);
   color: var(--color-dark-text-primary);
   border-bottom-color: var(--color-dark-border);
 }
 
+/* The subtle border is darker than the surface the rows now sit on, which
+   makes it vanish, so dark rows keep the standard border tone. */
 .dark td {
   border-bottom-color: var(--color-dark-border);
 }
 
-.dark tr:hover {
+.dark tbody tr:hover {
   background: var(--color-dark-surface-hover);
 }
 

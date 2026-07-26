@@ -312,10 +312,12 @@ img {
   border-radius: var(--radius-lg);
 }
 
-/* Modern Blockquote */
+/* Blockquotes read as note-style asides: tinted fill and a heavier left
+   edge. Without those they are the same white 1px card as `.dev-note`,
+   which makes a collapsed note and a note-quote indistinguishable. */
 blockquote {
-  background: var(--color-light-surface);
-  border: 1px solid var(--color-light-border);
+  background: var(--color-light-blockquote-bg);
+  border: 1px solid var(--color-light-blockquote-border);
   border-radius: var(--radius-lg);
   padding: var(--space-md) var(--space-lg);
   margin: var(--space-lg) 0;
@@ -398,52 +400,85 @@ button:focus-visible {
   border-radius: var(--radius-md);
 }
 
+/* Tables are framed like code blocks: 1px border, same radius, same
+   shadow, so a page that alternates the two reads as one system. */
 table {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   margin: 2em 0;
+  background: var(--color-light-surface);
+  border: 1px solid var(--color-light-border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
 }
 
-table th:not(:first-child),
-table td:not(:first-child) {
-  padding-left: 2em;
+/* border-collapse: separate keeps cell backgrounds square, so without
+   this the header fills past the rounded corners of the frame. */
+thead tr:first-child th:first-child {
+  border-top-left-radius: var(--radius-lg);
 }
 
-@media (max-width: 768px) {
-  table {
-    width: 100%;
-    max-width: 100%;
-    table-layout: fixed;
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    word-break: break-word;
-  }
+thead tr:first-child th:last-child {
+  border-top-right-radius: var(--radius-lg);
+}
+
+tbody tr:last-child td:first-child {
+  border-bottom-left-radius: var(--radius-lg);
+}
+
+tbody tr:last-child td:last-child {
+  border-bottom-right-radius: var(--radius-lg);
 }
 
 th {
-  background: var(--color-light-bg-secondary);
-  padding: 0.75em 1em;
+  background: var(--color-light-table-header);
+  padding: 0.7em 1.15em;
   text-align: left;
   font-weight: 600;
   color: var(--color-light-text-primary);
-  border-bottom: 2px solid var(--color-light-border);
+  border-bottom: 1px solid var(--color-light-border);
 }
 
 td {
-  padding: 0.75em 1em;
-  border-bottom: 1px solid var(--color-light-border);
+  padding: 0.7em 1.15em;
+  border-bottom: 1px solid var(--color-light-border-subtle);
 }
 
 tr:last-child td {
   border-bottom: none;
 }
 
-tr:hover {
-  background: var(--color-light-surface-hover);
+tbody tr {
   transition: background var(--duration-fast) var(--ease-out);
+}
+
+tbody tr:hover {
+  background: var(--color-light-surface-hover);
+}
+
+/* Cell code borrows the face of the code blocks but not their inline
+   chip, which would be noise in a table that is mostly code. */
+th code,
+td code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+/* Narrow screens scroll the table instead of breaking code mid-token:
+   prose still wraps, code keeps its line and the table overflows only as
+   far as the longest snippet needs. */
+@media (max-width: 768px) {
+  table {
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+  }
+
+  th code,
+  td code {
+    white-space: nowrap;
+  }
 }
 
 /* Smooth scrolling with offset for fixed header */
