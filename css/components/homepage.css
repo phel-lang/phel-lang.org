@@ -977,12 +977,6 @@
   transition: border-color var(--duration-fast) var(--ease-out);
 }
 
-/* On a tinted band the secondary grey is too close to the background,
-   so the cards sit on plain white like the code tabs above them. */
-.homepage-section--alt .faq-item {
-  background: var(--color-light-bg);
-}
-
 .faq-item[open] {
   border-color: var(--color-light-link);
 }
@@ -1110,6 +1104,12 @@
 .homepage-section {
   margin-top: var(--space-2xl);
   margin-bottom: var(--space-2xl);
+}
+
+/* The footer brings its own top spacing, so the last block on the page
+   must not stack a second gap on top of it. */
+.homepage-content > *:last-child {
+  margin-bottom: 0;
 }
 
 .homepage-section--alt {
