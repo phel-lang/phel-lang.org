@@ -24,10 +24,6 @@ Phel is a functional Lisp that compiles to PHP: persistent data structures, immu
     <h3 class="section-page-card__title">Coming from Clojure</h3>
     <p class="section-page-card__desc">Know Clojure? See what carries over and what changes on the PHP runtime.</p>
   </a>
-  <a href="/documentation/reference/api/" class="section-page-card">
-    <h3 class="section-page-card__title">Just the API</h3>
-    <p class="section-page-card__desc">Skip the prose. Jump straight to every function in every namespace.</p>
-  </a>
   <a href="/documentation/reference/agent-setup/" class="section-page-card">
     <h3 class="section-page-card__title">Coding with AI</h3>
     <p class="section-page-card__desc">Pairing with Claude Code, Cursor, or Copilot? One command wires your agent to Phel.</p>
@@ -69,11 +65,21 @@ Coming from another language? Jump to [Rosetta Stone: PHP to Phel](/documentatio
     <h3 class="section-page-card__title">PHP Interop</h3>
     <p class="section-page-card__desc">Call any PHP function, class, or Composer package directly from Phel.</p>
   </a>
+  <a href="/documentation/testing/" class="section-page-card">
+    <h3 class="section-page-card__title">Testing</h3>
+    <p class="section-page-card__desc">Write tests with deftest and is, mock dependencies, and run the suite with phel test.</p>
+  </a>
+  <a href="/documentation/deployment/" class="section-page-card">
+    <h3 class="section-page-card__title">Deployment</h3>
+    <p class="section-page-card__desc">Ship on plain PHP-FPM, or keep namespaces warm across requests with FrankenPHP and RoadRunner.</p>
+  </a>
   <a href="/documentation/reference/" class="section-page-card">
     <h3 class="section-page-card__title">Reference</h3>
     <p class="section-page-card__desc">Cheat sheet, agentic-coding guide, and the full auto-generated API for every namespace.</p>
   </a>
 </div>
+
+Also in the docs: [Why Phel?](/documentation/why-phel/), [Configuration](/documentation/configuration/), [Debugging](/documentation/debugging/), and [Performance](/documentation/performance/).
 
 ## Need help?
 

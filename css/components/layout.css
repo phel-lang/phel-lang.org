@@ -15,7 +15,9 @@
   padding: 0 var(--space-xl);
 }
 
-.one-column-layout:has(.homepage-content) {
+/* Pages without a sidebar that still need the full documentation width. */
+.one-column-layout:has(.homepage-content),
+.one-column-layout:has(.documentation-landing) {
   max-width: var(--container-wide);
 }
 

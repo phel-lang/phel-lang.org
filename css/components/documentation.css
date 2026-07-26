@@ -73,12 +73,43 @@
   background: none;
 }
 
-/* Section Page Card List */
+/* Section Page Card List
+   Steps 1 -> 2 -> 4 columns, never an in-between 3-up row. The steps key
+   off the wrapper width rather than the viewport, so the sidebar-less
+   landing pages get four cards while the narrower content column of a
+   page with a sidebar stays at two. */
+.documentation-landing,
+.homepage-section,
+.page-content {
+  container-type: inline-size;
+}
+
+/* Prose on the landing pages keeps the same reading measure as a
+   documentation page with a sidebar; only the card grids spread out
+   over the full width. */
+.documentation-landing > p,
+.documentation-landing > ol,
+.documentation-landing > ul {
+  max-width: var(--container-content);
+}
+
 .section-page-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-lg);
   margin-top: var(--space-xl);
+}
+
+@container (width >= 600px) {
+  .section-page-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@container (width >= 1180px) {
+  .section-page-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .section-page-card {

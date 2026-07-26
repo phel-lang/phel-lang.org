@@ -1106,6 +1106,12 @@
   margin-bottom: var(--space-2xl);
 }
 
+/* The footer brings its own top spacing, so the last block on the page
+   must not stack a second gap on top of it. */
+.homepage-content > *:last-child {
+  margin-bottom: 0;
+}
+
 .homepage-section--alt {
   position: relative;
   padding: var(--space-2xl) var(--space-xl);
