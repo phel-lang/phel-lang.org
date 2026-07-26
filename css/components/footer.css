@@ -60,6 +60,8 @@
   margin: 0;
 }
 
+/* Lives in the bottom bar, between the copyright and the badges, so the
+   brand column no longer sets the height of the whole link row. */
 .footer-social {
   display: flex;
   gap: var(--space-sm);
@@ -227,16 +229,6 @@
 
   .footer-description {
     max-width: 400px;
-  }
-
-  .footer-social a {
-    width: 40px;
-    height: 40px;
-  }
-
-  .footer-social svg {
-    width: 20px;
-    height: 20px;
   }
 
   .footer-links {
