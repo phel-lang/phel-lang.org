@@ -312,9 +312,9 @@ img {
   border-radius: var(--radius-lg);
 }
 
-/* Blockquotes read as note-style asides: tinted fill and a heavier left
-   edge. Without those they are the same white 1px card as `.dev-note`,
-   which makes a collapsed note and a note-quote indistinguishable. */
+/* Blockquotes read as note-style asides via their own tint. On the shared
+   surface they were the same white 1px card as `.dev-note`, which made a
+   collapsed note and a note-quote indistinguishable. */
 blockquote {
   background: var(--color-light-blockquote-bg);
   border: 1px solid var(--color-light-blockquote-border);
