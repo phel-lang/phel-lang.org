@@ -508,7 +508,11 @@ ul.api-namespace-grid > li::before {
   font-weight: 600;
   font-size: var(--text-sm);
   color: var(--color-light-text-secondary);
-  transition: all var(--duration-fast) var(--ease-out);
+  border-bottom: 0 solid var(--color-light-border);
+
+  /* Hover fill only, as in `.dev-note`: transitioning `all` animates the
+     open-state border up from 0 and flashes a line. */
+  transition: background-color var(--duration-fast) var(--ease-out);
 }
 
 .api-namespace-toc summary::-webkit-details-marker {
@@ -533,9 +537,13 @@ ul.api-namespace-grid > li::before {
   transform: rotate(90deg);
 }
 
+/* Single surface plus an open-state rule, as in `.dev-note`. */
+.api-namespace-toc[open] summary {
+  border-bottom-width: 1px;
+}
+
 .api-namespace-toc__content {
   padding: var(--space-md) var(--space-lg) var(--space-lg);
-  background: var(--color-light-bg-secondary);
 }
 
 ul.api-namespace-toc__list {
@@ -637,6 +645,7 @@ ul.api-namespace-toc__list > li::before {
 
 .dark .api-namespace-toc summary {
   color: var(--color-dark-text-secondary);
+  border-bottom-color: var(--color-dark-border);
 }
 
 .dark .api-namespace-toc summary:hover {
@@ -645,10 +654,6 @@ ul.api-namespace-toc__list > li::before {
 
 .dark .api-namespace-toc__chevron {
   color: var(--color-dark-text-muted);
-}
-
-.dark .api-namespace-toc__content {
-  background: var(--color-dark-bg);
 }
 
 /* API Footer Dark Mode */

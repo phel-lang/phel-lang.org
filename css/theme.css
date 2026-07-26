@@ -45,6 +45,11 @@
   --color-light-anchor: #bbb;
   --color-dark-anchor: #bccccc;
   
+  /* Table header: one step off the surface it sits on, lighter in dark
+     mode so the header row reads as raised rather than sunken. */
+  --color-light-table-header: #f8fafc;
+  --color-dark-table-header: #323a47;
+
   /* Blockquote */
   --color-light-blockquote-bg: #eff6ff;
   --color-light-blockquote-border: #afc4e7;

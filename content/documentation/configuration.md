@@ -34,8 +34,12 @@ Covers running, testing, formatting, building. Defaults handle the rest.
 
 ## Full reference
 
-<details>
-<summary><strong>All available options</strong></summary>
+<details class="dev-note">
+<summary>
+  <span class="dev-note__title">All available options</span>
+  <span class="dev-note__chevron">›</span>
+</summary>
+<div class="dev-note__content">
 
 ```php
 <?php
@@ -95,6 +99,7 @@ return (new \Phel\Config\PhelConfig())
 | `withExportTargetDirectory`            | Output dir for `phel export`. See [PHP Interop](/documentation/php-interop/#calling-phel-from-php).    |
 | `withBuildConfig` / `withExportConfig` | Tune the nested build/export config. Pass a configurator closure to adjust it in place, or a config object to replace it wholesale. |
 
+</div>
 </details>
 
 > **Note:** Old `setX()` setters are deprecated and emit notices. Use the `withX()` chain, the API is immutable.

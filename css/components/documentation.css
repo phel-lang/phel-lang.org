@@ -234,7 +234,11 @@ h6:hover .zola-anchor {
   font-weight: 600;
   font-size: var(--text-sm);
   color: var(--color-light-text-secondary);
-  transition: all var(--duration-fast) var(--ease-out);
+  border-bottom: 0 solid var(--color-light-border);
+
+  /* Only the hover fill animates. Transitioning `all` would animate the
+     open-state border from 0 to 1px as well, which flashes a line. */
+  transition: background-color var(--duration-fast) var(--ease-out);
 }
 
 .dev-note summary::-webkit-details-marker {
@@ -278,9 +282,15 @@ h6:hover .zola-anchor {
   color: white;
 }
 
+/* Header and body share the card surface, so the summary hover is the
+   only fill change in the component and reads as "this row is the
+   toggle". A rule separates them once the note is open. */
+.dev-note[open] summary {
+  border-bottom-width: 1px;
+}
+
 .dev-note__content {
   padding: var(--space-md) var(--space-lg) var(--space-lg);
-  background: var(--color-light-bg-secondary);
 }
 
 .dev-note__content > *:first-child { margin-top: 0; }
@@ -294,6 +304,7 @@ h6:hover .zola-anchor {
 
 .dark .dev-note summary {
   color: var(--color-dark-text-secondary);
+  border-bottom-color: var(--color-dark-border);
 }
 
 .dark .dev-note summary:hover {
@@ -304,9 +315,6 @@ h6:hover .zola-anchor {
   color: var(--color-dark-text-muted);
 }
 
-.dark .dev-note__content {
-  background: var(--color-dark-bg);
-}
 
 
 .dark .sidebar-section-header a,
