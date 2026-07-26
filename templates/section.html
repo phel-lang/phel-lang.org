@@ -1,19 +1,10 @@
-{% extends "base.html" %}
+{% extends "layouts/one-column-layout.html" %}
 
-{% block body %}
-{% include "header.html" %}
-
-<div class="page">
-    {% block content %}
-    <div class="page__content" style="max-width: 800px; margin: 0 auto; padding: 0 20px;">
-        {# The documentation landing curates its own navigation in the body
-           (Pick your path, New here? Start here, Browse by section), and the
-           full page tree is in the left sidebar. An auto-generated page list
-           here just duplicates both, so it is intentionally omitted. #}
-        {{ section.content | safe }}
-    </div>
-    {% endblock %}
+{% block content %}
+{# The documentation landing curates its own navigation in the body
+   (Pick your path, New here? Start here, Browse by section), so the
+   auto-generated page list other sections render is intentionally omitted. #}
+<div class="documentation-landing">
+    {{ section.content | safe }}
 </div>
-
-{% include "footer.html" %}
-{% endblock body %}
+{% endblock content %}
