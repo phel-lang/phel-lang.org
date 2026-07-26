@@ -60,26 +60,31 @@ function openSearchModal() {
         document.body.style.overflow = "hidden";
     }
 
-    // Focus the search input after a brief delay to ensure modal is visible
-    // Longer delay for iOS to account for position: fixed layout changes
+    // Focus synchronously: the modal is display:flex the moment aria-hidden
+    // flips, so the input is focusable right here. Deferring this dropped
+    // every character typed before the timeout fired, which is most of the
+    // query for anyone used to hitting "/" and typing straight away.
+    searchInput.focus();
+
+    // Mobile still needs a second attempt once the modal has been laid out,
+    // iOS especially, where the position:fixed scroll lock shifts things and
+    // the keyboard only appears after a click. Harmless when focus already
+    // landed above.
     const isMobile = window.innerWidth <= 768;
-    const delay = isIOS ? 300 : (isMobile ? 200 : 100);
-    
-    setTimeout(() => {
-        searchInput.focus();
-        // For mobile, ensure keyboard shows up
-        if (isMobile) {
+    if (isIOS || isMobile) {
+        setTimeout(() => {
+            searchInput.focus();
             searchInput.click();
-        }
-        
-        // iOS sometimes needs an additional nudge
-        if (isIOS) {
-            setTimeout(() => {
-                searchInput.focus();
-                searchInput.click();
-            }, 50);
-        }
-    }, delay);
+
+            // iOS sometimes needs an additional nudge
+            if (isIOS) {
+                setTimeout(() => {
+                    searchInput.focus();
+                    searchInput.click();
+                }, 50);
+            }
+        }, isIOS ? 300 : 200);
+    }
 }
 
 function closeSearchModal() {
