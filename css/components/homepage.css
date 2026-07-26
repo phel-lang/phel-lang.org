@@ -977,6 +977,12 @@
   transition: border-color var(--duration-fast) var(--ease-out);
 }
 
+/* On a tinted band the secondary grey is too close to the background,
+   so the cards sit on plain white like the code tabs above them. */
+.homepage-section--alt .faq-item {
+  background: var(--color-light-bg);
+}
+
 .faq-item[open] {
   border-color: var(--color-light-link);
 }
