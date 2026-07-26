@@ -42,8 +42,18 @@
   stroke-width: 2;
 }
 
-.code-block-wrapper:hover .copy-code-button {
+/* Focus has to reveal it too: the button is in the tab order, so hiding it
+   at opacity 0 while focused leaves a keyboard user on a target they cannot
+   see. Touch devices never hover, so there it stays visible. */
+.code-block-wrapper:hover .copy-code-button,
+.copy-code-button:focus-visible {
   opacity: 1;
+}
+
+@media (hover: none) {
+  .copy-code-button {
+    opacity: 1;
+  }
 }
 
 .copy-code-button:hover {
