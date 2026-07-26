@@ -159,8 +159,12 @@ Create `.vscode/launch.json` in your Phel project:
 
 > **Note:** Cache dir auto-detected from `phel-config.php`.
 
-<details>
-<summary><strong>Alternative: Using PHP Debug Extension</strong></summary>
+<details class="dev-note">
+<summary>
+  <span class="dev-note__title">Alternative: Using PHP Debug Extension</span>
+  <span class="dev-note__chevron">›</span>
+</summary>
+<div class="dev-note__content">
 
 For PHP-level debugging (or no Phel extension), use the [PHP Debug extension](https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug):
 
@@ -183,6 +187,7 @@ For PHP-level debugging (or no Phel extension), use the [PHP Debug extension](ht
 
 Set breakpoints in compiled PHP files (in the temp dir). Use `withKeepGeneratedTempFiles(true)` in `phel-config.php` to preserve them.
 
+</div>
 </details>
 
 ### PHPStorm
