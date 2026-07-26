@@ -95,7 +95,7 @@
 }
 
 /* Footer Links Section
-   Four categories that sit on a single row from tablet up, two per row
+   Three categories that sit on a single row from tablet up, two per row
    on phones. */
 .footer-links {
   display: grid;
@@ -237,7 +237,7 @@
   }
 
   .footer-links {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: var(--space-lg);
   }
 
