@@ -274,9 +274,12 @@
     padding: var(--space-3xl) 0 var(--space-lg);
   }
 
-  /* Brand on the left, the three link columns on the right. */
+  /* Brand on the left, the three link columns on the right. The brand
+     tracks its description closely so little of the column sits unused,
+     and never goes under the 400px the description is capped at, which
+     would cost it an extra wrapped line. */
   .footer-container {
-    grid-template-columns: minmax(0, 1.5fr) minmax(0, 2fr);
+    grid-template-columns: minmax(400px, 1.2fr) minmax(0, 2fr);
     gap: var(--space-3xl);
   }
 
