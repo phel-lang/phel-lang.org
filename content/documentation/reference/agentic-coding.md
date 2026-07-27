@@ -59,6 +59,24 @@ vendor/bin/phel format <file>      # rewrite formatting
 vendor/bin/phel doctor             # env + extension check
 ```
 
+### Reliable multi-line evaluation
+
+Pass a quoted heredoc to `eval -`:
+
+```bash
+vendor/bin/phel eval - <<'PHEL'
+(ns app)
+(println (+ 40 2))
+PHEL
+```
+
+Prefer this pattern because:
+
+- **No quoting issues:** Everything between `<<'PHEL'` and `PHEL` is treated as literal input.
+- **Consistent pattern:** One approach works for all evaluations, from simple to complex.
+- **Multi-line friendly:** Code keeps its natural, readable formatting.
+- **Easy to extend:** Add more forms without changing the command syntax.
+
 ## Installed agent skills
 
 Phel ships skill adapters in `vendor/phel-lang/phel-lang/.agents/`. Install for the active agent:
