@@ -212,6 +212,22 @@ echo '(map inc [1 2 3])' | vendor/bin/phel eval -
 # => @[2 3 4]
 ```
 
+For reliable multi-line evaluation, pass a quoted heredoc to stdin:
+
+```bash
+vendor/bin/phel eval - <<'PHEL'
+(ns app)
+(println (+ 40 2))
+PHEL
+```
+
+Prefer this pattern because:
+
+- **No quoting issues:** Everything between `<<'PHEL'` and `PHEL` is treated as literal input.
+- **Consistent pattern:** One approach works for all evaluations, from simple to complex.
+- **Multi-line friendly:** Code keeps its natural, readable formatting.
+- **Easy to extend:** Add more forms without changing the command syntax.
+
 ## Compile to PHP
 
 Emit the PHP that Phel generates for a snippet, file, or stdin, without evaluating it. Handy for understanding the compiler or debugging interop.

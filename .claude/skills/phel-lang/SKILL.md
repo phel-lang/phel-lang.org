@@ -13,12 +13,25 @@ Lisp dialect compiling to PHP. Persistent data structures. PHP interop via `php/
 Any Phel snippet added to docs/blog/cookbook MUST be runtime-checked. Examples that "look right" silently rot. Two ways:
 
 ```bash
-# One-shot eval
+# Simple one-shot eval
 ./vendor/bin/phel run -e '(println (map inc [1 2 3]))'
+
+# Reliable multi-line one-shot eval with heredoc
+./vendor/bin/phel eval - <<'PHEL'
+(ns app)
+(println (+ 40 2))
+PHEL
 
 # REPL session for exploration
 ./vendor/bin/phel repl
 ```
+
+Prefer the quoted heredoc because:
+
+- **No quoting issues:** Everything between `<<'PHEL'` and `PHEL` is treated as literal input.
+- **Consistent pattern:** One approach works for all evaluations, from simple to complex.
+- **Multi-line friendly:** Code keeps its natural, readable formatting.
+- **Easy to extend:** Add more forms without changing the command syntax.
 
 Write the snippet, run it, paste real output. If output differs from what you assumed, fix the doc - not the runtime.
 
