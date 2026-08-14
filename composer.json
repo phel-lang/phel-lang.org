@@ -47,7 +47,10 @@
             "php build/generate-error-reference.php"
         ],
         "test": "./vendor/bin/phpunit",
-        "test:snippets": "php build/run-doc-snippets.php",
+        "test:snippets": [
+            "Composer\\Config::disableProcessTimeout",
+            "php build/run-doc-snippets.php"
+        ],
         "phpstan": "phpstan analyse",
         "post-update-cmd": [
             "php build/update-phel-version.php"
