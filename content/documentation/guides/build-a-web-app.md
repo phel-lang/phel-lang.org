@@ -41,7 +41,7 @@ The guestbook needs somewhere to keep messages. An `atom` holds a vector and
 (add-message! "Alan" "Hello from Phel")
 
 (deref messages)
-# => [{:name "Ada", :text "First!"} {:name "Alan", :text "Hello from Phel"}]
+; => [{:name "Ada", :text "First!"} {:name "Alan", :text "Hello from Phel"}]
 ```
 
 `messages` is the whole database for now. Section 5 swaps it for a file.
@@ -74,7 +74,7 @@ tree to `html` once:
        [:button "Sign"]]]]))
 
 (php/str_contains (page [{:name "Ada" :text "Hi"}]) "<strong>Ada</strong>")
-# => true
+; => true
 ```
 
 `html` auto-escapes every value, so a message of `<script>` renders as harmless
@@ -104,7 +104,7 @@ directly:
 (let [req (http/request-from-map
             {:method "POST" :uri "/" :parsed-body {:name "Ada" :message "Hi"}})]
   [(get (sign req) :status) (deref messages)])
-# => [303 [{:name "Ada", :text "Hi"}]]
+; => [303 [{:name "Ada", :text "Hi"}]]
 ```
 
 The handler returns a response struct; `sign` sets `:status 303` and a
@@ -137,12 +137,12 @@ one `request -> response` function, the whole app:
 
 (def app (router/handler (router/router routes)))
 
-# POST a message, then GET the list, all in memory
+; POST a message, then GET the list, all in memory
 (let [post-req (http/request-from-map {:method "POST" :uri "/" :parsed-body {:name "Ada" :message "Hi"}})
       get-req  (http/request-from-map {:method "GET" :uri "/"})]
   (app post-req)
   (get-in (app get-req) [:body]))
-# => "messages: 1"
+; => "messages: 1"
 ```
 
 `app` is everything: routing, dispatch, your handlers. A `GET /missing` would
@@ -197,13 +197,13 @@ as is:
 
 (def app (router/handler (router/router routes)))
 
-# Quick in-memory check (delete before serving): post a message, render the
-# list, confirm the rendered page actually shows it.
+; Quick in-memory check (delete before serving): post a message, render the
+; list, confirm the rendered page actually shows it.
 (let [post (http/request-from-map {:method "POST" :uri "/" :parsed-body {:name "Ada" :message "Hello"}})
       _    (app post)
       body (get (app (http/request-from-map {:method "GET" :uri "/"})) :body)]
   (php/str_contains body "<strong>Ada</strong>: Hello"))
-# => true
+; => true
 ```
 
 The check posts a message and confirms the rendered HTML contains it, proving the

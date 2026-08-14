@@ -138,9 +138,9 @@ The vector-math primitives that power search are available for custom pipelines:
 (ns my-app.embed-demo
   (:require phel.ai :as ai))
 
-(println (ai/dot-product [1 2 3] [4 5 6]))    # => 32
-(println (ai/magnitude [3 4]))                # => 5
-(println (ai/cosine-similarity [1 0] [1 0]))  # => 1
+(println (ai/dot-product [1 2 3] [4 5 6]))    ; => 32
+(println (ai/magnitude [3 4]))                ; => 5
+(println (ai/cosine-similarity [1 0] [1 0]))  ; => 1
 ```
 
 `nearest` ranks a query embedding against an index of `{:text "..." :embedding [...]}` maps and returns the top matches by descending similarity, the same shape `search` produces.

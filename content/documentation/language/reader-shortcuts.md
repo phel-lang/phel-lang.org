@@ -43,13 +43,13 @@ Quasiquote is like quote but allows selective evaluation inside it: unquote (`~`
 (let [xs [2 3 4]] `(1 ~@xs 5)) ; => (1 2 3 4 5) ~@ splices a sequence
 ```
 
-> **Deprecated:** the `,` (unquote) and `,@` (unquote-splicing) reader macros. Use `~` and `~@`. Inside a quasiquote `,` is plain whitespace.
+> **Removed in 0.50:** the `,` (unquote) and `,@` (unquote-splicing) reader macros. Use `~` and `~@`. `,` is now plain whitespace, so `` `(f ,x) `` still parses and quietly *quotes* `x` instead of unquoting it: no error, just a wrong expansion.
 
 ### Auto-gensym `name#`
 
 Inside a quasiquote, a symbol ending in `#` expands to a fresh, unique name, and the same `name#` maps to that one generated name throughout the template: hygienic macros without an explicit `gensym`. See [Macros](/documentation/language/macros/#hygiene-and-gensym) for the full story.
 
-> **Deprecated:** `name$` as an auto-gensym suffix. Use `name#`.
+> **Removed in 0.50:** `name$` as an auto-gensym suffix. Use `name#`.
 
 ## Reader conditionals `#?()` and `#?@()`
 

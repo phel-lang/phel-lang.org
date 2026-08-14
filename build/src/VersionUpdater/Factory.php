@@ -24,7 +24,7 @@ final class Factory extends AbstractFactory
 
     private function getPhelConsoleFacade(): ConsoleFacadeInterface
     {
-        return $this->getProvidedDependency(DependencyProvider::FACADE_PHEL_CONSOLE);
+        return $this->getProvidedDependency(Provider::FACADE_PHEL_CONSOLE);
     }
 
     private function getConfigFileLocation(): string

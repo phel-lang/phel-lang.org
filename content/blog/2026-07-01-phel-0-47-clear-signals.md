@@ -22,7 +22,7 @@ The language server now provides signature help for plain Phel calls, not only `
 
 ```phel
 (map inc [1 2 3])
-# => [2 3 4]
+; => [2 3 4]
 ```
 
 ## A REPL that remembers
@@ -31,8 +31,8 @@ nREPL eval responses now carry per-session `*1`, `*2`, and `*3` value history. C
 
 <!-- phel-test: skip -->
 ```phel
-(+ 1 2)     # => 3
-(* *1 10)   # => 30, reusing the last result
+(+ 1 2)     ; => 3
+(* *1 10)   ; => 30, reusing the last result
 ```
 
 ## Examples in (doc)
@@ -67,7 +67,7 @@ Nothing here changes how your code compiles:
   (str "Hello, " name "!"))
 
 (greet "Phel")
-# => "Hello, Phel!"
+; => "Hello, Phel!"
 ```
 
 For the full list, see the [0.47 release notes](/releases/0-47-clear-signals/). Upgrade, clear the cache, and let the tooling keep pace with your REPL.

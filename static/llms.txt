@@ -17,7 +17,7 @@ If you only fetch one URL, fetch the agent reference:
 
 ## Language
 
-- [Cheat Sheet](https://phel-lang.org/documentation/reference/cheat-sheet/): full filterable core surface.
+- [Cheat Sheet](https://phel-lang.org/documentation/reference/cheat-sheet/): full core surface.
 - [Basic Types](https://phel-lang.org/documentation/language/basic-types/)
 - [Data Structures](https://phel-lang.org/documentation/language/data-structures/)
 - [Functions and Recursion](https://phel-lang.org/documentation/language/functions-and-recursion/)

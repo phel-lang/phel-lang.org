@@ -399,13 +399,13 @@ Whitespace-separated values in `#{}`, or built with `hash-set`:
 
 ## Queues
 
-Persistent FIFO queues with amortised O(1) `push`, `peek`, `pop`:
+Persistent FIFO queues with amortised O(1) `conj`, `peek`, `pop`:
 
 ```phel
 (def q (queue 1 2 3))
 (queue? q)        ; => true
 (peek q)          ; => 1
-(push q 4)        ; => <-(1 2 3 4)-<
+(conj q 4)        ; => <-(1 2 3 4)-<
 (pop q)           ; => <-(2 3)-<
 ```
 
@@ -493,7 +493,7 @@ Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some det
 
 ## Anonymous function shorthand
 
-`#(...)` defines an inline anonymous function, using `%`/`%1`/`%2`/`%&` for positional arguments: `#(* % 2)` is the same as `(fn [x] (* x 2))`. Full rules and the deprecated `|(...)` form live in [Functions and Recursion](/documentation/language/functions-and-recursion/#anonymous-function-fn).
+`#(...)` defines an inline anonymous function, using `%`/`%1`/`%2`/`%&` for positional arguments: `#(* % 2)` is the same as `(fn [x] (* x 2))`. Full rules, and the `|(...)` form removed in 0.50, live in [Functions and Recursion](/documentation/language/functions-and-recursion/#anonymous-function-fn).
 
 ## Deref shorthand
 

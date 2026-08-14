@@ -24,7 +24,16 @@
   border: 1px solid transparent;
 }
 
-/* Button variants */
+/* Prose links get an underline on hover; buttons keep their flat surface. */
+a.btn:hover {
+  text-decoration: none;
+}
+
+/* Button variants.
+   Buttons that are links must repeat their color on every state: the global
+   `a:hover` rules are more specific than a bare `.btn-*` class and would
+   otherwise repaint the label in the link color, on top of a link-colored
+   background. */
 .btn-primary {
   background: var(--color-light-link);
   color: white;
@@ -32,8 +41,9 @@
 }
 
 .btn-primary:hover {
-  background: var(--color-light-link-hover, #5a5fcf);
-  border-color: var(--color-light-link-hover, #5a5fcf);
+  background: var(--color-light-link-hover);
+  border-color: var(--color-light-link-hover);
+  color: white;
 }
 
 .btn-secondary {
@@ -104,8 +114,9 @@
 }
 
 .dark .btn-primary:hover {
-  background: #c2acf5;
-  border-color: #c2acf5;
+  background: var(--color-dark-text-accent-hover);
+  border-color: var(--color-dark-text-accent-hover);
+  color: var(--color-dark-bg);
 }
 
 .dark .btn-secondary {

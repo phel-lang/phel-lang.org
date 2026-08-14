@@ -59,6 +59,6 @@ final class Factory extends AbstractFactory
 
     private function getPhelApiFacade(): ApiFacadeInterface
     {
-        return $this->getProvidedDependency(DependencyProvider::FACADE_PHEL_API);
+        return $this->getProvidedDependency(Provider::FACADE_PHEL_API);
     }
 }

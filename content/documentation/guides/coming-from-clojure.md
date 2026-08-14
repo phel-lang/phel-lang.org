@@ -161,6 +161,7 @@ Same `.` separator as Clojure. PHP class FQNs in `:use` use `.`:
             [clojure.string :as str]))
 ```
 
+<!-- phel-test: skip -->
 ```phel
 ;; Phel
 (ns myapp.users
@@ -171,7 +172,7 @@ Differences:
 - No vector wrap per require clause
 - `:use` for PHP classes; `:require` for Phel modules
 - `:refer` same: `(:require myapp.db :refer [query])`
-- Backslash form `(ns myapp.db)` still parses for legacy code, warns under `PHEL_WARN_DEPRECATIONS=1`
+- Backslash form `(ns myapp\db)` still parses for legacy code, warns under `PHEL_WARN_DEPRECATIONS=1`
 
 See [Namespaces](/documentation/language/namespaces).
 
@@ -328,7 +329,7 @@ Use Composer. `composer.json` replaces `deps.edn`:
 ```json
 {
   "require": {
-    "phel-lang/phel-lang": "^0.49",
+    "phel-lang/phel-lang": "^0.50",
     "php": ">=8.4"
   }
 }

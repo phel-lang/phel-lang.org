@@ -1,11 +1,8 @@
 +++
 title = "Cheat Sheet"
 weight = 1
-description = "Filterable one-page reference of Phel syntax, core functions, and idioms."
+description = "One-page reference of Phel syntax, core functions, and idioms."
 aliases = ["/documentation/cheat-sheet"]
-
-[extra]
-scripts = ["cheat-sheet-filter.js"]
 +++
 
 Quick reference for Phel syntax and core functions.

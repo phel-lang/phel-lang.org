@@ -209,7 +209,7 @@ vendor/bin/phel eval '(+ 1 2 3)'
 # => 6
 
 echo '(map inc [1 2 3])' | vendor/bin/phel eval -
-# => @[2 3 4]
+# => (2 3 4)
 ```
 
 For reliable multi-line evaluation, pass a quoted heredoc to stdin:
