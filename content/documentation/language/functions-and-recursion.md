@@ -64,7 +64,7 @@ Shorter form omits the parameter list, naming params by position:
 (filter #(> % 3) [1 5 2 8])   ; => @[5 8]
 ```
 
-> **Legacy:** `|(...)` with `$` / `$1` / `$&` still reads. Prefer `#(...)` with `%` (matches Clojure).
+> **Removed in 0.50:** `|(...)` with `$` / `$1` / `$&`. Use `#(...)` with `%` (matches Clojure).
 
 {% php_note() %}
 `#()` short-form is like PHP arrow functions:

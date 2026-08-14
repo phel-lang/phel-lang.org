@@ -56,7 +56,7 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
      (filter odd?)
      (map #(* % %))
      (reduce +))
-# => 165
+; => 165
 ```
 
 </div>
@@ -81,15 +81,15 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 
 ```phel
 (php/strlen "hello, phel")
-# => 11
+; => 11
 
 (php/array_sum
   (to-php-array [1 2 3 4]))
-# => 10
+; => 10
 
 (php/-> (php/new \DateTime)
         (format "Y"))
-# => "2026"
+; => "2026"
 ```
 
 </div>

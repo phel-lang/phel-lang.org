@@ -208,6 +208,31 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 </div>
 </details>
 
+## Upgrading to 0.50
+
+```bash
+composer require phel-lang/phel-lang:^0.50
+./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
+```
+
+Always clear the cache after upgrading: compiled PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects too.
+
+0.50 is the clean-up release before 1.0: everything that had been printing a deprecation notice is now gone. Run `vendor/bin/phel run --warn-deprecations src/main.phel` on 0.49 first; a clean run means the upgrade is just a version bump.
+
+Breaking changes in 0.50:
+
+- Long-deprecated core aliases are removed: `push` → `conj`, `put` → `assoc`, `unset` → `dissoc`, `put-in` → `assoc-in`, `unset-in` → `dissoc-in`, `values` → `vals`, `function?` → `fn?`, `hash-map?` → `map?`, `id` → `identical?`, `str-contains?` → `phel.string/contains?`, `set-meta!` → `with-meta`.
+- Deprecated reader syntax is removed: `#| |#` and bare `#` comments (use `;` / `;;`), `|(...)` short functions (use `#(...)` with `%`), `,` / `,@` unquote (use `~` / `~@`), and `foo$` auto-gensym (use `foo#`).
+- **`,` is the one to watch.** The others stop parsing, so the compiler finds them; `,` is now plain whitespace, so `` `(f ,x) `` still parses and quietly quotes `x` instead of unquoting it. Sweep anything that generates Phel, not just `.phel` files: `grep -rnE ",[A-Za-z0-9_(\[{'\`~@:*+-]" --include='*.phel' src/ tests/`.
+- Lazy sequences print as `(1 2 3)` rather than `@[1 2 3]`, so `@` again means only the deref reader macro. Vectors still print as `@[1 2 3]`.
+- Core functions declare real arities, so a wrong argument count raises an arity error instead of being ignored, and `arity` reports `0` for the multi-arity ones.
+- `(max)` and `(min)` with no arguments are rejected at compile time (PHEL002) instead of throwing at runtime.
+- An unresolved `(:require ...)` fails at require time rather than when the missing name is first used.
+- Requires `gacela-project/gacela` `^2.0` and `symfony/console` `^7.3|^8.0`. Gacela 2 resolves module classes by filename suffix, so a `DependencyProvider` must be renamed to `Provider`.
+- CLI: `phel index --out` is now `--output` (`-o`), and `phel config --json` is now `--format=json` (`-f json`).
+
+New in 0.50: `phel.bench` and a `phel bench` command for benchmarks with baseline storage and a tolerance gate; `phel balance` to find (and `--fix`) unbalanced brackets; Clojure-style PHP interop for value members, dynamic calls, enum cases and `set!`; LSP go-to-definition for lexical locals, honouring shadowing and destructuring; and completion plus hover for PHP superglobals. See the [0.50 release notes](/releases/0-50-the-last-zero/).
+
 ## Upgrading to 0.49
 
 ```bash

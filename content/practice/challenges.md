@@ -75,7 +75,7 @@ Hint: `loop`/`recur` with an accumulator.
       (slice nums 0 n)
       (let [a (get nums (- (count nums) 2))
             b (get nums (- (count nums) 1))]
-        (recur (push nums (+ a b)))))))
+        (recur (conj nums (+ a b)))))))
 ```
 Each new number is the sum of the two before it. We grow a vector with `loop`/`recur` and `slice` at the end so `(fib 1)` and `(fib 0)` behave.
 

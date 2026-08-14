@@ -68,7 +68,7 @@ None of this touches the language: your namespaces, macros, and structs compile 
   (str "Hello, " name "!"))
 
 (greet "Phel")
-# => "Hello, Phel!"
+; => "Hello, Phel!"
 ```
 
 For the full list, see the [0.46 release notes](/releases/0-46-native-path/). Upgrade, run `phel doctor`, and let the tooling catch the problems you used to find the hard way.

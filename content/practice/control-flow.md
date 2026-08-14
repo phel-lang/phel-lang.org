@@ -138,7 +138,7 @@ Use `loop` and `recur` to build a vector of numbers from `1` to `10`.
 (loop [v [] i 1]
   (if (> i 10)
     v
-    (recur (push v i) (inc i))))
+    (recur (conj v i) (inc i))))
 ; => [1 2 3 4 5 6 7 8 9 10]
 ```
 `loop` defines starting bindings, `recur` jumps back with new values. This is Phel's stack-safe way to iterate without mutable variables.
