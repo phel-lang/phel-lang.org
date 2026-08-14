@@ -605,6 +605,7 @@ function showResults(searchIndices) {
                     if (doc.anchor !== undefined) cleanDoc.anchor = doc.anchor;
                     if (doc.path !== undefined) cleanDoc.path = doc.path;
                     if (doc.namespace !== undefined) cleanDoc.namespace = doc.namespace;
+                    if (doc.deprecated !== undefined) cleanDoc.deprecated = doc.deprecated;
 
                     return {
                         ref: result.ref,
@@ -739,11 +740,36 @@ function createMenuItem(result, index, filter) {
     searchResultsItems.appendChild(item);
 }
 
+// The deprecation reason comes from the indexed `:deprecated` metadata and
+// lands in an attribute, so it is escaped rather than interpolated raw.
+function escapeAttribute(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+}
+
+// Present only on entries carrying the marker. Shown under every filter: that
+// a function is on its way out matters more than which tab you are on.
+function deprecatedBadge(item) {
+    if (!item.deprecated) {
+        return '';
+    }
+
+    const reason = item.deprecated === 'deprecated'
+        ? 'Deprecated'
+        : `Deprecated: ${item.deprecated}`;
+
+    return `<span class="search-results__badge search-results__badge--deprecated"`
+        + ` title="${escapeAttribute(reason)}">Deprecated</span>`;
+}
+
 function formatSearchResultItem(item, filter) {
     // Determine if we should show the badge
     const showDocsBadge = filter !== 'docs';
     const showApiBadge = filter !== 'api';
-    
+
     if (item.type === "documentation") {
         const badge = showDocsBadge 
             ? `<span class="search-results__badge search-results__badge--docs">Docs</span>` 
@@ -768,8 +794,8 @@ function formatSearchResultItem(item, filter) {
             + `<span class="desc">${item.desc || ''}</span>`
             + `</div></a>`;
     } else {
-        const badge = showApiBadge 
-            ? `<span class="search-results__badge search-results__badge--api">API</span>` 
+        const badge = showApiBadge
+            ? `<span class="search-results__badge search-results__badge--api">API</span>`
             : '';
         const apiHref = item.path || `/documentation/reference/api/#${item.anchor || ''}`;
         return `<a class="search-results__link" href="${apiHref}">`
@@ -779,6 +805,7 @@ function formatSearchResultItem(item, filter) {
             + `<span class="fn-name">${item.name || ''}</span> `
             + `<small class="fn-signatures">${item.signatures || ''}</small>`
             + `</div>`
+            + deprecatedBadge(item)
             + badge
             + `</div>`
             + `<span class="desc">${item.desc || ''}</span>`

@@ -18,6 +18,9 @@ use RuntimeException;
  * signatures, a documentation entry describes a whole markdown page and
  * carries a prose excerpt. They are kept as separate shapes on purpose.
  *
+ * `deprecated` is present only on the entries that carry the marker, so the
+ * index does not grow by a dead key on all ~960 functions.
+ *
  * @psalm-type TApiSearchItem = array{
  *     id: string,
  *     name: string,
@@ -27,6 +30,7 @@ use RuntimeException;
  *     namespace: string,
  *     path: string,
  *     type: 'api',
+ *     deprecated?: string,
  * }
  * @psalm-type TDocSearchItem = array{
  *     id: string,
@@ -73,7 +77,7 @@ final readonly class ApiSearchGenerator
                 ? sprintf('/documentation/reference/api/%s/#%s', $namespaceSlug, $anchor)
                 : '#' . $anchor;
 
-            $result[] = [
+            $item = [
                 'id' => 'api_' . $fn->name,
                 'name' => $fn->nameWithNamespace(),
                 'signatures' => $fn->signatures,
@@ -83,11 +87,36 @@ final readonly class ApiSearchGenerator
                 'path' => $path,
                 'type' => 'api',
             ];
+
+            $deprecated = $this->deprecationReason($fn->meta);
+            if ($deprecated !== '') {
+                $item['deprecated'] = $deprecated;
+            }
+
+            $result[] = $item;
         }
 
         $documentationItems = $this->generateDocumentationSearchItems();
 
         return array_merge($result, $documentationItems);
+    }
+
+    /**
+     * Reads the `:deprecated` marker the same way Phel's own linter does
+     * (`DiscouragedVarRule`): the recorded reason when one is given, the bare
+     * word for a plain `^:deprecated`, and `''` for a current definition.
+     *
+     * @param array<string, mixed> $meta
+     */
+    private function deprecationReason(array $meta): string
+    {
+        $value = $meta['deprecated'] ?? null;
+
+        if (is_string($value) && $value !== '') {
+            return $value;
+        }
+
+        return $value === true ? 'deprecated' : '';
     }
 
     /**

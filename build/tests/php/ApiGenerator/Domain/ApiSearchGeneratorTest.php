@@ -153,4 +153,60 @@ final class ApiSearchGeneratorTest extends TestCase
         self::assertSame(['(conj coll x)', '(conj coll x & xs)'], $apiItems[0]['signatures']);
         self::assertSame('/documentation/reference/api/core/#conj', $apiItems[0]['path']);
     }
+
+    public function test_current_function_carries_no_deprecated_key(): void
+    {
+        $apiFacade = $this->createStub(ApiFacadeInterface::class);
+        $apiFacade->method('getPhelFunctions')
+            ->willReturn([
+                PhelFunction::fromArray([
+                    'name' => 'conj',
+                    'desc' => 'Adds elements to a collection.',
+                    'namespace' => 'core',
+                    'meta' => ['doc' => 'Adds elements to a collection.'],
+                ]),
+            ]);
+
+        $apiItems = $this->apiOnly($this->generator($apiFacade)->generateSearchIndex());
+
+        // Absent rather than empty: the key would otherwise be dead weight on
+        // every one of the ~960 indexed functions.
+        self::assertArrayNotHasKey('deprecated', $apiItems[0]);
+    }
+
+    public function test_deprecated_metadata_records_its_reason(): void
+    {
+        $apiFacade = $this->createStub(ApiFacadeInterface::class);
+        $apiFacade->method('getPhelFunctions')
+            ->willReturn([
+                PhelFunction::fromArray([
+                    'name' => 'push',
+                    'desc' => 'Adds elements to a collection.',
+                    'namespace' => 'core',
+                    'meta' => ['deprecated' => 'use conj instead'],
+                ]),
+            ]);
+
+        $apiItems = $this->apiOnly($this->generator($apiFacade)->generateSearchIndex());
+
+        self::assertSame('use conj instead', $apiItems[0]['deprecated']);
+    }
+
+    public function test_bare_deprecated_marker_falls_back_to_the_word(): void
+    {
+        $apiFacade = $this->createStub(ApiFacadeInterface::class);
+        $apiFacade->method('getPhelFunctions')
+            ->willReturn([
+                PhelFunction::fromArray([
+                    'name' => 'values',
+                    'desc' => 'Returns the values of a map.',
+                    'namespace' => 'core',
+                    'meta' => ['deprecated' => true],
+                ]),
+            ]);
+
+        $apiItems = $this->apiOnly($this->generator($apiFacade)->generateSearchIndex());
+
+        self::assertSame('deprecated', $apiItems[0]['deprecated']);
+    }
 }

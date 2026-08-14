@@ -420,6 +420,12 @@
   color: white;
 }
 
+/* Sits next to the API badge, so it reads as caution rather than category. */
+.search-results__badge--deprecated {
+  background: var(--color-light-deprecated);
+  color: white;
+}
+
 .search-results__item .fn-name {
   color: var(--color-light-link);
   font-weight: 600;
@@ -673,6 +679,11 @@
 
 .dark .search-results__badge--docs {
   background: var(--color-dark-link);
+  color: var(--color-dark-bg);
+}
+
+.dark .search-results__badge--deprecated {
+  background: var(--color-dark-deprecated);
   color: var(--color-dark-bg);
 }
 
