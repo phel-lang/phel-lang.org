@@ -13,6 +13,7 @@
   --color-light-text-muted: #64748b;
   --color-light-text-accent: #915bd5;
   --color-light-link: #512da8;
+  --color-light-link-hover: #6d3fc2;
   --color-light-border: #e2e8f0;
   --color-light-border-subtle: #f1f5f9;
   
@@ -23,6 +24,7 @@
   --color-dark-text-secondary: #cbd5e1;
   --color-dark-text-muted: #94a3b8;
   --color-dark-text-accent: #bfa4ff;
+  --color-dark-text-accent-hover: #c2acf5;
   --color-dark-link: #d1c7e5;
   --color-dark-border: #3a3a3a;
   --color-dark-border-subtle: #2a2a2a;

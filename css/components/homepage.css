@@ -270,8 +270,8 @@
 }
 
 .homepage-cta-primary:hover {
-  background: #6d3fc2;
-  border-color: #6d3fc2;
+  background: var(--color-light-link-hover);
+  border-color: var(--color-light-link-hover);
   color: white;
 }
 
@@ -508,8 +508,8 @@
 }
 
 .dark .homepage-cta-primary:hover {
-  background: #c2acf5;
-  border-color: #c2acf5;
+  background: var(--color-dark-text-accent-hover);
+  border-color: var(--color-dark-text-accent-hover);
   color: var(--color-dark-bg);
 }
 
