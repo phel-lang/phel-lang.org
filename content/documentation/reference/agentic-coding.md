@@ -326,7 +326,7 @@ In the Phel install:
 
 On this site:
 
-- [Cheat Sheet](/documentation/reference/cheat-sheet): filterable forms and functions.
+- [Cheat Sheet](/documentation/reference/cheat-sheet): core forms and functions.
 - [Language section](/documentation/language/): types, functions, control flow, macros, interfaces, namespaces, destructuring, recursion.
 - [PHP Interop](/documentation/php-interop): every interop form.
 - [Cookbook](/documentation/guides/cookbook): copy-paste recipes.

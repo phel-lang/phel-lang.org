@@ -74,5 +74,5 @@ For agents or scripts that cannot run the Phel CLI, the same knowledge is on the
 ## Where to go next
 
 - [Agentic Coding](/documentation/reference/agentic-coding/) : the reference an agent should load, with a truncation-safe rules table.
-- [Cheat Sheet](/documentation/reference/cheat-sheet/) : the filterable core surface.
+- [Cheat Sheet](/documentation/reference/cheat-sheet/) : the core surface.
 - [CLI Commands](/documentation/tooling/cli-commands/) : every `phel` subcommand.

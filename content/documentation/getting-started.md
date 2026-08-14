@@ -136,7 +136,7 @@ In order:
 
 1. **[Practice: Basics](/practice/basic)** (~10 min), graded REPL exercises.
 2. **[Basic Types](/documentation/language/basic-types)** (~5 min), every literal.
-3. **[Cheat Sheet](/documentation/reference/cheat-sheet)** (keep open), core functions, filterable.
+3. **[Cheat Sheet](/documentation/reference/cheat-sheet)** (keep open), core functions at a glance.
 4. **[Cookbook](/documentation/guides/cookbook)** (~15 min), copy-paste recipes.
 
 Branch by need:
