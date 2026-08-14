@@ -1,7 +1,7 @@
 [
     {
         "prompt": "(map inc [1 2 3])",
-        "result": "@[2 3 4]"
+        "result": "(2 3 4)"
     },
     {
         "prompt": "(->> (range 1 6) (filter odd?) (reduce +))",
