@@ -165,16 +165,16 @@
         },
         {
             "name": "gacela-project/gacela",
-            "version": "2.2.0",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gacela-project/gacela.git",
-                "reference": "dc8833777729810bb792261ebce3c79cb1f54777"
+                "reference": "1f1e5fa2e8013f8574ab168d383b9908ba34c18e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gacela-project/gacela/zipball/dc8833777729810bb792261ebce3c79cb1f54777",
-                "reference": "dc8833777729810bb792261ebce3c79cb1f54777",
+                "url": "https://api.github.com/repos/gacela-project/gacela/zipball/1f1e5fa2e8013f8574ab168d383b9908ba34c18e",
+                "reference": "1f1e5fa2e8013f8574ab168d383b9908ba34c18e",
                 "shasum": ""
             },
             "require": {
@@ -262,7 +262,7 @@
             ],
             "support": {
                 "issues": "https://github.com/gacela-project/gacela/issues",
-                "source": "https://github.com/gacela-project/gacela/tree/2.2.0"
+                "source": "https://github.com/gacela-project/gacela/tree/2.3.0"
             },
             "funding": [
                 {
@@ -270,7 +270,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-08-11T12:42:08+00:00"
+            "time": "2026-08-15T09:23:34+00:00"
         },
         {
             "name": "phel-lang/phel-lang",
@@ -4185,5 +4185,5 @@
     "platform-overrides": {
         "php": "8.4"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }
