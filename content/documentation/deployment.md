@@ -8,6 +8,31 @@ PHP is **shared-nothing** by default: every request boots a fresh process, so a 
 
 A **worker runtime** keeps the PHP process alive across requests: namespaces load **once** at boot and in-memory state survives between requests, much closer to the JVM/Clojure model.
 
+## What a request pays
+
+One measurement (PHP 8.4, warm `.phel/cache`, a host that boots and then calls `phel.core/str`):
+
+| | no opcache | opcache file cache |
+|---|---|---|
+| `vendor/autoload.php` | 11ms | 8ms |
+| `Phel::bootstrap()` | 5ms | 4ms |
+| load `phel.core` | 491ms | 37ms |
+| **first call reachable after** | **508ms** | **49ms** |
+| peak memory | 48MB | 28MB |
+| per call after that | 0.2µs | 0.2µs |
+
+Three things follow. Calling Phel from PHP is free at 0.2µs per call, so the boundary is never what a request pays for. Loading namespaces is everything, and opcache is worth more than an order of magnitude on it: a deployment without it is running a Phel that boots ten times slower than the one you shipped. And under PHP-FPM every request pays that whole column, which is exactly what a worker runtime removes.
+
+The absolute figures move with the machine and with how much your app loads, so measure your own:
+
+```php
+require 'vendor/autoload.php';
+Phel\Phel::bootstrap(__DIR__);
+$t = hrtime(true);
+new Phel\Run\RunFacade()->runNamespace('app.main');
+printf("%.1f ms, %.1f MB\n", (hrtime(true) - $t) / 1e6, memory_get_peak_usage(true) / 1048576);
+```
+
 ## The one rule
 
 Require the built entry point **once, before the request loop**. Everything inside the loop should only call your exported functions.
@@ -71,4 +96,4 @@ Same shape: require the built entry point once, then handle requests in the work
 
 ## When you do not need a worker runtime
 
-Plain PHP-FPM with opcache is fine for most apps. Reach for a worker runtime when boot cost or per-request namespace registration shows up in profiling, or when you want persistent in-memory state (caches, connection pools) across requests. See [Performance](/documentation/performance/) for opcache tuning and the compiled-code cache that cut that boot cost.
+Plain PHP-FPM with opcache is fine for most apps: the table above is the per-request budget you are working with, and 49ms of it is boot. Reach for a worker runtime when that boot cost or the per-request namespace registration shows up in profiling, or when you want persistent in-memory state (caches, connection pools) across requests. See [Performance](/documentation/performance/) for opcache tuning and the compiled-code cache that cut that boot cost.
