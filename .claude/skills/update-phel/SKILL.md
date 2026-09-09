@@ -48,7 +48,25 @@ This repo pins `phel-lang/phel-lang` in `composer.json` and mirrors the active v
 
    These prose fixes belong in the same commit or a follow-up `docs:` commit.
 
-6. **Commit.** Use this exact subject (matches prior `chore: bump phel-lang to 0.39.0` convention):
+6. **Check the quick-launch script's PHP pin.** `static/get` (served at `https://phel-lang.org/get`) downloads a static PHP build plus the Phel PHAR. Its `PHEL_VERSION` default is `latest`, which resolves through the `/phar` redirect, so a normal bump needs **no edit here**. It does need one when the new release raises the minimum PHP:
+   ```bash
+   grep -n '_PHEL_GET_PHP_DEFAULT=' static/get
+   curl -sI -o /dev/null -w '%{http_code}\n' \
+     https://dl.static-php.dev/static-php-cli/common/php-<new>-cli-linux-x86_64.tar.gz
+   ```
+   static-php-cli lags upstream PHP, so confirm the build exists for all four
+   platforms (`{linux,macos}-{x86_64,aarch64}`) before pinning it, then
+   re-pin the four SHA-256s in `_phel_get_sha256`:
+   ```bash
+   for p in linux-x86_64 linux-aarch64 macos-x86_64 macos-aarch64; do
+     curl -sL "https://dl.static-php.dev/static-php-cli/common/php-<new>-cli-$p.tar.gz" | shasum -a 256
+   done
+   ```
+   Also update the `PHP_VERSION` default in the Options table in
+   `content/documentation/installation.md`. The `quick-launch` CI job runs the
+   script on Linux and macOS, so a wrong pin or a stale sum fails there.
+
+7. **Commit.** Use this exact subject (matches prior `chore: bump phel-lang to 0.39.0` convention):
    ```
    chore: bump phel-lang to X.Y.Z
    ```
@@ -65,6 +83,8 @@ Clean bump (no API/snippet changes):
 - `composer.json` - constraint bump only (1 line)
 - `composer.lock` - phel-lang + transitive deps (often symfony/*)
 - `config.toml` - `phel_version` rewritten by post-update hook
+
+Not touched by a normal bump: `static/get` pins only PHP, not Phel.
 
 A release that adds/renames core namespaces or changes runtime behaviour also
 legitimately touches:

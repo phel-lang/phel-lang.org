@@ -1,8 +1,12 @@
 # https://help.github.com/en/categories/automating-your-workflow-with-github-actions
 
 on:
-  - pull_request
-  - push
+  pull_request:
+  push:
+  # The static PHP build the quick-launch script pins can be pulled upstream;
+  # a weekly run notices that without waiting for a push.
+  schedule:
+    - cron: '0 6 * * 1'
 
 name: CI
 
@@ -46,6 +50,48 @@ jobs:
 
       - name: Run documentation snippets against the Phel runtime
         run: composer test:snippets
+
+  quick-launch:
+    name: Quick launch script on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Lint the script
+        if: matrix.os == 'ubuntu-latest'
+        run: shellcheck static/get
+
+      - name: Download PHP and Phel, report the version
+        run: bash static/get --version
+
+      - name: Evaluate an expression
+        run: |
+          out="$(bash static/get eval '(+ 1 2)' | perl -pe 's/\e\[[0-9;]*m//g')"
+          test "$out" = "3" || { echo "expected 3, got: $out"; exit 1; }
+
+      - name: Reuse the cached download
+        run: bash static/get --version
+
+      - name: Sourced mode puts phel on PATH (bash)
+        run: bash -c 'source static/get && phel --version'
+
+      - name: Sourced mode puts phel on PATH (zsh)
+        if: runner.os == 'macOS'
+        run: zsh -c 'source static/get && phel --version'
+
+      - name: Pinning PHEL_VERSION resolves that release
+        run: |
+          out="$(PHEL_VERSION=0.50.0 bash static/get --version)"
+          case "$out" in *0.50.0*) ;; *) echo "expected 0.50.0, got: $out"; exit 1 ;; esac
+
+      - name: A failed download must not abort the sourcing shell
+        run: |
+          out="$(bash -c 'PHP_VERSION=9.9.9 source static/get; echo still-alive' 2>/dev/null)"
+          case "$out" in *still-alive*) ;; *) echo "sourcing killed the shell"; exit 1 ;; esac
 
   build:
     name: Build site
