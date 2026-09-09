@@ -22,6 +22,7 @@
     "build-css-prod": "npm run prebuild-css && postcss ./css/tailwind.entry.css -o ./static/tailwind.css --env production",
     "dev": "concurrently \"npm run build-css-dev\" \"zola serve\" --names \"CSS,ZOLA\" --prefix-colors \"blue,green\"",
     "lint:css": "stylelint \"css/**/*.{css,scss}\"",
+    "lint:sh": "shellcheck static/get scripts/*.sh",
     "format:css": "prettier --write \"css/**/*.css\"",
     "format:templates": "prettier --write \"templates/**/*.html\"",
     "format": "npm run format:css && npm run format:templates",

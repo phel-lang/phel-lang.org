@@ -15,7 +15,7 @@ Zero to live REPL in under a minute.
 
 No extra runtime. No JVM.
 
-> **No PHP installed?** Run a REPL in a single Docker command: see [Installation → Docker](/documentation/installation/#docker-no-php-required).
+> **No PHP installed?** One command, no Docker needed: see [Installation → Quick launch](/documentation/installation/#quick-launch-no-php-no-docker). Prefer containers? [Docker](/documentation/installation/#docker-no-php-required) works too.
 
 ## 60-second quick start
 

@@ -2,3 +2,8 @@ ErrorDocument 404 /404.html
 
 # Redirect /phar to latest Phel release
 Redirect 301 /phar https://github.com/phel-lang/phel-lang/releases/latest/download/phel.phar
+
+# Serve the extension-less quick-launch script as text so it renders in a browser
+<Files "get">
+  ForceType text/plain
+</Files>

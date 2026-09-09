@@ -12,7 +12,7 @@ If you only fetch one URL, fetch the agent reference:
 ## Onboarding
 
 - [Getting Started](https://phel-lang.org/documentation/getting-started/): zero to REPL in 60 seconds.
-- [Installation](https://phel-lang.org/documentation/installation/): Composer, PHAR, Docker, Nix.
+- [Installation](https://phel-lang.org/documentation/installation/): Composer, PHAR, one-line script, Docker, Nix.
 - [Why Phel?](https://phel-lang.org/documentation/why-phel/): honest FAQ.
 
 ## Language
