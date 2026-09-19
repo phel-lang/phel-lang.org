@@ -208,6 +208,31 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 </div>
 </details>
 
+## Upgrading to 0.52
+
+```bash
+composer require phel-lang/phel-lang:^0.52
+./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
+```
+
+Breaking changes in 0.52:
+
+- `php/new`, `php/->`, `php/::` and `set-var` are no longer valid source. Writing one is a `PHEL012` error. Use `(new \Foo arg)`, `(.method obj arg)` / `(.-field obj)`, `(\Foo/method arg)` / `\Foo/CONST`, and `(alter-var-root (var v) f)`. The compiler still emits all four, so generated PHP does not change and macros that expand to them keep working. The rest of `php/*` stays.
+- PHP API only: `CommandFacadeInterface::getRuntimeErrorReport()` returns the runtime error report as a string, and `ErrorCode::INVALID_QUOTE`, `INVALID_UNQUOTE` and `INVALID_CHARACTER` are gone.
+
+New in 0.52: runtime errors carry a code (`PHEL400` to `PHEL404`), `phel explain <code>` prints what a code means with the smallest program that raises it, `--stack-trace` on `run`, `eval` and `repl`, uniform compile-error reporting, `phel lint` exits 1 on a file it cannot parse, `(exit)` / `(quit)` in the REPL, and a pruned OPcache file cache. See the [0.52 release notes](/releases/0-52-honest-output/) and the [Error Reference](/documentation/reference/errors/).
+
+## Upgrading to 0.51
+
+```bash
+composer require phel-lang/phel-lang:^0.51
+./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
+```
+
+Nothing breaks in 0.51. Two deprecations start printing under `--warn-deprecations`: `to-php-array` (use `to-array`) and key-first map destructuring `{:key local}` (use binding-first `{local :key}`).
+
+New in 0.51: `phel mutate` for mutation testing, `phel test --changed` / `--reporter=github` / `^:skip` / `^:focus`, `phel format --exclude`, `cache-env-vars`, Clojure-style binding-first destructuring, `^:redef`, id and class shorthand in `phel.html`, plus 18-24% faster compiles and large runtime and stdlib speedups. See the [0.51 release notes](/releases/0-51-only-once/).
+
 ## Upgrading to 0.50
 
 ```bash

@@ -139,7 +139,7 @@ Reference by name:
 <!-- phel-test: skip -->
 ```phel
 (ClassName.)          ; preferred shorthand
-(php/new ClassName)   ; also valid
+(new ClassName)       ; also valid
 ```
 
 Aliases avoid collisions:
@@ -154,7 +154,7 @@ Importing is preferred, but optional. Use full namespace inline if needed:
 
 <!-- phel-test: skip -->
 ```phel
-(php/new Some.Php.ClassName)   ; or: (Some.Php.ClassName.)
+(new Some.Php.ClassName)   ; or: (Some.Php.ClassName.)
 ```
 
 ## Require PHP files

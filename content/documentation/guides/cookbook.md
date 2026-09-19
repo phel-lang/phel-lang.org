@@ -237,7 +237,7 @@ PHP DateTime via interop: create, format, compare.
 (def from-format
   (DateTimeImmutable/createFromFormat "d/m/Y" "25/12/2024"))
 
-;; Format dates - .method is shorthand for (php/-> obj (method ...))
+;; Format dates - .method calls an instance method
 (println (.format now "Y-m-d H:i:s"))       ; 2024-03-10 14:30:00
 (println (.format now "l, F j, Y"))         ; Sunday, March 10, 2024
 (println (.format specific-date "D, M j"))  ; Sat, Jun 15

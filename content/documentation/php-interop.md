@@ -73,7 +73,7 @@ Namespaced PHP functions use full path after `php/`. Three equivalent forms acce
 (php/Foo.Bar/baz)      ; dot-separated, slash before fn name
 (php/Foo.Bar.baz)      ; fully dot-separated
 
-(php/Amp.trapSignal [(php/:: SIGINT) (php/:: SIGTERM)])
+(php/Amp.trapSignal [php/SIGINT php/SIGTERM])
 ```
 
 Capture into a Phel alias:
@@ -84,18 +84,20 @@ Capture into a Phel alias:
 (trap-signal [2 15])
 ```
 
-## Interop shorthands
+## Interop forms
 
-Terse forms that expand to verbose `php/*`. Use whichever reads better.
+Clojure-style forms cover every class member. They are the only spelling: the
+old `php/new`, `php/->` and `php/::` are rejected as source since Phel 0.52
+(error `PHEL012`), though the compiler still emits them internally.
 
-| Shorthand                 | Expands to                         |
-|---------------------------|------------------------------------|
-| `(ClassName. args)`       | `(php/new ClassName args)`         |
-| `(new ClassName args)`    | `(php/new ClassName args)`         |
-| `(.method obj args)`      | `(php/-> obj (method args))`       |
-| `(.-field obj)`           | `(php/-> obj field)`               |
-| `(ClassName/method args)` | `(php/:: ClassName (method args))` |
-| `ClassName/MEMBER`        | `(php/:: ClassName MEMBER)`        |
+| Form                      | PHP equivalent            |
+|---------------------------|---------------------------|
+| `(ClassName. args)`       | `new ClassName(args)`     |
+| `(new ClassName args)`    | `new ClassName(args)`     |
+| `(.method obj args)`      | `$obj->method(args)`      |
+| `(.-field obj)`           | `$obj->field`             |
+| `(ClassName/method args)` | `ClassName::method(args)` |
+| `ClassName/MEMBER`        | `ClassName::MEMBER`       |
 
 ```phel
 (ns my.module
@@ -110,7 +112,7 @@ DateTimeImmutable/ATOM                         ; static constant
 
 ## Class instantiation
 
-Three equivalent forms - prefer `ClassName.` for imported classes:
+Two equivalent forms - prefer `ClassName.` for imported classes:
 
 ```phel
 (ns my.module
@@ -119,9 +121,8 @@ Three equivalent forms - prefer `ClassName.` for imported classes:
 (DateTime.)              ; => DateTime instance (ClassName. shorthand)
 (DateTime. "now")        ; => DateTime instance with arg
 (new DateTime)           ; also valid
-(php/new DateTime)       ; also valid
 
-(php/new "\\DateTimeImmutable") ; instantiate from string (dynamic)
+(new "\\DateTimeImmutable") ; instantiate from string (dynamic)
 ```
 
 {% php_note() %}
@@ -144,13 +145,13 @@ Import classes with `:use` to use the short `ClassName.` form without repeating 
 
 <!-- phel-test: skip -->
 ```phel
-(php/-> object (methodname expr*))
-(php/-> object property)
+(.methodname object expr*)
+(.-property object)
 ```
 
-Calls method or accesses property. Both `methodname` and `property` must be symbols, not evaluated values.
+Calls method or accesses property. Both `methodname` and `property` are part of the head symbol, not evaluated values.
 
-Chain multiple in one `php/->`. Each element evaluates on result of previous, enabling fluent chains or nested property access.
+Thread with `->` to chain: each element evaluates on the result of the previous one, methods and properties alike.
 
 <!-- phel-test: skip -->
 ```phel
@@ -161,9 +162,8 @@ Chain multiple in one `php/->`. Each element evaluates on result of previous, en
 
 (def di (DateInterval. "PT30S"))
 
-(.format di "%s seconds")          ; => "30 seconds"  (.method shorthand)
-(php/-> di (format "%s seconds"))  ; same, verbose form
-(.-s di)                           ; => 30  (.-prop shorthand)
+(.format di "%s seconds")          ; => "30 seconds"
+(.-s di)                           ; => 30
 
 ;; Chain multiple calls:
 ;; (new DateTimeImmutable("2024-03-10"))->modify("+1 day")->format("Y-m-d")
@@ -171,19 +171,19 @@ Chain multiple in one `php/->`. Each element evaluates on result of previous, en
     (.modify "+1 day")
     (.format "Y-m-d"))
 
-;; php/-> also works and is required for chains mixing methods and properties:
-(php/-> user profile (getDisplayName))
+;; Chains mixing methods and properties thread the same way:
+(-> user (.-profile) (.getDisplayName))
 
 ;; Nested property access:
 (def address (stdClass.))
 (def user    (stdClass.))
-(php/oset (php/-> address city) "Berlin")
-(php/oset (php/-> user address) address)
-(php/-> user address city) ; => "Berlin"
+(set! (.-city address) "Berlin")
+(set! (.-address user) address)
+(.-city (.-address user)) ; => "Berlin"
 ```
 
 {% php_note() %}
-The `php/->` operator is similar to PHP's `->` but allows chaining in a more functional style:
+The `.method` and `.-field` forms read like PHP's `->`, but chain in a more functional style:
 
 ```php
 // PHP
@@ -192,26 +192,26 @@ $di->s;
 (new DateTimeImmutable("2024-03-10"))->modify("+1 day")->format("Y-m-d");
 $user->profile->getDisplayName();
 
-// Phel - shorthand forms
+// Phel
 (.format di "%s seconds")
 (.-s di)
 (-> (DateTimeImmutable. "2024-03-10") (.modify "+1 day") (.format "Y-m-d"))
-(php/-> user profile (getDisplayName))   ; mixed chains need php/->
+(-> user (.-profile) (.getDisplayName))
 ```
 
-Method calls: `(.method obj args)` shorthand or `(php/-> obj (method args))`. Property access: `(.-prop obj)` or `(php/-> obj prop)`. Mixed chains (method + property in one expression) use `php/->` directly.
+Method calls: `(.method obj args)`. Property access: `(.-prop obj)`. Mixed chains thread both through `->`.
 {% end %}
 
 {% clojure_note() %}
-The `php/->` operator is inspired by Clojure's thread-first macro `->`, but specifically designed for PHP object method chaining.
+Same spelling as Clojure: `.method`, `.-field`, `Class/member`, and `->` for chaining.
 {% end %}
 
 ## Static method and property
 
 <!-- phel-test: skip -->
 ```phel
-(php/:: class (methodname expr*))
-(php/:: class property)
+(class/methodname expr*)
+class/PROPERTY
 ```
 
 Same as above, but static.
@@ -220,22 +220,20 @@ Same as above, but static.
 (ns my.module
   (:use DateTimeImmutable))
 
-DateTimeImmutable/ATOM                                     ; => "Y-m-d\TH:i:sP"  (shorthand)
-(php/:: DateTimeImmutable ATOM)                            ; verbose form
+DateTimeImmutable/ATOM                                    ; => "Y-m-d\TH:i:sP"
 
-(DateTimeImmutable/createFromFormat "Y-m-d" "2020-03-22") ; shorthand
-(php/:: DateTimeImmutable (createFromFormat "Y-m-d" "2020-03-22")) ; verbose
+(DateTimeImmutable/createFromFormat "Y-m-d" "2020-03-22")
 ```
 
 {% php_note() %}
-The `php/::` operator is equivalent to PHP's `::` for static method and property access:
+`ClassName/member` is equivalent to PHP's `::` for static method and property access:
 
 ```php
 // PHP
 DateTimeImmutable::ATOM;
 DateTimeImmutable::createFromFormat("Y-m-d", "2020-03-22");
 
-// Phel - shorthand forms
+// Phel
 DateTimeImmutable/ATOM
 (DateTimeImmutable/createFromFormat "Y-m-d" "2020-03-22")
 ```
@@ -243,12 +241,11 @@ DateTimeImmutable/ATOM
 
 ## Named arguments
 
-PHP 8 named arguments are passed after a `:&` marker as `:key value` pairs. Works in `php/new`, `php/->`, and `php/::`. Keyword keys map to the PHP parameter names; order is then irrelevant.
+PHP 8 named arguments are passed after a `:&` marker as `:key value` pairs. Works in constructors, instance methods, and static calls. Keyword keys map to the PHP parameter names; order is then irrelevant.
 
 ```phel
-(let [dt (php/:: \DateTime
-                 (createFromFormat :& :format "Y-m-d" :datetime "2026-06-06"))]
-  (php/-> dt (format "Y-m-d"))) ; => "2026-06-06"
+(let [dt (\DateTime/createFromFormat :& :format "Y-m-d" :datetime "2026-06-06")]
+  (.format dt "Y-m-d")) ; => "2026-06-06"
 ```
 
 {% php_note() %}
@@ -261,8 +258,8 @@ new \App\Mailer(host: "smtp", port: 587);
 <!-- phel-test: skip -->
 ```phel
 ;; Phel
-(php/:: \DateTime (createFromFormat :& :format "Y-m-d" :datetime "2026-06-06"))
-(php/new \App\Mailer :& :host "smtp" :port 587)
+(\DateTime/createFromFormat :& :format "Y-m-d" :datetime "2026-06-06")
+(new \App\Mailer :& :host "smtp" :port 587)
 ```
 {% end %}
 
@@ -277,25 +274,25 @@ Some PHP functions write through a `&$ref` parameter (`preg_match`, `sort`, ...)
   (php/aget matches 1)) ; => "42"
 ```
 
-`php/ref` also works inside `php/->` / `php/::` calls.
+`php/ref` also works inside method and static calls.
 
 ## Set object properties
 
 <!-- phel-test: skip -->
 ```phel
-(php/oset (php/-> object property) value)
-(php/oset (php/:: class property) value)
+(set! (.-property object) value)
+(set! class/property value)
 ```
 
 Set value on class/object property.
 
 ```phel
 (def x (stdclass.))
-(php/oset (php/-> x name) "foo")
+(set! (.-name x) "foo")
 ```
 
 {% php_note() %}
-`php/oset` is the Phel equivalent of PHP's property assignment:
+`set!` is the Phel equivalent of PHP's property assignment:
 
 ```php
 // PHP
@@ -304,7 +301,7 @@ $x->name = "foo";
 
 // Phel
 (def x (stdclass.))
-(php/oset (php/-> x name) "foo")
+(set! (.-name x) "foo")
 ```
 
 **Note:** This mutates the PHP object. When possible, use Phel's immutable data structures instead.
@@ -316,13 +313,13 @@ Phel values and PHP values cross the boundary automatically for scalars (int, fl
 
 | Function | Direction | Example | Result |
 |---|---|---|---|
-| `to-php-array` | Phel vector/map to PHP array | `(to-php-array [1 2 3])` | `<PHP-Array [1, 2, 3]>` |
+| `to-array` | Phel vector/map to PHP array | `(to-array [1 2 3])` | `<PHP-Array [1, 2, 3]>` |
 | `phel->php` | deep Phel to PHP (nested) | `(phel->php {:a 1 :b 2})` | `<PHP-Array [a:1, b:2]>` |
 | `php->phel` | deep PHP to Phel (nested) | `(php->phel (php/array 1 2 3))` | `[1 2 3]` |
 | `php-array-to-map` | PHP array to Phel map | `(php-array-to-map #php {"a" 1 "b" 2})` | `{"a" 1, "b" 2}` |
 
 ```phel
-(to-php-array [1 2 3])              ; => <PHP-Array [1, 2, 3]>
+(to-array [1 2 3])                 ; => <PHP-Array [1, 2, 3]>
 (php->phel (php/array 1 2 3))       ; => [1 2 3]
 (php-array-to-map #php {"a" 1})     ; => {"a" 1}
 (phel->php {:a 1})                  ; => <PHP-Array [a:1]>
@@ -335,7 +332,7 @@ Use `#php [...]` and `#php {...}` reader macros to write PHP array literals dire
 `php/instanceof` tests an object against a PHP class or interface:
 
 ```phel
-(php/instanceof (php/new \DateTime) \DateTimeInterface) ; => true
+(php/instanceof (new \DateTime) \DateTimeInterface) ; => true
 ```
 
 For Phel's own values use the core predicates (`int?`, `string?`, `map?`, `vector?`, ...).
@@ -641,7 +638,7 @@ To read PHP 8 attributes and bridge native enums, see `phel.reflect`
 
 (try
   (throw (NotFound "missing"))
-  (catch \RuntimeException e (php/-> e (getMessage)))) ; => "missing"
+  (catch \RuntimeException e (.getMessage e))) ; => "missing"
 ```
 
 ## Reflection: attributes and enums
@@ -680,7 +677,7 @@ Enum bridge:
 ```phel
 ;; enum Suit: string { case Hearts = 'H'; case Spades = 'S'; }
 (reflect/enum-values \Demo\Suit)               ; => [:Hearts :Spades]
-(reflect/enum->keyword (php/:: \Demo\Suit Hearts)) ; => :Hearts
+(reflect/enum->keyword \Demo\Suit/Hearts) ; => :Hearts
 (reflect/keyword->enum \Demo\Suit :Spades)     ; => Suit::Spades
 ```
 
@@ -692,7 +689,7 @@ PHP functions and methods throw native exceptions, and they cross the interop bo
 (try
   (php/intdiv 1 0)
   (catch \DivisionByZeroError e
-    (php/-> e (getMessage))))
+    (.getMessage e)))
 ; => "Division by zero"
 ```
 

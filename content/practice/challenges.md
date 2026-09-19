@@ -24,7 +24,7 @@ Time to put everything together. These challenges grow from gentle warm-ups into
   (case direction
     :c->f (c->f degrees)
     :f->c (f->c degrees)
-    (throw (php/new \Exception (str "Unknown direction: " direction)))))
+    (throw (new \Exception (str "Unknown direction: " direction)))))
 ```
 A friendly warm-up: small functions, `case` to dispatch on a keyword, and a defensive default. Once you have the building blocks, `convert` is just a router.
 
@@ -222,7 +222,7 @@ Hints:
   (println "Play your hand: (r)ock, (p)aper, (s)cissors")
   (print "; ")
   (let [guess (sanitize-input (php/readline))]
-    (if (php/in_array guess (to-php-array possible-guesses)) guess)))
+    (if (php/in_array guess (to-array possible-guesses)) guess)))
 
 (defn calculate-winner [{:computer cg :player pg}]
   (let [guesses [cg pg]]

@@ -30,7 +30,7 @@ Truncation-safe rules. Code form first, reason second. Verify with `phel doc` be
 | `argv` (vector of strings)                                                       | `*argv*` (pre-0.39), `php/$argv`                              | Symbol renamed in 0.39. `php/$argv` is `nil` under `phel run`. |
 | `for` for data, `foreach`/`doseq` for effects                                    | `for` with side effects                                       | `for` returns a vector. `foreach` returns `nil`.               |
 | `recur` in tail of `loop`/`fn`                                                   | `recur` anywhere else                                         | Non-tail `recur` errors at compile time.                       |
-| `vec` (PHP→Phel), `to-php-array` (Phel→PHP)                                      | treating PHP arrays as Phel collections                       | Different types. Mixing breaks `count`, `map`, etc.            |
+| `vec` (PHP→Phel), `to-array` (Phel→PHP)                                          | treating PHP arrays as Phel collections                       | Different types. Mixing breaks `count`, `map`, etc.            |
 | `#php {"k" "v"}` for PHP assoc                                                   | `{:k "v"}` as a PHP array                                     | Phel maps are not PHP arrays.                                  |
 | `(:x p)` or `(get p :x)` for records                                             | `(.-x p)`                                                     | Record fields are protected PHP properties.                    |
 | `false`, `nil` only as falsy                                                     | assuming `0`, `""`, `[]`, `{}` falsy                          | All four are truthy.                                           |
@@ -183,18 +183,16 @@ Rules:
 <!-- phel-test: skip -->
 ```phel
 (php/strlen "hi")                          ; call PHP function
-(php/new DateTimeImmutable "2024-01-15")   ; construct
-(php/-> obj (method arg))                  ; instance method
-(php/:: DateTimeImmutable ATOM)            ; static / constant
+(new DateTimeImmutable "2024-01-15")       ; construct
+(.method obj arg)                          ; instance method
+(.-prop obj)                               ; instance property
+(DateTimeImmutable/createFromFormat f s)   ; static method
+DateTimeImmutable/ATOM                     ; static constant
 
-;; Shorthands also accepted:
-(.method obj arg)
-(.-prop obj)
-(Class/method args)
-Class/CONST
+;; php/new, php/-> and php/:: are errors in source since 0.52 (PHEL012).
 
 ;; Convert Phel collection to PHP array (when handing off to PHP):
-(to-php-array ["a" "b" "c"])
+(to-array ["a" "b" "c"])
 
 ;; Convert PHP array back to Phel collection:
 (vec (php/explode "," "a,b,c"))            ; => ["a" "b" "c"]
@@ -258,7 +256,7 @@ Run with `vendor/bin/phel test`.
 Beyond the TL;DR:
 
 - **`transduce` with `max`/`min`:** no zero-arity. Pass init: `(transduce xf (fn [a b] (max a b)) 0 coll)`.
-- **No `to-vec` / `to-list` functions.** Use `vec` (PHP array to Phel vector) or `to-php-array` (Phel to PHP).
+- **No `to-vec` / `to-list` functions.** Use `vec` (PHP array to Phel vector) or `to-array` (Phel to PHP).
 - **`recur` arity must match `loop` bindings.** Mismatched arg count errors at compile time.
 - **`#` line comments are deprecated.** Use `;` or `;;`.
 
@@ -269,7 +267,7 @@ Agents trained on Clojure data hallucinate Clojure-only forms in Phel code. Phel
 Known differences:
 
 - **Strings module:** `phel.string`, not `clojure.string`. Some function names match, some don't. Check each.
-- **Interop is PHP, not Java.** `(php/new Class arg)`, `(.method obj)`, `(Class/method)`, `Class/CONST`. No `Class/.method`, no `Class.`, no JVM.
+- **Interop is PHP, not Java.** `(new Class arg)`, `(.method obj)`, `(Class/method)`, `Class/CONST`. No `Class/.method`, no JVM.
 - **Records:** field access by keyword `(:x p)`. No `.-field` on records.
 - **Numbers:** PHP `int`/`float`, plus Phel `:ratio` (`(/ 1 3)` => `1/3`) and `:bigint` (auto-promoted on overflow). No `BigDecimal`.
 - **Reader conditionals use `:phel`/`:default`,** not `:clj`/`:cljs`. Example: `#?(:phel "phel" :default "other")`.

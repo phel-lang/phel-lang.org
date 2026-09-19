@@ -600,23 +600,18 @@ Composable transformations independent of the data source. Avoid intermediate co
 (php/date "Y-m-d")                 ; => "2026-02-07"
 (php/array_merge arr1 arr2)        ; call any PHP function
 
-;; Instantiation - all three forms are equivalent
-(php/new DateTime "now")
+;; Instantiation - both forms are equivalent
 (new DateTime "now")
 (DateTime. "now")                  ; ClassName. shorthand (preferred)
 
 ;; Instance methods & properties
-(php/-> obj (method arg))          ; $obj->method($arg)
-(php/-> obj property)              ; $obj->property
-(php/-> obj (a) (b) (c))           ; chained: $obj->a()->b()->c()
-(.method obj arg)                  ; shorthand
-(.-property obj)                   ; property shorthand
+(.method obj arg)                  ; $obj->method($arg)
+(.-property obj)                   ; $obj->property
+(-> obj (.a) (.b) (.c))            ; chained: $obj->a()->b()->c()
 
 ;; Static methods & properties
-(php/:: MyClass CONST)             ; MyClass::CONST
-(php/:: MyClass (create "x"))      ; MyClass::create("x")
-(MyClass/create "x")               ; static shorthand
-Ns.MyClass/CONST                   ; static member shorthand
+(MyClass/create "x")               ; MyClass::create("x")
+Ns.MyClass/CONST                   ; MyClass::CONST
 
 ;; PHP arrays
 (php/aget arr 0)                   ; $arr[0] ?? null
@@ -663,7 +658,7 @@ See [Namespaces](/documentation/language/namespaces).
 
 (deftest exception-test
   (is (thrown? Exception
-    (throw (php/new Exception "boom")))))
+    (throw (new Exception "boom")))))
 ```
 
 ```bash

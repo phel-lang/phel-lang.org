@@ -33,7 +33,7 @@ Phel and PHP optimize for different things on the same runtime.
 
 ## Can I use existing PHP libraries?
 
-Yes. Any Composer package, class, trait, function, or constant is callable through the `php/` prefix, e.g. `(php/strlen "hello")` or `(php/-> (php/new DateTimeImmutable "2024-01-15") (format "Y-m-d"))`. The full escape hatch (methods, statics, constants, `php/aget`) is in [PHP Interop](/documentation/php-interop).
+Yes. Any Composer package, class, trait, function, or constant is callable through the `php/` prefix, e.g. `(php/strlen "hello")` or `(.format (new DateTimeImmutable "2024-01-15") "Y-m-d")`. The full escape hatch (methods, statics, constants, `php/aget`) is in [PHP Interop](/documentation/php-interop).
 
 ## Isn't a compilation step a hassle?
 

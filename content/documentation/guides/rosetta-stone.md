@@ -1022,7 +1022,7 @@ $date = new DateTimeImmutable("2024-01-15");
 
 (def now (DateTime.))                        ; shorthand
 (def date (DateTimeImmutable. "2024-01-15")) ; shorthand
-;; also: (php/new DateTime) or (new DateTime)
+;; also: (new DateTime)
 ```
 
 </div>
@@ -1054,12 +1054,11 @@ $result = $date->modify("+1 month")->format("Y-m-d");
 
 (def date (DateTimeImmutable. "2024-01-15"))
 
-(def formatted (.format date "Y-m-d"))   ; shorthand
-;; also:       (php/-> date (format "Y-m-d"))
+(def formatted (.format date "Y-m-d"))
 (def result
-  (php/-> date
-    (modify "+1 month")
-    (format "Y-m-d")))
+  (-> date
+    (.modify "+1 month")
+    (.format "Y-m-d")))
 ```
 
 </div>
@@ -1089,12 +1088,10 @@ $parsed = DateTimeImmutable::createFromFormat(
 **Phel**
 
 ```phel
-(def atom DateTimeImmutable/ATOM)   ; shorthand
-;; also: (php/:: DateTimeImmutable ATOM)
+(def atom DateTimeImmutable/ATOM)
 
 (def parsed
   (DateTimeImmutable/createFromFormat "Y-m-d" "2024-03-22"))
-;; also: (php/:: DateTimeImmutable (createFromFormat ...))
 ```
 
 </div>
