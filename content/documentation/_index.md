@@ -79,7 +79,7 @@ Coming from another language? Jump to [Rosetta Stone: PHP to Phel](/documentatio
   </a>
 </div>
 
-Also in the docs: [Why Phel?](/documentation/why-phel/), [Configuration](/documentation/configuration/), [Debugging](/documentation/debugging/), and [Performance](/documentation/performance/).
+Also in the docs: [Why Phel?](/documentation/why-phel/), [Configuration](/documentation/configuration/), [Debugging](/documentation/debugging/), [Performance](/documentation/performance/), and the [Stability Policy](/documentation/stability/).
 
 ## Need help?
 
