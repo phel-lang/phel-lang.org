@@ -98,12 +98,12 @@ vendor/bin/phel lsp
 
 It provides hover, go-to-definition, find-references, completion, document and workspace symbols, rename, formatting, and debounced diagnostics. On top of Phel symbols, completion is PHP-interop-aware:
 
-- instance methods and properties after `(php/-> receiver ...)`
-- static methods and constants after `(php/:: Class ...)`
-- class names in `(php/new ...)` and `\Fully\Qualified` positions
+- instance methods and properties after `(.` and `(.-` on a receiver
+- static methods and constants after `Class/`
+- class names in `(new ...)` and `\Fully\Qualified` positions
 - global functions after the `php/` prefix
 
-Hover shows the reflected signature for PHP methods, functions, and classes, and signature help fires inside `(php/new ...)` and method calls. The receiver's type is inferred from `:tag` metadata, an inline `(php/new \Foo)`, or a local `(php/new ...)` binding; when the type is unknown, completion simply does nothing rather than emitting noise or false diagnostics.
+Hover shows the reflected signature for PHP methods, functions, and classes, and signature help fires inside `(new ...)` and method calls. The receiver's type is inferred from `:tag` metadata, an inline `(new \Foo)`, or a local `(new ...)` binding; when the type is unknown, completion simply does nothing rather than emitting noise or false diagnostics.
 
 ## Next steps
 

@@ -329,7 +329,7 @@ Use Composer. `composer.json` replaces `deps.edn`:
 ```json
 {
   "require": {
-    "phel-lang/phel-lang": "^0.50",
+    "phel-lang/phel-lang": "^0.52",
     "php": ">=8.4"
   }
 }
@@ -376,9 +376,9 @@ Many orgs already run PHP. Bring FP/Lisp into environments where the JVM isn't a
 | `(alter-var-root #'v f)`     | `(alter-var-root #'v f)`                                  | Same                                   |
 | `(with-redefs [v x] ...)`    | `(with-redefs [v x] ...)`                                 | Same. Works for non-dynamic vars       |
 | `(binding [*x* v] ...)`      | `(binding [*x* v] ...)`                                   | Var must be `^:dynamic`                |
-| `(.method obj)`              | `(.method obj)` or `(php/-> obj (method))`                | Both forms work                        |
-| `(Class/staticMethod)`       | `(Class/staticMethod)` or `(php/:: Class (staticMethod))` | Both forms work                        |
-| `(new Class)`                | `(Class.)` or `(php/new Class)`                           | `ClassName.` shorthand                 |
+| `(.method obj)`              | `(.method obj)`                                           | Same                                   |
+| `(Class/staticMethod)`       | `(Class/staticMethod)`                                    | Same                                   |
+| `(new Class)`                | `(new Class)` or `(Class.)`                               | `ClassName.` shorthand                 |
 | `^int` tag                   | `^int` tag                                                | Emits PHP type declaration             |
 | `(memoize f)`                | `^:memoize` on `defn`                                     | Metadata shorthand                     |
 | `(defprotocol P)`            | `(defprotocol P)`                                         | Same                                   |

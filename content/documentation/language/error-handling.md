@@ -23,7 +23,7 @@ How Phel signals and recovers from failures: `throw` to raise, `try`/`catch`/`fi
 
 <!-- phel-test: skip -->
 ```phel
-(throw (php/new \Exception "Something went wrong"))
+(throw (new \Exception "Something went wrong"))
 
 ;; Shorthand for constructing a class: (Class. args)
 (throw (Exception. "Something went wrong"))
@@ -57,24 +57,24 @@ A `catch` clause names the exception type and a symbol bound to the caught value
 
 ```phel
 (try
-  (throw (php/new \InvalidArgumentException "bad input"))
-  (catch \InvalidArgumentException e (str "arg error: " (php/-> e (getMessage))))
+  (throw (new \InvalidArgumentException "bad input"))
+  (catch \InvalidArgumentException e (str "arg error: " (.getMessage e)))
   (catch \Exception e "other error"))
 ; => "arg error: bad input"
 ```
 
 ## Catching PHP exceptions
 
-Anything PHP can throw, you can catch. Reference the PHP class with a leading backslash (`\Exception`, `\RuntimeException`, `\TypeError`). Read its details with PHP method calls via `php/->`.
+Anything PHP can throw, you can catch. Reference the PHP class with a leading backslash (`\Exception`, `\RuntimeException`, `\TypeError`). Read its details with PHP method calls via `.method`.
 
 ```phel
 (try
-  (throw (php/new \RuntimeException "disk full"))
+  (throw (new \RuntimeException "disk full"))
   (catch \Exception e
-    (php/-> e (getMessage)))) ; => "disk full"
+    (.getMessage e))) ; => "disk full"
 ```
 
-`php/->` is the PHP method-call operator: `(php/-> e (getMessage))` is the same as `$e->getMessage()` in PHP. Use it to reach `getCode`, `getFile`, `getLine`, and friends.
+`.method` is the PHP method-call form: `(.getMessage e)` is the same as `$e->getMessage()` in PHP. Use it to reach `getCode`, `getFile`, `getLine`, and friends.
 
 {% php_note() %}
 Same exceptions, different shape:
@@ -91,8 +91,8 @@ try {
 ```phel
 ;; Phel
 (try
-  (throw (php/new \RuntimeException "disk full"))
-  (catch \Exception e (php/-> e (getMessage))))
+  (throw (new \RuntimeException "disk full"))
+  (catch \Exception e (.getMessage e)))
 ```
 {% end %}
 
@@ -140,7 +140,7 @@ Pass the original exception as the third argument to keep the failure trail. Rea
 ```phel
 (try
   (try
-    (throw (php/new \Exception "io fail"))
+    (throw (new \Exception "io fail"))
     (catch \Exception e
       (throw (ex-info "save failed" {:op :save} e))))
   (catch \Exception e

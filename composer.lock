@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "23c9fa9861161f066b3ff018e7799747",
+    "content-hash": "578345eb0509de644d4565f9b373d65b",
     "packages": [
         {
             "name": "amphp/amp",
@@ -89,16 +89,16 @@
         },
         {
             "name": "gacela-project/container",
-            "version": "2.0.2",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gacela-project/container.git",
-                "reference": "e9ac0b6b5c6b0eb8724e04b8e9cbc829f43c6707"
+                "reference": "faa1e00cafca1e2d02938adaf204fc38abfbe64a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gacela-project/container/zipball/e9ac0b6b5c6b0eb8724e04b8e9cbc829f43c6707",
-                "reference": "e9ac0b6b5c6b0eb8724e04b8e9cbc829f43c6707",
+                "url": "https://api.github.com/repos/gacela-project/container/zipball/faa1e00cafca1e2d02938adaf204fc38abfbe64a",
+                "reference": "faa1e00cafca1e2d02938adaf204fc38abfbe64a",
                 "shasum": ""
             },
             "require": {
@@ -153,7 +153,7 @@
             ],
             "support": {
                 "issues": "https://github.com/gacela-project/container/issues",
-                "source": "https://github.com/gacela-project/container/tree/2.0.2"
+                "source": "https://github.com/gacela-project/container/tree/2.1.0"
             },
             "funding": [
                 {
@@ -161,25 +161,26 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-08-06T08:42:24+00:00"
+            "time": "2026-08-17T17:53:52+00:00"
         },
         {
             "name": "gacela-project/gacela",
-            "version": "2.2.0",
+            "version": "2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/gacela-project/gacela.git",
-                "reference": "dc8833777729810bb792261ebce3c79cb1f54777"
+                "reference": "c148b7f1fd44d84d8d71a5b84c7a882e7a86c75a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gacela-project/gacela/zipball/dc8833777729810bb792261ebce3c79cb1f54777",
-                "reference": "dc8833777729810bb792261ebce3c79cb1f54777",
+                "url": "https://api.github.com/repos/gacela-project/gacela/zipball/c148b7f1fd44d84d8d71a5b84c7a882e7a86c75a",
+                "reference": "c148b7f1fd44d84d8d71a5b84c7a882e7a86c75a",
                 "shasum": ""
             },
             "require": {
-                "gacela-project/container": "^2.0.2",
-                "php": ">=8.3"
+                "gacela-project/container": "^2.1",
+                "php": ">=8.3",
+                "psr/event-dispatcher": "^1.0"
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8",
@@ -232,8 +233,8 @@
             "autoload": {
                 "psr-4": {
                     "Gacela\\": "src/",
-                    "Gacela\\LaravelBridge\\": "laravel-bridge/src/",
-                    "Gacela\\SymfonyBridge\\": "symfony-bridge/src/"
+                    "Gacela\\LaravelBridge\\": "bridges/laravel-bridge/src/",
+                    "Gacela\\SymfonyBridge\\": "bridges/symfony-bridge/src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -262,7 +263,7 @@
             ],
             "support": {
                 "issues": "https://github.com/gacela-project/gacela/issues",
-                "source": "https://github.com/gacela-project/gacela/tree/2.2.0"
+                "source": "https://github.com/gacela-project/gacela/tree/2.4.0"
             },
             "funding": [
                 {
@@ -270,20 +271,20 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-08-11T12:42:08+00:00"
+            "time": "2026-08-17T19:12:54+00:00"
         },
         {
             "name": "phel-lang/phel-lang",
-            "version": "v0.50.0",
+            "version": "v0.52.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phel-lang/phel-lang.git",
-                "reference": "e11c7a08450ef85d0dcd44745cfed38162a14667"
+                "reference": "376ccab6ec6eb9cf8c6aef360d3b831b61c32242"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/e11c7a08450ef85d0dcd44745cfed38162a14667",
-                "reference": "e11c7a08450ef85d0dcd44745cfed38162a14667",
+                "url": "https://api.github.com/repos/phel-lang/phel-lang/zipball/376ccab6ec6eb9cf8c6aef360d3b831b61c32242",
+                "reference": "376ccab6ec6eb9cf8c6aef360d3b831b61c32242",
                 "shasum": ""
             },
             "require": {
@@ -299,7 +300,7 @@
                 "ergebnis/composer-normalize": "^2.50",
                 "ext-readline": "*",
                 "friendsofphp/php-cs-fixer": "^3.94",
-                "infection/infection": "^0.34",
+                "infection/infection": "^0.35",
                 "phpbench/phpbench": "^1.6",
                 "phpstan/phpstan": "^2.1",
                 "phpstan/phpstan-deprecation-rules": "^2.0",
@@ -346,7 +347,7 @@
             ],
             "support": {
                 "issues": "https://github.com/phel-lang/phel-lang/issues",
-                "source": "https://github.com/phel-lang/phel-lang/tree/v0.50.0"
+                "source": "https://github.com/phel-lang/phel-lang/tree/v0.52.0"
             },
             "funding": [
                 {
@@ -354,7 +355,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-08-14T12:48:17+00:00"
+            "time": "2026-09-19T14:55:39+00:00"
         },
         {
             "name": "psr/container",
@@ -408,6 +409,56 @@
                 "source": "https://github.com/php-fig/container/tree/2.0.2"
             },
             "time": "2021-11-05T16:47:00+00:00"
+        },
+        {
+            "name": "psr/event-dispatcher",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/event-dispatcher.git",
+                "reference": "dbefd12671e8a14ec7f180cab83036ed26714bb0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/event-dispatcher/zipball/dbefd12671e8a14ec7f180cab83036ed26714bb0",
+                "reference": "dbefd12671e8a14ec7f180cab83036ed26714bb0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\EventDispatcher\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Standard interfaces for event handling.",
+            "keywords": [
+                "events",
+                "psr",
+                "psr-14"
+            ],
+            "support": {
+                "issues": "https://github.com/php-fig/event-dispatcher/issues",
+                "source": "https://github.com/php-fig/event-dispatcher/tree/1.0.0"
+            },
+            "time": "2019-01-08T18:20:26+00:00"
         },
         {
             "name": "revolt/event-loop",
@@ -809,16 +860,16 @@
         },
         {
             "name": "symfony/polyfill-intl-normalizer",
-            "version": "v1.38.0",
+            "version": "v1.42.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-intl-normalizer.git",
-                "reference": "2d446c214bdbe5b71bde5011b060a05fece3ae6b"
+                "reference": "aa20edea75bd9c48cfecc8360922e5a6e5c44502"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/2d446c214bdbe5b71bde5011b060a05fece3ae6b",
-                "reference": "2d446c214bdbe5b71bde5011b060a05fece3ae6b",
+                "url": "https://api.github.com/repos/symfony/polyfill-intl-normalizer/zipball/aa20edea75bd9c48cfecc8360922e5a6e5c44502",
+                "reference": "aa20edea75bd9c48cfecc8360922e5a6e5c44502",
                 "shasum": ""
             },
             "require": {
@@ -870,7 +921,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.38.0"
+                "source": "https://github.com/symfony/polyfill-intl-normalizer/tree/v1.42.0"
             },
             "funding": [
                 {
@@ -890,7 +941,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-05-25T13:48:31+00:00"
+            "time": "2026-08-07T06:33:24+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1059,16 +1110,16 @@
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v3.7.1",
+            "version": "v3.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
-                "reference": "c0a284bab1ed8aa0417e3d69250ab437739563a0"
+                "reference": "15e6a07ec2a2c75ceb1b21dd98105ee8456d2257"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/c0a284bab1ed8aa0417e3d69250ab437739563a0",
-                "reference": "c0a284bab1ed8aa0417e3d69250ab437739563a0",
+                "url": "https://api.github.com/repos/symfony/service-contracts/zipball/15e6a07ec2a2c75ceb1b21dd98105ee8456d2257",
+                "reference": "15e6a07ec2a2c75ceb1b21dd98105ee8456d2257",
                 "shasum": ""
             },
             "require": {
@@ -1122,7 +1173,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/service-contracts/tree/v3.7.1"
+                "source": "https://github.com/symfony/service-contracts/tree/v3.7.3"
             },
             "funding": [
                 {
@@ -1142,7 +1193,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-06-16T09:55:08+00:00"
+            "time": "2026-07-27T15:39:01+00:00"
         },
         {
             "name": "symfony/string",
@@ -4185,5 +4236,5 @@
     "platform-overrides": {
         "php": "8.4"
     },
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }

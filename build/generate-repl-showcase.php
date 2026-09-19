@@ -52,7 +52,7 @@ foreach (explode("\n", $stripped) as $line) {
     if ($line === '') {
         continue;
     }
-    if (preg_match('/^(Welcome to the Phel Repl|Type "exit"|Bye!)/', $line)) {
+    if (preg_match('/^(Welcome to the Phel Repl|Type |Bye!)/', $line)) {
         continue;
     }
     $results[] = $line;

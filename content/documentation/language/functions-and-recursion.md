@@ -166,7 +166,7 @@ Annotate types with `:tag` metadata. The compiler emits PHP type declarations an
 (defn greet ^{:tag "?string"} [^string name]
   (when (seq name) (str "hi " name)))
 
-(defn make-foo ^"\\My\\Foo" [] (php/new "My\\Foo"))
+(defn make-foo ^"\\My\\Foo" [] (new "My\\Foo"))
 ```
 
 Reader shorthands: `^int`, `^"?int"`, `^"\\Foo\\Bar"`, `^{:tag "..."}`.

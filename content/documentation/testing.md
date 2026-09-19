@@ -94,11 +94,11 @@ FAIL (= a b)
 (deftest exception-assertions
   ;; assert throws
   (is (thrown? Exception
-        (throw (php/new Exception "test"))))
+        (throw (new Exception "test"))))
 
   ;; assert throws with specific message
   (is (thrown-with-msg? Exception "test"
-        (throw (php/new Exception "test")))))
+        (throw (new Exception "test")))))
 ```
 
 ### Output
@@ -126,8 +126,8 @@ $this->expectExceptionMessage("test");
 throw new Exception("test");
 
 // Phel (inline exception assertions)
-(is (thrown? Exception (throw (php/new Exception "test"))))
-(is (thrown-with-msg? Exception "test" (throw (php/new Exception "test"))))
+(is (thrown? Exception (throw (new Exception "test"))))
+(is (thrown-with-msg? Exception "test" (throw (new Exception "test"))))
 ```
 
 The `output?` assertion is similar to PHPUnit's output buffering:
@@ -390,7 +390,7 @@ Useful in REPL to isolate or reset state between runs.
 (seq-mock)  ; => 3
 
 ;; Mock that throws
-(def err-mock (mock-throwing (php/new RuntimeException "fail")))
+(def err-mock (mock-throwing (new RuntimeException "fail")))
 ```
 
 ### Inspecting calls

@@ -96,11 +96,11 @@ Anything prefixed with `php/` reaches straight into PHP. Every function, class, 
 ```phel
 (php/strlen "hello")                 ; => 5, calls PHP strlen()
 (php/date "Y-m-d" 0)                 ; calls PHP date()
-(def now (php/new DateTime "2024-01-15"))  ; new DateTime(...)
-(php/-> now (format "Y-m-d"))        ; $now->format("Y-m-d")
+(def now (new DateTime "2024-01-15"))      ; new DateTime(...)
+(.format now "Y-m-d")                ; $now->format("Y-m-d")
 ```
 
-`php/new` builds objects, `php/->` calls methods, `php/::` reaches statics and constants. You do not need them to start, but it is why "a Lisp on PHP" is more than a slogan: the entire PHP ecosystem is still there. Full details in [PHP Interop](/documentation/php-interop/).
+`new` builds objects, `.method` calls methods, `Class/member` reaches statics and constants. You do not need them to start, but it is why "a Lisp on PHP" is more than a slogan: the entire PHP ecosystem is still there. Full details in [PHP Interop](/documentation/php-interop/).
 
 ## Putting it together
 

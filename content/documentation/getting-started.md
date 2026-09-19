@@ -73,7 +73,7 @@ Done. Working Phel project.
 
 - Runtime is PHP, not JVM. `println`, files, HTTP go through PHP.
 - Namespaces use dashes and dot separators in source, map to PHP classes (`my-app.core` ↔ `MyApp\Core`).
-- Interop: `(php/date "Y-m-d")`, `(php/new DateTime)`, `(php/-> obj (method arg))`.
+- Interop: `(php/date "Y-m-d")`, `(new DateTime)`, `(.method obj arg)`.
 - No agents/refs. Use PHP for concurrency, or Phel's fiber-based `async` (amphp).
 - Only `nil` and `false` are falsy. Strings, `0`, `[]` truthy.
 - Comments: `;` inline, `;;` standalone. `#_` reader discard and `(comment ...)` work.
@@ -99,7 +99,7 @@ Done. Working Phel project.
 - Prefix notation: `add(1, 2)` becomes `(+ 1 2)`. Function is always first.
 - Persistent vectors/maps/sets, not PHP arrays (structural sharing, O(log32 n) updates).
 - Everything an expression. No statements, no `return`.
-- One-liner interop: `(php/date "Y-m-d")`, `(php/new DateTime "2024-01-01")`, `(php/-> obj (method arg))`.
+- One-liner interop: `(php/date "Y-m-d")`, `(new DateTime "2024-01-01")`, `(.method obj arg)`.
 - REPL-first. Evaluate forms, don't re-run scripts.
 
 **Start:** [Rosetta Stone: PHP → Phel](/documentation/guides/rosetta-stone). Maps PHP patterns to Phel.

@@ -84,11 +84,10 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 ; => 11
 
 (php/array_sum
-  (to-php-array [1 2 3 4]))
+  (to-array [1 2 3 4]))
 ; => 10
 
-(php/-> (php/new \DateTime)
-        (format "Y"))
+(.format (new \DateTime) "Y")
 ; => "2026"
 ```
 
@@ -98,8 +97,8 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 <div class="tab-split-title">Direct PHP interop</div>
 
 - `php/` prefix calls any built-in function
-- `php/->` is the PHP method-call operator
-- `php/new` constructs PHP classes
+- `.method` calls PHP methods on objects
+- `new` constructs PHP classes
 - Composer packages work without wrappers
 
 </div>

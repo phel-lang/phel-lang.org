@@ -199,12 +199,12 @@ When one branch fails, cancel its sibling. `future-cancel` is cooperative - `slo
   (async
     (let [slow (future (do (delay 0.2) :slow))
           fast (future (do (delay 0.05)
-                           (throw (php/new \RuntimeException "boom"))))]
+                           (throw (new \RuntimeException "boom"))))]
       (try
         (await fast)
         (catch \RuntimeException e
           (future-cancel slow)
-          (str "cancelled after: " (php/-> e (getMessage))))))))
+          (str "cancelled after: " (.getMessage e)))))))
 
 (println (await (launch))) ; prints: cancelled after: boom
 ```
