@@ -119,7 +119,7 @@ They could not simply be deleted: the compiler still emits all four, `(new \C 1)
 
 ## PHP support
 
-- `1.x` requires **PHP 8.4 or newer**. Raising the minimum is breaking, so major only. It can still move before `1.0.0`; from the major it is frozen.
+- `1.x` requires **PHP 8.5 or newer**. Raising the minimum is breaking, so major only, which is exactly why the floor moves now: it can still change before `1.0.0`, and from the major it is frozen until `2.0.0`.
 - Every PHP minor from the minimum to the newest stable runs the full compiler and core suites in CI, added within one Phel minor of its release.
 - Support for a PHP minor is never dropped inside a major, including after it leaves PHP's own security window. Phel keeps testing it; the security posture of the runtime is your call.
 
