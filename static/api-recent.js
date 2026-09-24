@@ -109,12 +109,12 @@
       '</div>' +
       '<ul class="api-recent__list"></ul>';
 
-    // Prefer placing the bar directly above the namespace grid; fall back to
-    // after the page H1; last resort, top of content.
-    const grid = content.querySelector('.api-namespace-grid');
+    // Prefer placing the bar directly above the first category of namespace
+    // cards; fall back to after the page H1; last resort, top of content.
+    const group = content.querySelector('.api-index-group');
     const heading = content.querySelector('h1');
-    if (grid && grid.parentNode) {
-      grid.parentNode.insertBefore(container, grid);
+    if (group && group.parentNode) {
+      group.parentNode.insertBefore(container, group);
     } else if (heading) {
       heading.insertAdjacentElement('afterend', container);
     } else {

@@ -32,12 +32,7 @@ final class ApiMarkdownGeneratorTest extends TestCase
                 'aliases = ["/api", "/documentation/api"]',
                 '+++',
                 '',
-                '> **Tip:** This documentation is also available in JSON format at [`/api.json`](/api.json).',
-                '',
-                'Browse the API by namespace:',
-                '',
-                '<ul class="api-namespace-grid">',
-                '</ul>',
+                '0 namespaces and 0 functions, grouped by area.',
                 '',
             ],
             $files[ApiMarkdownGenerator::INDEX_KEY],
@@ -134,6 +129,116 @@ final class ApiMarkdownGeneratorTest extends TestCase
             [ApiMarkdownGenerator::INDEX_KEY, 'ns-1', 'ns-2'],
             array_keys($files),
         );
+    }
+
+    public function test_index_groups_namespaces_by_category_in_curated_order(): void
+    {
+        $index = $this->generateIndex(['string', 'json', 'core', 'brand-new']);
+
+        self::assertContains('4 namespaces and 4 functions, grouped by area.', $index);
+        $headings = array_values(array_filter($index, static fn (string $l): bool => str_starts_with($l, '<h2 ')));
+        self::assertSame(
+            [
+                '<h2 id="core-language">Core language</h2>',
+                '<h2 id="data-formats">Data formats</h2>',
+                '<h2 id="other">Other</h2>',
+            ],
+            $headings,
+        );
+
+        $html = implode("\n", $index);
+        self::assertLessThan(strpos($html, '/api/string/'), strpos($html, '/api/core/'));
+        self::assertStringContainsString('<a href="#other">Other</a>', $html);
+    }
+
+    public function test_index_card_carries_curated_description_or_count_only(): void
+    {
+        $html = implode("\n", $this->generateIndex(['json', 'brand-new']));
+
+        self::assertStringContainsString(
+            '<a class="api-ns-card__link" href="/documentation/reference/api/json/"><span class="api-ns-card__head"><span class="api-namespace-grid__name">json</span><span class="api-namespace-grid__count">1</span></span><span class="api-ns-card__desc">Encode and decode JSON.</span></a>',
+            $html,
+        );
+        self::assertStringContainsString(
+            '<a class="api-ns-card__link" href="/documentation/reference/api/brand-new/"><span class="api-ns-card__head"><span class="api-namespace-grid__name">brand-new</span><span class="api-namespace-grid__count">1</span></span></a>',
+            $html,
+        );
+    }
+
+    public function test_index_nests_sub_namespaces_under_their_parent_card(): void
+    {
+        $index = $this->generateIndex(['test.gen', 'test', 'mock', 'orphan.child']);
+        $html = implode("\n", $index);
+
+        self::assertSame(1, substr_count($html, 'class="api-ns-card__link" href="/documentation/reference/api/test/"'));
+        self::assertStringNotContainsString('class="api-ns-card__link" href="/documentation/reference/api/test-gen/"', $html);
+        self::assertStringContainsString(
+            '<li><a href="/documentation/reference/api/test-gen/"><code>test.gen</code><span class="api-ns-card__sub-count">1</span></a></li>',
+            $html,
+        );
+        // No `orphan` parent, so the child keeps a card of its own.
+        self::assertStringContainsString('class="api-ns-card__link" href="/documentation/reference/api/orphan-child/"', $html);
+    }
+
+    public function test_index_ends_with_json_note(): void
+    {
+        $index = $this->generateIndex(['core']);
+
+        self::assertSame(
+            '<p class="api-index-json">The full API is also available as JSON at <a href="/api.json"><code>/api.json</code></a>.</p>',
+            $index[count($index) - 2],
+        );
+    }
+
+    public function test_namespace_file_carries_curated_description(): void
+    {
+        $apiFacade = $this->createStub(ApiFacadeInterface::class);
+        $apiFacade->method('getPhelFunctions')
+            ->willReturn([
+                PhelFunction::fromArray(['name' => 'encode', 'doc' => '', 'namespace' => 'json']),
+            ]);
+
+        $files = (new ApiMarkdownGenerator($apiFacade))->generate();
+
+        self::assertSame('description = "Encode and decode JSON."', $files['json'][2]);
+    }
+
+    public function test_deprecation_notice_uses_themed_class_not_inline_color(): void
+    {
+        $apiFacade = $this->createStub(ApiFacadeInterface::class);
+        $apiFacade->method('getPhelFunctions')
+            ->willReturn([
+                PhelFunction::fromArray([
+                    'name' => 'old-fn',
+                    'doc' => '',
+                    'namespace' => 'ns-1',
+                    'meta' => ['deprecated' => '0.9'],
+                ]),
+            ]);
+
+        $files = (new ApiMarkdownGenerator($apiFacade))->generate();
+
+        self::assertContains('<small><span class="api-deprecated">Deprecated</span>: 0.9</small>', $files['ns-1']);
+    }
+
+    /**
+     * @param list<string> $namespaces one function each
+     * @return list<string>
+     */
+    private function generateIndex(array $namespaces): array
+    {
+        $apiFacade = $this->createStub(ApiFacadeInterface::class);
+        $apiFacade->method('getPhelFunctions')
+            ->willReturn(array_map(
+                static fn (string $ns): PhelFunction => PhelFunction::fromArray([
+                    'name' => 'fn',
+                    'doc' => '',
+                    'namespace' => $ns,
+                ]),
+                $namespaces,
+            ));
+
+        return (new ApiMarkdownGenerator($apiFacade))->generate()[ApiMarkdownGenerator::INDEX_KEY];
     }
 
     public function test_see_also_link_within_namespace_uses_relative_anchor(): void

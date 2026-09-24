@@ -27,6 +27,9 @@
     {% include "partials/breadcrumb.html" %}
 
     <h1><code>{{ page.title }}</code></h1>
+    {% if page.description %}
+    <p class="api-ns-lead">{{ page.description }}</p>
+    {% endif %}
 
     {% if page.title is not containing(".") %}
     {% set_global sub_namespaces = [] %}
@@ -42,8 +45,13 @@
         {% for sub in sub_namespaces %}
             <li>
                 <a href="{{ sub.permalink | safe }}">
-                    <span class="api-subnamespaces__name"><code>{{ sub.title }}</code></span>
-                    <span class="api-subnamespaces__count">{{ sub.extra.fn_count | default(value=0) }}</span>
+                    <span class="api-subnamespaces__head">
+                        <span class="api-subnamespaces__name"><code>{{ sub.title }}</code></span>
+                        <span class="api-subnamespaces__count">{{ sub.extra.fn_count | default(value=0) }}</span>
+                    </span>
+                    {% if sub.description %}
+                    <span class="api-subnamespaces__desc">{{ sub.description }}</span>
+                    {% endif %}
                 </a>
             </li>
         {% endfor %}
@@ -52,10 +60,34 @@
     {% endif %}
     {% endif %}
 
-    {% if page.toc and page.toc | length > 0 %}
+    {% set fn_total = page.toc | length %}
+    {# Function entries are h3; this h2 keeps the outline h1 > h2 > h3. #}
+    {% if fn_total > 0 %}
+    <h2 class="api-fns-title">Functions</h2>
+    {% endif %}
+    {# The filter needs JS, so it ships hidden and api-filter.js reveals it.
+       Short namespaces fit on a screen and skip it. #}
+    {% if fn_total > 10 %}
+    <div class="api-filter" data-api-filter hidden>
+        <div class="api-filter__field">
+            <svg class="api-filter__icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+            <input class="api-filter__input" id="api-filter-input" type="search" placeholder="Filter functions by name" aria-label="Filter {{ fn_total }} functions by name" aria-controls="api-fns" autocomplete="off" autocapitalize="off" spellcheck="false">
+            <button type="button" class="api-filter__clear" aria-label="Clear filter" hidden>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <p class="api-filter__count" aria-live="polite">{{ fn_total }} functions</p>
+    </div>
+    <div class="api-filter-empty" data-api-filter-empty hidden>
+        <p>No functions match <code></code></p>
+        <button type="button" class="api-filter-empty__clear">Clear filter</button>
+    </div>
+    {% endif %}
+
+    {% if page.toc and fn_total > 0 %}
     <details class="api-namespace-toc">
         <summary>
-            <span class="api-namespace-toc__title">Jump to function ({{ page.toc | length }})</span>
+            <span class="api-namespace-toc__title">Jump to function ({{ fn_total }})</span>
             <span class="api-namespace-toc__chevron">&rsaquo;</span>
         </summary>
         <div class="api-namespace-toc__content">
@@ -68,10 +100,13 @@
     </details>
     {% endif %}
 
-    {{ page.content | safe }}
+    <div class="api-fns" id="api-fns">
+        {{ page.content | safe }}
+    </div>
 {% endblock content %}
 
 {% block page_scripts %}
     <script type="text/javascript" src="/api-ns-rail.js" defer></script>
     <script type="text/javascript" src="/api-recent.js" defer></script>
+    <script type="text/javascript" src="/api-filter.js" defer></script>
 {% endblock page_scripts %}

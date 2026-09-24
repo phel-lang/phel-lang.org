@@ -15,6 +15,7 @@ final readonly class ApiMarkdownGenerator
 
     public function __construct(
         private ApiFacadeInterface $apiFacade,
+        private ApiNamespaceCatalog $catalog = new ApiNamespaceCatalog(),
     ) {
     }
 
@@ -62,11 +63,16 @@ final readonly class ApiMarkdownGenerator
     }
 
     /**
+     * The index is one raw HTML block (no blank lines) so markdown leaves the
+     * nested cards alone.
+     *
      * @param array<string, list<PhelFunction>> $groupedByNamespace
      * @return list<string>
      */
     private function buildIndexFile(array $groupedByNamespace): array
     {
+        $counts = array_map(count(...), $groupedByNamespace);
+
         $lines = [
             '+++',
             'title = "API"',
@@ -78,26 +84,116 @@ final readonly class ApiMarkdownGenerator
             'aliases = ["/api", "/documentation/api"]',
             '+++',
             '',
-            '> **Tip:** This documentation is also available in JSON format at [`/api.json`](/api.json).',
-            '',
-            'Browse the API by namespace:',
+            sprintf(
+                '%d namespaces and %s functions, grouped by area.',
+                count($counts),
+                number_format(array_sum($counts)),
+            ),
             '',
         ];
 
-        ksort($groupedByNamespace);
-        $lines[] = '<ul class="api-namespace-grid">';
-        foreach ($groupedByNamespace as $namespace => $functions) {
-            $slug = $this->namespaceSlug($namespace);
-            $count = count($functions);
+        $groups = $this->catalog->group(array_keys($counts));
+        if ($groups === []) {
+            return $lines;
+        }
+
+        $lines[] = '<nav class="api-index-toc" aria-label="API categories">';
+        $lines[] = '<ul>';
+        foreach (array_keys($groups) as $category) {
             $lines[] = sprintf(
-                '<li><a href="/documentation/reference/api/%s/"><span class="api-namespace-grid__name">%s</span><span class="api-namespace-grid__count">%d</span></a></li>',
-                $slug,
-                htmlspecialchars($namespace),
-                $count,
+                '<li><a href="#%s">%s</a></li>',
+                ZolaAnchor::fromHeading($category),
+                htmlspecialchars($category),
             );
         }
         $lines[] = '</ul>';
+        $lines[] = '</nav>';
+
+        foreach ($groups as $category => $namespaces) {
+            $anchor = ZolaAnchor::fromHeading($category);
+            $lines[] = sprintf('<section class="api-index-group" aria-labelledby="%s">', $anchor);
+            $lines[] = sprintf('<h2 id="%s">%s</h2>', $anchor, htmlspecialchars($category));
+            $lines[] = '<ul class="api-namespace-grid">';
+            foreach ($this->nestSubNamespaces($namespaces) as $namespace => $subNamespaces) {
+                $lines = array_merge($lines, $this->buildNamespaceCard($namespace, $subNamespaces, $counts));
+            }
+            $lines[] = '</ul>';
+            $lines[] = '</section>';
+        }
+
+        $lines[] = '<p class="api-index-json">The full API is also available as JSON at <a href="/api.json"><code>/api.json</code></a>.</p>';
         $lines[] = '';
+
+        return $lines;
+    }
+
+    /**
+     * Folds `a.b` under `a` when `a` is in the same list, so the index shows
+     * one card per family. Orphans keep their own card.
+     *
+     * @param list<string> $namespaces
+     * @return array<string, list<string>>
+     */
+    private function nestSubNamespaces(array $namespaces): array
+    {
+        $nested = [];
+        foreach ($namespaces as $namespace) {
+            $root = explode('.', $namespace, 2)[0];
+            if ($root !== $namespace && in_array($root, $namespaces, true)) {
+                continue;
+            }
+            $nested[$namespace] = [];
+        }
+
+        foreach ($namespaces as $namespace) {
+            $root = explode('.', $namespace, 2)[0];
+            if ($root !== $namespace && isset($nested[$root])) {
+                $nested[$root][] = $namespace;
+            }
+        }
+
+        return array_map(static function (array $subs): array {
+            sort($subs);
+            return $subs;
+        }, $nested);
+    }
+
+    /**
+     * @param list<string> $subNamespaces
+     * @param array<string, int> $counts
+     * @return list<string>
+     */
+    private function buildNamespaceCard(string $namespace, array $subNamespaces, array $counts): array
+    {
+        $description = $this->catalog->descriptionOf($namespace);
+
+        $lines = [
+            '<li class="api-ns-card">',
+            sprintf(
+                '<a class="api-ns-card__link" href="/documentation/reference/api/%s/"><span class="api-ns-card__head"><span class="api-namespace-grid__name">%s</span><span class="api-namespace-grid__count">%d</span></span>%s</a>',
+                $this->namespaceSlug($namespace),
+                htmlspecialchars($namespace),
+                $counts[$namespace],
+                $description === null
+                    ? ''
+                    : sprintf('<span class="api-ns-card__desc">%s</span>', htmlspecialchars($description)),
+            ),
+        ];
+
+        if ($subNamespaces !== []) {
+            $lines[] = sprintf('<ul class="api-ns-card__subs" aria-label="%s sub-namespaces">', htmlspecialchars($namespace));
+            foreach ($subNamespaces as $sub) {
+                $lines[] = sprintf(
+                    '<li><a href="/documentation/reference/api/%s/"><code>%s</code><span class="api-ns-card__sub-count">%d</span></a></li>',
+                    $this->namespaceSlug($sub),
+                    htmlspecialchars($sub),
+                    $counts[$sub],
+                );
+            }
+            $lines[] = '</ul>';
+        }
+
+        $lines[] = '</li>';
 
         return $lines;
     }
@@ -110,9 +206,11 @@ final readonly class ApiMarkdownGenerator
     private function buildNamespaceFile(string $namespace, array $functions, array $functionMap): array
     {
         $count = count($functions);
+        $description = $this->catalog->descriptionOf($namespace);
         $lines = [
             '+++',
             sprintf('title = "%s"', addslashes($namespace)),
+            ...($description === null ? [] : [sprintf('description = "%s"', addslashes($description))]),
             'template = "page-api-namespace.html"',
             '',
             '[extra]',
@@ -203,7 +301,7 @@ final readonly class ApiMarkdownGenerator
         }
 
         $message = sprintf(
-            '<small><span style="color: red; font-weight: bold;">Deprecated</span>: %s',
+            '<small><span class="api-deprecated">Deprecated</span>: %s',
             (string) $fn->meta['deprecated'],
         );
 
