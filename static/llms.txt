@@ -1,7 +1,7 @@
 # Phel Lang
 
 > Phel is a functional Lisp that compiles to PHP. Persistent immutable data structures,
-> macros, REPL-driven development, full PHP interop. Runs on PHP 8.4+.
+> macros, REPL-driven development, full PHP interop. Runs on PHP 8.5+.
 
 If you only fetch one URL, fetch the agent reference:
 

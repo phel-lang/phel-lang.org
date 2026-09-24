@@ -4,7 +4,7 @@ weight = 3
 description = "Install Phel via Composer, PHAR, Docker, or Nix, then verify with phel doctor."
 +++
 
-Requires **PHP 8.4+**. Pick the method matching your workflow.
+Requires **PHP 8.5+**. Pick the method matching your workflow.
 
 ## Which method?
 
@@ -85,7 +85,7 @@ No PHP installed? With Docker, run Phel in one command.
 Paste and you're in a live Phel REPL. No files, no install:
 
 ```bash
-docker run --rm -it php:8.4-cli sh -c \
+docker run --rm -it php:8.5-cli sh -c \
   "curl -sL https://phel-lang.org/phar -o /tmp/phel.phar && php /tmp/phel.phar repl"
 ```
 
@@ -96,7 +96,7 @@ Container downloads PHAR fresh each run. Fine for experimenting, wasteful for da
 Mount cwd, run any Phel script:
 
 ```bash
-docker run --rm -it -v "$PWD":/app -w /app php:8.4-cli sh -c \
+docker run --rm -it -v "$PWD":/app -w /app php:8.5-cli sh -c \
   "curl -sL https://phel-lang.org/phar -o /tmp/phel.phar && php /tmp/phel.phar run src/main.phel"
 ```
 
@@ -108,7 +108,7 @@ Download PHAR once, make `phel` feel native:
 curl -L https://phel-lang.org/phar -o phel.phar
 
 # Add to ~/.zshrc, ~/.bashrc, or run in your shell:
-alias phel='docker run --rm -it -v "$PWD":/app -w /app php:8.4-cli php /app/phel.phar'
+alias phel='docker run --rm -it -v "$PWD":/app -w /app php:8.5-cli php /app/phel.phar'
 
 phel repl
 phel run src/main.phel
@@ -207,6 +207,21 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 
 </div>
 </details>
+
+## Upgrading to 0.53
+
+```bash
+composer require phel-lang/phel-lang:^0.53
+./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
+```
+
+Breaking changes in 0.53:
+
+- PHP 8.5 is the minimum.
+- An octal escape above `\377` is a compile error. `"\400"` used to compile to NUL.
+- PHP API only: `FilesystemFacadeInterface` moves from `Phel\Filesystem` to `Phel\Shared\Facade`, and `Phel\Fiber\FiberFacadeInterface` is gone (type-hint `Phel\Fiber\FiberFacade`). `MetaInterface::withMeta()` always returns a copy, so keep the returned value. Lint rule codes move to `Phel\Shared\LintRuleCodes`, with the same strings.
+
+New in 0.53: short type tags (`^map`, `^vector`, `^set`, `^list`, `^keyword`, `^symbol`, `^atom`), a warning when the result of a copying collection call is dropped, `phel bench --ab=<git-ref>`, and faster literal `assoc`, `get-in`, `assoc-in` and `update-in`. See the [0.53.0 release](https://github.com/phel-lang/phel-lang/releases/tag/v0.53.0).
 
 ## Upgrading to 0.52
 

@@ -39,7 +39,7 @@ Truncation-safe rules. Code form first, reason second. Verify with `phel doc` be
 
 ## What Phel is
 
-Functional Lisp that compiles to PHP. Runs on any PHP 8.4+, ships via Composer, full PHP interop.
+Functional Lisp that compiles to PHP. Runs on any PHP 8.5+, ships via Composer, full PHP interop.
 
 - Immutable persistent data structures.
 - Macros, homoiconicity, REPL-driven dev.

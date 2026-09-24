@@ -10,7 +10,7 @@ Zero to live REPL in under a minute.
 
 ## Requirements
 
-- **PHP 8.4+** (`php -v`)
+- **PHP 8.5+** (`php -v`)
 - **[Composer](https://getcomposer.org/)** (`composer --version`)
 
 No extra runtime. No JVM.
