@@ -42,7 +42,7 @@ Write the snippet, run it, paste real output. If output differs from what you as
 - CLI args: `argv` (vector of user args, excludes program name); `*program*` for the script path. Not `*argv*` or `php/$argv`.
 - Side effects: `doseq` / `foreach`. Build sequences: `for`. Mixing causes wrong return shape.
 - String module: `phel\string` (not `phel\str`).
-- Phel vectors print as `@[...]`. Clojure prints `[...]`. Match the runtime output in docs.
+- REPL output: vectors print as `[1 2]`, lazy seqs (`map`, `filter`) as `(1 2)`. Prompt is `user:N>`. Match the runtime output in docs.
 
 ## Core syntax
 

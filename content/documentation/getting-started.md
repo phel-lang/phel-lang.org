@@ -28,28 +28,29 @@ composer repl
 You should see:
 
 ```
-Welcome to the Phel Repl.
-Type "exit" or press Ctrl-D to quit.
->>>
+Welcome to the Phel Repl (v0.53.0)
+Type (exit) or press Ctrl-D to exit.
+user:1>
 ```
 
 Try a few expressions:
 
 ```phel
->>> (+ 1 2 3)
+user:1> (+ 1 2 3)
 6
->>> (def xs [1 2 3])
->>> (conj xs 4)
+user:2> (def xs [1 2 3])
+#'user/xs
+user:3> (conj xs 4)
 [1 2 3 4]
->>> xs
-[1 2 3]                    ; original vector is unchanged
->>> (map inc xs)
-@[2 3 4]
->>> (php/date "Y-m-d")      ; call any PHP function
+user:4> xs
+[1 2 3]                         ; original vector is unchanged
+user:5> (map inc xs)
+(2 3 4)                         ; map returns a lazy sequence
+user:6> (php/date "Y-m-d")      ; call any PHP function
 "2026-04-21"
 ```
 
-Exit with `Ctrl+D` or `exit`. Run the entry script:
+Exit with `Ctrl+D` or `(exit)`. Run the entry script:
 
 ```bash
 composer dev
