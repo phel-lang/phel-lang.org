@@ -581,8 +581,8 @@
 
 .homepage-content .homepage-hero-logo {
   display: block;
-  width: 200px;
-  height: 200px;
+  width: 72px;
+  height: 72px;
   margin: 0 auto var(--space-md);
   user-select: none;
   -webkit-user-drag: none;
@@ -677,7 +677,81 @@
 
 .homepage-hero-aside {
   min-width: 0;
-  min-height: 400px;
+}
+
+.homepage-hero-aside .terminal {
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+/* On phones the wrapped transcript costs a full screen before the first real
+   code sample. The compile showcase right below carries the story there. */
+@media (max-width: 600px) {
+  .homepage-hero-aside {
+    display: none;
+  }
+}
+
+.homepage-hero-aside .terminal * {
+  margin-top: 0;
+}
+
+.homepage-hero-note {
+  font-size: var(--text-xs);
+  color: var(--color-light-text-secondary);
+}
+
+.homepage-hero-text > .homepage-hero-note {
+  margin-top: var(--space-sm);
+}
+
+/* Production facts strip under the hero actions */
+.homepage-facts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-xs) var(--space-lg);
+  list-style: none;
+  padding: var(--space-md) 0 0;
+  border-top: 1px solid var(--color-light-border);
+  font-size: var(--text-sm);
+  color: var(--color-light-text-secondary);
+}
+
+.homepage-hero-text > .homepage-facts {
+  margin-top: var(--space-lg);
+}
+
+.homepage-facts li {
+  margin: 0;
+  padding: 0;
+}
+
+.homepage-facts li::before {
+  display: none;
+}
+
+.homepage-facts strong {
+  color: var(--color-light-text-primary);
+}
+
+@media (min-width: 880px) {
+  .homepage-facts {
+    justify-content: flex-start;
+  }
+}
+
+.dark .homepage-hero-note,
+.dark .homepage-facts {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .homepage-facts {
+  border-top-color: var(--color-dark-border);
+}
+
+.dark .homepage-facts strong {
+  color: var(--color-dark-text-primary);
 }
 
 .homepage-hero-aside .phel-terminal {
@@ -730,14 +804,22 @@
 
 .homepage-code-tabs-nav {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
   gap: 0;
   background: var(--color-light-bg-secondary);
   border-bottom: 1px solid var(--color-light-border);
   padding: 0 var(--space-sm);
 }
 
+.homepage-code-tabs-nav::-webkit-scrollbar {
+  display: none;
+}
+
 .homepage-tab-btn {
+  flex: 0 0 auto;
+  white-space: nowrap;
   appearance: none;
   background: transparent;
   border: none;
@@ -756,6 +838,26 @@
     color var(--duration-fast) var(--ease-out),
     border-color var(--duration-fast) var(--ease-out),
     background var(--duration-fast) var(--ease-out);
+}
+
+@media (max-width: 520px) {
+  .homepage-code-tabs-nav {
+    padding: 0;
+  }
+
+  .homepage-tab-btn {
+    padding: var(--space-sm) var(--space-sm);
+  }
+
+  /* Shell one-liners wrap instead of hiding behind a sideways scroll. */
+  .homepage-tab-panel code[data-lang='shellscript'] {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .homepage-tab-panel {
+    padding: var(--space-lg) var(--space-md);
+  }
 }
 
 .homepage-tab-icon {
@@ -1062,12 +1164,152 @@
   background: rgba(191, 164, 255, 0.1);
   color: var(--color-dark-text-accent);
 }
+
+/* ========================================
+   COMPILE SHOWCASE - Phel in, PHP out
+   ======================================== */
+
+.homepage-content > .compile-showcase {
+  max-width: 1080px;
+}
+
+.compile-showcase > * {
+  margin-top: 0;
+}
+
+.compile-showcase > * + * {
+  margin-top: var(--space-md);
+}
+
+.compile-showcase > h2 {
+  margin-bottom: 0;
+}
+
+.homepage-content .compile-showcase-lede,
+.homepage-content .compile-showcase-note {
+  text-align: center;
+  max-width: 44rem;
+  margin-left: auto;
+  margin-right: auto;
+  color: var(--color-light-text-secondary);
+}
+
+.homepage-content .compile-showcase-note {
+  font-size: var(--text-sm);
+}
+
+.compile-showcase code:not(pre code) {
+  font-family: 'Fira Code', 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+
+.compile-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+
+@media (min-width: 880px) {
+  .compile-split {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    align-items: stretch;
+  }
+}
+
+.compile-pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.compile-pane > * {
+  margin-top: 0;
+}
+
+.compile-pane-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-light-link);
+}
+
+.compile-pane-meta {
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-light-text-secondary);
+}
+
+.compile-pane .code-block-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+}
+
+.compile-pane .code-block-wrapper > pre,
+.compile-pane > pre {
+  flex: 1;
+  margin: 0;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.dark .compile-pane-label {
+  color: var(--color-dark-text-accent);
+}
+
+.dark .compile-pane-meta,
+.dark .homepage-content .compile-showcase-lede,
+.dark .homepage-content .compile-showcase-note {
+  color: var(--color-dark-text-secondary);
+}
+
+/* ========================================
+   FINAL CTA - closing call to action
+   ======================================== */
+
+.homepage-final-cta {
+  text-align: center;
+}
+
+.homepage-final-cta > * {
+  margin-top: 0;
+}
+
 .homepage-content .homepage-final-cta-title {
   font-size: var(--text-2xl);
   font-weight: 700;
   color: var(--color-light-text-primary);
   text-align: center;
-  margin: 0;
+  margin: 0 auto;
+}
+
+.homepage-content .homepage-final-cta-lede {
+  margin-top: var(--space-sm);
+  color: var(--color-light-text-secondary);
+}
+
+.homepage-final-cta .homepage-final-cta-actions {
+  justify-content: center;
+  margin-top: var(--space-lg);
+}
+
+.dark .homepage-content .homepage-final-cta-title {
+  color: var(--color-dark-text-primary);
+}
+
+.dark .homepage-content .homepage-final-cta-lede {
+  color: var(--color-dark-text-secondary);
 } /* ========================================
    Section spacing harmony for new layout
    ======================================== */

@@ -8,30 +8,73 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
     <h1 class="homepage-hero-title">Functional Lisp <span class="homepage-hero-accent">for PHP developers</span></h1>
     <p class="homepage-hero-lede">Phel compiles a Lisp dialect to PHP. Macros, persistent data structures, and REPL-driven development on any PHP host.</p>
     <div class="homepage-hero-actions">
-      <a href="#try-it-in-30-seconds" class="homepage-cta-button homepage-cta-primary">
+      <a href="/repl/" class="homepage-cta-button homepage-cta-primary">
         <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5.2 18.6 12 7 18.8Z"></path></svg>
-        Quick start
+        Try it in your browser
       </a>
-      <a href="/documentation/" class="homepage-cta-button homepage-cta-secondary">
-        <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5A1.5 1.5 0 0 1 6.5 3H18a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H6.5A1.5 1.5 0 0 0 5 19.5z"></path><path d="M5 19.5A1.5 1.5 0 0 0 6.5 21H19"></path><path d="M9 7.5h6"></path><path d="M9 11h4"></path></svg>
-        Documentation
+      <a href="#try-it-in-30-seconds" class="homepage-cta-button homepage-cta-secondary">
+        <svg class="homepage-cta-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11"></path><path d="m7 10 5 5 5-5"></path><path d="M5 20h14"></path></svg>
+        Install
       </a>
-      <a href="/practice/" class="homepage-hero-link">Practice <span aria-hidden="true">&rarr;</span></a>
+      <a href="/documentation/" class="homepage-hero-link">Docs <span aria-hidden="true">&rarr;</span></a>
     </div>
+    <p class="homepage-hero-note">The browser REPL downloads about 80 MB. Desktop recommended.</p>
+    <ul class="homepage-facts" aria-label="Production facts">
+      <li>Requires <strong>PHP 8.5+</strong></li>
+      <li>Pre-1.0. Read the <a href="/documentation/stability/">stability policy</a></li>
+      <li>PHP-FPM, FrankenPHP or RoadRunner. <a href="/documentation/deployment/">Deploy guide</a></li>
+    </ul>
   </div>
   <div class="homepage-hero-aside">
-    <div id="animated-repl" aria-label="Phel REPL animation"></div>
-    <noscript>
-<pre class="phel-terminal-session is-active"><span class="t-p">&gt;&gt;&gt;</span> <span class="t-in">(map inc [1 2 3])</span>
-<span class="t-out">@[2 3 4]</span>
-<span class="t-p">&gt;&gt;&gt;</span> <span class="t-in">(-&gt;&gt; (range 1 6) (filter odd?) (reduce +))</span>
-<span class="t-out">9</span>
-<span class="t-p">&gt;&gt;&gt;</span> <span class="t-in">(defn greet [name] (str "hello, " name))</span>
-<span class="t-out">#'user/greet</span>
-<span class="t-p">&gt;&gt;&gt;</span> <span class="t-in">(greet "phel")</span>
-<span class="t-out">"hello, phel"</span></pre>
-    </noscript>
+    {{ hero_repl() }}
   </div>
+</section>
+
+<section class="homepage-section compile-showcase" aria-labelledby="phel-in-php-out">
+
+## Phel in, PHP out {#phel-in-php-out}
+
+<p class="compile-showcase-lede">The compiler emits plain PHP. The <code>-&gt;&gt;</code> macro expands away. PHP functions are called directly.</p>
+
+<div class="compile-split">
+<div class="compile-pane">
+<div class="compile-pane-label">You write Phel</div>
+
+```phel
+(defn slugify [title]
+  (->> title
+       php/trim
+       php/strtolower
+       (php/str_replace " " "-")))
+
+(slugify "  Hello Phel World ")
+; => "hello-phel-world"
+```
+
+</div>
+<div class="compile-pane">
+<div class="compile-pane-label">Phel emits PHP <span class="compile-pane-meta">metadata trimmed</span></div>
+
+```php
+\Phel::addDefinition(
+  "user",
+  "slugify",
+  new class() extends \Phel\Lang\AbstractFn {
+    public const BOUND_TO = "user\\slugify";
+
+    public function __invoke($title) {
+      return str_replace(" ", "-", strtolower(trim($title)));
+    }
+  },
+  // ...source location and doc metadata
+);
+```
+
+</div>
+</div>
+
+<p class="compile-showcase-note">Real output of <code>phel compile</code> for the <code>defn</code>. Run it on any snippet to see the PHP.</p>
+
 </section>
 
 <section class="homepage-section homepage-section--alt">
@@ -208,7 +251,8 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 
 ```bash
 docker run --rm -it php:8.5-cli sh -c \
-  "curl -sL https://phel-lang.org/phar -o /tmp/phel.phar && php /tmp/phel.phar repl"
+  "curl -sL https://phel-lang.org/phar -o /tmp/phel.phar \
+  && php /tmp/phel.phar repl"
 ```
 
   </div>
@@ -245,7 +289,7 @@ php phel.phar repl
 <div class="faq">
   <details class="faq-item">
     <summary class="faq-q">Is Phel production-ready?</summary>
-    <div class="faq-a">Phel is pre-1.0, but the core language and tooling are stable and tested: a good fit for side projects, CLI apps, internal tools, and prototypes. Breaking changes can still land between minor releases, so it isn't LTS-grade enterprise-stable yet. Full picture in <a href="/documentation/why-phel/#is-phel-production-ready">Why Phel</a>; track the <a href="/releases/">release notes</a> if you depend on it.</div>
+    <div class="faq-a">Phel is pre-1.0, but the core language and tooling are stable and tested: a good fit for side projects, CLI apps, internal tools, and prototypes. Breaking changes can still land between minor releases, so it isn't LTS-grade enterprise-stable yet. The <a href="/documentation/stability/">stability policy</a> spells out what <code>1.0</code> will freeze, and the <a href="/documentation/deployment/">deployment guide</a> covers FPM and worker runtimes. Full picture in <a href="/documentation/why-phel/#is-phel-production-ready">Why Phel</a>.</div>
   </details>
   <details class="faq-item">
     <summary class="faq-q">Can I call PHP libraries from Phel?</summary>
@@ -264,3 +308,13 @@ php phel.phar repl
     <div class="faq-a">Open a thread on <a href="https://github.com/phel-lang/phel-lang/discussions">GitHub Discussions</a>, file an issue on <a href="https://github.com/phel-lang/phel-lang/issues">GitHub</a>, or read the <a href="/documentation/">full documentation</a>.</div>
   </details>
 </div>
+
+<section class="homepage-section homepage-section--alt homepage-final-cta" aria-labelledby="final-cta-title">
+  <h2 id="final-cta-title" class="homepage-final-cta-title">Write your first Phel function today</h2>
+  <p class="homepage-final-cta-lede">Install it, open a REPL, write a function. Then drill the basics in Practice.</p>
+  <div class="homepage-hero-actions homepage-final-cta-actions">
+    <a href="/documentation/getting-started/" class="homepage-cta-button homepage-cta-primary">Get started</a>
+    <a href="/practice/" class="homepage-cta-button homepage-cta-secondary">Practice exercises</a>
+    <a href="/repl/" class="homepage-hero-link">Try it in your browser <span aria-hidden="true">&rarr;</span></a>
+  </div>
+</section>

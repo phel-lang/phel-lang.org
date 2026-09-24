@@ -1,0 +1,16 @@
+{#- Server-rendered REPL transcript for the homepage hero. The pairs come from
+    static/animated-repl-data.json, which build/generate-repl-showcase.php
+    captures from a real `phel repl` session, so the page shows real output
+    before any JavaScript runs. static/animated-repl.js only replays the last
+    form as typing. -#}
+{%- set pairs = load_data(path="static/animated-repl-data.json") -%}
+<div class="terminal" role="group" aria-label="Phel REPL session" data-animated-repl>
+<div class="terminal-header" aria-hidden="true"><span class="terminal-dots"><span class="terminal-dot terminal-dot-red"></span><span class="terminal-dot terminal-dot-yellow"></span><span class="terminal-dot terminal-dot-green"></span></span><span class="terminal-title">phel repl</span><span class="terminal-dots terminal-dots-spacer"></span></div>
+<div class="terminal-body">
+{%- for pair in pairs %}
+<div class="terminal-line terminal-input"><span class="terminal-prompt">user:{{ loop.index }}&gt; </span><span class="terminal-text">{{ pair.prompt }}</span></div>
+<div class="terminal-line terminal-result">{{ pair.result }}</div>
+{%- endfor %}
+<div class="terminal-line terminal-input"><span class="terminal-prompt">user:{{ pairs | length + 1 }}&gt; </span><span class="terminal-cursor" aria-hidden="true"></span></div>
+</div>
+</div>

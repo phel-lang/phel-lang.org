@@ -1,133 +1,39 @@
-document.addEventListener('DOMContentLoaded', async () => {
-  const container = document.getElementById('animated-repl');
-  if (!container) return;
+document.addEventListener('DOMContentLoaded', () => {
+  // The transcript is server-rendered by the hero_repl shortcode from REAL
+  // `phel repl` output (build/generate-repl-showcase.php), so the terminal is
+  // never empty and never drifts from what Phel prints. This script only
+  // replays the last form as typing, then reveals its result.
+  const terminal = document.querySelector('[data-animated-repl]');
+  if (!terminal) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  // Prompt/result pairs are generated from REAL `phel repl` output at build
-  // time (build/generate-repl-showcase.php) so the demo can never drift from
-  // what Phel actually prints. A tiny static fallback keeps the homepage from
-  // going blank if the data file fails to load.
-  const fallback = [
-    { prompt: '(map inc [1 2 3])', result: '@[2 3 4]' },
-    { prompt: '(greet "phel")', result: '"hello, phel"' },
-  ];
+  const body = terminal.querySelector('.terminal-body');
+  const inputs = body.querySelectorAll('.terminal-input .terminal-text');
+  const results = body.querySelectorAll('.terminal-result');
+  const idle = body.querySelector('.terminal-input:last-child');
+  if (!inputs.length || !results.length || !idle) return;
 
-  let pairs = fallback;
-  try {
-    const res = await fetch('/animated-repl-data.json', { cache: 'no-cache' });
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) pairs = data;
+  const lastInput = inputs[inputs.length - 1];
+  const lastResult = results[results.length - 1];
+  const text = lastInput.textContent;
+
+  // Lock the height so typing never shifts the layout around it.
+  body.style.minHeight = `${body.offsetHeight}px`;
+  lastInput.textContent = '';
+  lastResult.style.visibility = 'hidden';
+  idle.style.visibility = 'hidden';
+
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  (async () => {
+    await sleep(700);
+    for (const ch of text) {
+      lastInput.textContent += ch;
+      await sleep(30 + Math.random() * 14);
     }
-  } catch (_) {
-    // keep fallback
-  }
-
-  const lines = [];
-  for (const { prompt, result } of pairs) {
-    lines.push({ type: 'prompt', text: prompt, delay: 30 });
-    lines.push({ type: 'result', text: result, delay: 0 });
-  }
-
-  const terminal = document.createElement('div');
-  terminal.className = 'terminal';
-  terminal.innerHTML = `
-    <div class="terminal-header">
-      <div class="terminal-dots">
-        <span class="terminal-dot terminal-dot-red"></span>
-        <span class="terminal-dot terminal-dot-yellow"></span>
-        <span class="terminal-dot terminal-dot-green"></span>
-      </div>
-      <div class="terminal-title">phel repl</div>
-      <div class="terminal-dots" style="visibility:hidden">
-        <span class="terminal-dot"></span>
-        <span class="terminal-dot"></span>
-        <span class="terminal-dot"></span>
-      </div>
-    </div>
-    <div class="terminal-body" id="terminal-body"></div>
-  `;
-  container.innerHTML = '';
-  container.appendChild(terminal);
-
-  const body = terminal.querySelector('#terminal-body');
-  let isRunning = false;
-
-  let promptCounter = 0;
-
-  function getPrefix(type) {
-    if (type === 'shell') return '<span class="terminal-shell">$ </span>';
-    if (type === 'prompt') {
-      promptCounter += 1;
-      return `<span class="terminal-prompt">user:${promptCounter}&gt; </span>`;
-    }
-    return '';
-  }
-
-  function getClass(type) {
-    if (type === 'result') return 'terminal-result';
-    if (type === 'output') return 'terminal-output';
-    return 'terminal-input';
-  }
-
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  async function sleep(ms) {
-    if (reduceMotion) return;
-    return new Promise(r => setTimeout(r, ms));
-  }
-
-  async function typeLine(lineEl, text, charDelay) {
-    if (reduceMotion || charDelay <= 0) {
-      lineEl.textContent = text;
-      return;
-    }
-    for (let i = 0; i < text.length; i++) {
-      lineEl.textContent += text[i];
-      await sleep(charDelay + Math.random() * 14);
-    }
-  }
-
-  async function run() {
-    if (isRunning) return;
-    isRunning = true;
-    body.innerHTML = '';
-    promptCounter = 0;
-
-    for (const line of lines) {
-      const div = document.createElement('div');
-      div.className = `terminal-line ${getClass(line.type)}`;
-      div.innerHTML = getPrefix(line.type);
-      body.appendChild(div);
-
-      if (line.delay > 0) {
-        const textSpan = document.createElement('span');
-        div.appendChild(textSpan);
-        await sleep(100);
-        await typeLine(textSpan, line.text, line.delay);
-        await sleep(140);
-      } else {
-        const textSpan = document.createElement('span');
-        textSpan.textContent = line.text;
-        div.appendChild(textSpan);
-        await sleep(40);
-      }
-
-      body.scrollTop = body.scrollHeight;
-    }
-
-    await sleep(400);
-    const replay = document.createElement('div');
-    replay.className = 'terminal-replay';
-    replay.innerHTML = '<button class="terminal-replay-btn" title="Replay">&#8635; Replay</button>';
-    replay.querySelector('button').addEventListener('click', () => {
-      replay.remove();
-      isRunning = false;
-      run();
-    });
-    body.appendChild(replay);
-    body.scrollTop = body.scrollHeight;
-    isRunning = false;
-  }
-
-  run();
+    await sleep(180);
+    lastResult.style.visibility = '';
+    await sleep(120);
+    idle.style.visibility = '';
+  })();
 });
