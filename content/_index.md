@@ -207,7 +207,7 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
 <p class="homepage-tab-caption">Try without installing anything. Drops you into a REPL.</p>
 
 ```bash
-docker run --rm -it php:8.4-cli sh -c \
+docker run --rm -it php:8.5-cli sh -c \
   "curl -sL https://phel-lang.org/phar -o /tmp/phel.phar && php /tmp/phel.phar repl"
 ```
 
@@ -257,7 +257,7 @@ php phel.phar repl
   </details>
   <details class="faq-item">
     <summary class="faq-q">What PHP version do I need?</summary>
-    <div class="faq-a">The current release targets PHP 8.4 or later. Earlier Phel versions support older PHP releases if you need them.</div>
+    <div class="faq-a">The current release targets PHP 8.5 or later. Earlier Phel versions support older PHP releases if you need them.</div>
   </details>
   <details class="faq-item">
     <summary class="faq-q">Where do I get help?</summary>

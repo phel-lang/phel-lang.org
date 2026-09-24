@@ -116,11 +116,11 @@ Use splicing to add platform-specific entries to a map:
 (def config
   {:name "my-app"
    :version "1.0"
-   #?@(:phel [:runtime "php" :min-version "8.4"]
+   #?@(:phel [:runtime "php" :min-version "8.5"]
        :clj  [:runtime "jvm" :min-version "21"])})
 
 (println config)
-; => {:name "my-app" :version "1.0" :runtime "php" :min-version "8.4"}
+; => {:name "my-app" :version "1.0" :runtime "php" :min-version "8.5"}
 ```
 
 ### Inside control flow
