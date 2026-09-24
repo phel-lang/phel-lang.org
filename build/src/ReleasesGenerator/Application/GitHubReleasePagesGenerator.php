@@ -179,7 +179,8 @@ final readonly class GitHubReleasePagesGenerator
         $anchor = '<a id="v' . str_replace('.', '-', $release->getVersion()) . '"></a>';
 
         $name = trim($release->name) !== '' ? trim($release->name) : $release->getVersion();
-        $heading = "## " . $this->stripLeadingReleasePrefix($name);
+        // "0.22.0 – Title" reads as "0.22.0 - Title", matching the page title separator.
+        $heading = "## " . str_replace([' – ', ' — '], ' - ', $this->stripLeadingReleasePrefix($name));
 
         $meta = '*Released ' . $release->getPublishedDate() . '*';
         $meta .= ' · [GitHub release](' . $release->htmlUrl . ')';
@@ -273,8 +274,32 @@ final readonly class GitHubReleasePagesGenerator
 
         $cleanedBody = $this->removeBlockquotes($body);
         $description = $this->buildDescriptionFromLines($cleanedBody);
+        $description = EmDash::strip($this->stripInlineMarkdown($description));
 
         return $this->truncateDescription($description);
+    }
+
+    /**
+     * The description lands in list excerpts and meta tags, which render it
+     * as plain text, so markdown syntax would show up verbatim.
+     */
+    private function stripInlineMarkdown(string $text): string
+    {
+        // Split on code spans so their content (e.g. `*program*`) stays literal.
+        $parts = preg_split('/`([^`]*)`/', $text, -1, PREG_SPLIT_DELIM_CAPTURE) ?: [$text];
+
+        $plain = '';
+        foreach ($parts as $i => $part) {
+            if ($i % 2 === 1) {
+                $plain .= $part;
+                continue;
+            }
+            $part = preg_replace('/!?\[([^\]]*)\]\([^)]*\)/', '$1', $part) ?? $part;
+            $part = preg_replace('/(\*\*|__)(.+?)\1/', '$2', $part) ?? $part;
+            $plain .= $part;
+        }
+
+        return $plain;
     }
 
     private function removeBlockquotes(string $body): string

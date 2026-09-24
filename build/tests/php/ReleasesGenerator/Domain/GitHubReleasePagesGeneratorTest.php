@@ -40,6 +40,21 @@ final class GitHubReleasePagesGeneratorTest extends TestCase
         self::assertStringContainsString('description = "This is a great release with many improvements."', $result);
     }
 
+    public function test_section_heading_uses_hyphen_separator_instead_of_en_dash(): void
+    {
+        $release = $this->makeRelease(
+            tagName: 'v0.22.0',
+            name: '0.22.0 – Metadata conditions',
+            body: 'Notes.',
+            publishedAt: '2025-09-23T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release]);
+
+        self::assertStringContainsString('## 0.22.0 - Metadata conditions', $result);
+        self::assertStringNotContainsString('–', $result);
+    }
+
     public function test_slug_includes_name_suffix_when_present(): void
     {
         $release = $this->makeRelease(
@@ -234,6 +249,52 @@ final class GitHubReleasePagesGeneratorTest extends TestCase
 
         self::assertStringContainsString('description =', $result);
         self::assertStringContainsString('...', $result);
+    }
+
+    public function test_extract_description_strips_inline_markdown(): void
+    {
+        $release = $this->makeRelease(
+            tagName: 'v0.23.0',
+            name: '0.23.0',
+            body: 'New `phel eval` command, **faster** boot. See the [blog post](https://phel-lang.org/blog/x/) and `*program*`.',
+            publishedAt: '2025-10-05T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release]);
+
+        self::assertStringContainsString(
+            'description = "New phel eval command, faster boot. See the blog post and *program*."',
+            $result,
+        );
+    }
+
+    public function test_extract_description_truncates_after_stripping_links(): void
+    {
+        $url = 'https://github.com/phel-lang/phel-lang/blob/master/CHANGELOG.md';
+        $release = $this->makeRelease(
+            tagName: 'v0.23.0',
+            name: '0.23.0',
+            body: str_repeat('Lots of small improvements. ', 5) . "See the [Changelog]({$url}) for more.",
+            publishedAt: '2025-10-05T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release]);
+
+        self::assertMatchesRegularExpression('/^description = "[^\n]*See the Changelog for more\."$/m', $result);
+    }
+
+    public function test_extract_description_strips_em_dashes(): void
+    {
+        $release = $this->makeRelease(
+            tagName: 'v0.23.0',
+            name: '0.23.0',
+            body: 'Faster boot — and fewer surprises.',
+            publishedAt: '2025-10-05T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release]);
+
+        self::assertStringContainsString('description = "Faster boot, and fewer surprises."', $result);
     }
 
     public function test_empty_release_list_throws(): void
