@@ -41,7 +41,7 @@
 
 .site-header__search-trigger .search-trigger-text {
   flex: 1;
-  color: var(--color-gray-light);
+  color: var(--color-light-text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -58,7 +58,7 @@
   padding: 3px 8px;
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--color-gray-light);
+  color: var(--color-light-text-muted);
   background-color: var(--color-light-surface);
   border: 1px solid var(--color-light-border);
   border-radius: var(--radius-sm);
@@ -201,7 +201,7 @@
 }
 
 .search-modal__input::placeholder {
-  color: var(--color-gray-light);
+  color: var(--color-light-text-muted);
   font-weight: 400;
 }
 
@@ -228,7 +228,7 @@
   padding: 4px 10px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: var(--color-gray-light);
+  color: var(--color-light-text-muted);
   background-color: var(--color-light-bg-secondary);
   border: 1px solid var(--color-light-border);
   border-radius: var(--radius-sm);
@@ -461,12 +461,14 @@
   width: 100%;
 }
 
-/* Highlighted search terms - only in descriptions, not titles */
+/* Highlighted search terms - only in descriptions, not titles.
+   No inline padding on any highlight: the match is often part of a word
+   ("reduce" in "reduced"), and side padding would split it visually. */
 .search-results__item .desc strong {
   color: var(--color-light-link);
   font-weight: 700;
   background: rgba(99, 102, 241, 0.1);
-  padding: 0.1em 0.2em;
+  padding: 0.1em 0;
   border-radius: var(--radius-sm);
 }
 
@@ -474,7 +476,7 @@
   color: inherit;
   font-weight: inherit;
   background: rgba(99, 102, 241, 0.15);
-  padding: 0.1em 0.2em;
+  padding: 0.1em 0;
   border-radius: var(--radius-sm);
 }
 
@@ -482,7 +484,7 @@
 .search-results__item .title strong {
   font-weight: 700;
   background: rgba(99, 102, 241, 0.12);
-  padding: 0.1em 0.2em;
+  padding: 0.1em 0;
   border-radius: var(--radius-sm);
 }
 
@@ -599,7 +601,7 @@
 }
 
 .dark .search-modal__shortcut {
-  color: var(--color-dark-text-muted);
+  color: var(--color-dark-text-secondary);
   background-color: rgba(255, 255, 255, 0.05);
   border-color: var(--color-dark-border);
 }

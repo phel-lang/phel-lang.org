@@ -8,6 +8,14 @@
   margin: 0;
 }
 
+/* Overflowing blocks get tabindex="0" from copy-code.js so the keyboard can
+   scroll them; the focus ring shows where that scroll input lands. It sits
+   inset because the wrapper's overflow clips anything drawn outside. */
+pre:focus-visible {
+  outline: 2px solid var(--color-light-link);
+  outline-offset: -2px;
+}
+
 /* Preserve default margins for wrapped pre elements not in homepage */
 .two-column-layout .code-block-wrapper,
 .blog-entry .code-block-wrapper,
@@ -73,6 +81,10 @@
 /* ========================================
    DARK MODE
    ======================================== */
+
+.dark pre:focus-visible {
+  outline-color: var(--color-dark-text-accent);
+}
 
 .dark .copy-code-button {
   background-color: rgba(42, 49, 60, 0.95);

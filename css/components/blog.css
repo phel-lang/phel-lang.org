@@ -69,7 +69,7 @@
 }
 
 .blog-entry .meta {
-  color: var(--color-gray-light);
+  color: var(--color-light-text-muted);
 }
 
 .post-card__cta {
@@ -149,6 +149,10 @@
 
 .dark .post-card__cta {
   color: var(--color-dark-text-accent);
+}
+
+.dark .blog-entry .meta {
+  color: var(--color-dark-text-muted);
 }
 
 

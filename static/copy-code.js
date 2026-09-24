@@ -2,7 +2,25 @@ document.addEventListener('DOMContentLoaded', function() {
   // Add copy functionality to all pre blocks
   const preBlocks = document.querySelectorAll('pre');
 
+  // A block that scrolls sideways must be reachable by keyboard, otherwise
+  // arrow-key users can never read the clipped part. Only overflowing blocks
+  // join the tab order, and the check reruns whenever a block is resized.
+  function syncScrollableFocus(pre) {
+    if (pre.scrollWidth > pre.clientWidth) {
+      pre.setAttribute('tabindex', '0');
+    } else {
+      pre.removeAttribute('tabindex');
+    }
+  }
+
+  const resizeObserver = 'ResizeObserver' in window
+    ? new ResizeObserver(entries => entries.forEach(entry => syncScrollableFocus(entry.target)))
+    : null;
+
   preBlocks.forEach(pre => {
+    syncScrollableFocus(pre);
+    if (resizeObserver) resizeObserver.observe(pre);
+
     // Wrap pre in a container if not already wrapped
     if (!pre.parentElement.classList.contains('code-block-wrapper')) {
       const wrapper = document.createElement('div');

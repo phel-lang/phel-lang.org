@@ -12,7 +12,7 @@
 /* Comments and REPL prompts */
 .dark .z-comment,
 .dark .z-punctuation.z-definition.z-comment {
-  color: #64748b; /* slate-500 */
+  color: #94a3b8; /* slate-400: 5.47:1 on the #262c36 code bg */
   font-style: italic;
 }
 

@@ -4,7 +4,7 @@
     <ul>
         {% for h1 in page.toc %}
         <li>
-            <a href="#{{ h1.id }}">{{ h1.title }}</a>
+            <a href="#{{ h1.id }}" title="{{ h1.title }}">{{ h1.title }}</a>
         </li>
         {% endfor %}
     </ul>

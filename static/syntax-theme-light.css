@@ -12,7 +12,7 @@
 /* Comments and REPL prompts ("user:1>", "user:2>", "....:3>") */
 .z-comment,
 .z-punctuation.z-definition.z-comment {
-  color: #94a3b8; /* slate-400 */
+  color: #5b6b80; /* between slate-500 and 600: 4.97:1 on the #f1f5f9 code bg */
   font-style: italic;
 }
 
@@ -29,7 +29,7 @@
 /* Regex literals and character escapes */
 .z-string.z-regexp,
 .z-constant.z-character.z-escape {
-  color: #0891b2; /* cyan-600 */
+  color: #0e7490; /* cyan-700: 4.89:1 on the #f1f5f9 code bg (cyan-600 was 3.36) */
 }
 
 /* Keywords: defn, def, if, when, cond, let, ns, recur, try, catch, ... */
@@ -54,7 +54,7 @@
 
 /* Keysyms (:keys, :ns, :refer, :as) */
 .z-constant.z-other.z-keyword {
-  color: #0891b2; /* cyan-600 */
+  color: #0e7490; /* cyan-700: 4.89:1 on the #f1f5f9 code bg (cyan-600 was 3.36) */
 }
 
 /* Literals (true / false / nil) */

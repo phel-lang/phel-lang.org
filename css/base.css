@@ -135,6 +135,38 @@ a:hover {
   text-decoration: underline;
 }
 
+/* Links inside running prose: color alone sits at 1.2:1 against body text,
+   so they carry a soft underline that firms up on hover. Classless links only,
+   which leaves buttons, cards and nav components to their own styling. */
+:is(
+    .page-content,
+    .blog-entry,
+    .release-entry,
+    .homepage-content,
+    .documentation-landing
+  )
+  :is(p, li, blockquote, td, dd)
+  a:not([class]),
+.releases-intro a:not([class]) {
+  text-decoration-line: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, currentcolor 45%, transparent);
+  text-underline-offset: 0.2em;
+}
+
+:is(
+    .page-content,
+    .blog-entry,
+    .release-entry,
+    .homepage-content,
+    .documentation-landing
+  )
+  :is(p, li, blockquote, td, dd)
+  a:not([class]):hover,
+.releases-intro a:not([class]):hover {
+  text-decoration-color: currentcolor;
+}
+
 a:focus-visible {
   outline: 2px solid var(--color-light-link);
   outline-offset: 3px;
