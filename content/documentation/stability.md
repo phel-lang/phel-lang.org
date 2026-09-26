@@ -1,7 +1,7 @@
 +++
 title = "Stability Policy"
 weight = 85
-description = "What a Phel version number promises: language and embedding stability for 1.x, which PHP symbols are public, how deprecations are announced, and where the upgrade guides live."
+description = "What a Phel version promises: language and embedding stability for 1.x, which PHP symbols are public, how deprecations are announced, and upgrade guides."
 +++
 
 What a Phel version number promises you, which symbols it covers, and how those are allowed to change.
@@ -153,7 +153,7 @@ Not under semver, and not before `1.0` either:
 
 ## Upgrading
 
-- **Version by version:** the [Installation](/documentation/installation/) page carries upgrade notes for recent releases, back to 0.37, with the breaking changes and the `cache:clear` you need after each bump. Older releases are in [the changelog](https://github.com/phel-lang/phel-lang/blob/main/CHANGELOG.md).
+- **Version by version:** [Upgrading](/documentation/upgrading/) has the notes for each release back to 0.37, with the breaking changes and the `cache:clear` you need after each bump. Older releases are in [the changelog](https://github.com/phel-lang/phel-lang/blob/main/CHANGELOG.md).
 - **Straight to 1.0 from 0.49 or later:** [the upgrade guide](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/upgrade-0.49-to-1.0.md) walks the whole path step by step. Most projects need nothing; where there is work, it is removing calls to things that have been printing notices for several releases.
 - **Something behaves differently from Clojure?** Check [the divergence catalogue](https://github.com/phel-lang/phel-lang/blob/main/docs/spec/clojure-divergences.md) first. If a behaviour is listed there, it is deliberate. Anything unlisted that differs is worth an issue.
 
