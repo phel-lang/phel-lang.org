@@ -18,11 +18,11 @@ The four data-structure literals each desugar to a constructor call:
 ```phel
 [1 2 3]       ; => [1 2 3]      same as (vector 1 2 3)
 {:a 1 :b 2}   ; => {:a 1 :b 2}  same as (hash-map :a 1 :b 2)
-#{1 2 3}      ; => {1 2 3}       hash-set, same as (hash-set 1 2 3)
+#{1 2 3}      ; => #{1 2 3}     hash-set, same as (hash-set 1 2 3)
 '(1 2 3)      ; => (1 2 3)      quoted list, same as (list 1 2 3)
 ```
 
-Empty forms read the same way: `[]`, `{}`, `#{}`, `'()`. See [Data Structures](/documentation/language/data-structures) for the operations each collection supports.
+Empty forms read the same way: `[]`, `{}`, `#{}`, `'()`. See [Data Structures](/documentation/language/data-structures/) for the operations each collection supports.
 
 ## Quote `'`
 
@@ -77,7 +77,8 @@ Resolved while reading: `#?()` picks one form by platform key (Phel selects `:ph
 
 A tagged literal runs the tag's reader function on the following form at read time. Three tags are built in:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 #inst "2026-01-01T00:00:00Z"                   ; reads as \DateTimeImmutable
 #regex "\\d+"                                   ; reads as a PCRE pattern string
 #uuid "550e8400-e29b-41d4-a716-446655440000"   ; reads as Phel\Lang\UUID
@@ -85,7 +86,8 @@ A tagged literal runs the tag's reader function on the following form at read ti
 
 Register your own tag with `register-tag` from `phel.reader`:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (ns my-app.main
   (:require phel.reader :refer [register-tag]))
 
@@ -97,7 +99,8 @@ Register your own tag with `register-tag` from `phel.reader`:
 
 For project-wide tags, drop a `data-readers.phel` at any source root; it auto-loads and should register each tag explicitly:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 ;; src/phel/data-readers.phel
 (ns my-app.data-readers
   (:require phel.reader :refer [register-tag]))
@@ -105,7 +108,7 @@ For project-wide tags, drop a `data-readers.phel` at any source root; it auto-lo
 (register-tag "point" (fn [[x y]] {:x x :y y}))
 ```
 
-Related helpers in `phel.reader`: `tag-registered?`, `unregister-tag`, `registered-tags`. Tagged literals are also covered in [Basic Types](/documentation/language/basic-types#tagged-literals).
+Related helpers in `phel.reader`: `tag-registered?`, `unregister-tag`, `registered-tags`. Tagged literals are also covered in [Basic Types](/documentation/language/basic-types/#tagged-literals).
 
 ## Regex literals `#"..."`
 
@@ -115,21 +118,21 @@ Related helpers in `phel.reader`: `tag-registered?`, `unregister-tag`, `register
 (re-find #"\d+" "abc123")    ; => "123"
 ```
 
-See [Basic Types](/documentation/language/basic-types#regex-literals) for matching helpers.
+See [Basic Types](/documentation/language/basic-types/#regex-literals) for matching helpers.
 
 ## Anonymous functions `#(...)`
 
 `#(...)` defines an inline function using `%` placeholders: `%` (or `%1`) is the first argument, `%2` the second, `%&` the rest.
 
 ```phel
-(map #(* % 2) [1 2 3])          ; => [2 4 6]
-(filter #(> % 5) [3 6 2 8 4])   ; => [6 8]
+(map #(* % 2) [1 2 3])          ; => (2 4 6)
+(filter #(> % 5) [3 6 2 8 4])   ; => (6 8)
 (reduce #(+ %1 %2) 0 [1 2 3 4]) ; => 10
 ```
 
-The full treatment, including when to reach for a named `fn` instead, lives in [Functions and Recursion](/documentation/language/functions-and-recursion).
+The full treatment, including when to reach for a named `fn` instead, lives in [Functions and Recursion](/documentation/language/functions-and-recursion/).
 
-> **Deprecated:** the older `|(...)` form with `$`, `$1`, `$&` placeholders. Use `#(...)` with `%`.
+> **Removed in 0.50:** the older `|(...)` form with `$`, `$1`, `$&` placeholders. Use `#(...)` with `%`.
 
 ## Comments
 
@@ -140,18 +143,19 @@ The full treatment, including when to reach for a named `fn` instead, lives in [
 
 `;` runs to end of line: `;;` for standalone comments, `;` for inline.
 
-> **Deprecated:** `#` as a line-comment character (use `;`) and `#| ... |#` multiline blocks (use `(comment ...)`).
+> **Removed:** `#` line comments and `#| ... |#` blocks no longer parse. Use `;` for lines, and `#_` or `(comment ...)` for whole forms.
 
 ## Metadata `^`
 
 `^` attaches metadata to the following form. A bare keyword sets it to `true`; a map merges several keys:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 ^:private (def x 10)
 ^{:doc "Example"} (defn foo [] nil)
 ```
 
-Type hints use the same syntax: `^int`, `^"?int"`, `^{:tag "\\Foo\\Bar"}`. See [Functions and Recursion](/documentation/language/functions-and-recursion) for typed defns.
+Type hints use the same syntax: `^int`, `^"?int"`, `^{:tag "\\Foo\\Bar"}`. See [Functions and Recursion](/documentation/language/functions-and-recursion/) for typed defns.
 
 ## Summary table
 
@@ -177,9 +181,10 @@ Type hints use the same syntax: `^int`, `^"?int"`, `^{:tag "\\Foo\\Bar"}`. See [
 | `#_`        | Form comment       | skip the next form                             | `#_ expr`                        |
 | `^`         | Metadata           | attach metadata to next form                   | `^:private`                      |
 
-## See also
+## Next steps
 
-- [Basic Types](/documentation/language/basic-types): tagged literals, regex literals, deref, and comments in depth
-- [Functions and Recursion](/documentation/language/functions-and-recursion): the `#(...)` shorthand and typed defns
-- [Macros](/documentation/language/macros): quasiquote and auto-gensym hygiene in practice
-- [Cheat Sheet](/documentation/reference/cheat-sheet): the one-page syntax overview
+- [Reader conditionals](/documentation/language/reader-conditionals/) - share one `.cljc` file between Phel and Clojure
+- [Basic Types](/documentation/language/basic-types/) - tagged literals, regex literals, deref, and comments in depth
+- [Functions and Recursion](/documentation/language/functions-and-recursion/) - the `#(...)` shorthand and typed defns
+- [Macros](/documentation/language/macros/) - quasiquote and auto-gensym hygiene in practice
+- [Cheat Sheet](/documentation/reference/cheat-sheet/) - the one-page syntax overview

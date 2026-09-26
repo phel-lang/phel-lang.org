@@ -2,7 +2,7 @@
 title = "Error handling"
 weight = 7
 description = "Throw and catch exceptions, handle PHP exceptions, attach data with ex-info, and decide when to throw vs return nil"
-aliases = ["/documentation/error-handling"]
+aliases = ["/documentation/error-handling", "/documentation/exceptions"]
 
 [extra]
 difficulty = "intermediate"
@@ -96,9 +96,30 @@ try {
 ```
 {% end %}
 
+## Custom exception types with `defexception`
+
+`defexception` defines a new exception class. Callers can then catch it by type. The parent defaults to `\Exception`; pass another class to extend it:
+
+```phel
+(defexception ProductNotFound)
+(defexception PaymentFailed \RuntimeException)
+
+(try
+  (throw (ProductNotFound. "sku-42"))
+  (catch ProductNotFound e
+    (str "missing: " (.getMessage e)))) ; => "missing: sku-42"
+
+(try
+  (throw (PaymentFailed. "card declined"))
+  (catch \RuntimeException e
+    (.getMessage e))) ; => "card declined"
+```
+
+Use a custom type when callers need to tell your failure apart from others. Use `ex-info` when they need data about it.
+
 ## Structured errors with `ex-info`
 
-A plain message is often not enough. `ex-info` builds an exception that carries a data map (and an optional cause), so handlers can branch on machine-readable context instead of parsing strings.
+A message alone is hard for code to act on. `ex-info` builds an exception that carries a data map (and an optional cause), so handlers can branch on machine-readable context instead of parsing strings.
 
 <!-- phel-test: skip -->
 ```phel
@@ -154,7 +175,7 @@ Pass the original exception as the third argument to keep the failure trail. Rea
 
 ## When to throw vs return nil
 
-Throwing is for genuinely exceptional situations. For ordinary "no result" cases, returning `nil` is often cleaner and lets callers use `if-let`, `when-let`, or a default.
+Throw for exceptional situations. For ordinary "no result" cases, return `nil`. Callers can then use [`if-let`, `when-let`](/documentation/language/control-flow/#when-if-not-and-binding-conditionals), or a default.
 
 - **Return `nil`** when absence is expected and the caller can handle it: a lookup miss, an empty parse, an optional field.
 - **Throw** when continuing would be a bug or the caller cannot reasonably proceed: invalid arguments, broken invariants, failed I/O.
@@ -176,6 +197,7 @@ Throwing is for genuinely exceptional situations. For ordinary "no result" cases
 
 ## Next steps
 
+- [Namespaces](/documentation/language/namespaces/) - split code across files and require it
 - [Control flow](/documentation/language/control-flow/) - `if`, `cond`, and `case` for handling results
 - [Basic types](/documentation/language/basic-types/) - why only `false` and `nil` are falsy
 - [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

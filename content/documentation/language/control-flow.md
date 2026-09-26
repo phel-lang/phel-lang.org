@@ -8,7 +8,7 @@ aliases = ["/documentation/control-flow"]
 difficulty = "beginner"
 +++
 
-Everything that decides what runs next: conditionals (`if`, `cond`, `case`), iteration (`loop`/`recur`, `foreach`, `for`), and conditional threading.
+Everything that decides what runs next: conditionals (`if`, `when`, `if-let`, `cond`, `condp`, `case`), iteration (`loop`/`recur`, `foreach`, `for`), and threading.
 
 ## If
 
@@ -50,6 +50,36 @@ Only `false` and `nil` are falsy. Everything else truthy. PHP equivalent: `test 
 (divide 10 2)  ; => 5
 (divide 10 0)  ; => nil
 ```
+
+## When, if-not, and binding conditionals
+
+`when` is `if` with no else branch. Its body can hold several forms, and it returns `nil` when the test is falsy. `when-not` and `if-not` flip the test:
+
+```phel
+(when (pos? 5) :positive)           ; => :positive
+(when (pos? -5) :positive)          ; => nil
+(when-not (empty? [1 2]) :has-items) ; => :has-items
+(if-not (empty? []) :has-items :empty) ; => :empty
+```
+
+`if-let` and `when-let` bind a value and branch on it in one step. The binding only exists in the truthy branch:
+
+```phel
+(def users {1 "Alice" 2 "Bob"})
+
+(if-let [name (get users 1)]
+  (str "Found " name)
+  "No user")                ; => "Found Alice"
+
+(if-let [name (get users 9)]
+  (str "Found " name)
+  "No user")                ; => "No user"
+
+(when-let [name (get users 2)]
+  (str "Hi " name))         ; => "Hi Bob"
+```
+
+Use them when a lookup can miss. No separate `nil` check needed.
 
 ## Case
 
@@ -201,6 +231,32 @@ if ($value < 0) {
 Cleaner than nested `if`. Use `:else` as a default.
 {% end %}
 
+## Condp
+
+`condp` is `cond` with a shared predicate. `(condp pred expr a x b y default)` tests `(pred a expr)`, then `(pred b expr)`, and returns the first match. The last odd form is the default:
+
+```phel
+(defn size [n]
+  (condp < n
+    100 :large
+    10  :medium
+    :small))
+
+(size 500) ; => :large
+(size 50)  ; => :medium
+(size 5)   ; => :small
+
+(defn http-kind [code]
+  (condp = code
+    200 :ok
+    404 :not-found
+    :other))
+
+(http-kind 404) ; => :not-found
+```
+
+Without a default, no match throws. Reach for `case` when you compare against constants, and `condp` when the comparison is a function.
+
 For destructuring-by-shape (matching the structure of vectors and maps, not just running predicates), see [Match](#match) below.
 
 ## Match
@@ -277,7 +333,7 @@ End a vector pattern with `& rest` to capture the remaining slice:
 * Nested patterns bind left-to-right; a later binding shadows an earlier one with the same name.
 * A `:guard` predicate runs against the raw value. Numeric predicates coerce non-numbers, so `(pos? [1 2])` is truthy. Put literal and structural patterns _before_ an open numeric guard.
 
-See also [`phel.schema`](/documentation/reference/api/schema/) for shapes reusable across validation and matching, and `case`/`cond`/`condp` above for simpler dispatch without destructuring. Full API: [match reference](/documentation/reference/api/match/).
+See also [`phel.schema`](/documentation/reference/api/schema/) for shapes reusable across validation and matching, and [`case`](#case), [`cond`](#cond) and [`condp`](#condp) above for simpler dispatch without destructuring. Full API: [match reference](/documentation/reference/api/match/).
 
 ## Loop
 
@@ -445,7 +501,7 @@ Combines iteration, filtering (`:when`), early termination (`:while`), reduction
 Like Clojure `for` (`:let`, `:when`, nesting). `:reduce` is a Phel extension.
 {% end %}
 
-## Do
+## Do {#statements-do}
 
 <!-- phel-test: skip -->
 ```phel
@@ -466,6 +522,28 @@ Like `for` but for side-effects. Returns `nil` like `foreach`.
 ```phel
 (dofor [x :in [1 2 3]] (print x)) ; Prints 1, 2, 3, returns nil
 (dofor [x :in [2 3 4 5] :when (even? x)] (print x)) ; Prints 2, 4, returns nil
+```
+
+## Threading
+
+`->` (thread-first) passes a value as the first argument of each form in turn. `->>` (thread-last) passes it as the last. Read them top to bottom, like a pipeline:
+
+```phel
+(-> 5 (+ 3) (* 2))                   ; => 16, same as (* (+ 5 3) 2)
+(-> {:name "alice"} :name phel.string/upper-case) ; => "ALICE"
+
+(->> [1 2 3 4]
+     (map inc)
+     (filter even?))                 ; => (2 4)
+```
+
+Use `->` for maps and objects, where the subject goes first. Use `->>` for sequence functions, where the collection goes last.
+
+`some->` stops at the first `nil`:
+
+```phel
+(some-> {:user {:name "Ada"}} :user :name phel.string/upper-case) ; => "ADA"
+(some-> {:user nil} :user :name phel.string/upper-case)           ; => nil
 ```
 
 ## Conditional threading
@@ -508,51 +586,26 @@ Like `cond->` but threads as last arg (thread-last).
 (cond->> [1 2 3 4 5]
   true (map inc)
   false (filter odd?)
-  true (take 3))  ; => @[2 3 4]
+  true (take 3))  ; => (2 3 4)
 
 ;; Only applies (map inc) and (take 3), skips (filter odd?)
 ```
 
-## Exceptions
-
-<!-- phel-test: skip -->
-```phel
-(throw expr)
-```
-
-Evaluates _expr_ and throws it. Must implement PHP `Throwable`.
-
 ## Try, catch, and finally
 
-<!-- phel-test: skip -->
-```phel
-(try expr* catch-clause* finally-clause?)
-```
-
-Evaluates expressions. No exception: returns last value. Matching _catch-clause_: returns its value. No match: exception propagates. _finally-clause_ runs before return.
+`throw` raises any PHP `Throwable`. `try` catches it by type:
 
 ```phel
-(try) ; Evaluates to nil
-
 (try
-  (throw (Exception.))
-  (catch Exception e "error")) ; Evaluates to "error"
-
-(try
-  (+ 1 1)
-  (finally (print "test"))) ; Evaluates to 2 and prints "test"
-
-(try
-  (throw (Exception.))
-  (catch Exception e "error")
-  (finally (print "test"))) ; Evaluates to "error" and prints "test"
+  (throw (Exception. "boom"))
+  (catch \Exception e "recovered")) ; => "recovered"
 ```
 
-For catching PHP exceptions, structured errors with `ex-info`/`ex-data`, exception chaining, and guidance on when to throw, see [Error handling](/documentation/language/error-handling/).
+`finally`, PHP exceptions, structured errors with `ex-info`, chaining, custom exception types, and when to throw at all: [Error handling](/documentation/language/error-handling/).
 
 ## Next steps
 
-- [Match reference](/documentation/reference/api/match/) - all `match` pattern kinds and the full API
-- [Error handling](/documentation/language/error-handling/) - throw, catch, and structured errors in depth
 - [Functions and recursion](/documentation/language/functions-and-recursion/) - `loop`/`recur` and tail calls
+- [Error handling](/documentation/language/error-handling/) - throw, catch, and structured errors in depth
+- [Match reference](/documentation/reference/api/match/) - all `match` pattern kinds and the full API
 - [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

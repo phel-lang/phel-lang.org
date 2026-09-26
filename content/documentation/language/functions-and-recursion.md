@@ -24,7 +24,7 @@ Define and compose behavior: anonymous and named functions, multiple arities, ta
 
 Defines a function: parameter list, expression list. Returns last expression's value. Earlier expressions evaluate for side-effects. No expressions returns `nil`.
 
-Functions can have multiple arities. Call dispatches on argument count. At most one variadic clause, which must have the most params. No matching arity raises a clear compile/runtime error.
+Functions can have multiple arities. The call picks the clause by argument count. At most one clause can be variadic, and it must have the most params. Calling a `defn` with no matching arity fails at compile time with `PHEL002`.
 
 Functions introduce their own lexical scope.
 
@@ -60,11 +60,13 @@ Shorter form omits the parameter list, naming params by position:
 #(apply + %&)  ; Same as (fn [& xs] (apply + xs))
 
 ; Using with higher-order functions
-(map #(* % 2) [1 2 3])        ; => @[2 4 6]
-(filter #(> % 3) [1 5 2 8])   ; => @[5 8]
+(map #(* % 2) [1 2 3])        ; => (2 4 6)
+(filter #(> % 3) [1 5 2 8])   ; => (5 8)
 ```
 
 > **Removed in 0.50:** `|(...)` with `$` / `$1` / `$&`. Use `#(...)` with `%` (matches Clojure).
+
+> **Removed:** the `function?` predicate. Use `fn?`.
 
 {% php_note() %}
 `#()` short-form is like PHP arrow functions:
@@ -154,7 +156,7 @@ Tag a `defn` with metadata to wrap the body automatically:
   (http/get url))
 ```
 
-`^:memoize` / `^{:memoize-lru N}` desugar to [`memoize`](/documentation/reference/api/core/#memoize) / [`memoize-lru`](/documentation/reference/api/core/#memoize-lru) wrappers; entries from recursive self-calls within a single invocation are retained. `^:async` wraps the body with `async`, returning an `Amp\Future`.
+`^:memoize` / `^{:memoize-lru N}` desugar to [`memoize`](/documentation/reference/api/core/#memoize) / [`memoize-lru`](/documentation/reference/api/core/#memoize-lru) wrappers; entries from recursive self-calls within a single invocation are retained. `^:async` wraps the body with `async`, returning an `Amp\Future`. See [Async & Concurrency](/documentation/language/async/).
 
 ### Return and parameter types (`:tag`)
 
@@ -171,7 +173,7 @@ Annotate types with `:tag` metadata. The compiler emits PHP type declarations an
 
 Reader shorthands: `^int`, `^"?int"`, `^"\\Foo\\Bar"`, `^{:tag "..."}`.
 
-Tag inference fills in return types from tail primitive ops, tail calls to tagged globals or pure PHP builtins, and parameter types from primitive body uses - inferred tags persist in def metadata and graft onto compiled PHP signatures for single-arity `defn`. Mismatches surface at compile time.
+Tag inference fills in return types from tail primitive ops, tail calls to tagged globals or pure PHP builtins, and parameter types from primitive body uses. Inferred tags persist in def metadata and graft onto compiled PHP signatures for single-arity `defn`. Mismatches surface at compile time.
 
 ## Recursion
 
@@ -295,14 +297,14 @@ Dispatch function can be anything, not just a keyword:
 (apply f expr*)
 ```
 
-Calls `f` with the args. Last arg must be a list, spread as separate arguments. Returns the result.
+Calls `f` with the args. The last arg must be a collection (vector, list, PHP array), a string, or `nil`. Its elements spread as separate arguments.
 
 ```phel
 (apply + [1 2 3]) ; Evaluates to 6
 (apply + 1 2 [3]) ; Evaluates to 6
 ```
 
-`(apply + 1 2 3)` is invalid: last arg must be a list.
+`(apply + 1 2 3)` fails at runtime: `3` is not a collection.
 
 ## Passing by reference
 

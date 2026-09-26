@@ -351,6 +351,7 @@ Multimethods check the hierarchy for parent matches when dispatching:
 
 ## Next steps
 
+- [Macros](/documentation/language/macros/) - write code that writes code
 - [Functions and recursion](/documentation/language/functions-and-recursion/) - multimethods for open dispatch
 - [Data structures](/documentation/language/data-structures/) - structs and the maps they build on
 - [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

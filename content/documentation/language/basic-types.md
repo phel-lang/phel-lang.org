@@ -122,6 +122,8 @@ Integers, floats, ratios, big integers, big decimals. Integers and floats wrap P
 
 Auto-promoting variants `+'`, `-'`, `*'`, `inc'`, `dec'` widen to BigInt on overflow instead of wrapping.
 
+How these types mix in arithmetic, and when each one appears: [Numeric tower](/documentation/language/numeric-tower/).
+
 ## Arithmetic operators
 
 Prefix notation:
@@ -323,8 +325,8 @@ Strings are iterable: work with `map`, `filter`, `count`, `frequencies`, `foreac
 
 ```phel
 (count "hello")             ; => 5
-(frequencies "abracadabra") ; => {a 5, b 2, r 2, c 1, d 1}
-(seq "abc")                 ; => [a b c]
+(frequencies "abracadabra") ; => {"a" 5, "b" 2, "r" 2, "c" 1, "d" 1}
+(seq "abc")                 ; => ["a" "b" "c"]
 ```
 
 {% php_note() %}
@@ -452,6 +454,8 @@ In any source file:
 
 A `data-readers.phel` at any source root auto-loads. Ship tag definitions with your library.
 
+Every reader shortcut on one page: [Reader shortcuts](/documentation/language/reader-shortcuts/).
+
 ## PHP reader literals
 
 Native PHP arrays inline without `php/array`:
@@ -508,7 +512,7 @@ Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some det
 (+ 1 2) ; This is an inline comment
 ```
 
-> **Deprecation:** `#` line and `#| ... |#` multiline comments are deprecated. Use `;` and `;;`. `#` prefix is reserved for reader macros (`#()`, `#""`, `#?()`).
+> **Removed:** `#` line comments and `#| ... |#` blocks no longer parse. Use `;` for lines, and `#_` or `(comment ...)` for whole forms. The `#` prefix is reserved for reader macros (`#()`, `#""`, `#?()`).
 
 `#_` comments out the next form. Stack to comment multiple forms:
 

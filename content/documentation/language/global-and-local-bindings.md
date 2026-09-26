@@ -202,9 +202,25 @@ Atoms manage mutable state. Each holds a single value. Create with `atom`:
 @foo               ; Evaluates to 22
 ```
 
-> **Note:** `function?` is a deprecated alias for `fn?`. Use the Clojure-compatible name. The atom-related aliases `var`, `var?`, `set!` are gone: use `atom`, `atom?`, `reset!`. `var` / `var?` / `#'sym` now refer to first-class `Var` handles for global definitions, not atoms.
+{% php_note() %}
+Atoms are explicit, contained mutable state:
 
-## Vars
+```php
+// PHP - everything is mutable by default
+$count = 0;
+$count++;
+
+// Phel - explicit mutability with atoms
+(def count (atom 0))
+(swap! count inc)
+```
+
+Prefer immutable data structures. Atoms mainly for PHP interop or app state.
+{% end %}
+
+> **Note:** the old atom aliases `var`, `var?`, `set!` are gone. Use `atom`, `atom?`, `reset!`. `var` / `var?` / `#'sym` now refer to first-class `Var` handles for global definitions, not atoms.
+
+## Vars {#variables}
 
 `def` creates a global binding backed by a `Var`. Get a first-class handle with `(var sym)` or the `#'sym` reader macro:
 
@@ -228,22 +244,6 @@ counter  ; => 1
 ```
 
 Watch a var's value with `add-watch` / `remove-watch`. Adjust metadata with `alter-meta!` / `reset-meta!`. See the [API reference](/documentation/reference/api/core/) for the full surface.
-
-{% php_note() %}
-Atoms are explicit, contained mutable state:
-
-```php
-// PHP - everything is mutable by default
-$count = 0;
-$count++;
-
-// Phel - explicit mutability with atoms
-(def count (atom 0))
-(swap! count inc)
-```
-
-Prefer immutable data structures. Atoms mainly for PHP interop or app state.
-{% end %}
 
 ## Next steps
 

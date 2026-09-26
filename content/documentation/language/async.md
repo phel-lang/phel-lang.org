@@ -13,9 +13,9 @@ Most primitives live in `phel.core` and need no require. The one exception is `d
 
 ## The two layers
 
-**Fiber layer** - a cooperative scheduler with no event loop (`\Phel\Fiber\FiberFacade`). Safe at the top level of a script or the REPL. Functions: `promise`, `deliver`, `future-call`, `future-fiber`, `future?`. Good for CPU coordination, producer/consumer handoffs, and a lightweight `deref`-with-timeout.
+**Fiber layer**: a cooperative scheduler with no event loop (`\Phel\Fiber\FiberFacade`). Safe at the top level of a script or the REPL. Functions: `promise`, `deliver`, `future-call`, `future-fiber`, `future?`. Good for CPU coordination, producer/consumer handoffs, and a lightweight `deref`-with-timeout.
 
-**AMPHP layer** - built on `amphp/amp`; an event loop drives fibers, timers, and IO combinators. Functions: `async`, `await`, `await-all`, `await-any`, `pmap`, `future`, `future-cancel`, `future-cancelled?` (in `phel.core`), plus `delay` (in `phel.async`). Use it for timers, IO multiplexing, fan-out across many futures, or when mixing AMPHP-based libraries (HTTP clients, servers).
+**AMPHP layer**: built on `amphp/amp`. An event loop drives fibers, timers, and IO combinators. Functions: `async`, `await`, `await-all`, `await-any`, `pmap`, `future`, `future-cancel`, `future-cancelled?` (in `phel.core`), plus `delay` (in `phel.async`). Use it for timers, IO multiplexing, fan-out across many futures, or when mixing AMPHP-based libraries (HTTP clients, servers).
 
 Rule of thumb: the fiber layer for plain scripts, the AMPHP layer when timers, IO, or AMPHP code are involved.
 
@@ -76,7 +76,7 @@ Use `future?` to test whether a value is a future from either layer; `deref`, `r
 
 ### `await-all` and `await-any`
 
-`(await-all futures)` awaits every future and collects their resolved values; if any fails, the exception propagates. `(await-any futures)` returns the value of the first future to resolve - losing futures are not auto-cancelled, so pair it with `future-cancel` when you need to stop the others.
+`(await-all futures)` awaits every future and collects their resolved values; if any fails, the exception propagates. `(await-any futures)` returns the value of the first future to resolve. Losing futures are not auto-cancelled, so pair it with `future-cancel` when you need to stop the others.
 
 ```phel
 (await-all [(async (* 2 3)) (async (* 4 5))]) ; => [6 20]
@@ -84,7 +84,7 @@ Use `future?` to test whether a value is a future from either layer; `deref`, `r
 
 ### `pmap`
 
-`(pmap f coll & colls)` is a concurrent `map` over fibers, with results in input order; multiple collections stop at the shortest. It overlaps IO-bound work but does **not** speed up CPU-bound work - PHP fibers share one thread. (ClojureScript and Basilisp use the same single-threaded model; `clojure.core/pmap` uses a thread pool.)
+`(pmap f coll & colls)` is a concurrent `map` over fibers, with results in input order; multiple collections stop at the shortest. It overlaps IO-bound work but does **not** speed up CPU-bound work. PHP fibers share one thread. (ClojureScript and Basilisp use the same single-threaded model; `clojure.core/pmap` uses a thread pool.)
 
 ```phel
 (pmap (fn [x] (* x x)) [1 2 3 4]) ; => [1 4 9 16]
@@ -109,7 +109,8 @@ Use `future?` to test whether a value is a future from either layer; `deref`, `r
 
 Tagging a `defn` with `^:async` wraps each arity's body in `(async ...)`, so the function returns an `Amp\Future` for callers to `await`. `^{:async false}` opts out without removing the key.
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (defn ^:async fetch [url]
   (await (http-get url)))
 
@@ -125,25 +126,25 @@ Tagging a `defn` with `^:async` wraps each arity's body in `(async ...)`, so the
 | `(deref x)` / `@x` | Block until realized. Fiber path suspends cooperatively; AMPHP path awaits via the event loop. |
 | `(deref x timeout-ms timeout-val)` | Return `timeout-val` if not realized within `timeout-ms`. |
 | `(realized? x)` | `true` once a value is available. Works for promises, fiber futures, and `Future`. |
-| `(future-done? x)` | Terminal state, including cancellation - not just "value present". |
+| `(future-done? x)` | Terminal state, including cancellation. Not just "value present". |
 
 ## Error and cancellation model
 
-- **AMPHP path** - exceptions in a `future`/`async` body surface from `await`/`deref`. Cancellation uses `Amp\DeferredCancellation`; after `future-cancel`, `deref` raises `Amp\CancelledException` and the 3-arg form returns its fallback.
-- **Fiber path** - exceptions in `future-call` bodies re-raise on `deref`. `future-cancel` flips a flag checked at cooperative checkpoints; the 3-arg `deref` returns its fallback without waiting.
-- **`deliver` is idempotent** - the first call wins, and the return value tells you whether you set it. Useful for lock-free "first writer wins" handoffs.
+- **AMPHP path**: exceptions in a `future`/`async` body surface from `await`/`deref`. Cancellation uses `Amp\DeferredCancellation`; after `future-cancel`, `deref` raises `Amp\CancelledException` and the 3-arg form returns its fallback.
+- **Fiber path**: exceptions in `future-call` bodies re-raise on `deref`. `future-cancel` flips a flag checked at cooperative checkpoints; the 3-arg `deref` returns its fallback without waiting.
+- **`deliver` is idempotent**: the first call wins, and the return value tells you whether you set it. Useful for lock-free "first writer wins" handoffs.
 
 ## Interop
 
 - `->closure` converts a Phel function to a PHP `\Closure`. Many PHP libraries (AMPHP, ReactPHP) type-hint `\Closure` and reject Phel's `AbstractFn`, so wrap before passing a Phel fn.
-- Bare `Amp\Future` values from AMPHP libraries pass straight to `await`, `await-all`, and `await-any` - no wrapping needed.
+- Bare `Amp\Future` values from AMPHP libraries pass straight to `await`, `await-all`, and `await-any`. No wrapping needed.
 - To feed a fiber-layer result into AMPHP code, `deref` it inside an `async` block: `(async (use-value @(future-fiber ...)))`.
 
 ## Pitfalls
 
 - **`future` outside an event loop** needs a fiber context; use `future-fiber` for top-level scripts.
-- **Mixing future types** - `future?` is the safe predicate; `deref`, `realized?`, and `future-done?` dispatch by type.
-- **CPU-bound `pmap`** - fibers share one thread, so CPU-heavy work gains nothing and may add overhead. Shell out to worker processes for real parallelism.
+- **Mixing future types**: `future?` is the safe predicate; `deref`, `realized?`, and `future-done?` dispatch by type.
+- **CPU-bound `pmap`**: fibers share one thread, so CPU-heavy work gains nothing and may add overhead. Shell out to worker processes for real parallelism.
 - **Blocking PHP calls inside fibers** (`sleep`, `usleep`, synchronous `curl`, blocking socket reads) freeze the scheduler. Use `delay` or non-blocking IO instead.
 
 ## Recipes
@@ -189,7 +190,7 @@ With no producer wired up, the `deref` deadline expires and returns the fallback
 
 ### Cancel on first error
 
-When one branch fails, cancel its sibling. `future-cancel` is cooperative - `slow` finishes its current step before observing the cancellation, after which any `deref` on it throws `Amp\CancelledException`.
+When one branch fails, cancel its sibling. `future-cancel` is cooperative: `slow` finishes its current step before observing the cancellation, after which any `deref` on it throws `Amp\CancelledException`.
 
 ```phel
 (ns example.cancel-on-error

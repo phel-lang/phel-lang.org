@@ -12,7 +12,7 @@ Transducers are composable transformation pipelines that decouple *what* you do 
 A normal pipeline allocates at every step; transducers fuse the steps:
 
 ```phel
-(ns example\transducers)
+(ns example.transducers)
 
 ; Two intermediate lazy sequences
 (filter even? (map inc [1 2 3 4 5]))   ; => (2 4 6)
@@ -27,7 +27,7 @@ The [Data Structures](/documentation/language/data-structures/#transducers) page
 ## Three ways to consume a transducer
 
 ```phel
-(ns example\consume)
+(ns example.consume)
 
 ; transduce - apply a transducer, then reduce
 (transduce (map inc) + [1 2 3])   ; => 9   (2 + 3 + 4)
@@ -39,6 +39,17 @@ The [Data Structures](/documentation/language/data-structures/#transducers) page
 
 ; sequence - a vector of transformed results; shorthand for (into [] xf coll)
 (sequence (filter even?) [1 2 3 4 5 6])   ; => [2 4 6]
+```
+
+### Plain reducing functions with `completing`
+
+A full reducing function has three arities: 0 for init, 1 for completion, 2 for each step. `completing` turns a plain 2-arity function, like `conj`, into a full one. Completion defaults to `identity`.
+
+```phel
+(ns example.completing)
+
+(def my-rf (completing conj))
+(transduce (map inc) my-rf [1 2 3])   ; => [2 3 4]
 ```
 
 ## Transducer-producing functions
@@ -68,7 +79,7 @@ Most sequence functions are dual-purpose: called **with** a collection they retu
 `comp` builds a pipeline. Transducers compose **left-to-right** (leftmost runs first), the opposite of normal function composition and matching the order of `->>`:
 
 ```phel
-(ns example\compose)
+(ns example.compose)
 
 (def xf (comp
           (filter even?)   ; 1. keep even numbers
@@ -89,7 +100,7 @@ Most sequence functions are dual-purpose: called **with** a collection they retu
 A reducing function signals "stop" by wrapping its return value in `reduced`:
 
 ```phel
-(ns example\reduced)
+(ns example.reduced)
 
 ; Sum until the accumulator exceeds 10
 (reduce
@@ -105,7 +116,7 @@ A reducing function signals "stop" by wrapping its return value in `reduced`:
 `take` and `take-while` use `reduced` internally, so the outer `reduce`/`transduce` stops rather than walking the rest:
 
 ```phel
-(ns example\early-stop)
+(ns example.early-stop)
 
 (transduce (take 2) conj [1 2 3 4 5])   ; => [1 2]  (does not touch the rest)
 ```
@@ -129,19 +140,18 @@ A transducer takes a reducing function `rf` and returns a new one handling three
 - **1** (completion): return `(rf result)`, optionally flush state
 - **2** (step): the transformation logic
 
-Dispatch on arity with a variadic `[& args]` plus `case (count args)`, the shape Phel's own core transducers use internally. It works correctly when the returned fn closes over `rf` or other state. (A multi-arity `fn` with `([] ...) ([result] ...) ([result input] ...)` clauses reads cleaner but does not currently compile for transducers, so prefer the variadic form.)
+Write it as a multi-arity `fn`, one clause per arity:
 
 ```phel
-(ns example\custom)
+(ns example.custom)
 
 ; A transducer that doubles every element
 (defn map-double []
   (fn [rf]
-    (fn [& args]
-      (case (count args)
-        0 (rf)
-        1 (rf (first args))
-        2 (rf (first args) (* 2 (second args)))))))
+    (fn
+      ([] (rf))
+      ([result] (rf result))
+      ([result input] (rf result (* 2 input))))))
 
 (sequence (map-double) [1 2 3])   ; => [2 4 6]
 ```
@@ -151,27 +161,25 @@ Dispatch on arity with a variadic `[& args]` plus `case (count args)`, the shape
 Override the 1-arity branch to flush buffered state. This `batch` transducer groups elements into vectors of `n`, emitting any partial final group on completion:
 
 ```phel
-(ns example\batch)
+(ns example.batch)
 
 (defn batch [n]
   (fn [rf]
     (let [buf (volatile! [])]
-      (fn [& args]
-        (case (count args)
-          0 (rf)
-          1 (let [result (first args)
-                  b @buf]
-              ; flush remaining items on completion
-              (if (empty? b)
-                (rf result)
-                (rf (rf result b))))
-          2 (let [result (first args)
-                  input (second args)]
-              (let [b (vswap! buf conj input)]
-                (if (= (count b) n)
-                  (do (vreset! buf [])
-                      (rf result b))
-                  result))))))))
+      (fn
+        ([] (rf))
+        ([result]
+         ; flush remaining items on completion
+         (let [b @buf]
+           (if (empty? b)
+             (rf result)
+             (rf (rf result b)))))
+        ([result input]
+         (let [b (vswap! buf conj input)]
+           (if (= (count b) n)
+             (do (vreset! buf [])
+                 (rf result b))
+             result)))))))
 
 (sequence (batch 3) [1 2 3 4 5 6 7])   ; => [[1 2 3] [4 5 6] [7]]
 ```
@@ -181,19 +189,17 @@ Override the 1-arity branch to flush buffered state. This `batch` transducer gro
 Wrap the step result in `reduced` to stop the pipeline. This `take-until` keeps elements until `pred` first returns true, inclusive:
 
 ```phel
-(ns example\take-until)
+(ns example.take-until)
 
 (defn take-until [pred]
   (fn [rf]
-    (fn [& args]
-      (case (count args)
-        0 (rf)
-        1 (rf (first args))
-        2 (let [result (first args)
-                input (second args)]
-            (if (pred input)
-              (reduced (rf result input))
-              (rf result input)))))))
+    (fn
+      ([] (rf))
+      ([result] (rf result))
+      ([result input]
+       (if (pred input)
+         (reduced (rf result input))
+         (rf result input))))))
 
 (sequence (take-until #(> % 3)) [1 2 3 4 5])   ; => [1 2 3 4]
 ```
@@ -206,7 +212,7 @@ Each [dual-purpose function](#transducer-producing-functions) works both ways: w
 - **Transducers** to avoid intermediates in multi-step pipelines, to reuse one transformation across multiple sources or destinations, or to reduce into something that isn't a sequence (sums, maps, side effects).
 
 ```phel
-(ns example\reuse)
+(ns example.reuse)
 
 ; Define once, reuse with different consumers
 (def xf (comp (filter even?) (map inc)))
@@ -216,9 +222,10 @@ Each [dual-purpose function](#transducer-producing-functions) works both ways: w
 (into #{} xf [1 2 3 4 5 6])   ; => #{3 5 7}
 ```
 
-## See also
+## Next steps
 
+- [Reader shortcuts](/documentation/language/reader-shortcuts/) - what `#(...)`, `@`, `'` and friends expand to
+- [Lazy sequences](/documentation/language/lazy-sequences/) - the other way to run the same functions
 - [Data structures](/documentation/language/data-structures/#transducers) - `into`, `reduce`, and the basic transducer producers
-- [Control flow](/documentation/language/control-flow/) - iterate and build collections with `for` and `loop`
-- [Cookbook -- Data processing with transducers](/documentation/guides/cookbook/#data-processing-with-transducers) - a worked real-world pipeline
-- [Cheat sheet -- Transducers](/documentation/reference/cheat-sheet/#transducers) - keep it open while coding
+- [Cookbook: data processing with transducers](/documentation/guides/cookbook/#data-processing-with-transducers) - a worked real-world pipeline
+- [Cheat sheet: transducers](/documentation/reference/cheat-sheet/#transducers) - keep it open while coding

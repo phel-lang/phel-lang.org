@@ -8,11 +8,11 @@ aliases = ["/documentation/lazy-sequences"]
 difficulty = "advanced"
 +++
 
-Lazy sequences defer computation until values are actually needed. This lets you describe infinite or expensive collections, then realize only the part you consume.
+Lazy sequences defer computation until you need the values. This lets you describe infinite or expensive collections, then realize only the part you consume.
 
-Phel has two constructs for building them by hand: `lazy-seq` wraps an expression in a thunk, and `lazy-cat` concatenates collections lazily. Most of the time you will reach for the built-in lazy functions (`range`, `map`, `filter`, ...) listed at the end of this page.
+Phel has two constructs for building them by hand: `lazy-seq` wraps an expression in a thunk, and `lazy-cat` concatenates collections lazily. Most of the time you will reach for the built-in lazy functions (`range`, `map`, `filter`, ...) listed in [Built-in lazy functions](#built-in-lazy-functions).
 
-For a quick overview of the lazy helpers see the [cheat sheet](/documentation/reference/cheat-sheet/#lazy-sequences); this page explains how laziness actually works and how to write your own lazy sequences.
+For a quick overview of the lazy helpers see the [cheat sheet](/documentation/reference/cheat-sheet/#lazy-sequences); this page explains how laziness works and how to write your own lazy sequences.
 
 ## lazy-seq
 
@@ -37,8 +37,8 @@ Combine `lazy-seq` with recursion, using `cons` to defer the recursive call so t
   (lazy-seq
     (cons n (ints-from (inc n)))))
 
-(println (take 5 (ints-from 0)))   ; [0 1 2 3 4]
-(println (take 3 (ints-from 10)))  ; [10 11 12]
+(println (take 5 (ints-from 0)))   ; (0 1 2 3 4)
+(println (take 3 (ints-from 10)))  ; (10 11 12)
 ```
 
 `take` realizes only the elements it returns, so the infinite recursion never runs away.
@@ -56,12 +56,13 @@ Combine `lazy-seq` with recursion, using `cons` to defer the recursive call so t
 
 Because it evaluates its arguments first, `lazy-cat` must **not** be used to build a recursive infinite sequence. Use `cons` for that instead:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 ;; ✅ cons defers the recursive call
 (defn ints [n]
   (lazy-seq (cons n (ints (inc n)))))
 
-(take 5 (ints 0))  ; => [0 1 2 3 4]
+(take 5 (ints 0))  ; => (0 1 2 3 4)
 
 ;; ❌ lazy-cat evaluates all args first -> the recursive call never returns
 (defn ints [n]
@@ -79,7 +80,7 @@ A Fibonacci sequence and a prime sieve, both infinite and lazily realized:
   ([a b] (lazy-seq (cons a (fib-seq b (+ a b))))))
 
 (println (take 10 (fib-seq)))
-; [0 1 1 2 3 5 8 13 21 34]
+; (0 1 1 2 3 5 8 13 21 34)
 
 ;; Sieve of primes: filtering an infinite sequence
 (defn ints-from [n]
@@ -94,13 +95,15 @@ A Fibonacci sequence and a prime sieve, both infinite and lazily realized:
     (sieve (ints-from 2))))
 
 (println (take 10 (primes)))
-; [2 3 5 7 11 13 17 19 23 29]
+; (2 3 5 7 11 13 17 19 23 29)
 ```
 
-Because the pipeline is lazy, you can compose transformations over a data source and only touch the records you actually consume:
+Because the pipeline is lazy, you can compose transformations over a data source and only touch the records you consume:
 
-```phel skip
-(:require phel.string :as str)
+<!-- phel-test: skip -->
+```phel
+(ns example.records
+  (:require phel.string :as str))
 
 (defn process-records [records]
   (->> records
@@ -121,21 +124,21 @@ These return lazy sequences, so you rarely need to write `lazy-seq` yourself:
 - `cycle`: infinite sequence by cycling through a collection
 - `map`: lazy transformation
 - `filter`: lazy filtering
-- `take`: first `n` elements (realizes them)
+- `take`: first `n` elements (realizes its first chunk when called)
 - `drop`: skips first `n` elements (stays lazy)
 
 ```phel
 (println (take 10 (iterate (fn [x] (* 2 x)) 1)))
-; [1 2 4 8 16 32 64 128 256 512]
+; (1 2 4 8 16 32 64 128 256 512)
 
 (println (take 7 (cycle [:a :b :c])))
-; [:a :b :c :a :b :c :a]
+; (:a :b :c :a :b :c :a)
 
 (println (->> (range 100)
               (map inc)
               (filter odd?)
               (take 5)))
-; [1 3 5 7 9]
+; (1 3 5 7 9)
 ```
 
 ## Performance
@@ -148,9 +151,9 @@ These return lazy sequences, so you rarely need to write `lazy-seq` yourself:
 
 A lazy sequence may realize more elements than you consume, so side effects can run for elements you never read:
 
-```phel skip
+```phel
 (take 5 (map (fn [x] (do (println x) x)) (range 100)))
-;; may print more than 5 numbers due to chunking
+;; prints 0 through 5: six side effects for five results
 ```
 
 ### Realizing
@@ -168,7 +171,8 @@ Force a lazy sequence when you need all of it:
 
 **1. Holding the head** keeps the whole sequence in memory. Don't bind a large lazy sequence to a name you reuse:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 ;; ❌ binds `nums`, so first + last hold the entire sequence in memory
 (let [nums (range 1000000)]
   (println (first nums))
@@ -181,11 +185,12 @@ Force a lazy sequence when you need all of it:
 
 **2. Lazy sequences in tests**: realize before asserting, otherwise you compare against an unrealized thunk:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (is (= expected (doall lazy-result)))  ; force realization
 ```
 
-**3. Side effects run on realization, not creation.** Building a lazy sequence does nothing until you consume it:
+**3. Side effects run on realization, and realization comes in chunks.** A bare `map` does nothing until you read it. Reading one element realizes a whole chunk:
 
 ```phel
 (def log-and-inc
@@ -193,8 +198,11 @@ Force a lazy sequence when you need all of it:
        (range 5)))
 ; nothing printed yet
 
-(println (first log-and-inc))  ; now prints "Processing 0" then 1
+(println (first log-and-inc))
+; prints "Processing 0", "Processing 1", then 1
 ```
+
+`take` realizes its first chunk as soon as you call it, before you read anything. Keep side effects out of lazy pipelines. Use `foreach` or `dofor` for them.
 
 ## Debugging
 
@@ -208,9 +216,10 @@ Force a lazy sequence when you need all of it:
 (println (take-while (fn [x] (< x 100)) (iterate inc 0)))
 ```
 
-## Further reading
+## Next steps
 
-- [Cheat sheet: lazy sequences](/documentation/reference/cheat-sheet/#lazy-sequences) for a one-screen reference, including lazy file I/O (`line-seq`, `file-seq`, `csv-seq`).
-- [Data structures](/documentation/language/data-structures/) for the sequence functions that consume and transform these collections.
-- [Cookbook](/documentation/guides/cookbook/) for lazy pipelines applied to real tasks.
-- [Clojure: lazy sequences](https://clojure.org/reference/sequences): the model Phel follows.
+- [Transducers](/documentation/language/transducers/) - the same `map`/`filter`/`take` steps fused into one pass, with no intermediate sequences
+- [Cheat sheet: lazy sequences](/documentation/reference/cheat-sheet/#lazy-sequences) - one-screen reference, including lazy file I/O (`line-seq`, `file-seq`, `csv-seq`)
+- [Data structures](/documentation/language/data-structures/) - the sequence functions that consume and transform these collections
+- [Cookbook](/documentation/guides/cookbook/) - lazy pipelines applied to real tasks
+- [Clojure: lazy sequences](https://clojure.org/reference/sequences) - the model Phel follows

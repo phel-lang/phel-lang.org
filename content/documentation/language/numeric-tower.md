@@ -34,10 +34,11 @@ For literal syntax and the everyday arithmetic operators, see [Basic Types](/doc
 (println (bigdec? 1.5M))     ; true
 ```
 
-Contrast with `float`, where the same sum drifts:
+Contrast with `float`. The sum prints as `0.3`, but it is not `0.3`:
 
 ```phel
-(println (+ 0.1 0.2)) ; 0.30000000000000004
+(println (= (+ 0.1 0.2) 0.3))       ; false (float drift)
+(println (= (+ 0.1M 0.2M) 0.3M))    ; true
 ```
 
 ## Promoting integers: `bigint` and `+'`
@@ -103,10 +104,13 @@ A `Ratio` is always normalised and collapses back to an integer type when the re
 
 ### `==` arity-1 asserts numeric
 
-In Clojure, `(==)` and `(== x)` return `true` for any single argument. Phel's `==` requires its argument to be numeric and otherwise throws. Single-argument `==` is a numeric assertion, not an identity check:
+In Clojure, `(== x)` returns `true` for any single argument. Phel's `==` requires a number and throws otherwise. Single-argument `==` is a numeric assertion, not an identity check:
 
 ```phel
 (println (== 5)) ; true
+(println (try (== :a)
+              (catch \Exception e (.getMessage e))))
+; Argument must be a number, got: :a
 ```
 
 ## Quick reference
@@ -121,8 +125,9 @@ In Clojure, `(==)` and `(== x)` return `true` for any single argument. Phel's `=
 | Numerator / denominator | `numerator`, `denominator` |
 | Float to exact | `rationalize` |
 
-## See also
+## Next steps
 
+- [Async & Concurrency](/documentation/language/async/) - run work concurrently with fibers and AMPHP
 - [Basic Types](/documentation/language/basic-types/#numbers) - number literals and arithmetic operators
 - [Coming from Clojure](/documentation/guides/coming-from-clojure/) - numeric differences from Clojure
 - [Core API](/documentation/reference/api/core/) - full predicate and operator reference

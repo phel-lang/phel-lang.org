@@ -95,6 +95,36 @@ Defaults for missing keys:
 
 Without `:or`, missing keys bind to `nil`.
 
+### Shorthand with `:keys`
+
+`:keys` binds each keyword key to a local of the same name. `:or` works with it:
+
+```phel
+(let [{:keys [name role] :or {role "guest"}}
+      {:name "Bob"}]
+  (str name " (" role ")")) ; => "Bob (guest)"
+```
+
+For string keys, like decoded JSON, use `:strs`:
+
+```phel
+(let [{:strs [name]} {"name" "Alice"}]
+  name) ; => "Alice"
+```
+
+### Whole map with `:as`
+
+`:as` binds the whole map next to the pieces:
+
+```phel
+(let [{:keys [name] :as user} {:name "Alice" :id 7}]
+  [name (:id user)]) ; => ["Alice" 7]
+```
+
+{% clojure_note() %}
+`:keys`, `:strs`, `:or` and `:as` work in map patterns as in Clojure. Vector patterns do not support `:as`: `(let [[a :as all] [1 2]] all)` fails with `PHEL008 Cannot destructure Keyword`. Bind the vector to a name first, then destructure it.
+{% end %}
+
 {% php_note() %}
 Extract values by key:
 
@@ -145,7 +175,7 @@ Sequential in params:
   (php/sqrt (+ (* (- x2 x1) (- x2 x1))
                (* (- y2 y1) (- y2 y1)))))
 
-(distance [0 0] [3 4]) ; => 5
+(distance [0 0] [3 4]) ; => 5.0
 ```
 
 ## In `loop`
@@ -162,6 +192,7 @@ Loop bindings:
 
 ## Next steps
 
+- [Error handling](/documentation/language/error-handling/) - throw, catch, and structured errors
 - [Functions and recursion](/documentation/language/functions-and-recursion/) - destructure function arguments
 - [Data structures](/documentation/language/data-structures/) - the collections you destructure
 - [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

@@ -11,7 +11,7 @@ difficulty = "beginner"
 Phel's four core collections are lists, vectors, maps, and sets. All are **persistent** (immutable): an operation returns a new version that shares structure with the old one, and the original never changes.
 
 {% php_note() %}
-"Copy-on-write" for collections. Prevents bugs from unexpected mutations.
+PHP arrays copy on write. Phel collections share structure instead: a new version reuses most of the old one, so updates stay cheap. No function can change data you pass to it.
 {% end %}
 
 ## Lists
@@ -31,12 +31,14 @@ Access values with `get`, `first`, `second`, `next`, `rest`, `peek`:
 (get (list 1 2 3) 0)  ; Evaluates to 1
 (first (list 1 2 3))  ; Evaluates to 1
 (second (list 1 2 3)) ; Evaluates to 2
-(peek (list 1 2 3))   ; Evaluates to 3
+(peek (list 1 2 3))   ; Evaluates to 1
 (next (list 1 2 3))   ; Evaluates to (2 3)
 (next (list))         ; Evaluates to nil
 (rest (list 1 2 3))   ; Evaluates to (2 3)
 (rest (list))         ; Evaluates to ()
 ```
+
+`peek` returns the cheap end of a collection: the head of a list, the last element of a vector.
 
 Add to the front with `cons`:
 
@@ -145,11 +147,86 @@ Remove with `dissoc`:
 Like PHP associative arrays, but with two differences: keys can be **any type** (vectors, lists, other maps), and maps are **immutable**: "updating" with `assoc` returns a new map and leaves the original untouched. Worked comparison in [Immutability vs PHP mutability](#immutability-vs-php-mutability) below.
 {% end %}
 
+## Sets
+
+Unique values in any order. Values must implement `HashableInterface` and `EqualsInterface`.
+
+Create with `#{}`, `hash-set`, or coerce with `set`:
+
+```phel
+#{1 2 3}         ; A new set using shortcut syntax
+(hash-set 1 2 3) ; A new set from individual arguments
+(set [1 2 3])    ; Coerce a collection to a set
+(set '(1 2 3))   ; Works with any collection type
+```
+
+> **Note:** `set` coerces a collection (Clojure alignment). `hash-set` builds from individual args.
+
+Add with `conj`:
+
+```phel
+(conj #{1 2 3} 4) ; Evaluates to #{1 2 3 4}
+(conj #{1 2 3} 2) ; Evaluates to #{1 2 3}
+```
+
+Remove with `disj`:
+
+```phel
+(disj #{1 2 3} 2)   ; Evaluates to #{1 3}
+(disj #{1 2 3} 2 3) ; Evaluates to #{1}
+```
+
+Size with `count`:
+
+```phel
+(count #{})  ; Evaluates to 0
+(count #{2}) ; Evaluates to 1
+```
+
+`union`: all elements of multiple sets.
+
+```phel
+(union)               ; Evaluates to #{}
+(union #{1 2})        ; Evaluates to #{1 2}
+(union #{1 2} #{0 3}) ; Evaluates to #{0 1 2 3}
+```
+
+`intersection`: elements shared by all sets.
+
+```phel
+(intersection #{1 2} #{0 3})     ; Evaluates to #{}
+(intersection #{1 2} #{0 1 2 3}) ; Evaluates to #{1 2}
+```
+
+`difference`: elements in first set not in the others.
+
+```phel
+(difference #{1 2} #{0 3})     ; Evaluates to #{1 2}
+(difference #{1 2} #{0 1 2 3}) ; Evaluates to #{}
+(difference #{0 1 2 3} #{1 2}) ; Evaluates to #{0 3}
+```
+
+`symmetric-difference`: elements in some sets but not in their intersection.
+
+```phel
+(symmetric-difference #{1 2} #{0 3})     ; Evaluates to #{0 1 2 3}
+(symmetric-difference #{1 2} #{0 1 2 3}) ; Evaluates to #{0 3}
+```
+
+`subset?` and `superset?`:
+
+```phel
+(subset? (hash-set 1 2) (hash-set 1 2 3))   ; Evaluates to true
+(subset? (hash-set 1 4) (hash-set 1 2 3))   ; Evaluates to false
+(superset? (hash-set 1 2 3) (hash-set 1 2)) ; Evaluates to true
+(superset? (hash-set 1 2 3) (hash-set 1 4)) ; Evaluates to false
+```
+
 ## Working with collections
 
 Core functions span data structures.
 
-### Adding with `conj`
+### Adding with `conj` {#adding-elements-with-conj}
 
 `conj` adds elements. Behavior depends on type for efficiency:
 
@@ -188,17 +265,14 @@ Core functions span data structures.
 
 ### Removing with `dissoc`
 
-`dissoc` removes a key:
+`dissoc` removes a key from a map:
 
 ```phel
-;; Maps - remove key-value pair
 (dissoc {:a 1 :b 2} :a)         ; Evaluates to {:b 2}
 (dissoc {:a 1 :b 2 :c 3} :a :c) ; Evaluates to {:b 2}
-
-;; Sets - remove element
-(dissoc #{1 2 3} 2)             ; Evaluates to #{1 3}
-(dissoc #{1 2 3} 2 3)           ; Evaluates to #{1}
 ```
+
+For sets, use `disj`. `dissoc` also works on sets, but `disj` is the Clojure name.
 
 ### Nested operations
 
@@ -220,6 +294,69 @@ Core functions span data structures.
 ;; update-in - Update nested values
 (update-in {:a {:b 1}} [:a :b] inc)      ; Evaluates to {:a {:b 2}}
 ```
+
+### Transforming map keys and values
+
+`update-keys`, `update-vals` apply a function across keys/values:
+
+```phel
+; Transform all keys
+(update-keys {:a 1 :b 2 :c 3} name)
+; => {"a" 1 "b" 2 "c" 3}
+
+(update-keys {"name" "Alice" "age" "30"} keyword)
+; => {:name "Alice" :age "30"}
+
+; Transform all values
+(update-vals {:a 1 :b 2 :c 3} inc)
+; => {:a 2 :b 3 :c 4}
+
+(update-vals {:x "hello" :y "world"} phel.string/upper-case)
+; => {:x "HELLO" :y "WORLD"}
+```
+
+### Building collections with `into`
+
+`into` pours elements from one collection into another. Third arg applies a transducer:
+
+```phel
+; Two-argument form: pour elements into a collection
+(into [] '(1 2 3))          ; => [1 2 3]
+(into #{} [1 2 2 3 3])     ; => #{1 2 3}
+(into {} [[:a 1] [:b 2]])  ; => {:a 1 :b 2}
+
+; Three-argument form: apply a transducer during transfer
+(into [] (map inc) [1 2 3])           ; => [2 3 4]
+(into #{} (filter odd?) [1 2 3 4 5])  ; => #{1 3 5}
+(into {} (map (fn [[k v]] [k (* v 2)])) (pairs {:a 1 :b 2}))
+; => {:a 2 :b 4}
+```
+
+### Transducers
+
+Call `map`, `filter`, `take` and friends without a collection and you get a transducer: a transformation you can reuse with any consumer. Compose them with `comp`:
+
+```phel
+(def xf (comp (filter odd?) (map #(* % 10))))
+
+(into [] xf [1 2 3 4 5])       ; => [10 30 50]
+(transduce xf + 0 [1 2 3 4 5]) ; => 90
+```
+
+Common producers:
+
+```phel
+(into [] (take 3) (range 10))                ; => [0 1 2]
+(into [] (drop 7) (range 10))                ; => [7 8 9]
+(into [] (take-while #(< % 5)) (range 10))   ; => [0 1 2 3 4]
+(into [] (drop-while #(< % 5)) (range 10))   ; => [5 6 7 8 9]
+(into [] (take-nth 3) (range 10))             ; => [0 3 6 9]
+(into [] (distinct) [1 2 1 3 2 4])            ; => [1 2 3 4]
+(into [] (dedupe) [1 1 2 2 3 1 1])            ; => [1 2 3 1]
+(into [] (interpose :sep) [1 2 3])            ; => [1 :sep 2 :sep 3]
+```
+
+Composition order, early termination, `completing`, `cat`, and custom transducers live in [Transducers](/documentation/language/transducers/).
 
 {% php_note() %}
 
@@ -280,8 +417,9 @@ Phel matches Clojure's names:
 | `assoc-in`  | Set nested value            | ✓ Yes                |
 | `update`    | Update with function        | ✓ Yes                |
 | `update-in` | Update nested with function | ✓ Yes                |
+| `disj`      | Remove from a set           | ✓ Yes                |
 
-**Migration:** `push`, `put`, `unset` deprecated. Use `conj`, `assoc`, `dissoc`.
+**Migration:** `push`, `put`, `unset` were removed. Use `conj`, `assoc`, `dissoc`.
 
 {% end %}
 
@@ -312,80 +450,6 @@ Expose PHP magic methods (`__invoke`, `__toString`, `__get`, ...) through a `:ph
 ```
 
 A `:php` block coexists with regular interface implementations. A custom `__invoke` must take exactly one call argument or be variadic (a struct is already callable as a key lookup), else the compiler rejects it.
-
-## Sets
-
-Unique values in any order. Values must implement `HashableInterface` and `EqualsInterface`.
-
-Create with `#{}`, `hash-set`, or coerce with `set`:
-
-```phel
-#{1 2 3}         ; A new set using shortcut syntax
-(hash-set 1 2 3) ; A new set from individual arguments
-(set [1 2 3])    ; Coerce a collection to a set
-(set '(1 2 3))   ; Works with any collection type
-```
-
-> **Note:** `set` coerces a collection (Clojure alignment). `hash-set` builds from individual args.
-
-Add with `conj`:
-
-```phel
-(conj #{1 2 3} 4) ; Evaluates to #{1 2 3 4}
-(conj #{1 2 3} 2) ; Evaluates to #{1 2 3}
-```
-
-Remove with `dissoc`:
-
-```phel
-(dissoc #{1 2 3} 2) ; Evaluates to #{1 3}
-```
-
-Size with `count`:
-
-```phel
-(count #{})  ; Evaluates to 0
-(count #{2}) ; Evaluates to 1
-```
-
-`union`: all elements of multiple sets.
-
-```phel
-(union)               ; Evaluates to #{}
-(union #{1 2})        ; Evaluates to #{1 2}
-(union #{1 2} #{0 3}) ; Evaluates to #{0 1 2 3}
-```
-
-`intersection`: elements shared by all sets.
-
-```phel
-(intersection #{1 2} #{0 3})     ; Evaluates to #{}
-(intersection #{1 2} #{0 1 2 3}) ; Evaluates to #{1 2}
-```
-
-`difference`: elements in first set not in the others.
-
-```phel
-(difference #{1 2} #{0 3})     ; Evaluates to #{1 2}
-(difference #{1 2} #{0 1 2 3}) ; Evaluates to #{}
-(difference #{0 1 2 3} #{1 2}) ; Evaluates to #{0 3}
-```
-
-`symmetric-difference`: elements in some sets but not in their intersection.
-
-```phel
-(symmetric-difference #{1 2} #{0 3})     ; Evaluates to #{0 1 2 3}
-(symmetric-difference #{1 2} #{0 1 2 3}) ; Evaluates to #{0 3}
-```
-
-`subset?` and `superset?`:
-
-```phel
-(subset? (hash-set 1 2) (hash-set 1 2 3))   ; Evaluates to true
-(subset? (hash-set 1 4) (hash-set 1 2 3))   ; Evaluates to false
-(superset? (hash-set 1 2 3) (hash-set 1 2)) ; Evaluates to true
-(superset? (hash-set 1 2 3) (hash-set 1 4)) ; Evaluates to false
-```
 
 ## Transients
 
@@ -418,7 +482,7 @@ All data structures are callable:
 ;; Practical use with map
 (def users [{:name "Alice" :age 30}
             {:name "Bob" :age 25}])
-(map :name users)  ; Evaluates to @["Alice" "Bob"]
+(map :name users)  ; Evaluates to ("Alice" "Bob")
 ```
 
 ## Example: working with user data
@@ -470,9 +534,9 @@ All data structures are callable:
 
 ;; Use with nested structures
 (def api-response
-  (php/array "user_id" 123
-             "user_name" "Alice"
-             "is_active" true))
+  (php-associative-array "user_id" 123
+                         "user_name" "Alice"
+                         "is_active" true))
 
 (php-response-to-map api-response)
 ;; => {:user_id 123 :user_name "Alice" :is_active true}
@@ -518,90 +582,9 @@ All data structures are callable:
 ; => {:theme "dark" :lang "en" :debug false}
 ```
 
-### Transforming map keys and values
-
-`update-keys`, `update-vals` apply a function across keys/values:
-
-```phel
-; Transform all keys
-(update-keys {:a 1 :b 2 :c 3} name)
-; => {"a" 1 "b" 2 "c" 3}
-
-(update-keys {"name" "Alice" "age" "30"} keyword)
-; => {:name "Alice" :age "30"}
-
-; Transform all values
-(update-vals {:a 1 :b 2 :c 3} inc)
-; => {:a 2 :b 3 :c 4}
-
-(update-vals {:x "hello" :y "world"} phel.string/upper-case)
-; => {:x "HELLO" :y "WORLD"}
-```
-
-### Building collections with `into`
-
-`into` pours elements from one collection into another. Third arg applies a transducer:
-
-```phel
-; Two-argument form: pour elements into a collection
-(into [] '(1 2 3))          ; => [1 2 3]
-(into #{} [1 2 2 3 3])     ; => #{1 2 3}
-(into {} [[:a 1] [:b 2]])  ; => {:a 1 :b 2}
-
-; Three-argument form: apply a transducer during transfer
-(into [] (map inc) [1 2 3])           ; => [2 3 4]
-(into #{} (filter odd?) [1 2 3 4 5])  ; => #{1 3 5}
-(into {} (map (fn [[k v]] [k (* v 2)])) (pairs {:a 1 :b 2}))
-; => {:a 2 :b 4}
-```
-
-### Transducers
-
-Composable transformations independent of context. `map`, `filter`, `remove`, `take`, `drop`, `take-while`, `drop-while`, `take-nth`, `keep`, `keep-indexed`, `distinct`, `dedupe`, `mapcat`, `interpose` return a transducer when called without a collection:
-
-```phel
-; Create a transducer by calling map/filter without a collection
-(def xf (comp (filter odd?) (map #(* % 10))))
-
-; Apply with transduce (reduces with a function)
-(transduce xf + 0 [1 2 3 4 5])       ; => 90 (10 + 30 + 50)
-
-; Apply with into (pours into a collection)
-(into [] xf [1 2 3 4 5])             ; => [10 30 50]
-
-; Apply with sequence (returns a lazy sequence)
-(sequence xf [1 2 3 4 5])            ; => [10 30 50]
-```
-
-Common transducer producers:
-
-```phel
-(into [] (take 3) (range 10))                ; => [0 1 2]
-(into [] (drop 7) (range 10))                ; => [7 8 9]
-(into [] (take-while #(< % 5)) (range 10))   ; => [0 1 2 3 4]
-(into [] (drop-while #(< % 5)) (range 10))   ; => [5 6 7 8 9]
-(into [] (take-nth 3) (range 10))             ; => [0 3 6 9]
-(into [] (distinct) [1 2 1 3 2 4])            ; => [1 2 3 4]
-(into [] (dedupe) [1 1 2 2 3 1 1])            ; => [1 2 3 1]
-(into [] (interpose :sep) [1 2 3])            ; => [1 :sep 2 :sep 3]
-```
-
-`completing` adapts a plain 2-arity reducing function into a full reducing function with 0-arity init and 1-arity completion (defaults to `identity`):
-
-```phel
-(def my-rf (completing conj))
-(transduce (map inc) my-rf [1 2 3])  ; => [2 3 4]
-```
-
-`cat` concatenates inner collections:
-
-```phel
-(into [] cat [[1 2] [3 4] [5 6]])  ; => [1 2 3 4 5 6]
-```
-
 ## Walking data structures
 
-`phel.walk` recursively transforms nested data.
+`phel.walk` recursively transforms nested data. Full API: [walk reference](/documentation/reference/api/walk/).
 
 ### walk
 
@@ -665,6 +648,8 @@ Convert map keys between keywords and strings. Useful for PHP arrays or JSON:
 
 ## Next steps
 
+- [Global and local bindings](/documentation/language/global-and-local-bindings/) - name values with `def` and `let`, manage state with atoms
 - [Destructuring](/documentation/language/destructuring/) - pull values out of collections by shape
 - [Control flow](/documentation/language/control-flow/) - iterate and build collections with `for` and `loop`
+- [Transducers](/documentation/language/transducers/) - reusable pipelines with no intermediate collections
 - [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

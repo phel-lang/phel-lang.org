@@ -151,7 +151,7 @@ The expanded `tmp__1` is unique per expansion, so it cannot clash with a `tmp` t
 
 ## When to write a macro
 
-Most of the time you do not need one. **Prefer a function.** Functions are easier to read, test, compose, and pass around. Reach for a macro only when a function genuinely cannot do the job:
+Most of the time you do not need one. **Prefer a function.** Functions are easier to read, test, compose, and pass around. Reach for a macro only when a function cannot do the job:
 
 - **New syntax or binding forms** the language does not provide.
 - **Control flow** that must skip or reorder evaluation of its arguments (a function evaluates all its arguments first).
@@ -161,6 +161,8 @@ If the same result is achievable by passing values or functions, write a functio
 
 ## Next steps
 
+- [Lazy sequences](/documentation/language/lazy-sequences/) - compute values only when you need them
 - [Functions and recursion](/documentation/language/functions-and-recursion/) - the default tool; prefer it over macros
 - [Basic types](/documentation/language/basic-types/) - quote, lists, and symbols that macros manipulate
+- [Reader shortcuts](/documentation/language/reader-shortcuts/) - every reader macro, including quasiquote and `name#`
 - [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

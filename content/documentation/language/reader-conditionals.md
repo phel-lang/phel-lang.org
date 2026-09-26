@@ -40,8 +40,8 @@ This makes `.cljc` files shareable between Phel, Clojure, and other Lisp dialect
 3. If neither is present, the whole form is dropped (treated as whitespace).
 
 ```phel
-(println #?(:default 0 :phel 42))   ; => 42  (:phel wins)
-(println #?(:clj 99 :default 0))    ; => 0   (fallback)
+(println #?(:default 0 :phel 42))   ; prints 42 (:phel wins)
+(println #?(:clj 99 :default 0))    ; prints 0 (fallback)
 ;; #?(:clj 99 :cljs 88) reads as nothing and is dropped entirely.
 ```
 
@@ -50,19 +50,20 @@ This makes `.cljc` files shareable between Phel, Clojure, and other Lisp dialect
 `#?@()` splices the elements of the matched collection into the surrounding form and removes the wrapper. The selected branch **must be a sequential collection** (vector or list):
 
 ```phel
-(println [1 #?@(:phel [2 3]) 4])              ; => [1 2 3 4]
-(println (php/array 0 #?@(:phel [1 2 3]) 4))  ; => array(0, 1, 2, 3, 4)
+(println [1 #?@(:phel [2 3]) 4])              ; prints [1 2 3 4]
+(println (php/array 0 #?@(:phel [1 2 3]) 4))  ; prints <PHP-Array [0, 1, 2, 3, 4]>
 
 ;; Fallback and no-match behave like #?():
-(println [1 #?@(:clj [8 9] :default [2 3]) 4]) ; => [1 2 3 4]
-(println [1 #?@(:clj [8 9]) 4])                ; => [1 4]
+(println [1 #?@(:clj [8 9] :default [2 3]) 4]) ; prints [1 2 3 4]
+(println [1 #?@(:clj [8 9]) 4])                ; prints [1 4]
 ```
 
 ### Top-level restriction
 
 `#?@()` is only valid **inside** a collection (list, vector, map, or set). Splicing at the top level is an error, because there is no parent form to splice into:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 ;; ERROR: Reader conditional splicing #?@() is not allowed at the top level
 #?@(:phel [1 2])
 ```
@@ -87,7 +88,7 @@ Phel discovers and compiles `.cljc` files alongside `.phel` files, so a single f
      :cljs    "clojurescript"
      :default "unknown"))
 
-(println (platform)) ; => "phel"
+(println (platform)) ; prints phel
 ```
 
 > **Tip:** use `.` as the [namespace](/documentation/language/namespaces/) separator (`shared.utils`) so `.cljc` files parse cleanly under Clojure too. The legacy `\` separator still resolves but is deprecated.
@@ -119,8 +120,8 @@ Use splicing to add platform-specific entries to a map:
    #?@(:phel [:runtime "php" :min-version "8.5"]
        :clj  [:runtime "jvm" :min-version "21"])})
 
-(println config)
-; => {:name "my-app" :version "1.0" :runtime "php" :min-version "8.5"}
+config
+; => {:name "my-app", :version "1.0", :runtime "php", :min-version "8.5"}
 ```
 
 ### Inside control flow
@@ -131,7 +132,7 @@ Because conditionals resolve at parse time, they nest inside any form:
 (if #?(:phel true :clj false)
   (println "Running on Phel!")
   (println "Running on Clojure!"))
-; => "Running on Phel!"
+; prints Running on Phel!
 ```
 
 ## Summary
@@ -143,6 +144,7 @@ Because conditionals resolve at parse time, they nest inside any form:
 
 ## Next steps
 
+- [Numeric tower](/documentation/language/numeric-tower/) - how ints, ratios, BigInt, and BigDecimal mix in arithmetic
 - [Namespaces](/documentation/language/namespaces/) - the `ns` form that conditional `:require` entries plug into
-- [Cookbook -- Reader conditionals for cross-platform code](/documentation/guides/cookbook/#reader-conditionals-for-cross-platform-code) - a worked `.cljc` recipe
+- [Cookbook: reader conditionals for cross-platform code](/documentation/guides/cookbook/#reader-conditionals-for-cross-platform-code) - a worked `.cljc` recipe
 - [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding
