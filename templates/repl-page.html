@@ -1,0 +1,41 @@
+{% extends "layouts/one-column-layout.html" %}
+
+{% block content %}
+<div class="repl-page">
+  <header class="repl-page__header">
+    <h1>{{ page.title }}</h1>
+    <ul class="repl-page__meta">
+      <li>Runs Phel {{ page.extra.runtime_version }}</li>
+      <li>~80 MB first load, cached after</li>
+      <li>Desktop recommended</li>
+    </ul>
+  </header>
+
+  <iframe
+    src="/wasm-repl/index.html"
+    title="Phel browser REPL"
+    class="wasm-repl-frame"
+    allow="cross-origin-isolated">
+  </iframe>
+
+  <div class="repl-page__notes">
+    {{ page.content | safe }}
+  </div>
+</div>
+
+<script>
+  // Keep the REPL frame on the site's theme, including manual toggles.
+  (function () {
+    var frame = document.querySelector('.wasm-repl-frame');
+    if (!frame) return;
+    function sync() {
+      try {
+        var doc = frame.contentDocument;
+        if (doc) doc.documentElement.dataset.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      } catch (_) {}
+    }
+    frame.addEventListener('load', sync);
+    new MutationObserver(sync).observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  })();
+</script>
+{% endblock content %}

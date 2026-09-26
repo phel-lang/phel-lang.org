@@ -198,27 +198,6 @@
   border-radius: 3px;
 }
 
-.wasm-repl-frame {
-  display: block;
-  width: 100%;
-  height: 30rem;
-  max-height: 30rem;
-  border: 1px solid var(--repl-control-border, rgba(0, 0, 0, 0.12));
-  border-radius: var(--radius-md, 0.5rem);
-  background: #ffffff;
-}
-
-@media (max-width: 720px) {
-  .wasm-repl-frame {
-    height: 36rem;
-    max-height: 36rem;
-  }
-}
-
-.dark .wasm-repl-frame {
-  background: #0f172a;
-  border-color: rgba(255, 255, 255, 0.08);
-}
 @media (min-width: 1024px) {
   .homepage-code-section > *:not(.code-block-wrapper) {
     max-width: var(--container-content);
