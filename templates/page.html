@@ -2,6 +2,32 @@
 
 {% block sidebar_extra %}{% endblock sidebar_extra %}
 
+{% block structured_data %}
+{% if page.path is starting_with("/documentation/") %}
+{% set doc_dates = load_data(path="data/doc-dates.json", required=false) %}
+{% set updated = "" %}
+{% if doc_dates %}{% set updated = doc_dates | get(key=page.relative_path, default="") %}{% endif %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": {{ page.title | json_encode | safe }},
+  "description": {{ page.description | default(value=config.description) | json_encode | safe }},
+  "url": {{ page.permalink | json_encode | safe }},
+  "mainEntityOfPage": {{ page.permalink | json_encode | safe }},
+  {% if updated %}"dateModified": {{ updated | json_encode | safe }},{% endif %}
+  "publisher": {
+    "@type": "Organization",
+    "name": {{ config.title | json_encode | safe }},
+    "url": {{ config.base_url | json_encode | safe }}
+  }
+}
+</script>
+{% else %}
+{{ super() }}
+{% endif %}
+{% endblock structured_data %}
+
 {% block content %}
     {% set crumb_page = page %}
     {% include "partials/breadcrumb.html" %}
@@ -13,6 +39,14 @@
             {% endif %}
             {% if page.reading_time %}
                 <span class="page-meta__readtime">{{ page.reading_time }} min read</span>
+            {% endif %}
+            {# Last commit date, from scripts/generate-doc-dates.js. Absent file or entry hides it. #}
+            {% set doc_dates = load_data(path="data/doc-dates.json", required=false) %}
+            {% if doc_dates %}
+                {% set updated = doc_dates | get(key=page.relative_path, default="") %}
+                {% if updated %}
+                    <span class="page-meta__updated">Last updated <time datetime="{{ updated }}">{{ updated | date(format="%B %-d, %Y") }}</time></span>
+                {% endif %}
             {% endif %}
         </div>
     {% endif %}

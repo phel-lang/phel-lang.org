@@ -16,7 +16,8 @@
   "scripts": {
     "generate-agent-doc": "node ./scripts/generate-agent-doc.js",
     "generate-llms-full": "node ./scripts/generate-llms-full.js",
-    "prebuild-css": "node ./scripts/concat-tailwind.js && node ./scripts/generate-agent-doc.js && node ./scripts/generate-llms-full.js",
+    "generate-doc-dates": "node ./scripts/generate-doc-dates.js",
+    "prebuild-css": "node ./scripts/concat-tailwind.js && node ./scripts/generate-agent-doc.js && node ./scripts/generate-llms-full.js && node ./scripts/generate-doc-dates.js",
     "build-css": "npm run prebuild-css && postcss ./css/tailwind.entry.css -o ./static/tailwind.css --watch",
     "build-css-dev": "concurrently \"node ./scripts/concat-tailwind.js --watch\" \"postcss ./css/tailwind.entry.css -o ./static/tailwind.css --watch\" --names \"CONCAT,TAILWIND\" --prefix-colors \"yellow,cyan\"",
     "build-css-prod": "npm run prebuild-css && postcss ./css/tailwind.entry.css -o ./static/tailwind.css --env production",
@@ -25,7 +26,7 @@
     "format:css": "prettier --write \"css/**/*.css\"",
     "format:templates": "prettier --write \"templates/**/*.html\"",
     "format": "npm run format:css && npm run format:templates",
-    "clean": "rm -rf static/tailwind.css static/llms-full.txt css/tailwind.entry.css public/",
+    "clean": "rm -rf static/tailwind.css static/llms-full.txt css/tailwind.entry.css data/doc-dates.json public/",
     "prepare": "husky"
   },
   "lint-staged": {

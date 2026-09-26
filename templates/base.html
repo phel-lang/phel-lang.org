@@ -24,6 +24,8 @@
   {% set og_image_width = page.extra.og_image_width | default(value=section.extra.og_image_width | default(value=1200)) %}
   {% set og_image_height = page.extra.og_image_height | default(value=section.extra.og_image_height | default(value=630)) %}
   {% block og_type %}{% set og_type = "website" %}{% endblock og_type %}
+  {# Pages whose front matter is generated re-set full_title, page_title or page_desc here. #}
+  {% block seo_meta %}{% endblock seo_meta %}
 
   <!-- Prevent flash of light mode - must run before any rendering -->
   <script>

@@ -37,6 +37,9 @@ cache/
 # Full-content LLM bundle (generated from curated content pages)
 /static/llms-full.txt
 
+# Docs "Last updated" dates (generated from git history)
+/data/doc-dates.json
+
 # CSS files (generated)
 /css/tailwind.entry.css
 /static/tailwind.css

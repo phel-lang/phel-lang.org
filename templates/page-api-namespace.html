@@ -1,5 +1,16 @@
 {% extends "layouts/two-column-layout.html" %}
 
+{% block seo_meta %}
+{% set full_title = page.title ~ " namespace: Phel API reference" %}
+{% set page_title = full_title %}
+{# Generated one-line descriptions run short for a search snippet. #}
+{% if page.description %}
+    {% if page.description | length < 50 %}
+    {% set page_desc = "Functions in the phel " ~ page.title ~ " namespace: " ~ page.description %}
+    {% endif %}
+{% endif %}
+{% endblock seo_meta %}
+
 {% block site_navigation %}{% endblock site_navigation %}
 
 {% block sidebar_extra %}

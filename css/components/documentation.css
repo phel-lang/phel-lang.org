@@ -364,6 +364,71 @@ h6:hover .zola-anchor {
   color: var(--color-dark-text-muted);
 }
 
+/* --- Callouts: note, tip, warning, deprecated ---
+   Always-open asides, unlike the collapsible `.dev-note`. Same card shape
+   as `blockquote`: each kind sets one accent for the softened border, icon
+   and label, plus a tint behind the body. Dark values swap in from
+   dark-mode.css. */
+.callout {
+  --callout-accent: var(--color-light-callout-note);
+  --callout-bg: var(--color-light-callout-note-bg);
+
+  margin: var(--space-lg) 0;
+  padding: var(--space-md) var(--space-lg);
+  border: 1px solid color-mix(in srgb, var(--callout-accent) 35%, transparent);
+  border-radius: var(--radius-lg);
+  background: var(--callout-bg);
+  color: var(--color-light-text-secondary);
+}
+
+.callout--tip {
+  --callout-accent: var(--color-light-callout-tip);
+  --callout-bg: var(--color-light-callout-tip-bg);
+}
+
+.callout--warning {
+  --callout-accent: var(--color-light-callout-warning);
+  --callout-bg: var(--color-light-callout-warning-bg);
+}
+
+.callout--deprecated {
+  --callout-accent: var(--color-light-callout-deprecated);
+  --callout-bg: var(--color-light-callout-deprecated-bg);
+}
+
+/* A div, not a p: the global `.dark p` color would outrank the accent. */
+.callout__label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xs);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--callout-accent);
+}
+
+.callout__icon {
+  flex: none;
+}
+
+/* Scoped under `.callout` to outrank `.two-column-layout
+   .code-block-wrapper` (code-block.css loads later at equal specificity),
+   so a code block that ends a callout sits flush with the padding. */
+.callout .callout__content > *:first-child {
+  margin-top: 0;
+}
+
+.callout .callout__content > *:last-child {
+  margin-bottom: 0;
+}
+
+/* Same reading measure as the blockquotes these replace. */
+.page-content > .callout {
+  max-width: 34rem;
+}
+
 .dark .sidebar-section-header a,
 .dark .sidebar-section-header .sidebar-section-label {
   color: var(--color-dark-text-secondary);
@@ -472,8 +537,14 @@ h6:hover .zola-anchor {
   border-color: #f2c4c4;
 }
 
-.page-meta__readtime {
+.page-meta__readtime,
+.page-meta__updated {
   color: var(--color-light-text-secondary);
+}
+
+.page-meta__readtime + .page-meta__updated::before {
+  content: '·';
+  margin-right: 0.5rem;
 }
 
 .dark .page-meta__badge--beginner {
@@ -494,6 +565,7 @@ h6:hover .zola-anchor {
   border-color: rgba(214, 78, 78, 0.4);
 }
 
-.dark .page-meta__readtime {
+.dark .page-meta__readtime,
+.dark .page-meta__updated {
   color: var(--color-dark-text-secondary);
 }

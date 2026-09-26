@@ -51,7 +51,11 @@ jobs:
     name: Build site
     runs-on: ubuntu-latest
     steps:
+      # Full history: scripts/generate-doc-dates.js reads each page's last
+      # commit date, which a shallow clone reports as the checkout date.
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - uses: shivammathur/setup-php@v2
         with:

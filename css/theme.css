@@ -60,6 +60,26 @@
   --color-dark-blockquote-bg: #2a313c;
   --color-dark-blockquote-border: #466173;
 
+  /* Callouts: one accent per kind for the border, icon and label,
+     dark enough to clear 4.5:1 on its own tint. Deprecated reuses the
+     amber that marks deprecated functions in the API reference. */
+  --color-light-callout-note: #1d4ed8;
+  --color-light-callout-note-bg: #eff6ff;
+  --color-light-callout-tip: #15803d;
+  --color-light-callout-tip-bg: #f0fdf4;
+  --color-light-callout-warning: #b91c1c;
+  --color-light-callout-warning-bg: #fef2f2;
+  --color-light-callout-deprecated: var(--color-light-deprecated);
+  --color-light-callout-deprecated-bg: #fffbeb;
+  --color-dark-callout-note: #93c5fd;
+  --color-dark-callout-note-bg: #1f2b3d;
+  --color-dark-callout-tip: #86efac;
+  --color-dark-callout-tip-bg: #1d2f2a;
+  --color-dark-callout-warning: #fca5a5;
+  --color-dark-callout-warning-bg: #35262c;
+  --color-dark-callout-deprecated: var(--color-dark-deprecated);
+  --color-dark-callout-deprecated-bg: #332d22;
+
   /* Extended Color Palette */
   --color-gray-darker: #252525;
   --color-gray-dark: #475569;
@@ -145,7 +165,6 @@
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
-  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 
   /* Z-index layers */
   --z-dropdown: 1000;

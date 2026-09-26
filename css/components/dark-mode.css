@@ -80,6 +80,30 @@
   color: var(--color-dark-text-secondary);
 }
 
+/* Dark callouts: only the kind tokens change, the rules live in
+   documentation.css. */
+.dark .callout {
+  --callout-accent: var(--color-dark-callout-note);
+  --callout-bg: var(--color-dark-callout-note-bg);
+
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .callout--tip {
+  --callout-accent: var(--color-dark-callout-tip);
+  --callout-bg: var(--color-dark-callout-tip-bg);
+}
+
+.dark .callout--warning {
+  --callout-accent: var(--color-dark-callout-warning);
+  --callout-bg: var(--color-dark-callout-warning-bg);
+}
+
+.dark .callout--deprecated {
+  --callout-accent: var(--color-dark-callout-deprecated);
+  --callout-bg: var(--color-dark-callout-deprecated-bg);
+}
+
 /* Dark code blocks */
 .dark pre {
   background: var(--color-dark-code-bg);

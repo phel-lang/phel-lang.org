@@ -16,8 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy website to server
     steps:
+      # Full history: scripts/generate-doc-dates.js reads each page's last
+      # commit date, which a shallow clone reports as the checkout date.
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - name: Setup PHP with tools
         uses: shivammathur/setup-php@v2
