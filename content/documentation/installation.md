@@ -126,7 +126,7 @@ docker run --rm -it -v "$PWD":/app -w /app composer \
 cd example-app
 
 # Start the REPL
-docker run --rm -it -v "$PWD":/app -w /app -p 2345:2345 composer composer repl
+docker run --rm -it -v "$PWD":/app -w /app composer composer repl
 ```
 
 Alias for daily use:
@@ -137,8 +137,6 @@ dcomposer composer repl
 dcomposer composer test
 dcomposer composer dev
 ```
-
-> `-p 2345:2345` exposes default nREPL port for host editor integration. Omit if not needed.
 
 ## Nix
 
@@ -164,8 +162,8 @@ Pin PHP + Composer for the team:
 
 pkgs.mkShell {
   packages = with pkgs; [
-    php84
-    php84Packages.composer
+    php85
+    php85Packages.composer
   ];
 }
 ```
@@ -177,9 +175,9 @@ Then `nix-shell` and use Composer as normal.
 Run the doctor:
 
 ```bash
-vendor/bin/phel doctor    ; Composer
-php phel.phar doctor      ; PHAR
-phel doctor               ; Nix / global
+vendor/bin/phel doctor    # Composer
+php phel.phar doctor      # PHAR
+phel doctor               # Nix / global
 ```
 
 Checks PHP extensions (`json`, `mbstring`, `readline`), writable cache dir, source layout. Tells you exactly what's missing.
@@ -212,7 +210,7 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 
 ```bash
 composer require phel-lang/phel-lang:^0.53
-./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
+vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
 Breaking changes in 0.53:
@@ -221,13 +219,13 @@ Breaking changes in 0.53:
 - An octal escape above `\377` is a compile error. `"\400"` used to compile to NUL.
 - PHP API only: `FilesystemFacadeInterface` moves from `Phel\Filesystem` to `Phel\Shared\Facade`, and `Phel\Fiber\FiberFacadeInterface` is gone (type-hint `Phel\Fiber\FiberFacade`). `MetaInterface::withMeta()` always returns a copy, so keep the returned value. Lint rule codes move to `Phel\Shared\LintRuleCodes`, with the same strings.
 
-New in 0.53: short type tags (`^map`, `^vector`, `^set`, `^list`, `^keyword`, `^symbol`, `^atom`), a warning when the result of a copying collection call is dropped, `phel bench --ab=<git-ref>`, and faster literal `assoc`, `get-in`, `assoc-in` and `update-in`. See the [0.53.0 release](https://github.com/phel-lang/phel-lang/releases/tag/v0.53.0).
+New in 0.53: short type tags (`^map`, `^vector`, `^set`, `^list`, `^keyword`, `^symbol`, `^atom`), a warning when the result of a copying collection call is dropped, `phel bench --ab=<git-ref>`, and faster literal `assoc`, `get-in`, `assoc-in` and `update-in`. See the [0.53 release notes](/releases/0-53-floor-raised/).
 
 ## Upgrading to 0.52
 
 ```bash
 composer require phel-lang/phel-lang:^0.52
-./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
+vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
 Breaking changes in 0.52:
@@ -241,7 +239,7 @@ New in 0.52: runtime errors carry a code (`PHEL400` to `PHEL404`), `phel explain
 
 ```bash
 composer require phel-lang/phel-lang:^0.51
-./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
+vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
 Nothing breaks in 0.51. Two deprecations start printing under `--warn-deprecations`: `to-php-array` (use `to-array`) and key-first map destructuring `{:key local}` (use binding-first `{local :key}`).
@@ -252,7 +250,7 @@ New in 0.51: `phel mutate` for mutation testing, `phel test --changed` / `--repo
 
 ```bash
 composer require phel-lang/phel-lang:^0.50
-./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
+vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
 Always clear the cache after upgrading: compiled PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects too.
@@ -264,7 +262,7 @@ Breaking changes in 0.50:
 - Long-deprecated core aliases are removed: `push` → `conj`, `put` → `assoc`, `unset` → `dissoc`, `put-in` → `assoc-in`, `unset-in` → `dissoc-in`, `values` → `vals`, `function?` → `fn?`, `hash-map?` → `map?`, `id` → `identical?`, `str-contains?` → `phel.string/contains?`, `set-meta!` → `with-meta`.
 - Deprecated reader syntax is removed: `#| |#` and bare `#` comments (use `;` / `;;`), `|(...)` short functions (use `#(...)` with `%`), `,` / `,@` unquote (use `~` / `~@`), and `foo$` auto-gensym (use `foo#`).
 - **`,` is the one to watch.** The others stop parsing, so the compiler finds them; `,` is now plain whitespace, so `` `(f ,x) `` still parses and quietly quotes `x` instead of unquoting it. Sweep anything that generates Phel, not just `.phel` files: `grep -rnE ",[A-Za-z0-9_(\[{'\`~@:*+-]" --include='*.phel' src/ tests/`.
-- Lazy sequences print as `(1 2 3)` rather than `@[1 2 3]`, so `@` again means only the deref reader macro. Vectors still print as `@[1 2 3]`.
+- Lazy sequences print as `(1 2 3)` rather than `@[1 2 3]`, so `@` again means only the deref reader macro.
 - Core functions declare real arities, so a wrong argument count raises an arity error instead of being ignored, and `arity` reports `0` for the multi-arity ones.
 - `(max)` and `(min)` with no arguments are rejected at compile time (PHEL002) instead of throwing at runtime.
 - An unresolved `(:require ...)` fails at require time rather than when the missing name is first used.
@@ -277,7 +275,7 @@ New in 0.50: `phel.bench` and a `phel bench` command for benchmarks with baselin
 
 ```bash
 composer require phel-lang/phel-lang:^0.49
-./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
+vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
 Always clear the cache after upgrading: compiled PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects too.
@@ -298,7 +296,7 @@ New in 0.49: 20 new core fns, including `every-pred`, `mapv`, `filterv`, `while`
 
 ```bash
 composer require phel-lang/phel-lang:^0.48
-./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
+vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
 Always clear the cache after upgrading: compiled PHP from earlier installs references renamed core types and fails to load otherwise. Rebuild downstream projects too.
@@ -362,6 +360,8 @@ Behaviour changes in 0.42:
 
 New in 0.42 (richer typed PHP interop, all opt-in):
 
+The `php/new`, `php/->` and `php/::` forms below are `PHEL012` errors since 0.52. Write `(new \Foo ...)`, `(.method obj ...)` and `(\Foo/method ...)` instead.
+
 - `phel.reflect`: read PHP 8 attributes (`class-attributes` / `method-attributes` / ...) and bridge native enums (`enum->keyword` / `keyword->enum` / `enum-values`).
 - `defenum` native backed enums and `defexception` with an optional parent class.
 - `php/ref` passes a local by reference into `php/->` / `php/::` and plain PHP calls like `preg_match` / `sort`.
@@ -377,10 +377,14 @@ Breaking changes in 0.41:
 - Stricter argument errors: `take` with a non-int count, `remove` / `select-keys` on a non-seqable, `int` / `long` / `float` / `double` on non-numeric values, and `get` / `assoc` / `update` with non-int keys now raise clean Phel errors instead of leaking a PHP `TypeError`. Code that leaned on silent coercion must pass real values.
 - Clojure-aligned laziness: `map`, `filter`, `remove`, `concat`, `distinct`, and `repeatedly` no longer realize their head eagerly, `map` over `nil` returns a lazy seq, and `LazySeq` no longer drops `nil` values. Force with `doall` or `vec` where you relied on eager evaluation.
 
+See the [0.41 release notes](/releases/0-41-fold-and-inline/).
+
 Breaking changes in 0.40:
 
 - `phel agent-install`: the `.agents/` docs tree is now copied by default. The `--with-docs` flag is gone; use `--no-docs` to opt out.
 - Map destructuring with `:keys` / `:strs` / `:syms` and a non-vector value now reports a shape error instead of silently dropping the binding.
+
+See the [0.40 release notes](/releases/0-40-sharper-edges/).
 
 Breaking changes in 0.39 (Clojure-aligned core type renames):
 

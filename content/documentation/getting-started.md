@@ -4,9 +4,7 @@ weight = 2
 description = "Go from zero to a live Phel REPL in under a minute, then tour your first project."
 +++
 
-Phel is a Lisp that compiles to PHP. Persistent data structures, immutability by default, macros. Runs on your existing PHP runtime.
-
-Zero to live REPL in under a minute.
+Phel is a Lisp that compiles to PHP. This page takes you from zero to a live REPL in under a minute.
 
 ## Requirements
 
@@ -73,7 +71,7 @@ Done. Working Phel project.
 **Key differences:**
 
 - Runtime is PHP, not JVM. `println`, files, HTTP go through PHP.
-- Namespaces use dashes and dot separators in source, map to PHP classes (`my-app.core` ↔ `MyApp\Core`).
+- Namespaces use dashes and dot separators in source. They compile to PHP namespaces with dashes turned into underscores (`my-app.core` becomes `my_app\core`).
 - Interop: `(php/date "Y-m-d")`, `(new DateTime)`, `(.method obj arg)`.
 - No agents/refs. Use PHP for concurrency, or Phel's fiber-based `async` (amphp).
 - Only `nil` and `false` are falsy. Strings, `0`, `[]` truthy.
@@ -118,9 +116,11 @@ example-app/
 ├── phel-config.php     ; project config (src/test dirs, build)
 ├── src/
 │   ├── main.phel       ; entry namespace
-│   └── modules/        ; your code by namespace
+│   ├── commands/       ; CLI commands
+│   └── core/           ; pure logic the commands call
 └── tests/
-    └── modules/
+    ├── commands/
+    └── core/
 ```
 
 All commands as `vendor/bin/phel <cmd>` (e.g. `vendor/bin/phel repl`). Skeleton wires `composer repl`, `composer dev`, `composer test`, `composer build` as shortcuts.

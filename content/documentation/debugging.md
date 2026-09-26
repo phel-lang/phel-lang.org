@@ -41,7 +41,7 @@ Because the value passes through, `dbg` drops into the middle of threading macro
      (dbg))         ; ...and the filtered result
 ```
 
-With no argument, `dbg` prints just `[file:line]` as a "reached here" marker and returns nil:
+With no argument, `dbg` prints only `[file:line]` as a "reached here" marker and returns nil:
 
 <!-- phel-test: skip -->
 ```phel
@@ -73,11 +73,9 @@ For big nested structures, reach for `phel.pprint`:
 (remove-tap println)                 ; detach when done
 ```
 
-Since 0.49 the REPL registers a printing tap on startup, so `(tap> x)` is visible there out of the box (detach it with `(remove-tap phel.repl/print-tap)`). See [the REPL guide](/documentation/tooling/repl/#debug-helpers) for patterns like collecting tapped values into an atom during tests.
+The REPL registers a printing tap on startup, so `(tap> x)` is visible there out of the box (detach it with `(remove-tap phel.repl/print-tap)`). See [the REPL guide](/documentation/tooling/repl/#debug-helpers) for patterns like collecting tapped values into an atom during tests.
 
 ## phel.trace: log every call of a function
-
-*Available since 0.49.*
 
 When you need to see *how* a function is being called (argument flow, recursion shape, call order), instrument it with `phel.trace` (inspired by `clojure.tools.trace`). `deftrace` defines a function whose every call, including recursive ones, prints its arguments and result to stderr:
 
@@ -122,26 +120,28 @@ Phel compiles to PHP, but you never debug raw PHP line numbers: error output is 
 (println (first (div-all [1 2] 0)))
 ```
 
-produces:
+produces (paths shortened):
 
 ```text
-Division by zero
-   ... 1 internal frame
-#1 src/main.phel:4 : (phel\core\/ 1 0)
-   ... 5 internal frames
-#8 src/main.phel:6 : (phel\core\first @[])
-   ... 21 internal frames
+[PHEL404] Division by zero
+  at src/main.phel:4
+#1 vendor/phel-lang/phel-lang/src/phel/core/math.phel:302 : (phel\core\/ 1 0)
+#2 src/main.phel:4 : (phel\core\/ 1 0)
+#3 vendor/phel-lang/phel-lang/src/php/Lang/Generators/TransformGenerator.php:53 : (my-app\main\div-all 1)
+#10 src/main.phel:6 : (phel\core\first ())
+   ... 30 internal frames (--stack-trace to show, full trace in .phel/error.log)
 ```
 
 How to read it:
 
+- The first line carries the error code. `vendor/bin/phel explain PHEL404` prints what it means and the smallest program that raises it.
 - Each `#N file.phel:line : (fn args...)` frame is **your code** (or a core fn your code called), with real Phel file and line numbers plus the actual arguments.
-- Runs of PHP-native frames (runtime internals, vendor code) are collapsed into `... N internal frames`. The full unfiltered PHP trace is always written to the error log if you need it.
+- Runs of PHP-native frames (runtime internals, vendor code) are collapsed into `... N internal frames`. Pass `--stack-trace` to show them all. The full trace is always written to `.phel/error.log`.
 - Many common failures come with an actionable `hint:` line after the trace, for example calling something that isn't callable, wrong argument counts, or an undefined symbol suggesting a missing `(:require ...)`.
 
 ## Debug in the REPL
 
-`phel repl` is the fastest feedback loop. The history variables `*1`, `*2`, `*3` hold recent results and `*e` holds the last exception, so you can grab a failing value and dissect it interactively. Combine with `doc`, `dir`, `apropos`, and `symbol-info` to explore unfamiliar code, and `require` with `:reload` to pull in fresh definitions as you edit.
+`vendor/bin/phel repl` is the fastest feedback loop. The history variables `*1`, `*2`, `*3` hold recent results and `*e` holds the last exception, so you can grab a failing value and dissect it interactively. Combine with `doc`, `dir`, `apropos`, and `symbol-info` to explore unfamiliar code, and `require` with `:reload` to pull in fresh definitions as you edit.
 
 The full tour lives in the [REPL guide](/documentation/tooling/repl/); for the editor-integrated variant see [`phel nrepl`](/documentation/tooling/editor-support/).
 
@@ -190,10 +190,10 @@ Setup, editor configs, and troubleshooting: [Xdebug Setup](/documentation/toolin
 
 ## Inspect the compiled PHP
 
-When you want to understand what your Phel actually becomes (macro expansion questions, interop surprises, performance curiosity), ask the compiler directly:
+When you want to understand what your Phel becomes (macro expansion questions, interop surprises, performance curiosity), ask the compiler directly:
 
 ```bash
-phel compile '(defn double [x] (* x 2))'
+vendor/bin/phel compile '(defn double [x] (* x 2))'
 ```
 
 ```php
@@ -216,20 +216,20 @@ To debug *macros* specifically, expand them step by step in the REPL with `macro
 When the bug is "it's correct but slow", don't guess:
 
 ```bash
-phel profile src/main.phel
+vendor/bin/phel profile src/main.phel
 ```
 
 reports per-function call counts and self/total timings, plus compile-time phase costs. Sort with `--sort=total|self|calls|avg`, export JSON with `--format=json`. See [Performance](/documentation/performance/) for what to do with the results.
 
 ## Keep the loop tight
 
-- `phel watch` reloads namespaces when files change, so print-debugging iterations don't pay startup cost.
-- `phel test --filter <name>` reruns just the failing test while you bisect.
+- `vendor/bin/phel watch` reloads namespaces when files change, so print-debugging iterations don't pay startup cost.
+- `vendor/bin/phel test --filter <name>` reruns only the failing test while you bisect.
 - PHP-side tools work too: `(php/var_dump x)`, Symfony VarDumper's `(php/dump x)` / `(php/dd x)`: see [PHP Debugging Tools](/documentation/tooling/php-tools/).
 
 ## Next steps
 
-- [REPL](/documentation/tooling/repl/) - history vars, introspection helpers, tap patterns
-- [Xdebug Setup](/documentation/tooling/xdebug-setup/) - breakpoints in `.phel` files
-- [PHP Debugging Tools](/documentation/tooling/php-tools/) - `var_dump`, `dump`, `dd`
-- [Testing](/documentation/testing/) - pin the bug down with a test once you've found it
+- [REPL](/documentation/tooling/repl/): history vars, introspection helpers, tap patterns.
+- [Xdebug Setup](/documentation/tooling/xdebug-setup/): breakpoints in `.phel` files.
+- [PHP Debugging Tools](/documentation/tooling/php-tools/): `var_dump`, `dump`, `dd`.
+- [Testing](/documentation/testing/): pin the bug down with a test once you've found it.

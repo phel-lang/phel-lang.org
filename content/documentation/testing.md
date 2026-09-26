@@ -23,15 +23,24 @@ Built-in unit testing with no boilerplate. Define tests as functions, run them f
 Run:
 
 ```bash
-./vendor/bin/phel test
+vendor/bin/phel test
 ```
 
 Output:
 
 ```
-....
-2 tests, 3 assertions, 0 failures.
+Discovering tests...
+Loading 36 namespace(s)...
+...
+
+Passed: 3
+Failed: 0
+Error: 0
+Total: 3
+Time: 00:00.922, Memory: 52.00 MB
 ```
+
+Each dot is one passing assertion. The totals count assertions, not tests.
 
 {% php_note() %}
 No class boilerplate. Tests are plain functions:
@@ -73,16 +82,40 @@ The `is` macro defines assertions. Optional second argument is a description str
 (is (nil? (get {} :missing)))      ; any predicate works
 ```
 
-For collection equality, failures render a unified diff so missing/extra entries are obvious:
+A failed `=` names the test and its location, then shows a diff. Collections get one line per entry, with `-` for the expected value and `+` for the actual one:
+
+<!-- phel-test: skip -->
+```phel
+(deftest vector-diff
+  (is (= [:a 1 :b 2 :c 3] [:a 1 :b 99 :c 3])))
+```
 
 ```
-FAIL (= a b)
---- expected
-+++ actual
- [:a 1
-- :b 2
-+ :b 99
-  :c 3]
+FAIL vector-diff (diff_test.phel:5)
+          Form: (= [:a 1 :b 2 :c 3] [:a 1 :b 99 :c 3])
+  evaluated to: [:a 1 :b 99 :c 3]
+    but is not: = to [:a 1 :b 2 :c 3]
+  Diff:
+      [0] :a
+      [1] 1
+      [2] :b
+    - [3] 2
+    + [3] 99
+      [4] :c
+      [5] 3
+```
+
+Strings get a caret under the first mismatch:
+
+```
+FAIL string-diff (diff_test.phel:8)
+          Form: (= "hello" "hallo")
+  evaluated to: "hallo"
+    but is not: = to "hello"
+  String diff (first mismatch at index 1):
+    expected: "hello"
+    actual:   "hallo"
+                ^
 ```
 
 ### Exceptions
@@ -165,39 +198,36 @@ echo "hello";
 
 ## Running tests
 
-Run via `./vendor/bin/phel test`. Picks up tests recursively from [withTestDirs](/documentation/configuration/), defaults to `tests/`.
+Run via `vendor/bin/phel test`. Picks up tests recursively from [withTestDirs](/documentation/configuration/), defaults to `tests/`.
 
 Pass filenames to run specific files:
 
 ```bash
-./vendor/bin/phel test tests/main.phel tests/utils.phel
+vendor/bin/phel test tests/main.phel tests/utils.phel
 ```
 
 Filter by name with `--filter`:
 
 ```bash
-./vendor/bin/phel test tests/utils.phel --filter my-test-function
+vendor/bin/phel test tests/utils.phel --filter my-test-function
 ```
 
 Stop on first failure with `--fail-fast`:
 
 ```bash
-./vendor/bin/phel test --fail-fast
+vendor/bin/phel test --fail-fast
 ```
 
-Print discovered tests without running them (`--list`), re-run only failures from the previous run (`--last-failed`), or print the N slowest tests after the summary (`--slowest=N`):
+Print discovered tests without running them (`--list`), or print the N slowest tests after the summary (`--slowest=N`):
 
 ```bash
-./vendor/bin/phel test --list
-./vendor/bin/phel test --last-failed
-./vendor/bin/phel test --slowest=10
+vendor/bin/phel test --list
+vendor/bin/phel test --slowest=10
 ```
-
-`--last-failed` persists failures to `.phel/last-failed.txt`.
 
 `--testdox` for TestDox format. `--quiet` for errors only, `--silent` to silence fully.
 
-Full options: `./vendor/bin/phel test --help`.
+Full options: `vendor/bin/phel test --help`.
 
 ### Reporters
 
@@ -212,9 +242,9 @@ Pick format with `--reporter=<name>`. Repeatable for multiple formats.
 | `junit-xml` | JUnit XML (use `--output=path` for a file)  |
 
 ```bash
-./vendor/bin/phel test --reporter=dot
-./vendor/bin/phel test --reporter=junit-xml --output=build/tests.xml
-./vendor/bin/phel test --reporter=tap --reporter=junit-xml --output=build/tests.xml
+vendor/bin/phel test --reporter=dot
+vendor/bin/phel test --reporter=junit-xml --output=build/tests.xml
+vendor/bin/phel test --reporter=tap --reporter=junit-xml --output=build/tests.xml
 ```
 
 `phel.test/report` is a multimethod dispatching on event `:type`. Register custom reporters from Phel.
@@ -224,10 +254,10 @@ Pick format with `--reporter=<name>`. Repeatable for multiple formats.
 Filter by tag, namespace glob, or regex:
 
 ```bash
-./vendor/bin/phel test --include=integration
-./vendor/bin/phel test --exclude=slow
-./vendor/bin/phel test --ns='my-app.http.*'
-./vendor/bin/phel test --filter 'user.*login'
+vendor/bin/phel test --include=integration
+vendor/bin/phel test --exclude=slow
+vendor/bin/phel test --ns='my-app.http.*'
+vendor/bin/phel test --filter 'user.*login'
 ```
 
 Tag tests with metadata:
@@ -248,9 +278,9 @@ Skipped tests emit `:skipped` event.
 Re-run each test N times, randomize discovery order, and seed for reproducible runs:
 
 ```bash
-./vendor/bin/phel test --repeat=10            # stress a flaky test
-./vendor/bin/phel test --random-order         # random order, random seed
-./vendor/bin/phel test --random-order --seed=42  # deterministic
+vendor/bin/phel test --repeat=10            # stress a flaky test
+vendor/bin/phel test --random-order         # random order, random seed
+vendor/bin/phel test --random-order --seed=42  # deterministic
 ```
 
 `--seed=<int>` alone fixes the seed for the default deterministic order.
@@ -260,9 +290,9 @@ Re-run each test N times, randomize discovery order, and seed for reproducible r
 Run namespaces across subprocess workers to speed up large suites:
 
 ```bash
-./vendor/bin/phel test --parallel=auto   # CPU detection, capped at 8 workers
-./vendor/bin/phel test --parallel=4      # fixed worker count
-./vendor/bin/phel test --parallel=max    # every core the kernel reports
+vendor/bin/phel test --parallel=auto   # CPU detection, capped at 8 workers
+vendor/bin/phel test --parallel=4      # fixed worker count
+vendor/bin/phel test --parallel=max    # every core the kernel reports
 ```
 
 Auto-disabled for `--reporter=tap`, `--list`, and when a profiler hook is installed.
@@ -272,19 +302,19 @@ Auto-disabled for `--reporter=tap`, `--list`, and when a profiler hook is instal
 Re-run the selected tests on every change to a `.phel` file or `phel-config.php` under the project source and test directories. Combine it with selectors to tighten the loop to what you are working on:
 
 ```bash
-./vendor/bin/phel test --watch
-./vendor/bin/phel test --watch --ns=my-app.users.*   # only this namespace
+vendor/bin/phel test --watch
+vendor/bin/phel test --watch --ns='my-app.users.*'   # only this namespace
 ```
 
-Press `Ctrl+C` to stop. A failed `=` assertion prints an expected/actual diff with a caret at the first difference, and `FAIL`/`ERROR` headlines carry the failing `deftest` name and location (`FAIL my-test (file.phel:4)`).
+Press `Ctrl+C` to stop.
 
 ### Re-run failures
 
-After a run, re-run only the tests that failed instead of the whole suite. The failing set is read from `<phel-dir>/last-failed.txt`:
+After a run, re-run only the tests that failed instead of the whole suite. The failing set is read from `<phel-dir>/last-failed.txt` (`.phel/last-failed.txt` by default):
 
 ```bash
-./vendor/bin/phel test --last-failed
-./vendor/bin/phel test --last-failed --repeat=20   # hammer the flaky ones
+vendor/bin/phel test --last-failed
+vendor/bin/phel test --last-failed --repeat=20   # hammer the flaky ones
 ```
 
 ### Coverage
@@ -292,8 +322,8 @@ After a run, re-run only the tests that failed instead of the whole suite. The f
 Collect line coverage mapped back to your `.phel` sources. Requires the `pcov` or `xdebug` extension (you get a clear error otherwise), and runs serially: `--parallel` is disabled for the run. Only project source files count; vendor and core are excluded.
 
 ```bash
-./vendor/bin/phel test --coverage                      # per-file + total %, as text
-./vendor/bin/phel test --coverage=clover \
+vendor/bin/phel test --coverage                      # per-file + total %, as text
+vendor/bin/phel test --coverage=clover \
   --coverage-output=coverage.xml                       # Clover XML for CI (Codecov etc.)
 ```
 
@@ -307,14 +337,15 @@ Test command similar to PHPUnit:
 ./vendor/bin/phpunit --filter testMyFunction
 
 # Phel
-./vendor/bin/phel test
-./vendor/bin/phel test tests/main.phel
-./vendor/bin/phel test --filter my-test-function
+vendor/bin/phel test
+vendor/bin/phel test tests/main.phel
+vendor/bin/phel test --filter my-test-function
 ```
 
 Both support filtering, verbose output, specific files.
 {% end %}
 
+### Run tests from code
 
 Run tests from Phel code with `run-tests`. Takes options map (can be empty) and one or more namespaces.
 
@@ -347,11 +378,16 @@ Manage stats programmatically:
 
 <!-- phel-test: skip -->
 ```phel
+(ns my-app.stats
+  (:require phel.test :refer [reset-stats get-stats restore-stats])
+  (:require phel.repl :refer [test-ns]))
+
 ; Reset test counters to zero
 (reset-stats)
 
-; Get current test statistics (pass/fail/error counts)
+; Get current test statistics
 (get-stats)
+; => {:failed [], :skipped [], :counts {:failed 0, :error 0, :pass 0, :skipped 0, :total 0}}
 
 ; Save and restore stats around a test run
 (def saved (get-stats))

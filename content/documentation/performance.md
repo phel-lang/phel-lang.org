@@ -6,9 +6,23 @@ description = "Speed up phel test and phel run with CLI opcache, the compiled-co
 
 Make `phel test`, `phel run`, and the other CLI commands fast. Everything here applies to both source-checkout and PHAR installs.
 
-## TL;DR: enable CLI opcache
+## TL;DR: opcache is on by default
 
-Each `./vendor/bin/phel` invocation is a fresh PHP process. Without CLI opcache, PHP re-parses every `.php` file on every run (the whole of `vendor/`, the Phel compiler, the Symfony console, your own classes). Persisting compiled bytecode across processes is the single biggest win.
+Each `vendor/bin/phel` invocation is a fresh PHP process. Without CLI opcache, PHP re-parses every `.php` file on every run: the whole of `vendor/`, the Phel compiler, the Symfony console, your own classes. Keeping the compiled bytecode on disk between runs is the single biggest win.
+
+The `phel` binary does this for you. When the opcache extension is loaded and `pcntl` is available, it restarts itself with a file cache under `.phel/opcache/`. No `php.ini` change needed.
+
+Check the status under `Checking performance`:
+
+```bash
+vendor/bin/phel doctor
+```
+
+Set `PHEL_NO_OPCACHE_REEXEC=1` to turn this off and keep your own opcache settings.
+
+### Manual setup
+
+Configure opcache yourself when `pcntl` is missing, or when you run PHP directly instead of the `phel` binary:
 
 ```ini
 ; /your/php/conf.d/ext-opcache.ini
@@ -19,13 +33,13 @@ opcache.max_accelerated_files=20000
 opcache.interned_strings_buffer=16
 ```
 
-Create the cache directory once and restart your shell:
+Create the cache directory. Most systems empty `/tmp` on reboot, so recreate it after one:
 
 ```bash
 mkdir -p /tmp/php-opcache
 ```
 
-Repeat runs of `./vendor/bin/phel test` then drop from seconds to sub-second on a warm cache.
+Repeat runs of `vendor/bin/phel test` then drop from seconds to sub-second on a warm cache.
 
 ### Find your php.ini
 
@@ -56,16 +70,16 @@ The cache flags (`withEnableCompiledCodeCache`, `withEnableNamespaceCache`, `wit
 
 ### Reset the caches
 
-If a run behaves oddly (stale compiled code, missing definitions, a cache-hit crash), wipe both caches and retry. The next invocation repopulates cleanly.
-
-```bash
-rm -rf .phel/cache /tmp/php-opcache
-```
-
-The CLI also exposes a dedicated command for the Phel side:
+If a run behaves oddly (stale compiled code, missing definitions, a cache-hit crash), clear the caches and retry. The next invocation repopulates cleanly.
 
 ```bash
 vendor/bin/phel cache:clear
+```
+
+It clears the Phel caches under `.phel/`, including the `.phel/opcache/` file cache. If you set up a manual opcache file cache, wipe it too:
+
+```bash
+rm -rf /tmp/php-opcache
 ```
 
 ## Optimization levels
@@ -80,7 +94,7 @@ return (new \Phel\Config\PhelConfig())
 
 | Level | Effect |
 |---|---|
-| 0 | Off (default); output is byte-identical to previous releases. |
+| 0 | Off (default). No inlining, no tail-call rewrite. |
 | 1 | Reserved for auto-inlining single-expression private `defn-` (not implemented yet). |
 | 2 | `^:pure` call-site inlining plus rewrite of self-recursive tail calls into an implicit loop. |
 
@@ -140,16 +154,16 @@ See [Profile](/documentation/tooling/cli-commands/#profile) for output formats.
 
 ## Memory limit
 
-`./vendor/bin/phel` raises `memory_limit` to `-1` automatically. If you invoke PHP directly or embed Phel, bump the limit yourself: the compiler's `token_get_all` validation can exceed 128M on large projects.
+`vendor/bin/phel` raises `memory_limit` to `-1` automatically. If you invoke PHP directly or embed Phel, bump the limit yourself: the compiler's `token_get_all` validation can exceed 128M on large projects.
 
 ```bash
-php -d memory_limit=-1 ./vendor/bin/phel test
+php -d memory_limit=-1 vendor/bin/phel test
 ```
 
 ## Next steps
 
-- [Configuration](/documentation/configuration/) - cache flags and the full `phel-config.php` reference.
-- [CLI Commands](/documentation/tooling/cli-commands/#profile) - `phel profile` and `phel cache:clear`.
-- [Functions and Recursion](/documentation/language/functions-and-recursion/) - the full story on `:tag`, `^:memoize`, and `recur`.
-- [Deployment](/documentation/deployment/) - worker runtimes (FrankenPHP, RoadRunner) that drop per-request boot cost in production.
+- [Configuration](/documentation/configuration/): cache flags and the full `phel-config.php` reference.
+- [CLI Commands](/documentation/tooling/cli-commands/#profile): `phel profile` and `phel cache:clear`.
+- [Functions and Recursion](/documentation/language/functions-and-recursion/): the full story on `:tag`, `^:memoize`, and `recur`.
+- [Deployment](/documentation/deployment/): worker runtimes (FrankenPHP, RoadRunner) that drop per-request boot cost in production.
 - PHP manual: [opcache configuration](https://www.php.net/manual/en/opcache.configuration.php).

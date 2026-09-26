@@ -4,7 +4,7 @@ weight = 80
 description = "Deploy Phel apps on plain PHP-FPM or keep namespaces warm across requests with FrankenPHP and RoadRunner worker runtimes."
 +++
 
-PHP is **shared-nothing** by default: every request boots a fresh process, so a Phel namespace does not persist between requests. [`phel build`](/documentation/tooling/cli-commands/) compiles your namespaces to PHP ahead of time and opcache caches that bytecode, so nothing re-parses per request (see [Performance](/documentation/performance/) for the opcache and compiled-code cache setup). But each request still re-runs every loaded namespace's top-level forms to register its `def`s.
+PHP is **shared-nothing** by default: every request boots a fresh process, so a Phel namespace does not persist between requests. [`phel build`](/documentation/tooling/cli-commands/#build-the-project) compiles your namespaces to PHP ahead of time and opcache caches that bytecode, so nothing re-parses per request (see [Performance](/documentation/performance/) for the opcache and compiled-code cache setup). But each request still re-runs every loaded namespace's top-level forms to register its `def`s.
 
 A **worker runtime** keeps the PHP process alive across requests: namespaces load **once** at boot and in-memory state survives between requests, much closer to the JVM/Clojure model.
 
@@ -40,17 +40,17 @@ Require the built entry point **once, before the request loop**. Everything insi
 ```php
 <?php
 require __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/build/app/main.php'; // loads Phel namespaces ONCE
+require __DIR__ . '/out/app/main.php'; // loads Phel namespaces ONCE
 ```
 
-To produce that entry point, see [`phel build`](/documentation/tooling/cli-commands/) and configure `withMainPhelNamespace` / `withMainPhpPath` in [`phel-config.php`](/documentation/configuration/). To expose Phel functions to the PHP worker, mark them `{:export true}` and run [`phel export`](/documentation/tooling/cli-commands/), which generates one PHP class per namespace.
+To produce it, run [`phel build`](/documentation/tooling/cli-commands/#build-the-project) with `withMainPhelNamespace('app.main')` in [`phel-config.php`](/documentation/configuration/). The build writes each namespace to `out/` by default, so `app.main` lands in `out/app/main.php`. Change the folder with `withBuildDestDir`. To expose Phel functions to the PHP worker, mark them `{:export true}` and run [`phel export`](/documentation/tooling/cli-commands/#export-definitions), which generates one PHP class per namespace.
 
 ## Loading Phel: prod vs dev
 
 One boot hook covers both environments if you guard the load. In production the built file exists and you `require` it; in development it does not, so you fall back to `\Phel::run()`, which boots Gacela and compiles on first call:
 
 ```php
-$built = $root . '/build/app/main.php';
+$built = $root . '/out/app/main.php';
 
 if (is_file($built)) {
     require $built;                // prod: precompiled, self-contained \Phel::addDefinition() calls, no Gacela, no compiler
@@ -59,7 +59,7 @@ if (is_file($built)) {
 }
 ```
 
-`$root` is the project root your framework already knows (`base_path()`, `getProjectDir()`, `__DIR__`). Run this **once** per process, behind a static flag, never in a per-request hot path. Commit `build/` in the deploy artifact (or run `phel build` in CI); skip committing it in dev so `is_file()` is false and `\Phel::run()` takes over. Framework hooks (Laravel, Symfony, framework-less) wire this into their kernels in [Framework Integration](/documentation/web/framework-integration/).
+`$root` is the project root your framework already knows (`base_path()`, `getProjectDir()`, `__DIR__`). Run this **once** per process, behind a static flag, never in a per-request hot path. Ship `out/` in the deploy artifact (or run `phel build` in CI); keep it out of your dev checkout so `is_file()` is false and `\Phel::run()` takes over. Framework hooks (Laravel, Symfony, framework-less) wire this into their kernels in [Framework Integration](/documentation/web/framework-integration/).
 
 ## FrankenPHP
 
@@ -68,11 +68,11 @@ if (is_file($built)) {
 ```php
 <?php
 require __DIR__ . '/vendor/autoload.php';
-require __DIR__ . '/build/app/main.php'; // once, outside the loop
+require __DIR__ . '/out/app/main.php'; // once, outside the loop
 
 $handler = static function (): void {
     // call an exported Phel wrapper per request
-    echo \App\PhelGenerated\App\Main::handleRequest();
+    echo \PhelGenerated\App\Main::handleRequest();
 };
 
 while (frankenphp_handle_request($handler)) {

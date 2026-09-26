@@ -113,10 +113,10 @@ Here is a complete, runnable program using only what is above. Read it top to bo
 (def people ["Ada" "Alan" "Grace"])
 
 (println (map greet people))
-; prints: @["Hello, Ada!" "Hello, Alan!" "Hello, Grace!"]
+; prints: (Hello, Ada! Hello, Alan! Hello, Grace!)
 ```
 
-`str` joins values into a string. `map` applies `greet` to every item in the vector (this is Phel's `map`, the data-transforming one, not PHP's `map` naming). `println` prints the result. If you can follow this, you can read Phel.
+`str` joins values into a string. `map` applies `greet` to every item in the vector, like PHP's `array_map`. It returns a lazy sequence, which prints in parentheses. `println` prints the result. If you can follow this, you can read Phel.
 
 ## What next?
 

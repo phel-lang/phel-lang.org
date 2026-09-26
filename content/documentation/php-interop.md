@@ -4,39 +4,9 @@ weight = 50
 description = "Call PHP functions, build objects, work with PHP arrays, and catch PHP exceptions from Phel."
 +++
 
-## Globals and constants
+Phel runs on PHP. Every PHP function, class and Composer package is one form away.
 
-Access PHP superglobals with `php/` prefix and `get`:
-
-```phel
-(get php/$_SERVER "key") ; $_SERVER['key']
-(get php/$GLOBALS "argv") ; $GLOBALS['argv']
-```
-
-PHP [`define`](https://www.php.net/manual/en/function.define.php) constants accessed via `php/CONSTANT_NAME`:
-
-```phel
-(php/define "MY_SETTING" "My value") ; Calls PHP define('MY_SETTING', 'My value');
-php/MY_SETTING ; => "My value"
-```
-
-{% php_note() %}
-The `php/` prefix gives you direct access to PHP's global scope:
-
-```php
-// PHP
-$_SERVER['key']
-$GLOBALS['argv']
-MY_SETTING
-
-// Phel
-(get php/$_SERVER "key")
-(get php/$GLOBALS "argv")
-php/MY_SETTING
-```
-
-**Note:** Use Phel's immutable data structures when possible. Only use PHP arrays when you need to interop with PHP libraries that expect them.
-{% end %}
+This page covers the forms: calling functions, building objects, reading and writing PHP arrays, catching PHP exceptions, and calling Phel back from PHP.
 
 ## Calling PHP functions
 
@@ -84,6 +54,40 @@ Capture into a Phel alias:
 (trap-signal [2 15])
 ```
 
+## Globals and constants
+
+Access PHP superglobals with `php/` prefix and `get`:
+
+```phel
+(get php/$_SERVER "key") ; $_SERVER['key']
+(get php/$GLOBALS "argv") ; $GLOBALS['argv']
+```
+
+PHP [`define`](https://www.php.net/manual/en/function.define.php) constants accessed via `php/CONSTANT_NAME`:
+
+```phel
+(php/define "MY_SETTING" "My value") ; Calls PHP define('MY_SETTING', 'My value');
+php/MY_SETTING ; => "My value"
+```
+
+{% php_note() %}
+The `php/` prefix gives you direct access to PHP's global scope:
+
+```php
+// PHP
+$_SERVER['key']
+$GLOBALS['argv']
+MY_SETTING
+
+// Phel
+(get php/$_SERVER "key")
+(get php/$GLOBALS "argv")
+php/MY_SETTING
+```
+
+**Note:** Use Phel's immutable data structures when possible. Only use PHP arrays when you need to interop with PHP libraries that expect them.
+{% end %}
+
 ## Interop forms
 
 Clojure-style forms cover every class member. They are the only spelling: the
@@ -110,9 +114,9 @@ old `php/new`, `php/->` and `php/::` are rejected as source since Phel 0.52
 DateTimeImmutable/ATOM                         ; static constant
 ```
 
-## Class instantiation
+## Class instantiation {#php-class-instantiation}
 
-Two equivalent forms - prefer `ClassName.` for imported classes:
+Two equivalent forms. Prefer `ClassName.` for imported classes:
 
 ```phel
 (ns my.module
@@ -206,7 +210,7 @@ Method calls: `(.method obj args)`. Property access: `(.-prop obj)`. Mixed chain
 Same spelling as Clojure: `.method`, `.-field`, `Class/member`, and `->` for chaining.
 {% end %}
 
-## Static method and property
+## Static method and property {#php-static-method-and-property-call}
 
 <!-- phel-test: skip -->
 ```phel
@@ -276,7 +280,7 @@ Some PHP functions write through a `&$ref` parameter (`preg_match`, `sort`, ...)
 
 `php/ref` also works inside method and static calls.
 
-## Set object properties
+## Set object properties {#php-set-object-properties}
 
 <!-- phel-test: skip -->
 ```phel
@@ -314,7 +318,7 @@ Phel values and PHP values cross the boundary automatically for scalars (int, fl
 | Function | Direction | Example | Result |
 |---|---|---|---|
 | `to-array` | Phel vector/map to PHP array | `(to-array [1 2 3])` | `<PHP-Array [1, 2, 3]>` |
-| `phel->php` | deep Phel to PHP (nested) | `(phel->php {:a 1 :b 2})` | `<PHP-Array [a:1, b:2]>` |
+| `phel->php` | deep Phel to PHP (nested) | `(phel->php {:a 1 :b 2})` | `<PHP-Array ["a":1, "b":2]>` |
 | `php->phel` | deep PHP to Phel (nested) | `(php->phel (php/array 1 2 3))` | `[1 2 3]` |
 | `php-array-to-map` | PHP array to Phel map | `(php-array-to-map #php {"a" 1 "b" 2})` | `{"a" 1, "b" 2}` |
 
@@ -322,7 +326,7 @@ Phel values and PHP values cross the boundary automatically for scalars (int, fl
 (to-array [1 2 3])                 ; => <PHP-Array [1, 2, 3]>
 (php->phel (php/array 1 2 3))       ; => [1 2 3]
 (php-array-to-map #php {"a" 1})     ; => {"a" 1}
-(phel->php {:a 1})                  ; => <PHP-Array [a:1]>
+(phel->php {:a 1})                  ; => <PHP-Array ["a":1]>
 ```
 
 Use `#php [...]` and `#php {...}` reader macros to write PHP array literals directly.
@@ -337,13 +341,13 @@ Use `#php [...]` and `#php {...}` reader macros to write PHP array literals dire
 
 For Phel's own values use the core predicates (`int?`, `string?`, `map?`, `vector?`, ...).
 
-## PHP functions as values
+## PHP functions as values {#php-first-class-callable}
 
 A `php/`-prefixed function is a first-class value. Bind it, pass it, or spread arguments into it with `apply`:
 
 ```phel
 (let [upcase php/strtoupper]
-  (map upcase ["a" "b"]))        ; => @["A" "B"]
+  (map upcase ["a" "b"]))        ; => ("A" "B")
 
 (apply php/max [3 7 2])          ; => 7
 ```
@@ -356,16 +360,13 @@ Capture a namespaced PHP function into a Phel alias the same way:
 (trap-signal [2 15])
 ```
 
-## Magic methods on structs
-
-A `defstruct` is a real PHP class, so it can expose magic methods (`__invoke`, `__toString`, `__get`, ...) through an inline `:php` block. See [Structs](/documentation/language/data-structures/#structs) for the full form.
+`php/callable` builds a native PHP first-class callable, like PHP's `strtoupper(...)`, without an `fn` wrapper. It takes a function, a static method, or an instance method:
 
 ```phel
-(defstruct money [cents]
-  :php
-  (__toString [this] (str "$" (/ (get this :cents) 100))))
+(map (php/callable \strtoupper) ["a" "b"]) ; => ("A" "B")
 
-(php/strval (money 500)) ; => "$5"
+(let [parse (php/callable \DateTimeImmutable createFromFormat)]
+  (.format (parse "Y-m-d" "2026-06-06") "Y-m-d")) ; => "2026-06-06"
 ```
 
 ## Get PHP array value
@@ -580,31 +581,28 @@ Parent arrays remain intact even if they become empty after the unset.
 
 ## `__DIR__`, `__FILE__`, `*file*`
 
-PHP magic constants `__DIR__` and `__FILE__` work but expand at PHP compile, pointing to the generated PHP file under `.phel/cache`.
-
-For the original Phel source path, use `*file*` (absolute path of current Phel file). Combine with `php/dirname` for the source dir.
+The compiler replaces PHP's `__DIR__` and `__FILE__` with the location of your `.phel` source file. `*file*` holds the same absolute path.
 
 ```phel
-(println __DIR__)  ; Directory name of the generated PHP file
-(println __FILE__) ; Filename of the generated PHP file
-
-(println (php/dirname *file*)) ; Directory of the original Phel file
-(println *file*)               ; Absolute path of the original file
+(println __DIR__)              ; directory of this .phel file
+(println __FILE__)             ; absolute path of this .phel file
+(println (php/dirname *file*)) ; same as __DIR__
+(println *file*)               ; same as __FILE__
 ```
+
+All four are baked in at compile time. A `phel build` on a CI machine keeps the CI machine's paths in the output. When the build moves to another machine, resolve files from a root you pass in at runtime.
 
 {% php_note() %}
-**Important distinction:**
+In PHP, `__DIR__` is the directory of the running `.php` file. In Phel it is the directory of the `.phel` source, not of the generated PHP:
 
 ```php
-// PHP magic constants
-__DIR__   // Points to .phel/cache directory (generated PHP)
-__FILE__  // Points to cached .php file
+// PHP
+__DIR__   // directory of this .php file
 
-// Phel special var
-*file*    // Points to your actual .phel source file
+// Phel
+__DIR__   // directory of the .phel source, fixed at compile time
+*file*    // absolute path of the .phel source
 ```
-
-Use `*file*` when you need to reference the original Phel source location, such as for loading resources relative to your source code.
 {% end %}
 
 ## Map to typed object and back
@@ -621,6 +619,18 @@ Use `*file*` when you need to reference the original Phel source location, such 
 To read PHP 8 attributes and bridge native enums, see `phel.reflect`
 (`class-attributes`, `enum->keyword`, ...) in the
 [API reference](/documentation/reference/api/reflect).
+
+## Magic methods on structs
+
+A `defstruct` is a real PHP class, so it can expose magic methods (`__invoke`, `__toString`, `__get`, ...) through an inline `:php` block. See [Structs](/documentation/language/data-structures/#structs) for the full form.
+
+```phel
+(defstruct money [cents]
+  :php
+  (__toString [this] (str "$" (/ (get this :cents) 100))))
+
+(php/strval (money 500)) ; => "$5"
+```
 
 ## Native enums and exceptions
 
@@ -647,7 +657,7 @@ To read PHP 8 attributes and bridge native enums, see `phel.reflect`
 
 ```phel
 (ns my-app
-  (:require phel\reflect :as reflect))
+  (:require phel.reflect :as reflect))
 ```
 
 Attributes come back as `{:name :args}` maps:
@@ -709,29 +719,28 @@ For Phel's own exceptions, `ex-info`, and re-throwing, see [Error Handling](/doc
 
 ## Calling Phel from PHP
 
-Useful for integrating Phel into existing PHP apps. Load the Phel namespace after `autoload.php`.
+Use this to bring Phel into an existing PHP app. Two ways: call a Phel function by name with `PhelCallerTrait`, or generate PHP wrapper classes with `phel export`.
 
-Example: [using-exported-phel-function.php](https://github.com/phel-lang/cli-skeleton/blob/main/example/using-exported-phel-function.php)
+This is the export route, taken from the CLI skeleton's [using-exported-phel-function.php](https://github.com/phel-lang/cli-skeleton/blob/main/example/using-exported-phel-function.php). Run `vendor/bin/phel export` first to generate the wrapper classes:
 
 ```php
-<?php
+<?php declare(strict_types=1);
 
 use Phel\Phel;
-use PhelGenerated\CliSkeleton\Modules\AdderModule;
+use PhelGenerated\CliSkeleton\Core\Adder;
 
 $projectRootDir = dirname(__DIR__);
 
 require $projectRootDir . '/vendor/autoload.php';
 
-Phel::run($projectRootDir, 'cli-skeleton.modules.adder-module');
+Phel::run($projectRootDir, 'cli-skeleton.core.adder');
 
-$adder = new AdderModule();
-$result = $adder->adder(1, 2, 3);
+$result = Adder::adder(1, 2, 3);
 
-echo 'Result = ' . $result . PHP_EOL;
+echo 'Result = ' . $result . PHP_EOL; // Result = 6
 ```
 
-Two ways: manually, or via the `export` command.
+`Phel::run()` loads the namespace. The exported functions are static methods on the generated class.
 
 ### Manually
 

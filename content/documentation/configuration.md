@@ -51,19 +51,24 @@ return (new \Phel\Config\PhelConfig())
     ->withTestDirs(['tests'])
     ->withVendorDir('vendor')
     ->withErrorLogFile('.phel/error.log')
-    ->withIgnoreWhenBuilding(['ignore-when-building.phel'])
+    ->withIgnoreWhenBuilding([])
     ->withNoCacheWhenBuilding([])
     ->withFormatDirs(['src', 'tests'])
+    ->withFormatExclude([])
+    ->withAppModulePaths([])
     ->withKeepGeneratedTempFiles(false)
-    ->withTempDir(sys_get_temp_dir().'/phel')
+    ->withTempDir(sys_get_temp_dir().'/phel/tmp')
     ->withCacheDir('.phel/cache')
+    ->withCacheEnvVars([])
     ->withPhelDir('.phel')
     ->withEnableNamespaceCache(true)
     ->withEnableCompiledCodeCache(true)
+    ->withEnableIntermediateCache(false)
     ->withEnableAsserts(true)
     ->withWarnDeprecations(false)
     ->withOptimizationLevel(0)
-    ->withMainPhelNamespace('your-ns.index')
+    ->withStripSymbolMeta(false)
+    ->withMainPhelNamespace('')        // no default: set your entry ns, e.g. 'your-ns.main'
     ->withMainPhpPath('out/index.php')
     ->withBuildDestDir('out')
     ->withExportFromDirectories(['src'])
@@ -82,16 +87,21 @@ return (new \Phel\Config\PhelConfig())
 | `withIgnoreWhenBuilding`               | Phel files skipped by `phel build`.                                                                    |
 | `withNoCacheWhenBuilding`              | Files always retranspiled, regardless of `--cache` / `--no-cache`.                                     |
 | `withFormatDirs`                       | Directories rewritten by `phel format`.                                                                |
+| `withFormatExclude`                    | Globs `phel format` skips (generated files, vendored trees). Combined with `--exclude`.               |
+| `withAppModulePaths`                   | Directories scanned for Gacela modules. Default `[]` walks the whole project root. Only for projects that define Gacela modules. |
 | `withKeepGeneratedTempFiles`           | Keep generated temp files after `phel run`. Default `false`.                                           |
 | `withTempDir`                          | Absolute path for temporary files. Throws if not writable.                                             |
-| `withCacheDir`                         | Directory for namespace + compiled-code caches. Default `.phel/cache`.                                 |
+| `withCacheDir`                         | Directory for namespace + compiled-code caches. Default `.phel/cache`. Override via `PHEL_CACHE_DIR` env. |
+| `withCacheEnvVars`                     | Env vars that take part in the compiled-code cache key. Use it when a macro reads `(php/getenv ...)`. Values are hashed, never stored. |
 | `withPhelDir`                          | Root for runtime state (cache, REPL history, error log). Default `.phel`. Override via `PHEL_DIR` env. |
 | `withEnableNamespaceCache`             | Persistent namespace cache for warm runs. Default `true`.                                              |
 | `withEnableCompiledCodeCache`          | Compiled-code cache for tests/builds. Default `true`.                                                  |
+| `withEnableIntermediateCache`          | Cache the lex/parse/read output per source so warm rebuilds skip to analysis. Experimental. Default `false`. |
 | `withEnableAsserts`                    | Toggle runtime `assert` checks.                                                                        |
 | `withWarnDeprecations`                 | Emit warnings on deprecated APIs.                                                                      |
 | `withOptimizationLevel`                | Compiler optimization level (`0` = off, `2` = inline + tail-call rewrite). See [Performance](/documentation/performance/#optimization-levels). |
-| `withMainPhelNamespace`                | Entry ns for `phel build`.                                                                             |
+| `withStripSymbolMeta`                  | `phel build` drops symbol metadata (docstrings, arglists, source locations). Smaller, faster artifacts, but `phel doc` and `(meta ...)` return nil on built defs. Production builds only. |
+| `withMainPhelNamespace`                | Entry ns for `phel build`. No default.                                                                 |
 | `withMainPhpPath`                      | Generated PHP entry path.                                                                              |
 | `withBuildDestDir`                     | Output directory for `phel build`.                                                                     |
 | `withExportFromDirectories`            | Source dirs scanned by `phel export`.                                                                  |
@@ -102,7 +112,7 @@ return (new \Phel\Config\PhelConfig())
 </div>
 </details>
 
-> **Note:** Old `setX()` setters are deprecated and emit notices. Use the `withX()` chain, the API is immutable.
+> **Note:** The old `setX()` setters were removed in 0.46. Use the `withX()` chain. Each call returns a new config.
 
 To see the merged result of all of this (and which file each value came from), run `phel config`. See [CLI commands](/documentation/tooling/cli-commands/#inspect-configuration).
 

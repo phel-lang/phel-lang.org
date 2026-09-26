@@ -33,11 +33,11 @@ Phel and PHP optimize for different things on the same runtime.
 
 ## Can I use existing PHP libraries?
 
-Yes. Any Composer package, class, trait, function, or constant is callable through the `php/` prefix, e.g. `(php/strlen "hello")` or `(.format (new DateTimeImmutable "2024-01-15") "Y-m-d")`. The full escape hatch (methods, statics, constants, `php/aget`) is in [PHP Interop](/documentation/php-interop).
+Yes. Any PHP function or constant is one `php/` prefix away: `(php/strlen "hello")`. Classes from PHP or any Composer package work with `new`, `.method`, and `Class/member`: `(.format (new DateTimeImmutable "2024-01-15") "Y-m-d")`. The full escape hatch (methods, statics, constants, `php/aget`) is in [PHP Interop](/documentation/php-interop).
 
 ## Isn't a compilation step a hassle?
 
-No. `vendor/bin/phel run` or the REPL compiles transparently. No build pipeline, watcher, or output dir. Same idea as TypeScript or Sass. Deploys as plain PHP.
+No. In development there is no build step: `vendor/bin/phel run` and the REPL compile on the fly. For production, `phel build` precompiles everything to plain PHP. See [Deployment](/documentation/deployment/).
 
 ## What about performance?
 
@@ -49,11 +49,11 @@ In a hot inner loop over millions of elements, reach for native PHP arrays throu
 
 Full PHP debugging ecosystem works:
 
-- **Phel helpers**: `tap>`, `add-tap`, `pprint`.
+- **Phel helpers**: `dbg`, `tap>`, `add-tap`, `pprint`.
 - **PHP native**: `var_dump`, `print_r`, Symfony `dump()`. Phel values are PHP objects.
-- **XDebug**: step-through, breakpoints, variable inspection. PhpStorm and VS Code.
+- **Xdebug**: step-through, breakpoints, variable inspection. PhpStorm and VS Code.
 
-See [Debug helpers](/documentation/tooling/repl/#debug-helpers) and [XDebug setup](/documentation/tooling/xdebug-setup/).
+See [Debug helpers](/documentation/tooling/repl/#debug-helpers) and [Xdebug setup](/documentation/tooling/xdebug-setup/).
 
 ## What about IDE support?
 
