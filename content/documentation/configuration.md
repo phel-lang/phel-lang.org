@@ -112,7 +112,9 @@ return (new \Phel\Config\PhelConfig())
 </div>
 </details>
 
-> **Note:** The old `setX()` setters were removed in 0.46. Use the `withX()` chain. Each call returns a new config.
+{% callout(kind="note") %}
+The old `setX()` setters were removed in 0.46. Use the `withX()` chain. Each call returns a new config.
+{% end %}
 
 To see the merged result of all of this (and which file each value came from), run `phel config`. See [CLI commands](/documentation/tooling/cli-commands/#inspect-configuration).
 

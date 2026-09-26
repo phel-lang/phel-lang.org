@@ -13,7 +13,9 @@ Phel is a Lisp that compiles to PHP. This page takes you from zero to a live REP
 
 No extra runtime. No JVM.
 
-> **No PHP installed?** Run a REPL in a single Docker command: see [Installation → Docker](/documentation/installation/#docker-no-php-required).
+{% callout(kind="tip") %}
+**No PHP installed?** Run a REPL in a single Docker command: see [Installation → Docker](/documentation/installation/#docker-no-php-required).
+{% end %}
 
 ## 60-second quick start
 

@@ -11,51 +11,76 @@ If you only fetch one URL, fetch the agent reference:
 
 ## Onboarding
 
+- [Phel in 5 Minutes](https://phel-lang.org/documentation/phel-in-5-minutes/): read Phel code without installing anything.
 - [Getting Started](https://phel-lang.org/documentation/getting-started/): zero to REPL in 60 seconds.
 - [Installation](https://phel-lang.org/documentation/installation/): Composer, PHAR, Docker, Nix.
+- [Upgrading](https://phel-lang.org/documentation/upgrading/): breaking changes and upgrade steps per release.
 - [Why Phel?](https://phel-lang.org/documentation/why-phel/): honest FAQ.
+- [Stability Policy](https://phel-lang.org/documentation/stability/): what a version number promises.
 
 ## Language
 
 - [Cheat Sheet](https://phel-lang.org/documentation/reference/cheat-sheet/): full core surface.
-- [Basic Types](https://phel-lang.org/documentation/language/basic-types/)
+- [Basic Types](https://phel-lang.org/documentation/language/basic-types/): literals, truthiness, arithmetic.
 - [Data Structures](https://phel-lang.org/documentation/language/data-structures/)
-- [Functions and Recursion](https://phel-lang.org/documentation/language/functions-and-recursion/)
-- [Control Flow](https://phel-lang.org/documentation/language/control-flow/)
-- [Destructuring](https://phel-lang.org/documentation/language/destructuring/)
 - [Global and Local Bindings](https://phel-lang.org/documentation/language/global-and-local-bindings/)
+- [Control Flow](https://phel-lang.org/documentation/language/control-flow/)
+- [Functions and Recursion](https://phel-lang.org/documentation/language/functions-and-recursion/)
+- [Destructuring](https://phel-lang.org/documentation/language/destructuring/)
+- [Numeric Tower](https://phel-lang.org/documentation/language/numeric-tower/)
+- [Reader Shortcuts](https://phel-lang.org/documentation/language/reader-shortcuts/)
+- [Error Handling](https://phel-lang.org/documentation/language/error-handling/)
 - [Namespaces](https://phel-lang.org/documentation/language/namespaces/)
-- [Macros](https://phel-lang.org/documentation/language/macros/)
 - [Interfaces](https://phel-lang.org/documentation/language/interfaces/)
-- [Truth and Boolean](https://phel-lang.org/documentation/language/truth-and-boolean-operations/)
-- [Arithmetic](https://phel-lang.org/documentation/language/arithmetic/)
+- [Macros](https://phel-lang.org/documentation/language/macros/)
+- [Lazy Sequences](https://phel-lang.org/documentation/language/lazy-sequences/)
+- [Transducers](https://phel-lang.org/documentation/language/transducers/)
+- [Reader Conditionals](https://phel-lang.org/documentation/language/reader-conditionals/)
+- [Async and Concurrency](https://phel-lang.org/documentation/language/async/)
 
 ## Interop and Tooling
 
 - [PHP Interop](https://phel-lang.org/documentation/php-interop/)
+- [Configuration](https://phel-lang.org/documentation/configuration/)
+- [Testing](https://phel-lang.org/documentation/testing/)
+- [Debugging](https://phel-lang.org/documentation/debugging/)
+- [Performance](https://phel-lang.org/documentation/performance/)
+- [Deployment](https://phel-lang.org/documentation/deployment/)
 - [CLI Commands](https://phel-lang.org/documentation/tooling/cli-commands/)
 - [REPL](https://phel-lang.org/documentation/tooling/repl/)
 - [Editor Support](https://phel-lang.org/documentation/tooling/editor-support/)
-- [Phel Helpers](https://phel-lang.org/documentation/tooling/phel-helpers/)
-- [XDebug Setup](https://phel-lang.org/documentation/tooling/xdebug-setup/)
-- [Authoring Libraries](https://phel-lang.org/documentation/tooling/authoring-libraries/)
-- [Configuration](https://phel-lang.org/documentation/configuration/)
-- [Testing](https://phel-lang.org/documentation/testing/)
-
-## Guides
-
-- [Cookbook](https://phel-lang.org/documentation/guides/cookbook/)
-- [Rosetta Stone (PHP to Phel)](https://phel-lang.org/documentation/guides/rosetta-stone/)
-- [Coming from Clojure](https://phel-lang.org/documentation/guides/coming-from-clojure/)
-- [Phel for PHP Developers](https://phel-lang.org/documentation/guides/phel-for-php-developers/)
+- [PHP Debugging Tools](https://phel-lang.org/documentation/tooling/php-tools/)
+- [Xdebug Setup](https://phel-lang.org/documentation/tooling/xdebug-setup/)
+- [Error Reference](https://phel-lang.org/documentation/reference/errors/): every PHEL error code.
 
 ## Web
 
+- [Routing](https://phel-lang.org/documentation/web/routing/)
 - [HTML Rendering](https://phel-lang.org/documentation/web/html-rendering/)
 - [HTTP Request and Response](https://phel-lang.org/documentation/web/http-request-and-response/)
+- [Framework Integration](https://phel-lang.org/documentation/web/framework-integration/): Symfony, Laravel, plain PHP.
+
+## Guides
+
+- [Build a Web App](https://phel-lang.org/documentation/guides/build-a-web-app/): end-to-end tutorial.
+- [Cookbook](https://phel-lang.org/documentation/guides/cookbook/)
+- [One-liners](https://phel-lang.org/documentation/guides/one-liners/)
+- [Rosetta Stone (PHP to Phel)](https://phel-lang.org/documentation/guides/rosetta-stone/)
+- [Coming from Clojure](https://phel-lang.org/documentation/guides/coming-from-clojure/)
+
+## Libraries
+
+- [Schema Validation](https://phel-lang.org/documentation/libraries/schema/)
+- [Data Formats](https://phel-lang.org/documentation/libraries/data-formats/): EDN and Transit.
+- [AI Module](https://phel-lang.org/documentation/libraries/ai/): provider-agnostic LLM client.
+
+## Reference
+
+- [API Reference](https://phel-lang.org/documentation/reference/api/): every namespace and function.
+- [Agent Setup](https://phel-lang.org/documentation/reference/agent-setup/)
 
 ## Source of Truth
 
 - Compiler + core: <https://github.com/phel-lang/phel-lang>
-- Agent skill adapters: `vendor/phel-lang/phel-lang/.agents/` after `composer require phel-lang/phel-lang`.
+- Agent skill adapters: `vendor/phel-lang/phel-lang/resources/agents/` after `composer require phel-lang/phel-lang`, or `./.agents/` after `agent-install`.
 - Install adapter for active agent: `vendor/bin/phel agent-install <claude|codex|cursor|copilot|aider|gemini|--all>`.

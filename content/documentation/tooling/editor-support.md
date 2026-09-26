@@ -41,7 +41,7 @@ Install:
 2. Search for "Phel".
 3. Install, then reload the window.
 
-Config note: this extension also powers step-through debugging. See [XDebug setup](/documentation/tooling/xdebug-setup/) for `launch.json` and breakpoints in `.phel` files.
+Config note: this extension also powers step-through debugging. See [Xdebug setup](/documentation/tooling/xdebug-setup/) for `launch.json` and breakpoints in `.phel` files.
 
 ## Emacs
 
@@ -109,4 +109,4 @@ Hover shows the reflected signature for PHP methods, functions, and classes, and
 
 - [REPL](/documentation/tooling/repl/) - the interactive loop your editor connects to
 - [CLI commands](/documentation/tooling/cli-commands/#nrepl) - start `phel nrepl` and `phel lsp`
-- [XDebug setup](/documentation/tooling/xdebug-setup/) - step-through debugging in VS Code and PhpStorm
+- [Xdebug setup](/documentation/tooling/xdebug-setup/): step-through debugging in VS Code and PhpStorm

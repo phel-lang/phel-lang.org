@@ -7,7 +7,9 @@ aliases = ["/documentation/cheat-sheet"]
 
 Quick reference for Phel syntax and core functions.
 
-> **AI agents:** load [Agentic Coding](/documentation/reference/agentic-coding) first for the truncation-safe rules and PHP-interop gotchas. This sheet is the wide surface; that one is the must-know.
+{% callout(kind="tip") %}
+**AI agents:** load [Agentic Coding](/documentation/reference/agentic-coding) first for the truncation-safe rules and PHP-interop gotchas. This sheet is the wide surface; that one is the must-know.
+{% end %}
 
 ## Basic syntax
 
@@ -26,7 +28,9 @@ my-var my-module/fn     ; symbols
 #"[a-z]+"               ; regex literal (PCRE pattern)
 ```
 
-> **Note:** `#` line and `#| |#` multiline comments were removed. The lexer rejects them. Use `;;` for standalone comments and `;` for inline comments.
+{% callout(kind="warning") %}
+`#` line and `#| |#` multiline comments were removed. The lexer rejects them. Use `;;` for standalone comments and `;` for inline comments.
+{% end %}
 
 See [Basic Types](/documentation/language/basic-types).
 

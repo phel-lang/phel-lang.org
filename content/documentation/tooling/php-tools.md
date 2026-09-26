@@ -156,5 +156,5 @@ Catches:
 ## Next steps
 
 - [Phel debug helpers](/documentation/tooling/repl/#debug-helpers) for native debugging
-- [XDebug](/documentation/tooling/xdebug-setup/) for step-through debugging
+- [Xdebug](/documentation/tooling/xdebug-setup/) for step-through debugging
 - [Config docs](/documentation/configuration/) for more dev settings
