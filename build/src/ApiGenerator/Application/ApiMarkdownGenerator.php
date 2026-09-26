@@ -269,9 +269,9 @@ final readonly class ApiMarkdownGenerator
             $lines[] = $deprecation;
         }
 
-        // Render doc fences as clojure so Zola highlights them. with-mock-wrapper
-        // and with-mocks ship indented doc blocks that need de-indenting first.
-        $input = preg_replace('/```phel/', '```clojure', $fn->doc) ?? $fn->doc;
+        // with-mock-wrapper and with-mocks ship indented doc blocks that need
+        // de-indenting first.
+        $input = $fn->doc;
         if ($fn->name === 'with-mock-wrapper' || $fn->name === 'with-mocks') {
             $input = preg_replace('/^[ \t]+/m', '', $input) ?? $input;
             $input = preg_replace('/(?<!\n)\n(```phel)/', "\n\n$1", $input) ?? $input;
@@ -308,11 +308,9 @@ final readonly class ApiMarkdownGenerator
         if (isset($fn->meta['superseded-by'])) {
             $supersededBy = (string) $fn->meta['superseded-by'];
             $href = $this->buildFunctionHref($namespace, $supersededBy, $functionMap);
-            $message .= sprintf(
-                ' &mdash; Use [`%s`](%s) instead',
-                $supersededBy,
-                $href,
-            );
+            $message .= $href === null
+                ? sprintf(' &mdash; Use `%s` instead', $supersededBy)
+                : sprintf(' &mdash; Use [`%s`](%s) instead', $supersededBy, $href);
         }
 
         return $message . '</small>';
@@ -331,7 +329,7 @@ final readonly class ApiMarkdownGenerator
             '',
             '**Example:**',
             '',
-            '```clojure',
+            '```phel',
             (string) $fn->meta['example'],
             '```',
         ];
@@ -401,21 +399,26 @@ final readonly class ApiMarkdownGenerator
         return array_map(
             function (string $func) use ($currentNamespace, $functionMap) {
                 $href = $this->buildFunctionHref($currentNamespace, $func, $functionMap);
-                return sprintf('<a href="%s"><code>%s</code></a>', $href, htmlspecialchars($func));
+                return $href === null
+                    ? sprintf('<code>%s</code>', htmlspecialchars($func))
+                    : sprintf('<a href="%s"><code>%s</code></a>', $href, htmlspecialchars($func));
             },
             $functionNames,
         );
     }
 
     /**
+     * Null when the name matches no documented function: a link to an anchor
+     * Zola never emitted is worse than no link.
+     *
      * @param array<string, PhelFunction> $functionMap
      */
-    private function buildFunctionHref(string $currentNamespace, string $name, array $functionMap): string
+    private function buildFunctionHref(string $currentNamespace, string $name, array $functionMap): ?string
     {
-        $target = $functionMap[$name] ?? null;
+        $target = $this->resolveFunction($currentNamespace, $name, $functionMap);
 
         if ($target === null) {
-            return '#' . ZolaAnchor::fromHeading($name);
+            return null;
         }
 
         $anchor = ZolaAnchor::fromHeading($target->nameWithNamespace());
@@ -424,5 +427,29 @@ final readonly class ApiMarkdownGenerator
         }
 
         return '/documentation/reference/api/' . $this->namespaceSlug($target->namespace) . '/#' . $anchor;
+    }
+
+    /**
+     * A bare name prefers the referring namespace, then core, then any
+     * namespace. A qualified name may carry the full Phel namespace
+     * (`phel.schema/validate`, or the older `phel\schema/validate`), while the
+     * API keys it the short way (`schema/validate`, core without a prefix).
+     *
+     * @param array<string, PhelFunction> $functionMap
+     */
+    private function resolveFunction(string $currentNamespace, string $name, array $functionMap): ?PhelFunction
+    {
+        $slash = strpos($name, '/');
+        if ($slash === false || $slash === 0) {
+            return $functionMap[$currentNamespace . '/' . $name] ?? $functionMap[$name] ?? null;
+        }
+
+        $namespace = str_replace('\\', '.', substr($name, 0, $slash));
+        $namespace = str_starts_with($namespace, 'phel.') ? substr($namespace, 5) : $namespace;
+        $bareName = substr($name, $slash + 1);
+
+        return $namespace === 'core'
+            ? $functionMap[$bareName] ?? null
+            : $functionMap[$namespace . '/' . $bareName] ?? null;
     }
 }

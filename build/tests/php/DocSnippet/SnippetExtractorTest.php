@@ -37,6 +37,14 @@ final class SnippetExtractorTest extends TestCase
         self::assertFalse($snippets[0]['skip']);
     }
 
+    public function test_does_not_cover_generated_api_pages(): void
+    {
+        self::assertFalse($this->extractor->coversFile('/site/content/documentation/reference/api/core.md'));
+        self::assertFalse($this->extractor->coversFile('content/documentation/reference/api/_index.md'));
+        self::assertTrue($this->extractor->coversFile('/site/content/documentation/reference/cheat-sheet.md'));
+        self::assertTrue($this->extractor->coversFile('content/documentation/language/control-flow.md'));
+    }
+
     public function test_ignores_non_phel_fences(): void
     {
         $md = [

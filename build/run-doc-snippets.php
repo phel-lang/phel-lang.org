@@ -68,6 +68,7 @@ foreach ($paths as $path) {
         }
     }
 }
+$files = array_values(array_filter($files, $extractor->coversFile(...)));
 sort($files);
 
 // Extract snippets, write runnable temp files.

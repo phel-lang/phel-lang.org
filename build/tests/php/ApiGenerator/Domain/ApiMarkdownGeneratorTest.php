@@ -314,6 +314,92 @@ final class ApiMarkdownGeneratorTest extends TestCase
         );
     }
 
+    public function test_see_also_resolves_a_fully_qualified_name_to_the_short_api_namespace(): void
+    {
+        $seeAlso = $this->seeAlsoLine('schema.coercer', ['phel\\schema/validate', 'phel.schema/validate', 'phel.core/get'], [
+            ['name' => 'validate', 'namespace' => 'schema'],
+            ['name' => 'get', 'namespace' => 'core'],
+        ]);
+
+        self::assertSame(
+            '<div><strong>See also:</strong> '
+            . '<a href="/documentation/reference/api/schema/#schema-validate"><code>phel\\schema/validate</code></a>, '
+            . '<a href="/documentation/reference/api/schema/#schema-validate"><code>phel.schema/validate</code></a>, '
+            . '<a href="/documentation/reference/api/core/#get"><code>phel.core/get</code></a></div>',
+            $seeAlso,
+        );
+    }
+
+    public function test_see_also_bare_name_prefers_the_referring_namespace_over_core(): void
+    {
+        $seeAlso = $this->seeAlsoLine('http_client', ['get'], [
+            ['name' => 'get', 'namespace' => 'core'],
+            ['name' => 'get', 'namespace' => 'http_client'],
+        ]);
+
+        self::assertStringContainsString('<a href="#http-client-get"><code>get</code></a>', $seeAlso);
+    }
+
+    public function test_see_also_unknown_name_renders_without_a_link(): void
+    {
+        $seeAlso = $this->seeAlsoLine('core', ['values', 'keys'], [
+            ['name' => 'keys', 'namespace' => 'core'],
+        ]);
+
+        self::assertSame(
+            '<div><strong>See also:</strong> <code>values</code>, <a href="#keys"><code>keys</code></a></div>',
+            $seeAlso,
+        );
+    }
+
+    public function test_doc_and_example_fences_stay_phel(): void
+    {
+        $apiFacade = $this->createStub(ApiFacadeInterface::class);
+        $apiFacade->method('getPhelFunctions')
+            ->willReturn([
+                PhelFunction::fromArray([
+                    'name' => 'inc',
+                    'doc' => "```phel\n(inc x)\n```\nIncrements x by one.",
+                    'namespace' => 'core',
+                    'meta' => ['example' => '(inc 1) ; => 2'],
+                ]),
+            ]);
+
+        $core = implode("\n", (new ApiMarkdownGenerator($apiFacade))->generate()['core']);
+
+        self::assertSame(2, substr_count($core, '```phel'));
+        self::assertStringNotContainsString('```clojure', $core);
+    }
+
+    /**
+     * @param list<string> $seeAlso
+     * @param list<array{name: string, namespace: string}> $others
+     */
+    private function seeAlsoLine(string $namespace, array $seeAlso, array $others): string
+    {
+        $apiFacade = $this->createStub(ApiFacadeInterface::class);
+        $apiFacade->method('getPhelFunctions')
+            ->willReturn([
+                ...array_map(
+                    static fn (array $fn): PhelFunction => PhelFunction::fromArray([...$fn, 'doc' => '']),
+                    $others,
+                ),
+                PhelFunction::fromArray([
+                    'name' => 'subject',
+                    'doc' => '',
+                    'namespace' => $namespace,
+                    'meta' => ['see-also' => new \ArrayIterator($seeAlso)],
+                ]),
+            ]);
+
+        $lines = (new ApiMarkdownGenerator($apiFacade))->generate()[$namespace];
+
+        return array_values(array_filter(
+            $lines,
+            static fn (string $line) => str_starts_with($line, '<div><strong>See also:</strong>'),
+        ))[0];
+    }
+
     public function test_namespace_slug_replaces_backslash_with_dash(): void
     {
         $generator = new ApiMarkdownGenerator($this->createStub(ApiFacadeInterface::class));
