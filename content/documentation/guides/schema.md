@@ -8,7 +8,7 @@ description = "Validate, coerce, and generate data with phel.schema, using plain
 
 ## Quickstart
 
-A schema describes the shape data should have. `validate` answers yes or no, `explain` tells you what went wrong, and `coerce` reshapes loosely typed input (for example string-keyed request data) into the required types.
+A schema describes the shape data should have. `validate` answers yes or no, `explain` tells you what went wrong, and `coerce` turns loosely typed values (for example `"1"` from a form) into the required types.
 
 ```phel
 (ns my-app.quickstart
@@ -22,9 +22,11 @@ A schema describes the shape data should have. `validate` answers yes or no, `ex
 
 (println (s/validate User {:id 1 :email "a@b.co" :age nil}))   ; => true
 (println (s/explain  User {:id 1 :email "a@b.co" :age nil}))   ; => nil (conforms)
-(println (s/coerce   User {"id" "1" "email" "a@b.co" "age" nil}))
-; => {:id 1 :email "a@b.co" :age nil}
+(prn     (s/coerce   User {:id "1" :email "a@b.co" :age nil}))
+; => {:id 1, :email "a@b.co", :age nil}
 ```
+
+`coerce` converts values, not keys. A map with string keys such as `{"id" "1"}` comes back unchanged, so turn string keys into keywords first (`keywordize-keys` from `phel.walk`).
 
 `[:maybe T]` makes the *value* nilable, but the key is still required to be present. Omit the key on a `{:closed true}` map and validation fails with `:type :missing`.
 
@@ -131,7 +133,8 @@ Register a schema under a name and refer to it from anywhere with `[:ref name]`.
 
 Calling the wrapped function with arguments that fail the schema throws:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (add! "x" 2) ; throws: argument 0 failed schema
 ```
 
@@ -142,7 +145,7 @@ Toggle checking globally with `set-schema-check!`, inspect it with `schema-check
 - `:map` is open by default; add `{:closed true}` to reject extra keys. The key is `:closed`, not `:closed?`, and a `?` variant is silently ignored.
 - `[:maybe T]` allows a nil value but does not make the key optional; use `{:optional true}` on the map entry for that.
 - `[:and ...]` children must be schemas; wrap a bare predicate as `[:fn pred]` (for example `[:fn pos-int?]`, not `pos-int?`).
-- `[:re ...]` expects a `#"regex"` literal, or a PCRE string *with* delimiters such as `"/^[0-9]+$/"`; a bare pattern string like `"^[0-9]+$"` silently fails.
+- `[:re ...]` expects a `#"regex"` literal, or a PCRE string *with* delimiters such as `"/^[0-9]+$/"`; a bare pattern string like `"^[0-9]+$"` never matches, and PHP prints a `preg_match` warning.
 - `generate` may fail on over-constrained `[:and ...]` or `[:re ...]` schemas; pass `{:gen <gen-fn>}` in the schema options to override.
 
 ## See also

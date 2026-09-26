@@ -91,7 +91,34 @@ Use [Symfony VarDumper](https://symfony.com/doc/current/components/var_dumper.ht
 
 ## Check the evaluated PHP
 
-Keep generated temp PHP files for debugging. Useful when an error references `/private/var/folders/.../T/__phelV2KvGD` that no longer exists. See [docs](/documentation/configuration/).
+The fastest way to see what Phel emits is `phel compile`. It prints the PHP for a snippet or a file without running it:
+
+```bash
+vendor/bin/phel compile '(defn greet [name] (str "Hello, " name "!"))'
+```
+
+Output, trimmed after the function body:
+
+```php
+\Phel::addDefinition(
+  "user",
+  "greet",
+  new class() extends \Phel\Lang\AbstractFn {
+    public const BOUND_TO = "user\\greet";
+
+    public function __invoke($name): string {
+      return (\Phel\Lang\Registry::readRoot("phel.core", "str"))->__invoke("Hello, ", $name, "!");
+    }
+  },
+  // ... location and metadata
+);
+```
+
+Every `defn` becomes a class that extends `AbstractFn`, registered under its namespace. Core functions are looked up through the registry. Reach for this when you debug interop, report a compiler bug, or want to see why something is slow.
+
+### Keep the temp files
+
+`phel run` and the REPL compile to temp files such as `$TMPDIR/phel/tmp/__phel_<hash>.php` and delete them afterwards. An error that points at one of those paths then points at a file that no longer exists. Keep them with `withKeepGeneratedTempFiles`:
 
 ```php
 <?php # phel-config-local.php
@@ -101,40 +128,9 @@ return (require __DIR__ . '/phel-config.php')
 ;
 ```
 
-> TIP: Add to `.gitignore` to control dev config without touching the global one.
+> TIP: Add `phel-config-local.php` to `.gitignore` to change your dev config without touching the shared one.
 
-### Inspecting compiled PHP
-
-After `withKeepGeneratedTempFiles(true)`:
-
-1. **Find the files** in `/tmp/` or system temp dir.
-2. **Read the PHP** to see how Phel compiles.
-3. **Understand errors** by matching line numbers.
-4. **Learn the compiler** by seeing optimization patterns.
-
-**Example:**
-
-```phel
-;; Your Phel code
-(defn greet [name]
-  (str "Hello, " name "!"))
-```
-
-Generated PHP:
-
-```php
-<?php
-// Generated PHP (simplified)
-function greet($name) {
-    return "Hello, " . $name . "!";
-}
-```
-
-Useful for:
-- Debugging compiler issues
-- Understanding performance
-- Learning Phel internals
-- Reporting bugs with concrete examples
+Then open the file from the error message and match its line numbers. See [Configuration](/documentation/configuration/) for the other dev settings.
 
 ## PHP error reporting
 

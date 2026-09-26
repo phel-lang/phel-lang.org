@@ -64,7 +64,8 @@ phel/
 
 `phel/app/main.phel` requires every feature namespace:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (ns app.main
   (:require shop.pricing)
   (:require reports.daily)
@@ -243,7 +244,8 @@ Two small libraries cover it:
 - [phel-sql](https://github.com/phel-lang/phel-sql): HoneySQL-style. Map in, `[sql params]` out. No driver.
 - [phel-pdo](https://github.com/phel-lang/phel-pdo): runs `[sql params]`, returns rows as maps.
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (ns shop.catalog
   (:require phel.sql :as sql)
   (:require phel.pdo :as pdo))
@@ -257,7 +259,7 @@ Two small libraries cover it:
         (pdo/fetch))))                       ; => {:id 1 :name "Keyboard" :price 49.9}
 ```
 
-The discount stays pure: no DB, no mutation, just a value in and a value out.
+The discount stays pure: no DB, no mutation. A value in, a value out.
 
 ```phel
 (defn apply-discount [product pct]
@@ -278,11 +280,12 @@ $rows = $conn->executeQuery($sql, $params)->fetchAllAssociative();
 
 phel-pdo can also wrap an existing PDO handle so its map-returning helpers run on the host's pooled connection.
 
-### When you really need the object
+### When you need the object {#when-you-really-need-the-object}
 
 Some host APIs demand a concrete instance (a typed DTO, a value object a library type-hints). Bridge at the boundary instead of modeling your domain as objects: `hydrate` builds an instance from a map without running its constructor (the ORM/serializer pattern), and `bean` reads a public-property object back into a keyword-keyed map. Keep maps as the working representation; reach for objects only at the edge where a typed instance is unavoidable.
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (def dto (hydrate "App\\Dto\\Product" {:id 1 :name "Keyboard" :price 49.9}))
 (bean dto)  ; => {:id 1 :name "Keyboard" :price 49.9}
 ```
@@ -305,7 +308,8 @@ When the generated PHP must satisfy a framework's type expectations, opt-in meta
 
 A struct annotated as a Doctrine entity:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (defstruct ^{:php/attr [:ORM/Entity] :php/json true} product
   [^{:tag int :php/attr [:ORM/Id]} id
    ^{:tag string} name])

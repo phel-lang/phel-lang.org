@@ -9,7 +9,7 @@ The `phel.http` namespace gives you one struct for the incoming request and one 
 
 ## HTTP request
 
-PHP scatters the request across `$_GET`, `$_POST`, `$_SERVER`, `$_COOKIES`, `$_FILES`. Phel normalizes them into one struct. All in `phel.http`.
+PHP scatters the request across `$_GET`, `$_POST`, `$_SERVER`, `$_COOKIE`, `$_FILES`. Phel normalizes them into one struct. All in `phel.http`.
 
 Request struct:
 
@@ -78,11 +78,11 @@ Two helpers create responses:
 
 ;; Create response from map
 (http/response-from-map {:status 200 :body "Test"})
-;; Evaluates to (phel.http.response 200 {} Test 1.1 OK)
+;; Evaluates to (phel.http.response 200 {} "Test" "1.1" "OK")
 
 ;; Create response from string
 (http/response-from-string "Hello World")
-;; Evaluates to (phel.http.response 200 {} Hello World 1.1 OK)
+;; Evaluates to (phel.http.response 200 {} "Hello World" "1.1" "OK")
 ```
 
 `json-response` and `html-response` set the `Content-Type` header for you:

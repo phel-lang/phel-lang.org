@@ -24,7 +24,7 @@ Read CSV into a vector of maps, headers as keys.
       (do
         (println (str "Error: cannot open " filepath))
         [])
-      ;; Pass the escape arg explicitly ("") -- PHP 8.4 deprecates its implicit default
+      ;; Pass the escape arg explicitly (""): PHP 8.4 deprecates its implicit default
       (let [headers (php/fgetcsv handle nil "," "\"" "")
             header-keys (for [h :in headers] (keyword h))]
         (loop [rows []]
@@ -166,7 +166,7 @@ GET request via `phel.http-client`. Parse JSON via `phel.json`.
 `html` is a macro: it walks the literal hiccup at compile time and splices any
 `(for ...)` it finds **inline**. So build the whole page in a single `html` call
 with the loops written in place. Plain element helpers (no embedded loop) like
-`user-card` below still compose -- they return a single element vector that an
+`user-card` below still compose: they return a single element vector that an
 inline `for` can emit.
 
 ```phel
@@ -263,7 +263,7 @@ PHP DateTime via interop: create, format, compare.
 
 (def start (DateTimeImmutable. "2024-01-01"))
 (def end   (DateTimeImmutable. "2024-12-31"))
-(println (str "Days in 2024: " (days-between start end)))  ; 365
+(println (str "Days from Jan 1 to Dec 31: " (days-between start end)))  ; 365
 
 ;; Work with time zones
 (def utc-now   (DateTimeImmutable. "now" (DateTimeZone. "UTC")))
@@ -351,7 +351,8 @@ Read, write, list, exist checks via PHP interop.
   (when (not (exists? path))
     (php/mkdir path 0755 true)))
 
-;; Example usage
+;; Example usage. Create the directory first: file_put_contents will not.
+(mkdir "output")
 (write-file "output/example.txt" "Hello from Phel!\n")
 (append-file "output/example.txt" "Another line.\n")
 
@@ -363,7 +364,7 @@ Read, write, list, exist checks via PHP interop.
 (foreach [f phel-files]
   (println (str "Found: " f)))
 
-;; Get info about each file. `map` / `filter` are lazy -- finish the pipeline
+;; Get info about each file. `map` / `filter` are lazy, so finish the pipeline
 ;; with `into` (or `vec` / `doall`) to realise the result.
 (def file-report
   (->> phel-files
@@ -402,11 +403,11 @@ Filter, transform, group via threading macros and collection functions.
        (group-by :role)))                                       ; group into a map by role
 
 ;; result =>
-;; {"engineer" [{:name "ALICE"   :age 32 ...}
+;; {"designer" [{:name "EVE"     :age 29 ...}]
+;;  "engineer" [{:name "ALICE"   :age 32 ...}
 ;;              {:name "GRACE"   :age 38 ...}
 ;;              {:name "CHARLIE" :age 45 ...}]
-;;  "manager"  [{:name "DIANA"   :age 35 ...}]
-;;  "designer" [{:name "EVE"     :age 29 ...}]}
+;;  "manager"  [{:name "DIANA"   :age 35 ...}]}
 
 ;; Print a summary report. A 3-element `foreach` binds key and value of a map.
 (foreach [role members result]
@@ -425,8 +426,9 @@ Filter, transform, group via threading macros and collection functions.
 (println (str "Average age of active users: " avg-age))
 
 ;; Find the oldest user per role.
-;; `pairs` turns the grouped map into [key value] tuples -- iterating a map
-;; directly (map/reduce) walks its *values* only, not key/value pairs.
+;; `pairs` turns the grouped map into [key value] tuples. `map` over a map
+;; already yields [key value] entries, but `reduce` over a map sees values only,
+;; so `pairs` keeps the shape explicit.
 (def oldest-per-role
   (->> users
        (group-by :role)
@@ -588,14 +590,14 @@ Protocols define polymorphic behavior, extendable to any type. More flexible tha
   (str/join "" (map render-html page-elements)))
 
 (println html-output)
-;; => <h1>Welcome</h1><p>This is a Phel-powered page.</p>...
+;; prints <h1>Welcome</h1><p>This is a Phel-powered page.</p>...
 
 ;; Check if a value supports the protocol
 (satisfies? Renderable (paragraph "hi"))  ; => true
 (satisfies? Renderable "plain string")    ; => false
 ```
 
-**See also:** [Cheat Sheet -- Protocols](/documentation/reference/cheat-sheet/#protocols)
+**See also:** [Cheat Sheet: Protocols](/documentation/reference/cheat-sheet/#protocols)
 
 ## Data processing with transducers
 
@@ -628,19 +630,19 @@ Compose pipelines without intermediate collections. Faster, less memory than cha
     (completing (fn [acc _] (inc acc)))
     0
     events))
-(println (str "Slow API calls: " slow-count))  ; => 4
+(println (str "Slow API calls: " slow-count))  ; prints Slow API calls: 4
 
 ;; Apply with into to collect results
 (def slow-paths
   (into [] slow-api-paths events))
 (println (str "Paths: " slow-paths))
-;; => ["/api/users" "/api/users" "/api/posts" "/api/users"]
+;; prints Paths: ["/api/users" "/api/users" "/api/posts" "/api/users"]
 
 ;; Get unique slow paths using a set
 (def unique-slow-paths
   (into #{} slow-api-paths events))
 (println (str "Unique: " unique-slow-paths))
-;; => #{"/api/users" "/api/posts"}
+;; prints Unique: #{"/api/users" "/api/posts"}
 
 ;; Compute average response time of API calls. The reducing step accumulates
 ;; a running [sum count]; divide once afterwards. (`transduce` already wraps the
@@ -657,14 +659,14 @@ Compose pipelines without intermediate collections. Faster, less memory than cha
     (comp (filter #(= :api-call (get % :type)))
           (map :ms))
     events))
-(println (str "Avg API response: " avg-api-ms "ms"))  ; => 237.5ms
+(println (str "Avg API response: " avg-api-ms "ms"))  ; prints Avg API response: 237.5ms
 
 ;; Use cat to flatten nested collections
 (def nested [[1 2 3] [4 5] [6]])
 (into [] cat nested)               ; => [1 2 3 4 5 6]
 ```
 
-**See also:** [Cheat Sheet -- Transducers](/documentation/reference/cheat-sheet/#transducers)
+**See also:** [Cheat Sheet: Transducers](/documentation/reference/cheat-sheet/#transducers)
 
 ## Reader conditionals for cross-platform code
 
@@ -679,7 +681,7 @@ Write `.cljc` targeting multiple platforms. `:phel` for Phel-specific, `:default
   #?(:phel "Phel on PHP"
      :default "Unknown platform"))
 
-(println platform)  ; => "Phel on PHP"
+(println platform)  ; prints Phel on PHP
 
 ;; Practical use: platform-specific implementations
 (defn now-timestamp []
@@ -735,7 +737,7 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
 ;; => ["Alice" "Bob" "Charlie"]
 ```
 
-**See also:** [Cheat Sheet -- Regular Expressions](/documentation/reference/cheat-sheet/#regular-expressions)
+**See also:** [Cheat Sheet: Regular Expressions](/documentation/reference/cheat-sheet/#regular-expressions)
 
 ## Structured exceptions with ex-info
 
@@ -746,7 +748,7 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
   (:require phel.json :as json)
   (:use Exception))
 
-;; Stub user lookup -- replace with real datasource
+;; Stub user lookup. Replace with a real datasource.
 (def users {1 {:id 1 :name "Alice"}
             2 {:id 2 :name "Bob"}})
 
@@ -795,7 +797,7 @@ Regex literals (`#"..."`) and matching functions for PCRE patterns.
       (println (str "Caused by: " (ex-message (ex-cause e)))))))
 ```
 
-**See also:** [Cheat Sheet -- Error Handling](/documentation/reference/cheat-sheet/#error-handling)
+**See also:** [Cheat Sheet: Error Handling](/documentation/reference/cheat-sheet/#error-handling)
 
 ## Pattern matching with `phel.match`
 
@@ -846,9 +848,33 @@ Each pattern vector must have the same length as the target vector. A trailing
 
 ## Schemas with `phel.schema`
 
-Validate, coerce, and generate data from declarative schemas built out of plain Phel data, and wrap functions with `instrument!` to check args and returns on every call. See the [Schema Validation guide](/documentation/guides/schema/) for the full reference.
+Check form input against a schema. Form values arrive as strings, so `coerce` first, then `validate`.
 
-## Async with `phel.async`
+```phel
+(ns cookbook.schema
+  (:require phel.schema :as s))
+
+(def Signup
+  [:map {:closed true}
+   [:email [:re #"^[^@]+@[^@]+$"]]
+   [:age   :int]])
+
+(defn parse-signup [input]
+  (let [data (s/coerce Signup input)]
+    (if (s/validate Signup data)
+      {:ok data}
+      {:error (s/human-readable-explain (s/explain Signup data))})))
+
+(parse-signup {:email "ada@example.com" :age "36"})
+;; => {:ok {:email "ada@example.com", :age 36}}
+
+(contains? (parse-signup {:email "nope" :age "36"}) :error)
+;; => true
+```
+
+`coerce` works on keyword keys. Turn string-keyed input into keywords first (for example with `keywordize-keys` from `phel.walk`). The [Schema Validation guide](/documentation/guides/schema/) covers the full API, including `instrument!` for checking function arguments.
+
+## Async with promises and futures
 
 Fiber-backed promises and futures. `promise`, `deliver`, `future-call`, `future?`, and `deref` live in `phel.core` and are available without a require:
 
@@ -1015,35 +1041,35 @@ Flatten nested vectors one level:
 
 ```phel
 (apply concat [[1 2] [3 4] [5 6]])
-;; => @[1 2 3 4 5 6]
+;; => (1 2 3 4 5 6)
 ```
 
 Unique elements preserving order:
 
 ```phel
 (distinct [3 1 4 1 5 9 2 6 5 3])
-;; => @[3 1 4 5 9 2 6]
+;; => (3 1 4 5 9 2 6)
 ```
 
 Zip two vectors together:
 
 ```phel
 (map vector [:a :b :c] [1 2 3])
-;; => @[[:a 1] [:b 2] [:c 3]]
+;; => ([:a 1] [:b 2] [:c 3])
 ```
 
 Partition into pairs:
 
 ```phel
 (partition 2 [1 2 3 4 5 6])
-;; => @[[1 2] [3 4] [5 6]]
+;; => ([1 2] [3 4] [5 6])
 ```
 
 Transpose a matrix:
 
 ```phel
 (apply map vector [[1 2 3] [4 5 6] [7 8 9]])
-;; => @[[1 4 7] [2 5 8] [3 6 9]]
+;; => ([1 4 7] [2 5 8] [3 6 9])
 ```
 
 Character frequencies:
@@ -1065,7 +1091,7 @@ Interleave and take:
 
 ```phel
 (take 7 (interleave [:a :b :c :d] [1 2 3 4]))
-;; => @[:a 1 :b 2 :c 3 :d]
+;; => (:a 1 :b 2 :c 3 :d)
 ```
 
 ### Data Processing
@@ -1078,7 +1104,7 @@ Group and count:
      (group-by :role)
      pairs                          ; map -> [key value] tuples
      (map (fn [[k v]] [k (count v)])))
-;; => @[["admin" 2] ["user" 3]]
+;; => (["admin" 2] ["user" 3])
 ```
 
 Top N items by key:
@@ -1088,7 +1114,7 @@ Top N items by key:
      (sort-by :score)
      reverse
      (take 2))
-;; => @[{:name "B" :score 99} {:name "C" :score 71}]
+;; => ({:name "B" :score 99} {:name "C" :score 71})
 ```
 
 Merge maps with defaults:
@@ -1133,7 +1159,7 @@ FizzBuzz (1 to 20):
          (= 0 (% n 5))  "Buzz"
          :else n))
      (range 1 21))
-;; => @[1 2 "Fizz" 4 "Buzz" "Fizz" 7 8 "Fizz" "Buzz" 11 "Fizz" 13 14 "FizzBuzz" 16 17 "Fizz" 19 "Buzz"]
+;; => (1 2 "Fizz" 4 "Buzz" "Fizz" 7 8 "Fizz" "Buzz" 11 "Fizz" 13 14 "FizzBuzz" 16 17 "Fizz" 19 "Buzz")
 ```
 
 Caesar cipher (shift by 3):

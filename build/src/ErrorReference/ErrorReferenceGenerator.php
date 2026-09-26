@@ -95,7 +95,7 @@ final class ErrorReferenceGenerator
             'meaning' => 'A form Phel now says another way was used as source.',
             'cause' => '`php/new`, `php/->`, `php/::` or `set-var` was written by hand. The compiler still emits them, but they are no longer accepted in source.',
             'fix' => 'Use the replacement the message names: `(new \\Foo arg)`, `(.method obj arg)` / `(.-field obj)`, `(\\Foo/method arg)` / `\\Foo/CONST`, and `(alter-var-root (var v) f)`.',
-            'learnMore' => '[PHP interop](/documentation/language/php-interop/).',
+            'learnMore' => '[PHP interop](/documentation/php-interop/).',
         ],
         'PHEL100' => [
             'meaning' => 'A list was not closed.',
@@ -161,7 +161,7 @@ final class ErrorReferenceGenerator
             'meaning' => 'A value of the wrong type reached a PHP function or method.',
             'cause' => 'Most of these come from `php/` interop calls whose callee declares a type the argument does not satisfy.',
             'fix' => 'Convert the value to the type the callee declares before passing it.',
-            'learnMore' => '[PHP interop](/documentation/language/php-interop/).',
+            'learnMore' => '[PHP interop](/documentation/php-interop/).',
         ],
         'PHEL403' => [
             'meaning' => 'An indexed read asked for a position the collection does not have.',

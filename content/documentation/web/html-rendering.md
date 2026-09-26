@@ -5,7 +5,7 @@ description = "Render HTML from Phel data structures: vectors are elements, maps
 aliases = ["/documentation/html-rendering"]
 +++
 
-Build HTML from plain Phel data: vectors are elements, maps are attributes, and values auto-escape for XSS protection. No template language to learn, just the data structures you already use.
+Build HTML from plain Phel data: vectors are elements, maps are attributes, and values auto-escape for XSS protection. No template language to learn. You use the data structures you already know.
 
 ## Syntax
 
@@ -97,6 +97,28 @@ Use `if`:
 ;; Evaluates to "<ul><li>3</li><li>4</li><li>5</li></ul>"
 ```
 
+Write the `for` inside the vector you pass to `html`. `html` is a macro: it walks that literal at compile time and splices a `for` it finds there. A `for` hidden inside a helper function is not spliced, so the loop result reaches `html` as a vector of elements and fails:
+
+<!-- phel-test: skip -->
+```phel
+(defn item-list [xs] [:ul (for [x :in xs] [:li x])])
+
+(html (item-list [1 2]))
+;; throws: [:li 1] is not a valid element name.
+```
+
+Keep the loop inline and move the per-item markup into a helper that returns one element:
+
+```phel
+(ns my-app
+  (:require phel.html :refer [html]))
+
+(defn item [x] [:li x])
+
+(html [:ul (for [x :in [1 2]] (item x))])
+;; Evaluates to "<ul><li>1</li><li>2</li></ul>"
+```
+
 ## Raw HTML
 
 Values auto-escape for XSS protection. For unescaped output, use `raw-string`:
@@ -125,7 +147,7 @@ Supported values: `:html5`, `:xhtml-transitional`, `:xhtml-strict`, `:html4`.
 
 ## Composing reusable fragments
 
-Because elements are just vectors, a function that returns a vector is a reusable component. Compose them like any other Phel value, then pass the result to `html` once at the end.
+Elements are vectors, so a function that returns a vector is a reusable component. Compose them like any other Phel value, then pass the result to `html` once at the end. One rule from [Rendering sequential data](#rendering-sequential-data) applies: keep every `for` inline in the literal you pass to `html`, not inside a component.
 
 ```phel
 (ns my-app

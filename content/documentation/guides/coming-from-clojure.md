@@ -46,8 +46,8 @@ Clojure intuition carries over.
 **Higher-order functions:** `map`, `filter`, `reduce`, `some`, `every?`, `comp`, `partial`, `apply`, etc.:
 
 ```phel
-(map inc [1 2 3])          ; => @[2 3 4]
-(filter even? [1 2 3 4])   ; => @[2 4]
+(map inc [1 2 3])          ; => (2 3 4)
+(filter even? [1 2 3 4])   ; => (2 4)
 (reduce + 0 [1 2 3 4 5])   ; => 15
 ```
 
@@ -144,7 +144,7 @@ Same as Clojure: only `false` and `nil` falsy. `0`, `""`, `[]` truthy. Differs f
      :default "Unknown"))
 ```
 
-No custom reader macros. Generic tagged literals (`#uuid`, `#inst`, `#cpp`, etc.) read as tagged-literal nodes. Clojure-style `#(...)` with `%`/`%1`/`%&` works. Phel-only `|(...)` with `$` accepted but deprecated. `#_` to skip a form.
+No custom reader macros. Four tagged literals are built in: `#inst` reads as a `DateTimeImmutable`, `#uuid` as a `Phel\Lang\UUID`, `#regex` as a PCRE pattern string, `#php` as a PHP array. Any other tag, such as `#cpp`, is a read error unless you register a handler with `register-tag` from `phel.reader`. Tags inside a non-selected reader-conditional branch (`:clj`, `:jank`) are skipped. Clojure-style `#(...)` with `%`/`%1`/`%&` works. `#_` skips a form.
 
 ## Syntax differences
 
@@ -232,7 +232,7 @@ Keywords act as functions on maps in both: `(:name user)`.
 #(+ %1 %2)
 ```
 
-Phel accepts legacy `|(...)` with `$`, but `#(...)` is preferred.
+The old Phel-only `|(...)` form with `$` was removed. Use `#(...)`.
 
 See [Functions and Recursion](/documentation/language/functions-and-recursion) for multi-arity, variadic, `recur`.
 
@@ -337,13 +337,13 @@ Use Composer. `composer.json` replaces `deps.edn`:
 
 ### core.async / concurrency primitives
 
-PHP is request-based, not long-running. No `core.async`, channels, CSP. Use PHP queues or process managers via interop.
+No `core.async`, channels, or CSP. Phel has fiber-based `future-call`, `promise`/`deliver`, `async`/`await`, and `pmap` instead. See [Async](/documentation/language/async/). PHP is request-based, so for work that outlives a request use a PHP queue or process manager through interop.
 
 ## What you'll gain
 
 ### Cheap, ubiquitous hosting
 
-PHP runs on virtually any web host, including shared hosting at a few dollars/month. No JVM-capable server.
+PHP runs on almost any web host, including shared hosting at a few dollars a month. No JVM-capable server needed. Many orgs already run PHP, so you can bring a Lisp into places where the JVM is not an option.
 
 ### Simpler deployment
 
@@ -355,11 +355,7 @@ PHP processes start in milliseconds. No JVM warmup. CLI tools and short-lived sc
 
 ### PHP ecosystem
 
-Decades of battle-tested libraries via `composer require`: WordPress, Laravel, Symfony, Guzzle, PHPUnit, Doctrine, thousands more. All callable via `php/`.
-
-### Shared hosting
-
-Many orgs already run PHP. Bring FP/Lisp into environments where the JVM isn't an option.
+Decades of battle-tested libraries via `composer require`: WordPress, Laravel, Symfony, Guzzle, PHPUnit, Doctrine, thousands more. All callable through [PHP interop](/documentation/php-interop/).
 
 ## Quick reference: Clojure to Phel
 
@@ -367,7 +363,7 @@ Many orgs already run PHP. Bring FP/Lisp into environments where the JVM isn't a
 |------------------------------|-----------------------------------------------------------|----------------------------------------|
 | `(ns foo.bar)`               | `(ns foo.bar)`                                            | Same separator. PHP FQNs use `.`       |
 | `(:require [foo.bar :as b])` | `(:require foo.bar :as b)`                                | No vector wrapping required            |
-| `#(* % 2)`                   | `#(* % 2)`                                                | Same. `\|(* $ 2)` legacy, deprecated   |
+| `#(* % 2)`                   | `#(* % 2)`                                                | Same. `\|(* $ 2)` was removed          |
 | `(atom 0)`                   | `(atom 0)`                                                | Same                                   |
 | `@my-atom`                   | `@my-atom`                                                | Same                                   |
 | `(reset! a v)`               | `(reset! a v)`                                            | Same (`set!` alias removed in 0.36)    |
@@ -392,7 +388,7 @@ Many orgs already run PHP. Bring FP/Lisp into environments where the JVM isn't a
 | `(transduce xf f coll)`      | `(transduce xf f coll)`                                   | Same                                   |
 | `;; comment`                 | `;; comment`                                              | `;` and `;;` standard                  |
 
-Welcome to the PHP side of Lisp. The parentheses are the same; the runtime just happens to be PHP.
+Welcome to the PHP side of Lisp. The parentheses are the same; the runtime is PHP.
 
 ## Next steps
 

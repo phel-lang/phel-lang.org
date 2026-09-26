@@ -10,4 +10,4 @@ description = "Build web apps in Phel: HTTP request and response handling, routi
 insert_after = "PHP Interop"
 +++
 
-Built-in support for the full request lifecycle. Read an incoming **request**, match it with the **router**, and return a **response**, rendering HTML straight from Phel data structures. Read the pages in order for the end-to-end flow.
+Built-in support for the full request lifecycle. Read an incoming **request**, match it with the **router**, and return a **response**, rendering HTML straight from Phel data structures. Read the pages in order for the end-to-end flow. Already have a Symfony or Laravel app? **Framework Integration** shows how to add Phel without rewriting it.

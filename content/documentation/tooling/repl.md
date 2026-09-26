@@ -18,8 +18,8 @@ Start:
 Type any expression, press Enter:
 
 ```phel
-Welcome to the Phel Repl
-Type "exit" or press Ctrl-D to exit.
+Welcome to the Phel Repl (v0.53.0)
+Type (exit) or press Ctrl-D to exit.
 user:1> (* 6 7)
 42
 user:2> (str "Hello, " "world!")
@@ -35,7 +35,7 @@ user:3> (greet "Phel")
 "Hello, Phel!"
 ```
 
-`Ctrl-D` or `exit` to quit.
+`Ctrl-D` or `(exit)` to quit.
 
 Prompt shows current namespace (defaults to `user`), tracks `(ns ...)` and `(in-ns ...)`. `def` returns a printable var ref (e.g. `#'user/my-var`).
 
@@ -89,7 +89,7 @@ Import a Phel namespace. Same args as `:require` in `ns`:
 user:1> (require phel.html :as h)
 phel.html
 user:2> (h/html [:span {:class "greeting"} "Hello"])
-<span class="greeting">Hello</span>
+"<span class=\"greeting\">Hello</span>"
 ```
 
 ### dir
@@ -110,8 +110,8 @@ escape
 Search symbols by name across loaded namespaces. Returns a sorted vector of fully qualified names:
 
 ```phel
-user:1> (apropos "map")
-@["phel.core/flat-map" "phel.core/hash-map" "phel.core/map" "phel.core/map-indexed" "phel.core/mapcat"]
+user:1> (apropos "mapc")
+["phel.core/mapcat"]
 ```
 
 ### search-doc
@@ -140,7 +140,14 @@ user:2> (.format (DateTimeImmutable.) "Y-m-d")
 
 ## Introspection
 
-Inspect code, namespaces, and macros. These helpers live in `phel.repl` and load automatically in the REPL and over nREPL.
+Inspect code, namespaces, and macros. These helpers live in `phel.repl`.
+
+The REPL refers a few of them into every namespace: `doc`, `source`, `symbol-info`, `test-ns`, `eval-str`, `load-file`, `macroexpand`, `macroexpand-1`, and `ns-list`. The rest of `phel.repl` sits behind the `repl` alias: write `repl/find-fn`, `repl/reload!`, or `repl/run-tests`. Or require them by name:
+
+<!-- phel-test: skip -->
+```phel
+(require phel.repl :refer [find-fn reload! reload-all! run-tests run-test])
+```
 
 ### source
 
@@ -153,12 +160,11 @@ user:1> (source filter)
 
 ### find-fn
 
-Search functions by name or docstring. Returns a vector of maps with `:ns`, `:name`, `:doc`, and arity info:
+Search functions by name or docstring. Returns maps with `:ns`, `:name`, `:doc`, `:private`, and arity info:
 
 ```phel
-user:1> (find-fn "reduce")
-@[{:ns "phel.core", :name "reduce", :doc "...", :private false, :min-arity 3, :max-arity 3, :is-variadic false}
-  ...]
+user:1> (map :name (repl/find-fn "reduce"))
+("for" "reduced" "reduced?" "unreduced" "ensure-reduced" "preserving-reduced" "reduce" "reduce-kv" "transduce" "conj!" "reductions" "eduction" "compile-str")
 ```
 
 ### symbol-info
@@ -231,27 +237,26 @@ user:2> (load-file "src/my/app.phel")
 Run tests for a namespace from the REPL:
 
 ```phel
-user:1> (require phel.repl :refer [test-ns])
-user:2> (test-ns "my-app.tests")
+user:1> (test-ns "my-app.tests")
 ; Runs all tests in the namespace and prints results
 ```
 
-`phel.repl` also exposes `run-tests` and `run-test`, which load the namespace first if needed: `run-tests` takes one or more namespace symbols, `run-test` a single fully qualified test symbol:
+`phel.repl` also exposes `run-tests` and `run-test`. Both load the namespace first if needed. `run-tests` takes one or more namespace symbols, `run-test` a single fully qualified test symbol:
 
 <!-- phel-test: skip -->
 ```phel
-user:3> (run-tests 'my-app.users-test 'my-app.handlers-test)
-user:4> (run-test 'my-app.users-test/creates-a-user)
+user:2> (repl/run-tests 'my-app.users-test 'my-app.handlers-test)
+user:3> (repl/run-test 'my-app.users-test/creates-a-user)
 ```
 
 See also [Testing](/documentation/testing/) for `reset-stats`, `get-stats`, and `restore-stats`.
 
 ## Auto-injected utilities
 
-`(in-ns ...)` auto-injects `doc`, `require`, `use` into the new namespace. No manual imports.
+`(in-ns ...)` injects `doc`, `require`, `use`, the other REPL helpers, and the `repl` alias into the new namespace. No manual imports. It takes a bare symbol or a string, not a quoted symbol.
 
 ```phel
-user:1> (in-ns 'my.app)
+user:1> (in-ns my.app)
 my.app:2> (doc map)
 ; Works immediately: no require needed
 ```
@@ -270,10 +275,10 @@ user:1> (def users [{:name "Alice" :role :admin}
 ....:3>             {:name "Carol" :role :admin}])
 
 user:4> (filter #(= :admin (:role %)) users)
-@[{:name "Alice", :role :admin} {:name "Carol", :role :admin}]
+({:name "Alice", :role :admin} {:name "Carol", :role :admin})
 
 user:5> (map :name *1)
-@["Alice" "Carol"]
+("Alice" "Carol")
 ```
 
 ### Test functions as you write them
@@ -293,7 +298,7 @@ user:7> (fizzbuzz 15)
 user:8> (fizzbuzz 7)
 7
 user:9> (map fizzbuzz (range 1 16))
-@[1 2 "Fizz" 4 "Buzz" "Fizz" 7 8 "Fizz" "Buzz" 11 "Fizz" 13 14 "FizzBuzz"]
+(1 2 "Fizz" 4 "Buzz" "Fizz" 7 8 "Fizz" "Buzz" 11 "Fizz" 13 14 "FizzBuzz")
 ```
 
 ### Reload changed code
@@ -302,14 +307,14 @@ Edit files in your editor and pull the changes into the running REPL without res
 
 <!-- phel-test: skip -->
 ```phel
-user:1> (reload!)
-; => @[my-app.users my-app.handlers]   ; reloaded the changed ns and what depends on it
+user:1> (repl/reload!)
+; => ["my-app.users" "my-app.handlers"]   ; reloaded the changed ns and what depends on it
 
-user:2> (reload-all!)
+user:2> (repl/reload-all!)
 ; => force-reloads every loaded project namespace, ignoring mtimes
 ```
 
-`reload!`, `reload-all!`, `run-tests`, and `run-test` live in `phel.repl` and load automatically in the REPL and over nREPL. Editors can bind the matching nREPL ops to editor commands: see [Editor Support](/documentation/tooling/editor-support/#nrepl-and-editor-integration).
+`reload!`, `reload-all!`, `run-tests`, and `run-test` live in `phel.repl`. Call them through the `repl` alias, or require them as shown in [Introspection](#introspection). Editors can bind the matching nREPL ops to editor commands: see [Editor Support](/documentation/tooling/editor-support/#nrepl-and-editor-integration).
 
 ### Explore PHP interop
 

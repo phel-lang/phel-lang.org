@@ -14,7 +14,7 @@ aliases = ["/documentation/debug/xdebug-setup"]
 </summary>
 <div class="dev-note__content">
 
-<p style="font-size: 1.5em;font-weight: bold">Installation</p>
+## Installation
 
 **Recommended: [PIE](https://github.com/php/pie)** (PHP Installer for Extensions)
 
@@ -30,7 +30,7 @@ sudo mv pie.phar /usr/local/bin/pie
 pie install xdebug/xdebug
 ```
 
-**Note:** PECL deprecated. PIE is the official successor.
+**Note:** PIE is the official successor to PECL. `pecl install xdebug` still works where PIE is not set up yet.
 
 **Alternatives:**
 
@@ -38,9 +38,9 @@ pie install xdebug/xdebug
 # Via system package manager (Ubuntu/Debian)
 apt-get install php-xdebug
 
-# On macOS with Homebrew
+# On macOS with Homebrew: Homebrew's PHP ships pecl
 brew install php
-brew install php-xdebug
+pecl install xdebug
 ```
 
 **Docker/containers,** add to your `Dockerfile`:
@@ -65,7 +65,7 @@ php -v
 
 <hr>
 
-<p style="font-size: 1.5em;font-weight: bold">Configuration</p>
+## Configuration
 
 Configure in `php.ini` or a dedicated file (`/etc/php/conf.d/xdebug.ini`):
 
@@ -73,17 +73,17 @@ Configure in `php.ini` or a dedicated file (`/etc/php/conf.d/xdebug.ini`):
 [xdebug]
 zend_extension=xdebug.so
 
-# XDebug 3.x configuration
+; XDebug 3.x configuration
 xdebug.mode=debug
 xdebug.start_with_request=yes
 xdebug.client_host=localhost
 xdebug.client_port=9003
 
-# For Docker/VM environments, use host.docker.internal or your host IP
-# xdebug.client_host=host.docker.internal
+; For Docker/VM environments, use host.docker.internal or your host IP
+; xdebug.client_host=host.docker.internal
 
-# Optional: logging for troubleshooting
-# xdebug.log=/tmp/xdebug.log
+; Optional: logging for troubleshooting
+; xdebug.log=/tmp/xdebug.log
 ```
 
 **Settings:**

@@ -24,6 +24,12 @@ See how common PHP patterns translate to Phel. Click a category to filter, or br
 
 <!-- ==================== VARIABLES ==================== -->
 
+<div class="rosetta-item rosetta-group" data-category="variables">
+
+## Variables
+
+</div>
+
 <div class="rosetta-item" data-category="variables">
 
 ### Variable assignment
@@ -34,8 +40,8 @@ See how common PHP patterns translate to Phel. Click a category to filter, or br
 **PHP**
 
 ```php
-$name = "world";
-echo "Hello $name";
+$userName = "world";
+echo "Hello $userName";
 ```
 
 </div>
@@ -44,8 +50,8 @@ echo "Hello $name";
 **Phel**
 
 ```phel
-(def name "world")
-(println (str "Hello " name))
+(def user-name "world")
+(println (str "Hello " user-name))
 ```
 
 </div>
@@ -135,7 +141,7 @@ function area(float $r): float {
 
 ```phel
 (let [[a b & rest] [1 2 3 4 5]]
-  rest) ; => @[3 4 5]
+  rest) ; => [3 4 5]
 
 (def user {:name "Alice" :age 30})
 (let [{:name name :age age} user]
@@ -180,6 +186,12 @@ is_array($x);     // true/false
 </div>
 
 <!-- ==================== FUNCTIONS ==================== -->
+
+<div class="rosetta-item rosetta-group" data-category="functions">
+
+## Functions
+
+</div>
 
 <div class="rosetta-item" data-category="functions">
 
@@ -389,6 +401,12 @@ echo sum(1, 2, 3, 4); // 10
 
 <!-- ==================== ARRAYS / COLLECTIONS ==================== -->
 
+<div class="rosetta-item rosetta-group" data-category="arrays">
+
+## Arrays and collections
+
+</div>
+
 <div class="rosetta-item" data-category="arrays">
 
 ### Create array / vector
@@ -434,7 +452,7 @@ $user = [
     'age' => 30,
     'role' => 'admin',
 ];
-$name = $user['name']; // "Alice"
+$userName = $user['name']; // "Alice"
 ```
 
 </div>
@@ -446,7 +464,7 @@ $name = $user['name']; // "Alice"
 (def user {:name "Alice"
            :age 30
            :role "admin"})
-(def name (:name user)) ; "Alice"
+(def user-name (:name user)) ; "Alice"
 ```
 
 </div>
@@ -518,7 +536,7 @@ $filtered = array_filter($items, fn($x) => $x !== 2);
 
 (def items [1 2 3])
 (filter #(not= % 2) items)
-;; @[1 3]
+;; (1 3)
 ```
 
 </div>
@@ -562,6 +580,12 @@ $city = $data['user']['address']['city'];
 
 <!-- ==================== STRINGS ==================== -->
 
+<div class="rosetta-item rosetta-group" data-category="strings">
+
+## Strings
+
+</div>
+
 <div class="rosetta-item" data-category="strings">
 
 ### Concatenation
@@ -572,8 +596,10 @@ $city = $data['user']['address']['city'];
 **PHP**
 
 ```php
-$full = $first . " " . $last;
-$greeting = "Hello, " . $name . "!";
+$firstName = "Ada";
+$lastName = "Lovelace";
+$full = $firstName . " " . $lastName;
+$greeting = "Hello, " . $firstName . "!";
 ```
 
 </div>
@@ -582,8 +608,10 @@ $greeting = "Hello, " . $name . "!";
 **Phel**
 
 ```phel
-(def full (str first " " last))
-(def greeting (str "Hello, " name "!"))
+(def first-name "Ada")
+(def last-name "Lovelace")
+(def full (str first-name " " last-name))   ; "Ada Lovelace"
+(def greeting (str "Hello, " first-name "!")) ; "Hello, Ada!"
 ```
 
 </div>
@@ -600,7 +628,7 @@ $greeting = "Hello, " . $name . "!";
 **PHP**
 
 ```php
-$msg = sprintf("Hello, %s! You are %d.", $name, $age);
+$msg = sprintf("Hello, %s! You are %d.", $userName, $age);
 $price = sprintf("$%.2f", $amount);
 ```
 
@@ -610,10 +638,10 @@ $price = sprintf("$%.2f", $amount);
 **Phel**
 
 ```phel
-(def name "Alice")
+(def user-name "Alice")
 (def age 30)
 (def amount 9.5)
-(def msg (format "Hello, %s! You are %d." name age))
+(def msg (format "Hello, %s! You are %d." user-name age))
 (def price (format "$%.2f" amount))
 ```
 
@@ -721,6 +749,12 @@ $has = preg_match('/^\d+$/', '123') === 1; // true
 
 <!-- ==================== CONTROL FLOW ==================== -->
 
+<div class="rosetta-item rosetta-group" data-category="control">
+
+## Control flow
+
+</div>
+
 <div class="rosetta-item" data-category="control">
 
 ### If / else
@@ -799,7 +833,7 @@ switch ($code) {
 **PHP**
 
 ```php
-$label = $count > 0 ? "has items" : "empty";
+$label = $itemCount > 0 ? "has items" : "empty";
 $display = $user['name'] ?: "Anonymous";
 ```
 
@@ -809,9 +843,9 @@ $display = $user['name'] ?: "Anonymous";
 **Phel**
 
 ```phel
-(def count 3)
+(def item-count 3)
 (def user {:name "Alice"})
-(def label (if (> count 0) "has items" "empty"))
+(def label (if (> item-count 0) "has items" "empty"))
 (def display (or (:name user) "Anonymous"))
 ```
 
@@ -829,7 +863,7 @@ $display = $user['name'] ?: "Anonymous";
 **PHP**
 
 ```php
-$name = $input ?? "default";
+$userName = $input ?? "default";
 $host = $config['db']['host'] ?? "localhost";
 ```
 
@@ -841,7 +875,7 @@ $host = $config['db']['host'] ?? "localhost";
 ```phel
 (def input nil)
 (def config {:db {:host "db.example.com"}})
-(def name (or input "default"))
+(def user-name (or input "default"))
 (def host
   (or (get-in config [:db :host]) "localhost"))
 ```
@@ -851,6 +885,12 @@ $host = $config['db']['host'] ?? "localhost";
 </div>
 
 <!-- ==================== LOOPS ==================== -->
+
+<div class="rosetta-item rosetta-group" data-category="loops">
+
+## Loops
+
+</div>
 
 <div class="rosetta-item" data-category="loops">
 
@@ -997,6 +1037,12 @@ foreach (range(0, 9) as $x) {
 
 <!-- ==================== OOP / INTEROP ==================== -->
 
+<div class="rosetta-item rosetta-group" data-category="oop">
+
+## OOP and interop
+
+</div>
+
 <div class="rosetta-item" data-category="oop">
 
 ### Create object
@@ -1075,7 +1121,7 @@ $result = $date->modify("+1 month")->format("Y-m-d");
 **PHP**
 
 ```php
-$atom = DateTimeImmutable::ATOM;
+$atomFormat = DateTimeImmutable::ATOM;
 $parsed = DateTimeImmutable::createFromFormat(
     "Y-m-d",
     "2024-03-22"
@@ -1088,7 +1134,7 @@ $parsed = DateTimeImmutable::createFromFormat(
 **Phel**
 
 ```phel
-(def atom DateTimeImmutable/ATOM)
+(def atom-format DateTimeImmutable/ATOM)
 
 (def parsed
   (DateTimeImmutable/createFromFormat "Y-m-d" "2024-03-22"))
@@ -1099,6 +1145,12 @@ $parsed = DateTimeImmutable::createFromFormat(
 </div>
 
 <!-- ==================== FUNCTIONAL ==================== -->
+
+<div class="rosetta-item rosetta-group" data-category="functional">
+
+## Functional
+
+</div>
 
 <div class="rosetta-item" data-category="functional">
 
@@ -1124,7 +1176,7 @@ $doubled = array_map(
 
 ```phel
 (map #(* % 2) [1 2 3 4])
-;; @[2 4 6 8]
+;; (2 4 6 8)
 ```
 
 </div>
@@ -1155,7 +1207,7 @@ $evens = array_filter(
 
 ```phel
 (filter even? [1 2 3 4 5 6])
-;; @[2 4 6]
+;; (2 4 6)
 ```
 
 </div>

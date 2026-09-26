@@ -24,10 +24,10 @@ Truncation-safe rules. Code form first, reason second. Verify with `phel doc` be
 
 | Use                                                                              | Avoid                                                         | Why                                                            |
 |----------------------------------------------------------------------------------|---------------------------------------------------------------|----------------------------------------------------------------|
-| `phel doc <fn>`, grep `vendor/phel-lang/phel-lang/src/phel/core/`                | inventing names                                               | Hallucinated symbols compile then fail at runtime.             |
+| `phel doc <fn>`, grep `vendor/phel-lang/phel-lang/src/phel/core/`                | inventing names                                               | Unknown symbols fail to compile with `PHEL001`.                |
 | `phel.string` (alias `str`)                                                      | `phel.str`, `clojure.string`, `php/strtoupper`, `php/explode` | `phel.str` removed. Phel string fns return Phel values.        |
 | `(ns app.main)` (≥2 segments, file mirrors path under `src/`)                    | `(ns main)`                                                   | Single-segment ns exports invalid PHP under `phel build`.      |
-| `argv` (vector of strings)                                                       | `*argv*` (pre-0.39), `php/$argv`                              | Symbol renamed in 0.39. `php/$argv` is `nil` under `phel run`. |
+| `*argv*` (vector of strings)                                                     | `argv`, `php/$argv`                                           | `argv` does not resolve. `php/$argv` is `nil` under `phel run`.|
 | `for` for data, `foreach`/`doseq` for effects                                    | `for` with side effects                                       | `for` returns a vector. `foreach` returns `nil`.               |
 | `recur` in tail of `loop`/`fn`                                                   | `recur` anywhere else                                         | Non-tail `recur` errors at compile time.                       |
 | `vec` (PHP→Phel), `to-array` (Phel→PHP)                                          | treating PHP arrays as Phel collections                       | Different types. Mixing breaks `count`, `map`, etc.            |
@@ -79,14 +79,14 @@ Prefer this pattern because:
 
 ## Installed agent skills
 
-Phel ships skill adapters in `vendor/phel-lang/phel-lang/.agents/`. Install for the active agent:
+Phel ships skill adapters in `vendor/phel-lang/phel-lang/resources/agents/`. Install them for the active agent:
 
 ```bash
 vendor/bin/phel agent-install claude    # or codex, cursor, copilot, aider, gemini
 vendor/bin/phel agent-install --all     # every adapter
 ```
 
-`.agents/` contains: `RULES.md`, `index.md` (intent map), `tasks/*.md` (HTTP apps, CLI tools, tests, REPL flow, validation), `examples/`. Prefer it over guessing.
+After install, the project's `.agents/` folder contains: `RULES.md`, `index.md` (intent map), `tasks/*.md` (HTTP apps, CLI tools, tests, REPL flow, validation), `examples/`. Prefer it over guessing.
 
 ## Syntax in 60 seconds
 
@@ -95,7 +95,7 @@ vendor/bin/phel agent-install --all     # every adapter
 ;; Standalone comment uses two.
 
 ;; Atoms: nil true false
-;; Numbers: 42 -3 1.5 3.14e2 0xFF 0b1010 0o17
+;; Numbers: 42 -3 1.5 3.14e2 0xFF 0b1010 017 (octal)
 ;; Strings: "hello" "line\nbreak"
 ;; Keywords: :status :user/email
 ;; Symbols: my-var my-ns/fn
@@ -211,7 +211,7 @@ DateTimeImmutable/ATOM                     ; static constant
 (def p (->Point 1 2))
 (:x p)                             ; => 1     (keyword-as-fn: preferred)
 (get p :x)                         ; => 1     (also valid)
-(map->Point {:x 1 :y 2})           ; => (point 1 2)
+(map->Point {:x 1 :y 2})           ; => (user.Point 1 2)
 
 (defprotocol Drawable
   (draw [this]))
@@ -258,7 +258,7 @@ Beyond the TL;DR:
 - **`transduce` with `max`/`min`:** no zero-arity. Pass init: `(transduce xf (fn [a b] (max a b)) 0 coll)`.
 - **No `to-vec` / `to-list` functions.** Use `vec` (PHP array to Phel vector) or `to-array` (Phel to PHP).
 - **`recur` arity must match `loop` bindings.** Mismatched arg count errors at compile time.
-- **`#` line comments are deprecated.** Use `;` or `;;`.
+- **`#` line comments were removed.** The lexer rejects them. Use `;` or `;;`.
 
 ## Phel is not Clojure
 
@@ -269,14 +269,14 @@ Known differences:
 - **Strings module:** `phel.string`, not `clojure.string`. Some function names match, some don't. Check each.
 - **Interop is PHP, not Java.** `(new Class arg)`, `(.method obj)`, `(Class/method)`, `Class/CONST`. No `Class/.method`, no JVM.
 - **Records:** field access by keyword `(:x p)`. No `.-field` on records.
-- **Numbers:** PHP `int`/`float`, plus Phel `:ratio` (`(/ 1 3)` => `1/3`) and `:bigint` (auto-promoted on overflow). No `BigDecimal`.
+- **Numbers:** PHP `int`/`float`, plus Phel `:ratio` (`(/ 1 3)` => `1/3`) `:bigint` (auto-promoted on overflow), and `:bigdec` (`1.5M` literals). No Java `BigInteger` or `BigDecimal` classes: these are Phel types.
 - **Reader conditionals use `:phel`/`:default`,** not `:clj`/`:cljs`. Example: `#?(:phel "phel" :default "other")`.
 - **Concurrency primitives are fiber-based.** `atom`, `future`, `promise`, `pmap`, `async`/`await`, `await-all`, `await-any` all exist (see `phel/core/async.phel`). `ref`, `agent`, STM do not. Verify each with `phel doc`.
 - **No `clojure.*` namespaces.** `clojure.set`, `clojure.walk`, `clojure.spec`, `clojure.test.check`, `core.match`: none. Phel modules live under `phel.*` (`phel.string`, `phel.html`, `phel.test`, etc).
 - **`phel.test`, not `clojure.test`.** Uses `deftest` + `is`.
 - **Type tags emit PHP declarations**, not Java. `^int`, `^string`, `^"?int"` on `defn` params/return.
 
-When in doubt: run `phel doc <name>`. If it errors, it does not exist; do not generate code that calls it.
+When in doubt: run `phel doc <name>`. If it prints `No function matches`, the function does not exist. Do not generate code that calls it. The command exits 0 either way, so read the output, not the exit code.
 
 ## Project layout
 
@@ -310,16 +310,15 @@ TL;DR covers what must not break. These shape what good Phel looks like:
 4. **Interop shorthands.** `(.method obj)`, `(.-prop obj)`, `(Class/method)`, `(ClassName.)`. Shorter, idiomatic.
 5. **`^:memoize` for caching.** `(defn ^:memoize f [x] ...)` beats a manual `static $cache` pattern.
 6. **Type tags emit PHP declarations.** `^int`, `^string`, `^"?int"` on `defn` params/return = free PHP type hints.
-7. **No em-dashes** in docstrings or generated site docs. Use commas, colons, periods, parentheses.
-8. **Conventional commits.** `feat:`, `fix:`, `ref:`, `chore:`, `docs:`, `test:`. No AI/LLM authorship references.
 
 ## Where to look next
 
 In the Phel install:
 
-- `vendor/phel-lang/phel-lang/.agents/index.md`: intent → recipe map.
-- `vendor/phel-lang/phel-lang/.agents/RULES.md`: canonical rules + CLI map.
-- `vendor/phel-lang/phel-lang/.agents/tasks/`: HTTP, CLI, tests, debugging, validation, pattern matching.
+- `.agents/index.md` (after `phel agent-install`): intent → recipe map.
+- `.agents/RULES.md`: canonical rules + CLI map.
+- `.agents/tasks/`: HTTP, CLI, tests, debugging, validation, pattern matching.
+- `vendor/phel-lang/phel-lang/resources/agents/`: the same files before install.
 - `vendor/phel-lang/phel-lang/src/phel/core/`: every core function source.
 
 On this site:

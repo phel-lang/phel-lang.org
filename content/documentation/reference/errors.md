@@ -127,7 +127,7 @@ A form Phel now says another way was used as source.
 
 **Fix:** Use the replacement the message names: `(new \Foo arg)`, `(.method obj arg)` / `(.-field obj)`, `(\Foo/method arg)` / `\Foo/CONST`, and `(alter-var-root (var v) f)`.
 
-**Learn more:** [PHP interop](/documentation/language/php-interop/).
+**Learn more:** [PHP interop](/documentation/php-interop/).
 
 ## Parser errors
 
@@ -249,7 +249,7 @@ A value of the wrong type reached a PHP function or method.
 
 **Fix:** Convert the value to the type the callee declares before passing it.
 
-**Learn more:** [PHP interop](/documentation/language/php-interop/).
+**Learn more:** [PHP interop](/documentation/php-interop/).
 
 ### PHEL403 : Index out of bounds
 

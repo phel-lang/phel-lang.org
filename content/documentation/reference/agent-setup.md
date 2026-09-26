@@ -11,17 +11,17 @@ Set up your AI coding agent to write correct Phel. One command installs a per-to
 
 ## One-command setup
 
-Install Phel as a dev dependency, then let it detect the agents already in your project:
+Install Phel, then let it detect the agents already in your project:
 
 ```bash
-composer require --dev phel-lang/phel-lang
+composer require phel-lang/phel-lang
 vendor/bin/phel agent-install --auto
 ```
 
-`--auto` looks for signals like `.claude/`, `.cursor/`, `AGENTS.md`, or `.github/copilot-instructions.md` and installs only for the tools you actually use. Prefer to be explicit? Name a platform, or install everything:
+`--auto` looks for signals like `.claude/`, `.cursor/`, `AGENTS.md`, or `.github/copilot-instructions.md` and installs only for the tools you use. Prefer to be explicit? Name a platform, or install everything:
 
 ```bash
-vendor/bin/phel agent-install claude     # just Claude Code
+vendor/bin/phel agent-install claude     # Claude Code only
 vendor/bin/phel agent-install --all      # every supported platform
 ```
 
@@ -63,6 +63,7 @@ The per-tool skill file tells the agent to load these in order, so it reads the 
 | `--dry-run` | Print what would be written, change nothing. |
 | `--force` | Overwrite without creating `.pre-phel.bak` backups. |
 | `--uninstall` | Remove installed skill files, restoring any backup. |
+| `--check` | Compare the installed docs version with the bundled one. Exits 1 when they differ. |
 
 ## No CLI? Fetch the reference directly
 

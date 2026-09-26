@@ -16,7 +16,8 @@ For the full signature of every function mentioned here, see the [ai API referen
 
 ## Quickstart
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (ns my-app.main
   (:require phel.ai :as ai))
 
@@ -45,13 +46,15 @@ The default model evolves with `src/phel/ai.phel`; check there for the current v
 
 Every per-call `opts` map (`chat`, `complete`, `chat-with-tools`, `extract`, `extract-many`) accepts these same keys as per-request overrides:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (ai/complete "Summarize the news" {:provider :openai :model "gpt-4o-mini"})
 ```
 
 For scoped config that auto-restores, even when the body throws, use `with-config`:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (ai/with-config {:provider :openai :model "gpt-4o"}
   (ai/complete "Summarize the news"))
 ;; global config restored here, even if the body threw
@@ -59,7 +62,8 @@ For scoped config that auto-restores, even when the body throws, use `with-confi
 
 ## Chat
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (ai/chat [{:role "user" :content "What's 2+2?"}]
          {:system "Answer with a single integer."})
 ; => "4"
@@ -67,7 +71,8 @@ For scoped config that auto-restores, even when the body throws, use `with-confi
 
 Multi-turn conversations carry history forward with `chat-with-history`:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (let [h1 (ai/chat-with-history [] "My name is Alice.")
       h2 (ai/chat-with-history h1 "What's my name?")]
   (get (last h2) :content))
@@ -78,7 +83,8 @@ Multi-turn conversations carry history forward with `chat-with-history`:
 
 Populate a schema from free text. `extract-many` returns a vector when the input describes multiple items:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (ai/extract
   {:name "string" :age "integer" :email "email address"}
   "Hi, I'm Alice, 30, alice@example.com")
@@ -89,7 +95,8 @@ Populate a schema from free text. `extract-many` returns a vector when the input
 
 Define tools with the provider-agnostic `tool`, then either hand off to `run-tools` or drive the loop manually with `chat-with-tools` + `tool-result`.
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (def tools
   [(ai/tool "get-weather"
             "Returns current weather for a city."
@@ -107,7 +114,8 @@ Define tools with the provider-agnostic `tool`, then either hand off to `run-too
 
 For finer control, drive `chat-with-tools` yourself:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (let [resp (ai/chat-with-tools messages tools)
       calls (ai/tool-calls resp)]
   ...)
@@ -115,7 +123,8 @@ For finer control, drive `chat-with-tools` yourself:
 
 `chat-with-tools` returns:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 {:text       "..."    ; assistant text (nil if only tool calls)
  :tool-calls [{:name "..." :id "..." :input {...}}]
  :stop-reason "..."
@@ -124,7 +133,8 @@ For finer control, drive `chat-with-tools` yourself:
 
 ## Embeddings & semantic search
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (ai/configure {:provider :openai})
 
 (def index (ai/build-index ["cats purr" "dogs bark" "birds sing"]))
@@ -138,9 +148,9 @@ The vector-math primitives that power search are available for custom pipelines:
 (ns my-app.embed-demo
   (:require phel.ai :as ai))
 
-(println (ai/dot-product [1 2 3] [4 5 6]))    ; => 32
-(println (ai/magnitude [3 4]))                ; => 5
-(println (ai/cosine-similarity [1 0] [1 0]))  ; => 1
+(println (ai/dot-product [1 2 3] [4 5 6]))    ; prints 32
+(println (ai/magnitude [3 4]))                ; prints 5.0
+(println (ai/cosine-similarity [1 0] [1 0]))  ; prints 1.0
 ```
 
 `nearest` ranks a query embedding against an index of `{:text "..." :embedding [...]}` maps and returns the top matches by descending similarity, the same shape `search` produces.
@@ -149,7 +159,8 @@ The vector-math primitives that power search are available for custom pipelines:
 
 `:max-retries` (default `2`) retries HTTP 429 and 5xx responses with exponential backoff (500ms, 1s, 2s, ...). Network errors bubble up immediately. Tune per call:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (ai/complete "long task" {:timeout 300 :max-retries 4})
 ```
 
@@ -161,7 +172,8 @@ All failures throw `\RuntimeException`. Messages include the HTTP status and the
 
 `phel.ai` exposes an HTTP seam, `*http-post*`, that tests rebind to return canned responses. Combined with [`phel.mock`](/documentation/reference/api/mock/), this removes the dependency on a live provider:
 
-```phel skip
+<!-- phel-test: skip -->
+```phel
 (ns my-app.test.ai-test
   (:require phel.test :refer [deftest is])
   (:require phel.ai :as ai)

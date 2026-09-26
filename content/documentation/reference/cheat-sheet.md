@@ -26,7 +26,7 @@ my-var my-module/fn     ; symbols
 #"[a-z]+"               ; regex literal (PCRE pattern)
 ```
 
-> **Note:** `#` line and `#| |#` multiline comments are deprecated. Use `;;` for standalone comments and `;` for inline comments.
+> **Note:** `#` line and `#| |#` multiline comments were removed. The lexer rejects them. Use `;;` for standalone comments and `;` for inline comments.
 
 See [Basic Types](/documentation/language/basic-types).
 
@@ -44,7 +44,7 @@ See [Basic Types](/documentation/language/basic-types).
 
 ;; Tagged literals
 #inst "2026-01-15T12:00:00Z"    ; => DateTimeImmutable
-#uuid "550e8400-e29b-41d4-a716-446655440000"  ; => UUID string
+#uuid "550e8400-e29b-41d4-a716-446655440000"  ; => Phel\Lang\UUID object
 #regex "\\d+"                    ; => PCRE pattern string
 
 ;; First-class var handles
@@ -52,11 +52,11 @@ See [Basic Types](/documentation/language/basic-types).
 (var my-fn)             ; returns the Var object for my-fn
 ```
 
-`#(...)` is the preferred shorthand. `%` or `%1` first arg, `%2` second, `%&` rest. Legacy `|(...)` with `$` is deprecated.
+`#(...)` is the preferred shorthand. `%` or `%1` first arg, `%2` second, `%&` rest. The legacy `|(...)` form with `$` was removed.
 
 Reader conditionals (`#?()`, `#?@()`) target platforms in `.cljc` via `:phel` and `:default`.
 
-Tagged literals: `#inst` reads as `DateTimeImmutable`, `#uuid` as a UUID string, `#regex` as a PCRE pattern. Register custom tags with `register-tag` from `phel.reader`.
+Tagged literals: `#inst` reads as `DateTimeImmutable`, `#uuid` as a `Phel\Lang\UUID` object, `#regex` as a PCRE pattern string. Register custom tags with `register-tag` from `phel.reader`.
 
 ## Data structures
 
@@ -150,7 +150,7 @@ See [Destructuring](/documentation/language/destructuring).
   (* x 2))
 
 (defstruct point [x y])           ; struct (typed map)
-(point 1 2)                       ; => (point 1 2)
+(point 1 2)                       ; => (user.point 1 2) (printed with its namespace)
 (point? (point 1 2))              ; => true
 
 (let [x 1                         ; local bindings
@@ -250,8 +250,8 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 ```phel
 (def users [{:role :admin} {:role :user} {:role :admin}])
 
-(map inc [1 2 3])                  ; => @[2 3 4]
-(filter even? [1 2 3 4])          ; => @[2 4]
+(map inc [1 2 3])                  ; => (2 3 4)
+(filter even? [1 2 3 4])          ; => (2 4)
 (mapv inc [1 2 3])                 ; => [2 3 4] (eager, returns a vector)
 (filterv even? [1 2 3 4])         ; => [2 4] (eager, returns a vector)
 (reduce + 0 [1 2 3])              ; => 6
@@ -269,15 +269,15 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion), 
 (vec '(1 2 3))                     ; => [1 2 3] (coerce to vector)
 (subset? #{1 2} #{1 2 3})         ; => true
 (superset? #{1 2 3} #{1 2})       ; => true
-(distinct [1 2 1 3 2])            ; => @[1 2 3]
+(distinct [1 2 1 3 2])            ; => (1 2 3)
 (distinct? 1 2 3)                  ; => true (no two arguments are =)
 (splitv-at 2 [1 2 3 4 5])         ; => [[1 2] [3 4 5]] (eager split)
 (map-invert {:a 1 :b 2})          ; => {1 :a, 2 :b} (swap keys and values)
-(flatten [[1 2] [3 [4]]])         ; => @[1 2 3 4]
+(flatten [[1 2] [3 [4]]])         ; => (1 2 3 4)
 (reverse [1 2 3])                  ; => [3 2 1]
-(concat [1 2] [3 4])              ; => @[1 2 3 4]
-(compact [1 nil 2 nil 3])         ; => @[1 2 3]
-(remove neg? [1 -2 3 -4])        ; => @[1 3]
+(concat [1 2] [3 4])              ; => (1 2 3 4)
+(compact [1 nil 2 nil 3])         ; => (1 2 3)
+(remove neg? [1 -2 3 -4])        ; => (1 3)
 ```
 
 See [Data Structures](/documentation/language/data-structures).
@@ -286,8 +286,8 @@ See [Data Structures](/documentation/language/data-structures).
 
 ```phel
 (def sm (sorted-map 1 :a 3 :b 5 :c))
-(subseq sm >= 3)                   ; => @[[3 :b] [5 :c]] (ascending range query)
-(rsubseq sm <= 3)                  ; => @[[3 :b] [1 :a]] (descending)
+(subseq sm >= 3)                   ; => ([3 :b] [5 :c]) (ascending range query)
+(rsubseq sm <= 3)                  ; => ([3 :b] [1 :a]) (descending)
 
 ;; Relational helpers over sets of maps, in the spirit of clojure.set
 (def rel #{{:id 1 :role :admin} {:id 2 :role :user}})
@@ -318,25 +318,25 @@ See [Data Structures](/documentation/language/data-structures/#walking-data-stru
 
 <!-- phel-test: skip -->
 ```phel
-(take 5 (range))                   ; => @[0 1 2 3 4]
-(take 5 (iterate inc 0))          ; => @[0 1 2 3 4]
-(take 7 (cycle [1 2 3]))          ; => @[1 2 3 1 2 3 1]
-(take 4 (repeat :x))              ; => @[:x :x :x :x]
+(take 5 (range))                   ; => (0 1 2 3 4)
+(take 5 (iterate inc 0))          ; => (0 1 2 3 4)
+(take 7 (cycle [1 2 3]))          ; => (1 2 3 1 2 3 1)
+(take 4 (repeat :x))              ; => (:x :x :x :x)
 (take 5 (repeatedly #(php/rand 1 100)))  ; 5 random numbers
 
-(drop 3 (range 10))               ; => @[3 4 5 6 7 8 9]
-(take-while pos? [3 2 1 0 -1])   ; => @[3 2 1]
-(drop-while pos? [3 2 1 0 -1])   ; => @[0 -1]
-(partition 2 [1 2 3 4 5 6])       ; => @[[1 2] [3 4] [5 6]]
-(partition 2 1 [1 2 3 4])         ; => @[[1 2] [2 3] [3 4]] (sliding window)
-(partition-all 2 [1 2 3])         ; => @[[1 2] [3]] (keeps the short tail)
+(drop 3 (range 10))               ; => (3 4 5 6 7 8 9)
+(take-while pos? [3 2 1 0 -1])   ; => (3 2 1)
+(drop-while pos? [3 2 1 0 -1])   ; => (0 -1)
+(partition 2 [1 2 3 4 5 6])       ; => ([1 2] [3 4] [5 6])
+(partition 2 1 [1 2 3 4])         ; => ([1 2] [2 3] [3 4]) (sliding window)
+(partition-all 2 [1 2 3])         ; => ([1 2] [3]) (keeps the short tail)
 (random-sample 0.5 (range 100))   ; keeps each item with probability 0.5
-(interleave [:a :b :c] [1 2 3])  ; => @[:a 1 :b 2 :c 3]
+(interleave [:a :b :c] [1 2 3])  ; => (:a 1 :b 2 :c 3)
 
 ;; Lazy filtering + transformation
 (->> (range)
      (filter even?)
-     (take 5))                     ; => @[0 2 4 6 8]
+     (take 5))                     ; => (0 2 4 6 8)
 
 ;; Custom lazy sequence
 (defn fibs []
@@ -369,7 +369,7 @@ Lazy file I/O:
 
 (->> [1 2 3 4 5]                   ; thread-last
      (filter odd?)
-     (map inc))                    ; => @[2 4 6]
+     (map inc))                    ; => (2 4 6)
 
 (as-> [1 2 3] v                    ; thread with named binding
       (conj v 4)
@@ -381,7 +381,7 @@ Lazy file I/O:
 
 (cond->> [1 2 3]                   ; conditional thread-last
          true (map inc)
-         false (filter odd?))      ; => @[2 3 4]
+         false (filter odd?))      ; => (2 3 4)
 ```
 
 ## Strings
@@ -751,7 +751,7 @@ Integer division (`/`) returns a `Ratio` when not evenly divisible. Use `float` 
 (nan? (php/log -1))                ; => true
 (rational? 1/2)                    ; => true (integers, Ratio, BigDecimal)
 (rational? 1.5)                    ; => false
-(random-uuid)                      ; => "550e8400-e29b-..." (random UUID string)
+(random-uuid)                      ; => #uuid "b668b235-..." (Phel\Lang\UUID object)
 ```
 
 ## Printing
@@ -792,18 +792,18 @@ Integer division (`/`) returns a `Ratio` when not evenly divisible. Use `float` 
 
 ;; phel.reflect: introspect PHP classes via reflection
 (reflect/class-info \DateTime)         ; => map of name, methods, properties, ...
-(reflect/methods \DateInterval)        ; => vector of method-info maps
-(reflect/properties \DateInterval)     ; => vector of property-info maps
-(reflect/supers \RuntimeException)     ; => parent classes + interfaces
+(reflect/methods \DateInterval)        ; => [{:name "__construct" ...} ...] (method-info maps)
+(reflect/properties \Exception)        ; => [{:name "message" ...} ...] (property-info maps)
+(reflect/supers \RuntimeException)     ; => #{"Exception" "Throwable" "Stringable"}
 ```
 
 ## REPL utilities
 
 <!-- phel-test: skip -->
 ```phel
-(source my-fn)                     ; print source code of a function
+(source my-fn)                     ; source code of a function, as a string
 (phel.repl/find-fn "map")          ; search for functions by name
-(symbol-info 'map)                 ; detailed info about a symbol
+(symbol-info map)                  ; detailed info about a symbol (a macro: no quote)
 (ns-publics 'phel.core)           ; all public vars in a namespace
 (ns-aliases 'my-app.core)         ; namespace aliases
 (ns-refers 'my-app.core)          ; referred symbols
@@ -821,7 +821,7 @@ Integer division (`/`) returns a `Ratio` when not evenly divisible. Use `float` 
 ```phel
 (dbg (* w h))                      ; print [file:line] form => value to stderr, return value
 (dbg)                              ; "reached here" marker, returns nil
-(inspect x)                        ; print a structural view of any value
+(inspect x)                        ; structural view of any value (phel.pprint)
 (break)                            ; pause and open a sub-REPL over the local bindings
 
 (add-tap println)                  ; attach an inspector
