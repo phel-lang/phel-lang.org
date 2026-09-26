@@ -10,18 +10,18 @@ A **worker runtime** keeps the PHP process alive across requests: namespaces loa
 
 ## What a request pays
 
-One measurement (PHP 8.4, warm `.phel/cache`, a host that boots and then calls `phel.core/str`):
+One measurement (PHP 8.5, Phel 0.53, Apple M4 Pro, a host that boots and then calls `phel.core/str`, median of 15 runs, 5 for the cold column):
 
-| | no opcache | opcache file cache |
-|---|---|---|
-| `vendor/autoload.php` | 11ms | 8ms |
-| `Phel::bootstrap()` | 5ms | 4ms |
-| load `phel.core` | 491ms | 37ms |
-| **first call reachable after** | **508ms** | **49ms** |
-| peak memory | 48MB | 28MB |
-| per call after that | 0.2µs | 0.2µs |
+| | cold `.phel/cache` | warm cache, no opcache | warm cache + opcache file cache |
+|---|---|---|---|
+| `vendor/autoload.php` | 1ms | 1ms | 1ms |
+| `Phel::bootstrap()` | 7ms | 5ms | 4ms |
+| load `phel.core` | 1054ms | 48ms | 33ms |
+| **first call reachable after** | **1062ms** | **54ms** | **38ms** |
+| peak memory | 88MB | 20MB | 6MB |
+| per call after that | 0.1µs | 0.1µs | 0.1µs |
 
-Three things follow. Calling Phel from PHP is free at 0.2µs per call, so the boundary is never what a request pays for. Loading namespaces is everything, and opcache is worth more than an order of magnitude on it: a deployment without it is running a Phel that boots ten times slower than the one you shipped. And under PHP-FPM every request pays that whole column, which is exactly what a worker runtime removes.
+Three things follow. Calling Phel from PHP is free at 0.1µs per call, so the boundary is never what a request pays for. Loading namespaces is everything, and compiling them is the expensive part: a cold cache costs 20 times a warm one. Never let a request compile. Ship `phel build` output or a warm `.phel/cache`, and opcache takes another third off the load and most of the memory. Under PHP-FPM every request still pays the whole column, which is exactly what a worker runtime removes.
 
 The absolute figures move with the machine and with how much your app loads, so measure your own:
 
@@ -92,7 +92,62 @@ frankenphp php-server --root . --worker ./worker.php
 
 ## RoadRunner
 
-Same shape: require the built entry point once, then handle requests in the worker loop (via `spiral/roadrunner-http`'s PSR-7 worker), calling exported Phel functions per request.
+Same shape as FrankenPHP. RoadRunner is a Go server that keeps PHP workers alive and hands them PSR-7 requests. Install the worker library, a PSR-7 implementation, and the `rr` binary:
+
+```bash
+composer require spiral/roadrunner-http nyholm/psr7
+composer require --dev spiral/roadrunner-cli
+vendor/bin/rr get-binary    # downloads ./rr
+```
+
+`worker.php`:
+
+```php
+<?php
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/out/app/main.php'; // once, outside the loop
+
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Nyholm\Psr7\Response;
+use Spiral\RoadRunner\Http\PSR7Worker;
+use Spiral\RoadRunner\Worker;
+
+$factory = new Psr17Factory();
+$psr7 = new PSR7Worker(Worker::create(), $factory, $factory, $factory);
+
+while ($request = $psr7->waitRequest()) {
+    try {
+        // call an exported Phel wrapper per request
+        $body = \PhelGenerated\App\Main::handleRequest($request->getUri()->getPath());
+        $psr7->respond(new Response(200, [], $body));
+    } catch (\Throwable $e) {
+        $psr7->respond(new Response(500, [], 'Internal error'));
+        $psr7->getWorker()->error((string) $e);
+    }
+}
+```
+
+`.rr.yaml`:
+
+```yaml
+version: "3"
+
+server:
+  command: "php worker.php"
+
+http:
+  address: 0.0.0.0:8080
+```
+
+Run it:
+
+```bash
+./rr serve
+```
+
+{% php_note() %}
+**State is per-worker here too.** RoadRunner starts one worker per CPU core by default. An `atom` counting hits goes up once per request that lands on *its* worker, not once per request. Pin a single worker with `pool: { num_workers: 1 }` under `http`, or keep shared state in Redis, APCu, or a database.
+{% end %}
 
 ## When you do not need a worker runtime
 
