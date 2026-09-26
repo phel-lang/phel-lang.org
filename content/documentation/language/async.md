@@ -65,7 +65,9 @@ Use `future?` to test whether a value is a future from either layer; `deref`, `r
 
 `(delay seconds)` suspends for `seconds` via `Amp\delay`. At the top level it behaves like `php/sleep`; inside an `async`/`future` body it suspends only the current fiber and becomes cancellable.
 
-> **Not Clojure's `delay`.** `clojure.core/delay` is a lazy-thunk wrapper, not a sleep. Phel keeps `delay` in `phel.async` (not `phel.core`) so the difference stays visible to portable `.cljc` code.
+{% callout(kind="note") %}
+**Not Clojure's `delay`.** `clojure.core/delay` is a lazy-thunk wrapper, not a sleep. Phel keeps `delay` in `phel.async` (not `phel.core`) so the difference stays visible to portable `.cljc` code.
+{% end %}
 
 ```phel
 (ns example.delay

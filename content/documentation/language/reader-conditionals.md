@@ -1,6 +1,6 @@
 +++
 title = "Reader Conditionals"
-weight = 14
+weight = 15
 description = "Write platform-specific code in shared .cljc source files with #?() and #?@(), resolved at parse time using :phel and :default keys"
 
 [extra]
@@ -91,7 +91,9 @@ Phel discovers and compiles `.cljc` files alongside `.phel` files, so a single f
 (println (platform)) ; prints phel
 ```
 
-> **Tip:** use `.` as the [namespace](/documentation/language/namespaces/) separator (`shared.utils`) so `.cljc` files parse cleanly under Clojure too. The legacy `\` separator still resolves but is deprecated.
+{% callout(kind="tip") %}
+Use `.` as the [namespace](/documentation/language/namespaces/) separator (`shared.utils`) so `.cljc` files parse cleanly under Clojure too. The legacy `\` separator still resolves but is deprecated.
+{% end %}
 
 ### Platform-specific dependencies
 
@@ -144,7 +146,7 @@ Because conditionals resolve at parse time, they nest inside any form:
 
 ## Next steps
 
-- [Numeric tower](/documentation/language/numeric-tower/) - how ints, ratios, BigInt, and BigDecimal mix in arithmetic
+- [Async & Concurrency](/documentation/language/async/) - run work concurrently with fibers and AMPHP
 - [Namespaces](/documentation/language/namespaces/) - the `ns` form that conditional `:require` entries plug into
 - [Cookbook: reader conditionals for cross-platform code](/documentation/guides/cookbook/#reader-conditionals-for-cross-platform-code) - a worked `.cljc` recipe
 - [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

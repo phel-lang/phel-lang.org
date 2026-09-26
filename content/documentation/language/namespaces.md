@@ -1,6 +1,6 @@
 +++
 title = "Namespaces"
-weight = 8
+weight = 10
 description = "Declare namespaces with ns, require Phel modules and PHP classes, and use aliases, :refer, and namespaced keywords"
 aliases = ["/documentation/namespaces"]
 

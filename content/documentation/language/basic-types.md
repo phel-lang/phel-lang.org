@@ -120,8 +120,6 @@ Integers, floats, ratios, big integers, big decimals. Integers and floats wrap P
 (bigdec? 1.5M)  ; => true
 ```
 
-Auto-promoting variants `+'`, `-'`, `*'`, `inc'`, `dec'` widen to BigInt on overflow instead of wrapping.
-
 How these types mix in arithmetic, and when each one appears: [Numeric tower](/documentation/language/numeric-tower/).
 
 ## Arithmetic operators
@@ -198,7 +196,6 @@ Other numerics:
 - `quot`, `rem`, `mod`: integer quotient, remainder, modulo. `%` aliases `rem`.
 - `floor`, `ceil`, `round`, `sqrt`: math primitives.
 - `**`: power.
-- `+'`, `-'`, `*'`, `inc'`, `dec'`: auto-promote to `BigInt` on overflow.
 - `numerator`, `denominator`, `rationalize`, `ratio?`.
 - `bigint`, `biginteger`, `bigint?`; `bigdec`, `bigdec?` / `decimal?`.
 
@@ -344,84 +341,22 @@ PHP strings internally. Use `phel.string` for idiomatic string operations:
 All PHP string functions also available via `php/` prefix. Same as PHP double-quoted strings, except `$` doesn't need escaping.
 {% end %}
 
-## Lists
+## Collections
 
-Whitespace-separated values in parentheses:
-
-```phel
-(do 1 2 3)
-```
-
-Lists are function/macro/special-form calls. Quoted lists are data:
+Four literals, one per core collection:
 
 ```phel
-'(1 2 3)
+'(1 2 3)    ; list
+[1 2 3]     ; vector
+{:a 1 :b 2} ; map
+#{1 2 3}    ; set
 ```
 
-## Vectors
+Quote a list to keep it as data. Unquoted, `(f 1 2)` calls `f`.
 
-Whitespace-separated values in brackets:
+Queues and map entries have no literal. Build them with `queue` and `map-entry`.
 
-```phel
-[1 2 3] ; same as (vector 1 2 3)
-```
-
-Indexed data structure. Unlike PHP arrays, vectors are not maps/hashtables.
-
-## Maps
-
-Whitespace-separated key/value pairs in braces. Even count: key1, value1, key2, value2.
-
-```phel
-{} ; same as (hash-map)
-{:key1 "value1" :key2 "value2"}
-
-; Any type can be a key
-{'(1 2 3) '(4 5 6)}  ; Lists as keys
-{[] []}              ; Vectors as keys
-{1 2 3 4 5 6}        ; Numbers as keys
-
-; Common pattern: keywords as keys
-{:name "Alice" :age 30 :email "alice@example.com"}
-```
-
-{% php_note() %}
-Unlike PHP associative arrays, Phel map keys can be **any type** (vectors, lists, other maps), maps are **immutable** (operations return new maps), and they are **not** PHP arrays internally. Worked comparison in [Data structures → Immutability](/documentation/language/data-structures/#immutability-vs-php-mutability).
-{% end %}
-
-## Sets
-
-Whitespace-separated values in `#{}`, or built with `hash-set`:
-
-```phel
-#{1 2 3}         ; set literal
-(hash-set 1 2 3) ; same result
-(set [1 2 3])    ; coerce a collection to a set
-```
-
-## Queues
-
-Persistent FIFO queues with amortised O(1) `conj`, `peek`, `pop`:
-
-```phel
-(def q (queue 1 2 3))
-(queue? q)        ; => true
-(peek q)          ; => 1
-(conj q 4)        ; => <-(1 2 3 4)-<
-(pop q)           ; => <-(2 3)-<
-```
-
-## Map entries
-
-`map-entry` produces an entry that compares equal to a 2-element vector. `seq` over a map yields map entries:
-
-```phel
-(def e (map-entry :a 1))
-(map-entry? e)    ; => true
-(key e)           ; => :a
-(val e)           ; => 1
-(= e [:a 1])      ; => true
-```
+Reading, adding and updating each one: [Data structures](/documentation/language/data-structures/).
 
 ## Tagged literals
 
@@ -512,7 +447,9 @@ Same `#"..."` syntax as Clojure. Engine is PHP PCRE, not Java regex, so some det
 (+ 1 2) ; This is an inline comment
 ```
 
-> **Removed:** `#` line comments and `#| ... |#` blocks no longer parse. Use `;` for lines, and `#_` or `(comment ...)` for whole forms. The `#` prefix is reserved for reader macros (`#()`, `#""`, `#?()`).
+{% callout(kind="warning") %}
+**Removed:** `#` line comments and `#| ... |#` blocks no longer parse. Use `;` for lines, and `#_` or `(comment ...)` for whole forms. The `#` prefix is reserved for reader macros (`#()`, `#""`, `#?()`).
+{% end %}
 
 `#_` comments out the next form. Stack to comment multiple forms:
 

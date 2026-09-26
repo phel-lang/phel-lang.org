@@ -192,7 +192,7 @@ Loop bindings:
 
 ## Next steps
 
-- [Error handling](/documentation/language/error-handling/) - throw, catch, and structured errors
+- [Numeric tower](/documentation/language/numeric-tower/) - how ints, ratios, BigInt, and BigDecimal mix in arithmetic
 - [Functions and recursion](/documentation/language/functions-and-recursion/) - destructure function arguments
 - [Data structures](/documentation/language/data-structures/) - the collections you destructure
 - [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

@@ -64,9 +64,13 @@ Shorter form omits the parameter list, naming params by position:
 (filter #(> % 3) [1 5 2 8])   ; => (5 8)
 ```
 
-> **Removed in 0.50:** `|(...)` with `$` / `$1` / `$&`. Use `#(...)` with `%` (matches Clojure).
+{% callout(kind="warning") %}
+**Removed in 0.50:** `|(...)` with `$` / `$1` / `$&`. Use `#(...)` with `%` (matches Clojure).
+{% end %}
 
-> **Removed:** the `function?` predicate. Use `fn?`.
+{% callout(kind="warning") %}
+**Removed:** the `function?` predicate. Use `fn?`.
+{% end %}
 
 {% php_note() %}
 `#()` short-form is like PHP arrow functions:

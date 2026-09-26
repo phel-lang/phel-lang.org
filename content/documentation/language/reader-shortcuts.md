@@ -1,7 +1,7 @@
 +++
 title = "Reader Shortcuts"
-weight = 13
-description = "Compact catalog of the reader macros and special syntax the Phel reader expands at read time: literals, quote/quasiquote, tagged literals, anonymous functions, reader conditionals, and metadata."
+weight = 8
+description = "Catalog of the Phel reader macros and special syntax: literals, quote/quasiquote, tagged literals, anonymous functions, reader conditionals, and metadata."
 
 [extra]
 difficulty = "intermediate"
@@ -43,13 +43,17 @@ Quasiquote is like quote but allows selective evaluation inside it: unquote (`~`
 (let [xs [2 3 4]] `(1 ~@xs 5)) ; => (1 2 3 4 5) ~@ splices a sequence
 ```
 
-> **Removed in 0.50:** the `,` (unquote) and `,@` (unquote-splicing) reader macros. Use `~` and `~@`. `,` is now plain whitespace, so `` `(f ,x) `` still parses and quietly *quotes* `x` instead of unquoting it: no error, just a wrong expansion.
+{% callout(kind="warning") %}
+**Removed in 0.50:** the `,` (unquote) and `,@` (unquote-splicing) reader macros. Use `~` and `~@`. `,` is now plain whitespace, so `` `(f ,x) `` still parses and quietly *quotes* `x` instead of unquoting it: no error, just a wrong expansion.
+{% end %}
 
 ### Auto-gensym `name#`
 
 Inside a quasiquote, a symbol ending in `#` expands to a fresh, unique name, and the same `name#` maps to that one generated name throughout the template: hygienic macros without an explicit `gensym`. See [Macros](/documentation/language/macros/#hygiene-and-gensym) for the full story.
 
-> **Removed in 0.50:** `name$` as an auto-gensym suffix. Use `name#`.
+{% callout(kind="warning") %}
+**Removed in 0.50:** `name$` as an auto-gensym suffix. Use `name#`.
+{% end %}
 
 ## Reader conditionals `#?()` and `#?@()`
 
@@ -132,7 +136,9 @@ See [Basic Types](/documentation/language/basic-types/#regex-literals) for match
 
 The full treatment, including when to reach for a named `fn` instead, lives in [Functions and Recursion](/documentation/language/functions-and-recursion/).
 
-> **Removed in 0.50:** the older `|(...)` form with `$`, `$1`, `$&` placeholders. Use `#(...)` with `%`.
+{% callout(kind="warning") %}
+**Removed in 0.50:** the older `|(...)` form with `$`, `$1`, `$&` placeholders. Use `#(...)` with `%`.
+{% end %}
 
 ## Comments
 
@@ -143,7 +149,9 @@ The full treatment, including when to reach for a named `fn` instead, lives in [
 
 `;` runs to end of line: `;;` for standalone comments, `;` for inline.
 
-> **Removed:** `#` line comments and `#| ... |#` blocks no longer parse. Use `;` for lines, and `#_` or `(comment ...)` for whole forms.
+{% callout(kind="warning") %}
+**Removed:** `#` line comments and `#| ... |#` blocks no longer parse. Use `;` for lines, and `#_` or `(comment ...)` for whole forms.
+{% end %}
 
 ## Metadata `^`
 
@@ -183,6 +191,7 @@ Type hints use the same syntax: `^int`, `^"?int"`, `^{:tag "\\Foo\\Bar"}`. See [
 
 ## Next steps
 
+- [Error handling](/documentation/language/error-handling/) - throw, catch, and structured errors
 - [Reader conditionals](/documentation/language/reader-conditionals/) - share one `.cljc` file between Phel and Clojure
 - [Basic Types](/documentation/language/basic-types/) - tagged literals, regex literals, deref, and comments in depth
 - [Functions and Recursion](/documentation/language/functions-and-recursion/) - the `#(...)` shorthand and typed defns

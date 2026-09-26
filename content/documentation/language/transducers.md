@@ -1,6 +1,6 @@
 +++
 title = "Transducers"
-weight = 12
+weight = 14
 description = "Build composable, allocation-free transformation pipelines that decouple the transformation from the consumer, and write your own custom transducers"
 
 [extra]
@@ -224,7 +224,7 @@ Each [dual-purpose function](#transducer-producing-functions) works both ways: w
 
 ## Next steps
 
-- [Reader shortcuts](/documentation/language/reader-shortcuts/) - what `#(...)`, `@`, `'` and friends expand to
+- [Reader conditionals](/documentation/language/reader-conditionals/) - share one `.cljc` file between Phel and Clojure
 - [Lazy sequences](/documentation/language/lazy-sequences/) - the other way to run the same functions
 - [Data structures](/documentation/language/data-structures/#transducers) - `into`, `reduce`, and the basic transducer producers
 - [Cookbook: data processing with transducers](/documentation/guides/cookbook/#data-processing-with-transducers) - a worked real-world pipeline

@@ -1,6 +1,6 @@
 +++
 title = "Error handling"
-weight = 7
+weight = 9
 description = "Throw and catch exceptions, handle PHP exceptions, attach data with ex-info, and decide when to throw vs return nil"
 aliases = ["/documentation/error-handling", "/documentation/exceptions"]
 

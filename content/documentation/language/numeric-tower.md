@@ -1,6 +1,6 @@
 +++
 title = "Numeric Tower"
-weight = 15
+weight = 7
 description = "Phel's five numeric shapes (int, BigInt, Ratio, BigDecimal, float), when each appears, and how arithmetic dispatches across them"
 
 [extra]
@@ -127,7 +127,7 @@ In Clojure, `(== x)` returns `true` for any single argument. Phel's `==` require
 
 ## Next steps
 
-- [Async & Concurrency](/documentation/language/async/) - run work concurrently with fibers and AMPHP
+- [Reader shortcuts](/documentation/language/reader-shortcuts/) - what `#(...)`, `@`, `'` and friends expand to
 - [Basic Types](/documentation/language/basic-types/#numbers) - number literals and arithmetic operators
 - [Coming from Clojure](/documentation/guides/coming-from-clojure/) - numeric differences from Clojure
 - [Core API](/documentation/reference/api/core/) - full predicate and operator reference

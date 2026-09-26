@@ -1,7 +1,7 @@
 +++
 title = "Data structures"
 weight = 2
-description = "Phel's persistent collections: lists, vectors, maps, sets, structs, plus core functions like conj, assoc, get-in, and into"
+description = "Phel's persistent collections: lists, vectors, maps, sets, queues, structs, plus core functions like conj, assoc, get-in, and into"
 aliases = ["/documentation/data-structures"]
 
 [extra]
@@ -147,6 +147,20 @@ Remove with `dissoc`:
 Like PHP associative arrays, but with two differences: keys can be **any type** (vectors, lists, other maps), and maps are **immutable**: "updating" with `assoc` returns a new map and leaves the original untouched. Worked comparison in [Immutability vs PHP mutability](#immutability-vs-php-mutability) below.
 {% end %}
 
+### Map entries
+
+A map entry is one key-value pair. `seq` over a map yields entries. Each entry compares equal to a 2-element vector. Build one directly with `map-entry`:
+
+```phel
+(def e (map-entry :a 1))
+(map-entry? e)      ; => true
+(key e)             ; => :a
+(val e)             ; => 1
+(= e [:a 1])        ; => true
+
+(first {:a 1 :b 2}) ; => [:a 1]
+```
+
 ## Sets
 
 Unique values in any order. Values must implement `HashableInterface` and `EqualsInterface`.
@@ -160,7 +174,9 @@ Create with `#{}`, `hash-set`, or coerce with `set`:
 (set '(1 2 3))   ; Works with any collection type
 ```
 
-> **Note:** `set` coerces a collection (Clojure alignment). `hash-set` builds from individual args.
+{% callout(kind="note") %}
+`set` coerces a collection (Clojure alignment). `hash-set` builds from individual args.
+{% end %}
 
 Add with `conj`:
 
@@ -221,6 +237,22 @@ Size with `count`:
 (superset? (hash-set 1 2 3) (hash-set 1 2)) ; Evaluates to true
 (superset? (hash-set 1 2 3) (hash-set 1 4)) ; Evaluates to false
 ```
+
+## Queues
+
+Persistent first-in, first-out queue. `conj` adds to the back. `peek` and `pop` read and drop the front. All three run in amortised O(1).
+
+No literal syntax. Build one with `queue`:
+
+```phel
+(def q (queue 1 2 3))
+(queue? q)        ; => true
+(peek q)          ; => 1
+(conj q 4)        ; => <-(1 2 3 4)-<
+(pop q)           ; => <-(2 3)-<
+```
+
+A queue prints as `<-(...)-<`. Items enter on the right and leave on the left.
 
 ## Working with collections
 

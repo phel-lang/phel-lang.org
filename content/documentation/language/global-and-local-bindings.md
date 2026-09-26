@@ -218,7 +218,9 @@ $count++;
 Prefer immutable data structures. Atoms mainly for PHP interop or app state.
 {% end %}
 
-> **Note:** the old atom aliases `var`, `var?`, `set!` are gone. Use `atom`, `atom?`, `reset!`. `var` / `var?` / `#'sym` now refer to first-class `Var` handles for global definitions, not atoms.
+{% callout(kind="note") %}
+The old atom aliases `var`, `var?`, `set!` are gone. Use `atom`, `atom?`, `reset!`. `var` / `var?` / `#'sym` now refer to first-class `Var` handles for global definitions, not atoms.
+{% end %}
 
 ## Vars {#variables}
 

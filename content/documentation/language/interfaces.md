@@ -1,6 +1,6 @@
 +++
 title = "Interfaces"
-weight = 9
+weight = 11
 description = "Define contracts with definterface, implement them in structs, extend types with protocols, and dispatch via hierarchies"
 aliases = ["/documentation/interfaces"]
 
@@ -31,7 +31,9 @@ Multiple methods per interface:
 
 Generates callable functions per method: `(area my-shape)` works like any function.
 
-> **Note:** Unlike PHP, Phel interfaces don't extend other interfaces.
+{% callout(kind="note") %}
+Unlike PHP, Phel interfaces don't extend other interfaces.
+{% end %}
 
 ## Implementing with structs
 
