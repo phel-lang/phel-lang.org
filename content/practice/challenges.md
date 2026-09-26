@@ -56,7 +56,7 @@ Learn more: [Functions and Recursion](/documentation/language/functions-and-recu
 ```
 A `for` comprehension over `range`, with `cond` doing the dispatch. Notice we test divisibility by 15 first - in `cond`, order matters.
 
-Learn more: [Control Flow](/documentation/language/control-flow), [Arithmetic](/documentation/language/arithmetic)
+Learn more: [Control Flow](/documentation/language/control-flow), [Arithmetic](/documentation/language/basic-types/#arithmetic-operators)
 {% end %}
 
 {% question(difficulty="hard") %}

@@ -81,8 +81,21 @@
     });
   }
 
+  // Paper is white: print with the light theme, then restore the choice.
+  function watchPrint() {
+    let wasDark = false;
+    window.addEventListener('beforeprint', () => {
+      wasDark = document.documentElement.classList.contains('dark');
+      document.documentElement.classList.remove('dark');
+    });
+    window.addEventListener('afterprint', () => {
+      if (wasDark) document.documentElement.classList.add('dark');
+    });
+  }
+
   function init() {
     initDarkMode();
+    watchPrint();
     attachToggleButton();
     watchSystemTheme();
     syncToggleState();

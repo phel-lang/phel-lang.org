@@ -16,6 +16,9 @@
       
       toggleButton.setAttribute('aria-expanded', !isExpanded);
       sidebarContent.classList.toggle('active');
+
+      const label = toggleButton.querySelector('.sidebar-toggle-text');
+      if (label) label.textContent = isExpanded ? 'Show navigation' : 'Hide navigation';
     });
   }
 

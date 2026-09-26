@@ -28,8 +28,9 @@ function scrollFunction() {
 
 // When the user clicks on the button, scroll to the top of the document
 function backToTop() {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   window.scrollTo({
     top: 0,
-    behavior: 'smooth'
+    behavior: reduceMotion ? 'auto' : 'smooth'
   });
 }

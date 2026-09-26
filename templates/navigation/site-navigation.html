@@ -5,7 +5,7 @@
 {% endif %}
 
 {% if ancestor_path %}
-<div class="site-navigation-section">
+<nav class="site-navigation-section" aria-label="Documentation">
     <h2 class="site-navigation__title">Contents</h2>
     <ol class="site-navigation">
         {% set doc_section = get_section(path=ancestor_path) %}
@@ -18,7 +18,7 @@
 
             {% for doc_page in main_doc_section.pages %}
                 <li class="site-navigation__entry {% if current_path == doc_page.path %}active{% endif %}">
-                    <a href="{{ doc_page.path }}">{{ doc_page.title }}</a>
+                    <a href="{{ doc_page.path }}"{% if current_path == doc_page.path %} aria-current="page"{% endif %}>{{ doc_page.title }}</a>
                 </li>
 
                 {% for subsection_path in main_doc_section.subsections %}
@@ -40,7 +40,7 @@
                             {% endfor %}
                             <li class="site-navigation__entry sidebar-section sidebar-section--{{ subsection.title | slugify }} {% if is_section_active or has_active_child %}active{% else %}collapsed{% endif %}">
                                 <div class="sidebar-section-header">
-                                    <span class="sidebar-section-label">{{ subsection.title }}</span>
+                                    <a class="sidebar-section-label" href="{{ subsection.path }}"{% if is_section_active %} aria-current="page"{% endif %}>{{ subsection.title }}</a>
                                     {% if subsection.pages | length > 0 or subsection.subsections | length > 0 %}
                                         <button class="subsection-toggle" aria-label="Toggle {{ subsection.title }} subsection" aria-expanded="{% if is_section_active or has_active_child %}true{% else %}false{% endif %}">
                                             <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -53,13 +53,13 @@
                                     <ol class="sidebar-subsection">
                                         {% for subpage in subsection.pages %}
                                             <li class="site-navigation__entry {% if current_path == subpage.path %}active{% endif %}">
-                                                <a href="{{ subpage.path }}">{{ subpage.title }}</a>
+                                                <a href="{{ subpage.path }}"{% if current_path == subpage.path %} aria-current="page"{% endif %}>{{ subpage.title }}</a>
                                             </li>
                                         {% endfor %}
                                         {% for nested_path in subsection.subsections %}
                                             {% set nested = get_section(path=nested_path) %}
                                             <li class="site-navigation__entry {% if current_path is starting_with(nested.path) %}active{% endif %}">
-                                                <a href="{{ nested.path }}">{{ nested.title }}</a>
+                                                <a href="{{ nested.path }}"{% if current_path == nested.path %} aria-current="page"{% elif current_path is starting_with(nested.path) %} aria-current="true"{% endif %}>{{ nested.title }}</a>
                                             </li>
                                         {% endfor %}
                                     </ol>
@@ -89,8 +89,7 @@
                     {% endfor %}
                     <li class="site-navigation__entry sidebar-section sidebar-section--{{ subsection.title | slugify }} {% if is_section_active or has_active_child %}active{% else %}collapsed{% endif %}">
                         <div class="sidebar-section-header">
-                            <span class="sidebar-section-icon" aria-hidden="true"></span>
-                            <span class="sidebar-section-label">{{ subsection.title }}</span>
+                            <a class="sidebar-section-label" href="{{ subsection.path }}"{% if is_section_active %} aria-current="page"{% endif %}>{{ subsection.title }}</a>
                             {% if subsection.pages | length > 0 or subsection.subsections | length > 0 %}
                                 <button class="subsection-toggle" aria-label="Toggle {{ subsection.title }} subsection" aria-expanded="{% if is_section_active or has_active_child %}true{% else %}false{% endif %}">
                                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -103,13 +102,13 @@
                             <ol class="sidebar-subsection">
                                 {% for subpage in subsection.pages %}
                                     <li class="site-navigation__entry {% if current_path == subpage.path %}active{% endif %}">
-                                        <a href="{{ subpage.path }}">{{ subpage.title }}</a>
+                                        <a href="{{ subpage.path }}"{% if current_path == subpage.path %} aria-current="page"{% endif %}>{{ subpage.title }}</a>
                                     </li>
                                 {% endfor %}
                                 {% for nested_path in subsection.subsections %}
                                     {% set nested = get_section(path=nested_path) %}
                                     <li class="site-navigation__entry {% if current_path is starting_with(nested.path) %}active{% endif %}">
-                                        <a href="{{ nested.path }}">{{ nested.title }}</a>
+                                        <a href="{{ nested.path }}"{% if current_path == nested.path %} aria-current="page"{% elif current_path is starting_with(nested.path) %} aria-current="true"{% endif %}>{{ nested.title }}</a>
                                     </li>
                                 {% endfor %}
                             </ol>
@@ -120,10 +119,10 @@
         {% else %}
             {% for doc_page in doc_section.pages %}
                 <li class="site-navigation__entry {% if current_path == doc_page.path %}active{% endif %}">
-                    <a href="{{ doc_page.path }}">{{ doc_page.title }}</a>
+                    <a href="{{ doc_page.path }}"{% if current_path == doc_page.path %} aria-current="page"{% endif %}>{{ doc_page.title }}</a>
                 </li>
             {% endfor %}
         {% endif %}
     </ol>
-</div>
+</nav>
 {% endif %}

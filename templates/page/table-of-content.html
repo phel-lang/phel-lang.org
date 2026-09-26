@@ -1,12 +1,21 @@
 {% if page.toc %}
-<div class="page-toc">
-    <h2>On this page</h2>
+<nav class="page-toc" aria-labelledby="page-toc-title">
+    <h2 id="page-toc-title">On this page</h2>
     <ul>
         {% for h1 in page.toc %}
         <li>
-            <a href="#{{ h1.id }}" title="{{ h1.title }}">{{ h1.title }}</a>
+            <a href="#{{ h1.id }}">{{ h1.title }}</a>
+            {% if h1.children %}
+            <ul>
+                {% for h2 in h1.children %}
+                <li>
+                    <a href="#{{ h2.id }}">{{ h2.title }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         </li>
         {% endfor %}
     </ul>
-</div>
+</nav>
 {% endif %}

@@ -1,9 +1,16 @@
-@view-transition {
-  navigation: auto;
+/* Motion is opt-in: page cross-fades and smooth scrolling only run for
+   visitors who have not asked the OS to reduce motion. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 html {
-  scroll-behavior: smooth;
   color-scheme: light;
   scrollbar-color: var(--color-light-border) transparent;
 }
@@ -85,8 +92,9 @@ body {
   line-height: var(--leading-relaxed);
   padding-top: var(--header-height);
   overflow-x: hidden;
-  transition: background-color var(--duration-normal) var(--ease-out),
-              color var(--duration-normal) var(--ease-out);
+  transition:
+    background-color var(--duration-normal) var(--ease-out),
+    color var(--duration-normal) var(--ease-out);
 }
 
 @media (max-width: 1039px) {
@@ -138,13 +146,7 @@ a:hover {
 /* Links inside running prose: color alone sits at 1.2:1 against body text,
    so they carry a soft underline that firms up on hover. Classless links only,
    which leaves buttons, cards and nav components to their own styling. */
-:is(
-    .page-content,
-    .blog-entry,
-    .release-entry,
-    .homepage-content,
-    .documentation-landing
-  )
+:is(.page-content, .blog-entry, .release-entry, .homepage-content, .documentation-landing)
   :is(p, li, blockquote, td, dd)
   a:not([class]),
 .releases-intro a:not([class]) {
@@ -154,13 +156,7 @@ a:hover {
   text-underline-offset: 0.2em;
 }
 
-:is(
-    .page-content,
-    .blog-entry,
-    .release-entry,
-    .homepage-content,
-    .documentation-landing
-  )
+:is(.page-content, .blog-entry, .release-entry, .homepage-content, .documentation-landing)
   :is(p, li, blockquote, td, dd)
   a:not([class]):hover,
 .releases-intro a:not([class]):hover {
@@ -356,9 +352,13 @@ blockquote {
   color: var(--color-light-text-secondary);
 }
 
-blockquote > *:first-child { margin-top: 0; }
-blockquote > *:last-child { margin-bottom: 0; }
+blockquote > *:first-child {
+  margin-top: 0;
+}
 
+blockquote > *:last-child {
+  margin-bottom: 0;
+}
 
 /* Modern Code Blocks */
 pre {
@@ -404,6 +404,10 @@ li code {
   border-radius: var(--radius-sm);
   border: 1px solid var(--color-light-border);
   font-weight: 500;
+
+  /* Long identifiers (`Class::method()`, file paths) have no break points;
+     without this they run past the viewport and body's overflow-x clips them. */
+  overflow-wrap: anywhere;
 }
 
 /* Modern Selection */
@@ -515,7 +519,20 @@ td code {
 
 /* Smooth scrolling with offset for fixed header */
 [id] {
-scroll-margin-top: calc(var(--header-height) + 2rem);
+  scroll-margin-top: calc(var(--header-height) + 2rem);
+}
+
+/* Hidden on screen, still read by assistive tech (live status region). */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* Skip-to-content link: visually hidden until keyboard-focused. */
@@ -557,7 +574,7 @@ scroll-margin-top: calc(var(--header-height) + 2rem);
   outline-color: var(--color-dark-primary);
 }
 
-[id="main-content"]:focus {
+[id='main-content']:focus {
   outline: none;
 }
 

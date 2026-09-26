@@ -57,7 +57,7 @@
     {% set has_prev = current_index > 0 %}
     {% set has_next = current_index < last_index %}
     {% if has_prev or has_next %}
-    <div class="page-navigation">
+    <nav class="page-navigation" aria-label="Previous and next pages">
       {% if has_prev %}
         {% set prev_i = current_index - 1 %}
         {% set prev_title = flat_titles | nth(n=prev_i) %}
@@ -72,7 +72,7 @@
           {{ next_title }} &rarr;
         </a>
       {% endif %}
-    </div>
+    </nav>
     {% endif %}
   {% endif %}
 {% endif %}

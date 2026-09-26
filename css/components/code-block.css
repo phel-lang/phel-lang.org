@@ -30,7 +30,10 @@ pre:focus-visible {
   width: 36px;
   height: 36px;
   opacity: 0;
-  transition: opacity 200ms ease-in-out, background-color 200ms ease-in-out, transform 200ms ease-in-out;
+  transition:
+    opacity 200ms ease-in-out,
+    background-color 200ms ease-in-out,
+    transform 200ms ease-in-out;
   cursor: pointer;
   background-color: rgba(255, 255, 255, 0.95);
   border: 1px solid #d1d5db;
@@ -78,6 +81,41 @@ pre:focus-visible {
   stroke: white;
 }
 
+/* Language chip (copy-code.js, documentation blocks only). It shares the
+   top-right corner with the copy button and steps aside when the button
+   appears; on touch screens the button is always shown, so the chip sits
+   to its left instead. */
+.code-lang {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  margin: 0;
+  padding: 0 var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--color-light-text-secondary);
+  background: var(--color-light-code-bg);
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 200ms ease-in-out;
+}
+
+.code-block-wrapper:hover .code-lang,
+.code-block-wrapper:focus-within .code-lang {
+  opacity: 0;
+}
+
+@media (hover: none) {
+  .code-lang,
+  .code-block-wrapper:hover .code-lang,
+  .code-block-wrapper:focus-within .code-lang {
+    right: calc(0.75rem + 36px + var(--space-sm));
+    opacity: 1;
+  }
+}
+
 /* ========================================
    DARK MODE
    ======================================== */
@@ -108,3 +146,7 @@ pre:focus-visible {
   stroke: white;
 }
 
+.dark .code-lang {
+  color: var(--color-dark-text-muted);
+  background: var(--color-dark-code-bg);
+}

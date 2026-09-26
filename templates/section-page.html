@@ -14,7 +14,7 @@
         <div class="section-page-list">
             {% for page in section.pages %}
             <a href="{{ page.path }}" class="section-page-card">
-                <h3 class="section-page-card__title">{{ page.title }}</h3>
+                <h2 class="section-page-card__title">{{ page.title }}</h2>
                 {% if page.description %}
                 <p class="section-page-card__desc">{{ page.description }}</p>
                 {% else %}
@@ -25,7 +25,7 @@
             {% for nested_path in section.subsections %}
                 {% set nested = get_section(path=nested_path) %}
                 <a href="{{ nested.path }}" class="section-page-card">
-                    <h3 class="section-page-card__title">{{ nested.title }}</h3>
+                    <h2 class="section-page-card__title">{{ nested.title }}</h2>
                     {% if nested.description %}
                     <p class="section-page-card__desc">{{ nested.description }}</p>
                     {% elif nested.content %}

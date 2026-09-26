@@ -82,24 +82,11 @@
   border-color: var(--color-light-link);
 }
 
-.sidebar-toggle[aria-expanded='true'] .sidebar-toggle-text::before {
-  font-weight: 600;
-  font-size: var(--text-base);
-  content: 'Hide navigation';
-}
-
-.sidebar-toggle[aria-expanded='false'] .sidebar-toggle-text::before {
-  font-weight: 600;
-  font-size: var(--text-base);
-  content: 'Show navigation';
-}
-
+/* Real text (swapped by sidebar-toggle.js) so the accessible name matches
+   what is on screen. */
 .sidebar-toggle-text {
-  font-size: 0;
-}
-
-.sidebar-toggle-text::before {
-  font-size: var(--text-sm);
+  font-weight: 600;
+  font-size: var(--text-base);
 }
 
 /* Sidebar content - collapsed by default on mobile */
@@ -400,4 +387,64 @@
   border-color: var(--color-dark-text-accent);
   box-shadow: var(--shadow-dark-sm);
   text-decoration: none;
+}
+
+/* ========================================
+   PRINT
+   A printed page keeps the article only: no site chrome, no sidebar or
+   TOC rail, no hover controls, and code wraps instead of being cut off at
+   the paper edge. dark-mode.js drops the dark theme while printing.
+   ======================================== */
+
+@media print {
+  .skip-to-content,
+  .site-header,
+  .site-footer,
+  .two-column-layout__sidebar,
+  .page-toc,
+  .page-toc-mobile,
+  .page-navigation,
+  .edit-page-link,
+  .copy-code-button,
+  .code-lang,
+  .zola-anchor,
+  .back-to-top-button,
+  .kbd-overlay,
+  .search-modal {
+    display: none !important;
+  }
+
+  body {
+    padding-top: 0;
+  }
+
+  .two-column-layout,
+  .flex-container--with-toc {
+    display: block;
+    max-width: none;
+    padding: 0;
+  }
+
+  .code-block-wrapper {
+    overflow: visible;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    box-shadow: none;
+  }
+
+  pre,
+  table,
+  blockquote,
+  .dev-note {
+    break-inside: avoid;
+  }
+
+  h2,
+  h3,
+  h4 {
+    break-after: avoid;
+  }
 }

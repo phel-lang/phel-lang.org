@@ -61,10 +61,17 @@
   font-weight: 600;
 }
 
-/* Sidebar section with toggle */
+/* Sidebar section with toggle. Grid rows animate open/closed to the list's
+   real height, so a section with many pages is never clipped by a fixed
+   max-height cap. */
 .sidebar-section {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  transition: grid-template-rows var(--duration-normal, 0.25s) var(--ease-out);
+}
+
+.sidebar-section.collapsed {
+  grid-template-rows: auto 0fr;
 }
 
 .sidebar-section-header {
@@ -135,16 +142,23 @@
 }
 
 .sidebar-subsection {
+  min-height: 0;
   overflow: hidden;
-  max-height: 500px;
   opacity: 1;
-  transition: max-height var(--duration-normal, 0.25s) var(--ease-out),
-              opacity var(--duration-fast, 0.15s) var(--ease-out);
+  visibility: visible;
+  transition:
+    opacity var(--duration-fast, 0.15s) var(--ease-out),
+    visibility 0s;
 }
 
+/* visibility (not only opacity) takes the hidden links out of the tab
+   order; it flips after the collapse animation has finished. */
 .sidebar-section.collapsed .sidebar-subsection {
-  max-height: 0;
   opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--duration-fast, 0.15s) var(--ease-out),
+    visibility 0s linear var(--duration-normal, 0.25s);
 }
 
 .sidebar-section:not(.collapsed) .subsection-toggle svg {
@@ -268,7 +282,7 @@
 }
 
 .page-toc-mobile > summary::after {
-  content: "›";
+  content: '›';
   font-size: var(--text-lg);
   line-height: 1;
   color: var(--color-light-text-muted);
@@ -278,6 +292,10 @@
 
 .page-toc-mobile[open] > summary::after {
   transform: rotate(270deg);
+}
+
+.page-toc-mobile nav {
+  margin: 0;
 }
 
 .page-toc-mobile ul {
@@ -310,7 +328,7 @@
 }
 
 .page-toc-mobile ul ul {
-  padding-left: var(--space-md);
+  padding: 0 0 0 var(--space-md);
 }
 
 @media (min-width: 1280px) {
@@ -387,8 +405,8 @@
   display: none;
 }
 
-/* Long headings truncate to one line; the title attribute keeps the full
-   text one hover away. Block padding keeps each target above 24px tall. */
+/* Long headings wrap instead of truncating, so the full title is readable
+   without hovering. Block padding keeps each target above 24px tall. */
 .page-toc a {
   display: block;
   margin-left: -1px;
@@ -397,9 +415,6 @@
   font-weight: 500;
   color: var(--color-light-text-muted);
   text-decoration: none;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   border-left: 2px solid transparent;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   transition:
@@ -421,6 +436,16 @@
 .page-toc a.active {
   color: var(--color-light-link);
   border-left-color: var(--color-light-text-accent);
+}
+
+/* Second-level entries hang off the same rail, indented one step. */
+.page-toc ul ul {
+  border-left: 0;
+}
+
+.page-toc ul ul a {
+  padding-left: calc(var(--space-md) * 2);
+  font-size: var(--text-xs);
 }
 
 .page-toc a:focus-visible {
@@ -519,4 +544,3 @@
   color: var(--color-dark-text-accent);
   border-left-color: var(--color-dark-text-accent);
 }
-

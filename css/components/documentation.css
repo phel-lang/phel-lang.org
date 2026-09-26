@@ -84,6 +84,15 @@
   container-type: inline-size;
 }
 
+/* Reading measure: running text stops at about 75 characters a line.
+   Set in rem, not ch: the system UI font has wide digits (1ch = 10.3px at
+   17px), so 68ch still let lines reach ~100 characters. Code blocks,
+   tables and card grids keep the full column, so long code lines don't
+   gain a scrollbar just to keep the prose narrow. */
+.page-content > :is(p, ul, ol, dl, blockquote, h2, h3, h4) {
+  max-width: 34rem;
+}
+
 /* Prose on the landing pages keeps the same reading measure as a
    documentation page with a sidebar; only the card grids spread out
    over the full width. */
@@ -199,8 +208,37 @@ h6:hover .zola-anchor {
   opacity: 1;
 }
 
+/* The anchor is mouse-only (aria-hidden, out of the tab order: the TOC
+   already links every section), so a focused anchor can only come from a
+   script; show it anyway. Touch screens never hover, so there it stays
+   faintly visible instead of unreachable. */
+.zola-anchor:focus-visible {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .zola-anchor {
+    opacity: 0.6;
+  }
+}
+
 .zola-anchor:hover {
   color: var(--color-light-link);
+}
+
+/* Brief confirmation after copy-anchor-link.js put the URL on the clipboard. */
+.zola-anchor.copied {
+  opacity: 1;
+}
+
+.zola-anchor.copied::after {
+  display: inline;
+  content: 'Link copied';
+  margin-left: var(--space-xs);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--color-light-text-secondary);
 }
 
 /* Developer Notes (Collapsible) */
@@ -214,6 +252,9 @@ h6:hover .zola-anchor {
   color: var(--color-dark-anchor);
 }
 
+.dark .zola-anchor.copied::after {
+  color: var(--color-dark-text-secondary);
+}
 
 /* --- Developer Notes: Gradient Header Bar Style --- */
 .dev-note {
@@ -272,13 +313,16 @@ h6:hover .zola-anchor {
   transform: rotate(90deg);
 }
 
+/* Brand hues darkened until the white 12.75px label clears 4.5:1 at both
+   gradient stops (PHP 6.4 / 8.4, Clojure 5.3 / 7.2). The label carries its
+   own background, so the same pair holds in light and dark mode. */
 .dev-note--php .dev-note__label {
-  background: linear-gradient(135deg, #8892bf 0%, #6c7ab5 100%);
+  background: linear-gradient(135deg, #4f5b93 0%, #3f4a80 100%);
   color: white;
 }
 
 .dev-note--clojure .dev-note__label {
-  background: linear-gradient(135deg, #63b132 0%, #4a9125 100%);
+  background: linear-gradient(135deg, #3d7a1f 0%, #2f6317 100%);
   color: white;
 }
 
@@ -293,8 +337,13 @@ h6:hover .zola-anchor {
   padding: var(--space-md) var(--space-lg) var(--space-lg);
 }
 
-.dev-note__content > *:first-child { margin-top: 0; }
-.dev-note__content > *:last-child { margin-bottom: 0; }
+.dev-note__content > *:first-child {
+  margin-top: 0;
+}
+
+.dev-note__content > *:last-child {
+  margin-bottom: 0;
+}
 
 /* Developer Notes Dark Mode */
 .dark .dev-note {
@@ -314,8 +363,6 @@ h6:hover .zola-anchor {
 .dark .dev-note__chevron {
   color: var(--color-dark-text-muted);
 }
-
-
 
 .dark .sidebar-section-header a,
 .dark .sidebar-section-header .sidebar-section-label {
@@ -376,7 +423,6 @@ h6:hover .zola-anchor {
 
 .agent-doc-cta__hint code {
   user-select: all;
-  white-space: nowrap;
 }
 
 .dark .agent-doc-cta {

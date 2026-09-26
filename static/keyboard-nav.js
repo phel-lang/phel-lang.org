@@ -50,13 +50,20 @@ document.addEventListener('DOMContentLoaded', () => {
   backdrop.addEventListener('click', hideOverlay);
   closeBtn.addEventListener('click', hideOverlay);
 
+  function scrollBehavior() {
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+  }
+
   // "g" prefix for go-to shortcuts
   let gPressed = false;
   let gTimer = null;
 
   document.addEventListener('keydown', (e) => {
-    // Don't handle when typing in input/textarea
-    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) return;
+    // Leave browser and OS shortcuts alone: Cmd/Ctrl+P must print, not
+    // navigate. Don't handle when typing in input/textarea either.
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const active = document.activeElement;
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(active.tagName) || active.isContentEditable) return;
     // Don't handle if a modal is open (search, etc.)
     if (document.querySelector('.search-modal.active')) return;
 
@@ -81,18 +88,18 @@ document.addEventListener('DOMContentLoaded', () => {
         hideOverlay();
         break;
       case 'j':
-        window.scrollBy({ top: 100, behavior: 'smooth' });
+        window.scrollBy({ top: 100, behavior: scrollBehavior() });
         break;
       case 'k':
-        window.scrollBy({ top: -100, behavior: 'smooth' });
+        window.scrollBy({ top: -100, behavior: scrollBehavior() });
         break;
       case 'n': {
-        const next = document.querySelector('.page-navigation a[href]:last-child');
+        const next = document.querySelector('.page-navigation a.link--next');
         if (next) next.click();
         break;
       }
       case 'p': {
-        const prev = document.querySelector('.page-navigation a[href]:first-child');
+        const prev = document.querySelector('.page-navigation a.link--previous');
         if (prev) prev.click();
         break;
       }

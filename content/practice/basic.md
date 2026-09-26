@@ -16,7 +16,7 @@ Compute `1 + 1`.
 ```
 In Phel (like every Lisp), the operator comes first. This is called **prefix notation**.
 
-Learn more: [Arithmetic](/documentation/language/arithmetic)
+Learn more: [Arithmetic](/documentation/language/basic-types/#arithmetic-operators)
 {% end %}
 
 {% question(difficulty="easy") %}
@@ -29,7 +29,7 @@ Compute `(3 + 4.0 / 5) * 6`.
 ```
 Nested expressions evaluate inside-out. No precedence rules to memorize - the parens make the order obvious. Using `4.0` keeps the result a float; `(/ 4 5)` in Phel returns a rational `4/5`, not `0`.
 
-Learn more: [Arithmetic](/documentation/language/arithmetic)
+Learn more: [Arithmetic](/documentation/language/basic-types/#arithmetic-operators)
 {% end %}
 
 {% question(difficulty="easy") %}
@@ -82,7 +82,7 @@ Check whether `(+ 2 3)` equals `5`.
 ```
 `=` compares values for equality and works across any types.
 
-Learn more: [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations)
+Learn more: [Truth and Boolean Operations](/documentation/language/basic-types/#truthiness)
 {% end %}
 
 {% question(difficulty="easy") %}
@@ -124,7 +124,7 @@ Predict each result, then run them:
 ```
 `and` returns the last truthy value or the first falsy one. `or` returns the first truthy value. They short-circuit, just like in PHP.
 
-Learn more: [Truth and Boolean Operations](/documentation/language/truth-and-boolean-operations)
+Learn more: [Truth and Boolean Operations](/documentation/language/basic-types/#truthiness)
 {% end %}
 
 {% question(difficulty="easy") %}

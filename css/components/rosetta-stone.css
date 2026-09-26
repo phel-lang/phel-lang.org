@@ -95,6 +95,15 @@
   border-bottom: none;
 }
 
+/* Category heading wrappers reuse .rosetta-item so the filter hides them
+   with their category, but they introduce the next items rather than
+   close a comparison, so they get no divider underneath. */
+.rosetta-item.rosetta-group {
+  margin-bottom: 1rem;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
 .rosetta-item.hidden {
   display: none;
 }
@@ -137,4 +146,10 @@
 .dark .rosetta-php p strong,
 .dark .rosetta-phel p strong {
   color: var(--color-dark-text-muted);
+}
+
+/* The column labels above already name the language; the code-block chip
+   from copy-code.js would repeat it. */
+.rosetta-compare .code-lang {
+  display: none;
 }
