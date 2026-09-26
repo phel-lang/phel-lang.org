@@ -46,13 +46,7 @@ Namespaced PHP functions use full path after `php/`. Three equivalent forms acce
 (php/Amp.trapSignal [php/SIGINT php/SIGTERM])
 ```
 
-Capture into a Phel alias:
-
-<!-- phel-test: skip -->
-```phel
-(def trap-signal php/\Amp.trapSignal)
-(trap-signal [2 15])
-```
+To bind one to a name, see [PHP functions as values](#php-first-class-callable).
 
 ## Globals and constants
 
@@ -100,23 +94,15 @@ old `php/new`, `php/->` and `php/::` are rejected as source since Phel 0.52
 | `(new ClassName args)`    | `new ClassName(args)`     |
 | `(.method obj args)`      | `$obj->method(args)`      |
 | `(.-field obj)`           | `$obj->field`             |
+| `(set! (.-field obj) v)`  | `$obj->field = v`         |
 | `(ClassName/method args)` | `ClassName::method(args)` |
 | `ClassName/MEMBER`        | `ClassName::MEMBER`       |
 
-```phel
-(ns my.module
-  (:use DateTimeImmutable DateInterval))
-
-(DateTimeImmutable. "2026-04-20")              ; constructor (preferred)
-(.format (DateTimeImmutable.) "Y-m-d")          ; instance method
-(.-s (DateInterval. "PT30S"))                  ; property
-(DateTimeImmutable/createFromFormat "Y-m-d" "2026-04-20") ; static method
-DateTimeImmutable/ATOM                         ; static constant
-```
+The sections below show each row in use.
 
 ## Class instantiation {#php-class-instantiation}
 
-Two equivalent forms. Prefer `ClassName.` for imported classes:
+Two equivalent forms. Prefer `ClassName.` and import the class with `:use`, so you never repeat its namespace:
 
 ```phel
 (ns my.module
@@ -128,22 +114,6 @@ Two equivalent forms. Prefer `ClassName.` for imported classes:
 
 (new "\\DateTimeImmutable") ; instantiate from string (dynamic)
 ```
-
-{% php_note() %}
-```php
-// PHP
-new DateTime();
-new DateTime("now");
-new \DateTimeImmutable();
-
-// Phel - preferred shorthand
-(DateTime.)
-(DateTime. "now")
-(DateTimeImmutable.)
-```
-
-Import classes with `:use` to use the short `ClassName.` form without repeating the namespace.
-{% end %}
 
 ## Method and property call
 
@@ -186,26 +156,6 @@ Thread with `->` to chain: each element evaluates on the result of the previous 
 (.-city (.-address user)) ; => "Berlin"
 ```
 
-{% php_note() %}
-The `.method` and `.-field` forms read like PHP's `->`, but chain in a more functional style:
-
-```php
-// PHP
-$di->format("%s seconds");
-$di->s;
-(new DateTimeImmutable("2024-03-10"))->modify("+1 day")->format("Y-m-d");
-$user->profile->getDisplayName();
-
-// Phel
-(.format di "%s seconds")
-(.-s di)
-(-> (DateTimeImmutable. "2024-03-10") (.modify "+1 day") (.format "Y-m-d"))
-(-> user (.-profile) (.getDisplayName))
-```
-
-Method calls: `(.method obj args)`. Property access: `(.-prop obj)`. Mixed chains thread both through `->`.
-{% end %}
-
 {% clojure_note() %}
 Same spelling as Clojure: `.method`, `.-field`, `Class/member`, and `->` for chaining.
 {% end %}
@@ -228,20 +178,6 @@ DateTimeImmutable/ATOM                                    ; => "Y-m-d\TH:i:sP"
 
 (DateTimeImmutable/createFromFormat "Y-m-d" "2020-03-22")
 ```
-
-{% php_note() %}
-`ClassName/member` is equivalent to PHP's `::` for static method and property access:
-
-```php
-// PHP
-DateTimeImmutable::ATOM;
-DateTimeImmutable::createFromFormat("Y-m-d", "2020-03-22");
-
-// Phel
-DateTimeImmutable/ATOM
-(DateTimeImmutable/createFromFormat "Y-m-d" "2020-03-22")
-```
-{% end %}
 
 ## Named arguments
 
@@ -369,215 +305,67 @@ Capture a namespaced PHP function into a Phel alias the same way:
   (.format (parse "Y-m-d" "2026-06-06") "Y-m-d")) ; => "2026-06-06"
 ```
 
-## Get PHP array value
+## PHP arrays
 
-<!-- phel-test: skip -->
-```phel
-(php/aget arr index)
-```
+Seven `php/` forms read and write a PHP array in place. Use them only on PHP arrays. Phel vectors and maps are immutable and have their own functions, in the last column.
 
-Equivalent: `arr[index] ?? null`.
+| Form                       | PHP equivalent          | On Phel data |
+|----------------------------|-------------------------|--------------|
+| `(php/aget arr k)`         | `$arr[k] ?? null`       | `get`        |
+| `(php/aget-in arr path)`   | `$arr[a][b] ?? null`    | `get-in`     |
+| `(php/aset arr k v)`       | `$arr[k] = v`           | `assoc`      |
+| `(php/aset-in arr path v)` | `$arr[a][b] = v`        | `assoc-in`   |
+| `(php/apush arr v)`        | `$arr[] = v`            | `conj`       |
+| `(php/aunset arr k)`       | `unset($arr[k])`        | `dissoc`     |
+| `(php/aunset-in arr path)` | `unset($arr[a][b])`     | `dissoc-in`  |
 
-```phel
-(php/aget ["a" "b" "c"] 0) ; Evaluates to "a"
-(php/aget (php/array "a" "b" "c") 1) ; Evaluates to "b"
-(php/aget (php/array "a" "b" "c") 5) ; Evaluates to nil
-```
+`path` is a vector of keys and indexes.
 
-{% php_note() %}
-`php/aget` safely accesses PHP array elements:
+### Get PHP array value
 
-```php
-// PHP
-$arr[0] ?? null;
-$arr[1] ?? null;
-$arr[5] ?? null;  // Returns null
-
-// Phel
-(php/aget arr 0)
-(php/aget arr 1)
-(php/aget arr 5)  ; Returns nil
-```
-
-**Important distinction:**
-- Use `php/aget` for **PHP arrays** (mutable)
-- Use `get` for **Phel data structures** (immutable vectors, maps)
-{% end %}
-
-## Get nested PHP array value
-
-<!-- phel-test: skip -->
-```phel
-(php/aget-in arr path)
-```
-
-Resolves nested values via a sequence of keys/indexes. `path` is a sequential collection (e.g. vector). Missing step returns `nil`.
+A missing key returns `nil`, at any depth.
 
 ```phel
 (def users
-  #php {"users"
-        #php {0 #php {"name" "Alice"}
-              1 #php {"name" "Bob"}}})
+  #php {"users" #php {0 #php {"name" "Alice"}
+                      1 #php {"name" "Bob"}}})
 
-(php/aget-in users ["users" 1 "name"]) ; Evaluates to "Bob"
-
-(php/aget-in
-    #php {"meta" #php {"status" "ok"}}
-    ["meta" "status"]) ; Evaluates to "ok"
-
-(php/aget-in
-    #php {"meta" #php {"status" "ok"}}
-    ["meta" "missing"]) ; Evaluates to nil
+(php/aget (php/array "a" "b" "c") 1)   ; => "b"
+(php/aget (php/array "a" "b" "c") 5)   ; => nil
+(php/aget-in users ["users" 1 "name"]) ; => "Bob"
+(php/aget-in users ["users" 7 "name"]) ; => nil
 ```
 
-{% php_note() %}
-`php/aget-in` provides safe nested array access:
+### Set PHP array value
 
-```php
-// PHP - manual nested access with null coalescing
-$users['users'][1]['name'] ?? null;
-$data['meta']['status'] ?? null;
-$data['meta']['missing'] ?? null;
-
-// Phel - clean path-based access
-(php/aget-in users ["users" 1 "name"])
-(php/aget-in data ["meta" "status"])
-(php/aget-in data ["meta" "missing"])  ; Returns nil safely
-```
-
-This is similar to Phel's `get-in` for immutable data structures, but specifically for PHP arrays.
-{% end %}
-
-## Set PHP array value
-
-<!-- phel-test: skip -->
-```phel
-(php/aset arr index value)
-```
-
-Equivalent: `arr[index] = value`.
-
-{% php_note() %}
-`php/aset` mutates a PHP array in place:
-
-```php
-// PHP
-$arr[0] = "value";
-
-// Phel
-(php/aset arr 0 "value")
-```
-
-**Important:** This mutates the array. For immutable operations, use Phel's `assoc` on Phel data structures instead.
-{% end %}
-
-## Set nested PHP array value
-
-<!-- phel-test: skip -->
-```phel
-(php/aset-in arr path value)
-```
-
-Creates or updates nested entries. Missing intermediate arrays are created.
+`php/aset-in` creates the missing arrays along the path.
 
 ```phel
 (def data (php/array))
+(php/aset data "id" 42)
 (php/aset-in data ["user" "profile" "name"] "Charlie")
-(php/aget-in data ["user" "profile" "name"]) ; Evaluates to "Charlie"
-;; Equivalent to $data['user']['profile']['name'] = 'Charlie';
+(php/aget-in data ["user" "profile" "name"]) ; => "Charlie"
 ```
 
-{% php_note() %}
-`php/aset-in` creates nested structures automatically:
-
-```php
-// PHP - manual nested array creation
-$data = [];
-$data['user']['profile']['name'] = 'Charlie';
-
-// Phel - automatic path creation
-(def data (php/array))
-(php/aset-in data ["user" "profile" "name"] "Charlie")
-```
-
-This is the mutable counterpart to Phel's `assoc-in` for immutable data structures.
-{% end %}
-
-## Append PHP array value
-
-<!-- phel-test: skip -->
-```phel
-(php/apush arr value)
-```
-
-Equivalent: `arr[] = value`.
-
-{% php_note() %}
-`php/apush` appends to a PHP array:
-
-```php
-// PHP
-$arr[] = "new value";
-
-// Phel
-(php/apush arr "new value")
-```
-
-For immutable operations, use `conj` on Phel vectors instead.
-{% end %}
-
-## Unset PHP array value
-
-<!-- phel-test: skip -->
-```phel
-(php/aunset arr index)
-```
-
-Equivalent: `unset(arr[index])`.
-
-{% php_note() %}
-`php/aunset` removes an element from a PHP array:
-
-```php
-// PHP
-unset($arr[0]);
-
-// Phel
-(php/aunset arr 0)
-```
-
-For immutable operations, use `dissoc` on Phel maps instead.
-{% end %}
-
-## Unset nested PHP array value
-
-<!-- phel-test: skip -->
-```phel
-(php/aunset-in arr path)
-```
-
-Removes nested entry. Parent arrays remain untouched even if empty after.
+### Append PHP array value
 
 ```phel
-(def data #php {"user" #php {"profile" #php {"name" "Dora"}}})
+(def xs (php/array))
+(php/apush xs "first")
+(php/apush xs "second")
+xs ; => <PHP-Array ["first", "second"]>
+```
+
+### Unset PHP array value
+
+`php/aunset-in` removes only the last key. The parent arrays stay, even when empty.
+
+```phel
+(def data #php {"id" 42 "user" #php {"profile" #php {"name" "Dora"}}})
+(php/aunset data "id")
 (php/aunset-in data ["user" "profile" "name"])
-(php/aget-in data ["user" "profile" "name"]) ; Evaluates to nil
-;; Equivalent to unset($data['user']['profile']['name']);
+data ; => <PHP-Array ["user":<PHP-Array ["profile":<PHP-Array []>]>]>
 ```
-
-{% php_note() %}
-`php/aunset-in` removes nested array elements:
-
-```php
-// PHP
-unset($data['user']['profile']['name']);
-
-// Phel
-(php/aunset-in data ["user" "profile" "name"])
-```
-
-Parent arrays remain intact even if they become empty after the unset.
-{% end %}
 
 ## `__DIR__`, `__FILE__`, `*file*`
 
