@@ -10,10 +10,14 @@ use RuntimeException;
 
 final readonly class GitHubReleasePagesGenerator
 {
+    private const string REPO_URL = 'https://github.com/phel-lang/phel-lang';
+
     /**
      * @param list<Release> $releases All releases belonging to one minor version.
+     * @param array<string, string> $slugsByMinor Page slug per minor key (e.g. "0.7"),
+     *     used to point legacy blog release links at their release page.
      */
-    public function generateMinorPageContent(array $releases): string
+    public function generateMinorPageContent(array $releases, array $slugsByMinor = []): string
     {
         if (count($releases) === 0) {
             throw new RuntimeException('Cannot generate a minor page from an empty release list');
@@ -26,7 +30,7 @@ final readonly class GitHubReleasePagesGenerator
         $patches = array_values(array_filter($sorted, static fn(Release $r): bool => $r->getPatch() > 0));
 
         return $this->generateFrontMatter($headline, $latest, $sorted)
-            . $this->generateBody($headline, $patches)
+            . $this->generateBody($headline, $patches, $slugsByMinor)
             . $this->generateDownloadsSection($sorted)
             . $this->generateFooter($headline);
     }
@@ -159,22 +163,26 @@ final readonly class GitHubReleasePagesGenerator
 
     /**
      * @param list<Release> $patches
+     * @param array<string, string> $slugsByMinor
      */
-    private function generateBody(Release $headline, array $patches): string
+    private function generateBody(Release $headline, array $patches, array $slugsByMinor): string
     {
         $body = '';
 
         foreach ($patches as $patch) {
-            $body .= $this->renderSection($patch);
+            $body .= $this->renderSection($patch, $slugsByMinor);
             $body .= "---\n\n";
         }
 
-        $body .= $this->renderSection($headline);
+        $body .= $this->renderSection($headline, $slugsByMinor);
 
         return $body;
     }
 
-    private function renderSection(Release $release): string
+    /**
+     * @param array<string, string> $slugsByMinor
+     */
+    private function renderSection(Release $release, array $slugsByMinor): string
     {
         $anchor = '<a id="v' . str_replace('.', '-', $release->getVersion()) . '"></a>';
 
@@ -185,7 +193,7 @@ final readonly class GitHubReleasePagesGenerator
         $meta = '*Released ' . $release->getPublishedDate() . '*';
         $meta .= ' · [GitHub release](' . $release->htmlUrl . ')';
 
-        $body = $this->formatChangelogLinks($release->body);
+        $body = $this->formatChangelogLinks($release->body, $release->tagName, $slugsByMinor);
 
         return "{$anchor}\n\n{$heading}\n\n{$meta}\n\n{$body}\n\n";
     }
@@ -227,18 +235,72 @@ final readonly class GitHubReleasePagesGenerator
         return "---\n\n[View release on GitHub]({$headline->htmlUrl})\n";
     }
 
-    private function formatChangelogLinks(string $body): string
+    /**
+     * @param array<string, string> $slugsByMinor
+     */
+    private function formatChangelogLinks(string $body, string $tagName, array $slugsByMinor): string
     {
         $body = $this->formatPrReferences($body);
         $body = $this->formatContributorMentions($body);
+        $body = $this->formatCompareUrls($body);
+        $body = $this->absolutizeRepoRelativeLinks($body, $tagName);
+        $body = $this->mapLegacyBlogReleaseLinks($body, $slugsByMinor);
 
-        $body = preg_replace_callback(
-            '#https://github\.com/phel-lang/phel-lang/compare/(v[\d.]+)\.\.\.(v[\d.]+)#',
+        return EmDash::strip($body);
+    }
+
+    /**
+     * Only bare compare URLs get a label; one already used as a link target
+     * (`[a...b](url)`) or label would otherwise be wrapped twice into `[a]([a](url))`.
+     */
+    private function formatCompareUrls(string $body): string
+    {
+        return preg_replace_callback(
+            '#(?<!\]\()(?<!\[)https://github\.com/phel-lang/phel-lang/compare/(v[\d.]+)\.\.\.(v[\d.]+)#',
             static fn(array $matches): string => "[{$matches[1]}...{$matches[2]}]({$matches[0]})",
             $body,
         ) ?? $body;
+    }
 
-        return EmDash::strip($body);
+    /**
+     * Release notes are written for GitHub, where `[x](docs/adr/0016.md)` resolves
+     * against the repo. On this site it would resolve against the page URL.
+     */
+    private function absolutizeRepoRelativeLinks(string $body, string $tagName): string
+    {
+        return preg_replace_callback(
+            '/(?<!!)(\[[^\]\n]*\])\((?![a-z][a-z0-9+.-]*:|\/|#)(?:\.\/)?([^)\s]+)\)/i',
+            static fn(array $m): string => "{$m[1]}(" . self::REPO_URL . "/blob/{$tagName}/{$m[2]})",
+            $body,
+        ) ?? $body;
+    }
+
+    /**
+     * The old per-release blog posts (`/blog/release-0-7/`) no longer exist;
+     * their content lives on the release pages. Falls back to the `/releases/v0-7/`
+     * alias every release page registers when the slug is unknown.
+     *
+     * @param array<string, string> $slugsByMinor
+     */
+    private function mapLegacyBlogReleaseLinks(string $body, array $slugsByMinor): string
+    {
+        $urlPattern = '(?:https?://(?:www\.)?phel-lang\.org)?/blog/release-(\d+)-(\d+)/?';
+        $releasePath = static function (string $major, string $minor) use ($slugsByMinor): string {
+            $slug = $slugsByMinor["{$major}.{$minor}"] ?? "v{$major}-{$minor}";
+            return "/releases/{$slug}/";
+        };
+
+        $body = preg_replace_callback(
+            '#\]\(' . $urlPattern . '\)#',
+            static fn(array $m): string => '](' . $releasePath($m[1], $m[2]) . ')',
+            $body,
+        ) ?? $body;
+
+        return preg_replace_callback(
+            '#(?<![(\[/\w])' . $urlPattern . '(?![\w/])#',
+            static fn(array $m): string => "[Release {$m[1]}.{$m[2]}](" . $releasePath($m[1], $m[2]) . ')',
+            $body,
+        ) ?? $body;
     }
 
     private function formatContributorMentions(string $body): string

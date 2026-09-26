@@ -31,10 +31,24 @@ final readonly class GitHubReleasePages
         $this->cleanStaleReleasePages();
 
         $groups = $this->groupByMinor($releases);
+        $slugsByMinor = $this->slugsByMinor($groups);
 
         foreach ($groups as $group) {
-            $this->generateMinorPage($group);
+            $this->generateMinorPage($group, $slugsByMinor);
         }
+    }
+
+    /**
+     * @param list<list<Release>> $groups
+     * @return array<string, string>
+     */
+    private function slugsByMinor(array $groups): array
+    {
+        $slugs = [];
+        foreach ($groups as $group) {
+            $slugs[$group[0]->getMinorKey()] = $this->gitHubReleasePagesGenerator->computeSlug($group);
+        }
+        return $slugs;
     }
 
     /**
@@ -164,10 +178,11 @@ final readonly class GitHubReleasePages
 
     /**
      * @param list<Release> $group
+     * @param array<string, string> $slugsByMinor
      */
-    private function generateMinorPage(array $group): void
+    private function generateMinorPage(array $group, array $slugsByMinor): void
     {
-        $markdown = $this->gitHubReleasePagesGenerator->generateMinorPageContent($group);
+        $markdown = $this->gitHubReleasePagesGenerator->generateMinorPageContent($group, $slugsByMinor);
         $fileName = $this->generateFileName($group);
         file_put_contents($this->outputDir . '/' . $fileName, $markdown);
     }
