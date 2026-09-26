@@ -1,7 +1,8 @@
 +++
 title = "Data Formats"
-weight = 6
+weight = 2
 description = "Exchange data with other Clojure-aligned runtimes using the eval-free EDN and Transit interchange modules."
+aliases = ["/documentation/guides/data-formats"]
 +++
 
 Phel ships two **eval-free interchange modules** for exchanging data with other

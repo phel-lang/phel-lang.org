@@ -128,7 +128,7 @@ Phel ships `BigInt`, `BigDecimal`, and `Ratio` as first-class types:
 
 ### No spec
 
-No `clojure.spec`. Phel ships `phel.schema` for validation, coercion, and generation. See the [Schema Validation guide](/documentation/guides/schema/).
+No `clojure.spec`. Phel ships `phel.schema` for validation, coercion, and generation. See [Schema Validation](/documentation/libraries/schema/).
 
 ### Truthiness
 

@@ -1,7 +1,8 @@
 +++
 title = "AI Module"
-weight = 7
+weight = 3
 description = "Provider-agnostic LLM client for Phel: chat, structured extraction, tool use, embeddings, and semantic search across Anthropic, OpenAI, and Voyage AI."
+aliases = ["/documentation/guides/ai"]
 +++
 
 `phel.ai` is a provider-agnostic client for LLM chat, structured extraction, tool use, embeddings, and semantic search. One API, swappable providers: pick the backend per call or globally.

@@ -49,7 +49,11 @@ Phel is a functional Lisp that compiles to PHP: persistent data structures, immu
   </a>
   <a href="/documentation/guides/" class="section-page-card">
     <h3 class="section-page-card__title">Guides</h3>
-    <p class="section-page-card__desc">Build a complete web app end to end, transition guides for PHP and Clojure developers, and a cookbook of real-world recipes.</p>
+    <p class="section-page-card__desc">Build a complete web app end to end, transition guides for PHP and Clojure developers, a cookbook of real-world recipes, and one-liners.</p>
+  </a>
+  <a href="/documentation/libraries/" class="section-page-card">
+    <h3 class="section-page-card__title">Libraries</h3>
+    <p class="section-page-card__desc">Built-in modules beyond the core: schema validation, EDN and Transit data formats, and an AI client for LLMs.</p>
   </a>
   <a href="/documentation/tooling/" class="section-page-card">
     <h3 class="section-page-card__title">Tooling</h3>

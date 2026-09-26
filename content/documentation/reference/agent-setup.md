@@ -7,7 +7,7 @@ aliases = ["/documentation/agent-setup", "/documentation/ai-setup"]
 
 Set up your AI coding agent to write correct Phel. One command installs a per-tool skill file plus a shared docs tree into your project, so the agent knows Phel's syntax, idioms, and gotchas without crawling the web.
 
-> **Two kinds of "AI" on this site.** This page is about **coding Phel *with* an agent**. If instead you want to **build AI features *in* Phel** (LLM chat, embeddings, tool use), see the [AI Module](/documentation/guides/ai/) and the [ai API](/documentation/reference/api/ai/).
+> **Two kinds of "AI" on this site.** This page is about **coding Phel *with* an agent**. If instead you want to **build AI features *in* Phel** (LLM chat, embeddings, tool use), see the [AI Module](/documentation/libraries/ai/) and the [ai API](/documentation/reference/api/ai/).
 
 ## One-command setup
 

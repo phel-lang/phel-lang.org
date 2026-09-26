@@ -1,7 +1,8 @@
 +++
 title = "Schema Validation"
-weight = 5
+weight = 1
 description = "Validate, coerce, and generate data with phel.schema, using plain Phel data as declarative schemas"
+aliases = ["/documentation/guides/schema"]
 +++
 
 `phel.schema` validates, coerces, and generates values from declarative schemas. A schema is plain Phel data, a keyword or a vector, so there is no separate DSL to learn: schemas are built, composed, and stored like any other value.
