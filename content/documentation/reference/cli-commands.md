@@ -1,238 +1,138 @@
 +++
 title = "CLI Commands"
 weight = 2
-description = "Every built-in phel command: init, build, run, test, repl, eval, compile, lint, watch, nrepl, lsp, and more"
+description = "Every built-in phel command with its flags and an example: init, run, test, build, eval, format, lint, repl, nrepl, lsp and more."
 aliases = ["/documentation/cli-commands", "/documentation/tooling/cli-commands/"]
 +++
 
-Every task you run through Phel goes through one CLI. This page lists the built-in commands with a working example for each.
+This page lists every `phel` command with its main flags and a working example. Run `vendor/bin/phel list` for the list and `vendor/bin/phel help <command>` for every flag of one command.
+
+## Overview
+
+| Command | Alias | What it does |
+|---|---|---|
+| [`init`](#initialize-a-project) | | Scaffold a new project |
+| [`run`](#run-a-script) | `r` | Run a file or namespace |
+| [`test`](#test) | `t` | Run tests |
+| [`eval`](#evaluate-an-expression) | `e` | Evaluate an expression and print the result |
+| [`repl`](#repl) | | Interactive prompt |
+| [`build`](#build-the-project) | `b` | Compile the project to PHP |
+| [`export`](#export-definitions) | | Generate PHP classes for exported functions |
+| [`format`](#format) | `fmt` | Format `.phel` files |
+| [`lint`](#lint) | | Static analysis |
+| [`balance`](#balance) | | Find and fix unbalanced brackets |
+| [`compile`](#compile-to-php) | | Print the PHP a snippet compiles to |
+| [`doc`](#look-up-docs) | | Show docs for core functions |
+| [`explain`](#explain-an-error-code) | | Explain an error code |
+| [`watch`](#watch) | | Reload namespaces on file change |
+| [`nrepl`](#nrepl) | | nREPL server for editors |
+| [`lsp`](#lsp) | | Language server for editors |
+| [`profile`](#profile) | | Per-function timings |
+| [`bench`](#bench) | | Run benchmarks |
+| [`mutate`](#mutate) | | Mutation testing |
+| [`doctor`](#check-your-environment) | | Check PHP, extensions and config |
+| [`config`](#inspect-configuration) | | Show the effective config |
+| [`cache:clear`](#caches) | | Clear compiled and namespace caches |
+| [`cache:warm`](#caches) | | Warm module caches for production |
+| [`ns`](#tooling-commands) | `loaded-ns` | List or inspect loaded namespaces |
+| [`analyze`, `index`, `api-daemon`](#tooling-commands) | | JSON output for tools |
+| [`agent-install`](#agent-install) | | Install AI agent skill files |
+| [`completion`](#shell-completion) | | Print a shell completion script |
+
+Flags that work on every command:
+
+| Flag | Effect |
+|---|---|
+| `--warn-deprecations` | Print deprecation notices to stderr. Same as `PHEL_WARN_DEPRECATIONS=1` |
+| `-q`, `--quiet` | Show errors only |
+| `-v`, `-vv`, `-vvv` | More output |
+| `--no-ansi` | No colors (or set `NO_COLOR`) |
+
+`--stack-trace` on `run`, `eval`, `repl` and `test` shows every stack frame, including the internal ones that are collapsed by default.
+
+## Initialize a project
 
 ```bash
-# Overview of all commands
-vendor/bin/phel list
+vendor/bin/phel init my-app                          # Flat layout: src/, tests/
+vendor/bin/phel init my-app --nested                 # src/phel/, tests/phel/
+vendor/bin/phel init my-app --minimal                # single main.phel at the root
+vendor/bin/phel init my-api --template=http-json-api # start from a bundled example
 ```
 
-## Initialize a new project
+Writes `phel-config.php`, a main namespace, a test, and a `.gitignore` in the current directory. The project name defaults to `app`.
 
-Scaffold a new Phel project:
+| Flag | Effect |
+|---|---|
+| `--nested` | Nested layout |
+| `-m`, `--minimal` | Root layout |
+| `-t`, `--template[=NAME]` | Scaffold from a bundled template. Without a value, lists them |
+| `--list-templates` | List templates (`http-json-api`, `todo-app`, `cli-wordcount`) |
+| `--dry-run` | Show what would be created |
+| `--force` | Overwrite existing files |
+| `--no-gitignore`, `--no-tests` | Skip those files |
 
-```bash
-vendor/bin/phel init
-# Usage:
-#   init [options] [--] [<project-name>]
-#
-# Arguments:
-#   project-name          The project/namespace name (default: "app")
-#
-# Options:
-#       --nested          Use nested layout (src/phel/, tests/phel/)
-#   -m, --minimal         Use root layout (single main.phel at project root)
-#       --force           Overwrite existing files
-#       --dry-run         Show what would be created without writing anything
-#       --no-gitignore    Skip generating .gitignore
-#       --no-tests        Skip generating a test file
-#   -t, --template[=NAME] Scaffold from a bundled example; omit the value to list
-#       --list-templates  List available project templates and exit
-```
-
-Defaults to **Flat** layout (`src/`, `tests/`). `--nested` for `src/phel/`. `--minimal` for a single root file.
-
-```bash
-# Flat layout (default)
-vendor/bin/phel init my-app
-
-# Nested layout
-vendor/bin/phel init my-app --nested
-
-# Preview what would be created
-vendor/bin/phel init my-app --dry-run
-```
-
-Scaffold from a bundled, runnable example instead of a bare skeleton. The template's namespaces, `composer.json`, and entry points are renamed to your project name. Composes with `--dry-run` and `--force`.
-
-```bash
-# List the bundled templates
-vendor/bin/phel init --list-templates
-# http-json-api, todo-app, cli-wordcount
-
-# Scaffold a project from a template
-vendor/bin/phel init my-api --template=http-json-api
-```
-
-## Build the project
-
-```bash
-vendor/bin/phel build
-# Usage:
-#   build [options]
-#
-# Options:
-#       --cache|--no-cache            Enable cache
-#       --source-map|--no-source-map  Enable source maps
-#   -O, --optimization-level=LEVEL    Override configured level (0 = off, 2 = inline + tail-call rewrite)
-#       --report                      Print a build report (namespaces, sizes, time)
-#       --timing                      Print per-phase compile timing (lex/parse/read/analyze/emit)
-```
-
-Compiles Phel to PHP and writes it to the configured main path (entry point `out/index.php`). Run the resulting PHP directly. Production requests then skip the compile step.
-
-```bash
-# Build with optimizations on (inlining + self-recursive tail-call rewriting)
-vendor/bin/phel build -O 2
-
-# Print a build summary to spot bloat and verify CI builds
-vendor/bin/phel build --report
-
-# Measure where compile time goes (pair with --no-cache for a full run)
-vendor/bin/phel build --no-cache --timing
-```
-
-`-O` overrides the level set via `withOptimizationLevel(...)` in `phel-config.php`. See [Performance](/documentation/guides/performance/) for what each level does. `--report` prints namespace count, per-namespace compiled size, total size, the fresh/cached breakdown, and build time.
-
-[Configuration](/documentation/reference/configuration/) in `phel-config.php`:
-```php
-<?php
-return (new \Phel\Config\PhelConfig())
-    ->withMainPhelNamespace('your-ns.index')
-    ->withMainPhpPath('out/index.php');
-```
-
-## Export definitions
-
-Exports definitions with `{:export true}` metadata as PHP classes. Generates one class per namespace, one method per exported definition. Lets you call Phel functions from PHP.
-
-```bash
-vendor/bin/phel export
-```
-
-Configure the export dirs, namespace prefix, and target directory in `phel-config.php`; see [Configuration](/documentation/reference/configuration/#full-reference).
-
-## Format phel files
-
-Formats files. Accepts relative or absolute paths.
-
-```bash
-vendor/bin/phel format            # formats src and tests by default
-vendor/bin/phel format src/foo.phel
-vendor/bin/phel format --dry-run  # report files that would change, exit non-zero if any
-vendor/bin/phel format --exclude='src/generated/*'  # skip a glob, repeatable
-```
-
-[Configuration](/documentation/reference/configuration/) in `phel-config.php`:
-```php
-<?php
-return (new PhelConfig())
-    ->withFormatDirs(['src', 'tests']);
-```
-
-Indents definition and body forms (`defstruct`, `defprotocol`, `defmethod`, `reify`, `doseq`, `letfn`, ...) cljfmt-style, and collapses consecutive blank lines to one.
-
-## Read-eval-print loop
-
-Interactive prompt for quick tests and language exploration.
-
-```bash
-vendor/bin/phel repl
-```
-
-See [REPL](/documentation/tooling/repl).
+A template's namespaces, `composer.json` and entry points are renamed to your project name.
 
 ## Run a script
 
-Run a file or namespace. Omit the path and Phel looks for `main.phel` or `core.phel`.
-
 ```bash
-vendor/bin/phel run
-# Usage:
-#   run [options] [--] [<path> [<argv>...]]
-#
-# Arguments:
-#   path                  The file path or namespace to execute
-#   argv                  Optional arguments
-#
-# Options:
-#   -t, --with-time       With time awareness
-#       --clear-opcache   Clears OPCache before running
-#       --debug[=FILTER]  Line-by-line trace to ./phel-debug.log (optional file filter, e.g. --debug="core")
-#       --stack-trace     Show every stack frame, including the internal ones collapsed by default
-```
-
-Arguments after the path reach your code as `*argv*`:
-
-```bash
+vendor/bin/phel run                          # auto-detects main.phel or core.phel
 vendor/bin/phel run src/cli.phel --name Alice
-# *argv* is ["--name" "Alice"]
 ```
 
-[Configuration](/documentation/reference/configuration/) in `phel-config.php`:
-```php
-<?php
-return (new PhelConfig())
-    ->withSrcDirs(['src']);
-```
+Arguments after the path reach your code as `*argv*`, here `["--name" "Alice"]`. The path can also be a namespace.
+
+| Flag | Effect |
+|---|---|
+| `-t`, `--with-time` | Print time and memory used after the run |
+| `--clear-opcache` | Clear OPcache before running |
+| `--debug[=FILTER]` | Line-by-line trace to `./phel-debug.log`. Optional file filter, e.g. `--debug="core"` |
+| `--stack-trace` | Show every stack frame |
 
 See [Getting Started](/documentation/getting-started/).
 
-## Test your Phel logic
-
-Runs tests. No paths runs everything in `tests/`.
+## Test
 
 ```bash
-vendor/bin/phel test
-# Usage:
-#   test [options] [--] [<paths>...]
-#
-# Arguments:
-#   paths                   The file paths that you want to test.
-#
-# Options:
-#   -f, --filter=REGEX      Regex or substring matched against test names. Repeatable.
-#       --fail-fast         Stop on first failure or error.
-#       --include=TAG       Only run tests tagged TAG. Repeatable.
-#       --exclude=TAG       Skip tests tagged TAG. Repeatable.
-#       --ns=GLOB           Only run namespaces matching GLOB. Repeatable.
-#       --list              List the selected tests without running them.
-#       --reporter=NAME     Reporter: default|testdox|dot|tap|junit-xml|github. Repeatable.
-#   -o, --output=PATH       Write the junit-xml report to a file.
-#       --testdox           Shortcut for --reporter=testdox.
-#       --repeat=N          Run each test N times (default 1).
-#       --seed=INT          Seed used for randomized order.
-#       --random-order      Run tests in random order (uses --seed if given).
-#       --parallel=N        Run namespaces in subprocess workers: int, "auto" (capped at 8), or "max".
-#       --watch             Re-run selected tests on every .phel / phel-config.php change.
-#       --last-failed       Re-run only tests that failed on the previous run.
-#       --changed[=REF]     Run only tests affected by changed files (uncommitted, or `git diff REF`).
-#       --fail-on-focus     Exit non-zero when a ^:focus test narrowed the run (always on under CI).
-#       --slowest=N         Print the N slowest tests after the summary (0 disables).
-#       --stack-trace       Show every stack frame, including the collapsed internal ones.
-#       --coverage[=FORMAT] Line coverage via pcov or xdebug: text (default), clover, html, per-test.
-#       --coverage-output=PATH  Write the coverage report to a file (the directory for html).
+vendor/bin/phel test                                  # everything in the test dirs
+vendor/bin/phel test tests/app/math-test.phel
+vendor/bin/phel test --filter=greet --parallel=auto
 ```
 
-See [Testing](/documentation/guides/testing/) for what each flag does.
+| Flag | Effect |
+|---|---|
+| `-f`, `--filter=REGEX` | Match test names. Repeatable |
+| `--include=TAG`, `--exclude=TAG` | Run or skip tagged tests. Repeatable. `--exclude` wins |
+| `--ns=GLOB` | Match namespaces. `*` is one segment, `**` any. Repeatable |
+| `--list` | List the selected tests without running them |
+| `--fail-fast` | Stop at the first failure |
+| `--reporter=NAME` | `default`, `testdox`, `dot`, `tap`, `junit-xml`, `github`. Repeatable. `github` is added on GitHub Actions |
+| `--testdox` | Same as `--reporter=testdox` |
+| `-o`, `--output=PATH` | Write the `junit-xml` report to a file |
+| `--parallel=N` | Run namespaces in workers: a number, `auto` (CPU count, max 8), or `max` |
+| `--watch` | Re-run on every `.phel` or `phel-config.php` change |
+| `--last-failed` | Re-run only the tests that failed last time |
+| `--changed[=REF]` | Run only tests affected by changed files (uncommitted, or `git diff REF`) |
+| `--repeat=N` | Run each test N times, to find flaky tests |
+| `--random-order`, `--seed=INT` | Shuffle test order, reproducibly with a seed |
+| `--fail-on-focus` | Exit non-zero when a `^:focus` test narrowed the run. Always on when `CI` is set |
+| `--slowest=N` | Print the N slowest tests |
+| `--coverage[=FORMAT]` | Line coverage via pcov or xdebug: `text`, `clover`, `html`, `per-test` |
+| `--coverage-output=PATH` | Write the coverage report to a file (a dir for `html`) |
 
-[Configuration](/documentation/reference/configuration/) in `phel-config.php`:
-```php
-<?php
-return (new PhelConfig())
-    ->withTestDirs(['tests']);
-```
+See [Testing](/documentation/guides/testing/) for how to write tests and use these flags.
 
 ## Evaluate an expression
 
-Evaluate and print. Pass a literal expression, or `-` for stdin.
-
-Add `--stack-trace` to see every frame when an expression throws.
-
 ```bash
 vendor/bin/phel eval '(+ 1 2 3)'
-# => 6
+# 6
 
 echo '(map inc [1 2 3])' | vendor/bin/phel eval -
-# => (2 3 4)
+# (2 3 4)
 ```
 
-For reliable multi-line evaluation, pass a quoted heredoc to stdin:
+For multi-line code, pass a quoted heredoc on stdin. Nothing inside it needs escaping:
 
 ```bash
 vendor/bin/phel eval - <<'PHEL'
@@ -241,71 +141,131 @@ vendor/bin/phel eval - <<'PHEL'
 PHEL
 ```
 
-Prefer this pattern because:
-
-- **No quoting issues:** Everything between `<<'PHEL'` and `PHEL` is treated as literal input.
-- **Consistent pattern:** One approach works for all evaluations, from simple to complex.
-- **Multi-line friendly:** Code keeps its natural, readable formatting.
-- **Easy to extend:** Add more forms without changing the command syntax.
-
-## Compile to PHP
-
-Emit the PHP that Phel generates for a snippet, file, or stdin, without evaluating it. Handy for understanding the compiler or debugging interop.
+## REPL
 
 ```bash
-vendor/bin/phel compile '(php/strlen "hello")'
-# => strlen("hello");
-
-vendor/bin/phel compile src/main.phel    # compile a file
-echo '(map inc [1 2 3])' | vendor/bin/phel compile -
-
-# Usage:
-#   compile [options] [--] [<source>]
-#
-# Arguments:
-#   source            Phel expression, path to a .phel file, or "-" for stdin
-#
-# Options:
-#   -t, --target      Compilation target (currently only "php")
+vendor/bin/phel repl
 ```
+
+Interactive prompt with history, completion, and `*1`, `*2`, `*3`, `*e`. Leave with `(exit)`, `(quit)` or Ctrl+D. See [REPL](/documentation/tooling/repl/).
+
+## Build the project
+
+```bash
+vendor/bin/phel build                  # incremental, uses the cache
+vendor/bin/phel build --no-cache -O 2  # clean, fully optimized
+```
+
+Compiles every namespace to PHP in the build dir (`out/` by default). When `withMainPhelNamespace` is set, it also writes an entry file (`out/index.php`) that you run with plain PHP, so production requests skip compiling. See [Deployment](/documentation/guides/deployment/).
+
+| Flag | Effect |
+|---|---|
+| `--cache`, `--no-cache` | Use or skip the build cache |
+| `--source-map`, `--no-source-map` | Emit source maps |
+| `-O`, `--optimization-level=N` | Override the configured level. `2` inlines `^:pure` calls and rewrites self tail calls. See [Performance](/documentation/guides/performance/#optimization-levels) |
+| `--report` | Print namespace count, compiled size per namespace, total size and build time |
+| `--timing` | Print compile time per phase (lex, parse, read, analyze, emit). Pair with `--no-cache` |
+
+Set the entry namespace and output paths in [Configuration](/documentation/reference/configuration/#build).
+
+## Export definitions
+
+```bash
+vendor/bin/phel export
+```
+
+Writes one PHP class per namespace, with one method per function marked `{:export true}`, so PHP code can call Phel. Set the dirs and namespace prefix in [Configuration](/documentation/reference/configuration/#export). See [PHP Interop](/documentation/language/php-interop/#calling-phel-from-php).
+
+## Format
+
+```bash
+vendor/bin/phel format                              # the configured format dirs
+vendor/bin/phel format src/main.phel
+vendor/bin/phel format --dry-run                    # exit non-zero if a file would change
+vendor/bin/phel format --exclude='src/generated/*'  # repeatable
+```
+
+Rewrites files in place. Indents definition and body forms cljfmt-style and collapses repeated blank lines. `--exclude` is combined with the `format-exclude` config key.
 
 ## Lint
 
-Static analysis. Errors: unresolved-symbol, arity-mismatch, invalid-destructuring, duplicate-key, duplicate-def. Warnings: unused-binding, unused-require, unused-import, shadowed-binding, redundant-do, discouraged-var, comment-style.
-
 ```bash
-vendor/bin/phel lint
-# Usage:
-#   lint [options] [--] [<paths>...]
-#
-# Options:
-#   -f, --format=FORMAT   human (default), json, github
-#       --config=PATH     Path to phel-lint.phel
-#       --no-cache        Disable linter cache
+vendor/bin/phel lint                     # the configured source dirs
+vendor/bin/phel lint src --format=json   # human (default), json, github
 ```
 
-Configure rules in `phel-lint.phel` at the project root.
+Reports issues without changing files. Exits 1 on errors, including a file it cannot parse. `--no-cache` skips the lint cache.
+
+| Default severity | Rules |
+|---|---|
+| Error | `unresolved-symbol`, `arity-mismatch`, `invalid-destructuring`, `duplicate-key`, `duplicate-def` |
+| Warning | `unused-binding`, `unused-require`, `unused-import`, `shadowed-binding`, `redundant-do`, `discouraged-var`, `comment-style` |
+
+Change severities (`:error`, `:warning`, `:info`, `:hint`, `:off`) or exclude files in `phel-lint.phel` at the project root, or pass `--config=PATH`:
+
+<!-- phel-test: skip -->
+```phel
+{:rules {:phel/unused-binding :off
+         :phel/arity-mismatch :error}
+ :exclude {:phel/unused-binding ["src/local.phel" "app.experimental.*"]}}
+```
+
+## Balance
+
+```bash
+vendor/bin/phel balance src/broken.phel
+# Unbalanced (1):
+#   src/broken.phel:2:0: unclosed '(', needs ')'
+# Run again with --fix to append the missing delimiters.
+```
+
+Brackets inside strings, comments, regexes and char literals are ignored. `--fix` only appends missing closers. A surplus or mismatched closer is reported and left alone.
+
+## Compile to PHP
+
+```bash
+vendor/bin/phel compile '(php/strlen "hello")'
+# strlen("hello");
+
+vendor/bin/phel compile src/main.phel
+echo '(map inc [1 2 3])' | vendor/bin/phel compile -
+```
+
+Prints the PHP without running it. A form that folds to a constant emits no PHP; the folded value goes to stderr.
+
+## Look up docs
+
+```bash
+vendor/bin/phel doc map                  # search: also matches map?, mapcat, ...
+vendor/bin/phel doc --format=json > docs.json
+```
+
+With no search term it lists every function. `--ns=NS` loads more namespaces. A search with no match prints `No function matches "..."` and still exits 0.
+
+## Explain an error code
+
+```bash
+vendor/bin/phel explain PHEL001
+# Undefined symbol [PHEL001]
+#
+# The analyzer reached a symbol that is bound nowhere: ...
+
+vendor/bin/phel explain 1   # same code, short form
+vendor/bin/phel explain     # list every code
+```
+
+Prints the meaning, the smallest program that raises it, and the fix. The same text is on the [Error Reference](/documentation/reference/errors/).
 
 ## Watch
 
-Reloads changed namespaces in dependency order. Backends: inotify, fswatch, polling.
-
 ```bash
-vendor/bin/phel watch
-# Usage:
-#   watch [options] [--] [<paths>...]
-#
-# Arguments:
-#   paths                 Files or directories to watch (default: configured src dirs)
-#
-# Options:
-#   -b, --backend=BACKEND Watcher backend: auto, inotify, fswatch, polling (default: auto)
-#       --poll=MS         Polling interval in ms, polling backend only (default: 500)
-#       --debounce=MS     Debounce window in ms (default: 100)
+vendor/bin/phel watch                 # the configured source dirs
+vendor/bin/phel watch src -b polling
 ```
 
-From Phel code, use `phel.watch`:
+Re-evaluates changed namespaces in dependency order. `-b`, `--backend` is `auto` (default), `inotify`, `fswatch` or `polling`. `--poll=MS` (default 500) and `--debounce=MS` (default 100) tune it. From Phel code, use `phel.watch`:
 
+<!-- phel-test: skip -->
 ```phel
 (ns my-app
   (:require phel.watch :refer [watch!]))
@@ -313,117 +273,72 @@ From Phel code, use `phel.watch`:
 (watch! ["src/"])
 ```
 
-
 ## nREPL
 
-Bencode-over-TCP nREPL server for editor inline eval.
-
 ```bash
-vendor/bin/phel nrepl --port=7888 --host=127.0.0.1
+vendor/bin/phel nrepl                # 127.0.0.1:7888
+vendor/bin/phel nrepl --port=0       # random free port
 ```
 
-See [Editor support](/documentation/tooling/editor-support/#nrepl-and-editor-integration) for supported ops and connecting your editor.
+Bencode-over-TCP server for Calva, CIDER, Conjure and Cursive. `-p`, `--port` and `--host` set the address. The bound port is written to `.nrepl-port` and removed when the server stops. See [Editor support](/documentation/tooling/editor-support/#nrepl-and-editor-integration).
 
 ## LSP
-
-LSP v3.17 over stdio.
 
 ```bash
 vendor/bin/phel lsp
 ```
 
-See [Editor support](/documentation/tooling/editor-support/#language-server-lsp) for supported features and PHP-interop-aware completion.
-
-
-## Analyze and index
-
-`phel analyze <file>` emits JSON diagnostics; `phel index <dir>...` builds a symbol table for tooling.
-
-```bash
-vendor/bin/phel analyze src/main.phel
-vendor/bin/phel index src --output=symbols.json
-```
-
-`phel api-daemon` serves the Api facade as JSON-RPC over stdio.
-
-```bash
-vendor/bin/phel api-daemon
-```
-
-
-## Agent install
-
-Writes skill/recipe files for AI coding assistants: Claude Code, Cursor, Codex, Gemini, Copilot, Aider. Copies a per-platform skill file plus the shared `.agents/` docs tree. Re-install is idempotent; existing files are backed up to `.pre-phel.bak` unless `--force`.
-
-```bash
-vendor/bin/phel agent-install              # pick platform interactively
-vendor/bin/phel agent-install claude       # single platform
-vendor/bin/phel agent-install --all        # every platform
-vendor/bin/phel agent-install --auto       # only platforms detected in project
-vendor/bin/phel agent-install --uninstall  # remove skill files, restore .pre-phel.bak
-#   --no-docs          Skip the .agents/ docs tree (copied by default)
-#   --with-examples    Also copy example projects into .agents/examples/
-#   --dry-run          Show what would be written, change nothing
-#   --force            Overwrite without .pre-phel.bak backups
-#   --check            Compare the installed docs version with the bundled one; exit 1 if they differ
-```
+Language server (LSP 3.17) over stdio. Your editor starts it. See [Editor support](/documentation/tooling/editor-support/#language-server-lsp).
 
 ## Profile
 
-Per-function timings and compile-phase costs:
-
 ```bash
-vendor/bin/phel profile path/to/file.phel
-# Options:
-#       --top=N              Show the top N functions (default 20)
-#   -f, --format=FORMAT      table (default), json, both
-#   -o, --output=PATH        Write the JSON report to PATH
-#   -s, --sort=KEY           Sort by self (default), total, calls, avg
-#       --no-compile-phases  Skip the compile-time phase report
+vendor/bin/phel profile src/main.phel
+vendor/bin/phel profile src/main.phel --sort=total --format=json -o profile.json
 ```
 
+Runs a script and reports per-function call counts and timings, plus compile-phase costs.
 
-## Look up docs
+| Flag | Effect |
+|---|---|
+| `--top=N` | Rows in the table (default 20) |
+| `-s`, `--sort=KEY` | `self` (default), `total`, `calls`, `avg` |
+| `-f`, `--format=FORMAT` | `table` (default), `json`, `both` |
+| `-o`, `--output=PATH` | Write the JSON report to a file |
+| `--no-compile-phases` | Skip the compile-phase report |
 
-Print the signature, docstring and example of any function. The argument is a search term, so `map` also matches `map?`, `mapcat` and friends.
-
-```bash
-vendor/bin/phel doc map
-# Usage:
-#   doc [options] [--] [<search>]
-#
-# Options:
-#       --ns[=NS]         Namespaces to load. Repeatable.
-#   -f, --format=FORMAT   table (default), json
-```
-
-With no argument it lists every documented function. `--format=json` emits the same data for tooling:
+## Bench
 
 ```bash
-vendor/bin/phel doc --format=json > docs.json
+vendor/bin/phel bench                                     # every defbench under the test dirs
+vendor/bin/phel bench --store=.phel/bench-baseline.json   # save a baseline
+vendor/bin/phel bench --ref=.phel/bench-baseline.json --tolerance=10
+vendor/bin/phel bench --ab=main --pairs=5 --filter=step   # compare with a git ref
 ```
 
-A search with no match prints `No function matches "..."` and still exits 0. Read the output, not the exit code.
+Runs functions defined with `phel.bench/defbench`. With `--tolerance`, it exits non-zero when a benchmark is slower than the baseline by more than that percentage. `--ab` runs the ref in a temporary worktree and your working tree in alternating pairs. Other flags: `-f`, `--filter`, `--revs`, `--iterations`, `--warmup`.
 
-## Explain an error code
-
-Every compiler error carries a stable code such as `[PHEL001]`. `explain` prints what it means and how to fix it. Omit the code to list them all.
+## Mutate
 
 ```bash
-vendor/bin/phel explain PHEL001
-# Undefined symbol [PHEL001]
-#
-# The analyzer reached a symbol that is bound nowhere: not in the current namespace, not in a required namespace, and not in a local binding.
-# ...
-
-vendor/bin/phel explain   # list every code
+vendor/bin/phel mutate                        # project sources against project tests
+vendor/bin/phel mutate src/app/calc.phel --only=arith,compare
+vendor/bin/phel mutate --min-msi=80 --parallel=auto
 ```
 
-The same explanations live on the [Error Reference](/documentation/reference/errors/) page.
+Mutates every `defn` and reports the mutants your tests do not catch. The unmutated suite must pass first.
+
+| Flag | Effect |
+|---|---|
+| `--tests=PATH` | Tests to run. Repeatable. Default: test dirs |
+| `--only=IDS` | Comma-separated mutator ids |
+| `--min-msi=N`, `--min-covered-msi=N` | Exit 1 below this score (percent) |
+| `--reporter=FORMAT`, `-o PATH` | `text` or `json`, optionally to a file |
+| `--parallel=N` | Workers: a number or `auto` |
+| `--changed[=REF]` | Mutate only changed files |
+| `--timeout-factor=N` | A mutant slower than N times the baseline counts as killed (default 3) |
 
 ## Check your environment
-
-`doctor` checks the PHP extensions Phel needs, the source and test directories, OPcache, and the cache size. Run it first when something fails before your code even loads.
 
 ```bash
 vendor/bin/phel doctor
@@ -434,61 +349,77 @@ vendor/bin/phel doctor
 # ...
 ```
 
-## Inspect configuration
+Checks the PHP version and extensions, module health, your config, and OPcache, and prints a fix for anything missing. Run it first when Phel fails before your code loads.
 
-Print the effective configuration and where each part comes from. Useful when a `phel-config.php`, a `phel-config-local.php` override, or the `PHEL_DIR` env var is not taking effect as you expect.
+## Inspect configuration
 
 ```bash
 vendor/bin/phel config
 # Sources:
 #  - project root: /path/to/project
-#  - phel-config.php: not found, using auto-detected defaults
+#  - phel-config.php: found (/path/to/project/phel-config.php)
 #  - phel-config-local.php: not present
 #  - PHEL_DIR env: (unset)
 #
 # Effective config:
 # { "src-dirs": ["src"], "test-dirs": ["tests"], ... }
 
-# Machine-readable: the effective config as JSON
 vendor/bin/phel config --format=json
 ```
 
-See [Configuration](/documentation/reference/configuration/) for every setter.
+Shows the merged config and where each part came from, then validation warnings. Use it when `phel-config.php`, `phel-config-local.php` or `PHEL_DIR` does not take effect. See [Configuration](/documentation/reference/configuration/).
 
-## Clear caches
-
-Clear namespace and compiled-code caches:
+## Caches
 
 ```bash
 vendor/bin/phel cache:clear
+vendor/bin/phel cache:warm --clear --attributes
 ```
 
-Removes everything in the cache dir. Useful for stale caches or after upgrades.
+`cache:clear` removes the compiled-code, namespace and temp caches and empties the OPcache file cache. Run it after every upgrade. `cache:warm` pre-resolves module classes for production; `-c`, `--clear` starts fresh and `-a`, `--attributes` also caches `#[ServiceMap]` attributes.
 
-Runtime state (cache, REPL history, error log) lives under `.phel/` by default. Override via `withPhelDir('...')` in `phel-config.php` or the `PHEL_DIR` env var.
+Runtime state (cache, REPL history, error log) lives under `.phel/`. Move it with `withPhelDir('...')` or `PHEL_DIR`.
 
-## Other commands
+## Tooling commands
 
-Smaller tools. Run `vendor/bin/phel help <command>` for every flag.
-
-| Command | What it does | Key flags |
-|---------|--------------|-----------|
-| `balance [paths]` | Report unbalanced `()`, `[]`, `{}` in `.phel` files. | `--fix` appends the missing closers |
-| `bench [paths]` | Run the benchmarks under `tests/` (or the given paths). | `-f/--filter`, `--revs`, `--iterations`, `--warmup`, `--store`, `--ref`, `--tolerance`, `--ab=REF`, `--pairs` |
-| `mutate [paths]` | Mutation testing: mutate every `defn`, report the mutants your tests miss. | `--tests`, `--only`, `--min-msi`, `--min-covered-msi`, `--reporter=text\|json`, `-o`, `--parallel`, `--changed[=REF]` |
-| `ns [namespace]` | List loaded namespaces, or show one namespace and its dependencies. | `-s/--simple` |
-| `completion [shell]` | Print the shell completion script (bash, zsh, fish). | `--debug` |
-| `cache:warm` | Pre-resolve module classes and warm the cache for production. | `-c/--clear`, `-a/--attributes` |
+For editors and scripts. You rarely run these by hand.
 
 ```bash
-vendor/bin/phel balance src/broken.phel
-# Unbalanced (1):
-#   src/broken.phel:2:0: unclosed '(', needs ')'
-# Run again with --fix to append the missing delimiters.
+vendor/bin/phel analyze src/main.phel                 # JSON diagnostics for one file
+vendor/bin/phel index src tests --output=index.json   # project symbol index
+vendor/bin/phel api-daemon                            # JSON-RPC over stdio
+vendor/bin/phel ns                                    # list loaded namespaces
+vendor/bin/phel ns phel.core --simple                 # inspect one, names only
 ```
 
-## Next steps
+The Gacela framework also adds `debug:container`, `debug:dependencies`, `debug:modules`, `list:modules`, `profile:report` and `validate:config`. They inspect Phel's internal modules.
 
-- [REPL](/documentation/tooling/repl/) - the interactive loop behind `phel repl`
-- [Editor support](/documentation/tooling/editor-support/) - connect your editor to `phel nrepl`
-- [Configuration](/documentation/reference/configuration/) - tune paths, cache, and export in `phel-config.php`
+## Agent install
+
+```bash
+vendor/bin/phel agent-install --auto     # agents detected in this project
+vendor/bin/phel agent-install claude     # one platform
+vendor/bin/phel agent-install --all      # every platform
+vendor/bin/phel agent-install --check    # exit 1 if installed docs are stale
+```
+
+Writes a skill file for Claude, Cursor, Codex, Gemini, Copilot or Aider, plus a shared `.agents/` docs tree. Re-running updates only what changed upstream and keeps files you edited. An existing skill file is backed up to `.pre-phel.bak`.
+
+| Flag | Effect |
+|---|---|
+| `--no-docs` | Skip the `.agents/` docs tree |
+| `--with-examples` | Also copy example projects into `.agents/examples/` |
+| `--dry-run` | Show what would be written |
+| `--force` | Overwrite without the skill backup, and overwrite edited docs (backing them up) |
+| `--uninstall` | Remove skill files and restore `.pre-phel.bak` |
+
+See [AI agents](/documentation/tooling/ai-agents/).
+
+## Shell completion
+
+```bash
+vendor/bin/phel completion zsh > completion.sh && source completion.sh
+eval "$(vendor/bin/phel completion zsh)"   # or in ~/.zshrc
+```
+
+Supports `bash`, `zsh` and `fish`. Without an argument it reads `$SHELL`.
