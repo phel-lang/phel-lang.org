@@ -8,7 +8,7 @@ Many functional programming models prefer to express repetition by **recursive**
 
 In Phel's iteration process, there is a highly functional and convenient `for` macro, but there is also a `loop` special form that performs more primitive loop processing.
 
-[Loop Document | Control flow | The Phel Language](https://phel-lang.org/documentation/control-flow/#loop)
+[Loop Document | Control flow | The Phel Language](https://phel-lang.org/documentation/language/control-flow/#loop)
 
 Phel's `loop` allows you to write repetitive processing just like a recursive function.
 

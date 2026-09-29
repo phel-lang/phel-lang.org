@@ -227,7 +227,7 @@ Several bindings nest, like nested loops:
 Like Clojure's `for`, but it returns a vector, not a lazy sequence, and each binding names its verb (`:in`, `:range`, ...). `:reduce` is a Phel extension.
 {% end %}
 
-## Side effects: foreach and dofor
+## Side effects: foreach and dofor {#foreach}
 
 `for` is for building values. For side effects such as printing or writing to a database, use `foreach` or `dofor`. Both return `nil`:
 
@@ -277,7 +277,7 @@ Use `->` for maps and objects, where the subject goes first. Use `->>` for seque
 (build-user "Bob" false) ; => {:name "Bob"}
 ```
 
-## Errors
+## Errors {#try-catch-and-finally}
 
 `throw` raises any PHP `Throwable`. `try` catches it by type:
 

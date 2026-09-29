@@ -174,7 +174,7 @@ Tag tests with metadata to include or exclude them as a group:
 | `--seed=<int>` | Fix the seed for the default order |
 | `--slowest=N` | Print the N slowest tests after the summary |
 
-`--last-failed --repeat=20` is a quick way to hammer the tests that just failed. `vendor/bin/phel test --help` and [CLI commands](/documentation/reference/cli-commands/#test-your-phel-logic) list every flag.
+`--last-failed --repeat=20` is a quick way to hammer the tests that just failed. `vendor/bin/phel test --help` and [CLI commands](/documentation/reference/cli-commands/#test) list every flag.
 
 {% php_note() %}
 `vendor/bin/phpunit tests/MainTest.php --filter testMyFunction` becomes `vendor/bin/phel test tests/main.phel --filter my-test-function`.

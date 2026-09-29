@@ -178,7 +178,7 @@ A multimethod picks an implementation from the result of a dispatch function. `d
 (area {:shape :circle :radius 2})             ; => 12
 ```
 
-The dispatch function can be any function, such as `#(get % :language)` or `(fn [x] (type x))`. Other namespaces can add methods later without changing the original code. Dispatch on type hierarchies: [Interfaces](/documentation/language/interfaces/#hierarchy-aware-multimethod-dispatch).
+The dispatch function can be any function, such as `#(get % :language)` or `(fn [x] (type x))`. Other namespaces can add methods later without changing the original code. Dispatch on type hierarchies: [Interfaces](/documentation/language/interfaces/#hierarchies).
 
 ## Defn metadata shortcuts
 

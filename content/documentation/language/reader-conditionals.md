@@ -107,5 +107,3 @@ Reader conditionals work inside `ns`, so each platform can require its own libra
 ```
 
 Phel accepts both the vector form (`[phel.json :as json]`) and the list form (`phel.json :as json`) inside `:require`, so the same `ns` parses on both sides.
-
-For a worked example, see [Cookbook: reader conditionals for cross-platform code](/documentation/guides/cookbook/#reader-conditionals-for-cross-platform-code).

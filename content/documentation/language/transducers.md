@@ -142,5 +142,3 @@ Wrap the step result in `reduced` to end the pipeline. This `take-until` keeps i
 
 (sequence (take-until #(> % 3)) [1 2 3 4 5]) ; => [1 2 3 4]
 ```
-
-For a full pipeline on real data, see [Cookbook: data processing with transducers](/documentation/guides/cookbook/#data-processing-with-transducers).
