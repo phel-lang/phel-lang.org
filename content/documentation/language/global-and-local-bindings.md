@@ -1,36 +1,40 @@
 +++
 title = "Global and local bindings"
 weight = 3
-description = "Bind values to names with def and let, rebind dynamic vars with binding, and manage mutable state with atoms"
+description = "Bind values to names with def and let, manage mutable state with atoms, and rebind dynamic vars with binding"
 aliases = ["/documentation/global-and-local-bindings"]
 
 [extra]
 difficulty = "beginner"
 +++
 
-How you name things in Phel: `def` for globals, `let` for locals, `binding` for dynamic vars, and `atom` for the rare mutable state.
+After this page you can name values: `def` for globals, `let` for locals, `atom` for the rare value that must change, and `binding` for dynamic vars.
 
 ## Definition (def)
 
 <!-- phel-test: skip -->
 ```phel
-(def name meta? value)
+(def name docstring? value)
 ```
 
-Binds a value to a global symbol. Cannot be redefined later.
+`def` binds a value to a global name in the current namespace:
 
 ```phel
 (def my-name "phel")
 (def sum-of-three (+ 1 2 3))
 ```
 
-Attach metadata: a Keyword, String, or Map.
+A global cannot be defined twice. A second `(def my-name ...)` in the same namespace fails at compile time with `PHEL004`.
+
+Add a docstring before the value, or metadata before the name:
 
 ```phel
-(def my-private-definition :private 12)
-(def my-name "Stores the name of this language" "Phel")
-(def my-other-name {:private true :doc "This is my doc"} "My value")
+(def answer "The answer to everything." 42)
+(def ^:private secret 12)
+(def ^{:doc "This is my doc" :private true} other-name "My value")
 ```
+
+A private definition cannot be used from other namespaces. Use `defn` to define a function: see [Functions and recursion](/documentation/language/functions-and-recursion/).
 
 ## Local bindings (let)
 
@@ -39,217 +43,109 @@ Attach metadata: a Keyword, String, or Map.
 (let [bindings*] expr*)
 ```
 
-Creates a lexical context with the bindings, then evaluates the expressions. Returns the last value (or `nil` if no expressions).
+`let` binds names for the expressions in its body and returns the value of the last one. Each binding can use the names bound before it:
 
 ```phel
-(let [x 1
-      y 2]
-  (+ x y)) ; Evaluates to 3
-
-(let [x 1
-      y (+ x 2)]) ; Evaluates to nil
-```
-
-All bindings are immutable.
-
-{% php_note() %}
-Block-scoped bindings, like PHP, but immutable:
-
-```php
-// PHP - mutable variables
-$x = 1;
-$y = $x + 2;
-$x = 10;  // Can reassign
-
-// Phel - immutable bindings
 (let [x 1
       y (+ x 2)]
-  // x = 10  <- This would be a compile error!
-  (+ x y))
-```
-{% end %}
-
-## Binding
-
-`binding` temporarily rebinds dynamic vars while executing the body. Useful for tests, mocking, dependency injection.
-
-**Difference:**
-- `let`: new local variables (lexical scope)
-- `binding`: temporarily rebinds dynamic vars (dynamic scope, fiber-local)
-
-Vars must be tagged `^:dynamic` at their `def`, otherwise `binding` throws. To swap a non-dynamic var for the duration of an expression (e.g. mocking), use `with-redefs`.
-
-<!-- phel-test: skip -->
-```phel
-;; Example 1: Simple binding demonstration
-(def ^:dynamic *config* "production")
-
-(defn get-config []
-  *config*)
-
-(get-config)  ; => "production"
-
-;; let doesn't affect the global definition
-(let [*config* "test"]
-  (get-config))  ; => "production" (still uses global!)
-
-;; binding temporarily rebinds the dynamic var
-(binding [*config* "test"]
-  (get-config))  ; => "test" (uses binding!)
-
-(get-config)  ; => "production" (back to original)
-
-;; Example 2: Mocking functions for testing with with-redefs
-(defn get-system-architecture []
-  (php/php_uname "m"))
-
-(defn greet-user-by-architecture []
-  (str "Hello " (get-system-architecture) " user!"))
-
-;; Without redef - calls actual system function
-(greet-user-by-architecture)  ; => "Hello x86_64 user!" (or your system arch)
-
-;; with-redefs swaps any var, restores on exit (works for non-dynamic too)
-(with-redefs [get-system-architecture (fn [] "i386")]
-  (greet-user-by-architecture))  ; => "Hello i386 user!" (mocked!)
-
-;; Example 3: Testing with with-redefs
-(ns my-app.tests.demo
-  (:require phel.test :refer [deftest is]))
-
-(deftest greeting-test
-  (with-redefs [get-system-architecture (fn [] "i386")]
-    (is (= "Hello i386 user!" (greet-user-by-architecture))
-        "i386 system user is greeted accordingly")))
-
-;; Example 4: Multiple dynamic bindings at once
-(def ^:dynamic *db-host* "production-db")
-(def ^:dynamic *db-port* 5432)
-
-(defn connect []
-  (str "Connecting to " *db-host* ":" *db-port*))
-
-(binding [*db-host* "test-db"
-          *db-port* 3306]
-  (connect))  ; => "Connecting to test-db:3306"
-
-(connect)  ; => "Connecting to production-db:5432"
+  (* x y)) ; => 3
 ```
 
-`with-bindings` rebinds dynamic vars from a `Var -> value` map:
+Bindings are immutable. An inner `let` can shadow an outer name, but it never changes the outer value:
 
 ```phel
-(def ^:dynamic *db-host* "production-db")
-(def ^:dynamic *db-port* 5432)
-
-(defn connect []
-  (str "Connecting to " *db-host* ":" *db-port*))
-
-(with-bindings {#'*db-host* "test-db"
-                #'*db-port* 3306}
-  (connect))  ; => "Connecting to test-db:3306"
+(let [x 1]
+  [(let [x 10] x) x]) ; => [10 1]
 ```
+
+`let` can also take a vector or map apart by shape:
+
+```phel
+(let [{:keys [name age]} {:name "Alice" :age 30}]
+  (str name " is " age)) ; => "Alice is 30"
+```
+
+The full rules are on [Destructuring](/documentation/language/destructuring/).
 
 {% php_note() %}
-Useful for DI and testing, similar to PHP mocking frameworks:
-
-```php
-// PHP - using dependency injection
-class UserService {
-    public function __construct(private DbConnection $db) {}
-}
-
-// In tests:
-$mockDb = $this->createMock(DbConnection::class);
-$service = new UserService($mockDb);
-
-// Phel - using with-redefs (simpler for testing)
-(defn get-user [id]
-  (query-db (str "SELECT * FROM users WHERE id=" id)))
-
-(deftest test-get-user
-  (with-redefs [query-db (fn [q] {:id 1 :name "Alice"})]
-    (is (= "Alice" (:name (get-user 1))))))
-```
-
-Useful for testing code with global state or external systems.
+A PHP variable can be reassigned at any time. A Phel local cannot. To compute a new value, bind a new name or pass the value to a function. This removes a whole class of "who changed this variable" bugs.
 {% end %}
 
 ## Atoms
 
-<!-- phel-test: skip -->
-```phel
-(atom value)
-```
-
-Atoms manage mutable state. Each holds a single value. Create with `atom`:
+An atom holds one value that can change over time. Use it for application state, caches, and counters. Read it with `deref` or `@`. Change it with `swap!` (apply a function) or `reset!` (set a value):
 
 ```phel
-(def foo (atom 10)) ; Define an atom with value 10
+(def counter (atom 0))
+
+@counter              ; => 0
+(swap! counter inc)   ; => 1
+(swap! counter + 10)  ; => 11
+(reset! counter 0)    ; => 0
+(deref counter)       ; => 0
 ```
 
-`deref` (or `@` shorthand) extracts the value. `reset!` replaces it. `swap!` applies a function:
+`swap!` passes the current value as the first argument, then any extra arguments. It works well with map updates:
 
 ```phel
-(def foo (atom 10))
-
-(deref foo)        ; Evaluates to 10
-@foo               ; Same as (deref foo)
-(reset! foo 20)    ; Set foo to 20, returns 20
-@foo               ; Evaluates to 20
-
-(swap! foo + 2)    ; Evaluates to 22
-@foo               ; Evaluates to 22
+(def state (atom {:count 0}))
+(swap! state update :count inc) ; => {:count 1}
 ```
 
-{% php_note() %}
-Atoms are explicit, contained mutable state:
-
-```php
-// PHP - everything is mutable by default
-$count = 0;
-$count++;
-
-// Phel - explicit mutability with atoms
-(def count (atom 0))
-(swap! count inc)
-```
-
-Prefer immutable data structures. Atoms mainly for PHP interop or app state.
-{% end %}
+Functions that change state end in `!` by convention. Prefer plain immutable values, and keep atoms at the edges of your program.
 
 {% callout(kind="note") %}
-The old atom aliases `var`, `var?`, `set!` are gone. Use `atom`, `atom?`, `reset!`. `var` / `var?` / `#'sym` now refer to first-class `Var` handles for global definitions, not atoms.
+The old atom names `var`, `var?`, and `set!` are gone. Use `atom`, `atom?`, and `reset!`. `var` and `#'sym` now return a [Var handle](#variables).
 {% end %}
+
+## Dynamic binding
+
+A dynamic var is a global that can take a different value for the duration of a call. Mark it `^:dynamic` and rebind it with `binding`:
+
+```phel
+(def ^:dynamic *env* "production")
+
+(defn current-env [] *env*)
+
+(current-env)                        ; => "production"
+(binding [*env* "test"] (current-env)) ; => "test"
+(current-env)                        ; => "production"
+```
+
+`let` would not work here: it creates a new local, so `current-env` still sees the global. `binding` changes what every function sees while the body runs, then restores the old value. The rebinding is local to the current fiber.
+
+`binding` throws if the var is not `^:dynamic`. To replace any global for the duration of a body, such as a function you want to stub in a test, use `with-redefs`:
+
+```phel
+(defn system-arch [] (php/php_uname "m"))
+(defn greet [] (str "Hello " (system-arch) " user"))
+
+(with-redefs [system-arch (fn [] "i386")]
+  (greet)) ; => "Hello i386 user"
+```
+
+`with-bindings` does the same as `binding` from a map of Var handles to values: `(with-bindings {#'*env* "test"} (current-env))`. More stubbing techniques are in [Testing](/documentation/guides/testing/#mocking).
 
 ## Vars {#variables}
 
-`def` creates a global binding backed by a `Var`. Get a first-class handle with `(var sym)` or the `#'sym` reader macro:
+Every `def` creates a `Var`. `(var name)`, or the `#'name` shorthand, returns the Var itself instead of its value:
 
 ```phel
 (def my-name "phel")
 
-(var my-name)        ; => #'user/my-name
-#'my-name            ; same as (var my-name)
-(var? #'my-name)     ; => true
-(deref #'my-name)    ; => "phel"
-(var-get #'my-name)  ; => "phel"
-(find-var 'user/my-name)  ; lookup by qualified symbol
+#'my-name           ; => #'user/my-name
+(var? #'my-name)    ; => true
+(deref #'my-name)   ; => "phel"
 ```
 
-Modify a var's root binding with `alter-var-root`:
+Change the value of a Var with `alter-var-root`:
 
 ```phel
-(def counter 0)
-(alter-var-root #'counter inc)
-counter  ; => 1
+(def total 0)
+(alter-var-root #'total inc)
+total ; => 1
 ```
 
-Watch a var's value with `add-watch` / `remove-watch`. Adjust metadata with `alter-meta!` / `reset-meta!`. See the [API reference](/documentation/reference/api/core/) for the full surface.
+Most code never needs Var handles. They are useful for REPL tools and for watching a global with `add-watch`. The full list is in the [core API](/documentation/reference/api/core/).
 
-## Next steps
-
-- [Control flow](/documentation/language/control-flow/) - branch and loop over your bindings
-- [Functions and recursion](/documentation/language/functions-and-recursion/) - define and compose behavior
-- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding
-
+Next: [Control flow](/documentation/language/control-flow/) shows how to branch and loop.
