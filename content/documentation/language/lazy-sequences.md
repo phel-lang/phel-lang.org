@@ -1,6 +1,6 @@
 +++
 title = "Lazy Sequences"
-weight = 13
+weight = 14
 description = "Defer computation with lazy-seq and lazy-cat, build infinite sequences, and avoid the common laziness pitfalls."
 aliases = ["/documentation/lazy-sequences"]
 

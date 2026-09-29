@@ -129,4 +129,4 @@ deprecated: Key-first map destructuring pair {:id id} at src/app/order.phel:4 is
 
 Beyond the compiler, `phel.core` loads 20% faster, because a definition's metadata is now built on first read. `mapv` and `filterv` are 3.5x and 2.8x faster. Grown maps read up to 5.5x faster, and `update-in` is 32% faster.
 
-For the full list, see the [0.51 release notes](/releases/0-51-only-once/) and the [Upgrading notes](/documentation/upgrading/#0-51). Upgrade, then run `phel mutate` once. Read what survives.
+For the full list, see the [0.51 release notes](/releases/0-51-only-once/) and the [Upgrading notes](/documentation/reference/upgrading/#0-51). Upgrade, then run `phel mutate` once. Read what survives.

@@ -1,7 +1,8 @@
 +++
 title = "Debugging"
-weight = 72
+weight = 11
 description = "A practical debugging workflow for Phel: the dbg macro, tap>, source-mapped stack traces, the REPL, inspecting compiled PHP, Xdebug, and profiling."
+aliases = ["/documentation/debugging/"]
 +++
 
 Phel ships a full debugging toolbox. This page is the map: pick the tool that matches your symptom, then follow the links for details.
@@ -207,7 +208,7 @@ vendor/bin/phel compile '(defn double [x] (* x 2))'
 );
 ```
 
-It compiles without evaluating, so it's safe to probe side-effecting code. For a whole project, `withKeepGeneratedTempFiles(true)` in `phel-config.php` preserves the generated PHP files for inspection (see [Configuration](/documentation/configuration/)).
+It compiles without evaluating, so it's safe to probe side-effecting code. For a whole project, `withKeepGeneratedTempFiles(true)` in `phel-config.php` preserves the generated PHP files for inspection (see [Configuration](/documentation/reference/configuration/)).
 
 To debug *macros* specifically, expand them step by step in the REPL with `macroexpand-1` and `macroexpand`.
 
@@ -219,7 +220,7 @@ When the bug is "it's correct but slow", don't guess:
 vendor/bin/phel profile src/main.phel
 ```
 
-reports per-function call counts and self/total timings, plus compile-time phase costs. Sort with `--sort=total|self|calls|avg`, export JSON with `--format=json`. See [Performance](/documentation/performance/) for what to do with the results.
+reports per-function call counts and self/total timings, plus compile-time phase costs. Sort with `--sort=total|self|calls|avg`, export JSON with `--format=json`. See [Performance](/documentation/guides/performance/) for what to do with the results.
 
 ## Keep the loop tight
 
@@ -232,4 +233,4 @@ reports per-function call counts and self/total timings, plus compile-time phase
 - [REPL](/documentation/tooling/repl/): history vars, introspection helpers, tap patterns.
 - [Xdebug Setup](/documentation/tooling/xdebug-setup/): breakpoints in `.phel` files.
 - [PHP Debugging Tools](/documentation/tooling/php-tools/): `var_dump`, `dump`, `dd`.
-- [Testing](/documentation/testing/): pin the bug down with a test once you've found it.
+- [Testing](/documentation/guides/testing/): pin the bug down with a test once you've found it.

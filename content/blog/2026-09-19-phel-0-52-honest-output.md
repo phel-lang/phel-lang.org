@@ -109,4 +109,4 @@ The `at` line points at your call, not at the compiled cache. An uncaught `ex-in
 
 If your CI ran `phel lint` on broken files and passed, it will fail now. That is the point.
 
-For the full list, see the [0.52 release notes](/releases/0-52-honest-output/) and the [0.52 upgrade notes](/documentation/upgrading/#0-52). Upgrade. Fix the PHEL012 errors. Let the next error explain itself.
+For the full list, see the [0.52 release notes](/releases/0-52-honest-output/) and the [0.52 upgrade notes](/documentation/reference/upgrading/#0-52). Upgrade. Fix the PHEL012 errors. Let the next error explain itself.

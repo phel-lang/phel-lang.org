@@ -56,7 +56,7 @@ Read CSV into a vector of maps, headers as keys.
 ;; => ["alice@example.com"]
 ```
 
-**See also:** [PHP Interop](/documentation/php-interop), [Data Structures](/documentation/language/data-structures)
+**See also:** [PHP Interop](/documentation/language/php-interop), [Data Structures](/documentation/language/data-structures)
 
 ## Build a simple CLI tool
 
@@ -102,7 +102,7 @@ CLI script that reads args, parses flags, produces output.
 ;;   Hello, Alice!
 ```
 
-**See also:** [PHP Interop](/documentation/php-interop), [Control Flow](/documentation/language/control-flow)
+**See also:** [PHP Interop](/documentation/language/php-interop), [Control Flow](/documentation/language/control-flow)
 
 ## HTTP request with cURL
 
@@ -157,7 +157,7 @@ GET request via `phel.http-client`. Parse JSON via `phel.json`.
 (println (str completed-count " of " (count todos) " todos completed"))
 ```
 
-**See also:** [PHP Interop](/documentation/php-interop)
+**See also:** [PHP Interop](/documentation/language/php-interop)
 
 ## Generate HTML
 
@@ -283,7 +283,7 @@ PHP DateTime via interop: create, format, compare.
       :else             (str (php/intval (/ seconds 86400)) " days ago"))))
 ```
 
-**See also:** [PHP Interop](/documentation/php-interop)
+**See also:** [PHP Interop](/documentation/language/php-interop)
 
 ## Filesystem operations
 
@@ -374,7 +374,7 @@ Read, write, list, exist checks via PHP interop.
        (into [])))
 ```
 
-**See also:** [PHP Interop](/documentation/php-interop)
+**See also:** [PHP Interop](/documentation/language/php-interop)
 
 ## Data transformation pipeline
 
@@ -545,7 +545,7 @@ Persistent KV store backed by JSON. Get, put, delete, list keys.
 (println (str "All keys: " (store-keys)))
 ```
 
-**See also:** [Data Structures](/documentation/language/data-structures), [PHP Interop](/documentation/php-interop)
+**See also:** [Data Structures](/documentation/language/data-structures), [PHP Interop](/documentation/language/php-interop)
 
 ## Defining and using protocols
 
@@ -928,4 +928,4 @@ Failing cases shrink automatically; the reported seed makes them reproducible.
 - [One-liners](/documentation/guides/one-liners/) - short tricks, each a single expression
 - [Rosetta Stone (PHP to Phel)](/documentation/guides/rosetta-stone/) - look up the Phel form for a PHP idiom
 - [Data structures](/documentation/language/data-structures/) - the collections behind these recipes
-- [PHP interop](/documentation/php-interop/) - call any PHP function from Phel
+- [PHP interop](/documentation/language/php-interop/) - call any PHP function from Phel

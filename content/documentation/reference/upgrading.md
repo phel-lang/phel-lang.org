@@ -1,7 +1,8 @@
 +++
 title = "Upgrading"
-weight = 4
+weight = 5
 description = "Upgrade notes for each Phel release from 0.53 back to 0.37: what breaks, what changes, and the cache clear you need after every bump."
+aliases = ["/documentation/upgrading/"]
 +++
 
 Every release below lists what breaks and what is new. Newest first. Read each section between your current version and the target.
@@ -15,7 +16,7 @@ vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 
 Never skip the cache clear. Compiled PHP from an older install can reference renamed core types and fail to load. Rebuild downstream projects too.
 
-Going to 1.0 from 0.49 or later? Follow [the 1.0 upgrade guide](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/upgrade-0.49-to-1.0.md). What a version number promises is on [Stability Policy](/documentation/stability/). Releases older than 0.37 are in [the changelog](https://github.com/phel-lang/phel-lang/blob/main/CHANGELOG.md).
+Going to 1.0 from 0.49 or later? Follow [the 1.0 upgrade guide](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/upgrade-0.49-to-1.0.md). What a version number promises is on [Stability Policy](/documentation/reference/stability/). Releases older than 0.37 are in [the changelog](https://github.com/phel-lang/phel-lang/blob/main/CHANGELOG.md).
 
 ## 0.53
 
@@ -190,7 +191,7 @@ See the [0.39 release notes](/releases/0-39-parity-pass/).
 
 ## 0.37
 
-- `PhelConfig` setters replaced by immutable `withX()` chain; old `setX()` shims emit deprecation notices. See [Configuration](/documentation/configuration/).
+- `PhelConfig` setters replaced by immutable `withX()` chain; old `setX()` shims emit deprecation notices. See [Configuration](/documentation/reference/configuration/).
 - `PhelConfig::forProject(ProjectLayout $layout = Flat, string $mainNamespace = '')`: layout argument is first, `Flat` is the default.
 - `Phel\Printer` moved to `Phel\Shared\Printer`. Phel sources should `(:use Phel.Shared.Printer.Printer)`; the old path no longer resolves.
 - Cross-module exceptions + `CodeSnippet` moved to `Phel\Shared\Exceptions` / `Phel\Shared\Parser\ReadModel`.

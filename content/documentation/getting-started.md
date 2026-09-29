@@ -145,7 +145,7 @@ In order:
 Branch by need:
 
 - **Editor flow:** [REPL](/documentation/tooling/repl), [Editor Support](/documentation/tooling/editor-support).
-- **From PHP:** [Rosetta Stone](/documentation/guides/rosetta-stone), [PHP Interop](/documentation/php-interop).
+- **From PHP:** [Rosetta Stone](/documentation/guides/rosetta-stone), [PHP Interop](/documentation/language/php-interop).
 - **Power features:** [Macros](/documentation/language/macros), [Interfaces](/documentation/language/interfaces).
 - **AI agent pairing:** [Agentic Coding](/documentation/reference/agentic-coding) for Claude Code, Codex, Cursor.
 

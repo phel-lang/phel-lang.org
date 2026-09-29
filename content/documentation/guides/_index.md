@@ -1,10 +1,15 @@
 +++
 title = "Guides"
-weight = 100
+weight = 10
 sort_by = "weight"
 insert_anchor_links = "right"
 template = "section-page.html"
-description = "Build a complete web app end to end, plus transition guides for developers coming from PHP or Clojure, a cookbook of copy-paste recipes, and a page of one-liners."
+description = "Task-focused guides: build a web app, move over from PHP or Clojure, copy working recipes, and test, debug, tune, and deploy Phel code."
 +++
 
-Want to build something? **Build a Web App** walks through a complete guestbook end to end. Coming from PHP? Start with the **Rosetta Stone**. Coming from Clojure? Start with **Coming from Clojure**. Want working code for common tasks? Open the **Cookbook**. Want small tricks in a single expression? Browse the **One-liners**. Looking for schema validation, EDN and Transit, or the AI client? Those live under [Libraries](/documentation/libraries/).
+Pick the guide for the job in front of you.
+
+- **Build a Web App** takes a guestbook from empty folder to running app.
+- **Rosetta Stone** maps everyday PHP to Phel. **Coming from Clojure** lists what carries over and what changes.
+- **Cookbook** has copy-paste recipes for common tasks.
+- **Testing**, **Debugging**, **Performance**, and **Deployment** cover the work around the code.

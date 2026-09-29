@@ -104,4 +104,4 @@ phel bench --ab=main --pairs=5
 
 It runs the working tree and the ref in turns, in a temporary worktree. Each row shows the mean delta, or `noise` when the pairs disagree on the sign.
 
-For the full list, see the [0.53 release notes](/releases/0-53-floor-raised/) and the [0.53 upgrade notes](/documentation/upgrading/#0-53). Upgrade PHP first. Then Phel. Then clear the cache.
+For the full list, see the [0.53 release notes](/releases/0-53-floor-raised/) and the [0.53 upgrade notes](/documentation/reference/upgrading/#0-53). Upgrade PHP first. Then Phel. Then clear the cache.

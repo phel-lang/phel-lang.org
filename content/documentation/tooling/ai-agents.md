@@ -1,8 +1,8 @@
 +++
-title = "Agent Setup"
-weight = 49
+title = "AI Agents"
+weight = 5
 description = "Wire an AI coding agent (Claude Code, Cursor, Copilot, Codex, Gemini, Aider) to Phel with one command: phel agent-install."
-aliases = ["/documentation/agent-setup", "/documentation/ai-setup"]
+aliases = ["/documentation/agent-setup", "/documentation/ai-setup", "/documentation/reference/agent-setup/"]
 +++
 
 Set up your AI coding agent to write correct Phel. One command installs a per-tool skill file plus a shared docs tree into your project, so the agent knows Phel's syntax, idioms, and gotchas without crawling the web.
@@ -76,4 +76,4 @@ For agents or scripts that cannot run the Phel CLI, the same knowledge is on the
 
 - [Agentic Coding](/documentation/reference/agentic-coding/) : the reference an agent should load, with a truncation-safe rules table.
 - [Cheat Sheet](/documentation/reference/cheat-sheet/) : the core surface.
-- [CLI Commands](/documentation/tooling/cli-commands/) : every `phel` subcommand.
+- [CLI Commands](/documentation/reference/cli-commands/) : every `phel` subcommand.

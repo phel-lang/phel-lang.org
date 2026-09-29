@@ -1,6 +1,6 @@
 +++
 title = "Xdebug Setup"
-weight = 6
+weight = 3
 description = "Install and configure Xdebug for Phel: breakpoints in .phel files, path mappings, and editor setup for VS Code, PhpStorm, Emacs, and Neovim"
 aliases = ["/documentation/debug/xdebug-setup"]
 +++
@@ -318,12 +318,12 @@ The same hard breakpoint from Phel code (no-op when Xdebug isn't loaded):
 ```
 
 {% callout(kind="tip") %}
-**No Xdebug at hand?** Phel's built-in [`(break)`](/documentation/debugging/#break-a-repl-breakpoint-in-your-code) pauses execution in a sub-REPL with all lexical locals in scope: no extension or editor setup required.
+**No Xdebug at hand?** Phel's built-in [`(break)`](/documentation/guides/debugging/#break-a-repl-breakpoint-in-your-code) pauses execution in a sub-REPL with all lexical locals in scope: no extension or editor setup required.
 {% end %}
 
 ## Next steps
 
-- [Debugging](/documentation/debugging/) - the full debugging workflow: `dbg`, `tap>`, stack traces, profiling
+- [Debugging](/documentation/guides/debugging/) - the full debugging workflow: `dbg`, `tap>`, stack traces, profiling
 - [Editor support](/documentation/tooling/editor-support/) - install the VS Code Phel extension used above
 - [PHP debugging tools](/documentation/tooling/php-tools/) - lighter-weight `var_dump`/`dump` debugging
-- [Configuration](/documentation/configuration/) - `withKeepGeneratedTempFiles` and other dev settings
+- [Configuration](/documentation/reference/configuration/) - `withKeepGeneratedTempFiles` and other dev settings

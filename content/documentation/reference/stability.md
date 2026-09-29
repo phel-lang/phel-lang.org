@@ -1,7 +1,8 @@
 +++
 title = "Stability Policy"
-weight = 85
+weight = 6
 description = "What a Phel version promises: language and embedding stability for 1.x, which PHP symbols are public, how deprecations are announced, and upgrade guides."
+aliases = ["/documentation/stability/"]
 +++
 
 What a Phel version number promises you, which symbols it covers, and how those are allowed to change.
@@ -139,7 +140,7 @@ Your `phel-config.php` returns a `Phel\Config\PhelConfig`, covered by rule 6. Tw
 - **The wire keys.** `PhelConfig::SRC_DIRS` is the string `'src-dirs'`, and every sibling constant is the literal key the config reader consumes. Renaming one would silently change the meaning of an existing config file.
 - **The builder API.** `with*()` methods only gain siblings. An existing one keeps its name, its parameter type and its "returns a new instance" contract.
 
-The `.phel/` layout is frozen too: a tool may rely on `.phel/cache/` and `.phel/repl-history` being where they are. `PHEL_DIR` relocates the whole tree. See [Configuration](/documentation/configuration/).
+The `.phel/` layout is frozen too: a tool may rely on `.phel/cache/` and `.phel/repl-history` being where they are. `PHEL_DIR` relocates the whole tree. See [Configuration](/documentation/reference/configuration/).
 
 ## Explicitly not covered
 
@@ -153,7 +154,7 @@ Not under semver, and not before `1.0` either:
 
 ## Upgrading
 
-- **Version by version:** [Upgrading](/documentation/upgrading/) has the notes for each release back to 0.37, with the breaking changes and the `cache:clear` you need after each bump. Older releases are in [the changelog](https://github.com/phel-lang/phel-lang/blob/main/CHANGELOG.md).
+- **Version by version:** [Upgrading](/documentation/reference/upgrading/) has the notes for each release back to 0.37, with the breaking changes and the `cache:clear` you need after each bump. Older releases are in [the changelog](https://github.com/phel-lang/phel-lang/blob/main/CHANGELOG.md).
 - **Straight to 1.0 from 0.49 or later:** [the upgrade guide](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/upgrade-0.49-to-1.0.md) walks the whole path step by step. Most projects need nothing; where there is work, it is removing calls to things that have been printing notices for several releases.
 - **Something behaves differently from Clojure?** Check [the divergence catalogue](https://github.com/phel-lang/phel-lang/blob/main/docs/spec/clojure-divergences.md) first. If a behaviour is listed there, it is deliberate. Anything unlisted that differs is worth an issue.
 

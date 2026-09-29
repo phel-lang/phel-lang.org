@@ -1,6 +1,6 @@
 +++
 title = "REPL"
-weight = 2
+weight = 1
 description = "Use the Phel REPL: history vars, doc/dir/apropos helpers, introspection, tap> debugging, and a REPL-driven workflow"
 aliases = ["/documentation/repl", "/documentation/tooling/phel-helpers"]
 +++
@@ -249,7 +249,7 @@ user:2> (repl/run-tests 'my-app.users-test 'my-app.handlers-test)
 user:3> (repl/run-test 'my-app.users-test/creates-a-user)
 ```
 
-See also [Testing](/documentation/testing/) for `reset-stats`, `get-stats`, and `restore-stats`.
+See also [Testing](/documentation/guides/testing/) for `reset-stats`, `get-stats`, and `restore-stats`.
 
 ## Auto-injected utilities
 
@@ -429,7 +429,7 @@ Phel values are PHP objects, so every PHP inspection function works via `php/`: 
 
 ## Next steps
 
-- [Debugging](/documentation/debugging/) - the full debugging workflow: `dbg`, stack traces, Xdebug, profiling
-- [CLI commands](/documentation/tooling/cli-commands/) - run, test, and build from the terminal
+- [Debugging](/documentation/guides/debugging/) - the full debugging workflow: `dbg`, stack traces, Xdebug, profiling
+- [CLI commands](/documentation/reference/cli-commands/) - run, test, and build from the terminal
 - [Editor support](/documentation/tooling/editor-support/) - get the same eval loop inside your editor via `phel nrepl`
-- [Testing](/documentation/testing/) - run and inspect tests from the REPL
+- [Testing](/documentation/guides/testing/) - run and inspect tests from the REPL

@@ -24,7 +24,7 @@ Phel is a functional Lisp that compiles to PHP: persistent data structures, immu
     <h3 class="section-page-card__title">Coming from Clojure</h3>
     <p class="section-page-card__desc">Know Clojure? See what carries over and what changes on the PHP runtime.</p>
   </a>
-  <a href="/documentation/reference/agent-setup/" class="section-page-card">
+  <a href="/documentation/tooling/ai-agents/" class="section-page-card">
     <h3 class="section-page-card__title">Coding with AI</h3>
     <p class="section-page-card__desc">Pairing with Claude Code, Cursor, or Copilot? One command wires your agent to Phel.</p>
   </a>
@@ -63,15 +63,15 @@ Phel is a functional Lisp that compiles to PHP: persistent data structures, immu
     <h3 class="section-page-card__title">Web</h3>
     <p class="section-page-card__desc">Built-in HTTP request and response handling, routing, and HTML rendering.</p>
   </a>
-  <a href="/documentation/php-interop/" class="section-page-card">
+  <a href="/documentation/language/php-interop/" class="section-page-card">
     <h3 class="section-page-card__title">PHP Interop</h3>
     <p class="section-page-card__desc">Call any PHP function, class, or Composer package directly from Phel.</p>
   </a>
-  <a href="/documentation/testing/" class="section-page-card">
+  <a href="/documentation/guides/testing/" class="section-page-card">
     <h3 class="section-page-card__title">Testing</h3>
     <p class="section-page-card__desc">Write tests with deftest and is, mock dependencies, and run the suite with phel test.</p>
   </a>
-  <a href="/documentation/deployment/" class="section-page-card">
+  <a href="/documentation/guides/deployment/" class="section-page-card">
     <h3 class="section-page-card__title">Deployment</h3>
     <p class="section-page-card__desc">Ship on plain PHP-FPM, or keep namespaces warm across requests with FrankenPHP and RoadRunner.</p>
   </a>
@@ -81,7 +81,7 @@ Phel is a functional Lisp that compiles to PHP: persistent data structures, immu
   </a>
 </div>
 
-Also in the docs: [Why Phel?](/documentation/why-phel/), [Configuration](/documentation/configuration/), [Debugging](/documentation/debugging/), [Performance](/documentation/performance/), and the [Stability Policy](/documentation/stability/).
+Also in the docs: [Why Phel?](/documentation/why-phel/), [Configuration](/documentation/reference/configuration/), [Debugging](/documentation/guides/debugging/), [Performance](/documentation/guides/performance/), and the [Stability Policy](/documentation/reference/stability/).
 
 ## Need help?
 

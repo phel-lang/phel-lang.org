@@ -42,7 +42,7 @@ Hint: `php/strtoupper` does the lifting.
 ```
 PHP functions are reachable via the `php/` prefix - the entire PHP stdlib is at your fingertips.
 
-Learn more: [PHP Interop](/documentation/php-interop)
+Learn more: [PHP Interop](/documentation/language/php-interop)
 {% end %}
 
 {% question(difficulty="medium") %}

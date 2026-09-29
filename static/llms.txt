@@ -9,18 +9,15 @@ If you only fetch one URL, fetch the agent reference:
 - [Agentic Coding (raw markdown)](https://phel-lang.org/agentic-coding.md): same content, no HTML chrome. Preferred for direct ingest.
 - [Full documentation bundle (raw markdown)](https://phel-lang.org/llms-full.txt): the core pages concatenated into one file. Fetch this to ingest everything at once.
 
-## Onboarding
+## Start
 
 - [Phel in 5 Minutes](https://phel-lang.org/documentation/phel-in-5-minutes/): read Phel code without installing anything.
 - [Getting Started](https://phel-lang.org/documentation/getting-started/): zero to REPL in 60 seconds.
 - [Installation](https://phel-lang.org/documentation/installation/): Composer, PHAR, Docker, Nix.
-- [Upgrading](https://phel-lang.org/documentation/upgrading/): breaking changes and upgrade steps per release.
 - [Why Phel?](https://phel-lang.org/documentation/why-phel/): honest FAQ.
-- [Stability Policy](https://phel-lang.org/documentation/stability/): what a version number promises.
 
 ## Language
 
-- [Cheat Sheet](https://phel-lang.org/documentation/reference/cheat-sheet/): full core surface.
 - [Basic Types](https://phel-lang.org/documentation/language/basic-types/): literals, truthiness, arithmetic.
 - [Data Structures](https://phel-lang.org/documentation/language/data-structures/)
 - [Global and Local Bindings](https://phel-lang.org/documentation/language/global-and-local-bindings/)
@@ -31,6 +28,7 @@ If you only fetch one URL, fetch the agent reference:
 - [Reader Shortcuts](https://phel-lang.org/documentation/language/reader-shortcuts/)
 - [Error Handling](https://phel-lang.org/documentation/language/error-handling/)
 - [Namespaces](https://phel-lang.org/documentation/language/namespaces/)
+- [PHP Interop](https://phel-lang.org/documentation/language/php-interop/)
 - [Interfaces](https://phel-lang.org/documentation/language/interfaces/)
 - [Macros](https://phel-lang.org/documentation/language/macros/)
 - [Lazy Sequences](https://phel-lang.org/documentation/language/lazy-sequences/)
@@ -38,35 +36,24 @@ If you only fetch one URL, fetch the agent reference:
 - [Reader Conditionals](https://phel-lang.org/documentation/language/reader-conditionals/)
 - [Async and Concurrency](https://phel-lang.org/documentation/language/async/)
 
-## Interop and Tooling
-
-- [PHP Interop](https://phel-lang.org/documentation/php-interop/)
-- [Configuration](https://phel-lang.org/documentation/configuration/)
-- [Testing](https://phel-lang.org/documentation/testing/)
-- [Debugging](https://phel-lang.org/documentation/debugging/)
-- [Performance](https://phel-lang.org/documentation/performance/)
-- [Deployment](https://phel-lang.org/documentation/deployment/)
-- [CLI Commands](https://phel-lang.org/documentation/tooling/cli-commands/)
-- [REPL](https://phel-lang.org/documentation/tooling/repl/)
-- [Editor Support](https://phel-lang.org/documentation/tooling/editor-support/)
-- [PHP Debugging Tools](https://phel-lang.org/documentation/tooling/php-tools/)
-- [Xdebug Setup](https://phel-lang.org/documentation/tooling/xdebug-setup/)
-- [Error Reference](https://phel-lang.org/documentation/reference/errors/): every PHEL error code.
-
-## Web
-
-- [Routing](https://phel-lang.org/documentation/web/routing/)
-- [HTML Rendering](https://phel-lang.org/documentation/web/html-rendering/)
-- [HTTP Request and Response](https://phel-lang.org/documentation/web/http-request-and-response/)
-- [Framework Integration](https://phel-lang.org/documentation/web/framework-integration/): Symfony, Laravel, plain PHP.
-
 ## Guides
 
 - [Build a Web App](https://phel-lang.org/documentation/guides/build-a-web-app/): end-to-end tutorial.
+- [Coming from Clojure](https://phel-lang.org/documentation/guides/coming-from-clojure/)
+- [Rosetta Stone (PHP to Phel)](https://phel-lang.org/documentation/guides/rosetta-stone/)
 - [Cookbook](https://phel-lang.org/documentation/guides/cookbook/)
 - [One-liners](https://phel-lang.org/documentation/guides/one-liners/)
-- [Rosetta Stone (PHP to Phel)](https://phel-lang.org/documentation/guides/rosetta-stone/)
-- [Coming from Clojure](https://phel-lang.org/documentation/guides/coming-from-clojure/)
+- [Testing](https://phel-lang.org/documentation/guides/testing/)
+- [Debugging](https://phel-lang.org/documentation/guides/debugging/)
+- [Performance](https://phel-lang.org/documentation/guides/performance/)
+- [Deployment](https://phel-lang.org/documentation/guides/deployment/)
+
+## Web
+
+- [Request and Response](https://phel-lang.org/documentation/web/http-request-and-response/)
+- [Routing](https://phel-lang.org/documentation/web/routing/)
+- [HTML Rendering](https://phel-lang.org/documentation/web/html-rendering/)
+- [Framework Integration](https://phel-lang.org/documentation/web/framework-integration/): Symfony, Laravel, plain PHP.
 
 ## Libraries
 
@@ -74,10 +61,23 @@ If you only fetch one URL, fetch the agent reference:
 - [Data Formats](https://phel-lang.org/documentation/libraries/data-formats/): EDN and Transit.
 - [AI Module](https://phel-lang.org/documentation/libraries/ai/): provider-agnostic LLM client.
 
+## Tooling
+
+- [REPL](https://phel-lang.org/documentation/tooling/repl/)
+- [Editor Support](https://phel-lang.org/documentation/tooling/editor-support/)
+- [Xdebug Setup](https://phel-lang.org/documentation/tooling/xdebug-setup/)
+- [PHP Debugging Tools](https://phel-lang.org/documentation/tooling/php-tools/)
+- [AI Agents](https://phel-lang.org/documentation/tooling/ai-agents/): connect a coding agent with `phel agent-install`.
+
 ## Reference
 
+- [Cheat Sheet](https://phel-lang.org/documentation/reference/cheat-sheet/): core forms on one page.
+- [CLI Commands](https://phel-lang.org/documentation/reference/cli-commands/)
+- [Configuration](https://phel-lang.org/documentation/reference/configuration/)
+- [Error Reference](https://phel-lang.org/documentation/reference/errors/): every PHEL error code.
+- [Upgrading](https://phel-lang.org/documentation/reference/upgrading/): breaking changes and upgrade steps per release.
+- [Stability Policy](https://phel-lang.org/documentation/reference/stability/): what a version number promises.
 - [API Reference](https://phel-lang.org/documentation/reference/api/): every namespace and function.
-- [Agent Setup](https://phel-lang.org/documentation/reference/agent-setup/)
 
 ## Source of Truth
 

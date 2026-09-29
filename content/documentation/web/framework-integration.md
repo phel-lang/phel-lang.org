@@ -17,7 +17,7 @@ Phel installs as a Composer package and compiles to plain PHP. Your framework ne
 2. Mark public functions with `{:export true}`.
 3. Create one main namespace (`app.main`) that `:require`s every feature namespace. Loading it registers all exported functions at once.
 4. Export PHP wrappers under your framework's `App\` PSR-4 root via `phel export`.
-5. In production, run `phel build` at deploy and `require 'build/app/main.php'` at boot; in development, `\Phel::run($root, 'app.main')` compiles on first call. One [load guard](/documentation/deployment/#loading-phel-prod-vs-dev) picks the right path.
+5. In production, run `phel build` at deploy and `require 'build/app/main.php'` at boot; in development, `\Phel::run($root, 'app.main')` compiles on first call. One [load guard](/documentation/guides/deployment/#loading-phel-prod-vs-dev) picks the right path.
 
 Namespaces need at least two segments (`shop.pricing`, not `pricing`); a single-segment namespace exports invalid PHP.
 
@@ -100,7 +100,7 @@ return PhelConfig::forProject()
     ->withExportTargetDirectory(__DIR__ . '/app/PhelGenerated');
 ```
 
-A service provider runs the [load guard](/documentation/deployment/#loading-phel-prod-vs-dev) once, with Laravel's `base_path()` as the root, so all wrappers are ready:
+A service provider runs the [load guard](/documentation/guides/deployment/#loading-phel-prod-vs-dev) once, with Laravel's `base_path()` as the root, so all wrappers are ready:
 
 ```php
 namespace App\Providers;
@@ -173,7 +173,7 @@ return PhelConfig::forProject()
 
 The default `App\ → src/` PSR-4 mapping covers `App\PhelGenerated\`.
 
-Hook the same [load guard](/documentation/deployment/#loading-phel-prod-vs-dev) into the kernel `boot()`, with `getProjectDir()` as the root:
+Hook the same [load guard](/documentation/guides/deployment/#loading-phel-prod-vs-dev) into the kernel `boot()`, with `getProjectDir()` as the root:
 
 ```php
 private static bool $phelLoaded = false;
@@ -215,7 +215,7 @@ return PhelConfig::forProject(mainNamespace: 'app.main')
     ->withBuildDestDir('build');
 ```
 
-Entry script, applying the [load guard](/documentation/deployment/#loading-phel-prod-vs-dev) with `__DIR__` as the root:
+Entry script, applying the [load guard](/documentation/guides/deployment/#loading-phel-prod-vs-dev) with `__DIR__` as the root:
 
 ```php
 <?php
@@ -290,7 +290,7 @@ Some host APIs demand a concrete instance (a typed DTO, a value object a library
 (bean dto)  ; => {:id 1 :name "Keyboard" :price 49.9}
 ```
 
-See [Map to typed object and back](/documentation/php-interop/#map-to-typed-object-and-back) in the PHP interop reference for the full semantics.
+See [Map to typed object and back](/documentation/language/php-interop/#map-to-typed-object-and-back) in the PHP interop reference for the full semantics.
 
 ### Typed PHP from Phel definitions
 
@@ -322,7 +322,7 @@ Two related forms help framework integration:
 - `(defenum Status :active "active" :inactive "inactive")`: a native PHP backed enum (Doctrine/Symfony columns) plus a `Status?` predicate. An enum can implement interfaces and carry methods, reusing `defstruct`'s inline-impl machinery.
 - `(defexception NotFound \RuntimeException)`: an exception extending a chosen parent, so framework `catch` blocks match by type.
 
-For the full semantics of typed emission, native enums, and exceptions, see [Native enums and exceptions](/documentation/php-interop/#native-enums-and-exceptions) and the rest of the [PHP Interop](/documentation/php-interop/) reference.
+For the full semantics of typed emission, native enums, and exceptions, see [Native enums and exceptions](/documentation/language/php-interop/#native-enums-and-exceptions) and the rest of the [PHP Interop](/documentation/language/php-interop/) reference.
 
 ### Controllers, transactions, migrations
 
@@ -334,14 +334,14 @@ For the full semantics of typed emission, native enums, and exceptions, see [Nat
 
 - Namespace path matches directory: `phel/shop/pricing.phel` maps to `(ns shop.pricing)`.
 - Hyphens become camelCase: `(ns my-lib.core)` maps to `App\PhelGenerated\MyLib\Core`; `apply-discount` to `applyDiscount`.
-- Prod vs dev load, the run-once rule, and committing `build/`: see [Loading Phel: prod vs dev](/documentation/deployment/#loading-phel-prod-vs-dev).
+- Prod vs dev load, the run-once rule, and committing `build/`: see [Loading Phel: prod vs dev](/documentation/guides/deployment/#loading-phel-prod-vs-dev).
 - Load Phel in Laravel's `boot()`, never `register()` or any per-request hot path.
 - `withBuildDestDir()` is relative to the project root.
 - Add `vendor/bin/phel test` to CI alongside `phpunit`.
 
 ## Next steps
 
-- [PHP Interop](/documentation/php-interop/) - call PHP, build objects, typed emission, enums, and exceptions
+- [PHP Interop](/documentation/language/php-interop/) - call PHP, build objects, typed emission, enums, and exceptions
 - [Build a Web App](/documentation/guides/build-a-web-app/) - end-to-end Phel web app tutorial
 - [Debug with PHP tools](/documentation/tooling/php-tools/) - inspect compiled PHP and dump values with Symfony VarDumper
 - [phel-sql](https://github.com/phel-lang/phel-sql) and [phel-pdo](https://github.com/phel-lang/phel-pdo) - data-driven SQL + PDO wrapper

@@ -14,7 +14,7 @@ composer require phel-lang/phel-lang:^0.48
 ./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
-Always clear the cache after upgrading: compiled PHP from an earlier install can reference renamed internals and fail to load otherwise. This release also bumps the compiled-code cache format, so old entries are dropped once on the first run. Expect one cold compile. The [0.48 upgrade notes](/documentation/upgrading/#0-48) list every behaviour change.
+Always clear the cache after upgrading: compiled PHP from an earlier install can reference renamed internals and fail to load otherwise. This release also bumps the compiled-code cache format, so old entries are dropped once on the first run. Expect one cold compile. The [0.48 upgrade notes](/documentation/reference/upgrading/#0-48) list every behaviour change.
 
 ## Print a value in place
 

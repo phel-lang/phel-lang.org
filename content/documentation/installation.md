@@ -208,11 +208,11 @@ Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/edi
 
 ## Upgrading
 
-Moving to a newer Phel? [Upgrading](/documentation/upgrading/) lists what changed in each release, back to 0.37.
+Moving to a newer Phel? [Upgrading](/documentation/reference/upgrading/) lists what changed in each release, back to 0.37.
 
 ## Next steps
 
 - [Getting Started](/documentation/getting-started): first REPL session, project tour.
 - [Editor Support](/documentation/tooling/editor-support): Emacs, VS Code, IntelliJ, Vim.
-- [CLI Commands](/documentation/tooling/cli-commands): every subcommand.
-- [Configuration](/documentation/configuration): `phel-config.php` options.
+- [CLI Commands](/documentation/reference/cli-commands): every subcommand.
+- [Configuration](/documentation/reference/configuration): `phel-config.php` options.

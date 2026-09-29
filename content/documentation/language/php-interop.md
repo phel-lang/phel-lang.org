@@ -1,7 +1,8 @@
 +++
 title = "PHP Interop"
-weight = 50
+weight = 11
 description = "Call PHP functions, build objects, work with PHP arrays, and catch PHP exceptions from Phel."
+aliases = ["/documentation/php-interop/"]
 +++
 
 Phel runs on PHP. Every PHP function, class and Composer package is one form away.
@@ -555,7 +556,7 @@ class MyExistingClass {
 
 `phel export` generates a wrapper class for all Phel functions marked *export*.
 
-Set the `withExportFromDirectories`, `withExportNamespacePrefix`, and `withExportTargetDirectory` options in `phel-config.php` first: see [Configuration](/documentation/configuration/#full-reference).
+Set the `withExportFromDirectories`, `withExportNamespacePrefix`, and `withExportTargetDirectory` options in `phel-config.php` first: see [Configuration](/documentation/reference/configuration/#full-reference).
 
 Mark a function exported with metadata:
 
@@ -575,6 +576,6 @@ When the generated PHP must satisfy a framework's type expectations, opt-in meta
 ## Next steps
 
 - [Error Handling](/documentation/language/error-handling/): `try`, `catch`, `finally`, `ex-info`.
-- [Configuration](/documentation/configuration/): `withExport*` options for `phel export`.
+- [Configuration](/documentation/reference/configuration/): `withExport*` options for `phel export`.
 - [PHP API reference](/documentation/reference/api/php): every `php/*` builtin.
 - [Rosetta Stone](/documentation/guides/rosetta-stone/): PHP and Phel side by side, interop included.

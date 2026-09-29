@@ -493,7 +493,7 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
     (ex-cause e)))                 ; => nil
 ```
 
-See [PHP Interop](/documentation/php-interop).
+See [PHP Interop](/documentation/language/php-interop).
 
 ## Interfaces & structs
 
@@ -623,7 +623,7 @@ Ns.MyClass/CONST                   ; MyClass::CONST
 (php/apush arr "v")                ; $arr[] = "v"
 ```
 
-See [PHP Interop](/documentation/php-interop).
+See [PHP Interop](/documentation/language/php-interop).
 
 ## Namespaces
 
@@ -672,7 +672,7 @@ See [Namespaces](/documentation/language/namespaces).
 ./vendor/bin/phel test --fail-fast           # stop on first failure
 ```
 
-See [Testing](/documentation/testing).
+See [Testing](/documentation/guides/testing).
 
 ## Async & concurrency
 
@@ -837,7 +837,7 @@ Integer division (`/`) returns a `Ratio` when not evenly divisible. Use `float` 
 (dotrace [parse-row normalize] (process-file "in.csv"))
 ```
 
-See [Debugging](/documentation/debugging).
+See [Debugging](/documentation/guides/debugging).
 
 ## Next steps
 

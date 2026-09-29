@@ -60,7 +60,7 @@ Like Clojure: `.` namespace separator. PHP class FQNs in `:use` use `.`.
 
 ### Import a Phel module
 
-Import with `:require`, then access as `module/name`. Namespaces resolve from `src/` (override with [configuration](/documentation/configuration/)).
+Import with `:require`, then access as `module/name`. Namespaces resolve from `src/` (override with [configuration](/documentation/reference/configuration/)).
 
 Module `util` in namespace `hello-world`:
 
@@ -204,5 +204,5 @@ Fully qualified: namespace, `/`, keyword name.
 ## Next steps
 
 - [Interfaces](/documentation/language/interfaces/) - share behavior across types within a namespace
-- [Configuration](/documentation/configuration/) - set the source paths namespaces resolve from
+- [Configuration](/documentation/reference/configuration/) - set the source paths namespaces resolve from
 - [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding

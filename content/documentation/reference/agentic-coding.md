@@ -1,6 +1,6 @@
 +++
 title = "Agentic Coding"
-weight = 50
+weight = 7
 description = "Single-page Phel reference for AI coding agents (Claude Code, Codex, Cursor, Copilot, Aider, Gemini). Self-contained syntax, idioms, interop, gotchas."
 aliases = ["/documentation/llms", "/documentation/ai-agents"]
 +++
@@ -9,7 +9,7 @@ Single-page reference for AI agents (Claude Code, Codex, Cursor, Copilot, Aider,
 
 Load this one if you can only load one doc into an agent's context.
 
-> **Want this installed as a skill in your tool?** [Agent Setup](/documentation/reference/agent-setup/) wires Claude Code, Cursor, Copilot, Codex, Gemini, or Aider to Phel with one `phel agent-install` command.
+> **Want this installed as a skill in your tool?** [AI Agents](/documentation/tooling/ai-agents/) wires Claude Code, Cursor, Copilot, Codex, Gemini, or Aider to Phel with one `phel agent-install` command.
 
 <div class="agent-doc-cta">
   <a href="/agentic-coding.md" class="btn btn-primary btn-lg" download>
@@ -298,7 +298,7 @@ Minimal `phel-config.php`:
 return \Phel\Config\PhelConfig::forProject(\Phel\Config\ProjectLayout::Flat, 'my-app.main');
 ```
 
-Full options: [Configuration](/documentation/configuration).
+Full options: [Configuration](/documentation/reference/configuration).
 
 ## Idiomatic style for agents
 
@@ -325,8 +325,8 @@ On this site:
 
 - [Cheat Sheet](/documentation/reference/cheat-sheet): core forms and functions.
 - [Language section](/documentation/language/): types, functions, control flow, macros, interfaces, namespaces, destructuring, recursion.
-- [PHP Interop](/documentation/php-interop): every interop form.
+- [PHP Interop](/documentation/language/php-interop): every interop form.
 - [Cookbook](/documentation/guides/cookbook): copy-paste recipes.
 - [Rosetta Stone](/documentation/guides/rosetta-stone): PHP to Phel side-by-side.
 - [REPL guide](/documentation/tooling/repl): dev loop.
-- [CLI Commands](/documentation/tooling/cli-commands): every subcommand.
+- [CLI Commands](/documentation/reference/cli-commands): every subcommand.

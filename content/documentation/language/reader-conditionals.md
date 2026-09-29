@@ -1,6 +1,6 @@
 +++
 title = "Reader Conditionals"
-weight = 15
+weight = 16
 description = "Write platform-specific code in shared .cljc source files with #?() and #?@(), resolved at parse time using :phel and :default keys"
 
 [extra]

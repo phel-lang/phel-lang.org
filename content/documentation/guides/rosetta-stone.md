@@ -1292,5 +1292,5 @@ $result = implode(", ",
 ## Next steps
 
 - [Cookbook](/documentation/guides/cookbook/) - ready-made recipes for common tasks
-- [PHP interop](/documentation/php-interop/) - reach into the PHP standard library and Composer packages
+- [PHP interop](/documentation/language/php-interop/) - reach into the PHP standard library and Composer packages
 - [Data structures](/documentation/language/data-structures/) - how Phel collections differ from PHP arrays

@@ -1,6 +1,6 @@
 +++
 title = "Editor Support"
-weight = 3
+weight = 2
 description = "Set up Phel in PhpStorm, VS Code, Emacs, and Vim: syntax highlighting, indentation, and inline eval over nREPL"
 aliases = ["/documentation/editor-support"]
 +++
@@ -84,7 +84,7 @@ vendor/bin/phel nrepl --port=7888 --host=127.0.0.1
 
 This starts an [nREPL](https://nrepl.org/) server (Bencode over TCP) that nREPL-aware editors connect to. Once connected, evaluating a form in the editor runs it in the same process, so state and loaded namespaces persist between evaluations, exactly like the [REPL](/documentation/tooling/repl/).
 
-Defaults are port `7888` and host `127.0.0.1`. Override either with the flags above. The server is also listed under [CLI commands](/documentation/tooling/cli-commands/#nrepl) alongside the other tooling entry points.
+Defaults are port `7888` and host `127.0.0.1`. Override either with the flags above. The server is also listed under [CLI commands](/documentation/reference/cli-commands/#nrepl) alongside the other tooling entry points.
 
 The server implements the standard ops (`eval`, `clone`, `close`, `describe`, `load-file`, `interrupt`, `completions`, `lookup`, `info`, `eldoc`), so stock nREPL clients work unmodified. Two Phel-specific ops back the [REPL-driven workflow](/documentation/tooling/repl/#reload-changed-code): `reload` (with an `all` param to force a full reload) and `run-tests` (an `ns` param plus an optional `var`). Bind them to editor commands for "reload changed namespaces" and "run the test under the cursor".
 
@@ -108,5 +108,5 @@ Hover shows the reflected signature for PHP methods, functions, and classes, and
 ## Next steps
 
 - [REPL](/documentation/tooling/repl/) - the interactive loop your editor connects to
-- [CLI commands](/documentation/tooling/cli-commands/#nrepl) - start `phel nrepl` and `phel lsp`
+- [CLI commands](/documentation/reference/cli-commands/#nrepl) - start `phel nrepl` and `phel lsp`
 - [Xdebug setup](/documentation/tooling/xdebug-setup/): step-through debugging in VS Code and PhpStorm

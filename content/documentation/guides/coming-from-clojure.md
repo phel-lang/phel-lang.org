@@ -276,7 +276,7 @@ Use `php/` prefix:
 (php/pow 2 10)
 ```
 
-Any PHP function via `php/` prefix. See [PHP Interop](/documentation/php-interop).
+Any PHP function via `php/` prefix. See [PHP Interop](/documentation/language/php-interop).
 
 ### Printing
 
@@ -316,7 +316,7 @@ Use `;` and `;;`. Legacy `#` line and `#| ... |#` block comments still read but 
 
 ### CIDER / Calva / nREPL
 
-Editor tooling covers [VS Code, PhpStorm, Emacs, Vim](/documentation/tooling/editor-support/). Phel ships [nREPL](/documentation/tooling/cli-commands/#nrepl) and [LSP](/documentation/tooling/cli-commands/#lsp) servers, structured stack frames in `EvalError`, stdout capture in `EvalResult`.
+Editor tooling covers [VS Code, PhpStorm, Emacs, Vim](/documentation/tooling/editor-support/). Phel ships [nREPL](/documentation/reference/cli-commands/#nrepl) and [LSP](/documentation/reference/cli-commands/#lsp) servers, structured stack frames in `EvalError`, stdout capture in `EvalResult`.
 
 ### ClojureScript
 
@@ -355,7 +355,7 @@ PHP processes start in milliseconds. No JVM warmup. CLI tools and short-lived sc
 
 ### PHP ecosystem
 
-Decades of battle-tested libraries via `composer require`: WordPress, Laravel, Symfony, Guzzle, PHPUnit, Doctrine, thousands more. All callable through [PHP interop](/documentation/php-interop/).
+Decades of battle-tested libraries via `composer require`: WordPress, Laravel, Symfony, Guzzle, PHPUnit, Doctrine, thousands more. All callable through [PHP interop](/documentation/language/php-interop/).
 
 ## Quick reference: Clojure to Phel
 
@@ -394,4 +394,4 @@ Welcome to the PHP side of Lisp. The parentheses are the same; the runtime is PH
 
 - [Rosetta Stone: PHP to Phel](/documentation/guides/rosetta-stone/) - the PHP angle on the same forms
 - [Cookbook](/documentation/guides/cookbook/) - copy-paste recipes to get productive fast
-- [PHP interop](/documentation/php-interop/) - the full interop reference
+- [PHP interop](/documentation/language/php-interop/) - the full interop reference

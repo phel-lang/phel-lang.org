@@ -1,7 +1,8 @@
 +++
 title = "Testing"
-weight = 70
+weight = 10
 description = "Write tests with deftest, is, mocks, and property-based specs, then run them with phel test."
+aliases = ["/documentation/testing/"]
 +++
 
 Built-in unit testing with no boilerplate. Define tests as functions, run them from the CLI.
@@ -198,7 +199,7 @@ echo "hello";
 
 ## Running tests
 
-Run via `vendor/bin/phel test`. Picks up tests recursively from [withTestDirs](/documentation/configuration/), defaults to `tests/`.
+Run via `vendor/bin/phel test`. Picks up tests recursively from [withTestDirs](/documentation/reference/configuration/), defaults to `tests/`.
 
 Pass filenames to run specific files:
 
@@ -516,7 +517,7 @@ Opt out of shrinking with `^:no-shrink` metadata or `:shrink? false`.
 
 ## Next steps
 
-- [Configuration](/documentation/configuration/): point `withTestDirs` at your test folders.
-- [CLI Commands](/documentation/tooling/cli-commands): the full `phel test` flag list.
+- [Configuration](/documentation/reference/configuration/): point `withTestDirs` at your test folders.
+- [CLI Commands](/documentation/reference/cli-commands): the full `phel test` flag list.
 - [phel.test API](/documentation/reference/api/test): every assertion and helper.
-- [Debugging](/documentation/debugging/): find the bug before you pin it with a test.
+- [Debugging](/documentation/guides/debugging/): find the bug before you pin it with a test.

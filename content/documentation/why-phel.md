@@ -33,17 +33,17 @@ Phel and PHP optimize for different things on the same runtime.
 
 ## Can I use existing PHP libraries?
 
-Yes. Any PHP function or constant is one `php/` prefix away: `(php/strlen "hello")`. Classes from PHP or any Composer package work with `new`, `.method`, and `Class/member`: `(.format (new DateTimeImmutable "2024-01-15") "Y-m-d")`. The full escape hatch (methods, statics, constants, `php/aget`) is in [PHP Interop](/documentation/php-interop).
+Yes. Any PHP function or constant is one `php/` prefix away: `(php/strlen "hello")`. Classes from PHP or any Composer package work with `new`, `.method`, and `Class/member`: `(.format (new DateTimeImmutable "2024-01-15") "Y-m-d")`. The full escape hatch (methods, statics, constants, `php/aget`) is in [PHP Interop](/documentation/language/php-interop).
 
 ## Isn't a compilation step a hassle?
 
-No. In development there is no build step: `vendor/bin/phel run` and the REPL compile on the fly. For production, `phel build` precompiles everything to plain PHP. See [Deployment](/documentation/deployment/).
+No. In development there is no build step: `vendor/bin/phel run` and the REPL compile on the fly. For production, `phel build` precompiles everything to plain PHP. See [Deployment](/documentation/guides/deployment/).
 
 ## What about performance?
 
 Phel compiles to plain PHP, so the bulk of your code runs at PHP speed. The real overhead is the persistent (immutable) data structures: an "update" allocates a new structure with structural sharing (O(log32 n)) rather than mutating in place, so they are slower than a native PHP array write. For most web, CLI, and data-processing work that cost is negligible.
 
-In a hot inner loop over millions of elements, reach for native PHP arrays through [PHP interop](/documentation/php-interop/) (`php/aset`, `php/aget`, `php/apush`) and stay on the fast path, then hand the result back as a Phel value. Everywhere else, immutability buys correctness and clearer code for a price you will not notice.
+In a hot inner loop over millions of elements, reach for native PHP arrays through [PHP interop](/documentation/language/php-interop/) (`php/aset`, `php/aget`, `php/apush`) and stay on the fast path, then hand the result back as a Phel value. Everywhere else, immutability buys correctness and clearer code for a price you will not notice.
 
 ## What about debugging?
 
@@ -76,5 +76,5 @@ See [awesome-phel](https://github.com/phel-lang/awesome-phel) for libraries, too
 ## Next steps
 
 - [Getting Started](/documentation/getting-started): zero to a live REPL.
-- [PHP Interop](/documentation/php-interop): call any PHP function or class.
+- [PHP Interop](/documentation/language/php-interop): call any PHP function or class.
 - [Cheat Sheet](/documentation/reference/cheat-sheet): core syntax and functions in one page.

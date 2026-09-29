@@ -1,6 +1,6 @@
 +++
 title = "PHP Debugging Tools"
-weight = 7
+weight = 4
 description = "Debug Phel with PHP tools: var_dump, Symfony VarDumper dump/dd, inspecting compiled PHP, and error reporting"
 aliases = ["/documentation/tooling/php-tools"]
 +++
@@ -130,7 +130,7 @@ return (require __DIR__ . '/phel-config.php')
 
 > TIP: Add `phel-config-local.php` to `.gitignore` to change your dev config without touching the shared one.
 
-Then open the file from the error message and match its line numbers. See [Configuration](/documentation/configuration/) for the other dev settings.
+Then open the file from the error message and match its line numbers. See [Configuration](/documentation/reference/configuration/) for the other dev settings.
 
 ## PHP error reporting
 
@@ -157,4 +157,4 @@ Catches:
 
 - [Phel debug helpers](/documentation/tooling/repl/#debug-helpers) for native debugging
 - [Xdebug](/documentation/tooling/xdebug-setup/) for step-through debugging
-- [Config docs](/documentation/configuration/) for more dev settings
+- [Config docs](/documentation/reference/configuration/) for more dev settings

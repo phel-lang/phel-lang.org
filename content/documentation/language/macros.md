@@ -1,6 +1,6 @@
 +++
 title = "Macros"
-weight = 12
+weight = 13
 description = "Write compile-time code that rewrites code: defmacro, quasiquote, macroexpand, gensym hygiene, and when a macro is worth it"
 aliases = ["/documentation/macros"]
 

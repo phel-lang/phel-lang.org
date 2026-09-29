@@ -100,7 +100,7 @@ Anything prefixed with `php/` reaches straight into PHP. Every function, class, 
 (.format now "Y-m-d")                ; $now->format("Y-m-d")
 ```
 
-`new` builds objects, `.method` calls methods, `Class/member` reaches statics and constants. You do not need them to start, but it is why "a Lisp on PHP" is more than a slogan: the entire PHP ecosystem is still there. Full details in [PHP Interop](/documentation/php-interop/).
+`new` builds objects, `.method` calls methods, `Class/member` reaches statics and constants. You do not need them to start, but it is why "a Lisp on PHP" is more than a slogan: the entire PHP ecosystem is still there. Full details in [PHP Interop](/documentation/language/php-interop/).
 
 ## Putting it together
 

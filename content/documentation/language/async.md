@@ -1,6 +1,6 @@
 +++
 title = "Async & Concurrency"
-weight = 16
+weight = 17
 description = "Run work concurrently with Phel's two fiber-based layers: top-level promises and futures, plus an AMPHP event loop for timers, IO, and fan-out"
 
 [extra]
@@ -216,4 +216,4 @@ When one branch fails, cancel its sibling. `future-cancel` is cooperative: `slow
 
 - [Async API reference](/documentation/reference/api/async/) - every function with its full signature
 - [Error handling](/documentation/language/error-handling/) - `try`/`catch` around awaited work
-- [PHP interop](/documentation/php-interop/) - calling AMPHP and other PHP libraries from Phel
+- [PHP interop](/documentation/language/php-interop/) - calling AMPHP and other PHP libraries from Phel

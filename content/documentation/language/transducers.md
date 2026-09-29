@@ -1,6 +1,6 @@
 +++
 title = "Transducers"
-weight = 14
+weight = 15
 description = "Build composable, allocation-free transformation pipelines that decouple the transformation from the consumer, and write your own custom transducers"
 
 [extra]

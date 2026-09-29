@@ -1,8 +1,8 @@
 +++
 title = "CLI Commands"
-weight = 1
+weight = 2
 description = "Every built-in phel command: init, build, run, test, repl, eval, compile, lint, watch, nrepl, lsp, and more"
-aliases = ["/documentation/cli-commands"]
+aliases = ["/documentation/cli-commands", "/documentation/tooling/cli-commands/"]
 +++
 
 Every task you run through Phel goes through one CLI. This page lists the built-in commands with a working example for each.
@@ -87,9 +87,9 @@ vendor/bin/phel build --report
 vendor/bin/phel build --no-cache --timing
 ```
 
-`-O` overrides the level set via `withOptimizationLevel(...)` in `phel-config.php`. See [Performance](/documentation/performance/) for what each level does. `--report` prints namespace count, per-namespace compiled size, total size, the fresh/cached breakdown, and build time.
+`-O` overrides the level set via `withOptimizationLevel(...)` in `phel-config.php`. See [Performance](/documentation/guides/performance/) for what each level does. `--report` prints namespace count, per-namespace compiled size, total size, the fresh/cached breakdown, and build time.
 
-[Configuration](/documentation/configuration/) in `phel-config.php`:
+[Configuration](/documentation/reference/configuration/) in `phel-config.php`:
 ```php
 <?php
 return (new \Phel\Config\PhelConfig())
@@ -105,7 +105,7 @@ Exports definitions with `{:export true}` metadata as PHP classes. Generates one
 vendor/bin/phel export
 ```
 
-Configure the export dirs, namespace prefix, and target directory in `phel-config.php`; see [Configuration](/documentation/configuration/#full-reference).
+Configure the export dirs, namespace prefix, and target directory in `phel-config.php`; see [Configuration](/documentation/reference/configuration/#full-reference).
 
 ## Format phel files
 
@@ -118,7 +118,7 @@ vendor/bin/phel format --dry-run  # report files that would change, exit non-zer
 vendor/bin/phel format --exclude='src/generated/*'  # skip a glob, repeatable
 ```
 
-[Configuration](/documentation/configuration/) in `phel-config.php`:
+[Configuration](/documentation/reference/configuration/) in `phel-config.php`:
 ```php
 <?php
 return (new PhelConfig())
@@ -164,7 +164,7 @@ vendor/bin/phel run src/cli.phel --name Alice
 # *argv* is ["--name" "Alice"]
 ```
 
-[Configuration](/documentation/configuration/) in `phel-config.php`:
+[Configuration](/documentation/reference/configuration/) in `phel-config.php`:
 ```php
 <?php
 return (new PhelConfig())
@@ -209,9 +209,9 @@ vendor/bin/phel test
 #       --coverage-output=PATH  Write the coverage report to a file (the directory for html).
 ```
 
-See [Testing](/documentation/testing/) for what each flag does.
+See [Testing](/documentation/guides/testing/) for what each flag does.
 
-[Configuration](/documentation/configuration/) in `phel-config.php`:
+[Configuration](/documentation/reference/configuration/) in `phel-config.php`:
 ```php
 <?php
 return (new PhelConfig())
@@ -453,7 +453,7 @@ vendor/bin/phel config
 vendor/bin/phel config --format=json
 ```
 
-See [Configuration](/documentation/configuration/) for every setter.
+See [Configuration](/documentation/reference/configuration/) for every setter.
 
 ## Clear caches
 
@@ -491,4 +491,4 @@ vendor/bin/phel balance src/broken.phel
 
 - [REPL](/documentation/tooling/repl/) - the interactive loop behind `phel repl`
 - [Editor support](/documentation/tooling/editor-support/) - connect your editor to `phel nrepl`
-- [Configuration](/documentation/configuration/) - tune paths, cache, and export in `phel-config.php`
+- [Configuration](/documentation/reference/configuration/) - tune paths, cache, and export in `phel-config.php`

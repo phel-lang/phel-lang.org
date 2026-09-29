@@ -110,7 +110,7 @@ Hint: `php/ord` and `php/chr` give you character codes.
 ```
 This combines `map` over a string (treated as a sequence of characters), the short anonymous `|` form, PHP interop for character codes, and modular arithmetic for the wrap-around.
 
-Learn more: [PHP Interop](/documentation/php-interop), [Functions and Recursion](/documentation/language/functions-and-recursion)
+Learn more: [PHP Interop](/documentation/language/php-interop), [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
 {% question(difficulty="hard") %}
@@ -152,7 +152,7 @@ Tips:
 ```
 A textbook `->>` pipeline. Each step reads as a sentence: lowercase, drop stop words, count, sort, take. This is the shape a lot of real Phel data work takes.
 
-Learn more: [PHP Interop](/documentation/php-interop), [Data Structures](/documentation/language/data-structures), [Functions and Recursion](/documentation/language/functions-and-recursion)
+Learn more: [PHP Interop](/documentation/language/php-interop), [Data Structures](/documentation/language/data-structures), [Functions and Recursion](/documentation/language/functions-and-recursion)
 {% end %}
 
 {% question(difficulty="hard") %}
@@ -259,5 +259,5 @@ Hints:
 ```
 The boss fight: global definitions, map destructuring in parameters, `cond`, `let`, `loop`/`recur`, PHP interop for input, and data-driven design with maps. Once you've finished this, you've used most of Phel's core toolkit.
 
-Learn more: [PHP Interop](/documentation/php-interop), [Control Flow](/documentation/language/control-flow), [Destructuring](/documentation/language/destructuring)
+Learn more: [PHP Interop](/documentation/language/php-interop), [Control Flow](/documentation/language/control-flow), [Destructuring](/documentation/language/destructuring)
 {% end %}

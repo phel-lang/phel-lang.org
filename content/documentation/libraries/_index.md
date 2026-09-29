@@ -1,6 +1,6 @@
 +++
 title = "Libraries"
-weight = 105
+weight = 30
 sort_by = "weight"
 insert_anchor_links = "right"
 template = "section-page.html"

@@ -21,8 +21,8 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
     <p class="homepage-hero-note">The browser REPL downloads about 80 MB. Desktop recommended.</p>
     <ul class="homepage-facts" aria-label="Production facts">
       <li>Requires <strong>PHP 8.5+</strong></li>
-      <li>Pre-1.0. Read the <a href="/documentation/stability/">stability policy</a></li>
-      <li>PHP-FPM, FrankenPHP or RoadRunner. <a href="/documentation/deployment/">Deploy guide</a></li>
+      <li>Pre-1.0. Read the <a href="/documentation/reference/stability/">stability policy</a></li>
+      <li>PHP-FPM, FrankenPHP or RoadRunner. <a href="/documentation/guides/deployment/">Deploy guide</a></li>
     </ul>
   </div>
   <div class="homepage-hero-aside">
@@ -297,11 +297,11 @@ php phel.phar repl
 <div class="faq">
   <details class="faq-item">
     <summary class="faq-q">Is Phel production-ready?</summary>
-    <div class="faq-a">Phel is pre-1.0, but the core language and tooling are stable and tested: a good fit for side projects, CLI apps, internal tools, and prototypes. Breaking changes can still land between minor releases, so it isn't LTS-grade enterprise-stable yet. The <a href="/documentation/stability/">stability policy</a> spells out what <code>1.0</code> will freeze, and the <a href="/documentation/deployment/">deployment guide</a> covers FPM and worker runtimes. Full picture in <a href="/documentation/why-phel/#is-phel-production-ready">Why Phel</a>.</div>
+    <div class="faq-a">Phel is pre-1.0, but the core language and tooling are stable and tested: a good fit for side projects, CLI apps, internal tools, and prototypes. Breaking changes can still land between minor releases, so it isn't LTS-grade enterprise-stable yet. The <a href="/documentation/reference/stability/">stability policy</a> spells out what <code>1.0</code> will freeze, and the <a href="/documentation/guides/deployment/">deployment guide</a> covers FPM and worker runtimes. Full picture in <a href="/documentation/why-phel/#is-phel-production-ready">Why Phel</a>.</div>
   </details>
   <details class="faq-item">
     <summary class="faq-q">Can I call PHP libraries from Phel?</summary>
-    <div class="faq-a">Yes. Phel compiles to PHP, so any Composer package, function, or class is directly callable via the <code>php/</code> prefix. See the <a href="/documentation/php-interop">interop guide</a>.</div>
+    <div class="faq-a">Yes. Phel compiles to PHP, so any Composer package, function, or class is directly callable via the <code>php/</code> prefix. See the <a href="/documentation/language/php-interop">interop guide</a>.</div>
   </details>
   <details class="faq-item">
     <summary class="faq-q">How is Phel different from Clojure?</summary>

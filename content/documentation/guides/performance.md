@@ -1,7 +1,8 @@
 +++
 title = "Performance"
-weight = 75
+weight = 12
 description = "Speed up phel test and phel run with CLI opcache, the compiled-code cache, optimization levels, profiling, and type tags."
+aliases = ["/documentation/performance/"]
 +++
 
 Make `phel test`, `phel run`, and the other CLI commands fast. Everything here applies to both source-checkout and PHAR installs.
@@ -66,7 +67,7 @@ Phel keeps its own compiled-code cache under `.phel/cache/` that memoizes Phel-t
 
 Invalidation is automatic. Each run hashes the `.phel` source (`md5`) against the stored entry; on a mismatch it recompiles that file and its transitive dependents, then `opcache_compile_file()`s the generated PHP. Changing the optimization level forces a full recompile.
 
-The cache flags (`withEnableCompiledCodeCache`, `withEnableNamespaceCache`, `withCacheDir`) and their defaults live in [Configuration](/documentation/configuration/). You rarely need to touch them.
+The cache flags (`withEnableCompiledCodeCache`, `withEnableNamespaceCache`, `withCacheDir`) and their defaults live in [Configuration](/documentation/reference/configuration/). You rarely need to touch them.
 
 ### Reset the caches
 
@@ -150,7 +151,7 @@ Do not guess. Profile a script to see per-function timings and compile-phase cos
 vendor/bin/phel profile path/to/file.phel
 ```
 
-See [Profile](/documentation/tooling/cli-commands/#profile) for output formats.
+See [Profile](/documentation/reference/cli-commands/#profile) for output formats.
 
 ## Memory limit
 
@@ -162,8 +163,8 @@ php -d memory_limit=-1 vendor/bin/phel test
 
 ## Next steps
 
-- [Configuration](/documentation/configuration/): cache flags and the full `phel-config.php` reference.
-- [CLI Commands](/documentation/tooling/cli-commands/#profile): `phel profile` and `phel cache:clear`.
+- [Configuration](/documentation/reference/configuration/): cache flags and the full `phel-config.php` reference.
+- [CLI Commands](/documentation/reference/cli-commands/#profile): `phel profile` and `phel cache:clear`.
 - [Functions and Recursion](/documentation/language/functions-and-recursion/): the full story on `:tag`, `^:memoize`, and `recur`.
-- [Deployment](/documentation/deployment/): worker runtimes (FrankenPHP, RoadRunner) that drop per-request boot cost in production.
+- [Deployment](/documentation/guides/deployment/): worker runtimes (FrankenPHP, RoadRunner) that drop per-request boot cost in production.
 - PHP manual: [opcache configuration](https://www.php.net/manual/en/opcache.configuration.php).

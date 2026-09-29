@@ -1,10 +1,17 @@
 +++
 title = "Reference"
-weight = 110
+weight = 50
 sort_by = "weight"
 insert_anchor_links = "right"
 template = "section-page.html"
-description = "Quick reference for Phel: the cheat sheet, the error-code index, the agentic-coding guide, and the full API for every built-in namespace."
+description = "Look things up: the cheat sheet, CLI commands, configuration keys, error codes, upgrade notes, the stability policy, and the API for every built-in namespace."
 +++
 
-Look things up fast. The **Cheat Sheet** is a one-page list of core forms and functions. The **Error Reference** explains every `PHEL...` compiler error code and how to fix it. **Agent Setup** installs Phel skill files for your AI coding tool with one command, and **Agentic Coding** is the single-page brief those tools load. The **API** documents every function in every built-in namespace.
+Pages to look things up, not to read top to bottom.
+
+- **Cheat Sheet**: the core forms on one page.
+- **CLI Commands** and **Configuration**: every command, flag, and config key.
+- **Error Reference**: every `PHEL...` compiler error and its fix.
+- **Upgrading** and **Stability Policy**: what changes between releases and what stays put.
+- **Agentic Coding**: the one-file brief AI coding tools load.
+- **API**: every function in every built-in namespace.

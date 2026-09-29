@@ -14,7 +14,7 @@ composer require phel-lang/phel-lang:^0.49
 ./vendor/bin/phel cache:clear        # or: rm -rf .phel/cache
 ```
 
-Always clear the cache after upgrading: compiled PHP from an earlier install can reference renamed internals and fail to load otherwise. The [0.49 upgrade notes](/documentation/upgrading/#0-49) list every behaviour change.
+Always clear the cache after upgrading: compiled PHP from an earlier install can reference renamed internals and fail to load otherwise. The [0.49 upgrade notes](/documentation/reference/upgrading/#0-49) list every behaviour change.
 
 ## Two behaviour changes
 

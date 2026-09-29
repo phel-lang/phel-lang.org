@@ -1,6 +1,6 @@
 +++
 title = "Interfaces"
-weight = 11
+weight = 12
 description = "Define contracts with definterface, implement them in structs, extend types with protocols, and dispatch via hierarchies"
 aliases = ["/documentation/interfaces"]
 
@@ -110,7 +110,7 @@ A struct can implement many. List each followed by its methods:
 
 ### Calling other methods on same struct
 
-Interface dispatch routes through the generated function, not through `this` directly. To call another interface method on the same struct from within a method body, use the [method-call form](/documentation/php-interop/#method-and-property-call) `.method` on `this`:
+Interface dispatch routes through the generated function, not through `this` directly. To call another interface method on the same struct from within a method body, use the [method-call form](/documentation/language/php-interop/#method-and-property-call) `.method` on `this`:
 
 ```phel
 (definterface Describable

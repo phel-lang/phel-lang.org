@@ -1,7 +1,8 @@
 +++
 title = "Configuration"
-weight = 60
+weight = 3
 description = "Set up phel-config.php: source and test dirs, build, cache, and export options."
+aliases = ["/documentation/configuration/"]
 +++
 
 Phel reads `phel-config.php` from the project root. Most projects only need the factory:
@@ -99,14 +100,14 @@ return (new \Phel\Config\PhelConfig())
 | `withEnableIntermediateCache`          | Cache the lex/parse/read output per source so warm rebuilds skip to analysis. Experimental. Default `false`. |
 | `withEnableAsserts`                    | Toggle runtime `assert` checks.                                                                        |
 | `withWarnDeprecations`                 | Emit warnings on deprecated APIs.                                                                      |
-| `withOptimizationLevel`                | Compiler optimization level (`0` = off, `2` = inline + tail-call rewrite). See [Performance](/documentation/performance/#optimization-levels). |
+| `withOptimizationLevel`                | Compiler optimization level (`0` = off, `2` = inline + tail-call rewrite). See [Performance](/documentation/guides/performance/#optimization-levels). |
 | `withStripSymbolMeta`                  | `phel build` drops symbol metadata (docstrings, arglists, source locations). Smaller, faster artifacts, but `phel doc` and `(meta ...)` return nil on built defs. Production builds only. |
 | `withMainPhelNamespace`                | Entry ns for `phel build`. No default.                                                                 |
 | `withMainPhpPath`                      | Generated PHP entry path.                                                                              |
 | `withBuildDestDir`                     | Output directory for `phel build`.                                                                     |
 | `withExportFromDirectories`            | Source dirs scanned by `phel export`.                                                                  |
 | `withExportNamespacePrefix`            | PHP namespace prefix for exported wrappers.                                                            |
-| `withExportTargetDirectory`            | Output dir for `phel export`. See [PHP Interop](/documentation/php-interop/#calling-phel-from-php).    |
+| `withExportTargetDirectory`            | Output dir for `phel export`. See [PHP Interop](/documentation/language/php-interop/#calling-phel-from-php).    |
 | `withBuildConfig` / `withExportConfig` | Tune the nested build/export config. Pass a configurator closure to adjust it in place, or a config object to replace it wholesale. |
 
 </div>
@@ -116,10 +117,10 @@ return (new \Phel\Config\PhelConfig())
 The old `setX()` setters were removed in 0.46. Use the `withX()` chain. Each call returns a new config.
 {% end %}
 
-To see the merged result of all of this (and which file each value came from), run `phel config`. See [CLI commands](/documentation/tooling/cli-commands/#inspect-configuration).
+To see the merged result of all of this (and which file each value came from), run `phel config`. See [CLI commands](/documentation/reference/cli-commands/#inspect-configuration).
 
 ## Next steps
 
-- [Testing](/documentation/testing): point `withTestDirs` at your tests, then run `phel test`.
-- [PHP Interop](/documentation/php-interop): export Phel functions for use from PHP.
-- [CLI Commands](/documentation/tooling/cli-commands): every subcommand the config drives.
+- [Testing](/documentation/guides/testing): point `withTestDirs` at your tests, then run `phel test`.
+- [PHP Interop](/documentation/language/php-interop): export Phel functions for use from PHP.
+- [CLI Commands](/documentation/reference/cli-commands): every subcommand the config drives.

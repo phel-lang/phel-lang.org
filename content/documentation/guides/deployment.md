@@ -1,10 +1,11 @@
 +++
 title = "Deployment"
-weight = 80
+weight = 13
 description = "Deploy Phel apps on plain PHP-FPM or keep namespaces warm across requests with FrankenPHP and RoadRunner worker runtimes."
+aliases = ["/documentation/deployment/"]
 +++
 
-PHP is **shared-nothing** by default: every request boots a fresh process, so a Phel namespace does not persist between requests. [`phel build`](/documentation/tooling/cli-commands/#build-the-project) compiles your namespaces to PHP ahead of time and opcache caches that bytecode, so nothing re-parses per request (see [Performance](/documentation/performance/) for the opcache and compiled-code cache setup). But each request still re-runs every loaded namespace's top-level forms to register its `def`s.
+PHP is **shared-nothing** by default: every request boots a fresh process, so a Phel namespace does not persist between requests. [`phel build`](/documentation/reference/cli-commands/#build-the-project) compiles your namespaces to PHP ahead of time and opcache caches that bytecode, so nothing re-parses per request (see [Performance](/documentation/guides/performance/) for the opcache and compiled-code cache setup). But each request still re-runs every loaded namespace's top-level forms to register its `def`s.
 
 A **worker runtime** keeps the PHP process alive across requests: namespaces load **once** at boot and in-memory state survives between requests, much closer to the JVM/Clojure model.
 
@@ -43,7 +44,7 @@ require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/out/app/main.php'; // loads Phel namespaces ONCE
 ```
 
-To produce it, run [`phel build`](/documentation/tooling/cli-commands/#build-the-project) with `withMainPhelNamespace('app.main')` in [`phel-config.php`](/documentation/configuration/). The build writes each namespace to `out/` by default, so `app.main` lands in `out/app/main.php`. Change the folder with `withBuildDestDir`. To expose Phel functions to the PHP worker, mark them `{:export true}` and run [`phel export`](/documentation/tooling/cli-commands/#export-definitions), which generates one PHP class per namespace.
+To produce it, run [`phel build`](/documentation/reference/cli-commands/#build-the-project) with `withMainPhelNamespace('app.main')` in [`phel-config.php`](/documentation/reference/configuration/). The build writes each namespace to `out/` by default, so `app.main` lands in `out/app/main.php`. Change the folder with `withBuildDestDir`. To expose Phel functions to the PHP worker, mark them `{:export true}` and run [`phel export`](/documentation/reference/cli-commands/#export-definitions), which generates one PHP class per namespace.
 
 ## Loading Phel: prod vs dev
 
@@ -151,4 +152,4 @@ Run it:
 
 ## When you do not need a worker runtime
 
-Plain PHP-FPM with opcache is fine for most apps: the table above is the per-request budget you are working with, and 49ms of it is boot. Reach for a worker runtime when that boot cost or the per-request namespace registration shows up in profiling, or when you want persistent in-memory state (caches, connection pools) across requests. See [Performance](/documentation/performance/) for opcache tuning and the compiled-code cache that cut that boot cost.
+Plain PHP-FPM with opcache is fine for most apps: the table above is the per-request budget you are working with, and 49ms of it is boot. Reach for a worker runtime when that boot cost or the per-request namespace registration shows up in profiling, or when you want persistent in-memory state (caches, connection pools) across requests. See [Performance](/documentation/guides/performance/) for opcache tuning and the compiled-code cache that cut that boot cost.

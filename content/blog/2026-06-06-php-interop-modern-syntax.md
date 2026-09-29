@@ -126,4 +126,4 @@ Native exceptions cross the boundary unchanged. Catch them by class, or `\Throwa
 
 The interop layer is small but covers the whole surface: functions, classes, arrays, magic methods, named arguments, references, and typed output. Reach for Phel's immutable data structures by default, and drop to `php/*` exactly where a PHP library expects it.
 
-Full reference: [PHP Interop](/documentation/php-interop/).
+Full reference: [PHP Interop](/documentation/language/php-interop/).

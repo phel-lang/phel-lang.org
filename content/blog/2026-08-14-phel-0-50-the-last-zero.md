@@ -125,7 +125,7 @@ On 0.50:
 
 The old form did not read back. `@` is the deref reader macro, so `@[2 3 4]` meant something else. Now `@` means deref and nothing more, and the output matches Clojure. If a test compares printed output against `"@[...]"`, update the expected string.
 
-On the CLI, `phel index --out` is now `--output` and `phel config --json` is now `--format=json`. If you embed Phel, it now needs Gacela 2 and Symfony Console 7.3 or later. The [Upgrading notes](/documentation/upgrading/#0-50) list the rest.
+On the CLI, `phel index --out` is now `--output` and `phel config --json` is now `--format=json`. If you embed Phel, it now needs Gacela 2 and Symfony Console 7.3 or later. The [Upgrading notes](/documentation/reference/upgrading/#0-50) list the rest.
 
 ## Clojure-style PHP interop
 

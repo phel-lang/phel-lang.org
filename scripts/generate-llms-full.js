@@ -31,10 +31,10 @@ const PAGES = [
   'documentation/language/error-handling.md',
   'documentation/language/namespaces.md',
   'documentation/language/macros.md',
-  'documentation/php-interop.md',
-  'documentation/tooling/cli-commands.md',
+  'documentation/language/php-interop.md',
+  'documentation/reference/cli-commands.md',
   'documentation/tooling/repl.md',
-  'documentation/testing.md',
+  'documentation/guides/testing.md',
   'documentation/reference/errors.md',
 ];
 
