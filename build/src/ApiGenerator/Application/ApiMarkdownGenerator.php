@@ -6,6 +6,7 @@ namespace PhelWeb\ApiGenerator\Application;
 
 use Phel\Shared\Api\PhelFunction;
 use Phel\Shared\Facade\ApiFacadeInterface;
+use PhelWeb\Shared\Text\DocUrl;
 use PhelWeb\Shared\Text\EmDash;
 use PhelWeb\Shared\Text\ZolaAnchor;
 
@@ -360,7 +361,7 @@ final readonly class ApiMarkdownGenerator
             if ($fn->githubUrl !== '') {
                 $lines[] = '<div><a href="' . $fn->githubUrl . '">View source</a></div>';
             } elseif ($fn->docUrl !== '') {
-                $lines[] = '<div><a href="' . $fn->docUrl . '">Read more</a></div>';
+                $lines[] = '<div><a href="' . DocUrl::current($fn->docUrl) . '">Read more</a></div>';
             }
         }
 
