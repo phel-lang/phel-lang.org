@@ -1,68 +1,53 @@
 +++
 title = "Namespaces"
 weight = 10
-description = "Declare namespaces with ns, require Phel modules and PHP classes, and use aliases, :refer, and namespaced keywords"
+description = "Declare namespaces with ns, require Phel modules and PHP classes, and use aliases, :refer, and namespaced keywords."
 aliases = ["/documentation/namespaces"]
 
 [extra]
 difficulty = "intermediate"
 +++
 
-How Phel organizes code across files: every file declares a namespace with `ns`, then pulls in Phel modules and PHP classes through requires.
+After this page you can split code across files, load Phel modules and PHP classes into a file, and write namespaced keywords.
 
-## Namespace (ns)
+## Declare a namespace
 
-Every Phel file needs a namespace. Names start with a letter, then letters/numbers/dashes. Parts separated by `.` (canonical) or `\` (legacy, still parses). Last part must match filename.
-
-<!-- phel-test: skip -->
-```phel
-(ns name imports*)
-```
-
-Sets the namespace and registers imports. `:use` for PHP classes, `:require` for Phel modules, `:require-file` for PHP files.
+Every Phel file starts with `ns`. The name has parts separated by `.`, and the last part matches the file name. Use one namespace per file. Each part starts with a letter or underscore, followed by letters, numbers, underscores or dashes. Use kebab-case (`my.user-service`); the compiler turns dashes into a valid PHP namespace.
 
 <!-- phel-test: skip -->
 ```phel
-(ns my.custom.module
-  (:require-file "vendor/autoload.php")
-  (:require my.phel.module)
-  (:use Some.Php.Class))
+(ns hello-world.main
+  (:require hello-world.util :as util)   ; Phel module
+  (:use Some.Php.ClassName)              ; PHP class
+  (:require-file "helpers.php"))         ; PHP file
 ```
 
-Also sets `*ns*` to the namespace.
+`ns` also sets `*ns*` to the current namespace name. The backslash separator (`hello\world`) still parses but prints a deprecation warning.
 
 {% php_note() %}
-Similar to PHP namespaces, with differences:
-
 ```php
 // PHP
 namespace My\Custom\Module;
-use Some\Php\Class;
+use Some\Php\ClassName;
 use My\Phel\Module as Utilities;
+```
 
-// Phel
+<!-- phel-test: skip -->
+```phel
+;; Phel
 (ns my.custom.module
-  (:use Some.Php.Class)
+  (:use Some.Php.ClassName)
   (:require my.phel.module :as utilities))
 ```
 
-**Differences:**
-- `.` separator for Phel namespaces (PHP class FQNs in `:use` use `.`)
-- `:require` for Phel modules, `:use` for PHP classes
-- Access via `/`, not `::`
+Phel uses `.` between namespace parts, `:require` for Phel modules and `:use` for PHP classes. You call a module function with `/`, not `::`.
 {% end %}
 
-{% clojure_note() %}
-Like Clojure: `.` namespace separator. PHP class FQNs in `:use` use `.`.
-- `:use` is for PHP classes
-- `:require` works as in Clojure
-{% end %}
+## Require a Phel module
 
-### Import a Phel module
+`:require` loads another namespace. Give it a short alias with `:as` and call its functions as `alias/name`. Namespaces resolve from `src/` by default; change the source paths in [Configuration](/documentation/reference/configuration/).
 
-Import with `:require`, then access as `module/name`. Namespaces resolve from `src/` (override with [configuration](/documentation/reference/configuration/)).
-
-Module `util` in namespace `hello-world`:
+A module `hello-world.util`:
 
 ```phel
 (ns hello-world.util)
@@ -70,139 +55,92 @@ Module `util` in namespace `hello-world`:
 (def my-name "Phel")
 
 (defn greet [name]
-  (print (str "Hello, " name)))
+  (str "Hello, " name))
 ```
 
-Module `main` imports `util`:
+Another module requires it:
 
 <!-- phel-test: skip -->
 ```phel
 (ns hello-world.main
-  (:require hello-world.util))
+  (:require hello-world.util :as util))
 
-(util/greet util/my-name)
+(util/greet util/my-name) ; => "Hello, Phel"
 ```
 
-Use aliases to avoid collisions:
+Without `:as`, the alias is the last part of the name (`util` here).
 
-<!-- phel-test: skip -->
+### Refer names directly
+
+`:refer` brings chosen names into the current namespace, so you call them without a prefix. It combines with `:as` in any order:
+
 ```phel
-(ns hello-world.main
-  (:require hello-world.util :as utilities))
+(ns my.app
+  (:require phel.string :as s :refer [join]))
+
+(join ", " ["a" "b" "c"]) ; => "a, b, c"
+(s/split "a,b,c" #",")    ; => ["a" "b" "c"]
 ```
 
-On collision, use a fully-qualified name to reach the original. A locally defined `get` shadows `phel.core/get` by its short name, but the full `phel.core/get` still works:
+Prefer `:as` for most names. The prefix shows where a function comes from. Keep `:refer` for a few names you call often.
+
+### Shadowed names
+
+A local definition hides a core function with the same short name. The full name still reaches the original:
 
 ```phel
 (ns hello-world.http-client)
 
 (defn get [uri]
-  {:status 200 :body "Hello World" :headers {}})
+  {:status 200 :body "Hello World"})
 
-(phel.core/get (get "https://example.com") :status) ; Evaluates to 200
+(phel.core/get (get "https://example.com") :status) ; => 200
 ```
 
-`:refer` brings specific symbols into the current namespace so you can call them unqualified:
+## Use a PHP class
+
+`:use` imports a PHP class. Write its namespace with dots. Add `:as` to rename it when two classes share a name:
 
 <!-- phel-test: skip -->
 ```phel
-(ns hello-world.main
-  (:require hello-world.util :refer [greet]))
+(ns my.module
+  (:use Symfony.Component.String.UnicodeString)
+  (:use App.Model.User :as UserModel))
 
-(greet util/my-name)
+(UnicodeString. "hello")
+(UserModel. 42)
 ```
 
-This works for standard-library modules too:
+Importing is optional. `(Some.Php.ClassName.)` works with the full name inline. For calling methods and statics, see [PHP Interop](/documentation/language/php-interop/).
 
-```phel
-(ns my.app
-  (:require phel.string :refer [join split]))
+## Require a PHP file
 
-(join ", " ["a" "b" "c"]) ; => "a, b, c"
-(split "a,b,c" #",")      ; => ["a" "b" "c"]
-```
-
-`:refer` and `:as` combine in any order.
-
-### Import a PHP class
-
-`:use` imports PHP classes:
+`:require-file` loads a PHP file with `require_once` before the rest of the namespace:
 
 <!-- phel-test: skip -->
-```phel
-(ns my.custom.module
-  (:use Some.Php.ClassName))
-```
-
-Reference by name:
-
-<!-- phel-test: skip -->
-```phel
-(ClassName.)          ; preferred shorthand
-(new ClassName)       ; also valid
-```
-
-Aliases avoid collisions:
-
-<!-- phel-test: skip -->
-```phel
-(ns my.custom.module
-  (:use Some.Php.ClassName :as BetterClassName))
-```
-
-Importing is preferred, but optional. Use full namespace inline if needed:
-
-<!-- phel-test: skip -->
-```phel
-(new Some.Php.ClassName)   ; or: (Some.Php.ClassName.)
-```
-
-## Require PHP files
-
-Load external PHP files via `:require-file` (calls `require_once`). Example for Composer autoload:
-
 ```phel
 (ns hello-world.main
   (:require-file "vendor/autoload.php"))
 ```
 
-`(php/require_once "vendor/autoload.php")` works elsewhere, but for autoload it runs too late since Phel's core needs the autoloader. Use `:require-file`.
+`vendor/bin/phel` loads Composer's autoloader for you. You need the line above when you run Phel another way, for example from the PHAR. Use `:require-file` instead of `(php/require_once ...)` for an autoloader: a call in the body runs too late, because Phel's core needs the autoloader first.
 
 ## Namespaced keywords
 
-Plain keywords collide when sharing data. Namespaced keywords solve this.
-
-Fully qualified: namespace, `/`, keyword name.
+Plain keywords can collide when libraries share data. A namespaced keyword adds a namespace before the name:
 
 ```phel
-:my.namespace/foo ; absolute namespaced keyword
-```
+:my.namespace/foo ; namespaced keyword
 
-`::` shortcut binds current namespace:
-
-```phel
 (ns bar)
-::foo ; => :bar/foo
+::foo             ; => :bar/foo
 ```
 
-`ns` aliases also work:
+`::` fills in the current namespace. With an alias, `::alias/name` expands to the aliased namespace:
 
-<!-- phel-test: skip -->
 ```phel
-(ns foobar
-  (:require abc.xyz :as bar))
+(ns my.app
+  (:require phel.string :as s))
 
-::bar/foo ; evaluates to :abc.xyz/foo
+::s/foo ; => :phel.string/foo
 ```
-
-## Best practices
-
-- **One namespace per file.** The last part of the namespace must match the filename, so a file maps to exactly one `ns`.
-- **Dashes map to PHP.** Use `kebab-case` namespace names (`my.user-service`); Phel translates dashes to a valid PHP namespace when compiling.
-- **Prefer `:as` over heavy `:refer`.** A short alias (`(:require phel.string :as str)`) keeps call sites clear about where a function comes from. Reserve `:refer` for a few frequently used names. Over-referring hides origins and invites collisions.
-
-## Next steps
-
-- [Interfaces](/documentation/language/interfaces/) - share behavior across types within a namespace
-- [Configuration](/documentation/reference/configuration/) - set the source paths namespaces resolve from
-- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding
