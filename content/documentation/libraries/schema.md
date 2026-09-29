@@ -5,31 +5,56 @@ description = "Validate, coerce, and generate data with phel.schema, using plain
 aliases = ["/documentation/guides/schema"]
 +++
 
-`phel.schema` validates, coerces, and generates values from declarative schemas. A schema is plain Phel data, a keyword or a vector, so there is no separate DSL to learn: schemas are built, composed, and stored like any other value.
+After this page you can check incoming data against a schema, turn form strings into typed values, and report what is wrong in a readable way. `phel.schema` ships with Phel. A schema is plain Phel data (a keyword or a vector), so you build, combine, and store schemas like any other value.
 
-## Quickstart
+## Validate a form
 
-A schema describes the shape data should have. `validate` answers yes or no, `explain` tells you what went wrong, and `coerce` turns loosely typed values (for example `"1"` from a form) into the required types.
+The most common task: a form arrives as a map of strings, and you want typed, checked data. Describe the shape once, then `coerce` the input and `validate` the result:
 
 ```phel
-(ns my-app.quickstart
-  (:require phel.schema :as s))
+(ns my-app.signup
+  (:require phel.schema :as s)
+  (:require phel.walk :refer [keywordize-keys]))
 
-(def User
+(def Signup
   [:map {:closed true}
-   [:id    :int]
+   [:name  [:and :string [:fn #(> (count %) 0)]]]
    [:email [:re #"^[^@]+@[^@]+$"]]
-   [:age   [:maybe :int]]])
+   [:age   {:optional true} :int]])
 
-(println (s/validate User {:id 1 :email "a@b.co" :age nil}))   ; => true
-(println (s/explain  User {:id 1 :email "a@b.co" :age nil}))   ; => nil (conforms)
-(prn     (s/coerce   User {:id "1" :email "a@b.co" :age nil}))
-; => {:id 1, :email "a@b.co", :age nil}
+(def form {"name" "Ada" "email" "ada@example.com" "age" "36"})
+
+(def input (s/coerce Signup (keywordize-keys form)))
+input                   ; => {:name "Ada", :email "ada@example.com", :age 36}
+(s/validate Signup input) ; => true
 ```
 
-`coerce` converts values, not keys. A map with string keys such as `{"id" "1"}` comes back unchanged, so turn string keys into keywords first (`keywordize-keys` from `phel.walk`).
+- `coerce` converts values (`"36"` to `36`), not keys. Form data has string keys, so convert them with `keywordize-keys` first.
+- `{:closed true}` rejects keys the schema does not list. Maps are open by default.
+- `{:optional true}` on an entry lets the key be missing.
 
-`[:maybe T]` makes the *value* nilable, but the key is still required to be present. Omit the key on a `{:closed true}` map and validation fails with `:type :missing`.
+When validation fails, `explain` says where and why. It returns `nil` when the value conforms:
+
+```phel
+(ns my-app.signup
+  (:require phel.schema :as s))
+
+(def Signup
+  [:map {:closed true}
+   [:name  :string]
+   [:email [:re #"^[^@]+@[^@]+$"]]])
+
+(def result (s/explain Signup {:name "Ada" :email "nope"}))
+
+(get result :errors)
+; => [{:path [:map :email], :in [:email], :schema [:re "/^[^@]+@[^@]+\$/"], :value "nope", :type :mismatch}]
+
+(println (s/human-readable-explain result))
+; Schema [:map ...] failed for value {:name Ada, :email nope}
+;   [:email] -> mismatch: expected [:re /^[^@]+@[^@]+$/], got nope
+```
+
+Each error has `:path` (position in the schema), `:in` (position in the value), `:schema`, `:value`, and `:type`. Use `:in` to attach a message to the right form field.
 
 ## Schema kinds
 
@@ -37,7 +62,7 @@ A schema describes the shape data should have. `validate` answers yes or no, `ex
 |------|---------|
 | scalar | `:int`, `:string`, `:bool`, `:keyword`, `:any` |
 | collection | `[:vector :int]`, `[:set :string]`, `[:map-of :keyword :int]` |
-| map | `[:map [:k :int] [:k2 :string]]` |
+| map | `[:map [:k :int] [:k2 {:optional true} :string]]` |
 | tuple | `[:tuple :int :string]` |
 | choice | `[:enum :a :b]`, `[:or :int :string]`, `[:and :int [:fn pos-int?]]`, `[:maybe :int]` |
 | regex | `[:re #"pattern"]` |
@@ -45,7 +70,7 @@ A schema describes the shape data should have. `validate` answers yes or no, `ex
 | reference | `[:ref :my/User]` |
 | function | `[:=> [:int :int] :int]` |
 
-Because schemas are data, you build a nested shape by nesting vectors:
+Nest vectors to describe nested data:
 
 ```phel
 (ns my-app.kinds
@@ -53,74 +78,60 @@ Because schemas are data, you build a nested shape by nesting vectors:
 
 (def Order
   [:map
-   [:id    :int]
+   [:id     :int]
    [:status [:enum :pending :shipped :done]]
-   [:items [:vector [:map [:sku :string] [:qty :int]]]]
-   [:tags  [:set :keyword]]])
+   [:items  [:vector [:map [:sku :string] [:qty :int]]]]
+   [:tags   [:set :keyword]]])
 
-(println (s/validate Order
-  {:id 7
-   :status :shipped
-   :items [{:sku "A1" :qty 2}]
-   :tags #{:rush}}))
+(s/validate Order {:id 7 :status :shipped :items [{:sku "A1" :qty 2}] :tags #{:rush}})
 ; => true
 ```
 
-## Core operations
+## Operations
 
-| Fn | Purpose |
-|----|---------|
-| `(validate schema value)` | `true` / `false` |
+| Function | Returns |
+|---|---|
+| `(validate schema value)` | `true` or `false` |
 | `(explain schema value)` | `nil` on success, `{:schema s :value v :errors [...]}` on failure |
-| `(human-readable-explain result)` | render an `explain` result as a multi-line string |
-| `(coerce schema value)` | reshape loosely typed input into the required types |
-| `(conform schema value)` | coerced value, or `:phel.schema/invalid` if it cannot fit |
-| `(generate schema)` | a random value conforming to `schema` |
+| `(human-readable-explain result)` | an `explain` result as a multi-line string |
+| `(coerce schema value)` | the value with loose types converted to the schema's types |
+| `(conform schema value)` | the coerced value, or `:phel.schema/invalid` |
+| `(generate schema)` | a random value that fits the schema |
 
-`explain` returns `nil` when the value conforms, so a non-nil result means failure. Each error carries `:path`, `:in`, `:schema`, `:value`, and `:type`. Pass the result to `human-readable-explain` for a printable summary:
-
-```phel
-(ns my-app.explain
-  (:require phel.schema :as s))
-
-(def result (s/explain :int :oops))
-(println (s/human-readable-explain result))
-```
-
-`conform` never throws: it returns the coerced value on success or the sentinel `:phel.schema/invalid` on failure, so compare against it (or `s/invalid-marker`) to branch:
+`conform` never throws. Compare its result with `s/invalid-marker` to branch:
 
 ```phel
 (ns my-app.conform
   (:require phel.schema :as s))
 
-(let [v (s/conform :int "42")]
-  (println (if (= v s/invalid-marker) :failed v)))
-; => 42
+(s/conform :int "42")                         ; => 42
+(= (s/conform :int "x") s/invalid-marker)     ; => true
 ```
 
-## Named-schema registry
+`generate` feeds property-based tests: `phel.test.gen` builds generators from the same schemas with `schema->gen`. See [Testing](/documentation/guides/testing/).
 
-Register a schema under a name and refer to it from anywhere with `[:ref name]`. This lets schemas reference each other and keeps large shapes readable.
+## Named schemas
+
+Register a schema under a name and refer to it with `[:ref name]`. Schemas can then reference each other, and large shapes stay readable:
 
 ```phel
 (ns my-app.registry
   (:require phel.schema :as s))
 
-(def User
+(s/register! :my/User
   [:map {:closed true}
    [:id    :int]
    [:email [:re #"^[^@]+@[^@]+$"]]])
 
-(s/register! :my/User User)
-(println (s/registered? :my/User))                            ; => true
-(println (s/validate [:ref :my/User] {:id 1 :email "a@b.co"})) ; => true
+(s/registered? :my/User)                        ; => true
+(s/validate [:ref :my/User] {:id 1 :email "a@b.co"}) ; => true
 ```
 
-`unregister!`, `deref-ref`, and `registered?` round out the registry.
+`unregister!` removes a name, and `deref-ref` returns the schema behind a name.
 
 ## Function instrumentation
 
-`instrument!` wraps a function so its arguments and return value are checked against a `[:=> [arg-schemas] ret-schema]` schema on every call. It returns the wrapped function (the original is kept so `unstrument!` can restore it):
+`instrument!` wraps a function so its arguments and return value are checked on every call against a `[:=> [arg-schemas] ret-schema]` schema. It returns the wrapped function and keeps the original so `unstrument!` can restore it:
 
 ```phel
 (ns my-app.instrument
@@ -129,27 +140,24 @@ Register a schema under a name and refer to it from anywhere with `[:ref name]`.
 (defn add [a b] (+ a b))
 (def add! (s/instrument! :add add [:=> [:int :int] :int]))
 
-(println (add! 2 3)) ; => 5
+(add! 2 3) ; => 5
 ```
 
-Calling the wrapped function with arguments that fail the schema throws:
+A call with arguments that fail the schema throws:
 
 <!-- phel-test: skip -->
 ```phel
 (add! "x" 2) ; throws: argument 0 failed schema
 ```
 
-Toggle checking globally with `set-schema-check!`, inspect it with `schema-check?`, or scope it to a thunk with `with-schema-check`. Disabling checks lets instrumented functions run at full speed in production while staying validated in development.
+Turn checks on or off globally with `set-schema-check!`, read the setting with `schema-check?`, or scope it to a function with `with-schema-check`. With checks off, instrumented functions run at full speed in production and stay checked in development.
 
 ## Pitfalls
 
-- `:map` is open by default; add `{:closed true}` to reject extra keys. The key is `:closed`, not `:closed?`, and a `?` variant is silently ignored.
-- `[:maybe T]` allows a nil value but does not make the key optional; use `{:optional true}` on the map entry for that.
-- `[:and ...]` children must be schemas; wrap a bare predicate as `[:fn pred]` (for example `[:fn pos-int?]`, not `pos-int?`).
-- `[:re ...]` expects a `#"regex"` literal, or a PCRE string *with* delimiters such as `"/^[0-9]+$/"`; a bare pattern string like `"^[0-9]+$"` never matches, and PHP prints a `preg_match` warning.
-- `generate` may fail on over-constrained `[:and ...]` or `[:re ...]` schemas; pass `{:gen <gen-fn>}` in the schema options to override.
+- The map option is `:closed`, not `:closed?`. An unknown option is ignored without a warning.
+- `[:maybe T]` allows a `nil` value but still requires the key. Use `{:optional true}` to allow a missing key.
+- `[:and ...]` children must be schemas. Wrap a bare predicate: `[:fn pos-int?]`, not `pos-int?`.
+- `[:re ...]` expects a `#"regex"` literal, or a PCRE string with delimiters such as `"/^[0-9]+$/"`. A bare pattern like `"^[0-9]+$"` never matches, and PHP prints a `preg_match` warning.
+- `generate` can fail on tight `[:and ...]` or `[:re ...]` schemas. Pass `{:gen <gen-fn>}` in the schema options to supply your own generator.
 
-## See also
-
-- [Coming from Clojure](/documentation/guides/coming-from-clojure) maps `schema` against the Clojure ecosystem.
-- `phel.test.gen` drives property-based testing from the same schemas via `generate` and `schema->gen`.
+Every function and its signature: [schema API reference](/documentation/reference/api/schema/).
