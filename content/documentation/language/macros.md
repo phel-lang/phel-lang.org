@@ -1,121 +1,76 @@
 +++
 title = "Macros"
 weight = 13
-description = "Write compile-time code that rewrites code: defmacro, quasiquote, macroexpand, gensym hygiene, and when a macro is worth it"
+description = "Write compile-time code that rewrites code: defmacro, quasiquote, macroexpand, gensym hygiene, and when a macro is worth it."
 aliases = ["/documentation/macros"]
 
 [extra]
 difficulty = "advanced"
 +++
 
-Macros are compile-time callables. They receive unevaluated code as data, transform it, and return new code for the compiler to process. This lets you add new syntax that functions cannot express.
+A macro runs at compile time. It receives code as data, rewrites it, and returns new code for the compiler. After this page you can write a macro, check what it expands to, and avoid name clashes in the generated code.
 
-## Why macros
+Most code does not need macros. Write a function first, and read [When to write a macro](#when-to-write-a-macro) before you reach for one.
 
-In PHP, you cannot add new language constructs. Want `unless` (the opposite of `if`)? You are stuck with a function. Functions evaluate all arguments before the call, which breaks short-circuit logic and makes them second-class compared to `if`:
+## Write a macro
 
-```php
-// PHP: forced to use closures to avoid premature evaluation
-function unless(bool $cond, callable $then, callable $else): mixed {
-    return $cond ? $else() : $then();
-}
-```
-
-In Phel, a macro receives the raw code unevaluated, rewrites it, and the result compiles normally:
+`defmacro` takes the same arguments as `defn`. The difference: the arguments arrive unevaluated, as code. Here is `unless`, the opposite of `if`:
 
 ```phel
 (defmacro unless [test then else]
   `(if (not ~test) ~then ~else))
 
-(unless false "yes" "no")  ; => "yes"
-;; Expands to: (if (not false) "yes" "no")
-;; Only "yes" is ever evaluated. Behaves identically to a built-in if.
+(unless false "yes" "no") ; => "yes"
 ```
 
-This works because **Phel code is data**. The call `(unless false "yes" "no")` is a plain Phel list, the same persistent list you work with everywhere. Macros manipulate that list at compile time using ordinary Phel functions.
+A call to `(unless false "yes" "no")` becomes `(if (not false) "yes" "no")` before the program runs. Only the chosen branch is evaluated, like a built-in `if`. A function cannot do this: it evaluates all its arguments before the call.
 
-`defn`, `when`, `and`, `or`, `->`, `->>` are all macros in Phel's standard library. They are not special compiler syntax. They are Phel code that rewrites other Phel code.
-
-`defn` itself expands to `def` + `fn`:
-
-<!-- phel-test: skip -->
-```phel
-(defn add [a b] (+ a b))
-;; expands to:
-(def add (fn [a b] (+ a b)))
-```
+This works because Phel code is data. The call is a plain list, and a macro changes that list with ordinary Phel functions. `defn`, `when`, `and`, `or`, `->` and `->>` are macros in the standard library, not compiler syntax.
 
 {% php_note() %}
-PHP has no macro system. The common alternatives each have significant limitations:
+PHP has no macros. The usual replacements each have a limit:
 
-- `eval()` runs at runtime, has security implications, and cannot be type-checked or linted
-- Code generation produces files on disk, requires a build step, and the output is opaque
-- Attributes are metadata only. They cannot transform the code they annotate.
+- `eval()` runs at runtime and cannot be linted or type-checked.
+- Code generation writes files to disk and needs a build step.
+- Attributes are metadata only. They cannot change the code they annotate.
 
-Phel macros run at compile time inside the compiler pipeline, produce normal Phel AST nodes, and are fully inspectable with `macroexpand`.
+Phel macros run inside the compiler, produce normal Phel code, and you can inspect the result with `macroexpand`.
 {% end %}
-
-## Quote
-
-`quote` returns its argument unevaluated. Single-quote prefix is shorthand for `(quote form)`.
-
-```phel
-(quote my-sym) ; => my-sym
-'my-sym ; same
-```
-
-Quote distinguishes code from data, making macros possible. Literals (numbers, strings) evaluate to themselves.
-
-```phel
-(quote 1) ; Evaluates to 1
-(quote hi) ; Evaluates to the symbol hi
-(quote quote) ; Evaluates to the symbol quote
-
-'(1 2 3) ; Evaluates to the list (1 2 3)
-'(print 1 2 3) ; Evaluates to the list (print 1 2 3). Nothing is printed.
-```
-
-## Define a macro
-
-<!-- phel-test: skip -->
-```phel
-(defmacro name docstring? attributes? [params*] expr*)
-```
-
-`defmacro` creates a macro. Same params as `defn`.
-
-With `quote` and `defmacro`, define a custom `defn` called `mydefn`:
-
-```phel
-(defmacro mydefn [name args & body]
-  (list 'def name (apply list 'fn args body)))
-```
-
-Simple, doesn't cover all `defn` features, but shows the basics.
 
 ## Quasiquote
 
-`quasiquote` improves macro readability. Inverts quoting: marks what *should* evaluate, leaves the rest unevaluated. Shorthand: `` ` `` (quasiquote), `~` (unquote), `~@` (unquote-splicing).
+The macro body above is a template. Three reader shortcuts build it:
 
-`mydefn` with quasiquote:
+| Shortcut | Name | Effect |
+|---|---|---|
+| `` ` `` | quasiquote | keep the form as code, do not evaluate it |
+| `~` | unquote | insert the value of this expression |
+| `~@` | unquote-splicing | insert the items of this list one by one |
+
+A small `defn` built with all three:
 
 ```phel
 (defmacro mydefn [name args & body]
   `(def ~name (fn ~args ~@body)))
+
+(mydefn add [a b] (+ a b))
+(add 1 2) ; => 3
 ```
 
+Quasiquote also qualifies the symbols it contains: `not` becomes `phel.core/not`. So the expansion still works when the caller has a local named `not`.
+
 {% clojure_note() %}
-Same quasiquote/unquote/splicing tokens as Clojure.
+Same quasiquote, unquote and splicing tokens as Clojure.
 {% end %}
 
-## Expanding macros
+## Expand a macro
 
-To see what a macro produces, expand it without running it. `macroexpand-1` does a single expansion step; `macroexpand` keeps expanding until the top form is no longer a macro call. Quote the form so it stays code.
+To see what a macro produces, expand it without running it. Quote the form so it stays code. `macroexpand-1` does one step. `macroexpand` repeats until the outer form is no longer a macro call:
 
-Expanding the `unless` macro from [Why macros](#why-macros):
-
-<!-- phel-test: skip -->
 ```phel
+(defmacro unless [test then else]
+  `(if (not ~test) ~then ~else))
+
 (macroexpand-1 '(unless false "yes" "no"))
 ; => (if (phel.core/not false) "yes" "no")
 
@@ -123,18 +78,11 @@ Expanding the `unless` macro from [Why macros](#why-macros):
 ; => (if true (do 1 2))
 ```
 
-Quasiquote fully qualifies referenced symbols (`not` becomes `phel.core/not`), which is what keeps macros from breaking when the caller has shadowed a name. This is your main debugging tool: if a macro misbehaves, expand it and read the generated code.
+When a macro misbehaves, expand it and read the generated code.
 
-## Hygiene and `gensym`
+## Hygiene and gensym
 
-A macro that introduces its own local bindings can accidentally capture (shadow) a name from the caller. To avoid this, generate a unique symbol with `gensym`:
-
-```phel
-(gensym) ; => __phel_1 (a fresh, unique name on every call)
-(gensym) ; => __phel_2
-```
-
-Inside a quasiquote, the `name#` suffix auto-generates a `gensym` for you, so the same `name#` refers to one fresh symbol throughout the template:
+A macro that binds its own local can hide a name the caller uses. Add `#` to the end of a local name inside a quasiquote. Each expansion then gets a fresh, unique symbol, and the same `name#` means the same symbol throughout the template:
 
 ```phel
 (defmacro my-or [a b]
@@ -147,22 +95,26 @@ Inside a quasiquote, the `name#` suffix auto-generates a `gensym` for you, so th
 ; => (let [tmp__1 false] (if tmp__1 tmp__1 42))
 ```
 
-The expanded `tmp__1` is unique per expansion, so it cannot clash with a `tmp` the caller already has. Reach for `gensym` (or `name#`) whenever a macro binds a local the user did not write.
+`tmp__1` cannot clash with a `tmp` the caller already has. Outside a quasiquote, call `(gensym)` to get a unique symbol such as `__phel_1`. Use `name#` or `gensym` whenever a macro binds a local the user did not write.
+
+## Quote
+
+The single quote returns a form without evaluating it. `'x` is short for `(quote x)`. Macros depend on this: it is how code stays data.
+
+```phel
+'my-sym        ; => my-sym, a symbol
+'(print 1 2 3) ; => (print 1 2 3), a list. Nothing is printed.
+(quote 1)      ; => 1, literals evaluate to themselves
+```
+
+Quasiquote is quote with holes: `~` marks the parts that should be evaluated.
 
 ## When to write a macro
 
-Most of the time you do not need one. **Prefer a function.** Functions are easier to read, test, compose, and pass around. Reach for a macro only when a function cannot do the job:
+Prefer a function. Functions are easier to read, test, compose and pass around. Write a macro only when a function cannot do the job:
 
-- **New syntax or binding forms** the language does not provide.
-- **Control flow** that must skip or reorder evaluation of its arguments (a function evaluates all its arguments first).
-- **Compile-time work**, where you want code generated or checked before the program runs.
+- **New syntax or binding forms** that the language does not have.
+- **Control flow** that must skip or reorder the evaluation of its arguments.
+- **Compile-time work**, when code must be generated or checked before the program runs.
 
-If the same result is achievable by passing values or functions, write a function.
-
-## Next steps
-
-- [Lazy sequences](/documentation/language/lazy-sequences/) - compute values only when you need them
-- [Functions and recursion](/documentation/language/functions-and-recursion/) - the default tool; prefer it over macros
-- [Basic types](/documentation/language/basic-types/) - quote, lists, and symbols that macros manipulate
-- [Reader shortcuts](/documentation/language/reader-shortcuts/) - every reader macro, including quasiquote and `name#`
-- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding
+If passing values or functions gives the same result, write a function. For a longer walkthrough, read [Writing your first macro](/blog/writing-your-first-macro/). Every reader shortcut, including `` ` `` and `name#`, is listed on [Reader shortcuts](/documentation/language/reader-shortcuts/).
