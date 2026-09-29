@@ -5,32 +5,31 @@ description = "What transfers from Clojure to Phel, what differs, and what Phel 
 aliases = ["/documentation/coming-from-clojure"]
 +++
 
-Phel is a functional Lisp on PHP, inspired by Clojure (and Janet). Persistent data structures, immutability by default, functional-first. This guide: what transfers, what differs, what Phel adds.
+This page maps your Clojure knowledge to Phel. Most forms work the same, so it lists only what is different: the runtime, namespaces, interop, and the few forms Phel changes or leaves out.
 
-Ships with: protocols, transducers, reader conditionals (`#?()`), regex literals, `ex-info`/`ex-data`, hierarchies (`derive`, `isa?`, `parents`, `ancestors`, `descendants`), core.match-style `match`, `schema`, fiber-based `async`, nREPL/LSP toolchain.
+Phel is a functional Lisp that compiles to PHP. It is inspired by Clojure (and Janet): persistent data structures, immutability by default, and a functional core.
 
-## What feels familiar
+## What works the same
 
-Clojure intuition carries over.
+You can write these the way you write them in Clojure:
 
-**Core forms:** `def`, `defn`, `let`, `fn`, `if`, `when`, `cond`, `case`, `do`, `loop`/`recur`.
-
-**Persistent data structures:** vectors, maps, sets. Same algorithms (HAMTs etc.), same core functions:
-
-```phel
-(def v [1 2 3])
-(conj v 4)              ; => [1 2 3 4]
-
-(def m {:name "Alice" :age 30})
-(assoc m :role :admin)  ; => {:name "Alice" :age 30 :role :admin}
-(get m :name)           ; => "Alice"
-(:name m)               ; => "Alice" (keywords are functions)
-
-(def s #{1 2 3})
-(conj s 4)              ; => #{1 2 3 4}
-```
-
-**Threading macros:** `->`, `->>`, `as->` work as in Clojure:
+| Area | Forms |
+|---|---|
+| Core forms | `def`, `defn`, `let`, `fn`, `if`, `when`, `cond`, `case`, `do`, `loop`/`recur` |
+| Data | vectors, maps, sets, keywords (also as functions), `conj`, `assoc`, `get`, `get-in`, `update` |
+| Sequences | `map`, `filter`, `reduce`, `some`, `every?`, `comp`, `partial`, `apply`, `lazy-seq`, `lazy-cat`, `doall`, `realized?`, transducers |
+| Threading | `->`, `->>`, `as->` |
+| Destructuring | sequential and associative, in `let`, `fn`, `defn`, `loop` |
+| Functions | `#(* % 2)`, `%1`, `%&`, multi-arity, variadic `&` |
+| State | `atom`, `swap!`, `reset!`, `deref`/`@` |
+| Vars | `#'sym`, `alter-var-root`, `with-redefs`, `binding` (var must be `^:dynamic`) |
+| Polymorphism | `defprotocol`, `extend-type`, `defrecord`, `defmulti`/`defmethod`, `derive`, `isa?`, `parents`, `ancestors`, `descendants` |
+| Errors | `try`/`catch`/`finally`, `ex-info`, `ex-data` |
+| Numbers | `1N`, `1.5M`, `1/2`, `(/ 1 2)` returns a ratio |
+| Macros | `defmacro`, quote, syntax-quote, unquote, unquote-splicing |
+| Reader | `#"regex"`, `#_` discard, `(comment ...)`, `;` and `;;` comments |
+| Printing | `println`, `print`, `prn`, `pr-str` |
+| Truthiness | only `nil` and `false` are falsy; `0`, `""`, `[]` are truthy (unlike PHP) |
 
 ```phel
 (def users [{:name "Alice" :active true} {:name "Bob" :active false}])
@@ -39,120 +38,33 @@ Clojure intuition carries over.
      (filter :active)
      (map :name)
      (into #{}))
+; => #{"Alice"}
 ```
 
-**Destructuring:** sequential and associative work in `let`, `fn`, `defn`, `loop`, same as Clojure. See [Destructuring](/documentation/reference/cheat-sheet/#destructuring).
+## What is different
 
-**Higher-order functions:** `map`, `filter`, `reduce`, `some`, `every?`, `comp`, `partial`, `apply`, etc.:
+| Clojure | Phel | Notes |
+|---|---|---|
+| JVM, JARs, classpath | PHP 8.5+ | Compiles to PHP and runs with your PHP binary |
+| `deps.edn`, Leiningen | Composer (`composer.json`) | `composer require phel-lang/phel-lang` |
+| `(:require [foo.bar :as b])` | `(:require foo.bar :as b)` | No vector around each clause |
+| `(:import (java.time Instant))` | `(:use DateTimeImmutable)` | `:use` imports PHP classes |
+| Java interop `(Math/pow 2 10)` | `(php/pow 2 10)` | Any PHP function through `php/` |
+| `(.method obj)`, `(Class/static)`, `(Class.)` | same | Works on PHP objects and classes |
+| `#?(:clj x :default y)` | `#?(:phel x :default y)` | Platform key is `:phel`; `#?@` also works |
+| `(memoize f)` on a defn | `(defn ^:memoize f ...)` | `memoize` also exists |
+| `core.async`, channels | `async`/`await`, `future-call`, `promise`, `pmap` | Fiber-based, no CSP. See [Async](/documentation/language/async/) |
+| agents, refs, STM | none | `atom` is the only mutable reference |
+| `clojure.spec` | `phel.schema` | Validation, coercion, generation. See [Schema](/documentation/libraries/schema/) |
+| `(* Long/MAX_VALUE 2)` throws | promotes to BigInt | PHP ints promote on overflow |
+| inline protocol in `defrecord` | `definterface` inline, `defprotocol` via `extend-type` | See [Protocols and interfaces](#protocols-and-interfaces) |
+| custom reader macros | none | Tagged literals only, see below |
+| ClojureScript | none | PHP is the only target |
+| CIDER, Calva | nREPL and LSP servers | See [Editor support](/documentation/tooling/editor-support/) |
 
-```phel
-(map inc [1 2 3])          ; => (2 3 4)
-(filter even? [1 2 3 4])   ; => (2 4)
-(reduce + 0 [1 2 3 4 5])   ; => 15
-```
+## Namespaces
 
-**Lazy sequences:** full support, including infinite seqs, custom `lazy-seq`/`lazy-cat`, realization control (`doall`, `dorun`, `realized?`), and lazy file I/O. See [Lazy sequences](/documentation/reference/cheat-sheet/#lazy-sequences).
-
-**Namespaces:** `:require` for Phel modules, `:as` and `:refer` like Clojure.
-
-**REPL:** supports `doc`, inline `require`, multiline. See [REPL](/documentation/tooling/repl).
-
-**Macros:** `defmacro`, quote, syntax-quote, unquote, unquote-splicing. `defn` is a macro. `defn` supports metadata shorthands: `^:memoize` wraps the body in `memoize`; `^:async` wraps in `async` returning `Amp\Future`. See [Macros](/documentation/language/macros).
-
-Reference: [Data Structures](/documentation/language/data-structures), [Functions and Recursion](/documentation/language/functions-and-recursion).
-
-## Key differences
-
-Day-to-day differences.
-
-### No JVM, PHP runtime
-
-Compiles to PHP, runs on PHP. No JVM, classpath, JARs. Dependency manager is Composer (not deps.edn or Leiningen).
-
-### Protocols
-
-Phel supports Clojure-style protocols with `defprotocol` and `extend-type`. Use `definterface` + `defstruct` for simpler cases where you control the type:
-
-```phel
-(definterface Greetable
-  (greet [this]))
-
-(defstruct person [name]
-  Greetable
-  (greet [this] (str "Hello, " name)))
-
-(greet (person "Alice")) ; => "Hello, Alice"
-```
-
-See [Interfaces](/documentation/language/interfaces) for the full reference.
-
-### Multimethods
-
-Phel supports Clojure-style `defmulti` / `defmethod` with hierarchy-aware dispatch through the `derive` / `isa?` system:
-
-```phel
-(defmulti area :shape)
-(defmethod area :circle [{:radius r}] (* 3.14159 r r))
-(defmethod area :rectangle [{:width w :height h}] (* w h))
-```
-
-### Type tags and inference
-
-`:tag` metadata emits PHP type declarations: `(defn ^int add [^int a ^int b] ...)` compiles to `function add(int $a, int $b): int`, and `^"?string"` marks a nullable type. Phel also infers return types from tail primitive ops, so you often don't need to annotate at all. See [Functions](/documentation/reference/cheat-sheet/#functions) for the tag and metadata shorthands (`^:memoize`, `^:async`).
-
-### Numeric tower
-
-Phel ships `BigInt`, `BigDecimal`, and `Ratio` as first-class types:
-
-```phel
-1N          ; BigInt literal
-1.5M        ; BigDecimal literal
-1/2         ; Ratio literal (not a float, exact ratio)
-
-(/ 1 2)     ; => 1/2  (Ratio, exact)
-(/ 1.0 2)   ; => 0.5  (float)
-(+ 1N 2N)   ; => 3    (BigInt)
-
-;; PHP ints auto-promote to BigInt on overflow
-(* 9999999999999999999N 2N) ; stays exact
-
-;; Constructors and predicates
-(bigint 42)    ; => 42
-(bigdec "1.5") ; => 1.5M
-(ratio? 1/2)   ; => true
-```
-
-### Atoms only, no agents/refs/STM
-
-`atom` is the only mutable primitive; `atom`, `swap!`, `reset!`, and `deref`/`@` work exactly like Clojure's. No agents, refs, STM. See [Global and Local Bindings](/documentation/language/global-and-local-bindings).
-
-### No spec
-
-No `clojure.spec`. Phel ships `phel.schema` for validation, coercion, and generation. See [Schema Validation](/documentation/libraries/schema/).
-
-### Truthiness
-
-Same as Clojure: only `false` and `nil` falsy. `0`, `""`, `[]` truthy. Differs from PHP. See [Truthiness](/documentation/language/basic-types/#truthiness).
-
-### Reader conditionals
-
-`#?()` and splicing `#?@()`, using `:phel` and `:default` as platform keys. Enables cross-platform `.cljc` files:
-
-```phel
-(def host
-  #?(:phel "PHP"
-     :default "Unknown"))
-```
-
-No custom reader macros. Four tagged literals are built in: `#inst` reads as a `DateTimeImmutable`, `#uuid` as a `Phel\Lang\UUID`, `#regex` as a PCRE pattern string, `#php` as a PHP array. Any other tag, such as `#cpp`, is a read error unless you register a handler with `register-tag` from `phel.reader`. Tags inside a non-selected reader-conditional branch (`:clj`, `:jank`) are skipped. Clojure-style `#(...)` with `%`/`%1`/`%&` works. `#_` skips a form.
-
-## Syntax differences
-
-Clojure and Phel side by side for syntactically different constructs.
-
-### Namespace declaration
-
-Same `.` separator as Clojure. PHP class FQNs in `:use` use `.`:
+Namespaces use `.` as in Clojure. Require Phel namespaces with `:require` and PHP classes with `:use`:
 
 ```clojure
 ;; Clojure
@@ -165,233 +77,80 @@ Same `.` separator as Clojure. PHP class FQNs in `:use` use `.`:
 ```phel
 ;; Phel
 (ns myapp.users
-  (:require myapp.db :as db))
+  (:require myapp.db :as db)
+  (:require phel.string :as str)
+  (:use DateTimeImmutable))
 ```
 
-Differences:
-- No vector wrap per require clause
-- `:use` for PHP classes; `:require` for Phel modules
-- `:refer` same: `(:require myapp.db :refer [query])`
-- Backslash form `(ns myapp\db)` still parses for legacy code, warns under `PHEL_WARN_DEPRECATIONS=1`
+`:refer` works the same: `(:require myapp.db :refer [query])`. The Clojure string namespace is `phel.string` in Phel. The old backslash form `(ns myapp\db)` still parses, and warns under `PHEL_WARN_DEPRECATIONS=1`. See [Namespaces](/documentation/language/namespaces/).
 
-See [Namespaces](/documentation/language/namespaces).
+## PHP interop
 
-### Keywords
-
-Same:
+Java interop becomes PHP interop:
 
 ```clojure
 ;; Clojure
-:name
-:my-key
-::namespaced-key
-```
-
-```phel
-;; Phel
-:name
-:my-key
-::namespaced-key
-```
-
-Keywords act as functions on maps in both: `(:name user)`.
-
-### String concatenation and formatting
-
-`str` for concat, `format` for sprintf-style:
-
-```clojure
-;; Clojure
-(str "Hello, " name "!")
-(format "Hello, %s! You are %d." name age)
-```
-
-```phel
-;; Phel
-(def name "Alice")
-(def age 30)
-(str "Hello, " name "!")
-(format "Hello, %s! You are %d." name age)
-```
-
-### Anonymous functions
-
-`fn` and `#(...)` with `%` work the same:
-
-```clojure
-;; Clojure
-(fn [x] (* x 2))
-#(* % 2)
-#(+ %1 %2)
-```
-
-```phel
-;; Phel
-(fn [x] (* x 2))
-#(* % 2)
-#(+ %1 %2)
-```
-
-The old Phel-only `|(...)` form with `$` was removed. Use `#(...)`.
-
-See [Functions and Recursion](/documentation/language/functions-and-recursion) for multi-arity, variadic, `recur`.
-
-### Maps
-
-Both use `{}`. Keyword keys idiomatic:
-
-```clojure
-;; Clojure
-{:name "Alice" :age 30}
-(get user :name)
-(:name user)
-(assoc user :role :admin)
-```
-
-```phel
-;; Phel
-(def user {:name "Alice" :age 30})
-(get user :name)
-(:name user)
-(assoc user :role :admin)
-```
-
-Same syntax and functions. Phel maps also accept any hashable type as keys.
-
-### PHP interop (replaces Java interop)
-
-Use `php/` prefix:
-
-```clojure
-;; Clojure (Java interop)
 (System/currentTimeMillis)
 (.toUpperCase "hello")
-(Math/pow 2 10)
 ```
 
 ```phel
-;; Phel (PHP interop)
+;; Phel
 (php/time)
-(php/strtoupper "hello")
-(php/pow 2 10)
+(php/strtoupper "hello") ; => "HELLO"
+(.format (DateTimeImmutable. "2024-01-15") "Y-m-d") ; => "2024-01-15"
 ```
 
-Any PHP function via `php/` prefix. See [PHP Interop](/documentation/language/php-interop).
+`:tag` metadata emits PHP type declarations: `(defn ^int add [^int a ^int b] ...)` compiles to `function add(int $a, int $b): int`, and `^"?string"` marks a nullable type. See [PHP Interop](/documentation/language/php-interop/).
 
-### Printing
+## Protocols and interfaces
 
-`println` adds newline, `print` doesn't:
-
-```clojure
-;; Clojure
-(println "Hello, world!")
-(pr-str {:a 1})
-```
+`defprotocol` works with `extend-type`, but you cannot implement a protocol inline in `defstruct` or `defrecord`. For an inline implementation, use `definterface`:
 
 ```phel
-;; Phel
-(println "Hello, world!")
-(str {:a 1})
+(definterface Greetable
+  (greet [this]))
+
+(defstruct person [name]
+  Greetable
+  (greet [this] (str "Hello, " name)))
+
+(greet (person "Alice")) ; => "Hello, Alice"
 ```
 
-### Comments
+See [Interfaces](/documentation/language/interfaces/).
 
-Use `;` and `;;`. Legacy `#` line and `#| ... |#` block comments still read but deprecated. `#_` skips a form:
+## Reader conditionals
 
-```clojure
-;; Clojure
-;; line comment
-(comment (+ 1 2))
-```
+`#?()` and `#?@()` use `:phel` and `:default` as platform keys, so one `.cljc` file can serve both languages:
 
 ```phel
-;; Phel
-; line comment
-;; standalone comment
-#_(comment (+ 1 2))  ; skip the next form
-(comment (+ 1 2))
+(def host
+  #?(:phel "PHP"
+     :default "Unknown"))
+; => "PHP"
 ```
 
-## What you'll miss (and workarounds)
+There are no custom reader macros. Four tagged literals are built in:
 
-### CIDER / Calva / nREPL
+| Tag | Reads as |
+|---|---|
+| `#inst` | `DateTimeImmutable` |
+| `#uuid` | `Phel\Lang\UUID` |
+| `#regex` | PCRE pattern string |
+| `#php` | PHP array |
 
-Editor tooling covers [VS Code, PhpStorm, Emacs, Vim](/documentation/tooling/editor-support/). Phel ships [nREPL](/documentation/reference/cli-commands/#nrepl) and [LSP](/documentation/reference/cli-commands/#lsp) servers, structured stack frames in `EvalError`, stdout capture in `EvalResult`.
+Any other tag is a read error unless you register a handler with `register-tag` from `phel.reader`. Tags inside a branch that is not selected (such as `:clj`) are skipped. See [Reader Conditionals](/documentation/language/reader-conditionals/).
 
-### ClojureScript
+## What you gain
 
-PHP only. No browser/JavaScript target.
-
-### deps.edn / Leiningen
-
-Use Composer. `composer.json` replaces `deps.edn`:
-
-```json
-{
-  "require": {
-    "phel-lang/phel-lang": "^0.53",
-    "php": ">=8.5"
-  }
-}
-```
-
-### core.async / concurrency primitives
-
-No `core.async`, channels, or CSP. Phel has fiber-based `future-call`, `promise`/`deliver`, `async`/`await`, and `pmap` instead. See [Async](/documentation/language/async/). PHP is request-based, so for work that outlives a request use a PHP queue or process manager through interop.
-
-## What you'll gain
-
-### Cheap, ubiquitous hosting
-
-PHP runs on almost any web host, including shared hosting at a few dollars a month. No JVM-capable server needed. Many orgs already run PHP, so you can bring a Lisp into places where the JVM is not an option.
-
-### Simpler deployment
-
-No JVM startup, heap tuning, GC config. Deploy like any PHP app: upload files or `composer install`.
-
-### Fast startup
-
-PHP processes start in milliseconds. No JVM warmup. CLI tools and short-lived scripts are practical.
-
-### PHP ecosystem
-
-Decades of battle-tested libraries via `composer require`: WordPress, Laravel, Symfony, Guzzle, PHPUnit, Doctrine, thousands more. All callable through [PHP interop](/documentation/language/php-interop/).
-
-## Quick reference: Clojure to Phel
-
-| Clojure                      | Phel                                                      | Notes                                  |
-|------------------------------|-----------------------------------------------------------|----------------------------------------|
-| `(ns foo.bar)`               | `(ns foo.bar)`                                            | Same separator. PHP FQNs use `.`       |
-| `(:require [foo.bar :as b])` | `(:require foo.bar :as b)`                                | No vector wrapping required            |
-| `#(* % 2)`                   | `#(* % 2)`                                                | Same. `\|(* $ 2)` was removed          |
-| `(atom 0)`                   | `(atom 0)`                                                | Same                                   |
-| `@my-atom`                   | `@my-atom`                                                | Same                                   |
-| `(reset! a v)`               | `(reset! a v)`                                            | Same (`set!` alias removed in 0.36)    |
-| `(swap! a f)`                | `(swap! a f)`                                             | Same                                   |
-| `#'sym` / `(var sym)`        | `#'sym` / `(var sym)`                                     | First-class `Var` handle               |
-| `(alter-var-root #'v f)`     | `(alter-var-root #'v f)`                                  | Same                                   |
-| `(with-redefs [v x] ...)`    | `(with-redefs [v x] ...)`                                 | Same. Works for non-dynamic vars       |
-| `(binding [*x* v] ...)`      | `(binding [*x* v] ...)`                                   | Var must be `^:dynamic`                |
-| `(.method obj)`              | `(.method obj)`                                           | Same                                   |
-| `(Class/staticMethod)`       | `(Class/staticMethod)`                                    | Same                                   |
-| `(new Class)`                | `(new Class)` or `(Class.)`                               | `ClassName.` shorthand                 |
-| `^int` tag                   | `^int` tag                                                | Emits PHP type declaration             |
-| `(memoize f)`                | `^:memoize` on `defn`                                     | Metadata shorthand                     |
-| `(defprotocol P)`            | `(defprotocol P)`                                         | Same                                   |
-| `(defrecord R)`              | `(defrecord R)` or `(defstruct R)`                        | Both available                         |
-| `(lazy-seq ...)`             | `(lazy-seq ...)`                                          | Same                                   |
-| `1N` / `1.5M` / `1/2`        | `1N` / `1.5M` / `1/2`                                     | BigInt / BigDecimal / Ratio            |
-| `(/ 1 2)` → `1/2` (Ratio)    | `(/ 1 2)` → `1/2` (Ratio)                                 | Same; use `(/ 1.0 2)` for float        |
-| `#"regex"`                   | `#"regex"`                                                | Regex literal; `re-find`, `re-matches` |
-| `#?(:clj x :default y)`      | `#?(:phel x :default y)`                                  | Reader conditionals                    |
-| `(ex-info msg data)`         | `(ex-info msg data)`                                      | Same                                   |
-| `(transduce xf f coll)`      | `(transduce xf f coll)`                                   | Same                                   |
-| `;; comment`                 | `;; comment`                                              | `;` and `;;` standard                  |
-
-Welcome to the PHP side of Lisp. The parentheses are the same; the runtime is PHP.
+- **Hosting.** PHP runs on almost any web host, including cheap shared hosting. You can bring a Lisp to teams that already run PHP.
+- **Deployment.** No JVM startup, heap tuning, or GC settings. Deploy like any PHP app.
+- **Startup time.** PHP starts in milliseconds, so CLI tools and short scripts are practical.
+- **Libraries.** Every Composer package (Laravel, Symfony, Guzzle, Doctrine) is callable through [PHP interop](/documentation/language/php-interop/).
 
 ## Next steps
 
-- [Rosetta Stone: PHP to Phel](/documentation/guides/rosetta-stone/) - the PHP angle on the same forms
-- [Cookbook](/documentation/guides/cookbook/) - copy-paste recipes to get productive fast
-- [PHP interop](/documentation/language/php-interop/) - the full interop reference
+- [Rosetta Stone: PHP to Phel](/documentation/guides/rosetta-stone/): the PHP side of the same forms
+- [Cookbook](/documentation/guides/cookbook/): recipes for common tasks
+- [REPL](/documentation/tooling/repl/): the interactive workflow
