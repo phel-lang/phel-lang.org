@@ -44,7 +44,7 @@ This repo pins `phel-lang/phel-lang` in `composer.json` and mirrors the active v
    Update at least:
    - `content/documentation/installation.md` - the `## Upgrading to ...` heading, the `composer require phel-lang/phel-lang:^X.Y` command, and a short breaking-changes list for the new minor (pull from the release notes).
    - `content/documentation/guides/coming-from-clojure.md` - the example `composer.json` pin.
-   - `content/documentation/tooling/php-tools.md` - the `symfony/var-dumper` constraint should match this repo's own `composer.json`.
+   - `content/documentation/guides/debugging.md` (section `### PHP dump functions`) - the `symfony/var-dumper` constraint should match this repo's own `composer.json`.
 
    These prose fixes belong in the same commit or a follow-up `docs:` commit.
 
