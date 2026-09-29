@@ -5,7 +5,7 @@ description = "Provider-agnostic LLM client for Phel: chat, structured extractio
 aliases = ["/documentation/guides/ai"]
 +++
 
-`phel.ai` is a provider-agnostic client for LLM chat, structured extraction, tool use, embeddings, and semantic search. One API, swappable providers: pick the backend per call or globally.
+After this page you can call an LLM from Phel: ask a question, pull structured data out of text, let the model call your functions, and search texts by meaning. `phel.ai` ships with Phel and has one API for several providers.
 
 | Provider | Chat | Tools | Embeddings |
 |----------|------|-------|------------|
@@ -13,55 +13,23 @@ aliases = ["/documentation/guides/ai"]
 | `:openai` | yes | yes | yes |
 | `:voyageai` | no | no | yes |
 
-For the full signature of every function mentioned here, see the [ai API reference](/documentation/reference/api/ai/). This page is the narrative overview.
+The calls below need an API key and network access, so their results are examples, not fixed values.
 
-## Quickstart
+## Ask a question
+
+Set the key for your provider in an environment variable (`ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, or `VOYAGE_API_KEY`), or pass it to `configure`. Then call `complete` with a prompt:
 
 <!-- phel-test: skip -->
 ```phel
 (ns my-app.main
   (:require phel.ai :as ai))
 
-;; Either set env vars (ANTHROPIC_API_KEY, OPENAI_API_KEY, VOYAGE_API_KEY)
-;; or configure explicitly:
 (ai/configure {:api-key "sk-ant-..."})
 
-(ai/complete "Say hi in one word")   ; => "Hi"
+(ai/complete "Say hi in one word") ; => "Hi"
 ```
 
-## Configuration
-
-`configure` merges options into the shared `ai/config` atom.
-
-| Key | Default | Purpose |
-|-----|---------|---------|
-| `:provider` | `:anthropic` | `:anthropic`, `:openai`, `:voyageai` |
-| `:model` | `"claude-sonnet-4-6"` | Model name |
-| `:max-tokens` | `1024` | Output token cap |
-| `:api-key` | `nil` | Falls back to the provider env var |
-| `:base-url` | `nil` | Override endpoint (proxies, self-hosted) |
-| `:timeout` | `120` | HTTP timeout (seconds) |
-| `:max-retries` | `2` | Retry 429/5xx with exponential backoff |
-
-The default model evolves with `src/phel/ai.phel`; check there for the current value.
-
-Every per-call `opts` map (`chat`, `complete`, `chat-with-tools`, `extract`, `extract-many`) accepts these same keys as per-request overrides:
-
-<!-- phel-test: skip -->
-```phel
-(ai/complete "Summarize the news" {:provider :openai :model "gpt-4o-mini"})
-```
-
-For scoped config that auto-restores, even when the body throws, use `with-config`:
-
-<!-- phel-test: skip -->
-```phel
-(ai/with-config {:provider :openai :model "gpt-4o"}
-  (ai/complete "Summarize the news"))
-;; global config restored here, even if the body threw
-```
-
-## Chat
+For more control, `chat` takes a vector of messages and a system prompt:
 
 <!-- phel-test: skip -->
 ```phel
@@ -70,7 +38,7 @@ For scoped config that auto-restores, even when the body throws, use `with-confi
 ; => "4"
 ```
 
-Multi-turn conversations carry history forward with `chat-with-history`:
+`chat-with-history` keeps a conversation going. It returns the history with the new question and answer appended:
 
 <!-- phel-test: skip -->
 ```phel
@@ -80,9 +48,9 @@ Multi-turn conversations carry history forward with `chat-with-history`:
 ; => "Alice"
 ```
 
-## Structured extraction
+## Extract structured data
 
-Populate a schema from free text. `extract-many` returns a vector when the input describes multiple items:
+`extract` fills a map from free text. Each key of the schema map is an output field, and its value tells the model what to put there. `extract-many` returns a vector of maps when the text describes several items:
 
 <!-- phel-test: skip -->
 ```phel
@@ -90,11 +58,16 @@ Populate a schema from free text. `extract-many` returns a vector when the input
   {:name "string" :age "integer" :email "email address"}
   "Hi, I'm Alice, 30, alice@example.com")
 ; => {:name "Alice" :age 30 :email "alice@example.com"}
+
+(ai/extract-many {:name "string" :role "string"} "Alice is CEO, Bob is CTO")
+; => [{:name "Alice" :role "CEO"} {:name "Bob" :role "CTO"}]
 ```
 
-## Tool use
+To check the result, validate it with [Schema](/documentation/libraries/schema/).
 
-Define tools with the provider-agnostic `tool`, then either hand off to `run-tools` or drive the loop manually with `chat-with-tools` + `tool-result`.
+## Let the model call functions
+
+Describe each tool with `tool`: a name, a description, and its parameters as JSON Schema maps. `run-tools` sends the conversation, calls your handler for each tool call, sends the results back, and returns the model's final text:
 
 <!-- phel-test: skip -->
 ```phel
@@ -108,77 +81,83 @@ Define tools with the provider-agnostic `tool`, then either hand off to `run-too
 
 (ai/run-tools [{:role "user" :content "weather in Paris?"}]
               tools handlers {:max-turns 5})
-;; => "It's 72F and sunny in Paris."
+; => "It's 72F and sunny in Paris."
 ```
 
-`run-tools` sends the conversation, resolves each tool call via `handlers` (a map of tool name to function), feeds the results back, and stops when the model returns plain text or `:max-turns` is reached. Anthropic-only.
+`handlers` maps a tool name to a function that takes the call's input map. `run-tools` throws when a tool has no handler, or when `:max-turns` (default 5) passes without a final answer. It works with Anthropic only.
 
-For finer control, drive `chat-with-tools` yourself:
+For other providers, or to control each step, run the loop yourself with `chat-with-tools`, `tool-calls`, and `tool-result`. `chat-with-tools` returns:
 
 <!-- phel-test: skip -->
 ```phel
-(let [resp (ai/chat-with-tools messages tools)
-      calls (ai/tool-calls resp)]
-  ...)
-```
-
-`chat-with-tools` returns:
-
-<!-- phel-test: skip -->
-```phel
-{:text       "..."    ; assistant text (nil if only tool calls)
- :tool-calls [{:name "..." :id "..." :input {...}}]
+{:text        "..."   ; assistant text, nil if the model only called tools
+ :tool-calls  [{:name "..." :id "..." :input {...}}]
  :stop-reason "..."
- :raw        {...}}   ; full provider body
+ :raw         {...}}  ; full provider response body
 ```
 
-## Embeddings & semantic search
+## Search by meaning
+
+`build-index` embeds a list of texts. `search` embeds a query and returns the closest texts first. Embeddings use OpenAI by default. Pass `{:provider :voyageai}` to use Voyage AI:
 
 <!-- phel-test: skip -->
 ```phel
-(ai/configure {:provider :openai})
-
 (def index (ai/build-index ["cats purr" "dogs bark" "birds sing"]))
+
 (ai/search "feline sounds" index {:k 1})
-; => [{:text "cats purr" :embedding [...] :similarity 0.87}]
+; => ({:text "cats purr" :embedding [...] :similarity 0.87})
 ```
 
-The vector-math primitives that power search are available for custom pipelines: `dot-product`, `magnitude`, `cosine-similarity`, and `nearest`. These are pure functions you can use without any network call:
+`embed` and `embed-one` return raw embedding vectors. The vector math behind search needs no network, so you can use it in your own pipelines:
 
 ```phel
 (ns my-app.embed-demo
   (:require phel.ai :as ai))
 
-(println (ai/dot-product [1 2 3] [4 5 6]))    ; prints 32
-(println (ai/magnitude [3 4]))                ; prints 5.0
-(println (ai/cosine-similarity [1 0] [1 0]))  ; prints 1.0
+(ai/dot-product [1 2 3] [4 5 6])   ; => 32
+(ai/magnitude [3 4])               ; => 5.0
+(ai/cosine-similarity [1 0] [1 0]) ; => 1.0
+
+(ai/nearest [1 0] [{:text "a" :embedding [1 0]} {:text "b" :embedding [0 1]}] 1)
+; => ({:text "a", :embedding [1 0], :similarity 1.0})
 ```
 
-`nearest` ranks a query embedding against an index of `{:text "..." :embedding [...]}` maps and returns the top matches by descending similarity, the same shape `search` produces.
+## Configuration
 
-## Retry & timeouts
+`configure` merges options into the shared `ai/config` atom. Every call that takes `opts` (`chat`, `complete`, `chat-with-tools`, `extract`, `extract-many`) accepts the same keys for one call.
 
-`:max-retries` (default `2`) retries HTTP 429 and 5xx responses with exponential backoff (500ms, 1s, 2s, ...). Network errors bubble up immediately. Tune per call:
+| Key | Default | Purpose |
+|-----|---------|---------|
+| `:provider` | `:anthropic` | `:anthropic`, `:openai`, or `:voyageai` |
+| `:model` | `"claude-sonnet-4-6"` | model name; the default can change between releases |
+| `:max-tokens` | `1024` | output token limit |
+| `:api-key` | `nil` | falls back to the provider's environment variable |
+| `:base-url` | `nil` | another endpoint, for a proxy or a self-hosted model |
+| `:timeout` | `120` | HTTP timeout in seconds |
+| `:max-retries` | `2` | retries for HTTP 429 and 5xx, with backoff of 500 ms, 1 s, 2 s, ... |
 
 <!-- phel-test: skip -->
 ```phel
-(ai/complete "long task" {:timeout 300 :max-retries 4})
+(ai/complete "Summarize the news" {:provider :openai :model "gpt-4o-mini" :timeout 300})
+
+(ai/with-config {:provider :openai :model "gpt-4o"}
+  (ai/complete "Summarize the news"))
 ```
 
-## Errors
+`with-config` changes the configuration for its body only and restores it afterwards, even when the body throws.
 
-All failures throw `\RuntimeException`. Messages include the HTTP status and the provider error body when available.
+Network errors are not retried. Every failure throws `\RuntimeException`, with the HTTP status and the provider's error body in the message when available.
 
-## Testing without a live API
+## Test without a live API
 
-`phel.ai` exposes an HTTP seam, `*http-post*`, that tests rebind to return canned responses. Combined with [`phel.mock`](/documentation/reference/api/mock/), this removes the dependency on a live provider:
+`phel.ai` sends every request through the dynamic var `*http-post*`. Rebind it in a test to return a canned response. With [`phel.mock`](/documentation/reference/api/mock/) you can also count the calls:
 
 <!-- phel-test: skip -->
 ```phel
 (ns my-app.test.ai-test
   (:require phel.test :refer [deftest is])
   (:require phel.ai :as ai)
-  (:require phel.mock :refer [mock-fn call-count first-call]))
+  (:require phel.mock :refer [mock-fn call-count]))
 
 (deftest test-my-ai-logic
   (let [fake (mock-fn (fn [_ _] {:status 200
@@ -188,10 +167,6 @@ All failures throw `\RuntimeException`. Messages include the HTTP status and the
       (is (= 1 (call-count fake))))))
 ```
 
-`phel.json` stringifies floats during `json/encode`. When a mock must return embedding arrays, build the response body as a raw JSON string instead of using `json/encode`.
+`json/encode` writes floats as strings. When a fake response must contain embedding arrays, write the body as a raw JSON string.
 
-## See also
-
-- [ai API reference](/documentation/reference/api/ai/) - every function and its full signature
-- [Agentic Coding](/documentation/reference/agentic-coding/) - using Phel with AI pair-programming tools
-- Source: `src/phel/ai.phel`; tests: `tests/phel/ai.phel` in the [phel-lang](https://github.com/phel-lang/phel-lang) repo
+Every function and its signature: [ai API reference](/documentation/reference/api/ai/). For AI coding assistants that write Phel, see [AI Agents](/documentation/tooling/ai-agents/).
