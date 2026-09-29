@@ -8,7 +8,7 @@ aliases = ["/documentation/rosetta-stone"]
 scripts = ["rosetta-stone.js"]
 +++
 
-See how common PHP patterns translate to Phel. Click a category to filter, or browse them all.
+Find the Phel form for a PHP pattern you already know. Click a category to filter, or browse them all.
 
 <div class="rosetta-filters" id="rosetta-filters">
   <button class="rosetta-filter active" data-filter="all">All</button>
@@ -145,7 +145,7 @@ function area(float $r): float {
 
 (def user {:name "Alice" :age 30})
 (let [{:name name :age age} user]
-  (str name " is " age))
+  (str name " is " age)) ; => "Alice is 30"
 ```
 
 </div>
@@ -219,7 +219,7 @@ echo add(2, 3); // 5
 (defn add [a b]
   (+ a b))
 
-(println (add 2 3)) ; 5
+(add 2 3) ; => 5
 ```
 
 </div>
@@ -254,8 +254,8 @@ greet("Phel"); // "Hello, Phel!"
   ([] (greet "World"))
   ([name] (str "Hello, " name "!")))
 
-(greet)       ; "Hello, World!"
-(greet "Phel") ; "Hello, Phel!"
+(greet)        ; => "Hello, World!"
+(greet "Phel") ; => "Hello, Phel!"
 ```
 
 </div>
@@ -291,7 +291,7 @@ echo $double(5); // 10
 
 (def add (fn [a b] (+ a b)))
 
-(println (double 5)) ; 10
+(double 5) ; => 10
 ```
 
 </div>
@@ -308,10 +308,6 @@ echo $double(5); // 10
 **PHP**
 
 ```php
-function add(int $a, int $b): int {
-    return $a + $b;
-}
-
 function greet(?string $name): string {
     return "Hello, " . ($name ?? "World");
 }
@@ -323,9 +319,6 @@ function greet(?string $name): string {
 **Phel**
 
 ```phel
-(defn ^int add [^int a ^int b]
-  (+ a b))
-
 (defn ^string greet [^"?string" name]
   (str "Hello, " (or name "World")))
 ```
@@ -392,7 +385,7 @@ echo sum(1, 2, 3, 4); // 10
 (defn sum [& numbers]
   (reduce + 0 numbers))
 
-(println (sum 1 2 3 4)) ; 10
+(sum 1 2 3 4) ; => 10
 ```
 
 </div>
@@ -429,8 +422,8 @@ $count = count($numbers);   // 5
 
 ```phel
 (def numbers [1 2 3 4 5])
-(def first-num (first numbers))  ; 1
-(def cnt (count numbers))        ; 5
+(first numbers) ; => 1
+(count numbers) ; => 5
 ```
 
 </div>
@@ -464,7 +457,7 @@ $userName = $user['name']; // "Alice"
 (def user {:name "Alice"
            :age 30
            :role "admin"})
-(def user-name (:name user)) ; "Alice"
+(:name user) ; => "Alice"
 ```
 
 </div>
@@ -495,10 +488,10 @@ $map['b'] = 2;         // ['a' => 1, 'b' => 2]
 
 ```phel
 (def items [1 2 3])
-(def updated (conj items 4))     ; [1 2 3 4]
+(conj items 4)  ; => [1 2 3 4]
 
 (def m {:a 1})
-(def with-b (assoc m :b 2))     ; {:a 1 :b 2}
+(assoc m :b 2)  ; => {:a 1 :b 2}
 ```
 
 </div>
@@ -518,10 +511,6 @@ $map['b'] = 2;         // ['a' => 1, 'b' => 2]
 $user = ['name' => 'Alice', 'age' => 30];
 unset($user['age']);
 // ['name' => 'Alice']
-
-$items = [1, 2, 3];
-$filtered = array_filter($items, fn($x) => $x !== 2);
-// [1, 3]
 ```
 
 </div>
@@ -531,12 +520,7 @@ $filtered = array_filter($items, fn($x) => $x !== 2);
 
 ```phel
 (def user {:name "Alice" :age 30})
-(dissoc user :age)
-;; {:name "Alice"}
-
-(def items [1 2 3])
-(filter #(not= % 2) items)
-;; (1 3)
+(dissoc user :age) ; => {:name "Alice"}
 ```
 
 </div>
@@ -570,8 +554,7 @@ $city = $data['user']['address']['city'];
 
 ```phel
 (def data {:user {:address {:city "Berlin"}}})
-(def city (get-in data [:user :address :city]))
-;; "Berlin"
+(get-in data [:user :address :city]) ; => "Berlin"
 ```
 
 </div>
@@ -610,8 +593,8 @@ $greeting = "Hello, " . $firstName . "!";
 ```phel
 (def first-name "Ada")
 (def last-name "Lovelace")
-(def full (str first-name " " last-name))   ; "Ada Lovelace"
-(def greeting (str "Hello, " first-name "!")) ; "Hello, Ada!"
+(str first-name " " last-name) ; => "Ada Lovelace"
+(str "Hello, " first-name "!") ; => "Hello, Ada!"
 ```
 
 </div>
@@ -641,8 +624,8 @@ $price = sprintf("$%.2f", $amount);
 (def user-name "Alice")
 (def age 30)
 (def amount 9.5)
-(def msg (format "Hello, %s! You are %d." user-name age))
-(def price (format "$%.2f" amount))
+(format "Hello, %s! You are %d." user-name age) ; => "Hello, Alice! You are 30."
+(format "$%.2f" amount)                         ; => "$9.50"
 ```
 
 </div>
@@ -672,8 +655,8 @@ $joined = implode("-", $parts);      // "a-b-c"
 (ns my-app
   (:require phel.string :as str))
 
-(def parts (str/split "a,b,c" #",")) ; ["a" "b" "c"]
-(def joined (str/join "-" parts))    ; "a-b-c"
+(def parts (str/split "a,b,c" #",")) ; => ["a" "b" "c"]
+(str/join "-" parts)                 ; => "a-b-c"
 ```
 
 </div>
@@ -705,10 +688,10 @@ $upper = strtoupper("hello");            // "HELLO"
 (ns my-app
   (:require phel.string :as str))
 
-(def sub (str/subs "Hello World" 0 5))        ; "Hello"
-(def has (str/starts-with? "Hello" "He"))     ; true
-(def upper (str/upper-case "hello"))          ; "HELLO"
-(def pos (php/strpos "Hello World" "World"))  ; 6 (PHP interop)
+(str/subs "Hello World" 0 5)       ; => "Hello"
+(php/strpos "Hello World" "World") ; => 6 (PHP interop)
+(str/includes? "Hello" "ell")      ; => true
+(str/upper-case "hello")           ; => "HELLO"
 ```
 
 </div>
@@ -737,10 +720,9 @@ $has = preg_match('/^\d+$/', '123') === 1; // true
 **Phel**
 
 ```phel
-(def found (re-find #"\d+" "abc123"))  ; "123"
-
-(re-matches #"^\d+$" "123")           ; "123" (full match)
-(re-matches #"^\d+$" "abc")           ; nil   (no match)
+(re-find #"\d+" "abc123")    ; => "123"
+(re-matches #"^\d+$" "123")  ; => "123" (full match)
+(re-matches #"^\d+$" "abc")  ; => nil (no match)
 ```
 
 </div>
@@ -816,7 +798,9 @@ switch ($code) {
   (case code
     200 "OK"
     404 "Not Found"
-    500 "Server Error"))
+    500 "Server Error"
+    "Unknown"))
+; => "Not Found"
 ```
 
 </div>
@@ -825,7 +809,7 @@ switch ($code) {
 
 <div class="rosetta-item" data-category="control">
 
-### Ternary / inline if
+### Ternary and null coalescing
 
 <div class="rosetta-compare">
 <div class="rosetta-php">
@@ -834,35 +818,6 @@ switch ($code) {
 
 ```php
 $label = $itemCount > 0 ? "has items" : "empty";
-$display = $user['name'] ?: "Anonymous";
-```
-
-</div>
-<div class="rosetta-phel">
-
-**Phel**
-
-```phel
-(def item-count 3)
-(def user {:name "Alice"})
-(def label (if (> item-count 0) "has items" "empty"))
-(def display (or (:name user) "Anonymous"))
-```
-
-</div>
-</div>
-</div>
-
-<div class="rosetta-item" data-category="control">
-
-### Null coalescing / or
-
-<div class="rosetta-compare">
-<div class="rosetta-php">
-
-**PHP**
-
-```php
 $userName = $input ?? "default";
 $host = $config['db']['host'] ?? "localhost";
 ```
@@ -873,11 +828,13 @@ $host = $config['db']['host'] ?? "localhost";
 **Phel**
 
 ```phel
+(def item-count 3)
 (def input nil)
 (def config {:db {:host "db.example.com"}})
-(def user-name (or input "default"))
-(def host
-  (or (get-in config [:db :host]) "localhost"))
+
+(if (> item-count 0) "has items" "empty")         ; => "has items"
+(or input "default")                              ; => "default"
+(or (get-in config [:db :host]) "localhost")      ; => "db.example.com"
 ```
 
 </div>
@@ -933,7 +890,7 @@ foreach ($map as $key => $value) {
 
 <div class="rosetta-item" data-category="loops">
 
-### For with accumulator / reduce
+### Accumulator loop / reduce
 
 <div class="rosetta-compare">
 <div class="rosetta-php">
@@ -954,9 +911,8 @@ for ($i = 1; $i <= 10; $i++) {
 **Phel**
 
 ```phel
-(def sum
-  (reduce + 0 (range 1 11)))
-;; 55
+(reduce + 0 (range 1 11))
+; => 55
 ```
 
 </div>
@@ -993,7 +949,7 @@ while ($n > 0) {
   (if (> n 0)
     (recur (dec n) (+ acc n))
     acc))
-;; 55
+; => 55
 ```
 
 </div>
@@ -1028,7 +984,7 @@ foreach (range(0, 9) as $x) {
 (for [x :range [0 10]
       :when (even? x)]
   (* x x))
-;; [0 4 16 36 64]
+; => [0 4 16 36 64]
 ```
 
 </div>
@@ -1176,7 +1132,7 @@ $doubled = array_map(
 
 ```phel
 (map #(* % 2) [1 2 3 4])
-;; (2 4 6 8)
+; => (2 4 6 8)
 ```
 
 </div>
@@ -1207,39 +1163,7 @@ $evens = array_filter(
 
 ```phel
 (filter even? [1 2 3 4 5 6])
-;; (2 4 6)
-```
-
-</div>
-</div>
-</div>
-
-<div class="rosetta-item" data-category="functional">
-
-### Reduce
-
-<div class="rosetta-compare">
-<div class="rosetta-php">
-
-**PHP**
-
-```php
-$sum = array_reduce(
-    [1, 2, 3, 4],
-    fn($carry, $x) => $carry + $x,
-    0
-);
-// 10
-```
-
-</div>
-<div class="rosetta-phel">
-
-**Phel**
-
-```phel
-(reduce + 0 [1 2 3 4])
-;; 10
+; => (2 4 6)
 ```
 
 </div>
@@ -1283,6 +1207,7 @@ $result = implode(", ",
        (filter #(> (count %) 3))
        (map str/upper-case)
        (str/join ", ")))
+; => "ALICE, CHARLIE"
 ```
 
 </div>
