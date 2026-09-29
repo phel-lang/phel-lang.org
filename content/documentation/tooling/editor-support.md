@@ -5,66 +5,28 @@ description = "Set up Phel in PhpStorm, VS Code, Emacs, and Vim: syntax highligh
 aliases = ["/documentation/editor-support"]
 +++
 
-Phel editing is provided by community plugins. Pick the one for your editor, then connect it to a running nREPL server for inline evaluation. Every plugin gives you at least syntax highlighting and filetype detection; richer features (structural editing, inline eval) depend on the plugin.
+After this page your editor highlights Phel and evaluates code inline. Install the plugin for your editor, then connect it to Phel's nREPL server or language server.
+
+| Editor | Plugin | Highlighting | Structural editing | Inline eval |
+|---|---|---|---|---|
+| PhpStorm | [Phel IntelliJ plugin](https://github.com/phel-lang/phel-intellij-plugin) | yes | yes | yes (REPL actions) |
+| VS Code | [Phel VS Code extension](https://github.com/phel-lang/phel-vs-code-extension) | yes | no | yes |
+| Emacs | [interactive-lang-tools](https://codeberg.org/mmontone/interactive-lang-tools) | yes | with `paredit` or `smartparens` | yes |
+| Vim | [`phel.vim`](https://github.com/danirod/phel.vim) | yes, plus indentation | no | with an nREPL client |
 
 ## PhpStorm
 
-[Phel IntelliJ plugin](https://github.com/phel-lang/phel-intellij-plugin)
-
-What you get:
-
-- Syntax highlighting and filetype detection for `.phel`
-- Structural (paren-aware) editing
-- REPL actions to evaluate code from the editor
-
-Install:
-
-1. Open *Settings -> Plugins -> Marketplace*.
-2. Search for "Phel".
-3. Install, then restart the IDE.
-
-Config note: the REPL actions evaluate against a Phel process, so run them from inside a project that has Phel installed (`composer require phel-lang/phel-lang`).
+Open *Settings -> Plugins -> Marketplace*, search for "Phel", install, and restart the IDE. The REPL actions evaluate code in a Phel process, so use them inside a project that has Phel installed (`composer require phel-lang/phel-lang`).
 
 ## VS Code
 
-[Phel VS Code extension](https://github.com/phel-lang/phel-vs-code-extension)
-
-What you get:
-
-- Syntax highlighting and filetype detection for `.phel`
-- Code snippets
-- Inline evaluation of expressions
-
-Install:
-
-1. Open the Extensions view (`Ctrl/Cmd+Shift+X`).
-2. Search for "Phel".
-3. Install, then reload the window.
-
-Config note: this extension also powers step-through debugging. See [Xdebug setup](/documentation/tooling/xdebug-setup/) for `launch.json` and breakpoints in `.phel` files.
+Open the Extensions view (`Ctrl/Cmd+Shift+X`), search for "Phel", install, and reload the window. The extension also adds code snippets and step-through debugging: see [Xdebug setup](/documentation/tooling/xdebug-setup/) for `launch.json` and breakpoints in `.phel` files.
 
 ## Emacs
 
-[interactive-lang-tools](https://codeberg.org/mmontone/interactive-lang-tools)
-
-What you get:
-
-- Phel editing support with REPL integration for interactive evaluation
-- Standard Lisp editing helpers from Emacs
-
-Install: follow the setup instructions in the repository. The package is not on MELPA, so install it from source (for example with `package-vc-install` or `straight.el`).
-
-Config note: for paren editing, pair it with a structural-editing mode you already use, such as `paredit` or `smartparens`.
+The package is not on MELPA. Install it from source (for example with `package-vc-install` or `straight.el`) and follow the setup in its repository. For paren-aware editing, pair it with the structural mode you already use.
 
 ## Vim
-
-[`phel.vim`](https://github.com/danirod/phel.vim)
-
-What you get:
-
-- Syntax highlighting
-- Filetype detection for `.phel`
-- Indentation
 
 Install with your plugin manager, for example vim-plug:
 
@@ -72,41 +34,40 @@ Install with your plugin manager, for example vim-plug:
 Plug 'danirod/phel.vim'
 ```
 
-Then run `:PlugInstall`, restart Vim, and open a `.phel` file. Config note: this is a syntax and indentation plugin. For inline evaluation, connect a generic nREPL client (such as `vim-iced` or `conjure`, configured for a custom nREPL) to a running `phel nrepl` server.
+Run `:PlugInstall`, restart Vim, and open a `.phel` file. The plugin covers syntax and indentation only. For inline evaluation, point a generic nREPL client (such as `vim-iced` or `conjure`) at a running `phel nrepl` server.
 
 ## nREPL and editor integration
 
-Inline evaluation (send an expression from your editor and see the result without leaving the file) works by talking to a running server. Phel ships one:
+Inline evaluation sends a form from your editor to a running server and shows the result. Phel ships an [nREPL](https://nrepl.org/) server:
 
 ```bash
 vendor/bin/phel nrepl --port=7888 --host=127.0.0.1
 ```
 
-This starts an [nREPL](https://nrepl.org/) server (Bencode over TCP) that nREPL-aware editors connect to. Once connected, evaluating a form in the editor runs it in the same process, so state and loaded namespaces persist between evaluations, exactly like the [REPL](/documentation/tooling/repl/).
+Port `7888` and host `127.0.0.1` are the defaults. `--port=0` picks a free port. Every evaluation runs in the same process, so state and loaded namespaces persist between evaluations, as in the [REPL](/documentation/tooling/repl/).
 
-Defaults are port `7888` and host `127.0.0.1`. Override either with the flags above. The server is also listed under [CLI commands](/documentation/reference/cli-commands/#nrepl) alongside the other tooling entry points.
+The server implements the standard operations (`eval`, `clone`, `close`, `describe`, `load-file`, `interrupt`, `completions`, `lookup`, `info`, `eldoc`), so stock nREPL clients work unchanged. Two Phel operations back the [REPL workflow](/documentation/tooling/repl/#reload-changed-code):
 
-The server implements the standard ops (`eval`, `clone`, `close`, `describe`, `load-file`, `interrupt`, `completions`, `lookup`, `info`, `eldoc`), so stock nREPL clients work unmodified. Two Phel-specific ops back the [REPL-driven workflow](/documentation/tooling/repl/#reload-changed-code): `reload` (with an `all` param to force a full reload) and `run-tests` (an `ns` param plus an optional `var`). Bind them to editor commands for "reload changed namespaces" and "run the test under the cursor".
+| Operation | Parameters | Bind it to |
+|---|---|---|
+| `reload` | optional `all` to reload every namespace | "reload changed namespaces" |
+| `run-tests` | `ns`, optional `var` | "run the test under the cursor" |
 
-## Language Server (LSP)
+## Language server (LSP)
 
-For editors that speak the Language Server Protocol rather than nREPL, Phel ships an LSP server (v3.17 over stdio, JSON-RPC with `Content-Length` framing):
+For editors that use the Language Server Protocol, Phel ships an LSP server (version 3.17, JSON-RPC over stdio):
 
 ```bash
 vendor/bin/phel lsp
 ```
 
-It provides hover, go-to-definition, find-references, completion, document and workspace symbols, rename, formatting, and debounced diagnostics. On top of Phel symbols, completion is PHP-interop-aware:
+It provides hover, go-to-definition, find references, completion, document and workspace symbols, rename, formatting, and diagnostics. Completion also knows PHP interop:
 
-- instance methods and properties after `(.` and `(.-` on a receiver
+- instance methods and properties after `(.` and `(.-`
 - static methods and constants after `Class/`
 - class names in `(new ...)` and `\Fully\Qualified` positions
-- global functions after the `php/` prefix
+- PHP functions after `php/`
 
-Hover shows the reflected signature for PHP methods, functions, and classes, and signature help fires inside `(new ...)` and method calls. The receiver's type is inferred from `:tag` metadata, an inline `(new \Foo)`, or a local `(new ...)` binding; when the type is unknown, completion does nothing rather than emitting noise or false diagnostics.
+Hover shows the signature of PHP methods, functions, and classes, and signature help works inside `(new ...)` and method calls. The server infers the receiver's type from `:tag` metadata or a `(new ...)` expression or binding. When it cannot infer the type, it offers no completion instead of guessing.
 
-## Next steps
-
-- [REPL](/documentation/tooling/repl/) - the interactive loop your editor connects to
-- [CLI commands](/documentation/reference/cli-commands/#nrepl) - start `phel nrepl` and `phel lsp`
-- [Xdebug setup](/documentation/tooling/xdebug-setup/): step-through debugging in VS Code and PhpStorm
+Both servers are also listed in [CLI commands](/documentation/reference/cli-commands/#nrepl).
