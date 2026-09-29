@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
       clearTimeout(gTimer);
       if (key === 'h') { window.location.href = '/'; return; }
       if (key === 'd') { window.location.href = '/documentation/getting-started/'; return; }
-      if (key === 'p') { window.location.href = '/practice/basic/'; return; }
+      if (key === 'p') { window.location.href = '/practice/first-steps/'; return; }
       return;
     }
 
