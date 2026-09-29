@@ -5,9 +5,11 @@ description = "Deploy Phel apps on plain PHP-FPM or keep namespaces warm across 
 aliases = ["/documentation/deployment/"]
 +++
 
-PHP is **shared-nothing** by default: every request boots a fresh process, so a Phel namespace does not persist between requests. [`phel build`](/documentation/reference/cli-commands/#build-the-project) compiles your namespaces to PHP ahead of time and opcache caches that bytecode, so nothing re-parses per request (see [Performance](/documentation/guides/performance/) for the opcache and compiled-code cache setup). But each request still re-runs every loaded namespace's top-level forms to register its `def`s.
+This page shows you how to ship a Phel app: build it ahead of time, load it once per process, and run it on PHP-FPM or on a worker runtime (FrankenPHP, RoadRunner).
 
-A **worker runtime** keeps the PHP process alive across requests: namespaces load **once** at boot and in-memory state survives between requests, much closer to the JVM/Clojure model.
+PHP shares nothing between requests by default. Every request starts fresh, so Phel namespaces do not persist. [`phel build`](/documentation/reference/cli-commands/#build-the-project) compiles your namespaces to PHP ahead of time and opcache caches the bytecode, so no request parses Phel (see [Performance](/documentation/guides/performance/) for the cache setup). Each request still runs the top-level forms of every loaded namespace to register its `def`s.
+
+A **worker runtime** keeps the PHP process alive across requests. Namespaces load once at boot, and in-memory state survives between requests, close to the JVM and Clojure model.
 
 ## What a request pays
 
@@ -22,7 +24,12 @@ One measurement (PHP 8.5, Phel 0.53, Apple M4 Pro, a host that boots and then ca
 | peak memory | 88MB | 20MB | 6MB |
 | per call after that | 0.1µs | 0.1µs | 0.1µs |
 
-Three things follow. Calling Phel from PHP is free at 0.1µs per call, so the boundary is never what a request pays for. Loading namespaces is everything, and compiling them is the expensive part: a cold cache costs 20 times a warm one. Never let a request compile. Ship `phel build` output or a warm `.phel/cache`, and opcache takes another third off the load and most of the memory. Under PHP-FPM every request still pays the whole column, which is exactly what a worker runtime removes.
+What this means:
+
+- Calling Phel from PHP costs 0.1µs per call. The boundary is never the cost.
+- Loading namespaces is the cost, and compiling them is the expensive part: a cold cache costs 20 times a warm one. Never let a request compile. Ship `phel build` output or a warm `.phel/cache`.
+- Opcache takes another third off the load time and most of the memory.
+- Under PHP-FPM every request pays the whole column. A worker runtime pays it once per process.
 
 The absolute figures move with the machine and with how much your app loads, so measure your own:
 
@@ -36,7 +43,7 @@ printf("%.1f ms, %.1f MB\n", (hrtime(true) - $t) / 1e6, memory_get_peak_usage(tr
 
 ## The one rule
 
-Require the built entry point **once, before the request loop**. Everything inside the loop should only call your exported functions.
+Require the built entry point **once, before the request loop**. Inside the loop, only call your exported functions.
 
 ```php
 <?php
@@ -44,11 +51,13 @@ require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/out/app/main.php'; // loads Phel namespaces ONCE
 ```
 
-To produce it, run [`phel build`](/documentation/reference/cli-commands/#build-the-project) with `withMainPhelNamespace('app.main')` in [`phel-config.php`](/documentation/reference/configuration/). The build writes each namespace to `out/` by default, so `app.main` lands in `out/app/main.php`. Change the folder with `withBuildDestDir`. To expose Phel functions to the PHP worker, mark them `{:export true}` and run [`phel export`](/documentation/reference/cli-commands/#export-definitions), which generates one PHP class per namespace.
+To produce it, set `withMainPhelNamespace('app.main')` in [`phel-config.php`](/documentation/reference/configuration/) and run [`phel build`](/documentation/reference/cli-commands/#build-the-project). The build writes each namespace to `out/` by default, so `app.main` lands in `out/app/main.php`. Change the folder with `withBuildDestDir`.
+
+To call Phel functions from the PHP worker, mark them `{:export true}` and run [`phel export`](/documentation/reference/cli-commands/#export-definitions). It generates one PHP class per namespace, such as `\PhelGenerated\App\Main`.
 
 ## Loading Phel: prod vs dev
 
-One boot hook covers both environments if you guard the load. In production the built file exists and you `require` it; in development it does not, so you fall back to `\Phel::run()`, which boots Gacela and compiles on first call:
+One boot hook covers both environments if you guard the load. In production the built file exists and you `require` it. In development it does not, so you fall back to `\Phel::run()`, which boots Gacela and compiles on the first call:
 
 ```php
 $built = $root . '/out/app/main.php';
@@ -60,7 +69,11 @@ if (is_file($built)) {
 }
 ```
 
-`$root` is the project root your framework already knows (`base_path()`, `getProjectDir()`, `__DIR__`). Run this **once** per process, behind a static flag, never in a per-request hot path. Ship `out/` in the deploy artifact (or run `phel build` in CI); keep it out of your dev checkout so `is_file()` is false and `\Phel::run()` takes over. Framework hooks (Laravel, Symfony, framework-less) wire this into their kernels in [Framework Integration](/documentation/web/framework-integration/).
+- `$root` is the project root your framework already knows (`base_path()`, `getProjectDir()`, `__DIR__`).
+- Run this **once** per process, behind a static flag, never on a per-request path.
+- Ship `out/` in the deploy artifact, or run `phel build` in CI. Keep it out of your dev checkout, so `is_file()` is false and `\Phel::run()` takes over.
+
+[Framework Integration](/documentation/web/framework-integration/) wires this guard into Laravel, Symfony, and framework-less kernels.
 
 ## FrankenPHP
 
@@ -93,7 +106,7 @@ frankenphp php-server --root . --worker ./worker.php
 
 ## RoadRunner
 
-Same shape as FrankenPHP. RoadRunner is a Go server that keeps PHP workers alive and hands them PSR-7 requests. Install the worker library, a PSR-7 implementation, and the `rr` binary:
+RoadRunner is a Go server that keeps PHP workers alive and hands them PSR-7 requests. The worker has the same shape as the FrankenPHP one. Install the worker library, a PSR-7 implementation, and the `rr` binary:
 
 ```bash
 composer require spiral/roadrunner-http nyholm/psr7
@@ -152,4 +165,4 @@ Run it:
 
 ## When you do not need a worker runtime
 
-Plain PHP-FPM with opcache is fine for most apps: the table above is the per-request budget you are working with, and 49ms of it is boot. Reach for a worker runtime when that boot cost or the per-request namespace registration shows up in profiling, or when you want persistent in-memory state (caches, connection pools) across requests. See [Performance](/documentation/guides/performance/) for opcache tuning and the compiled-code cache that cut that boot cost.
+Plain PHP-FPM with opcache is fine for most apps. The last column of the table is the boot cost each request pays (38ms in that measurement). Use a worker runtime when that cost shows up in profiling, or when you want in-memory state (caches, connection pools) to live across requests.
