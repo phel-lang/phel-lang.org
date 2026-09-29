@@ -6,6 +6,26 @@
     <h1>{{page.title}}</h1>
     <div class="flex-container">
         <div class="page-content">
+            {% if page.extra.goals or page.extra.read_first %}
+            <div class="module-brief">
+                {% if page.extra.goals %}
+                <div class="module-brief__col">
+                    <h2 class="module-brief__title">You will learn</h2>
+                    <ul>
+                        {% for goal in page.extra.goals %}<li>{{ goal | markdown(inline=true) | safe }}</li>{% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+                {% if page.extra.read_first %}
+                <div class="module-brief__col">
+                    <h2 class="module-brief__title">Read first</h2>
+                    <ul>
+                        {% for link in page.extra.read_first %}<li><a href="{{ link[1] }}">{{ link[0] }}</a></li>{% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
             {% set parts = page.content | split(pat="question-block") %}
             {% set exercise_count = parts | length - 1 %}
             {% if exercise_count > 0 %}
@@ -29,6 +49,15 @@
             </div>
             {% endif %}
             {{page.content | safe}}
+
+            {% if page.extra.recap %}
+            <div class="module-recap">
+                <h2 class="module-recap__title">What you can do now</h2>
+                <ul>
+                    {% for item in page.extra.recap %}<li>{{ item | markdown(inline=true) | safe }}</li>{% endfor %}
+                </ul>
+            </div>
+            {% endif %}
 
             {% if page.lower or page.higher %}
             <div class="page-navigation">

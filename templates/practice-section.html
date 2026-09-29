@@ -32,8 +32,17 @@
             </div>
         </div>
 
-        <div class="practice-card-grid">
-            {% for page in section.pages %}
+        {% set_global current_stage = "" %}
+        {% for page in section.pages %}
+            {% set stage = page.extra.stage | default(value="") %}
+            {% if stage != current_stage %}
+                {% if current_stage != "" or loop.index > 1 %}</div>{% endif %}
+                {% if stage %}<h2 class="practice-stage">{{ stage }}</h2>{% endif %}
+                <div class="practice-card-grid">
+                {% set_global current_stage = stage %}
+            {% elif loop.first %}
+                <div class="practice-card-grid">
+            {% endif %}
             {% set slug = page.path | trim_end_matches(pat="/") | split(pat="/") | last %}
             {% set parts = page.content | split(pat="question-block") %}
             {% set exercise_count = parts | length - 1 %}
@@ -55,7 +64,7 @@
                     <div class="progress-tracker-fill" data-card-fill style="width: 0%"></div>
                 </div>
             </a>
-            {% endfor %}
+        {% endfor %}
         </div>
         {% endif %}
 

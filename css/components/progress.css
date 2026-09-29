@@ -224,6 +224,11 @@
   background: #22c55e;
 }
 
+.practice-stage {
+  margin: var(--space-2xl) 0 var(--space-md);
+  font-size: var(--text-xl);
+}
+
 .practice-card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
