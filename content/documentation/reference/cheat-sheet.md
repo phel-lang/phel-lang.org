@@ -184,9 +184,10 @@ Sorted collections, set relations (`subseq`, `select`, `index`), and `phel.walk`
 
 <!-- phel-test: skip -->
 ```phel
-(line-seq (php/fopen "file.txt" "r"))  ; lines, read on demand
-(csv-seq (php/fopen "data.csv" "r"))   ; CSV rows, read on demand
-(file-seq "src/")                       ; recursive directory listing
+(line-seq "file.txt")              ; lines, read on demand
+(csv-seq "data.csv")               ; CSV rows as vectors of strings
+(file-seq "src/")                  ; recursive directory listing
+(slurp "file.txt")  (spit "out.txt" "text")   ; whole file in, whole file out
 ```
 
 `map`, `filter`, `take`, `drop`, `concat`, and `mapcat` are lazy. To write your own with `lazy-seq`, see [Lazy Sequences](/documentation/language/lazy-sequences).
