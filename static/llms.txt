@@ -41,7 +41,6 @@ If you only fetch one URL, fetch the agent reference:
 - [Coming from Clojure](https://phel-lang.org/documentation/guides/coming-from-clojure/)
 - [Rosetta Stone (PHP to Phel)](https://phel-lang.org/documentation/guides/rosetta-stone/)
 - [Cookbook](https://phel-lang.org/documentation/guides/cookbook/)
-- [One-liners](https://phel-lang.org/documentation/guides/one-liners/)
 - [Testing](https://phel-lang.org/documentation/guides/testing/)
 - [Debugging](https://phel-lang.org/documentation/guides/debugging/)
 - [Performance](https://phel-lang.org/documentation/guides/performance/)
@@ -65,7 +64,6 @@ If you only fetch one URL, fetch the agent reference:
 - [REPL](https://phel-lang.org/documentation/tooling/repl/)
 - [Editor Support](https://phel-lang.org/documentation/tooling/editor-support/)
 - [Xdebug Setup](https://phel-lang.org/documentation/tooling/xdebug-setup/)
-- [PHP Debugging Tools](https://phel-lang.org/documentation/tooling/php-tools/)
 - [AI Agents](https://phel-lang.org/documentation/tooling/ai-agents/): connect a coding agent with `phel agent-install`.
 
 ## Reference
