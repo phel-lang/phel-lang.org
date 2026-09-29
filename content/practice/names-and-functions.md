@@ -69,6 +69,25 @@ Bind the name `greeting` to `"Hello, Phel!"`. Then use `greeting` and `str` to b
 Learn more: [Global and Local Bindings](/documentation/language/global-and-local-bindings/#definition-def)
 {% end %}
 
+{% question(difficulty="easy", kind="predict") %}
+Now that you can name a value, check that "changing" a collection leaves the original alone. What do the last two lines return?
+```phel
+(def langs ["php" "phel"])
+(conj langs "clojure")
+langs
+```
+{% end %}
+{% solution() %}
+```phel
+(def langs ["php" "phel"])
+(conj langs "clojure") ; => ["php" "phel" "clojure"]
+langs                  ; => ["php" "phel"]
+```
+`conj` returns a new vector and leaves `langs` as it was. To keep the new vector, give it a name: `(def more-langs (conj langs "clojure"))`. In PHP, `$langs[] = "clojure";` changes the array in place. In Phel nothing changes behind your back.
+
+Learn more: [Data Structures](/documentation/language/data-structures/)
+{% end %}
+
 ## Local names with let
 
 `let` takes a vector of name and value pairs, then a body. The names exist only inside the body. A later name can use an earlier one.

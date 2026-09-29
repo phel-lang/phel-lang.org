@@ -114,6 +114,6 @@ It checks the PHP extensions Phel needs, your source and test directories, OPcac
 
 ## Next steps
 
-- [Practice: Basics](/practice/basic): short graded exercises you solve in the REPL.
+- [Practice: First Steps](/practice/first-steps/): short graded exercises you solve in the REPL.
 - [Basic Types](/documentation/language/basic-types/): every literal and how it maps to PHP.
 - [Build a Web App](/documentation/guides/build-a-web-app/): a complete guestbook, end to end.
