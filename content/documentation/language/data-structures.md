@@ -1,475 +1,258 @@
 +++
 title = "Data structures"
 weight = 2
-description = "Phel's persistent collections: lists, vectors, maps, sets, queues, structs, plus core functions like conj, assoc, get-in, and into"
+description = "Phel's persistent collections: vectors, maps, sets, lists, queues, and structs, plus conj, assoc, get-in, update, and into"
 aliases = ["/documentation/data-structures"]
 
 [extra]
 difficulty = "beginner"
 +++
 
-Phel's four core collections are lists, vectors, maps, and sets. All are **persistent** (immutable): an operation returns a new version that shares structure with the old one, and the original never changes.
+After this page you can create, read, and update Phel's collections: vectors, maps, sets, lists, queues, and structs.
+
+All Phel collections are **persistent**: they never change. An update returns a new collection that shares most of its structure with the old one, so updates stay cheap and the original stays valid.
+
+```phel
+(def config {:theme "dark" :lang "en"})
+(def new-config (assoc config :theme "light"))
+
+config     ; => {:theme "dark" :lang "en"}
+new-config ; => {:theme "light" :lang "en"}
+```
 
 {% php_note() %}
-PHP arrays copy on write. Phel collections share structure instead: a new version reuses most of the old one, so updates stay cheap. No function can change data you pass to it.
+PHP arrays copy on write, and code that holds a reference can change them in place. A Phel function can never change the data you pass to it. When you need a mutable PHP array for interop, create one with `(php/array)` and change it with `php/aset`.
 {% end %}
 
-## Lists
+## Choosing a collection
 
-Linked list. Fast first-element access, slow random access. Lists are function/macro/special-form calls.
-
-Create with `list` or by quoting a parenthesized form:
-
-```phel
-(list 1 2 3) ; use the list function to create a new list
-'(1 2 3)     ; use a quote to create a list
-```
-
-Access values with `get`, `first`, `second`, `next`, `rest`, `peek`:
-
-```phel
-(get (list 1 2 3) 0)  ; Evaluates to 1
-(first (list 1 2 3))  ; Evaluates to 1
-(second (list 1 2 3)) ; Evaluates to 2
-(peek (list 1 2 3))   ; Evaluates to 1
-(next (list 1 2 3))   ; Evaluates to (2 3)
-(next (list))         ; Evaluates to nil
-(rest (list 1 2 3))   ; Evaluates to (2 3)
-(rest (list))         ; Evaluates to ()
-```
-
-`peek` returns the cheap end of a collection: the head of a list, the last element of a vector.
-
-Add to the front with `cons`:
-
-```phel
-(cons 1 (list))     ; Evaluates to (1)
-(cons 3 (list 1 2)) ; Evaluates to (3 1 2)
-```
-
-`count` for length:
-
-```phel
-(count (list))       ; Evaluates to 0
-(count (list 1 2 3)) ; Evaluates to 3
-```
+| Collection | Literal | Use it for |
+|------------|---------|------------|
+| Vector | `[1 2 3]` | ordered values, access by index, append at the end |
+| Map | `{:a 1 :b 2}` | values looked up by key |
+| Set | `#{1 2 3}` | unique values, fast membership tests |
+| List | `'(1 2 3)` | code as data, adding at the front |
+| Queue | `(queue 1 2 3)` | first in, first out |
 
 ## Vectors
 
-Indexed, sequential. Fast random access by index, fast append at end.
-
-Create with brackets, `vector`, or coerce with `vec`:
+A vector is an indexed sequence. Reading by index and appending at the end are fast.
 
 ```phel
-[1 2 3]       ; Creates a new vector with three values
-(vector 1 2)  ; Creates a new vector with two values
-(vec '(1 2 3)) ; Coerce a list to a vector: [1 2 3]
-(vec #{1 2 3}) ; Coerce a set to a vector
+[1 2 3]          ; literal
+(vector 1 2 3)   ; => [1 2 3]
+(vec '(1 2 3))   ; => [1 2 3], from any collection
 ```
 
-`get` by index. `first`, `second`, `peek` for first/second/last:
+Read by index with `get` (or `nth`). `get` returns `nil`, or a default, when the index is missing:
 
 ```phel
-(get [1 2 3] 0)  ; Evaluates to 1
-(first [1 2 3])  ; Evaluates to 1
-(second [1 2 3]) ; Evaluates to 2
-(peek [1 2 3])   ; Evaluates to 3
+(get [10 20 30] 0)       ; => 10
+(get [10 20 30] 5)       ; => nil
+(get [10 20 30] 5 :none) ; => :none
+(first [10 20 30])       ; => 10
+(peek [10 20 30])        ; => 30 (the last element)
 ```
 
-Append with `conj`:
+Add at the end with `conj`. Replace by index with `assoc`. Drop the last element with `pop`:
 
 ```phel
-(conj [1 2 3] 4) ; Evaluates to [1 2 3 4]
+(conj [1 2 3] 4)     ; => [1 2 3 4]
+(assoc [1 2 3] 0 9)  ; => [9 2 3]
+(assoc [1 2 3] 3 4)  ; => [1 2 3 4] (one past the end appends)
+(pop [1 2 3])        ; => [1 2]
+(count [1 2 3])      ; => 3
 ```
-
-Change a value with `assoc`:
-
-```phel
-(assoc [1 2 3] 0 4) ; Evaluates to [4 2 3]
-(assoc [1 2 3] 3 4) ; Evaluates to [1 2 3 4]
-```
-
-Length with `count`:
-
-```phel
-(count [])      ; Evaluates to 0
-(count [1 2 3]) ; Evaluates to 3
-```
-
-{% php_note() %}
-Like PHP indexed arrays (`[0 => 'a', 1 => 'b']`), but immutable.
-{% end %}
 
 ## Maps
 
-Key-value pairs in any order. Each key once. Any value implementing `HashableInterface` and `EqualsInterface` can be a key (vectors, lists, maps).
-
-Create with braces or `hash-map`:
+A map stores key-value pairs, each key once. Keys are usually keywords, but any value can be a key.
 
 ```phel
-{:key1 "value1" :key2 "value2"}          ; A new hash-map using shortcut syntax
-(hash-map :key1 "value1" :key2 "value2") ; A new hash-map using the function
-
-;; Any type can be a key
-{[1 2] "vector-key" :keyword "keyword-key" "string" "string-key"}
+{:name "Alice" :age 30}         ; literal
+(hash-map :name "Alice" :age 30) ; same map
 ```
 
-Access with `get`:
+Read with `get`, or call the keyword as a function. Both accept a default:
 
 ```phel
-(get {:a 1 :b 2} :a) ; Evaluates to 1
-(get {:a 1 :b 2} :b) ; Evaluates to 2
-(get {:a 1 :b 2} :c) ; Evaluates to nil
+(get {:a 1 :b 2} :a)      ; => 1
+(get {:a 1 :b 2} :c 0)    ; => 0
+(:a {:a 1 :b 2})          ; => 1
+(contains? {:a 1} :a)     ; => true
 ```
 
-Add or update with `assoc`. Multiple pairs at once:
+Add or replace keys with `assoc`. Remove them with `dissoc`. Combine maps with `merge`, where later maps win:
 
 ```phel
-(assoc {} :a "hello")           ; Evaluates to {:a "hello"}
-(assoc {:a "foo"} :a "bar")     ; Evaluates to {:a "bar"}
-(assoc {} :a 1 :b 2 :c 3)      ; Evaluates to {:a 1 :b 2 :c 3}
+(assoc {:a 1} :b 2 :c 3)          ; => {:a 1 :b 2 :c 3}
+(dissoc {:a 1 :b 2 :c 3} :a :c)   ; => {:b 2}
+(merge {:theme "light" :lang "en"} {:theme "dark"})
+; => {:theme "dark" :lang "en"}
 ```
 
-Remove with `dissoc`:
-
-```phel
-(dissoc {:a "foo"} :a) ; Evaluates to {}
-```
-
-`count` for size:
-
-```phel
-(count {})         ; Evaluates to 0
-(count {:a "foo"}) ; Evaluates to 1
-```
+`keys`, `vals`, and `select-keys` read parts of a map: `(select-keys {:a 1 :b 2 :c 3} [:a :c])` returns `{:a 1 :c 3}`.
 
 {% php_note() %}
-Like PHP associative arrays, but with two differences: keys can be **any type** (vectors, lists, other maps), and maps are **immutable**: "updating" with `assoc` returns a new map and leaves the original untouched. Worked comparison in [Immutability vs PHP mutability](#immutability-vs-php-mutability) below.
+A map is like a PHP associative array with two differences: keys can be any type, and `assoc` returns a new map instead of changing the old one.
 {% end %}
 
 ### Map entries
 
-A map entry is one key-value pair. `seq` over a map yields entries. Each entry compares equal to a 2-element vector. Build one directly with `map-entry`:
+Calling `seq` or `first` on a map gives map entries. An entry is equal to a `[key value]` vector:
 
 ```phel
-(def e (map-entry :a 1))
-(map-entry? e)      ; => true
-(key e)             ; => :a
-(val e)             ; => 1
-(= e [:a 1])        ; => true
-
-(first {:a 1 :b 2}) ; => [:a 1]
+(first {:a 1 :b 2})       ; => [:a 1]
+(key (map-entry :a 1))    ; => :a
+(val (map-entry :a 1))    ; => 1
+(= (map-entry :a 1) [:a 1]) ; => true
 ```
 
 ## Sets
 
-Unique values in any order. Values must implement `HashableInterface` and `EqualsInterface`.
-
-Create with `#{}`, `hash-set`, or coerce with `set`:
+A set holds unique values. Testing membership is fast.
 
 ```phel
-#{1 2 3}         ; A new set using shortcut syntax
-(hash-set 1 2 3) ; A new set from individual arguments
-(set [1 2 3])    ; Coerce a collection to a set
-(set '(1 2 3))   ; Works with any collection type
+#{1 2 3}          ; literal
+(hash-set 1 2 3)  ; => #{1 2 3}, from arguments
+(set [1 1 2 3])   ; => #{1 2 3}, from a collection
+
+(conj #{1 2} 3)           ; => #{1 2 3}
+(conj #{1 2} 2)           ; => #{1 2} (already present)
+(disj #{1 2 3} 2)         ; => #{1 3}
+(contains? #{1 2 3} 2)    ; => true
 ```
 
-{% callout(kind="note") %}
-`set` coerces a collection (Clojure alignment). `hash-set` builds from individual args.
-{% end %}
-
-Add with `conj`:
+Set algebra functions are in core:
 
 ```phel
-(conj #{1 2 3} 4) ; Evaluates to #{1 2 3 4}
-(conj #{1 2 3} 2) ; Evaluates to #{1 2 3}
+(union #{1 2} #{2 3})        ; => #{1 2 3}
+(intersection #{1 2} #{2 3}) ; => #{2}
+(difference #{1 2} #{2 3})   ; => #{1}
+(subset? #{1} #{1 2})        ; => true
 ```
 
-Remove with `disj`:
+`symmetric-difference` and `superset?` are also available. See the [core API](/documentation/reference/api/core/).
+
+## Lists
+
+A list is a linked list. Adding and reading at the front is fast. Reading by index is slow. Phel code is itself written as lists, so quote a list to keep it as data:
 
 ```phel
-(disj #{1 2 3} 2)   ; Evaluates to #{1 3}
-(disj #{1 2 3} 2 3) ; Evaluates to #{1}
+'(1 2 3)          ; => (1 2 3)
+(list 1 2 3)      ; => (1 2 3)
+(first '(1 2 3))  ; => 1
+(rest '(1 2 3))   ; => (2 3)
+(conj '(1 2 3) 0) ; => (0 1 2 3), adds at the front
 ```
 
-Size with `count`:
-
-```phel
-(count #{})  ; Evaluates to 0
-(count #{2}) ; Evaluates to 1
-```
-
-`union`: all elements of multiple sets.
-
-```phel
-(union)               ; Evaluates to #{}
-(union #{1 2})        ; Evaluates to #{1 2}
-(union #{1 2} #{0 3}) ; Evaluates to #{0 1 2 3}
-```
-
-`intersection`: elements shared by all sets.
-
-```phel
-(intersection #{1 2} #{0 3})     ; Evaluates to #{}
-(intersection #{1 2} #{0 1 2 3}) ; Evaluates to #{1 2}
-```
-
-`difference`: elements in first set not in the others.
-
-```phel
-(difference #{1 2} #{0 3})     ; Evaluates to #{1 2}
-(difference #{1 2} #{0 1 2 3}) ; Evaluates to #{}
-(difference #{0 1 2 3} #{1 2}) ; Evaluates to #{0 3}
-```
-
-`symmetric-difference`: elements in some sets but not in their intersection.
-
-```phel
-(symmetric-difference #{1 2} #{0 3})     ; Evaluates to #{0 1 2 3}
-(symmetric-difference #{1 2} #{0 1 2 3}) ; Evaluates to #{0 3}
-```
-
-`subset?` and `superset?`:
-
-```phel
-(subset? (hash-set 1 2) (hash-set 1 2 3))   ; Evaluates to true
-(subset? (hash-set 1 4) (hash-set 1 2 3))   ; Evaluates to false
-(superset? (hash-set 1 2 3) (hash-set 1 2)) ; Evaluates to true
-(superset? (hash-set 1 2 3) (hash-set 1 4)) ; Evaluates to false
-```
+`rest` returns an empty collection when nothing is left. `next` returns `nil`, which is handy in a loop test.
 
 ## Queues
 
-Persistent first-in, first-out queue. `conj` adds to the back. `peek` and `pop` read and drop the front. All three run in amortised O(1).
-
-No literal syntax. Build one with `queue`:
+A queue is first in, first out. `conj` adds at the back. `peek` reads the front and `pop` removes it. There is no literal; build one with `queue`:
 
 ```phel
 (def q (queue 1 2 3))
-(queue? q)        ; => true
-(peek q)          ; => 1
-(conj q 4)        ; => <-(1 2 3 4)-<
-(pop q)           ; => <-(2 3)-<
+(peek q)   ; => 1
+(conj q 4) ; => <-(1 2 3 4)-<
+(pop q)    ; => <-(2 3)-<
 ```
 
-A queue prints as `<-(...)-<`. Items enter on the right and leave on the left.
+A queue prints as `<-(...)-<`: items enter on the right and leave on the left.
 
 ## Working with collections
 
-Core functions span data structures.
-
 ### Adding with `conj` {#adding-elements-with-conj}
 
-`conj` adds elements. Behavior depends on type for efficiency:
+`conj` adds where it is cheapest for the type:
+
+| Type | `conj` adds | Example |
+|------|-------------|---------|
+| Vector | at the end | `(conj [1 2] 3)` => `[1 2 3]` |
+| List | at the front | `(conj '(1 2) 0)` => `(0 1 2)` |
+| Set | if not present | `(conj #{1} 2)` => `#{1 2}` |
+| Map | a `[key value]` pair | `(conj {:a 1} [:b 2])` => `{:a 1 :b 2}` |
+
+### Nested data
+
+The `-in` functions take a path of keys and indexes:
 
 ```phel
-;; Vectors - appends to end
-(conj [1 2 3] 4)         ; Evaluates to [1 2 3 4]
-(conj [] 1 2 3)          ; Evaluates to [1 2 3]
+(def user {:name "Alice"
+           :settings {:theme "dark" :font-size 14}})
 
-;; Sets - adds element
-(conj #{1 2 3} 4)        ; Evaluates to #{1 2 3 4}
-(conj #{1 2 3} 2)        ; Evaluates to #{1 2 3} (already present)
-
-;; Lists - prepends to front (for efficiency)
-(conj (list 1 2 3) 0)    ; Evaluates to (0 1 2 3)
-
-;; Maps - adds key-value pair
-(conj {:a 1} [:b 2])     ; Evaluates to {:a 1 :b 2}
-(conj {} [:a 1] [:b 2])  ; Evaluates to {:a 1 :b 2}
+(get-in user [:settings :theme])               ; => "dark"
+(get-in user [:settings :missing] "default")   ; => "default"
+(assoc-in user [:settings :theme] "light")
+; => {:name "Alice" :settings {:theme "light" :font-size 14}}
+(update-in user [:settings :font-size] + 2)
+; => {:name "Alice" :settings {:theme "dark" :font-size 16}}
 ```
 
-### Associating with `assoc`
-
-`assoc` sets a key in maps, vectors (by index), structs:
+`update` applies a function to one value. Extra arguments go after the old value:
 
 ```phel
-;; Maps - set or update key-value pairs
-(assoc {} :a "hello")           ; Evaluates to {:a "hello"}
-(assoc {:a "foo"} :a "bar")     ; Evaluates to {:a "bar"}
-(assoc {:a 1} :b 2 :c 3)        ; Evaluates to {:a 1 :b 2 :c 3}
-
-;; Vectors - set value at index (can extend by one position)
-(assoc [1 2 3] 0 4)             ; Evaluates to [4 2 3]
-(assoc [1 2 3] 3 4)             ; Evaluates to [1 2 3 4]
-(assoc [] 0 "first")            ; Evaluates to ["first"]
+(update {:count 1} :count inc) ; => {:count 2}
+(update [1 2 3] 0 + 10)        ; => [11 2 3]
 ```
 
-### Removing with `dissoc`
+`update-vals` applies a function to every value of a map, and `update-keys` to every key: `(update-vals {:a 1 :b 2} inc)` returns `{:a 2 :b 3}`.
 
-`dissoc` removes a key from a map:
+### Building with `into`
 
-```phel
-(dissoc {:a 1 :b 2} :a)         ; Evaluates to {:b 2}
-(dissoc {:a 1 :b 2 :c 3} :a :c) ; Evaluates to {:b 2}
-```
-
-For sets, use `disj`. `dissoc` also works on sets, but `disj` is the Clojure name.
-
-### Nested operations
-
-`-in` variants for nested structures:
+`into` adds every element of one collection to another. Use it to convert between types:
 
 ```phel
-;; get-in - Access nested values
-(get-in {:a {:b {:c 1}}} [:a :b :c])     ; Evaluates to 1
-(get-in {:users [{:name "Alice"}]} [:users 0 :name]) ; Evaluates to "Alice"
-
-;; assoc-in - Set nested values
-(assoc-in {} [:a :b :c] 1)               ; Evaluates to {:a {:b {:c 1}}}
-(assoc-in {:a {:b 1}} [:a :c] 2)         ; Evaluates to {:a {:b 1 :c 2}}
-
-;; update - Update a value by applying a function
-(update {:a 1} :a inc)                   ; Evaluates to {:a 2}
-(update [1 2 3] 0 + 10)                  ; Evaluates to [11 2 3]
-
-;; update-in - Update nested values
-(update-in {:a {:b 1}} [:a :b] inc)      ; Evaluates to {:a {:b 2}}
-```
-
-### Transforming map keys and values
-
-`update-keys`, `update-vals` apply a function across keys/values:
-
-```phel
-; Transform all keys
-(update-keys {:a 1 :b 2 :c 3} name)
-; => {"a" 1 "b" 2 "c" 3}
-
-(update-keys {"name" "Alice" "age" "30"} keyword)
-; => {:name "Alice" :age "30"}
-
-; Transform all values
-(update-vals {:a 1 :b 2 :c 3} inc)
-; => {:a 2 :b 3 :c 4}
-
-(update-vals {:x "hello" :y "world"} phel.string/upper-case)
-; => {:x "HELLO" :y "WORLD"}
-```
-
-### Building collections with `into`
-
-`into` pours elements from one collection into another. Third arg applies a transducer:
-
-```phel
-; Two-argument form: pour elements into a collection
-(into [] '(1 2 3))          ; => [1 2 3]
-(into #{} [1 2 2 3 3])     ; => #{1 2 3}
+(into [] '(1 2 3))         ; => [1 2 3]
+(into #{} [1 2 2 3])       ; => #{1 2 3}
 (into {} [[:a 1] [:b 2]])  ; => {:a 1 :b 2}
-
-; Three-argument form: apply a transducer during transfer
-(into [] (map inc) [1 2 3])           ; => [2 3 4]
-(into #{} (filter odd?) [1 2 3 4 5])  ; => #{1 3 5}
-(into {} (map (fn [[k v]] [k (* v 2)])) (pairs {:a 1 :b 2}))
-; => {:a 2 :b 4}
 ```
 
 ### Transducers
 
-Call `map`, `filter`, `take` and friends without a collection and you get a transducer: a transformation you can reuse with any consumer. Compose them with `comp`:
+`map`, `filter`, `take`, and similar functions return a **transducer** when you call them without a collection. A transducer is a reusable transformation. Pass it as the middle argument of `into`, or compose several with `comp`:
 
 ```phel
-(def xf (comp (filter odd?) (map #(* % 10))))
+(into [] (map inc) [1 2 3]) ; => [2 3 4]
 
+(def xf (comp (filter odd?) (map #(* % 10))))
 (into [] xf [1 2 3 4 5])       ; => [10 30 50]
 (transduce xf + 0 [1 2 3 4 5]) ; => 90
 ```
 
-Common producers:
+Composition order, early termination, and custom transducers: [Transducers](/documentation/language/transducers/).
+
+## Data structures as functions
+
+Vectors, maps, and sets are functions of their keys. Keywords are functions of maps. This keeps lookups short, especially with `map`:
 
 ```phel
-(into [] (take 3) (range 10))                ; => [0 1 2]
-(into [] (drop 7) (range 10))                ; => [7 8 9]
-(into [] (take-while #(< % 5)) (range 10))   ; => [0 1 2 3 4]
-(into [] (drop-while #(< % 5)) (range 10))   ; => [5 6 7 8 9]
-(into [] (take-nth 3) (range 10))             ; => [0 3 6 9]
-(into [] (distinct) [1 2 1 3 2 4])            ; => [1 2 3 4]
-(into [] (dedupe) [1 1 2 2 3 1 1])            ; => [1 2 3 1]
-(into [] (interpose :sep) [1 2 3])            ; => [1 :sep 2 :sep 3]
+([10 20 30] 1)    ; => 20
+({:a 1 :b 2} :a)  ; => 1
+(#{1 2 3} 2)      ; => 2
+(#{1 2 3} 4)      ; => nil
+
+(map :name [{:name "Alice"} {:name "Bob"}]) ; => ("Alice" "Bob")
 ```
-
-Composition order, early termination, `completing`, `cat`, and custom transducers live in [Transducers](/documentation/language/transducers/).
-
-{% php_note() %}
-
-### Immutability vs PHP mutability
-
-```php
-// PHP: Mutable operations
-$users = ['Alice', 'Bob'];
-$users[] = 'Charlie';  // $users is now ['Alice', 'Bob', 'Charlie']
-echo $users[0];        // Still 'Alice'
-
-// PHP: Mutating a map
-$config = ['theme' => 'dark', 'lang' => 'en'];
-$config['theme'] = 'light';  // Overwrites in place
-```
-
-```phel
-;; Phel: Immutable operations
-(def users ["Alice" "Bob"])
-(def updated-users (conj users "Charlie"))  ; New collection
-;; users is still ["Alice" "Bob"]
-;; updated-users is ["Alice" "Bob" "Charlie"]
-
-;; Phel: Creating a new map
-(def config {:theme "dark" :lang "en"})
-(def new-config (assoc config :theme "light"))
-;; config is still {:theme "dark" :lang "en"}
-;; new-config is {:theme "light" :lang "en"}
-```
-
-**Why immutability matters:**
-- **Thread-safe** reads
-- **Predictable**: functions can't mutate your data
-- **Time-travel**: keep old versions for undo/history
-- **Easier debugging**: no surprise changes
-
-**With PHP code:** use `php/aset` for mutable PHP arrays:
-```phel
-(def php-arr (php/array))
-(php/aset php-arr "key" "value")  ; Mutates the PHP array
-```
-
-{% end %}
-
-{% clojure_note() %}
-
-### Clojure compatibility
-
-Phel matches Clojure's names:
-
-| Function    | Behavior                    | Clojure Compatible?  |
-|-------------|-----------------------------|----------------------|
-| `conj`      | Add element (type-specific) | ✓ Yes                |
-| `assoc`     | Associate key with value    | ✓ Yes                |
-| `dissoc`    | Dissociate key              | ✓ Yes                |
-| `get`       | Get value by key            | ✓ Yes                |
-| `get-in`    | Get nested value            | ✓ Yes                |
-| `assoc-in`  | Set nested value            | ✓ Yes                |
-| `update`    | Update with function        | ✓ Yes                |
-| `update-in` | Update nested with function | ✓ Yes                |
-| `disj`      | Remove from a set           | ✓ Yes                |
-
-**Migration:** `push`, `put`, `unset` were removed. Use `conj`, `assoc`, `dissoc`.
-
-{% end %}
 
 ## Structs
 
-A struct is a Map with a fixed set of keys and a global name. `defstruct` also defines a predicate function.
+A struct is a map with a fixed set of keys and a name. `defstruct` defines a constructor and a predicate:
 
 ```phel
-(defstruct my-struct [a b c]) ; Defines the struct
-(let [x (my-struct 1 2 3)]    ; Create a new struct
-  (my-struct? x)              ; Evaluates to true
-  (get x :a)                  ; Evaluates to 1
-  (assoc x :a 12))            ; Evaluates to (my-struct 12 2 3)
+(defstruct point [x y])
+
+(def p (point 1 2))
+(point? p)       ; => true
+(get p :x)       ; => 1
+(:y p)           ; => 2
+(assoc p :x 10)  ; => (point 10 2)
 ```
 
-Internally, Structs are PHP classes (one property per key). Faster than Maps. Every struct implements `\Countable`, `\ArrayAccess`, and `\IteratorAggregate`, so PHP code can `count($s)` and read fields by string offset (`$s['name']`) as well as by keyword.
+A struct compiles to a PHP class with one property per key, so it is faster than a map. PHP code can call `count($p)` and read `$p['x']`: every struct implements `\Countable`, `\ArrayAccess`, and `\IteratorAggregate`.
 
-Expose PHP magic methods (`__invoke`, `__toString`, `__get`, ...) through a `:php` block. The first arg binds to `$this`; read fields with `(get this :field)`.
+A `:php` block adds PHP magic methods such as `__invoke` and `__toString`. The first argument is the struct itself:
 
 ```phel
 (defstruct multiplier [factor]
@@ -477,211 +260,44 @@ Expose PHP magic methods (`__invoke`, `__toString`, `__get`, ...) through a `:ph
   (__invoke   [this x] (* x (get this :factor)))
   (__toString [this]   (str "x" (get this :factor))))
 
-(let [m (multiplier 3)]
-  (m 14)) ; => 42  (PHP calls __invoke)
+((multiplier 3) 14) ; => 42
 ```
 
-A `:php` block coexists with regular interface implementations. A custom `__invoke` must take exactly one call argument or be variadic (a struct is already callable as a key lookup), else the compiler rejects it.
+A custom `__invoke` must take exactly one argument or be variadic, because a struct is already callable as a key lookup. Implementing interfaces on structs: [Interfaces](/documentation/language/interfaces/).
 
 ## Transients
 
-Most persistent structures have a transient (mutable) version (not lists). Same storage, but modifies in place.
-
-Faster, used as builders. Conversion to/from persistent is cheap.
-
-Convert a PHP array to a persistent map:
+A transient is a mutable version of a vector, map, or set (lists have none). Use one as a fast builder inside a function, then turn it back into a persistent collection. Both conversions are cheap:
 
 ```phel
-(defn php-array-to-map
-  "Converts a PHP Array to a map."
-  [arr]
-  (let [res (transient {})] ; Convert a persistent data to a transient
+(defn php-array-to-map [arr]
+  (let [res (transient {})]
     (foreach [k v arr]
-      (assoc res k v)) ; Fill the transient map (mutable)
-    (persistent res))) ; Convert the transient map to a persistent map.
+      (assoc res k v))  ; changes res in place
+    (persistent res)))
+
+(php-array-to-map (php-associative-array "a" 1 "b" 2)) ; => {"a" 1 "b" 2}
 ```
 
-## Data structures as functions
-
-All data structures are callable:
-
-```phel
-((list 1 2 3) 0) ; Same as (get (list 1 2 3) 0)
-([1 2 3] 0)      ; Same as (get [1 2 3] 0)
-({:a 1 :b 2} :a) ; Same as (get {:a 1 :b 2} :a)
-(#{1 2 3} 1)     ; Same as (get #{1 2 3} 1)
-
-;; Practical use with map
-(def users [{:name "Alice" :age 30}
-            {:name "Bob" :age 25}])
-(map :name users)  ; Evaluates to ("Alice" "Bob")
-```
-
-## Example: working with user data
-
-```phel
-;; Start with user data
-(def user {:id 1
-           :name "Alice"
-           :email "alice@example.com"
-           :settings {:theme "dark" :notifications true}})
-
-;; Access nested data
-(get-in user [:settings :theme])  ; => "dark"
-
-;; Update nested settings immutably
-(def updated-user
-  (assoc-in user [:settings :theme] "light"))
-;; user still has "dark", updated-user has "light"
-
-;; Add a new field
-(def user-with-role
-  (assoc updated-user :role "admin"))
-
-;; Update using a function
-(def user-with-incremented-id
-  (update user-with-role :id inc))
-
-;; Working with collections of users
-(def users
-  [{:name "Alice" :active true}
-   {:name "Bob" :active false}
-   {:name "Charlie" :active true}])
-
-;; Filter active users and get their names
-(->> users
-     (filter :active)          ; Keep only active users
-     (map :name)              ; Extract names
-     (into #{}))              ; Convert to a set
-;; => #{"Alice" "Charlie"}
-
-;; Build a map from a PHP array (common when interoping with PHP)
-(defn php-response-to-map
-  "Convert a PHP API response to Phel data structures"
-  [php-arr]
-  (let [data (transient {})]
-    (foreach [k v php-arr]
-      (assoc data (keyword k) v))
-    (persistent data)))
-
-;; Use with nested structures
-(def api-response
-  (php-associative-array "user_id" 123
-                         "user_name" "Alice"
-                         "is_active" true))
-
-(php-response-to-map api-response)
-;; => {:user_id 123 :user_name "Alice" :is_active true}
-```
-
-### Common patterns
-
-**Building data incrementally:**
-```phel
-;; PHP way (mutable)
-;; $result = [];
-;; $result['id'] = 1;
-;; $result['name'] = 'Alice';
-;; return $result;
-
-;; Phel way (immutable)
-(-> {}
-    (assoc :id 1)
-    (assoc :name "Alice"))
-;; Or all at once:
-{:id 1 :name "Alice"}
-```
-
-**Updating deeply nested data:**
-```phel
-(def app-state
-  {:ui {:sidebar {:width 200 :visible true}}
-   :user {:name "Alice"}})
-
-;; Change sidebar visibility
-(assoc-in app-state [:ui :sidebar :visible] false)
-
-;; Increment sidebar width
-(update-in app-state [:ui :sidebar :width] + 50)
-```
-
-**Merging data:**
-```phel
-(def defaults {:theme "light" :lang "en" :debug false})
-(def user-prefs {:theme "dark"})
-
-(merge defaults user-prefs)
-; => {:theme "dark" :lang "en" :debug false}
-```
+Keep a transient local to one function. Never share it.
 
 ## Walking data structures
 
-`phel.walk` recursively transforms nested data. Full API: [walk reference](/documentation/reference/api/walk/).
-
-### walk
-
-`walk` traverses a structure, applying `inner` to each element, then `outer` to the result:
+`phel.walk` transforms every level of nested data. `postwalk` visits children before their parent. `prewalk` visits the parent first:
 
 ```phel
 (ns my-app
-  (:require phel.walk :refer [walk postwalk prewalk
-                               postwalk-replace prewalk-replace
-                               keywordize-keys stringify-keys]))
+  (:require phel.walk :refer [postwalk]))
 
-(walk inc identity [1 2 3])  ; => [2 3 4]
-```
-
-### postwalk and prewalk
-
-`postwalk` applies bottom-up (children first). `prewalk` applies top-down:
-
-```phel
-(ns example
-  (:require phel.walk :refer [postwalk prewalk]))
-
-;; Double every number in a nested structure
 (postwalk #(if (number? %) (* % 2) %)
           {:a 1 :b [2 3] :c {:d 4}})
-;; => {:a 2 :b [4 6] :c {:d 8}}
-
-;; prewalk visits parent before children
-(prewalk #(if (number? %) (* % 2) %)
-         [1 [2 [3]]])
-;; => [2 [4 [6]]]
+; => {:a 2 :b [4 6] :c {:d 8}}
 ```
 
-### postwalk-replace and prewalk-replace
+`keywordize-keys` and `stringify-keys` convert map keys at every level, which helps with decoded JSON. `walk`, `prewalk-replace`, and `postwalk-replace` are in the [walk API](/documentation/reference/api/walk/).
 
-Replace values via map lookup:
+{% clojure_note() %}
+`conj`, `assoc`, `dissoc`, `disj`, `get`, `get-in`, `assoc-in`, `update`, and `update-in` behave as in Clojure. The old Phel names `push`, `put`, and `unset` were removed.
+{% end %}
 
-```phel
-(ns example
-  (:require phel.walk :refer [postwalk-replace]))
-
-(postwalk-replace {:a :alpha :b :beta}
-                  [:a {:b :c}])
-;; => [:alpha {:beta :c}]
-```
-
-### keywordize-keys and stringify-keys
-
-Convert map keys between keywords and strings. Useful for PHP arrays or JSON:
-
-```phel
-(ns example
-  (:require phel.walk :refer [keywordize-keys stringify-keys]))
-
-(keywordize-keys {"name" "Alice" "age" 30})
-;; => {:name "Alice" :age 30}
-
-(stringify-keys {:name "Alice" :age 30})
-;; => {"name" "Alice" "age" 30}
-```
-
-## Next steps
-
-- [Global and local bindings](/documentation/language/global-and-local-bindings/) - name values with `def` and `let`, manage state with atoms
-- [Destructuring](/documentation/language/destructuring/) - pull values out of collections by shape
-- [Control flow](/documentation/language/control-flow/) - iterate and build collections with `for` and `loop`
-- [Transducers](/documentation/language/transducers/) - reusable pipelines with no intermediate collections
-- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding
+Next: [Global and local bindings](/documentation/language/global-and-local-bindings/) shows how to name these values with `def` and `let`.
