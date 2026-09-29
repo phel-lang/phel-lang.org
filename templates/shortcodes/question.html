@@ -1,16 +1,17 @@
 {#- Usage: {% question(difficulty="easy", kind="predict") %}Markdown{% end %}
     difficulty: easy | medium | hard
     kind: predict | fill | write | fix | refactor | build -#}
-{%- set kinds = ["predict", "fill", "write", "fix", "refactor", "build"] -%}
-{%- if kind and kind not in kinds -%}
-    {{ throw(message="question: unknown kind '" ~ kind ~ "', expected one of " ~ kinds | join(sep=", ")) }}
+{%- set kind = kind | default(value="") -%}
+{%- set difficulty = difficulty | default(value="") -%}
+{%- if kind and kind not in ["predict", "fill", "write", "fix", "refactor", "build"] -%}
+    {{ throw(message="question: unknown kind '" ~ kind ~ "', expected predict, fill, write, fix, refactor or build") }}
 {%- endif -%}
-{%- set kind_labels = {"predict": "Predict", "fill": "Fill in", "write": "Write", "fix": "Fix", "refactor": "Refactor", "build": "Build"} -%}
+{%- if kind == "fill" -%}{%- set kind_label = "Fill in" -%}{%- else -%}{%- set kind_label = kind | capitalize -%}{%- endif -%}
 <div class="question-block" id="exercise-{{ nth }}" data-exercise-index="{{ nth }}">
     <h3>
         <button type="button" class="exercise-check" data-exercise-check aria-label="Toggle completion" title="Mark as done"></button>
         <span class="exercise-number">Exercise {{ nth }}</span>
-        {% if kind %}<span class="exercise-kind exercise-kind--{{ kind }}">{{ kind_labels[kind] }}</span>{% endif %}
+        {% if kind %}<span class="exercise-kind exercise-kind--{{ kind }}">{{ kind_label }}</span>{% endif %}
         {% if difficulty %}<span class="difficulty difficulty-{{ difficulty }}">{{ difficulty }}</span>{% endif %}
     </h3>
     {{ body | markdown | safe }}
