@@ -2,7 +2,7 @@
 title = "Cookbook"
 weight = 4
 description = "Runnable Phel recipes for files, JSON, HTTP, dates, error handling, schemas, state, and data-transformation pipelines"
-aliases = ["/documentation/cookbook"]
+aliases = ["/documentation/cookbook", "/documentation/one-liners", "/documentation/guides/one-liners"]
 +++
 
 Practical, self-contained Phel recipes for everyday tasks. Copy one, adapt it, ship it.
@@ -923,9 +923,64 @@ function that returns truthy on success:
 
 Failing cases shrink automatically; the reported seed makes them reproducible.
 
+## One-liners
+
+Single expressions that combine core functions. Paste one into the REPL to see the result.
+
+```phel
+(ns cookbook.one-liners
+  (:require phel.string :as str))
+
+(def users [{:id 1 :name "Alice" :role "admin" :score 42}
+            {:id 2 :name "Bob"   :role "user"  :score 99}
+            {:id 3 :name "Carol" :role "admin" :score 71}])
+
+;; Index records by id
+(zipmap (map :id users) users)          ; => {1 {:id 1 ...}, 2 {...}, 3 {...}}
+
+;; Count per group
+(update-vals (group-by :role users) count)   ; => {"admin" 2, "user" 1}
+
+;; Sum per group
+(update-vals (group-by :role users) #(reduce + (map :score %)))
+;; => {"admin" 113, "user" 99}
+
+;; Top N by a key (pass > to sort descending)
+(->> users (sort-by :score >) (take 2) (map :name))   ; => ("Bob" "Carol")
+
+;; Most frequent first
+(sort-by second > (frequencies [:a :b :a :c :a :b]))  ; => [[:a 3] [:b 2] [:c 1]]
+
+;; Zip two collections, transpose a matrix
+(map vector [:a :b :c] [1 2 3])         ; => ([:a 1] [:b 2] [:c 3])
+(apply map vector [[1 2 3] [4 5 6]])    ; => ([1 4] [2 5] [3 6])
+
+;; Drop nil values from a map
+(into {} (remove (fn [[_ v]] (nil? v)) (pairs {:a 1 :b nil})))   ; => {:a 1}
+
+;; Swap keys and values
+(reduce-kv (fn [acc k v] (assoc acc v k)) {} {:a 1 :b 2})   ; => {1 :a, 2 :b}
+
+;; Fibonacci from an iterated pair
+(take 10 (map first (iterate (fn [[a b]] [b (+ a b)]) [0 1])))
+;; => (0 1 1 2 3 5 8 13 21 34)
+
+;; URL slug
+(-> "Hello World, This is Phel!"
+    str/lower-case
+    (str/replace #"[^a-z0-9]+" "-")
+    (str/replace #"^-|-$" ""))          ; => "hello-world-this-is-phel"
+
+;; Title case
+(->> (str/split "hello world of phel" #" ")
+     (map str/capitalize)
+     (str/join " "))                    ; => "Hello World Of Phel"
+```
+
+`reduce` and `filter` over a map see only its values, so wrap the map in `pairs` when you need `[key value]` entries.
+
 ## Next steps
 
-- [One-liners](/documentation/guides/one-liners/) - short tricks, each a single expression
 - [Rosetta Stone (PHP to Phel)](/documentation/guides/rosetta-stone/) - look up the Phel form for a PHP idiom
 - [Data structures](/documentation/language/data-structures/) - the collections behind these recipes
 - [PHP interop](/documentation/language/php-interop/) - call any PHP function from Phel
