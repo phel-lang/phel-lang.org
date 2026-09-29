@@ -1,5 +1,6 @@
 +++
 title = "Phel: A Functional Lisp Dialect for PHP Developers"
+aliases = ["/documentation/why-phel/"]
 +++
 
 <section class="homepage-hero">
@@ -295,23 +296,43 @@ php phel.phar repl
 ## Common questions
 
 <div class="faq">
-  <details class="faq-item">
+  <details class="faq-item" id="do-i-need-to-know-lisp">
+    <summary class="faq-q">Do I need to know Lisp?</summary>
+    <div class="faq-a">No. There is one rule: the first element inside parentheses is the function, the rest are arguments, as in <code>(php/str_contains haystack needle)</code>. There is no operator precedence to learn. The same regular syntax makes code into data, which is what lets <a href="/documentation/language/macros/">macros</a> add new forms to the language. <a href="/documentation/phel-in-5-minutes/">Phel in 5 Minutes</a> teaches you to read it, and the <a href="/practice/">practice exercises</a> build the habit.</div>
+  </details>
+  <details class="faq-item" id="why-not-modern-php">
+    <summary class="faq-q">Why not modern PHP?</summary>
+    <div class="faq-a">Modern PHP is a good language, and Phel runs on it. Phel adds what is not on PHP's roadmap: immutable data structures by default, a real macro system that works on code as data, REPL-driven development, and a functional-first standard library. PHP allows functional code; Phel is designed for it.</div>
+  </details>
+  <details class="faq-item" id="is-phel-production-ready">
     <summary class="faq-q">Is Phel production-ready?</summary>
-    <div class="faq-a">Phel is pre-1.0, but the core language and tooling are stable and tested: a good fit for side projects, CLI apps, internal tools, and prototypes. Breaking changes can still land between minor releases, so it isn't LTS-grade enterprise-stable yet. The <a href="/documentation/reference/stability/">stability policy</a> spells out what <code>1.0</code> will freeze, and the <a href="/documentation/guides/deployment/">deployment guide</a> covers FPM and worker runtimes. Full picture in <a href="/documentation/why-phel/#is-phel-production-ready">Why Phel</a>.</div>
+    <div class="faq-a">Phel is pre-1.0, but the core language and tooling are stable and tested: a good fit for side projects, CLI apps, internal tools, and prototypes. Breaking changes can still land between minor releases, so it isn't LTS-grade enterprise-stable yet. The <a href="/documentation/reference/stability/">stability policy</a> spells out what <code>1.0</code> will freeze, and the <a href="/documentation/guides/deployment/">deployment guide</a> covers FPM and worker runtimes. The community is small but active; <a href="https://github.com/phel-lang/awesome-phel">awesome-phel</a> lists libraries, tools, and projects.</div>
   </details>
-  <details class="faq-item">
+  <details class="faq-item" id="can-i-call-php-libraries">
     <summary class="faq-q">Can I call PHP libraries from Phel?</summary>
-    <div class="faq-a">Yes. Phel compiles to PHP, so any Composer package, function, or class is directly callable via the <code>php/</code> prefix. See the <a href="/documentation/language/php-interop">interop guide</a>.</div>
+    <div class="faq-a">Yes. Phel compiles to PHP, so any Composer package, function, or class is directly callable. Functions take the <code>php/</code> prefix, <code>(php/strlen "hello")</code>, and classes work with <code>new</code> and <code>.method</code>: <code>(.format (new DateTimeImmutable "2024-01-15") "Y-m-d")</code>. See <a href="/documentation/language/php-interop/">PHP Interop</a>.</div>
   </details>
-  <details class="faq-item">
+  <details class="faq-item" id="is-there-a-build-step">
+    <summary class="faq-q">Is there a build step?</summary>
+    <div class="faq-a">Not in development: <code>phel run</code>, <code>phel test</code>, and the REPL compile on the fly. For production, <code>phel build</code> compiles everything to plain PHP ahead of time. See the <a href="/documentation/guides/deployment/">deployment guide</a>.</div>
+  </details>
+  <details class="faq-item" id="how-fast-is-phel">
+    <summary class="faq-q">How fast is Phel?</summary>
+    <div class="faq-a">Phel compiles to plain PHP, so most code runs at PHP speed. The cost is in the persistent data structures: an update builds a new structure that shares most of the old one (O(log32 n)), which is slower than writing to a PHP array. For web, CLI, and data work you will not notice it. In a hot loop over millions of elements, use native PHP arrays through <a href="/documentation/language/php-interop/">interop</a>. See <a href="/documentation/guides/performance/">Performance</a>.</div>
+  </details>
+  <details class="faq-item" id="how-do-i-debug-phel">
+    <summary class="faq-q">How do I debug Phel, and which editors work?</summary>
+    <div class="faq-a">Phel has <code>dbg</code>, <code>tap&gt;</code>, and <code>pprint</code>. Phel values are PHP objects, so <code>var_dump</code>, Symfony <code>dump()</code>, and <a href="/documentation/tooling/xdebug-setup/">Xdebug</a> breakpoints in PhpStorm or VS Code work too. VS Code, PhpStorm, Emacs, and Vim have syntax highlighting and REPL support. See <a href="/documentation/guides/debugging/">Debugging</a> and <a href="/documentation/tooling/editor-support/">Editor Support</a>.</div>
+  </details>
+  <details class="faq-item" id="how-is-phel-different-from-clojure">
     <summary class="faq-q">How is Phel different from Clojure?</summary>
-    <div class="faq-a">Phel borrows ideas from Lisp and Clojure (immutable data, macros, threading) but targets the PHP runtime, not the JVM. No agents, no STM, no atoms. Phel maps to PHP's execution model. See the <a href="/blog/functional-programming-in-php">design rationale</a>.</div>
+    <div class="faq-a">Phel borrows ideas from Lisp and Clojure (immutable data, macros, threading) but targets the PHP runtime, not the JVM. State lives in atoms; there are no agents, refs, or STM. Phel maps to PHP's execution model. See <a href="/documentation/guides/coming-from-clojure/">Coming from Clojure</a> and the <a href="/blog/functional-programming-in-php">design rationale</a>.</div>
   </details>
-  <details class="faq-item">
+  <details class="faq-item" id="what-php-version-do-i-need">
     <summary class="faq-q">What PHP version do I need?</summary>
     <div class="faq-a">The current release targets PHP 8.5 or later. Earlier Phel versions support older PHP releases if you need them.</div>
   </details>
-  <details class="faq-item">
+  <details class="faq-item" id="where-do-i-get-help">
     <summary class="faq-q">Where do I get help?</summary>
     <div class="faq-a">Open a thread on <a href="https://github.com/phel-lang/phel-lang/discussions">GitHub Discussions</a>, file an issue on <a href="https://github.com/phel-lang/phel-lang/issues">GitHub</a>, or read the <a href="/documentation/">full documentation</a>.</div>
   </details>

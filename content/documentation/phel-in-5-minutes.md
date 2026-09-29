@@ -6,7 +6,7 @@ description = "Never seen a Lisp? Read Phel code in five minutes. One rule, four
 
 Phel is a [Lisp](https://en.wikipedia.org/wiki/Lisp_(programming_language)) that compiles to PHP. If you have never touched a Lisp, the parentheses look alien. They are not. This page teaches you to *read* Phel in five minutes: no install, no theory, no functional-programming lecture.
 
-Want the pitch for *why* you would use it? See [Why Phel?](/documentation/why-phel/). Ready to run code? See [Getting Started](/documentation/getting-started/). This page is only about reading the syntax.
+Want the pitch for *why* you would use it? See the [common questions](/#common-questions). Ready to run code? See [Getting Started](/documentation/getting-started/). This page is only about reading the syntax.
 
 ## The one rule
 
@@ -121,6 +121,6 @@ Here is a complete, runnable program using only what is above. Read it top to bo
 ## What next?
 
 - [Getting Started](/documentation/getting-started/): install and open a live REPL in under a minute.
-- [Why Phel?](/documentation/why-phel/): honest answers on where Phel fits and where it does not.
+- [Common questions](/#common-questions): where Phel fits and where it does not.
 - [Rosetta Stone: PHP to Phel](/documentation/guides/rosetta-stone/): the same tasks side by side in both languages.
 - [Cheat Sheet](/documentation/reference/cheat-sheet/): every core form on one page, to keep open while you code.

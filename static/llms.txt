@@ -14,7 +14,6 @@ If you only fetch one URL, fetch the agent reference:
 - [Phel in 5 Minutes](https://phel-lang.org/documentation/phel-in-5-minutes/): read Phel code without installing anything.
 - [Getting Started](https://phel-lang.org/documentation/getting-started/): zero to REPL in 60 seconds.
 - [Installation](https://phel-lang.org/documentation/installation/): Composer, PHAR, Docker, Nix.
-- [Why Phel?](https://phel-lang.org/documentation/why-phel/): honest FAQ.
 
 ## Language
 

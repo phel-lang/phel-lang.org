@@ -81,7 +81,7 @@ Phel is a functional Lisp that compiles to PHP: persistent data structures, immu
   </a>
 </div>
 
-Also in the docs: [Why Phel?](/documentation/why-phel/), [Configuration](/documentation/reference/configuration/), [Debugging](/documentation/guides/debugging/), [Performance](/documentation/guides/performance/), and the [Stability Policy](/documentation/reference/stability/).
+Also in the docs: [Configuration](/documentation/reference/configuration/), [Debugging](/documentation/guides/debugging/), [Performance](/documentation/guides/performance/), and the [Stability Policy](/documentation/reference/stability/).
 
 ## Need help?
 
