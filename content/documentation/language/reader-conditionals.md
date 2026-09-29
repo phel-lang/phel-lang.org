@@ -1,66 +1,68 @@
 +++
 title = "Reader Conditionals"
 weight = 16
-description = "Write platform-specific code in shared .cljc source files with #?() and #?@(), resolved at parse time using :phel and :default keys"
+description = "Write platform-specific code in shared .cljc source files with #?() and #?@(), resolved at parse time using :phel and :default keys."
 
 [extra]
 difficulty = "advanced"
 +++
 
-Reader conditionals let one source file hold platform-specific code. They resolve during the **parsing phase**, before compilation, so the analyzer and emitter only ever see the selected form. Phel picks the `:phel` branch, ignores other platforms (`:clj`, `:cljs`, ...), and falls back to `:default` when present.
+Reader conditionals let one source file hold code for several platforms. After this page you can write a `.cljc` file that runs on both Phel and Clojure.
 
-This makes `.cljc` files shareable between Phel, Clojure, and other Lisp dialects. If you are arriving from Clojure, the syntax is identical; see [Coming from Clojure](/documentation/guides/coming-from-clojure/#reader-conditionals).
+| Syntax | Does | Where |
+|--------|------|-------|
+| `#?(...)` | keeps one form, chosen by platform key | anywhere |
+| `#?@(...)` | splices the items of the chosen collection into the parent form | inside a collection only |
 
-## Selecting a form: `#?()`
+Both resolve while Phel parses the file, before compilation. The compiler only sees the selected form. The syntax is the same as in Clojure; see also [Coming from Clojure](/documentation/guides/coming-from-clojure/#reader-conditionals).
 
-`#?()` reads keyword/form pairs and keeps exactly one:
+## Choose a form with `#?()`
 
-```phel
-(println
-  #?(:phel (php/time)
-     :clj  (System/currentTimeMillis)
-     :cljs (js/Date.now)))
-; In Phel this is just (php/time); the :clj and :cljs branches are dropped at parse time.
-```
-
-### Platform keys
-
-| Key | Platform | Matched by Phel? |
-|-----|----------|-------------------|
-| `:phel` | Phel | Yes |
-| `:default` | Any platform (fallback) | Yes (when no `:phel`) |
-| `:clj` | Clojure (JVM) | No |
-| `:cljs` | ClojureScript | No |
-| any other | ignored | No |
-
-### Priority
-
-1. `:phel` always wins when present, regardless of position.
-2. `:default` is the fallback when there is no `:phel` branch.
-3. If neither is present, the whole form is dropped (treated as whitespace).
+`#?()` reads key and form pairs and keeps one:
 
 ```phel
-(println #?(:default 0 :phel 42))   ; prints 42 (:phel wins)
-(println #?(:clj 99 :default 0))    ; prints 0 (fallback)
-;; #?(:clj 99 :cljs 88) reads as nothing and is dropped entirely.
+#?(:phel (php/time)
+   :clj  (System/currentTimeMillis)
+   :cljs (js/Date.now))
+; In Phel this reads as (php/time). The other branches are dropped.
 ```
 
-## Splicing: `#?@()`
+Phel picks a branch by these rules:
 
-`#?@()` splices the elements of the matched collection into the surrounding form and removes the wrapper. The selected branch **must be a sequential collection** (vector or list):
+1. `:phel` wins when present, in any position.
+2. Otherwise `:default` is used.
+3. With neither, the whole form is dropped, as if it were whitespace.
+
+Other keys (`:clj`, `:cljs`, anything else) are ignored.
 
 ```phel
-(println [1 #?@(:phel [2 3]) 4])              ; prints [1 2 3 4]
-(println (php/array 0 #?@(:phel [1 2 3]) 4))  ; prints <PHP-Array [0, 1, 2, 3, 4]>
-
-;; Fallback and no-match behave like #?():
-(println [1 #?@(:clj [8 9] :default [2 3]) 4]) ; prints [1 2 3 4]
-(println [1 #?@(:clj [8 9]) 4])                ; prints [1 4]
+#?(:default 0 :phel 42) ; => 42
+#?(:clj 99 :default 0)  ; => 0
+[1 #?(:clj 99) 2]       ; => [1 2]
 ```
 
-### Top-level restriction
+## Splice with `#?@()`
 
-`#?@()` is only valid **inside** a collection (list, vector, map, or set). Splicing at the top level is an error, because there is no parent form to splice into:
+`#?@()` inserts the items of the chosen vector or list into the surrounding form. The branch must be a vector or a list:
+
+```phel
+[1 #?@(:phel [2 3]) 4]                   ; => [1 2 3 4]
+[1 #?@(:clj [8 9] :default [2 3]) 4]     ; => [1 2 3 4]
+[1 #?@(:clj [8 9]) 4]                    ; => [1 4]
+```
+
+It works in maps too, which is useful for platform-specific entries:
+
+```phel
+(def config
+  {:name "my-app"
+   #?@(:phel [:runtime "php" :min-version "8.5"]
+       :clj  [:runtime "jvm" :min-version "21"])})
+
+config ; => {:name "my-app", :runtime "php", :min-version "8.5"}
+```
+
+`#?@()` at the top level of a file is an error, because there is no parent form to splice into:
 
 <!-- phel-test: skip -->
 ```phel
@@ -68,11 +70,9 @@ This makes `.cljc` files shareable between Phel, Clojure, and other Lisp dialect
 #?@(:phel [1 2])
 ```
 
-## Use cases
+## Share `.cljc` files
 
-### Cross-platform source files (`.cljc`)
-
-Phel discovers and compiles `.cljc` files alongside `.phel` files, so a single file can serve multiple runtimes:
+Phel finds and compiles `.cljc` files next to `.phel` files, so one file can serve both runtimes:
 
 ```phel
 ;; src/shared/utils.cljc
@@ -80,24 +80,21 @@ Phel discovers and compiles `.cljc` files alongside `.phel` files, so a single f
 
 (defn now []
   #?(:phel (php/time)
-     :clj  (/ (System/currentTimeMillis) 1000)))
+     :clj  (quot (System/currentTimeMillis) 1000)))
 
 (defn platform []
   #?(:phel    "phel"
      :clj     "clojure"
-     :cljs    "clojurescript"
      :default "unknown"))
 
-(println (platform)) ; prints phel
+(platform) ; => "phel"
 ```
 
-{% callout(kind="tip") %}
-Use `.` as the [namespace](/documentation/language/namespaces/) separator (`shared.utils`) so `.cljc` files parse cleanly under Clojure too. The legacy `\` separator still resolves but is deprecated.
-{% end %}
+Use `.` as the [namespace](/documentation/language/namespaces/) separator (`shared.utils`), so the file also parses under Clojure.
 
-### Platform-specific dependencies
+### Platform-specific requires
 
-Reader conditionals work inside the `(ns ...)` form, so each platform can require its own libraries:
+Reader conditionals work inside `ns`, so each platform can require its own libraries:
 
 ```phel
 (ns app.http
@@ -109,44 +106,6 @@ Reader conditionals work inside the `(ns ...)` form, so each platform can requir
      :clj  (json/read-str s)))
 ```
 
-> Phel accepts both vector entries (`[phel.json :as json :refer [encode]]`) and the list form (`phel.json :as json`) inside `:require`, so the same `(ns ...)` parses on both sides.
+Phel accepts both the vector form (`[phel.json :as json]`) and the list form (`phel.json :as json`) inside `:require`, so the same `ns` parses on both sides.
 
-### Conditional data structures
-
-Use splicing to add platform-specific entries to a map:
-
-```phel
-(def config
-  {:name "my-app"
-   :version "1.0"
-   #?@(:phel [:runtime "php" :min-version "8.5"]
-       :clj  [:runtime "jvm" :min-version "21"])})
-
-config
-; => {:name "my-app", :version "1.0", :runtime "php", :min-version "8.5"}
-```
-
-### Inside control flow
-
-Because conditionals resolve at parse time, they nest inside any form:
-
-```phel
-(if #?(:phel true :clj false)
-  (println "Running on Phel!")
-  (println "Running on Clojure!"))
-; prints Running on Phel!
-```
-
-## Summary
-
-| Syntax | Name | Behavior | Context |
-|--------|------|----------|---------|
-| `#?()` | Reader conditional | Selects one form by platform key | Anywhere |
-| `#?@()` | Reader conditional splicing | Splices collection elements into parent | Inside collections only |
-
-## Next steps
-
-- [Async & Concurrency](/documentation/language/async/) - run work concurrently with fibers and AMPHP
-- [Namespaces](/documentation/language/namespaces/) - the `ns` form that conditional `:require` entries plug into
-- [Cookbook: reader conditionals for cross-platform code](/documentation/guides/cookbook/#reader-conditionals-for-cross-platform-code) - a worked `.cljc` recipe
-- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding
+For a worked example, see [Cookbook: reader conditionals for cross-platform code](/documentation/guides/cookbook/#reader-conditionals-for-cross-platform-code).
