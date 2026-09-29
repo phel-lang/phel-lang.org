@@ -1,10 +1,10 @@
 +++
 title = "Installation"
 weight = 3
-description = "Install Phel via Composer, PHAR, Docker, or Nix, then verify with phel doctor."
+description = "Install Phel with Composer, the PHAR, Docker, or Nix, then check your setup with phel doctor."
 +++
 
-Requires **PHP 8.5+**. Pick the method matching your workflow.
+This page shows every way to install Phel and how to check that it works. All methods need **PHP 8.5+**, except Docker, which brings its own PHP.
 
 ## Which method?
 
@@ -15,13 +15,13 @@ Requires **PHP 8.5+**. Pick the method matching your workflow.
 | Run a single file, no setup        | [PHAR](#phar-no-project-setup)                    |
 | **No PHP installed** (Docker only) | [Docker](#docker-no-php-required)                 |
 | Reproducible dev shells            | [Nix](#nix)                                       |
-| Fastest path                       | [Getting Started](/documentation/getting-started) |
+| Guided first project               | [Getting Started](/documentation/getting-started/) |
 
 ## Composer (recommended)
 
 ### New project from skeleton
 
-Ships with tests, build config, ready-to-use `composer` scripts (`repl`, `dev`, `test`, `build`, `format`).
+The skeleton ships with tests, build config, and ready-to-use Composer scripts (`repl`, `dev`, `test`, `build`, `format`).
 
 ```bash
 composer create-project --stability dev phel-lang/cli-skeleton example-app
@@ -36,31 +36,22 @@ composer require phel-lang/phel-lang
 vendor/bin/phel init my-app    # scaffold phel-config.php + src/
 ```
 
-All commands then via `vendor/bin/phel <cmd>` (e.g. `vendor/bin/phel repl`).
+Then run every command as `vendor/bin/phel <cmd>`, for example `vendor/bin/phel repl`. `phel init` has more layouts and templates: see [CLI Commands](/documentation/reference/cli-commands/).
 
-<details class="dev-note dev-note--php">
-<summary>
-  <span class="dev-note__label">PHP</span>
-  <span class="dev-note__title">Does this replace my PHP app?</span>
-  <span class="dev-note__chevron">›</span>
-</summary>
-<div class="dev-note__content">
-
-No. Phel lives alongside PHP. `require 'vendor/autoload.php'` and call compiled Phel namespaces from PHP, or call PHP from Phel. Drop into any Composer project (Laravel, Symfony, WordPress plugin) and use where Lisp fits better.
-
-</div>
-</details>
+{% php_note() %}
+**Does this replace my PHP app?** No. Phel lives next to your PHP code. Call compiled Phel namespaces from PHP after `require 'vendor/autoload.php'`, or call PHP from Phel. Add it to any Composer project (Laravel, Symfony, a WordPress plugin) and use it where a Lisp fits better. See [Framework Integration](/documentation/web/framework-integration/).
+{% end %}
 
 ## PHAR (no project setup)
 
-Run without Composer. Good for quick experiments, CI one-shots, trying the language.
+The PHAR is a single file that runs without Composer. Use it for quick experiments, one-off CI jobs, or to try the language.
 
 ```bash
 curl -L https://phel-lang.org/phar -o phel.phar
 php phel.phar --version
 ```
 
-Every command works the same:
+Every command works the same way:
 
 ```bash
 php phel.phar repl
@@ -68,7 +59,7 @@ php phel.phar run src/main.phel
 php phel.phar test --filter foo
 ```
 
-Make it globally available:
+To make it available everywhere:
 
 ```bash
 chmod +x phel.phar
@@ -78,22 +69,22 @@ phel repl
 
 ## Docker (no PHP required)
 
-No PHP installed? With Docker, run Phel in one command.
+No PHP on your machine? With Docker you run Phel in one command.
 
 ### Zero-setup REPL
 
-Paste and you're in a live Phel REPL. No files, no install:
+Paste this to open a live Phel REPL. No files, no install:
 
 ```bash
 docker run --rm -it php:8.5-cli sh -c \
   "curl -sL https://phel-lang.org/phar -o /tmp/phel.phar && php /tmp/phel.phar repl"
 ```
 
-Container downloads PHAR fresh each run. Fine for experimenting, wasteful for daily use. See [Persistent `phel` alias](#persistent-phel-alias-backed-by-docker) for a cached setup.
+The container downloads the PHAR again on every run. That is fine for a first try but slow for daily use. For a cached setup, see [Persistent `phel` alias](#persistent-phel-alias-backed-by-docker).
 
 ### Run a Phel file from your host
 
-Mount cwd, run any Phel script:
+Mount the current directory and run any Phel script:
 
 ```bash
 docker run --rm -it -v "$PWD":/app -w /app php:8.5-cli sh -c \
@@ -102,7 +93,7 @@ docker run --rm -it -v "$PWD":/app -w /app php:8.5-cli sh -c \
 
 ### Persistent `phel` alias backed by Docker
 
-Download PHAR once, make `phel` feel native:
+Download the PHAR once, then alias `phel` so it works like a local install:
 
 ```bash
 curl -L https://phel-lang.org/phar -o phel.phar
@@ -117,7 +108,7 @@ phel test
 
 ### Composer project with no local PHP
 
-Use official `composer` image (ships PHP + Composer):
+Use the official `composer` image, which ships PHP and Composer:
 
 ```bash
 docker run --rm -it -v "$PWD":/app -w /app composer \
@@ -129,7 +120,7 @@ cd example-app
 docker run --rm -it -v "$PWD":/app -w /app composer composer repl
 ```
 
-Alias for daily use:
+An alias for daily use:
 
 ```bash
 alias dcomposer='docker run --rm -it -v "$PWD":/app -w /app composer'
@@ -140,9 +131,9 @@ dcomposer composer dev
 
 ## Nix
 
-Reproducible dev environments. Phel is in nixpkgs: see [phel on search.nixos.org](https://search.nixos.org/packages?channel=unstable&show=phel) or the [package source](https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/ph/phel/package.nix).
+Use Nix for reproducible dev environments. Phel is in nixpkgs: see [phel on search.nixos.org](https://search.nixos.org/packages?channel=unstable&show=phel) or the [package source](https://github.com/NixOS/nixpkgs/blob/master/pkgs/by-name/ph/phel/package.nix).
 
-No Nix yet? Install via [Determinate Systems installer](https://determinate.systems/nix-installer/) or [official installer](https://nixos.org/download).
+No Nix yet? Install it with the [Determinate Systems installer](https://determinate.systems/nix-installer/) or the [official installer](https://nixos.org/download).
 
 ### Ad-hoc shell
 
@@ -151,11 +142,13 @@ nix shell nixpkgs#phel
 phel repl
 ```
 
-> Nixpkgs may lag latest. Check `nix eval nixpkgs#phel.version`. For newest, use Composer or PHAR.
+{% callout(kind="note") %}
+The nixpkgs version can be behind the latest release. Check it with `nix eval nixpkgs#phel.version`. For the newest release, use Composer or the PHAR.
+{% end %}
 
 ### Project `shell.nix`
 
-Pin PHP + Composer for the team:
+Pin PHP and Composer for the whole team:
 
 ```nix
 { pkgs ? import <nixpkgs> { } }:
@@ -168,11 +161,11 @@ pkgs.mkShell {
 }
 ```
 
-Then `nix-shell` and use Composer as normal.
+Then run `nix-shell` and use Composer as normal.
 
 ## Verify install
 
-Run the doctor:
+Run `doctor` with the method you installed:
 
 ```bash
 vendor/bin/phel doctor    # Composer
@@ -180,17 +173,10 @@ php phel.phar doctor      # PHAR
 phel doctor               # Nix / global
 ```
 
-Checks PHP extensions (`json`, `mbstring`, `readline`), writable cache dir, source layout. Tells you exactly what's missing.
+It checks the PHP extensions Phel needs (`json`, `mbstring`, `readline`), your source and test directories, OPcache, and the cache size, and names anything that is missing.
 
-<details class="dev-note dev-note--clojure">
-<summary>
-  <span class="dev-note__label">Clojure</span>
-  <span class="dev-note__title">Mental model for the toolchain</span>
-  <span class="dev-note__chevron">›</span>
-</summary>
-<div class="dev-note__content">
-
-Mapping from `lein`/`deps.edn`:
+{% clojure_note() %}
+How the toolchain maps from `lein` and `deps.edn`:
 
 | Clojure                    | Phel                                         |
 |----------------------------|----------------------------------------------|
@@ -201,10 +187,8 @@ Mapping from `lein`/`deps.edn`:
 | `uberjar`                  | `phel build` (compiles to PHP)               |
 | nREPL                      | `phel nrepl` (bencode over TCP)              |
 
-Editor integration: nREPL + LSP. See [Editor Support](/documentation/tooling/editor-support).
-
-</div>
-</details>
+Editors connect through nREPL and LSP. See [Editor Support](/documentation/tooling/editor-support/).
+{% end %}
 
 ## Upgrading
 
@@ -212,7 +196,6 @@ Moving to a newer Phel? [Upgrading](/documentation/reference/upgrading/) lists w
 
 ## Next steps
 
-- [Getting Started](/documentation/getting-started): first REPL session, project tour.
-- [Editor Support](/documentation/tooling/editor-support): Emacs, VS Code, IntelliJ, Vim.
-- [CLI Commands](/documentation/reference/cli-commands): every subcommand.
-- [Configuration](/documentation/reference/configuration): `phel-config.php` options.
+- [Getting Started](/documentation/getting-started/): first REPL session, first file, project tour.
+- [Editor Support](/documentation/tooling/editor-support/): set up Emacs, VS Code, PhpStorm, or Vim.
+- [Configuration](/documentation/reference/configuration/): tune `phel-config.php`.
