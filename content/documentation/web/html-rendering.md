@@ -5,109 +5,81 @@ description = "Render HTML from Phel data structures: vectors are elements, maps
 aliases = ["/documentation/html-rendering"]
 +++
 
-Build HTML from plain Phel data: vectors are elements, maps are attributes, and values auto-escape for XSS protection. No template language to learn. You use the data structures you already know.
+After this page you can build HTML pages from plain Phel data and send them as a response body. Vectors are elements, maps are attributes, and every value is escaped. There is no template language.
 
-## Syntax
+## Elements and attributes
 
-`html` from `phel.html` generates HTML:
-
-```phel
-(ns my-namespace
-  (:require phel.html :refer [html]))
-
-(html [:span {:class "foo"} "bar"])
-;; Evaluates to <span class="foo">bar</span>
-```
-
-Forms:
-
-<!-- phel-test: skip -->
-```phel
-[tag body+]
-[tag attributes body+]
-```
-
-First item: tag name (keyword or string). Second item: optional attribute map. Rest: body (strings, nested vectors, lists).
+`html` from `phel.html` turns a vector into an HTML string. The first item is the tag (keyword or string), an optional map holds the attributes, and the rest is the body: strings, numbers, nested vectors, or lists of them.
 
 ```phel
 (ns my-app
   (:require phel.html :refer [html]))
 
-(html [:div]) ; Evaluates to "<div></div>"
-(html ["div"]) ; Evaluates to "<div></div>"
-(html [:text "Lorem Ipsum"]) ; Evaluates to "<text>Lorem Ipsum</text>"
-(html [:body [:p] [:br]]) ; Evaluates to "<body><p></p><br /></body>"
-(html [:div {:id "foo"}]) ; Evaluates to "<div id=\"foo\"></div>"
+(html [:span {:class "foo"} "bar"])       ; => "<span class=\"foo\">bar</span>"
+(html ["div"])                            ; => "<div></div>"
+(html [:body [:p] [:br]])                 ; => "<body><p></p><br /></body>"
+(html [:input {:type "checkbox" :checked true :disabled false}])
+; => "<input type=\"checkbox\" checked=\"checked\" />"
 ```
+
+An attribute set to `true` renders as `name="name"`. An attribute set to `false` or `nil` is left out.
+
+## Escaping
+
+`html` escapes text and attribute values, so user input cannot inject markup:
+
+```phel
+(ns my-app
+  (:require phel.html :refer [html raw-string]))
+
+(html [:p "<script>alert(1)</script>"])
+; => "<p>&lt;script&gt;alert(1)&lt;/script&gt;</p>"
+
+(html [:span (raw-string "<em>trusted</em>")])
+; => "<span><em>trusted</em></span>"
+```
+
+`raw-string` skips escaping. Use it only for HTML you produced yourself, never for user input.
 
 ## Classes and styles
 
-Phel enhances `class` and `style` attributes.
-
-Use a map for styles instead of a string. Both forms equivalent:
+`class` accepts a vector, or a map whose truthy keys become classes. `style` accepts a map:
 
 ```phel
 (ns my-app
   (:require phel.html :refer [html]))
 
-(html [:div {:style "background:green;color:red;"} "bar"])
+(html [:div {:class [:a "b"]}])             ; => "<div class=\"a b\"></div>"
+(html [:div {:class {:a true :b false}}])   ; => "<div class=\"a\"></div>"
 (html [:div {:style {:background "green" :color "red"}} "bar"])
-;; Both evaluate to
-;; "<div style=\"background:green;color:red;\">bar</div>"
+; => "<div style=\"background:green;color:red;\">bar</div>"
 ```
 
-Class lists: vector or map. Map keys are class names; only truthy keys appear in the final list.
+## Conditions and lists
+
+Use `if` or `when` inside the tree. A `nil` body renders nothing:
 
 ```phel
 (ns my-app
   (:require phel.html :refer [html]))
 
-(html [:div {:class [:a]}]) ; <div class=\"a\"></div>
-(html [:div {:class [:a "b"]}]) ; <div class=\"a b\"></div>
-(html [:div {:class [:a :b]}]) ; <div class=\"a b\"></div>
-(html [:div {:class {:a true :b false}}]) ; <div class=\"a\"></div>
+(html [:div [:p "a"] (if false [:p "b"] [:p "c"])])  ; => "<div><p>a</p><p>c</p></div>"
+(html [:div [:p "a"] (when false [:p "b"])])         ; => "<div><p>a</p></div>"
+(html [:ul (for [i :in [3 4 5]] [:li i])])          ; => "<ul><li>3</li><li>4</li><li>5</li></ul>"
 ```
 
-## Conditional rendering
-
-Use `if`:
-
-```phel
-(ns my-app
-  (:require phel.html :refer [html]))
-
-(html [:div [:p "a"] (if true [:p "b"] [:p "c"])])
-;; Evaluates to "<div><p>a</p><p>b</p></div>"
-(html [:div [:p "a"] (if false [:p "b"] [:p "c"])])
-;; Evaluates to "<div><p>a</p><p>c</p></div>"
-```
-
-## Rendering sequential data
-
-`for` over vectors, lists, sets:
-
-```phel
-(ns my-app
-  (:require phel.html :refer [html]))
-
-(html [:ul (for [i :range [0 3]] [:li i])])
-;; Evaluates to "<ul><li>0</li><li>1</li><li>2</li></ul>"
-
-(html [:ul (for [i :in [3 4 5]] [:li i])])
-;; Evaluates to "<ul><li>3</li><li>4</li><li>5</li></ul>"
-```
-
-Write the `for` inside the vector you pass to `html`. `html` is a macro: it walks that literal at compile time and splices a `for` it finds there. A `for` hidden inside a helper function is not spliced, so the loop result reaches `html` as a vector of elements and fails:
+{% callout(kind="warning") %}
+Write each `for` inside the vector literal you pass to `html`. `html` is a macro: it walks that literal at compile time and splices the `for` results into the parent. A `for` inside a helper function is not spliced, and `html` fails with an error like `[:li 1] is not a valid element name`.
+{% end %}
 
 <!-- phel-test: skip -->
 ```phel
 (defn item-list [xs] [:ul (for [x :in xs] [:li x])])
-
 (html (item-list [1 2]))
-;; throws: [:li 1] is not a valid element name.
+; throws: [:li 1] is not a valid element name.
 ```
 
-Keep the loop inline and move the per-item markup into a helper that returns one element:
+Keep the loop inline and move the markup for one item into a helper:
 
 ```phel
 (ns my-app
@@ -116,42 +88,16 @@ Keep the loop inline and move the per-item markup into a helper that returns one
 (defn item [x] [:li x])
 
 (html [:ul (for [x :in [1 2]] (item x))])
-;; Evaluates to "<ul><li>1</li><li>2</li></ul>"
+; => "<ul><li>1</li><li>2</li></ul>"
 ```
 
-## Raw HTML
+## Composing reusable fragments
 
-Values auto-escape for XSS protection. For unescaped output, use `raw-string`:
-
-```phel
-(ns my-app
-  (:require phel.html :refer [html raw-string]))
-
-(html [:span (raw-string "<a></a>")])
-;; Evaluates to "<span><a></a></span>"
-```
-
-## Doctypes
-
-Use `doctype` for the document doctype:
+A function that returns a vector is a component. Combine components like any other values, then pass the result to `html` once. The rule above still applies: keep every `for` in the literal you pass to `html`.
 
 ```phel
 (ns my-app
   (:require phel.html :refer [html doctype]))
-
-(html (doctype :html5) [:div])
-;; Evaluates to "<!DOCTYPE html>\n<div></div>"
-```
-
-Supported values: `:html5`, `:xhtml-transitional`, `:xhtml-strict`, `:html4`.
-
-## Composing reusable fragments
-
-Elements are vectors, so a function that returns a vector is a reusable component. Compose them like any other Phel value, then pass the result to `html` once at the end. One rule from [Rendering sequential data](#rendering-sequential-data) applies: keep every `for` inline in the literal you pass to `html`, not inside a component.
-
-```phel
-(ns my-app
-  (:require phel.html :refer [html]))
 
 (defn nav-link [url label]
   [:a {:href url} label])
@@ -164,15 +110,22 @@ Elements are vectors, so a function that returns a vector is a reusable componen
     content]])
 
 (html (layout "Home" [:p "Welcome"]))
-;; Evaluates to
-;; "<html><head><title>Home</title></head><body>
-;;  <nav><a href=\"/\">Home</a><a href=\"/about\">About</a></nav><p>Welcome</p></body></html>"
+; => "<html><head><title>Home</title></head><body><nav><a href=\"/\">Home</a><a href=\"/about\">About</a></nav><p>Welcome</p></body></html>"
+
+(html (doctype :html5) [:div])
+; => "<!DOCTYPE html>\n<div></div>"
 ```
 
-Return a fragment from a route handler to produce the response body. See [Request and Response](/documentation/web/http-request-and-response/) and [Routing](/documentation/web/routing/) for wiring fragments into responses.
+`doctype` accepts `:html5`, `:xhtml-transitional`, `:xhtml-strict`, and `:html4`.
 
-## Next steps
+## Send it as a response
 
-- [Request and Response](/documentation/web/http-request-and-response/) - send rendered HTML as a response body
-- [Routing](/documentation/web/routing/) - map URLs to handlers that return HTML
-- [html API reference](/documentation/reference/api/html/) - full list of helpers
+Pass the string to `html-response`, which also sets the `Content-Type` header:
+
+<!-- phel-test: skip -->
+```phel
+(defn home [request]
+  (http/html-response 200 (html (doctype :html5) (layout "Home" [:p "Welcome"]))))
+```
+
+See [Request and Response](/documentation/web/http-request-and-response/) for the rest of the cycle, and the [html API reference](/documentation/reference/api/html/) for every helper.
