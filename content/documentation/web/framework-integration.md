@@ -5,7 +5,9 @@ description = "Add Phel to a Symfony, Laravel, or framework-less PHP project wit
 aliases = ["/documentation/framework-integration"]
 +++
 
-You can drop Phel into an existing PHP project (Symfony, Laravel, or no framework at all) without rewriting anything under `app/` or `src/`. Keep your Phel code in its own directory, export typed PHP wrappers, and call them like any other class.
+After this page you can add Phel to an existing Symfony, Laravel, or plain PHP project without changing anything under `app/` or `src/`. Your Phel code lives in its own directory, you export typed PHP wrappers, and your controllers call them like any other class.
+
+To serve HTTP with Phel itself instead, see [Request and Response](/documentation/web/http-request-and-response/) and [Routing](/documentation/web/routing/).
 
 {% php_note() %}
 Phel installs as a Composer package and compiles to plain PHP. Your framework never knows it is calling Lisp: it sees ordinary classes and methods.
@@ -19,7 +21,9 @@ Phel installs as a Composer package and compiles to plain PHP. Your framework ne
 4. Export PHP wrappers under your framework's `App\` PSR-4 root via `phel export`.
 5. In production, run `phel build` at deploy and `require 'build/app/main.php'` at boot; in development, `\Phel::run($root, 'app.main')` compiles on first call. One [load guard](/documentation/guides/deployment/#loading-phel-prod-vs-dev) picks the right path.
 
-Namespaces need at least two segments (`shop.pricing`, not `pricing`); a single-segment namespace exports invalid PHP.
+{% callout(kind="warning") %}
+Namespaces need at least two segments (`shop.pricing`, not `pricing`). A single-segment namespace exports invalid PHP.
+{% end %}
 
 There are two ways to call Phel from PHP:
 
@@ -35,13 +39,12 @@ And two load modes, behind the same provider/kernel hook:
 | Prod (AOT) | `require 'build/app/main.php'`, precompiled | Zero compile, one `require` |
 | Dev (JIT) | `\Phel::run($root, 'app.main')` | Gacela bootstrap + compile on first call |
 
-Install with:
+Install Phel, then let Composer build the wrappers and the compiled code on every install:
 
 ```bash
 composer require phel-lang/phel-lang
 ```
 
-Build the artifacts on deploy by letting Composer run both tools:
 
 ```json
 "scripts": {
@@ -155,7 +158,7 @@ final class CheckoutController
 
 ## Symfony
 
-`phel-config.php` (only the export target differs from Laravel):
+`phel-config.php` (only the test and export directories differ from Laravel):
 
 ```php
 <?php
@@ -200,7 +203,7 @@ public function boot(): void
 
 Controllers then use any wrapper (`App\PhelGenerated\Reports\Daily`, and so on), all registered by the main load.
 
-## Framework-less / existing `src/`
+## Plain PHP
 
 `phel-config.php`:
 
@@ -237,9 +240,7 @@ echo $greet('World') . "\n";
 
 ## Persistence: maps, not entities
 
-Phel models data as immutable values, not mutable identity-tracked objects. An ORM entity (Doctrine, Eloquent) is the opposite: a mutable object the framework hydrates and dirty-tracks. Making a Phel struct *be* an ORM entity fights the language. The functional path keeps rows as plain maps and pushes the database write to the edge.
-
-Two small libraries cover it:
+An ORM entity (Doctrine, Eloquent) is a mutable object that the framework loads and tracks for changes. Phel data is immutable, so making a Phel struct be an entity works against the language. Keep rows as plain maps and do the database write at the edge. Two small libraries cover it:
 
 - [phel-sql](https://github.com/phel-lang/phel-sql): HoneySQL-style. Map in, `[sql params]` out. No driver.
 - [phel-pdo](https://github.com/phel-lang/phel-pdo): runs `[sql params]`, returns rows as maps.
@@ -259,18 +260,19 @@ Two small libraries cover it:
         (pdo/fetch))))                       ; => {:id 1 :name "Keyboard" :price 49.9}
 ```
 
-The discount stays pure: no DB, no mutation. A value in, a value out.
+The business logic stays pure: a map in, a map out, no database:
 
 ```phel
 (defn apply-discount [product pct]
   (update product :price (fn [p] (* p (- 1 pct)))))
 
-(apply-discount {:id 1 :name "Keyboard" :price 49.9} 0.1)
+(apply-discount {:id 1 :name "Keyboard" :price 50.0} 0.1)
+; => {:id 1, :name "Keyboard", :price 45.0}
 ```
 
 ### Reuse the framework connection
 
-Don't open a second connection. phel-sql is driver-agnostic, so its `[sql params]` feeds straight into the connection your framework already configured, for example Doctrine DBAL in Symfony:
+Do not open a second connection. phel-sql does not depend on a driver, so its `[sql params]` goes into the connection your framework already has, for example Doctrine DBAL in Symfony:
 
 ```php
 // Symfony service, $conn injected (Doctrine\DBAL\Connection)
@@ -282,7 +284,7 @@ phel-pdo can also wrap an existing PDO handle so its map-returning helpers run o
 
 ### When you need the object {#when-you-really-need-the-object}
 
-Some host APIs demand a concrete instance (a typed DTO, a value object a library type-hints). Bridge at the boundary instead of modeling your domain as objects: `hydrate` builds an instance from a map without running its constructor (the ORM/serializer pattern), and `bean` reads a public-property object back into a keyword-keyed map. Keep maps as the working representation; reach for objects only at the edge where a typed instance is unavoidable.
+Some PHP APIs require a typed instance, such as a DTO or a value object. Convert at the boundary: `hydrate` builds an instance from a map without running its constructor, and `bean` reads its public properties back into a map with keyword keys. Keep maps everywhere else.
 
 <!-- phel-test: skip -->
 ```phel
@@ -294,7 +296,7 @@ See [Map to typed object and back](/documentation/language/php-interop/#map-to-t
 
 ### Typed PHP from Phel definitions
 
-When the generated PHP must satisfy a framework's type expectations, opt-in metadata enriches it. Untagged forms are unchanged.
+When a framework expects typed PHP, add metadata to your definitions. Forms without it compile as before.
 
 | Metadata | On | Emits |
 |---|---|---|
@@ -315,33 +317,32 @@ A struct annotated as a Doctrine entity:
    ^{:tag string} name])
 ```
 
-Every struct already implements `\Countable`, `\ArrayAccess`, and `\IteratorAggregate` (no opt-in needed), so PHP code can `count($s)` and read fields by a plain string offset (`$s['name']`) as well as a keyword. Structs are immutable, so writing an offset throws.
+Every struct implements `\Countable`, `\ArrayAccess`, and `\IteratorAggregate`, so PHP code can call `count($s)` and read `$s['name']`. Writing an offset throws, because structs are immutable.
 
-Two related forms help framework integration:
+Two more forms help with frameworks:
 
-- `(defenum Status :active "active" :inactive "inactive")`: a native PHP backed enum (Doctrine/Symfony columns) plus a `Status?` predicate. An enum can implement interfaces and carry methods, reusing `defstruct`'s inline-impl machinery.
-- `(defexception NotFound \RuntimeException)`: an exception extending a chosen parent, so framework `catch` blocks match by type.
+- `(defenum Status :active "active" :inactive "inactive")` emits a native PHP backed enum (for Doctrine or Symfony columns) and a `Status?` predicate.
+- `(defexception NotFound \RuntimeException)` emits an exception class with the parent you choose, so framework `catch` blocks match by type.
 
-For the full semantics of typed emission, native enums, and exceptions, see [Native enums and exceptions](/documentation/language/php-interop/#native-enums-and-exceptions) and the rest of the [PHP Interop](/documentation/language/php-interop/) reference.
+See [Native enums and exceptions](/documentation/language/php-interop/#native-enums-and-exceptions) for details.
 
 ### Controllers, transactions, migrations
 
-- **Routes/commands:** an exported `defn` can carry `^{:php/attr [:Symfony.Component.Routing.Attribute/Route "/products/{id}"]}`, so `phel export` emits the `#[Route]` on the generated wrapper: no hand-written controller shim.
-- **Transactions:** wrap writes with phel-pdo's transaction helpers; keep the pure work outside the transaction and only the effect inside.
-- **Migrations:** stay in PHP-land: reuse `doctrine/migrations` or your framework's tool. Phel does not need its own.
+- **Routes and commands:** an exported `defn` can carry `^{:php/attr [:Symfony.Component.Routing.Attribute/Route "/products/{id}"]}`. `phel export` then puts the `#[Route]` on the generated wrapper, so you need no controller class.
+- **Transactions:** wrap writes with phel-pdo's transaction helpers. Keep pure work outside the transaction.
+- **Migrations:** use `doctrine/migrations` or your framework's tool.
 
 ## Notes
 
 - Namespace path matches directory: `phel/shop/pricing.phel` maps to `(ns shop.pricing)`.
 - Hyphens become camelCase: `(ns my-lib.core)` maps to `App\PhelGenerated\MyLib\Core`; `apply-discount` to `applyDiscount`.
-- Prod vs dev load, the run-once rule, and committing `build/`: see [Loading Phel: prod vs dev](/documentation/guides/deployment/#loading-phel-prod-vs-dev).
+- Production and development loading, the run-once rule, and what to commit: see [Loading Phel: prod vs dev](/documentation/guides/deployment/#loading-phel-prod-vs-dev).
 - Load Phel in Laravel's `boot()`, never `register()` or any per-request hot path.
 - `withBuildDestDir()` is relative to the project root.
 - Add `vendor/bin/phel test` to CI alongside `phpunit`.
 
 ## Next steps
 
-- [PHP Interop](/documentation/language/php-interop/) - call PHP, build objects, typed emission, enums, and exceptions
-- [Build a Web App](/documentation/guides/build-a-web-app/) - end-to-end Phel web app tutorial
-- [Debug with PHP tools](/documentation/tooling/php-tools/) - inspect compiled PHP and dump values with Symfony VarDumper
-- [phel-sql](https://github.com/phel-lang/phel-sql) and [phel-pdo](https://github.com/phel-lang/phel-pdo) - data-driven SQL + PDO wrapper
+- [PHP Interop](/documentation/language/php-interop/): call PHP, build objects, typed emission, enums, and exceptions
+- [Debugging](/documentation/guides/debugging/): inspect compiled PHP and dump values with Symfony VarDumper
+- [phel-sql](https://github.com/phel-lang/phel-sql) and [phel-pdo](https://github.com/phel-lang/phel-pdo): data-driven SQL and a PDO wrapper
