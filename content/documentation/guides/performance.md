@@ -5,13 +5,13 @@ description = "Speed up phel test and phel run with CLI opcache, the compiled-co
 aliases = ["/documentation/performance/"]
 +++
 
-Make `phel test`, `phel run`, and the other CLI commands fast. Everything here applies to both source-checkout and PHAR installs.
+This page shows you how to make `phel test`, `phel run`, and the other CLI commands fast, and how to find and speed up slow functions. It applies to both source-checkout and PHAR installs.
 
-## TL;DR: opcache is on by default
+## Opcache is on by default
 
-Each `vendor/bin/phel` invocation is a fresh PHP process. Without CLI opcache, PHP re-parses every `.php` file on every run: the whole of `vendor/`, the Phel compiler, the Symfony console, your own classes. Keeping the compiled bytecode on disk between runs is the single biggest win.
+Each `vendor/bin/phel` call is a fresh PHP process. Without CLI opcache, PHP parses every `.php` file again on every run: all of `vendor/`, the Phel compiler, the Symfony console, and your own classes. Keeping the compiled bytecode on disk between runs is the biggest win.
 
-The `phel` binary does this for you. When the opcache extension is loaded and `pcntl` is available, it restarts itself with a file cache under `.phel/opcache/`. No `php.ini` change needed.
+The `phel` binary does this for you. When the opcache extension is loaded and `pcntl` is available, it restarts itself with a file cache under `.phel/opcache/`. You do not need to change `php.ini`.
 
 Check the status under `Checking performance`:
 
@@ -40,7 +40,7 @@ Create the cache directory. Most systems empty `/tmp` on reboot, so recreate it 
 mkdir -p /tmp/php-opcache
 ```
 
-Repeat runs of `vendor/bin/phel test` then drop from seconds to sub-second on a warm cache.
+With a warm cache, repeat runs of `vendor/bin/phel test` drop from seconds to under one second.
 
 ### Find your php.ini
 
@@ -58,20 +58,22 @@ php -r 'var_dump(opcache_get_status(false) !== false);'
 
 Prints `bool(true)` when CLI opcache is on.
 
-## Two caches that complement each other
+## The compiled-code cache
 
-Phel keeps its own compiled-code cache under `.phel/cache/` that memoizes Phel-to-PHP compilation per source hash. It pairs with opcache:
+Phel keeps its own cache under `.phel/cache/`. It stores the PHP compiled from each `.phel` file, keyed by a hash of the source. The two caches work together:
 
-- **Phel's compiled-code cache** skips recompiling unchanged `.phel` source.
-- **opcache's file cache** skips re-parsing the resulting PHP.
+| Cache | Skips |
+|---|---|
+| Phel compiled-code cache (`.phel/cache/`) | Compiling unchanged `.phel` source to PHP |
+| Opcache file cache (`.phel/opcache/`) | Parsing the generated PHP again |
 
-Invalidation is automatic. Each run hashes the `.phel` source (`md5`) against the stored entry; on a mismatch it recompiles that file and its transitive dependents, then `opcache_compile_file()`s the generated PHP. Changing the optimization level forces a full recompile.
+Invalidation is automatic. Each run compares the `md5` of each `.phel` file with the stored entry. On a mismatch it recompiles that file and every file that depends on it, then passes the new PHP to `opcache_compile_file()`. Changing the optimization level forces a full recompile.
 
 The cache flags (`withEnableCompiledCodeCache`, `withEnableNamespaceCache`, `withCacheDir`) and their defaults live in [Configuration](/documentation/reference/configuration/). You rarely need to touch them.
 
 ### Reset the caches
 
-If a run behaves oddly (stale compiled code, missing definitions, a cache-hit crash), clear the caches and retry. The next invocation repopulates cleanly.
+If a run behaves oddly (stale compiled code, missing definitions, a crash on a cache hit), clear the caches and try again. The next run fills them again.
 
 ```bash
 vendor/bin/phel cache:clear
@@ -85,7 +87,7 @@ rm -rf /tmp/php-opcache
 
 ## Optimization levels
 
-`phel-config.php` can opt the compiler into higher optimization levels (default `0`):
+Set a higher compiler optimization level in `phel-config.php` (the default is `0`):
 
 ```php
 <?php
@@ -96,15 +98,15 @@ return (new \Phel\Config\PhelConfig())
 | Level | Effect |
 |---|---|
 | 0 | Off (default). No inlining, no tail-call rewrite. |
-| 1 | Reserved for auto-inlining single-expression private `defn-` (not implemented yet). |
+| 1 | Same as 0 today. Reserved for inlining single-expression private `defn-`. |
 | 2 | `^:pure` call-site inlining plus rewrite of self-recursive tail calls into an implicit loop. |
 
 The level applies to `phel build`, `phel run`, `phel test`, `phel eval`, and `phel compile`. The REPL and nREPL always compile at level `0` so interactive redefinition stays predictable. `phel build -O2` (long form `--optimization-level=2`) overrides the configured level for a single build.
 
 Level 2 trade-offs:
 
-- `^:pure` is your promise that a single-arity `defn` is side-effect free and safe to inline at call sites; the compiler trusts the annotation rather than verifying it.
-- Tail-call rewriting eliminates per-iteration PHP stack frames (deep self-recursion no longer overflows) at the cost of a shorter stack trace inside the loop.
+- `^:pure` is your promise that a single-arity `defn` has no side effects and is safe to inline at call sites. The compiler trusts the annotation and does not check it.
+- Tail-call rewriting removes the PHP stack frame per iteration, so deep self-recursion no longer overflows. The cost is a shorter stack trace inside the loop.
 - Changing the level invalidates the compiled-code cache and the incremental `phel build` output, so the next run recompiles everything once.
 
 ### Spot build bloat
@@ -117,45 +119,43 @@ vendor/bin/phel build --report
 
 ## Faster functions
 
-A few language features pay off in hot paths. They are covered in full under [Functions and Recursion](/documentation/language/functions-and-recursion/#return-and-parameter-types-tag); the performance angle:
-
-### Type tags
-
-For hot numeric or string functions, add `:tag` annotations on the parameters and the return slot. The compiler emits matching PHP type declarations and infers the return type from primitive ops in tail position, which lets the tracing JIT specialize the call. Tag mismatches surface as Phel diagnostics at compile time.
-
-```phel
-(defn ^int add [^int a ^int b]
-  (+ a b))
-
-(add 2 3)
-```
-
-### Memoization
-
-`^:memoize` and `^{:memoize-lru N}` cache results per argument tuple, turning repeated expensive calls into a lookup:
-
-```phel
-(defn ^:memoize fib [n]
-  (if (< n 2) n (+ (fib (- n 1)) (fib (- n 2)))))
-
-(fib 30)
-```
-
-`^:memoize` keeps every result forever; `^{:memoize-lru N}` bounds the cache to the `N` most-recent entries. See [`memoize`](/documentation/reference/api/core/#memoize) and [`memoize-lru`](/documentation/reference/api/core/#memoize-lru).
-
 ### Find the hot functions first
 
-Do not guess. Profile a script to see per-function timings and compile-phase costs, then tag or memoize only what matters:
+Do not guess. Profile a script to see per-function timings and compile phase costs, then tag or memoize only what matters:
 
 ```bash
 vendor/bin/phel profile path/to/file.phel
 ```
 
-See [Profile](/documentation/reference/cli-commands/#profile) for output formats.
+See [Profile](/documentation/reference/cli-commands/#profile) for sort options and JSON output. Two language features then pay off in hot paths. [Functions and Recursion](/documentation/language/functions-and-recursion/#return-and-parameter-types-tag) covers them in full.
+
+### Type tags
+
+For hot numeric or string functions, add `:tag` annotations on the parameters and the return value. The compiler emits matching PHP type declarations and infers the return type from primitive operations in tail position, so the tracing JIT can specialize the call. A tag mismatch shows up as a Phel diagnostic at compile time.
+
+```phel
+(defn ^int add [^int a ^int b]
+  (+ a b))
+
+(add 2 3) ; => 5
+```
+
+### Memoization
+
+`^:memoize` and `^{:memoize-lru N}` cache results per set of arguments, so a repeated expensive call becomes a lookup:
+
+```phel
+(defn ^:memoize fib [n]
+  (if (< n 2) n (+ (fib (- n 1)) (fib (- n 2)))))
+
+(fib 30) ; => 832040
+```
+
+`^:memoize` keeps every result forever. `^{:memoize-lru N}` keeps only the `N` most recent entries. See [`memoize`](/documentation/reference/api/core/#memoize) and [`memoize-lru`](/documentation/reference/api/core/#memoize-lru).
 
 ## Memory limit
 
-`vendor/bin/phel` raises `memory_limit` to `-1` automatically. If you invoke PHP directly or embed Phel, bump the limit yourself: the compiler's `token_get_all` validation can exceed 128M on large projects.
+`vendor/bin/phel` sets `memory_limit` to `-1` for you. If you call PHP directly or embed Phel, raise the limit yourself: on large projects the compiler's `token_get_all` validation can use more than 128M.
 
 ```bash
 php -d memory_limit=-1 vendor/bin/phel test
@@ -163,8 +163,5 @@ php -d memory_limit=-1 vendor/bin/phel test
 
 ## Next steps
 
-- [Configuration](/documentation/reference/configuration/): cache flags and the full `phel-config.php` reference.
-- [CLI Commands](/documentation/reference/cli-commands/#profile): `phel profile` and `phel cache:clear`.
-- [Functions and Recursion](/documentation/language/functions-and-recursion/): the full story on `:tag`, `^:memoize`, and `recur`.
-- [Deployment](/documentation/guides/deployment/): worker runtimes (FrankenPHP, RoadRunner) that drop per-request boot cost in production.
+- [Deployment](/documentation/guides/deployment/): worker runtimes (FrankenPHP, RoadRunner) that remove the per-request boot cost in production.
 - PHP manual: [opcache configuration](https://www.php.net/manual/en/opcache.configuration.php).
