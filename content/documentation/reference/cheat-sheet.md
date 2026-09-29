@@ -1,113 +1,59 @@
 +++
 title = "Cheat Sheet"
 weight = 1
-description = "One-page reference of Phel syntax, core functions, and idioms."
+description = "The Phel forms and core functions you use every day, one screen per topic, with links to the full API reference."
 aliases = ["/documentation/cheat-sheet"]
 +++
 
-Quick reference for Phel syntax and core functions.
+The forms and functions you reach for every day, one block per topic. For every function and its full signature, see the [API reference](/documentation/reference/api/). For how a form works, follow the link under each block.
 
 {% callout(kind="tip") %}
-**AI agents:** load [Agentic Coding](/documentation/reference/agentic-coding) first for the truncation-safe rules and PHP-interop gotchas. This sheet is the wide surface; that one is the must-know.
+**AI agents:** load [Agentic Coding](/documentation/reference/agentic-coding) first for the truncation-safe rules and PHP-interop gotchas.
 {% end %}
 
 ## Basic syntax
 
 <!-- phel-test: skip -->
 ```phel
-;; This is a standalone comment
-; inline comment (after an expression)
-
-nil                     ; null value
-true false              ; booleans (only false and nil are falsy)
-42 -3 1.5 3.14e2        ; numbers
-0xFF 0b1010 017         ; hex, binary, octal
-"hello" "line\nbreak"   ; strings
-:keyword :status        ; keywords (interned constants)
-my-var my-module/fn     ; symbols
-#"[a-z]+"               ; regex literal (PCRE pattern)
+;; standalone comment        ; inline comment
+nil  true  false              ; only false and nil are falsy
+42  -3  1.5  0xFF  0b1010     ; numbers
+"hello\n"                     ; string
+:status  :user/id             ; keywords
+my-var  my-module/fn          ; symbols
+@my-atom                      ; (deref my-atom)
+#"[a-z]+"                     ; regex literal (PCRE)
+#(+ %1 %2)  #(inc %)  #(apply + %&)   ; anonymous fn shorthand
+#'my-fn                       ; (var my-fn)
+#inst "2026-01-15T12:00:00Z"  ; DateTimeImmutable
+#uuid "550e8400-e29b-41d4-a716-446655440000"
+#?(:phel a :default b)        ; reader conditional (.cljc)
 ```
 
-{% callout(kind="warning") %}
-`#` line and `#| |#` multiline comments were removed. The lexer rejects them. Use `;;` for standalone comments and `;` for inline comments.
-{% end %}
-
-See [Basic Types](/documentation/language/basic-types).
-
-## Reader syntax
-
-<!-- phel-test: skip -->
-```phel
-@my-var                 ; shorthand for (deref my-var)
-#"pattern"              ; regex literal (PCRE)
-#(+ %1 %2)             ; anonymous function shorthand
-#(inc %)                ; single-arg: % is the same as %1
-#(apply + %&)           ; variadic: %& captures rest args
-#?(:phel expr1 :default expr2)  ; reader conditional
-#?@(:phel [a b] :default [c])  ; splicing reader conditional
-
-;; Tagged literals
-#inst "2026-01-15T12:00:00Z"    ; => DateTimeImmutable
-#uuid "550e8400-e29b-41d4-a716-446655440000"  ; => Phel\Lang\UUID object
-#regex "\\d+"                    ; => PCRE pattern string
-
-;; First-class var handles
-#'my-fn                 ; shorthand for (var my-fn)
-(var my-fn)             ; returns the Var object for my-fn
-```
-
-`#(...)` is the preferred shorthand. `%` or `%1` first arg, `%2` second, `%&` rest. The legacy `|(...)` form with `$` was removed.
-
-Reader conditionals (`#?()`, `#?@()`) target platforms in `.cljc` via `:phel` and `:default`.
-
-Tagged literals: `#inst` reads as `DateTimeImmutable`, `#uuid` as a `Phel\Lang\UUID` object, `#regex` as a PCRE pattern string. Register custom tags with `register-tag` from `phel.reader`.
+`#` and `#| |#` comments were removed: use `;`. See [Basic Types](/documentation/language/basic-types) and [Reader Shortcuts](/documentation/language/reader-shortcuts).
 
 ## Data structures
 
 ```phel
-[1 2 3]                 ; vector (indexed)
-(vector 1 2 3)          ; same thing
-{:a 1 :b 2}             ; map (key-value pairs)
-(hash-map :a 1 :b 2)    ; same thing
-#{1 2 3}                ; set (unique values)
-(hash-set 1 2 3)        ; set from arguments
-(set [1 2 3])           ; coerce collection to set
-'(1 2 3)                ; quoted list (data, not a call)
-(list 1 2 3)            ; same thing
-```
+[1 2 3]  {:a 1 :b 2}  #{1 2 3}  '(1 2 3)   ; vector, map, set, list
 
-See [Data Structures](/documentation/language/data-structures).
+(get {:a 1} :b "default")          ; => "default"
+(get-in {:a {:b 1}} [:a :b])       ; => 1
+(:name {:name "Alice"})            ; => "Alice"
+([10 20 30] 1)                     ; => 20
+(first [1 2 3])                    ; => 1
+(peek [1 2 3])                     ; => 3
 
-## Accessing data
-
-```phel
-(get [1 2 3] 0)           ; => 1
-(get {:a 1} :a)            ; => 1
-(get {:a 1} :b "default")  ; => "default"
-(get-in {:a {:b 1}} [:a :b])  ; => 1
-(first [1 2 3])            ; => 1
-(second [1 2 3])           ; => 2
-(peek [1 2 3])             ; => 3
-(:name {:name "Alice"})    ; => "Alice" (keyword as function)
-({:a 1 :b 2} :a)           ; => 1 (map as function)
-([10 20 30] 1)             ; => 20 (vector as function)
-```
-
-## Modifying data
-
-```phel
-(conj [1 2] 3)                    ; => [1 2 3]
-(conj #{1 2} 3)                   ; => #{1 2 3}
-(conj {:a 1} [:b 2])              ; => {:a 1, :b 2}
-(assoc {:a 1} :b 2)               ; => {:a 1, :b 2}
-(assoc [1 2 3] 0 9)               ; => [9 2 3]
-(dissoc {:a 1 :b 2} :a)           ; => {:b 2}
-(update {:a 1} :a inc)            ; => {:a 2}
-(update-keys {:a 1 :b 2} name)    ; => {"a" 1, "b" 2}
-(update-vals {:a 1 :b 2} inc)     ; => {:a 2, :b 3}
-(assoc-in {} [:a :b] 1)           ; => {:a {:b 1}}
-(update-in {:a {:b 1}} [:a :b] inc)  ; => {:a {:b 2}}
-(merge {:a 1} {:b 2 :a 3})        ; => {:a 3, :b 2}
+(conj [1 2] 3)                     ; => [1 2 3]
+(assoc {:a 1} :b 2)                ; => {:a 1, :b 2}
+(dissoc {:a 1 :b 2} :a)            ; => {:b 2}
+(update {:a 1} :a inc)             ; => {:a 2}
+(assoc-in {} [:a :b] 1)            ; => {:a {:b 1}}
+(update-in {:a {:b 1}} [:a :b] inc) ; => {:a {:b 2}}
+(merge {:a 1} {:b 2 :a 3})         ; => {:a 3, :b 2}
+(update-vals {:a 1 :b 2} inc)      ; => {:a 2, :b 3}
+(select-keys {:a 1 :b 2} [:a])     ; => {:a 1}
+(keys {:a 1})  (vals {:a 1})       ; => [:a] [1]
 ```
 
 See [Data Structures](/documentation/language/data-structures).
@@ -115,55 +61,32 @@ See [Data Structures](/documentation/language/data-structures).
 ## Destructuring
 
 ```phel
-;; Sequential destructuring
-(let [[a b c] [1 2 3]]
-  (+ a b c))                      ; => 6
-
-(let [[a b & rest] [1 2 3 4 5]]
-  rest)                            ; => [3 4 5]
-
-;; Associative destructuring
-(let [{:name name :age age} {:name "Alice" :age 30}]
-  (str name " is " age))          ; => "Alice is 30"
-
-;; Default values
-(let [{:name name :role role :or {role "guest"}}
-      {:name "Bob"}]
-  role)                            ; => "guest"
-
-;; Works in defn, fn, loop too
-(defn greet [{:name name}]
-  (str "Hello, " name))
-(greet {:name "Alice"})            ; => "Hello, Alice"
+(let [[a b & more] [1 2 3 4]] more)              ; => [3 4]
+(let [{:name n} {:name "Alice"}] n)              ; => "Alice"
+(let [{:role r :or {r "guest"}} {}] r)           ; => "guest"
+(defn greet [{:name name}] (str "Hello, " name))
+(greet {:name "Alice"})                          ; => "Hello, Alice"
 ```
 
-See [Destructuring](/documentation/language/destructuring).
+Works in `let`, `fn`, `defn`, `loop`, and `for`. See [Destructuring](/documentation/language/destructuring).
 
 ## Defining things
 
 <!-- phel-test: skip -->
 ```phel
-(def pi 3.14159)                  ; global binding
-(def secret :private 42)          ; private binding
-(defonce conn (connect!))         ; bind once; skipped if already defined (survives REPL reloads)
+(def pi 3.14159)                   ; global binding
+(def secret :private 42)           ; private binding
+(defonce conn (connect!))          ; skipped on reload if already defined
+(defn greet [name] (str "Hi " name))
+(defn- helper [x] (* x 2))         ; private function
+(let [x 1 y (+ x 2)] (+ x y))      ; => 4
 
-(defn greet [name]                ; public function
-  (str "Hello, " name))
+(defstruct point [x y])
+(point 1 2)                        ; => (user.point 1 2)
+(point? (point 1 2))               ; => true
 
-(defn- helper [x]                 ; private function
-  (* x 2))
-
-(defstruct point [x y])           ; struct (typed map)
-(point 1 2)                       ; => (user.point 1 2) (printed with its namespace)
-(point? (point 1 2))              ; => true
-
-(let [x 1                         ; local bindings
-      y (+ x 2)]
-  (+ x y))                        ; => 4
-
-(defmulti area :shape)             ; multimethod (dispatch on :shape)
-(defmethod area :circle [{:radius r}]
-  (* 3.14 r r))
+(defmulti area :shape)             ; multimethod, dispatch on :shape
+(defmethod area :circle [{:radius r}] (* 3.14 r r))
 ```
 
 See [Global and Local Bindings](/documentation/language/global-and-local-bindings).
@@ -172,456 +95,236 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 
 <!-- phel-test: skip -->
 ```phel
-(fn [x] (* x 2))                  ; anonymous function
-#(* % 2)                           ; short form (single param)
-#(+ %1 %2)                        ; short form (multiple params)
-#(apply + %&)                     ; short form (variadic)
-
-(defn greet                        ; multi-arity
-  ([] "Hi")
-  ([name] (str "Hi " name)))
-
-(defn sum [& nums]                 ; variadic
-  (apply + nums))
+(fn [x] (* x 2))
+#(* % 2)
+(defn greet ([] "Hi") ([name] (str "Hi " name)))   ; multi-arity
+(defn sum [& nums] (apply + nums))                  ; variadic
 
 (apply + [1 2 3])                  ; => 6
-(partial + 10)                     ; => fn that adds 10
-(comp inc inc)                     ; => fn that increments twice
-(identity 42)                      ; => 42
-(some-fn pos? even?)               ; => fn: true if any predicate passes
-(every-pred pos? even?)            ; => fn: true only if every predicate passes
-(memoize expensive-fn)             ; => cached version of fn
-(memoize-lru expensive-fn 100)     ; => cached with max 100 entries
+(partial + 10)                     ; fn that adds 10
+(comp inc inc)                     ; fn that increments twice
+(juxt :id :name)                   ; fn returning [(:id x) (:name x)]
+(complement even?)                 ; fn returning the opposite
+(some-fn pos? even?)  (every-pred pos? even?)
+(memoize f)  (memoize-lru f 100)   ; cached versions of f
 
-(defn ^:memoize fib [n] ...)       ; defn metadata: auto-wraps in memoize
-(defn ^{:memoize-lru 128} f [k] ...)
-(defn ^:async fetch [url] ...)     ; wraps body in (async ...) -> Amp\Future
-
-(defn ^int add [^int a ^int b]     ; :tag metadata -> PHP type decls
-  (+ a b))
+(defn ^:memoize fib [n] ...)       ; metadata shorthands
+(defn ^:async fetch [url] ...)     ; body runs in (async ...)
+(defn ^int add [^int a ^int b] (+ a b))   ; PHP type declarations
 ```
 
 See [Functions and Recursion](/documentation/language/functions-and-recursion).
 
 ## Control flow
 
-<!-- phel-test: skip -->
 ```phel
-(if (> x 0) "pos" "non-pos")      ; if/else
-(when (> x 0) (print "pos"))      ; when (no else branch)
+(def n 5)
+(if (> n 0) "pos" "non-pos")       ; => "pos"
+(when (> n 0) "pos")               ; => "pos" (nil otherwise)
+(cond (< n 0) "neg" (= n 0) "zero" :else "pos")   ; => "pos"
+(case n 1 "one" 5 "five" "other")  ; => "five"
+(if-let [x (get {:a 1} :a)] x 0)   ; => 1
+(when-let [x nil] x)               ; => nil
+(and 1 nil 2)  (or nil 2)          ; => nil 2
 
-(cond
-  (< n 0) "negative"
-  (= n 0) "zero"
-  :else "positive")
-
-(case status
-  200 "OK"
-  404 "Not Found")
-
-(do (print "a") (print "b") 42)   ; evaluate multiple exprs, return last
+(loop [acc 0 i 10]
+  (if (= i 0) acc (recur (+ acc i) (dec i))))    ; => 55
+(for [x :in [1 2 3 4] :when (even? x)] (* x 10)) ; => [20 40]
+(for [x :range [0 3]] x)           ; => [0 1 2]
+(foreach [v [1 2 3]] (print v))    ; side effects, returns nil
+(dotimes [i 3] (print i))          ; prints 012
 ```
 
-See [Control Flow](/documentation/language/control-flow).
-
-## Loops & recursion
-
-```phel
-(loop [acc 0 n 10]                 ; loop with recur
-  (if (= n 0)
-    acc
-    (recur (+ acc n) (dec n))))    ; => 55
-
-(foreach [v [1 2 3]]              ; side-effects only, returns nil
-  (print v))
-
-(for [x :in [1 2 3]] (* x 2))    ; => [2 4 6] (list comprehension)
-(for [x :range [0 5]] x)          ; => [0 1 2 3 4]
-(for [x :in [1 2 3 4]
-      :when (even? x)] x)         ; => [2 4]
-
-(dotimes [i 3] (print i))         ; prints 0, 1, 2
-
-(def n (atom 0))
-(while (< @n 3) (swap! n inc))    ; side-effects while test is truthy
-@n                                 ; => 3
-```
-
-See [Functions and Recursion](/documentation/language/functions-and-recursion), [Control Flow](/documentation/language/control-flow).
+`for` builds a vector. `foreach`, `doseq`, and `dotimes` run side effects. See [Control Flow](/documentation/language/control-flow).
 
 ## Collections
 
 ```phel
-(def users [{:role :admin} {:role :user} {:role :admin}])
-
 (map inc [1 2 3])                  ; => (2 3 4)
-(filter even? [1 2 3 4])          ; => (2 4)
-(mapv inc [1 2 3])                 ; => [2 3 4] (eager, returns a vector)
-(filterv even? [1 2 3 4])         ; => [2 4] (eager, returns a vector)
-(reduce + 0 [1 2 3])              ; => 6
-(sort [3 1 2])                    ; => [1 2 3]
-(sort-by :age [{:age 30} {:age 20}])  ; sort by key
-(group-by :role users)             ; map of role -> [users]
-(frequencies [:a :b :a :a])        ; => {:a 3, :b 1}
+(mapv inc [1 2 3])                 ; => [2 3 4]
+(filter even? [1 2 3 4])           ; => (2 4)
+(remove neg? [1 -2 3])             ; => (1 3)
+(reduce + 0 [1 2 3])               ; => 6
+(map-indexed vector [:a :b])       ; => ([0 :a] [1 :b])
+(mapcat reverse [[1 2] [3 4]])     ; => (2 1 4 3)
+(keep :id [{:id 1} {} {:id 2}])    ; => (1 2)
+(sort [3 1 2])                     ; => [1 2 3]
+(sort-by :age [{:age 30} {:age 20}]) ; => [{:age 20} {:age 30}]
+(group-by even? [1 2 3 4])         ; => {false [1 3], true [2 4]}
+(frequencies [:a :b :a])           ; => {:a 2, :b 1}
+(distinct [1 2 1 3])               ; => (1 2 3)
+(zipmap [:a :b] [1 2])             ; => {:a 1, :b 2}
+(into #{} [1 2 1])                 ; => #{1 2}
+(concat [1 2] [3])                 ; => (1 2 3)
+(flatten [[1 2] [3 [4]]])          ; => (1 2 3 4)
 (count [1 2 3])                    ; => 3
 (empty? [])                        ; => true
-(contains? {:a 1} :a)             ; => true
-(some even? [1 3 4])              ; => true
-(every? pos? [1 2 3])             ; => true
-(bounded-count 3 [1 2 3 4 5])     ; => 5 (walks at most 3 of a non-counted? seq)
-(into #{} [1 2 1 3])              ; => #{1 2 3}
-(vec '(1 2 3))                     ; => [1 2 3] (coerce to vector)
-(subset? #{1 2} #{1 2 3})         ; => true
-(superset? #{1 2 3} #{1 2})       ; => true
-(distinct [1 2 1 3 2])            ; => (1 2 3)
-(distinct? 1 2 3)                  ; => true (no two arguments are =)
-(splitv-at 2 [1 2 3 4 5])         ; => [[1 2] [3 4 5]] (eager split)
-(map-invert {:a 1 :b 2})          ; => {1 :a, 2 :b} (swap keys and values)
-(flatten [[1 2] [3 [4]]])         ; => (1 2 3 4)
-(reverse [1 2 3])                  ; => [3 2 1]
-(concat [1 2] [3 4])              ; => (1 2 3 4)
-(compact [1 nil 2 nil 3])         ; => (1 2 3)
-(remove neg? [1 -2 3 -4])        ; => (1 3)
+(contains? {:a 1} :a)              ; => true
+(some even? [1 3 4])               ; => true
+(every? pos? [1 2 3])              ; => true
 ```
 
-See [Data Structures](/documentation/language/data-structures).
-
-## Sorted collections & set relations
-
-```phel
-(def sm (sorted-map 1 :a 3 :b 5 :c))
-(subseq sm >= 3)                   ; => ([3 :b] [5 :c]) (ascending range query)
-(rsubseq sm <= 3)                  ; => ([3 :b] [1 :a]) (descending)
-
-;; Relational helpers over sets of maps, in the spirit of clojure.set
-(def rel #{{:id 1 :role :admin} {:id 2 :role :user}})
-(select #(= (:role %) :admin) rel) ; => #{{:id 1 :role :admin}}
-(project rel [:role])              ; => #{{:role :admin} {:role :user}}
-(rename rel {:role :kind})         ; => rows with :role renamed to :kind
-(index rel [:role])                ; => map of {:role X} -> set of matching rows
-```
-
-`subseq` and `rsubseq` are lazy and honor the collection's comparator, so they only walk the matching range.
-
-## Walking data structures
-
-Requires `(:require phel.walk :refer [postwalk prewalk postwalk-replace keywordize-keys stringify-keys])`.
-
-<!-- phel-test: skip -->
-```phel
-(postwalk f nested)                ; transform bottom-up
-(prewalk f nested)                 ; transform top-down
-(postwalk-replace {:a :x} [:a :b]) ; => [:x :b]
-(keywordize-keys {"name" "Alice"}) ; => {:name "Alice"}
-(stringify-keys {:name "Alice"})   ; => {"name" "Alice"}
-```
-
-See [Data Structures](/documentation/language/data-structures/#walking-data-structures).
+Sorted collections, set relations (`subseq`, `select`, `index`), and `phel.walk` helpers are in the [API reference](/documentation/reference/api/core/). See [Data Structures](/documentation/language/data-structures).
 
 ## Lazy sequences
 
-<!-- phel-test: skip -->
 ```phel
 (take 5 (range))                   ; => (0 1 2 3 4)
-(take 5 (iterate inc 0))          ; => (0 1 2 3 4)
-(take 7 (cycle [1 2 3]))          ; => (1 2 3 1 2 3 1)
-(take 4 (repeat :x))              ; => (:x :x :x :x)
-(take 5 (repeatedly #(php/rand 1 100)))  ; 5 random numbers
-
-(drop 3 (range 10))               ; => (3 4 5 6 7 8 9)
-(take-while pos? [3 2 1 0 -1])   ; => (3 2 1)
-(drop-while pos? [3 2 1 0 -1])   ; => (0 -1)
-(partition 2 [1 2 3 4 5 6])       ; => ([1 2] [3 4] [5 6])
-(partition 2 1 [1 2 3 4])         ; => ([1 2] [2 3] [3 4]) (sliding window)
-(partition-all 2 [1 2 3])         ; => ([1 2] [3]) (keeps the short tail)
-(random-sample 0.5 (range 100))   ; keeps each item with probability 0.5
-(interleave [:a :b :c] [1 2 3])  ; => (:a 1 :b 2 :c 3)
-
-;; Lazy filtering + transformation
-(->> (range)
-     (filter even?)
-     (take 5))                     ; => (0 2 4 6 8)
-
-;; Custom lazy sequence
-(defn fibs []
-  (lazy-seq (cons 0 (cons 1
-    (map + (fibs) (rest (fibs)))))))
-
-(doall (take 8 (fibs)))           ; => [0 1 1 2 3 5 8 13]
-(dorun (map println [1 2 3]))     ; => nil (realize for side effects only)
-(realized? (lazy-seq [1 2 3]))    ; => false
+(take 3 (iterate #(* 2 %) 1))      ; => (1 2 4)
+(take 5 (cycle [1 2]))             ; => (1 2 1 2 1)
+(take 2 (repeat :x))               ; => (:x :x)
+(drop 3 (range 6))                 ; => (3 4 5)
+(take-while pos? [3 2 0 -1])       ; => (3 2)
+(partition 2 [1 2 3 4])            ; => ([1 2] [3 4])
+(partition 2 1 [1 2 3])            ; => ([1 2] [2 3])
+(partition-all 2 [1 2 3])          ; => ([1 2] [3])
+(interleave [:a :b] [1 2])         ; => (:a 1 :b 2)
+(doall (map inc [1 2]))            ; => [2 3] (realize now)
 ```
-
-Lazy file I/O:
 
 <!-- phel-test: skip -->
 ```phel
-(line-seq (php/fopen "file.txt" "r"))  ; lazy line-by-line reading
-(file-seq "src/")                       ; lazy recursive directory listing
-(csv-seq (php/fopen "data.csv" "r"))   ; lazy CSV parsing
-(read-file-lazy "big.txt" 4096)        ; lazy chunked reading
+(line-seq (php/fopen "file.txt" "r"))  ; lines, read on demand
+(csv-seq (php/fopen "data.csv" "r"))   ; CSV rows, read on demand
+(file-seq "src/")                       ; recursive directory listing
 ```
 
-`map`, `filter`, `take`, `drop`, `concat`, `mapcat`, `interleave`, `partition` return lazy sequences.
+`map`, `filter`, `take`, `drop`, `concat`, and `mapcat` are lazy. To write your own with `lazy-seq`, see [Lazy Sequences](/documentation/language/lazy-sequences).
 
 ## Threading macros
 
 ```phel
-(-> {:name "Alice" :age 30}        ; thread-first
-    (assoc :role "admin")
-    (dissoc :age))                  ; => {:name "Alice", :role "admin"}
-
-(->> [1 2 3 4 5]                   ; thread-last
-     (filter odd?)
-     (map inc))                    ; => (2 4 6)
-
-(as-> [1 2 3] v                    ; thread with named binding
-      (conj v 4)
-      (count v))                   ; => 4
-
-(cond-> 1                          ; conditional thread-first
-        true inc
-        false (* 42))              ; => 2
-
-(cond->> [1 2 3]                   ; conditional thread-last
-         true (map inc)
-         false (filter odd?))      ; => (2 3 4)
+(-> {:name "Alice"} (assoc :role "admin") (dissoc :name))  ; => {:role "admin"}
+(->> [1 2 3 4] (filter odd?) (map inc))                    ; => (2 4)
+(as-> [1 2] v (conj v 3) (count v))                        ; => 3
+(cond-> 1 true inc false (* 42))                           ; => 2
+(some-> {:a {:b 1}} :a :b inc)                             ; => 2
 ```
 
 ## Strings
 
 ```phel
-(str "Hello" " " "World")         ; => "Hello World"
-(str "n=" 42)                      ; => "n=42"
-(format "Hi %s, age %d" "Jo" 25)  ; => "Hi Jo, age 25"
-```
-
-Requires `(:require phel.string :as str)`:
-
-```phel
 (ns my-app.strings
   (:require phel.string :as str))
 
-(str/lower-case "HELLO")           ; => "hello"
-(str/upper-case "hello")           ; => "HELLO"
+(str "n=" 42)                      ; => "n=42"
+(format "%s is %d" "Jo" 25)        ; => "Jo is 25"
+(str/join ", " ["a" "b"])          ; => "a, b"
+(str/split "a,b,c" #",")           ; => ["a" "b" "c"]
 (str/replace "foo" "o" "0")        ; => "f00"
+(str/trim "  hi  ")                ; => "hi"
+(str/upper-case "hi")              ; => "HI"
+(str/starts-with? "hello" "he")    ; => true
+(str/includes? "hello" "ell")      ; => true
 (str/subs "hello" 1 3)             ; => "el"
-(str/split "a,b,c" #",")          ; => ["a" "b" "c"] (Phel vector)
-(str/join ", " ["a" "b" "c"])      ; => "a, b, c"
-(str/starts-with? "hello" "he")   ; => true
-(str/ends-with? "hello" "lo")     ; => true
-(str/trim "  hi  ")               ; => "hi"
-(str/capitalize "hello world")    ; => "Hello world"
-(str/reverse "hello")             ; => "olleh"
+(str/blank? "  ")                  ; => true
 ```
+
+Full list: [phel.string](/documentation/reference/api/string/).
 
 ## Regular expressions
 
 ```phel
-;; Regex literals use #"..." syntax (PCRE patterns)
 (re-find #"\d+" "abc123def")       ; => "123"
-(re-find #"(\w+)@(\w+)" "user@host")
-                                   ; => ["user@host" "user" "host"]
-(re-matches #"\d+" "123")          ; => "123"
-(re-matches #"\d+" "abc123")       ; => nil (must match entire string)
-
-;; re-seq: all matches as a vector
-(re-seq #"\d+" "a1b2c3")          ; => ["1" "2" "3"]
-
-;; Use regex for validation
-(defn valid-email? [s]
-  (some? (re-matches #".+@.+\..+" s)))
-
-(valid-email? "alice@example.com") ; => true
-(valid-email? "not-an-email")      ; => false
+(re-find #"(\w+)@(\w+)" "me@host") ; => ["me@host" "me" "host"]
+(re-matches #"\d+" "abc123")       ; => nil (must match the whole string)
+(re-seq #"\d+" "a1b2c3")           ; => ["1" "2" "3"]
 ```
 
 ## Mutable state
 
 ```phel
-(def counter (atom 0))             ; create an atom (mutable container)
-(deref counter)                    ; => 0
-@counter                           ; => 0 (shorthand for deref)
-(reset! counter 42)                ; direct reset
-@counter                           ; => 42
-(swap! counter inc)                ; apply function, counter is now 43
-(swap! counter + 10)               ; counter is now 53
-
-(compare-and-set! counter 53 100)  ; => true (set only if current value matches)
-(swap-vals! counter inc)           ; => [100 101] (returns [old new])
-(reset-vals! counter 0)            ; => [101 0] (returns [old new])
-
-;; Watchers: react to state changes
-(add-watch counter :logger
-  (fn [key ref old-val new-val]
-    (println (str "Changed from " old-val " to " new-val))))
-(remove-watch counter :logger)
-
-;; Validators: constrain allowed values
-(set-validator! counter #(>= % 0))  ; only non-negative values
-(get-validator counter)             ; => the validator fn
+(def counter (atom 0))
+@counter                           ; => 0
+(swap! counter inc)                ; => 1
+(swap! counter + 10)               ; => 11
+(reset! counter 0)                 ; => 0
+(add-watch counter :log (fn [k ref old new] (println old "->" new)))
+(set-validator! counter #(>= % 0)) ; reject negative values
 ```
 
-See [Global and Local Bindings](/documentation/language/global-and-local-bindings).
+`compare-and-set!`, `swap-vals!`, and `reset-vals!` are in [phel.core](/documentation/reference/api/core/).
 
 ## Error handling
 
 <!-- phel-test: skip -->
 ```phel
 (try
-  (/ 1 0)
-  (catch DivisionByZeroError e
-    (str "Error: " (.getMessage e))))
-
-(try
-  (do-risky-thing)
-  (catch Exception e
-    (println (str "Failed: " (.getMessage e))))
-  (finally
-    (cleanup)))
+  (risky)
+  (catch InvalidArgumentException e (.getMessage e))
+  (catch Exception e (log e))
+  (finally (cleanup)))
 
 (throw (InvalidArgumentException. "bad input"))
+(throw (ex-info "User not found" {:id 42}))
 
-;; Structured exceptions with ex-info
-(throw (ex-info "User not found" {:id 42 :type :not-found}))
-
-(try
-  (throw (ex-info "Validation failed" {:field :email} nil))
-  (catch Exception e
-    (ex-message e)                 ; => "Validation failed"
-    (ex-data e)                    ; => {:field :email}
-    (ex-cause e)))                 ; => nil
+(ex-message e)                     ; => "User not found"
+(ex-data e)                        ; => {:id 42}
+(ex-cause e)                       ; => wrapped exception or nil
 ```
 
-See [PHP Interop](/documentation/language/php-interop).
+See [Error Handling](/documentation/language/error-handling).
 
-## Interfaces & structs
+## Structs and interfaces
 
 ```phel
-(definterface Greetable
-  (greet [this]))
-
-(definterface HasArea
-  (area [this]))
+(definterface HasArea (area [this]))
 
 (defstruct circle [radius]
   HasArea
-  (area [this] (* 3.14159 radius radius)))
+  (area [this] (* 3 radius radius)))
 
-(defstruct person [name age]
-  Greetable
-  (greet [this] (str "Hello, I'm " name)))
-
-(greet (person "Alice" 30))        ; => "Hello, I'm Alice"
-(area (circle 5))                  ; => 78.53975
-(person? (person "Alice" 30))      ; => true
+(area (circle 2))                  ; => 12
+(:radius (circle 2))               ; => 2
 ```
 
 See [Interfaces](/documentation/language/interfaces).
 
 ## Protocols
 
-Polymorphic dispatch on the first argument's type. More flexible than interfaces, extendable to existing types.
+Dispatch on the type of the first argument. Unlike interfaces, you can extend a protocol to types you do not own.
 
 ```phel
-;; Define a protocol
-(defprotocol Stringable
-  (to-string [this]))
+(defprotocol Describe (describe [this]))
+(defstruct dog [name])
 
-(defstruct dog [name breed])
+(extend-type dog Describe (describe [this] (str "dog " (:name this))))
+(extend-protocol Describe
+  :string (describe [this] (str "text " this)))
 
-(extend-type dog
-  Stringable
-  (to-string [this] (str (:name this) " the " (:breed this))))
-
-(to-string (dog "Rex" "Labrador")) ; => "Rex the Labrador"
-
-;; Extend multiple types at once with extend-protocol
-(extend-protocol Stringable
-  :string  (to-string [this] this)
-  :int     (to-string [this] (str this)))
-
-;; Check protocol support
-(satisfies? Stringable (dog "Rex" "Labrador"))  ; => true
-(extends? Stringable :string)                    ; => true
-(extends? Stringable :array)                     ; => false
+(describe (dog "Rex"))             ; => "dog Rex"
+(describe "hi")                    ; => "text hi"
+(satisfies? Describe (dog "Rex"))  ; => true
 ```
 
-## Hierarchy system
-
-Ad-hoc hierarchies for multimethods and `isa?`.
-
-```phel
-(derive :shape/square :shape/poly)
-(derive :shape/circle :shape/poly)
-(derive :shape/filled-square :shape/square)
-
-(isa? :shape/square :shape/poly)         ; => true
-(isa? :shape/filled-square :shape/poly)  ; => true
-(parents :shape/square)                  ; => #{:shape/poly}
-(ancestors :shape/filled-square)         ; => #{:shape/square :shape/poly}
-(descendants :shape/poly)                ; => #{:shape/square :shape/circle :shape/filled-square}
-
-(make-hierarchy)                   ; => {:parents {}, :descendants {}, :ancestors {}}
-```
+A struct cannot implement a protocol inline: use `extend-type`. See [Interfaces](/documentation/language/interfaces).
 
 ## Transducers
 
-Composable transformations independent of the data source. Avoid intermediate collections.
-
 ```phel
-;; Basic transducer usage with transduce
-(transduce (map inc) + 0 [1 2 3])       ; => 9
-(transduce (filter even?) + 0 [1 2 3 4]) ; => 6
-
-;; Compose transducers (left-to-right order)
 (def xf (comp (filter even?) (map inc)))
-(transduce xf conj [] [1 2 3 4 5 6])    ; => [3 5 7]
-
-;; into with a transducer (3-arg form)
-(into [] (map inc) [1 2 3])              ; => [2 3 4]
-(into #{} (filter odd?) [1 2 3 2 1])     ; => #{1 3}
-
-;; sequence: lazy transducer application
-(sequence (map inc) [1 2 3])             ; => [2 3 4]
-
-;; cat: concatenating transducer for nested collections
-(into [] cat [[1 2] [3 4] [5]])          ; => [1 2 3 4 5]
-
-;; completing: supply a final step to a reducing function
-(transduce (map inc) (completing + str) 0 [1 2 3])  ; => 9
-
-;; Many core fns have transducer arities (called with no collection):
-;; (map f), (filter pred), (take n), (drop n), (partition-all n), etc.
+(into [] xf [1 2 3 4])             ; => [3 5]
+(transduce xf + 0 [1 2 3 4])       ; => 8
+(sequence xf [1 2 3 4])            ; => [3 5]
+(into [] cat [[1 2] [3]])          ; => [1 2 3]
 ```
+
+`map`, `filter`, `take`, `drop`, `partition-all` and others return a transducer when called without a collection. See [Transducers](/documentation/language/transducers).
 
 ## PHP interop
 
-<!-- phel-test: skip -->
-```phel
-;; Calling PHP functions
-(php/strlen "test")                ; => 4
-(php/date "Y-m-d")                 ; => "2026-02-07"
-(php/array_merge arr1 arr2)        ; call any PHP function
-
-;; Instantiation - both forms are equivalent
-(new DateTime "now")
-(DateTime. "now")                  ; ClassName. shorthand (preferred)
-
-;; Instance methods & properties
-(.method obj arg)                  ; $obj->method($arg)
-(.-property obj)                   ; $obj->property
-(-> obj (.a) (.b) (.c))            ; chained: $obj->a()->b()->c()
-
-;; Static methods & properties
-(MyClass/create "x")               ; MyClass::create("x")
-Ns.MyClass/CONST                   ; MyClass::CONST
-
-;; PHP arrays
-(php/aget arr 0)                   ; $arr[0] ?? null
-(php/aset arr "k" "v")             ; $arr["k"] = "v"
-(php/apush arr "v")                ; $arr[] = "v"
-```
+| Phel | PHP |
+|---|---|
+| `(php/strlen "x")` | `strlen("x")` |
+| `(DateTime. "now")` | `new DateTime("now")` |
+| `(.format d "Y-m-d")` | `$d->format("Y-m-d")` |
+| `(.-days interval)` | `$interval->days` |
+| `(DateTime/createFromFormat f s)` | `DateTime::createFromFormat($f, $s)` |
+| `DateTime/ATOM` | `DateTime::ATOM` |
+| `(php/aget arr 0)` | `$arr[0] ?? null` |
+| `(php/aset arr "k" "v")` | `$arr["k"] = "v"` |
+| `(to-php-array [1 2])` | `[1, 2]` |
+| `(php-array-to-map arr)` | Phel map from a PHP array |
 
 See [PHP Interop](/documentation/language/php-interop).
 
@@ -630,16 +333,11 @@ See [PHP Interop](/documentation/language/php-interop).
 <!-- phel-test: skip -->
 ```phel
 (ns my-app.handlers
-  (:require my-app.db)              ; import Phel module
-  (:require my-app.utils :as u)     ; with alias
-  (:require my-app.auth :refer [login logout])  ; import symbols
-  (:use DateTimeImmutable)           ; import PHP class
-  (:use Some.Long.Name :as Short))  ; PHP class with alias
-
-(db/query "SELECT 1")               ; use module prefix
-(u/format-date date)                 ; use alias
-(login credentials)                  ; use referred symbol
-(DateTimeImmutable.)                 ; use imported class (ClassName. shorthand)
+  (:require my-app.db)                         ; use as db/query
+  (:require my-app.utils :as u)                ; use as u/format-date
+  (:require my-app.auth :refer [login])        ; use as login
+  (:use DateTimeImmutable)                     ; PHP class
+  (:use Some.Long.Name :as Short))
 ```
 
 See [Namespaces](/documentation/language/namespaces).
@@ -650,197 +348,68 @@ See [Namespaces](/documentation/language/namespaces).
 (ns my-app.tests
   (:require phel.test :refer [deftest is are]))
 
-(deftest addition-test
-  (is (= 4 (+ 2 2)))
-  (is (= 4 (+ 2 2)) "optional description"))
-
-(deftest multiple-assertions
-  (are [expected input] (= expected (inc input))
+(deftest math-test
+  (is (= 4 (+ 2 2)) "optional message")
+  (is (thrown? Exception (throw (Exception. "boom"))))
+  (are [expected x] (= expected (inc x))
     2 1
-    3 2
-    4 3))
-
-(deftest exception-test
-  (is (thrown? Exception
-    (throw (new Exception "boom")))))
+    3 2))
 ```
 
 ```bash
-./vendor/bin/phel test                       # run all tests
-./vendor/bin/phel test tests/main.phel       # run specific file
-./vendor/bin/phel test --filter my-test      # filter by name
-./vendor/bin/phel test --fail-fast           # stop on first failure
+./vendor/bin/phel test                    # all tests
+./vendor/bin/phel test --filter math-test # by name
 ```
 
 See [Testing](/documentation/guides/testing).
 
-## Async & concurrency
-
-`async`, `await`, `await-all`, `await-any`, `->closure` are in `phel.core` (AMPHP-backed fibers).
+## Async
 
 ```phel
-;; Run body in a new fiber, returns an Amp\Future
 (def f (async (+ 1 2)))
-(await f)                          ; => 3 (blocks until resolved)
-
-;; Await multiple futures concurrently
-(await-all [(async 1) (async 2)]) ; => [1 2]
-(await-any [(async 1) (async 2)]) ; => 1 (first to resolve)
-
-;; Convert Phel fn to PHP Closure (for AMPHP and other libraries)
-(->closure (fn [x] (* x 2)))
-
-;; pmap: parallel map via fibers
+(await f)                          ; => 3
+(await-all [(async 1) (async 2)])  ; => [1 2]
 (pmap inc [1 2 3])                 ; => [2 3 4]
+(force (delay (+ 1 2)))            ; => 3 (evaluated once, then cached)
 ```
 
-## Delay & force
-
-`delay`, `delay?`, and `force` are in `phel.core` (auto-imported, no require needed). `phel.async/delay` is a different function that suspends a fiber for N seconds.
-
-```phel
-;; Delay defers evaluation until first access
-(def d (delay (do (println "computing...") 42)))
-(delay? d)                         ; => true
-(force d)                          ; prints "computing...", => 42
-(force d)                          ; => 42 (cached, no recomputation)
-```
-
-## Iteration
-
-```phel
-;; iteration: produce a lazy sequence from a step function
-;; Useful for paginated APIs or stateful producers
-(defn fetch-page [token]
-  {:items [1 2 3] :next-token (when (nil? token) "page2")})
-
-(iteration fetch-page
-  {:kf :next-token
-   :vf :items
-   :initk nil})
-```
+See [Async](/documentation/language/async).
 
 ## Arithmetic
 
 ```phel
-(+ 1 2 3)                          ; => 6
-(- 10 3)                           ; => 7
-(* 2 3 4)                          ; => 24
-(/ 10 2)                           ; => 5
-(/ 10 3)                           ; => 10/3 (Ratio, exact)
-(/ 10.0 3)                         ; => 3.333... (float)
-(float (/ 10 3))                   ; => 3.333... (coerce Ratio to float)
-(quot 10 3)                        ; => 3 (integer quotient)
-(rem 10 3)                         ; => 1 (remainder)
-(mod -10 3)                        ; => 2 (modulo, always non-negative)
+(/ 10 3)                           ; => 10/3 (exact Ratio)
+(/ 10.0 3)                         ; => 3.3333333333333
+(quot 10 3)  (rem 10 3)            ; => 3 1
+(mod -10 3)                        ; => 2
 (** 2 10)                          ; => 1024
-
-(bit-and 2r1100 2r1010)            ; => 8
-(bit-and-not 2r1111 2r0101)       ; => 10 (and with the complement)
-(bit-shift-right -8 1)             ; => -4 (arithmetic, sign-preserving)
-(unsigned-bit-shift-right -1 60)  ; => 15 (logical, zero-fills)
-```
-
-Integer division (`/`) returns a `Ratio` when not evenly divisible. Use `float` or `(/ 10.0 3)` if you need a float.
-
-## Utility functions
-
-```phel
 (parse-long "42")                  ; => 42
 (parse-double "3.14")              ; => 3.14
-(parse-boolean "true")             ; => true
-(abs -5)                           ; => 5
-(inf? php/INF)                     ; => true
-(infinite? php/INF)                ; => true (alias for inf?)
-(nan? (php/log -1))                ; => true
-(rational? 1/2)                    ; => true (integers, Ratio, BigDecimal)
-(rational? 1.5)                    ; => false
-(random-uuid)                      ; => #uuid "b668b235-..." (Phel\Lang\UUID object)
+(min 3 1 2)  (max 3 1 2)           ; => 1 3
 ```
 
-## Printing
+See [Numeric Tower](/documentation/language/numeric-tower).
 
-`print`/`println` render values for humans; the `pr` family renders them so the reader can read them back (strings quoted and escaped).
-
-```phel
-(pr-str "hi")                      ; => "\"hi\""
-(prn-str [1 "a"])                  ; => "[1 \"a\"]\n" (pr-str plus newline)
-(println-str 1 2)                  ; => "1 2\n"
-(str "hi")                         ; => "hi" (no quoting)
-```
-
-`pr` and `prn` write the same output to stdout instead of returning it.
-
-## Serialization (EDN & Transit)
-
-```phel
-(ns my-app.serialize
-  (:require phel.edn :as edn)
-  (:require phel.transit :as transit))
-
-;; phel.edn: eval-free EDN read/write (data only, no code execution)
-(edn/read-string "{:a 1 :b [2 3]}")    ; => {:a 1, :b [2 3]}
-(edn/write-string {:a 1 :b [2 3]})     ; => "{:a 1, :b [2 3]}"
-(edn/read-string-all "1 2 3")          ; => [1 2 3] (every top-level form)
-
-;; phel.transit: Transit + JSON-Verbose read/write
-(transit/write-string {:a 1})          ; => "[\"~#cmap\",[\"~:a\",1]]"
-(transit/read-string "[\"~:foo\",1]")  ; => [:foo 1]
-```
-
-## Reflection
-
-```phel
-(ns my-app.introspect
-  (:require phel.reflect :as reflect))
-
-;; phel.reflect: introspect PHP classes via reflection
-(reflect/class-info \DateTime)         ; => map of name, methods, properties, ...
-(reflect/methods \DateInterval)        ; => [{:name "__construct" ...} ...] (method-info maps)
-(reflect/properties \Exception)        ; => [{:name "message" ...} ...] (property-info maps)
-(reflect/supers \RuntimeException)     ; => #{"Exception" "Throwable" "Stringable"}
-```
-
-## REPL utilities
+## REPL and debugging
 
 <!-- phel-test: skip -->
 ```phel
-(source my-fn)                     ; source code of a function, as a string
-(phel.repl/find-fn "map")          ; search for functions by name
-(symbol-info map)                  ; detailed info about a symbol (a macro: no quote)
-(ns-publics 'phel.core)           ; all public vars in a namespace
-(ns-aliases 'my-app.core)         ; namespace aliases
-(ns-refers 'my-app.core)          ; referred symbols
-(ns-list)                          ; list all loaded namespaces
-(macroexpand-1 '(when true 1))    ; expand one level of macro
-(macroexpand '(when true 1))      ; fully expand macro
-(eval-str "(+ 1 2)")              ; evaluate a string of Phel code
-(load-file "src/my-module.phel")  ; load and evaluate a file
-(test-ns "my-app.tests")          ; run tests in a namespace (name as string)
+(doc map)                          ; docstring
+(source my-fn)                     ; source code as a string
+(macroexpand '(when true 1))       ; expand a macro
+(dbg (* w h))                      ; print [file:line] form => value, return value
+(inspect x)                        ; structural view of any value
+(break)                            ; pause in a sub-REPL over the local bindings
+(tap> {:event :login})             ; send a value to every tap
 ```
 
-## Debugging
+See [REPL](/documentation/tooling/repl) and [Debugging](/documentation/guides/debugging).
 
-<!-- phel-test: skip -->
-```phel
-(dbg (* w h))                      ; print [file:line] form => value to stderr, return value
-(dbg)                              ; "reached here" marker, returns nil
-(inspect x)                        ; structural view of any value (phel.pprint)
-(break)                            ; pause and open a sub-REPL over the local bindings
+## More in the API reference
 
-(add-tap println)                  ; attach an inspector
-(tap> {:event :login})            ; send a value to every tap (printed in the REPL by default)
-
-;; phel.trace: log every call, including recursive ones, to stderr
-(ns my-app.core (:require phel.trace :refer [deftrace dotrace]))
-(deftrace fact [n] (if (< n 2) 1 (* n (fact (dec n)))))
-(dotrace [parse-row normalize] (process-file "in.csv"))
-```
-
-See [Debugging](/documentation/guides/debugging).
-
-## Next steps
-
-- [Getting Started](/documentation/getting-started): set up a project and a REPL.
-- [Language section](/documentation/language/): the full reference behind each form here.
-- [Agentic Coding](/documentation/reference/agentic-coding): truncation-safe rules for AI pairing.
+- Printing: `pr-str`, `prn`, `println-str` in [phel.core](/documentation/reference/api/core/)
+- Data walking: `postwalk`, `keywordize-keys` in [phel.walk](/documentation/reference/api/walk/)
+- Serialization: [phel.edn](/documentation/reference/api/edn/), [phel.transit](/documentation/reference/api/transit/), [phel.json](/documentation/reference/api/json/)
+- Hierarchies: `derive`, `isa?`, `ancestors` in [phel.core](/documentation/reference/api/core/)
+- Reflection: [phel.reflect](/documentation/reference/api/reflect/)
+- Tracing: `deftrace`, `dotrace` in [phel.trace](/documentation/reference/api/trace/)
