@@ -1,72 +1,29 @@
 +++
 title = "Interfaces"
 weight = 12
-description = "Define contracts with definterface, implement them in structs, extend types with protocols, and dispatch via hierarchies"
+description = "Define contracts with definterface, implement them in structs, extend existing types with protocols, and dispatch through hierarchies."
 aliases = ["/documentation/interfaces"]
 
 [extra]
 difficulty = "advanced"
 +++
 
-Interfaces define contracts: sets of methods that structs implement. They map directly to PHP interfaces. Protocols and hierarchies extend the same idea to types you do not control.
+After this page you can define shared behavior for several types. Use an interface when you own the type (a struct), a protocol when you add behavior to a type you do not own, and a hierarchy when multimethods should dispatch on "is a" relations.
 
-## Defining interfaces
+| Tool | Works on | Where you implement it |
+|---|---|---|
+| `definterface` | structs (compiles to a PHP interface) | inside `defstruct` |
+| `defprotocol` | any type, structs included | later, with `extend-type` or `extend-protocol` |
+| `derive` | namespaced keywords | anywhere, read by `isa?` and multimethods |
 
-`definterface` declares one or more methods:
+## Define and implement an interface
 
-```phel
-(definterface Describable
-  (describe [this] "Returns a human-readable description."))
-```
-
-Methods need at least `this`. Optional doc string follows the parameter list.
-
-Multiple methods per interface:
+`definterface` lists methods. Each method takes at least `this` and can have a doc string. A struct implements the interface by naming it after its field list, followed by the method bodies. Inside a method, the struct fields are plain locals:
 
 ```phel
 (definterface Shape
   (area [this] "Computes the area of the shape.")
   (perimeter [this] "Computes the perimeter of the shape."))
-```
-
-Generates callable functions per method: `(area my-shape)` works like any function.
-
-{% callout(kind="note") %}
-Unlike PHP, Phel interfaces don't extend other interfaces.
-{% end %}
-
-## Implementing with structs
-
-Only structs implement interfaces. A struct is a typed map with fixed keys, compiled to a PHP class.
-
-Add implementations after the field list in `defstruct`:
-
-```phel
-(definterface Shape
-  (area [this] "Computes the area of the shape.")
-  (perimeter [this] "Computes the perimeter of the shape."))
-
-(defstruct circle [radius]
-  Shape
-  (area [this] (* 3.14159 radius radius))
-  (perimeter [this] (* 2 3.14159 radius)))
-
-(defstruct rectangle [width height]
-  Shape
-  (area [this] (* width height))
-  (perimeter [this] (* 2 (+ width height))))
-```
-
-Struct fields (`radius`, `width`, `height`) are directly accessible inside methods. No getters.
-
-### Calling methods
-
-Like regular functions, struct first:
-
-```phel
-(definterface Shape
-  (area [this])
-  (perimeter [this]))
 
 (defstruct circle [radius]
   Shape
@@ -79,38 +36,22 @@ Like regular functions, struct first:
   (perimeter [this] (* 2 (+ width height))))
 
 (area (circle 5))           ; => 78.53975
-(perimeter (circle 5))      ; => 31.4159
-
-(area (rectangle 4 6))      ; => 24
 (perimeter (rectangle 4 6)) ; => 20
+(map area [(circle 1) (rectangle 2 3)]) ; => (3.14159 6)
+
+(circle? (circle 5))        ; => true
+(circle? (rectangle 4 6))   ; => false
 ```
 
-### Multiple interfaces
+Each method becomes a normal function: call it with the struct first, pass it to `map`, compose it. Each struct also gets a predicate (`circle?`).
 
-A struct can implement many. List each followed by its methods:
+{% callout(kind="note") %}
+Only structs implement interfaces, and a Phel interface cannot extend another interface. For structs themselves, see [Structs](/documentation/language/data-structures/#structs).
+{% end %}
 
-```phel
-(definterface Shape
-  (area [this])
-  (perimeter [this]))
+### Several interfaces on one struct
 
-(definterface Describable
-  (describe [this]))
-
-(defstruct circle [radius]
-  Shape
-  (area [this] (* 3.14159 radius radius))
-  (perimeter [this] (* 2 3.14159 radius))
-  Describable
-  (describe [this]
-    (str "Circle with radius " radius)))
-
-(describe (circle 5))  ; => "Circle with radius 5"
-```
-
-### Calling other methods on same struct
-
-Interface dispatch routes through the generated function, not through `this` directly. To call another interface method on the same struct from within a method body, use the [method-call form](/documentation/language/php-interop/#method-and-property-call) `.method` on `this`:
+List each interface followed by its methods. To call another interface method on the same struct from inside a method, use the [method-call form](/documentation/language/php-interop/#method-and-property-call) on `this`:
 
 ```phel
 (definterface Describable
@@ -124,213 +65,86 @@ Interface dispatch routes through the generated function, not through `this` dir
   (describe [this] (str name ": $" price))
   HasSummary
   (summary [this] (str "Product - " (.describe this))))
+
+(summary (product "Pen" 2)) ; => "Product - Pen: $2"
 ```
 
-### Type checking
+### PHP interfaces
 
-Each struct gets a predicate:
+Phel interfaces compile to PHP interfaces, and a struct can implement any PHP interface the same way:
 
 ```phel
-(definterface Shape
-  (area [this])
-  (perimeter [this]))
+(defstruct email [address]
+  \Stringable
+  (__toString [this] address))
 
-(defstruct circle [radius]
-  Shape
-  (area [this] (* 3.14159 radius radius))
-  (perimeter [this] (* 2 3.14159 radius)))
-
-(defstruct rectangle [width height]
-  Shape
-  (area [this] (* width height))
-  (perimeter [this] (* 2 (+ width height))))
-
-(circle? (circle 5))       ; => true
-(circle? (rectangle 4 6))  ; => false
+(php/strval (email "ada@example.com")) ; => "ada@example.com"
 ```
 
-## Example: a renderer
-
-Interfaces shine when types share behavior:
-
-```phel
-(definterface Renderable
-  (render [this]))
-
-(defstruct paragraph [text]
-  Renderable
-  (render [this] (str "<p>" text "</p>")))
-
-(defstruct heading [level text]
-  Renderable
-  (render [this] (str "<h" level ">" text "</h" level ">")))
-
-(defstruct image [src alt]
-  Renderable
-  (render [this] (str "<img src=\"" src "\" alt=\"" alt "\">")))
-
-;; Render a page from mixed elements
-(let [elements [(heading 1 "Welcome")
-                (paragraph "Hello from Phel!")
-                (image "/logo.png" "Phel logo")]]
-  (->> elements
-       (map render)
-       (phel.string/join "\n")))
-;; => "<h1>Welcome</h1>\n<p>Hello from Phel!</p>\n<img src=\"/logo.png\" alt=\"Phel logo\">"
-```
-
-## Implementing PHP interfaces
-
-Phel interfaces compile to PHP interfaces. Structs can implement any PHP interface:
-
-```phel
-(defstruct json-config [data]
-  \JsonSerializable
-  (jsonSerialize [this] data))
-```
+For typed signatures, attributes and `\JsonSerializable` support, see [Typed PHP from Phel definitions](/documentation/web/framework-integration/#typed-php-from-phel-definitions).
 
 ## Protocols
 
-Protocols extend functions to existing types without modifying them. Unlike interfaces (require `defstruct`), protocols extend to any type after the fact.
+A protocol adds functions to types after the fact, without changing them. It works for built-in types and for structs.
 
-### Defining
-
-`defprotocol` defines method signatures:
+`extend-type` implements a protocol for one type. `extend-protocol` implements one protocol for several types at once:
 
 ```phel
 (defprotocol Printable
   (to-string [this] "Converts the value to a printable string."))
-```
-
-Each method needs `this`. Optional doc string. Multiple methods allowed:
-
-```phel
-(defprotocol Measurable
-  (width [this] "Returns the width.")
-  (height [this] "Returns the height.")
-  (dimensions [this] "Returns [width height] as a vector."))
-```
-
-### Extending to types
-
-`extend-type` implements a protocol for one type:
-
-```phel
-(defprotocol Printable
-  (to-string [this]))
-
-(extend-type :string
-  Printable
-  (to-string [this] (str "\"" this "\"")))
 
 (extend-type :int
   Printable
   (to-string [this] (str "int:" this)))
-
-(to-string "hello")  ; => "\"hello\""
-(to-string 42)       ; => "int:42"
-```
-
-`extend-protocol` implements one protocol across many types:
-
-```phel
-(defprotocol Printable
-  (to-string [this]))
 
 (extend-protocol Printable
-  :float
-  (to-string [this] (str "float:" this))
+  :string
+  (to-string [this] (str "\"" this "\""))
 
   :boolean
-  (to-string [this] (if this "true" "false")))
+  (to-string [this] (if this "yes" "no")))
 
-(to-string 3.14)   ; => "float:3.14"
-(to-string true)    ; => "true"
+(to-string 42)      ; => "int:42"
+(to-string "hello") ; => "\"hello\""
+(to-string true)    ; => "yes"
 ```
 
-### Checking
-
-`satisfies?` (value) and `extends?` (type):
+A struct cannot implement a protocol inside `defstruct`. Use `extend-type` with the struct name:
 
 ```phel
 (defprotocol Printable
   (to-string [this]))
 
-(extend-type :string
+(defstruct point [x y])
+
+(extend-type point
   Printable
-  (to-string [this] (str "\"" this "\"")))
+  (to-string [this] (str "(" (:x this) ", " (:y this) ")")))
+
+(to-string (point 1 2)) ; => "(1, 2)"
+```
+
+### Check support
+
+`satisfies?` checks a value. `extends?` checks a type keyword such as `:string` or `:int`, and returns `false` for struct types, so use `satisfies?` on an instance there:
+
+```phel
+(defprotocol Printable
+  (to-string [this]))
 
 (extend-type :int
   Printable
   (to-string [this] (str "int:" this)))
 
-(satisfies? Printable "hello")  ; => true
-(satisfies? Printable 42)       ; => true
-
-(extends? Printable :string)    ; => true
-(extends? Printable :array)     ; => false
+(satisfies? Printable 42)    ; => true
+(satisfies? Printable "a")   ; => false
+(extends? Printable :int)    ; => true
+(extends? Printable :array)  ; => false
 ```
-
-### Protocols vs interfaces
-
-- **Interfaces:** when you control the type (structs), compile-time guarantees.
-- **Protocols:** add behavior to existing types or types you don't control.
 
 ## Hierarchies
 
-Define relationships between types or values. Hierarchies + multimethods enable inheritance-aware dispatch.
-
-### Deriving
-
-`derive` sets parent-child between namespaced keywords (the child must be namespaced):
-
-```phel
-(derive :shapes/circle :shapes/shape)
-(derive :shapes/rectangle :shapes/shape)
-(derive :shapes/square :shapes/rectangle)   ; A square is a rectangle
-```
-
-### Querying
-
-`isa?`, `parents`, `ancestors`, `descendants`:
-
-```phel
-(derive :shapes/circle :shapes/shape)
-(derive :shapes/rectangle :shapes/shape)
-(derive :shapes/square :shapes/rectangle)
-
-(isa? :shapes/circle :shapes/shape)         ; => true
-(isa? :shapes/square :shapes/rectangle)     ; => true
-(isa? :shapes/square :shapes/shape)         ; => true (transitive)
-(isa? :shapes/shape :shapes/circle)         ; => false
-
-(parents :shapes/square)             ; => #{:shapes/rectangle}
-(ancestors :shapes/square)           ; => #{:shapes/rectangle :shapes/shape}
-(descendants :shapes/shape)          ; => #{:shapes/circle :shapes/rectangle :shapes/square}
-```
-
-### Removing
-
-`underive`:
-
-```phel
-(derive :shapes/square :shapes/rectangle)
-(underive :shapes/square :shapes/rectangle)
-(isa? :shapes/square :shapes/rectangle)     ; => false
-```
-
-### Empty hierarchy maps
-
-`make-hierarchy` creates the empty hierarchy shape. Public `derive`, `underive`, `isa?`, `parents`, `ancestors`, `descendants` operate on the global hierarchy.
-
-```phel
-(make-hierarchy)
-; => {:parents {}, :descendants {}, :ancestors {}}
-```
-
-### Hierarchy-aware multimethod dispatch
-
-Multimethods check the hierarchy for parent matches when dispatching:
+`derive` makes one namespaced keyword a child of another. Multimethods use these relations: a method for a parent handles its children. For multimethod basics, see [Multimethods](/documentation/language/functions-and-recursion/#multimethods).
 
 ```phel
 (derive :shapes/circle :shapes/shape)
@@ -339,7 +153,7 @@ Multimethods check the hierarchy for parent matches when dispatching:
 (defmulti draw :type)
 
 (defmethod draw :shapes/shape [s]
-  (str "Drawing a generic shape"))
+  "Drawing a generic shape")
 
 (defmethod draw :shapes/circle [s]
   (str "Drawing a circle with radius " (:radius s)))
@@ -348,12 +162,25 @@ Multimethods check the hierarchy for parent matches when dispatching:
 ; => "Drawing a circle with radius 5"
 
 (draw {:type :shapes/rectangle :width 4 :height 3})
-; => "Drawing a generic shape" (falls back to :shapes/shape via hierarchy)
+; => "Drawing a generic shape"
 ```
 
-## Next steps
+### Query and change the hierarchy
 
-- [Macros](/documentation/language/macros/) - write code that writes code
-- [Functions and recursion](/documentation/language/functions-and-recursion/) - multimethods for open dispatch
-- [Data structures](/documentation/language/data-structures/) - structs and the maps they build on
-- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding
+Relations are transitive. `isa?`, `parents`, `ancestors` and `descendants` read them, and `underive` removes one:
+
+```phel
+(derive :shapes/rectangle :shapes/shape)
+(derive :shapes/square :shapes/rectangle)
+
+(isa? :shapes/square :shapes/shape)     ; => true
+(isa? :shapes/shape :shapes/square)     ; => false
+(parents :shapes/square)                ; => #{:shapes/rectangle}
+(ancestors :shapes/square)              ; => #{:shapes/rectangle :shapes/shape}
+(descendants :shapes/shape)             ; => #{:shapes/rectangle :shapes/square}
+
+(underive :shapes/square :shapes/rectangle)
+(isa? :shapes/square :shapes/rectangle) ; => false
+```
+
+These functions work on one global hierarchy. `(make-hierarchy)` returns the empty hierarchy shape, `{:parents {}, :descendants {}, :ancestors {}}`.
