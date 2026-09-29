@@ -82,9 +82,9 @@
   <link rel="alternate" type="application/atom+xml" title="{{ config.title }} Blog" href="{{ config.base_url | safe }}/blog/atom.xml">
 
   {# ---------- Styles & icons ---------- #}
-  <link rel="stylesheet" href="/tailwind.css"/>
-  <link rel="stylesheet" href="/syntax-theme-light.css" />
-  <link rel="stylesheet" href="/syntax-theme-dark.css" />
+  <link rel="stylesheet" href="{{ get_url(path="tailwind.css", cachebust=true) }}"/>
+  <link rel="stylesheet" href="{{ get_url(path="syntax-theme-light.css", cachebust=true) }}" />
+  <link rel="stylesheet" href="{{ get_url(path="syntax-theme-dark.css", cachebust=true) }}" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
   <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -110,18 +110,18 @@
   <button onclick="backToTop()" id="back-to-top-button" class="back-to-top-button" title="Go to top">Top</button>
 
   {# Always-on: header UI, navigation, content affordances, search shell. #}
-  <script type="text/javascript" src="/mobile-menu.js"></script>
-  <script type="text/javascript" src="/dark-mode.js"></script>
-  <script type="text/javascript" src="/sidebar-toggle.js"></script>
-  <script type="text/javascript" src="/subsection-toggle.js"></script>
-  <script type="text/javascript" src="/sidebar-prev-next.js" defer></script>
-  <script type="text/javascript" src="/toc-scrollspy.js" defer></script>
-  <script type="text/javascript" src="/copy-code.js" defer></script>
-  <script type="text/javascript" src="/copy-anchor-link.js" defer></script>
-  <script type="text/javascript" src="/search.js" defer></script>
-  <script type="text/javascript" src="/back_to_top.js" defer></script>
-  <script type="text/javascript" src="/easter-eggs.js" defer></script>
-  <script type="text/javascript" src="/keyboard-nav.js" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="mobile-menu.js", cachebust=true) }}"></script>
+  <script type="text/javascript" src="{{ get_url(path="dark-mode.js", cachebust=true) }}"></script>
+  <script type="text/javascript" src="{{ get_url(path="sidebar-toggle.js", cachebust=true) }}"></script>
+  <script type="text/javascript" src="{{ get_url(path="subsection-toggle.js", cachebust=true) }}"></script>
+  <script type="text/javascript" src="{{ get_url(path="sidebar-prev-next.js", cachebust=true) }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="toc-scrollspy.js", cachebust=true) }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="copy-code.js", cachebust=true) }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="copy-anchor-link.js", cachebust=true) }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="search.js", cachebust=true) }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="back_to_top.js", cachebust=true) }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="easter-eggs.js", cachebust=true) }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="keyboard-nav.js", cachebust=true) }}" defer></script>
 
   {# Page-specific scripts injected by individual templates. #}
   {% block page_scripts %}{% endblock page_scripts %}

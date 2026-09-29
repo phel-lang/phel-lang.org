@@ -52,5 +52,5 @@
 {% endblock content %}
 
 {% block page_scripts %}
-    <script type="text/javascript" src="/progress-tracker.js" defer></script>
+    <script type="text/javascript" src="{{ get_url(path="progress-tracker.js", cachebust=true) }}" defer></script>
 {% endblock page_scripts %}

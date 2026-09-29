@@ -66,5 +66,5 @@
 {% endblock content %}
 
 {% block page_scripts %}
-    <script type="text/javascript" src="/practice-overview.js" defer></script>
+    <script type="text/javascript" src="{{ get_url(path="practice-overview.js", cachebust=true) }}" defer></script>
 {% endblock page_scripts %}

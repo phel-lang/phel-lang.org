@@ -117,7 +117,7 @@
 {% endblock content %}
 
 {% block page_scripts %}
-    <script type="text/javascript" src="/api-ns-rail.js" defer></script>
-    <script type="text/javascript" src="/api-recent.js" defer></script>
-    <script type="text/javascript" src="/api-filter.js" defer></script>
+    <script type="text/javascript" src="{{ get_url(path="api-ns-rail.js", cachebust=true) }}" defer></script>
+    <script type="text/javascript" src="{{ get_url(path="api-recent.js", cachebust=true) }}" defer></script>
+    <script type="text/javascript" src="{{ get_url(path="api-filter.js", cachebust=true) }}" defer></script>
 {% endblock page_scripts %}
