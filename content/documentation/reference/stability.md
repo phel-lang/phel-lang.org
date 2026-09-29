@@ -1,161 +1,112 @@
 +++
 title = "Stability Policy"
 weight = 6
-description = "What a Phel version promises: language and embedding stability for 1.x, which PHP symbols are public, how deprecations are announced, and upgrade guides."
+description = "What a Phel version promises: language and embedding stability for 1.x, which PHP symbols are public, how deprecations work, and PHP support."
 aliases = ["/documentation/stability/"]
 +++
 
-What a Phel version number promises you, which symbols it covers, and how those are allowed to change.
+This page tells you what a Phel version promises, what the promise covers, and how deprecations reach you.
 
-Phel is at **{{ phel_version() }}**. Until `1.0.0` ships, this page describes the *target*: what `1.x` will guarantee, with the enforceable parts already gated in CI. `0.x` remains free to break, and [the changelog](https://github.com/phel-lang/phel-lang/blob/main/CHANGELOG.md) marks every such change **BREAKING**.
-
-`1.0.0` is a stability commitment, not a feature release. What arrives is a promise that what exists stops moving.
+Phel is at **{{ phel_version() }}**. This page describes what `1.x` will guarantee. `0.x` can still break, and [the changelog](https://github.com/phel-lang/phel-lang/blob/main/CHANGELOG.md) marks each such change **BREAKING**.
 
 ## Two promises
 
 1. **Language stability.** Phel source that compiles on `1.0.0` compiles on every later `1.x`. Reader syntax, special forms and the public `phel.*` core API do not break inside the major. The frozen list is [the language surface spec](https://github.com/phel-lang/phel-lang/blob/main/docs/spec/language-surface.md).
-2. **Embedding stability.** The PHP surface listed under [Public PHP API](#public-php-api) follows semver, so a project wiring Phel into its own tooling can take `1.x` updates without reading a diff.
-
-Anything else is explicitly not promised. That boundary is what makes the promise affordable, not a gap to be filled later.
+2. **Embedding stability.** The PHP symbols listed under [Public PHP API](#public-php-api) follow semver, so a project that calls Phel from PHP can take `1.x` updates without reading a diff.
 
 ## Public PHP API
 
-This section matters if you call Phel's PHP classes from your own code. If you only write `.phel` files, promise 1 is the one that covers you.
+Read this if you call Phel's PHP classes. If you only write `.phel` files, promise 1 covers you.
 
-A PHP symbol is public if and only if it matches a rule below. **Everything else in `src/php/` is internal, carries `@internal`, and may change in any release including a patch.**
+A PHP symbol is public only if it matches a rule below. Everything else in `src/php/` is internal, carries `@internal`, and can change in any release, patches included.
 
-| # | Rule | Examples |
-|---|------|----------|
-| 1 | The `\Phel` runtime class | `Phel::vector()`, `Phel::bootstrap()` |
-| 2 | `Phel\<Module>\<Module>Facade` | `Phel\Compiler\CompilerFacade` |
-| 3 | `Phel\<Module>\<Module>FacadeInterface` | None since 0.53.0: every contract lives under `Phel\Shared\Facade\` |
-| 4 | Everything under `Phel\Shared\` | `Phel\Shared\Facade\CompilerFacadeInterface`, `Phel\Shared\CompileOptions` |
-| 5 | Everything under `Phel\Lang\` | `Phel\Lang\Symbol`, `Phel\Lang\Collections\Map\PersistentMapInterface` |
-| 6 | Everything under `Phel\Config\` | `Phel\Config\PhelConfig`, `Phel\Config\ProjectLayout` |
+| Rule | Examples |
+|---|---|
+| The `\Phel` runtime class | `Phel::vector()`, `Phel::bootstrap()` |
+| `Phel\<Module>\<Module>Facade` | `Phel\Compiler\CompilerFacade` |
+| Everything under `Phel\Shared\` | `Phel\Shared\Facade\CompilerFacadeInterface`, `Phel\Shared\CompileOptions` |
+| Everything under `Phel\Lang\` | `Phel\Lang\Symbol`, `Phel\Lang\Collections\Map\PersistentMapInterface` |
+| Everything under `Phel\Config\` | `Phel\Config\PhelConfig`, `Phel\Config\ProjectLayout` |
 
-Rule 1 exists because emitted PHP calls into it: every compiled `.phel` file is a consumer, so `\Phel` is load-bearing for build artifacts produced by older versions.
+`\Phel` is public because compiled PHP calls it, so build output from older versions depends on it. Since 0.53 every facade interface lives under `Phel\Shared\Facade\`.
 
-Rules 4 to 6 are whole namespaces rather than curated lists because they are what a consumer cannot avoid: the values that cross the facade boundary (`Lang`), the contracts those facades speak in (`Shared`), and the object your `phel-config.php` constructs (`Config`).
+These stay internal even when a public class returns them:
 
-### Internal by construction
-
-Internal even when a public class returns it:
-
-- `Phel\<Module>\Domain\`, `…\Application\`, `…\Infrastructure\`
+- `Phel\<Module>\Domain\`, `Application\` and `Infrastructure\`
 - `*Factory`, `*Config`, `*Provider` and `#[ServiceMap]` accessors
 - `Phel\<Module>\Transfer\` (cross-module transfers live in `Phel\Shared\Api\`)
 
-Depending on an internal symbol is not forbidden, it is unsupported. Reaching for one usually means a facade is missing a method, which is worth [an issue](https://github.com/phel-lang/phel-lang/issues).
+Using an internal symbol is unsupported. If you need one, [open an issue](https://github.com/phel-lang/phel-lang/issues): a facade probably lacks a method.
 
 ### What counts as a break
 
-Breaking for a public symbol, so major only:
+| Breaking (major only) | Not breaking (minor or patch) |
+|---|---|
+| Removing a class, interface, method, constant or public property | Adding a class, or a method to a `final` class |
+| Narrowing a parameter type, adding a required parameter, reordering parameters | Adding an optional parameter at the end |
+| Widening a return type, or changing it to an unrelated type | Widening a parameter type, narrowing a return type |
+| Adding a method to an interface, or making a method abstract | Any change to an `@internal` symbol |
+| Making a class `final`, or removing a public constructor | |
 
-- removing a class, interface, method, constant or public property
-- narrowing a parameter type, adding a required parameter, reordering parameters
-- widening a return type, or changing it to an unrelated type
-- adding a method to an interface, or making an existing method abstract
-- changing a class from non-`final` to `final`, or removing a public constructor
+Adding a method to an interface under `Phel\Shared\Facade\` breaks only implementers. The changelog labels it **BREAKING (PHP API, implementers only)**.
 
-Not breaking, so fine in a minor or a patch:
+CI snapshots every public signature, every `phel.*` definition and arity, and the special-form list on each pull request. Known gap: members inherited from a vendor base class are not in the snapshot.
 
-- adding a class, or a method to a `final` class
-- adding an optional parameter at the end of a signature
-- widening a parameter type, narrowing a return type
-- any change to an `@internal` symbol
+## Deprecations
 
-Interfaces under `Phel\Shared\Facade\` are the one place where adding a method bites implementers rather than callers. The changelog labels those **BREAKING (PHP API, implementers only)**.
-
-### How it is enforced today
-
-The enforceable half of both promises already runs in CI, on every pull request:
-
-- a snapshot test reflects over every symbol the rules above match, so any signature change fails the build until the snapshot is regenerated and the diff reviewed
-- an annotation test pins the complement, so the public/internal split reaches your IDE and your static analyser instead of living only on this page
-- a standard-library snapshot fails when a `phel.*` definition or one of its arities disappears
-- the special-form list is compared against the analyzer, so the language surface spec cannot drift from the compiler
-
-One known gap: a public class inheriting a *vendor* base is rendered without that base's members, so a dependency upgrade that changes an inherited signature is a real break the snapshot cannot see.
-
-## How deprecations are announced
-
-1. **Announce before removing.** A deprecated symbol ships with a notice for at least one full minor, and is removed only in a major.
-2. **One channel, off by default.** Everything the compiler knows about reports through a single switch, enabled with `--warn-deprecations` or `PHEL_WARN_DEPRECATIONS=1`. Notices go to stderr and cannot break a build. A deprecation inside a `vendor/` path is never reported: it belongs to the dependency's author.
-3. **No version promises in the message.** The release such a message names inevitably ships and the text goes stale. The tracking issue carries the schedule.
-4. **A migration page, always.** Every live deprecation appears in [the deprecated surface map](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/deprecated-surface.md) with its replacement and a mechanical before/after, and moves to [the removed list](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/removed-deprecated-core-fns.md) once it is gone.
-5. **PHP-side deprecations** use `#[\Deprecated]` or `@deprecated`, so `phpstan/phpstan-deprecation-rules` reports them in your project.
-
-Turn the notices on for one run to find out whether you are affected:
+1. **Announce before removing.** A deprecated symbol prints a notice for at least one full minor and is removed only in a major.
+2. **Off by default.** Notices appear with `--warn-deprecations`, `PHEL_WARN_DEPRECATIONS=1`, or `withWarnDeprecations(true)` in `phel-config.php`. They go to stderr and never fail a build. Uses inside Phel's own standard library and under `vendor/` are not reported, so you see only your own code.
+3. **Always a migration entry.** Every live deprecation is in [the deprecated surface map](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/deprecated-surface.md) with its replacement and a before/after. It moves to [the removed list](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/removed-deprecated-core-fns.md) once gone.
+4. **PHP-side deprecations** use `#[\Deprecated]` or `@deprecated`, so `phpstan/phpstan-deprecation-rules` reports them.
 
 ```bash
-vendor/bin/phel run --warn-deprecations src/main.phel
-PHEL_WARN_DEPRECATIONS=1 vendor/bin/phel test
+vendor/bin/phel test --warn-deprecations
+PHEL_WARN_DEPRECATIONS=1 vendor/bin/phel run src/main.phel
 ```
 
-Or permanently, in `phel-config.php`:
+Two deprecations print without the flag:
 
-```php
-return PhelConfig::forProject()->withWarnDeprecations(true);
-```
+- **A renamed CLI option** prints a one-line notice on every run. No rename is in progress today.
+- **The `\` namespace separator.** Write `shared.utils`, not `shared\utils`. `\` stays supported through all of `1.x`, but warns once per file and symbol (never under `vendor/`). See [backslash to dot](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/backslash-to-dot.md).
 
-Uses inside Phel's own standard library are suppressed, so the output lists only code you own.
+Since 0.52, writing `php/new`, `php/->`, `php/::` or `set-var` is a [`PHEL012`](/documentation/reference/errors/#phel012-superseded-form) error. See [Upgrading](/documentation/reference/upgrading/#0-52) for the replacements.
 
-### Two deprecations announce without the flag
+## PHP and platform support
 
-- **A renamed CLI option.** A renamed flag is one unmissable event rather than something scattered through your source, so it prints a one-line stderr notice on every run. No rename is in flight today.
-- **The `\` namespace separator.** `.` is the spelling going forward (`shared.utils`), and `\` is deprecated. It is **not** removed in `1.0` and stays supported through all of `1.x`, but a notice nobody is shown does not give anyone time to act, so this one warns by default. It reports once per file and symbol, and never under `vendor/`. Details and the migration path: [backslash to dot](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/backslash-to-dot.md).
-
-### Already removed as source in 0.52
-
-Four forms are no longer accepted in source. Writing one is a [`PHEL012`](/documentation/reference/errors/#phel012-superseded-form) error, with no flag to turn it off.
-
-| No longer valid as source | Write instead |
-|---|---|
-| `php/new` | `(new \Foo arg)` or `(\Foo. arg)` |
-| `php/->` | `(.method obj arg)` and `(.-field obj)` |
-| `php/::` | `(\Foo/method arg)` and `\Foo/CONST` |
-| `set-var` | `(alter-var-root (var v) f)`, or `(set! v x)` for the current binding frame |
-
-They could not simply be deleted: the compiler still emits all four, `(new \C 1)` becomes `(php/new \C 1)` and `binding` expands to `set-var`. What went is the ability to write them, not the forms themselves, so generated PHP does not change and macros expanding to them keep working. The rest of `php/*` stays, because each reaches a PHP capability Phel has no other word for.
-
-## PHP support
-
-- `1.x` requires **PHP 8.5 or newer**. Raising the minimum is breaking, so major only, which is exactly why the floor moves now: it can still change before `1.0.0`, and from the major it is frozen until `2.0.0`.
-- Every PHP minor from the minimum to the newest stable runs the full compiler and core suites in CI, added within one Phel minor of its release.
-- Support for a PHP minor is never dropped inside a major, including after it leaves PHP's own security window. Phel keeps testing it; the security posture of the runtime is your call.
-
-## Platform support
+- `1.x` requires **PHP 8.5 or newer**. Raising the minimum is breaking, so from `1.0.0` it is frozen until `2.0.0`.
+- CI tests every PHP minor from the minimum to the newest stable. A new PHP minor is added within one Phel minor of its release.
+- A PHP minor is never dropped inside a major, even after PHP ends its security support.
 
 | Tier | Platforms | Meaning |
 |---|---|---|
-| Supported | Linux, macOS | Full compiler, core and PHAR suites run in CI on every push. A failure blocks a release. |
-| Best effort | Windows | A reduced suite runs in CI. Bugs are fixed, but a Windows-only failure does not block a release. |
+| Supported | Linux, macOS | Full compiler, core and PHAR suites on every push. A failure blocks a release. |
+| Best effort | Windows | A reduced suite in CI. Bugs get fixed, but a Windows-only failure does not block a release. |
 
-The distinction is about what the project commits to, not about what works. The platform-sensitive parts are narrow: path separators, `readline` in the REPL, and the `phel watch` backends, which fall back to polling.
+Platform-sensitive parts: path separators, `readline` in the REPL, and `phel watch` (which falls back to polling).
 
 ## Configuration and project layout
 
-Your `phel-config.php` returns a `Phel\Config\PhelConfig`, covered by rule 6. Two things are frozen:
+`phel-config.php` returns a `Phel\Config\PhelConfig`, so it is public API. Also frozen:
 
-- **The wire keys.** `PhelConfig::SRC_DIRS` is the string `'src-dirs'`, and every sibling constant is the literal key the config reader consumes. Renaming one would silently change the meaning of an existing config file.
-- **The builder API.** `with*()` methods only gain siblings. An existing one keeps its name, its parameter type and its "returns a new instance" contract.
+- **Config keys.** Each constant keeps its string, for example `PhelConfig::SRC_DIRS` is `'src-dirs'`.
+- **Builder methods.** New `with*()` methods may appear. Existing ones keep their name, parameter type, and return a new instance.
+- **The `.phel/` layout.** Tools can rely on `.phel/cache/` and `.phel/repl-history`. `PHEL_DIR` moves the whole tree.
 
-The `.phel/` layout is frozen too: a tool may rely on `.phel/cache/` and `.phel/repl-history` being where they are. `PHEL_DIR` relocates the whole tree. See [Configuration](/documentation/reference/configuration/).
+See [Configuration](/documentation/reference/configuration/).
 
-## Explicitly not covered
+## Not covered
 
-Not under semver, and not before `1.0` either:
+These are outside semver, before and after `1.0`:
 
-- The exact PHP source the emitter produces. Only its *behaviour* is promised; the test suite pins the text so changes are reviewed, not forbidden.
-- Compiler diagnostic wording and error-output shape. The [error codes](/documentation/reference/errors/) are the stable thing to match on, not the message.
-- The `.phel/cache/` file format. It is keyed by source hash plus optimization level, Phel version and the fingerprint of the declared `cache-env-vars`, so a version bump invalidates it by design.
+- The exact PHP the compiler emits. Only its behaviour is promised.
+- The wording and layout of diagnostics. Match on [error codes](/documentation/reference/errors/), not messages.
+- The `.phel/cache/` file format. A version bump invalidates it.
 - Anything under `tests/`, `tools/`, `build/` or `resources/` in the Phel repository.
 - The nREPL and LSP wire protocols beyond the upstream specifications.
 
 ## Upgrading
 
-- **Version by version:** [Upgrading](/documentation/reference/upgrading/) has the notes for each release back to 0.37, with the breaking changes and the `cache:clear` you need after each bump. Older releases are in [the changelog](https://github.com/phel-lang/phel-lang/blob/main/CHANGELOG.md).
-- **Straight to 1.0 from 0.49 or later:** [the upgrade guide](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/upgrade-0.49-to-1.0.md) walks the whole path step by step. Most projects need nothing; where there is work, it is removing calls to things that have been printing notices for several releases.
-- **Something behaves differently from Clojure?** Check [the divergence catalogue](https://github.com/phel-lang/phel-lang/blob/main/docs/spec/clojure-divergences.md) first. If a behaviour is listed there, it is deliberate. Anything unlisted that differs is worth an issue.
-
-The normative policy this page summarises lives in [docs/stability.md](https://github.com/phel-lang/phel-lang/blob/main/docs/stability.md) in the Phel repository, alongside the reasoning and the quality gates behind each promise.
+- [Upgrading](/documentation/reference/upgrading/) lists the breaking changes for each release back to 0.37.
+- From 0.49 or later straight to 1.0: follow [the 1.0 upgrade guide](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/upgrade-0.49-to-1.0.md).
+- A behaviour differs from Clojure? Check [the divergence catalogue](https://github.com/phel-lang/phel-lang/blob/main/docs/spec/clojure-divergences.md). Listed differences are deliberate. Report anything else as an issue.
+- The full policy and its reasoning: [docs/stability.md](https://github.com/phel-lang/phel-lang/blob/main/docs/stability.md).
