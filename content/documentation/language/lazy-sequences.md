@@ -1,225 +1,141 @@
 +++
 title = "Lazy Sequences"
 weight = 14
-description = "Defer computation with lazy-seq and lazy-cat, build infinite sequences, and avoid the common laziness pitfalls."
+description = "Work with lazy sequences: built-in lazy functions, infinite sequences with lazy-seq, forcing with doall, and the common laziness pitfalls."
 aliases = ["/documentation/lazy-sequences"]
 
 [extra]
 difficulty = "advanced"
 +++
 
-Lazy sequences defer computation until you need the values. This lets you describe infinite or expensive collections, then realize only the part you consume.
+A lazy sequence computes its values only when you read them. After this page you can work with infinite or expensive sequences, build your own with `lazy-seq`, and avoid the usual laziness bugs.
 
-Phel has two constructs for building them by hand: `lazy-seq` wraps an expression in a thunk, and `lazy-cat` concatenates collections lazily. Most of the time you will reach for the built-in lazy functions (`range`, `map`, `filter`, ...) listed in [Built-in lazy functions](#built-in-lazy-functions).
+## Built-in lazy functions {#built-in-lazy-functions}
 
-For a quick overview of the lazy helpers see the [cheat sheet](/documentation/reference/cheat-sheet/#lazy-sequences); this page explains how laziness works and how to write your own lazy sequences.
+You rarely write a lazy sequence by hand. These core functions already return one:
 
-## lazy-seq
+| Function | Returns |
+|---|---|
+| `range` | numbers; `(range)` never ends |
+| `iterate` | `x`, `(f x)`, `(f (f x))`, ... forever |
+| `repeat` | the same value forever, or `n` times |
+| `cycle` | the items of a collection, repeated forever |
+| `map`, `filter`, `remove` | a transformed sequence |
+| `take`, `drop`, `take-while` | part of a sequence |
 
-`lazy-seq` takes a body that returns a sequence or `nil`. It wraps the body in a zero-arg thunk and returns a lazy sequence that, on first access (`first`, `rest`, `take`, ...), evaluates the body once and caches the result.
-
-```phel
-(def my-lazy-seq
-  (lazy-seq
-    (println "Computing...")
-    [1 2 3 4 5]))
-
-(first my-lazy-seq)  ; prints "Computing..." then returns 1
-(first my-lazy-seq)  ; returns 1 (cached, no printing)
-```
-
-### Infinite sequences
-
-Combine `lazy-seq` with recursion, using `cons` to defer the recursive call so the sequence builds one element at a time:
+Chain them freely. Only the values you read are computed, so infinite sources are safe as long as something limits them:
 
 ```phel
-(defn ints-from [n]
-  (lazy-seq
-    (cons n (ints-from (inc n)))))
+(->> (range)            ; 0, 1, 2, ... forever
+     (map inc)
+     (filter odd?)
+     (take 5))          ; => (1 3 5 7 9)
 
-(println (take 5 (ints-from 0)))   ; (0 1 2 3 4)
-(println (take 3 (ints-from 10)))  ; (10 11 12)
+(take 5 (iterate #(* 2 %) 1))           ; => (1 2 4 8 16)
+(take 7 (cycle [:a :b :c]))             ; => (:a :b :c :a :b :c :a)
+(take-while #(< % 10) (iterate #(* 2 %) 1)) ; => (1 2 4 8)
 ```
 
-`take` realizes only the elements it returns, so the infinite recursion never runs away.
+Lazy file readers (`line-seq`, `file-seq`, `csv-seq`) are on the [cheat sheet](/documentation/reference/cheat-sheet/#lazy-sequences).
 
-## lazy-cat
+## Force a sequence
 
-`lazy-cat` concatenates collections. It expands to `concat` and evaluates its arguments eagerly, which is fine for finite or already-realized sequences:
-
-```phel
-(println (lazy-cat [1 2] [3 4] [5 6]))                 ; (1 2 3 4 5 6)
-(println (lazy-cat (range 3) (range 3 6)))             ; (0 1 2 3 4 5)
-(println (lazy-cat (take 3 (range 100))
-                   (take 3 (range 10 20))))            ; (0 1 2 10 11 12)
-```
-
-Because it evaluates its arguments first, `lazy-cat` must **not** be used to build a recursive infinite sequence. Use `cons` for that instead:
-
-<!-- phel-test: skip -->
-```phel
-;; ✅ cons defers the recursive call
-(defn ints [n]
-  (lazy-seq (cons n (ints (inc n)))))
-
-(take 5 (ints 0))  ; => (0 1 2 3 4)
-
-;; ❌ lazy-cat evaluates all args first -> the recursive call never returns
-(defn ints [n]
-  (lazy-seq (lazy-cat [n] (ints (inc n)))))  ; stack overflow
-```
-
-## Common patterns
-
-A Fibonacci sequence and a prime sieve, both infinite and lazily realized:
-
-```phel
-;; Fibonacci
-(defn fib-seq
-  ([] (fib-seq 0 1))
-  ([a b] (lazy-seq (cons a (fib-seq b (+ a b))))))
-
-(println (take 10 (fib-seq)))
-; (0 1 1 2 3 5 8 13 21 34)
-
-;; Sieve of primes: filtering an infinite sequence
-(defn ints-from [n]
-  (lazy-seq (cons n (ints-from (inc n)))))
-
-(defn primes []
-  (let [sieve (fn sieve [s]
-                (lazy-seq
-                  (cons (first s)
-                        (sieve (filter (fn [x] (not= 0 (mod x (first s))))
-                                       (rest s))))))]
-    (sieve (ints-from 2))))
-
-(println (take 10 (primes)))
-; (2 3 5 7 11 13 17 19 23 29)
-```
-
-Because the pipeline is lazy, you can compose transformations over a data source and only touch the records you consume:
-
-<!-- phel-test: skip -->
-```phel
-(ns example.records
-  (:require phel.string :as str))
-
-(defn process-records [records]
-  (->> records
-       (filter (fn [x] (not (empty? x))))
-       (map (fn [x] (str/trim x)))
-       (map parse-record)))
-
-(take 100 (process-records lazy-data-source))
-```
-
-## Built-in lazy functions
-
-These return lazy sequences, so you rarely need to write `lazy-seq` yourself:
-
-- `range`: lazy sequence of numbers
-- `iterate`: infinite sequence by repeatedly applying a function
-- `repeat`: infinite sequence of a repeated value
-- `cycle`: infinite sequence by cycling through a collection
-- `map`: lazy transformation
-- `filter`: lazy filtering
-- `take`: first `n` elements (realizes its first chunk when called)
-- `drop`: skips first `n` elements (stays lazy)
-
-```phel
-(println (take 10 (iterate (fn [x] (* 2 x)) 1)))
-; (1 2 4 8 16 32 64 128 256 512)
-
-(println (take 7 (cycle [:a :b :c])))
-; (:a :b :c :a :b :c :a)
-
-(println (->> (range 100)
-              (map inc)
-              (filter odd?)
-              (take 5)))
-; (1 3 5 7 9)
-```
-
-## Performance
-
-**Use lazy sequences for:** large or infinite collections, partial consumption, composing transformations, and memory efficiency.
-
-**Avoid them when:** every element is accessed immediately, you iterate the same sequence multiple times, or holding the head would leak memory.
-
-### Chunking
-
-A lazy sequence may realize more elements than you consume, so side effects can run for elements you never read:
-
-```phel
-(take 5 (map (fn [x] (do (println x) x)) (range 100)))
-;; prints 0 through 5: six side effects for five results
-```
-
-### Realizing
-
-Force a lazy sequence when you need all of it:
+A lazy sequence runs nothing until something reads it. Force it with `doall` when you need every value now, or `dorun` when you only want the side effects:
 
 ```phel
 (def nums (map inc (range 5)))
 
-(println (doall nums))  ; realizes the whole sequence and returns it
-(dorun nums)            ; realizes for side effects only, returns nil
+(doall nums) ; => [1 2 3 4 5], fully computed
+(dorun nums) ; => nil
 ```
 
-## Gotchas
+For side effects over a collection, prefer `foreach` or `doseq`. They are eager and make the intent clear.
 
-**1. Holding the head** keeps the whole sequence in memory. Don't bind a large lazy sequence to a name you reuse:
+## Build your own with `lazy-seq`
+
+`lazy-seq` wraps a body that returns a sequence or `nil`. The body runs once, on first read, and the result is cached. Put a recursive call inside `cons` to build an infinite sequence one element at a time:
+
+```phel
+(defn fib-seq
+  ([] (fib-seq 0 1))
+  ([a b] (lazy-seq (cons a (fib-seq b (+ a b))))))
+
+(take 10 (fib-seq)) ; => (0 1 1 2 3 5 8 13 21 34)
+```
+
+`realized?` tells whether a lazy sequence has run its body yet:
+
+```phel
+(def s (lazy-seq [1 2 3]))
+
+(realized? s) ; => false
+(first s)     ; => 1
+(realized? s) ; => true
+```
+
+### `lazy-cat`
+
+`lazy-cat` joins collections. It expands to `concat` and evaluates its arguments right away:
+
+```phel
+(lazy-cat [1 2] (range 3 6)) ; => (1 2 3 4 5)
+```
+
+So `lazy-cat` cannot build a recursive infinite sequence. The recursive call runs before anything else and never returns:
 
 <!-- phel-test: skip -->
 ```phel
-;; ❌ binds `nums`, so first + last hold the entire sequence in memory
+;; Wrong: stack overflow
+(defn ints [n]
+  (lazy-seq (lazy-cat [n] (ints (inc n)))))
+
+;; Right: cons defers the recursive call
+(defn ints [n]
+  (lazy-seq (cons n (ints (inc n)))))
+```
+
+## Pitfalls
+
+### Side effects run in chunks
+
+A lazy sequence can compute more values than you read. Side effects inside `map` run for those extra values too, and at a time you do not control:
+
+```phel
+(def xs (take 5 (map (fn [x] (println x) x) (range 100))))
+;; prints 0 through 5 when defined: six side effects for five results
+```
+
+Keep side effects out of lazy pipelines. Use `foreach` or `doseq`.
+
+### Holding the head
+
+When a name holds the start of a large sequence, every realized value stays in memory until the name goes away:
+
+<!-- phel-test: skip -->
+```phel
+;; Holds all million values: nums is still needed after first
 (let [nums (range 1000000)]
   (println (first nums))
   (println (last nums)))
 
-;; ✅ don't bind the head
+;; Each sequence can be released as it is consumed
 (println (first (range 1000000)))
 (println (last (range 1000000)))
 ```
 
-**2. Lazy sequences in tests**: realize before asserting, otherwise you compare against an unrealized thunk:
+### Tests
+
+Force a lazy result before you compare it, so errors inside it surface in the test:
 
 <!-- phel-test: skip -->
 ```phel
-(is (= expected (doall lazy-result)))  ; force realization
+(is (= expected (doall lazy-result)))
 ```
 
-**3. Side effects run on realization, and realization comes in chunks.** A bare `map` does nothing until you read it. Reading one element realizes a whole chunk:
+## When to use them
 
-```phel
-(def log-and-inc
-  (map (fn [x] (do (println "Processing" x) (inc x)))
-       (range 5)))
-; nothing printed yet
+Use lazy sequences for large or infinite sources, when you read only part of the data, and to compose steps over a stream. Avoid them when you read every value right away, or read the same sequence many times. To run `map`, `filter` and `take` in one pass with no intermediate sequences, use [Transducers](/documentation/language/transducers/).
 
-(println (first log-and-inc))
-; prints "Processing 0", "Processing 1", then 1
-```
-
-`take` realizes its first chunk as soon as you call it, before you read anything. Keep side effects out of lazy pipelines. Use `foreach` or `dofor` for them.
-
-## Debugging
-
-```phel
-(def my-lazy-seq (lazy-seq [1 2 3]))
-
-(println (realized? my-lazy-seq))  ; false until consumed
-
-;; Inspect a potentially-infinite sequence without fully realizing it
-(println (take 10 (iterate inc 0)))
-(println (take-while (fn [x] (< x 100)) (iterate inc 0)))
-```
-
-## Next steps
-
-- [Transducers](/documentation/language/transducers/) - the same `map`/`filter`/`take` steps fused into one pass, with no intermediate sequences
-- [Cheat sheet: lazy sequences](/documentation/reference/cheat-sheet/#lazy-sequences) - one-screen reference, including lazy file I/O (`line-seq`, `file-seq`, `csv-seq`)
-- [Data structures](/documentation/language/data-structures/) - the sequence functions that consume and transform these collections
-- [Cookbook](/documentation/guides/cookbook/) - lazy pipelines applied to real tasks
-- [Clojure: lazy sequences](https://clojure.org/reference/sequences) - the model Phel follows
+{% clojure_note() %}
+Phel follows the [Clojure sequence model](https://clojure.org/reference/sequences).
+{% end %}
