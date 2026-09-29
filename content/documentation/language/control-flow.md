@@ -1,5 +1,5 @@
 +++
-title = "Control flow"
+title = "Control Flow"
 weight = 4
 description = "Branch, loop, and build collections with if, cond, case, match, loop/recur, for, and the threading macros"
 aliases = ["/documentation/control-flow"]

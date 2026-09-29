@@ -1,5 +1,5 @@
 +++
-title = "Error handling"
+title = "Error Handling"
 weight = 9
 description = "Throw and catch exceptions, attach data with ex-info, define exception types, and decide when to throw vs return nil."
 aliases = ["/documentation/error-handling", "/documentation/exceptions"]

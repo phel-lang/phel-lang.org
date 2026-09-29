@@ -1,5 +1,5 @@
 +++
-title = "Async & Concurrency"
+title = "Async and Concurrency"
 weight = 17
 description = "Run work concurrently with Phel's two fiber-based layers: top-level promises and futures, plus an AMPHP event loop for timers, IO, and fan-out."
 

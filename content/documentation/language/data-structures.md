@@ -1,5 +1,5 @@
 +++
-title = "Data structures"
+title = "Data Structures"
 weight = 2
 description = "Phel's persistent collections: vectors, maps, sets, lists, queues, and structs, plus conj, assoc, get-in, update, and into"
 aliases = ["/documentation/data-structures"]

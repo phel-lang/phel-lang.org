@@ -1,5 +1,5 @@
 +++
-title = "Global and local bindings"
+title = "Global and Local Bindings"
 weight = 3
 description = "Bind values to names with def and let, manage mutable state with atoms, and rebind dynamic vars with binding"
 aliases = ["/documentation/global-and-local-bindings"]
