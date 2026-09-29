@@ -212,6 +212,14 @@ title = "Phel: A Functional Lisp Dialect for PHP Developers"
   </div>
 </div>
 
+<div class="homepage-demo">
+<a class="homepage-demo-video" href="https://www.youtube.com/watch?v=Gvz95m4wAkQ" data-youtube-id="Gvz95m4wAkQ" aria-label="Play video: How I built DOOM in a Lisp that compiles to PHP">
+<img src="/images/phel-doom.jpg" width="960" height="540" loading="lazy" alt="DOOM running in the browser, written in Phel">
+<span class="homepage-demo-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
+</a>
+<p class="homepage-demo-caption"><strong>DOOM, written in Phel.</strong> A Lisp that compiles to PHP runs a full game. <a href="https://chemaclass.github.io/phel-doom/">Play it in your browser</a></p>
+</div>
+
 </section>
 
 ## Why Phel?

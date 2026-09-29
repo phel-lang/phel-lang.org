@@ -42,3 +42,7 @@ This website uses Cronitor RUM (Real User Monitoring) to collect anonymous perfo
 - No tracking across other websites
 
 The data is processed by Cronitor Inc., a third-party service provider. For more information, see [Cronitor's Privacy Policy](https://cronitor.io/privacy).
+
+## Embedded videos
+
+The homepage shows a YouTube video as a static preview image served from this website. No request goes to YouTube until you press play. After that, the video loads from `youtube-nocookie.com` and Google processes your data under [Google's Privacy Policy](https://policies.google.com/privacy).
