@@ -14,11 +14,20 @@
         <div class="section-page-list">
             {% for page in section.pages %}
             <a href="{{ page.path }}" class="section-page-card">
-                <h2 class="section-page-card__title">{{ page.title }}</h2>
+                <h2 class="section-page-card__title">
+                    {%- if section.extra.numbered %}<span class="section-page-card__step">{{ loop.index }}</span>{% endif -%}
+                    {{ page.title }}
+                </h2>
                 {% if page.description %}
                 <p class="section-page-card__desc">{{ page.description }}</p>
                 {% else %}
                 <p class="section-page-card__desc">{{ page.content | striptags | truncate(length=120) }}</p>
+                {% endif %}
+                {% if page.extra.difficulty is defined or page.reading_time %}
+                <p class="section-page-card__meta">
+                    {% if page.extra.difficulty is defined %}<span class="page-meta__badge page-meta__badge--{{ page.extra.difficulty }}">{{ page.extra.difficulty | title }}</span>{% endif %}
+                    {% if page.reading_time %}<span>{{ page.reading_time }} min read</span>{% endif %}
+                </p>
                 {% endif %}
             </a>
             {% endfor %}
