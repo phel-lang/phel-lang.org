@@ -5,11 +5,9 @@ description = "Single-page Phel reference for AI coding agents (Claude Code, Cod
 aliases = ["/documentation/llms", "/documentation/ai-agents"]
 +++
 
-Single-page reference for AI agents (Claude Code, Codex, Cursor, Copilot, Aider, Gemini) to learn Phel without crawling the docs. Humans pairing with an agent benefit too.
+A one-page Phel reference for AI coding agents (Claude Code, Codex, Cursor, Copilot, Aider, Gemini). If an agent can load only one doc, load this one. It is self-contained, so it repeats some of the cheat sheet.
 
-Load this one if you can only load one doc into an agent's context.
-
-> **Want this installed as a skill in your tool?** [AI Agents](/documentation/tooling/ai-agents/) wires Claude Code, Cursor, Copilot, Codex, Gemini, or Aider to Phel with one `phel agent-install` command.
+> **Want this installed as a skill?** [AI Agents](/documentation/tooling/ai-agents/) sets up your tool with one `phel agent-install` command.
 
 <div class="agent-doc-cta">
   <a href="/agentic-coding.md" class="btn btn-primary btn-lg" download>
@@ -20,48 +18,51 @@ Load this one if you can only load one doc into an agent's context.
 
 ## TL;DR for agents
 
-Truncation-safe rules. Code form first, reason second. Verify with `phel doc` before deviating.
+Rules first, reasons second. Check with `phel doc` before you deviate.
 
-| Use                                                                              | Avoid                                                         | Why                                                            |
-|----------------------------------------------------------------------------------|---------------------------------------------------------------|----------------------------------------------------------------|
-| `phel doc <fn>`, grep `vendor/phel-lang/phel-lang/src/phel/core/`                | inventing names                                               | Unknown symbols fail to compile with `PHEL001`.                |
-| `phel.string` (alias `str`)                                                      | `phel.str`, `clojure.string`, `php/strtoupper`, `php/explode` | `phel.str` removed. Phel string fns return Phel values.        |
-| `(ns app.main)` (≥2 segments, file mirrors path under `src/`)                    | `(ns main)`                                                   | Single-segment ns exports invalid PHP under `phel build`.      |
-| `*argv*` (vector of strings)                                                     | `argv`, `php/$argv`                                           | `argv` does not resolve. `php/$argv` is `nil` under `phel run`.|
-| `for` for data, `foreach`/`doseq` for effects                                    | `for` with side effects                                       | `for` returns a vector. `foreach` returns `nil`.               |
-| `recur` in tail of `loop`/`fn`                                                   | `recur` anywhere else                                         | Non-tail `recur` errors at compile time.                       |
-| `vec` (PHP→Phel), `to-array` (Phel→PHP)                                          | treating PHP arrays as Phel collections                       | Different types. Mixing breaks `count`, `map`, etc.            |
-| `#php {"k" "v"}` for PHP assoc                                                   | `{:k "v"}` as a PHP array                                     | Phel maps are not PHP arrays.                                  |
-| `(:x p)` or `(get p :x)` for records                                             | `(.-x p)`                                                     | Record fields are protected PHP properties.                    |
-| `false`, `nil` only as falsy                                                     | assuming `0`, `""`, `[]`, `{}` falsy                          | All four are truthy.                                           |
-| `(when-not *build-mode* ...)` around top-level effects                           | unguarded top-level effects                                   | `phel build` evaluates top level; effects fire at build time.  |
-| Verify Clojure-looking forms first ([Phel is not Clojure](#phel-is-not-clojure)) | porting Clojure code blindly                                  | PHP target, not JVM. Different stdlib, different concurrency.  |
+| Use | Avoid | Why |
+|---|---|---|
+| `phel doc <fn>`, grep `vendor/phel-lang/phel-lang/src/phel/` | inventing names | An unknown symbol is a `PHEL001` compile error |
+| `phel.string` (alias `str`) | `phel.str`, `clojure.string` | Neither exists. `phel.string` fns return Phel values |
+| `(ns app.main)`: two or more segments, file path mirrors the ns under `src/` | `(ns main)` | A single segment puts your code in a top-level PHP namespace |
+| `*argv*` (vector of strings) | `argv`, `php/$argv` | `argv` was removed. `$argv` is undefined under `phel run` |
+| `for` to build data, `doseq`/`foreach` for effects | `for` with side effects | `for` returns a vector. `doseq` and `foreach` return `nil` |
+| `recur` in tail position of `loop`/`fn` | `recur` anywhere else | Non-tail `recur` is a compile error (`PHEL010`) |
+| `vec`/`php->phel` (PHP to Phel), `to-array`/`phel->php` (Phel to PHP) | passing PHP arrays as Phel collections | Different types. `count`, `map` and friends expect Phel values |
+| `#php {"k" "v"}` for a literal PHP assoc array | `{:k "v"}` where PHP wants an array | Phel maps are objects, not PHP arrays |
+| `(:x p)` or `(get p :x)` for record fields | `(.-x p)` | Record fields are protected PHP properties |
+| Binding-first destructuring `{name :name}` | key-first `{:name name}` | Key-first is deprecated since 0.51 |
+| Only `false` and `nil` are falsy | treating `0`, `""`, `[]`, `{}` as falsy | All four are truthy |
+| `(when-not *build-mode* ...)` around top-level effects | unguarded top-level effects | `phel build` evaluates the top level, so effects fire at build time |
+| `(new Foo arg)`, `(.m obj)`, `(Foo/m)` | `php/new`, `php/->`, `php/::` | Those are a `PHEL012` error since 0.52 |
+| Check Clojure-looking forms first ([Phel is not Clojure](#phel-is-not-clojure)) | porting Clojure blindly | PHP target: different stdlib and concurrency |
 
 ## What Phel is
 
-Functional Lisp that compiles to PHP. Runs on any PHP 8.5+, ships via Composer, full PHP interop.
+A functional Lisp that compiles to PHP. Runs on PHP 8.5+, installs with Composer, and calls any PHP code.
 
 - Immutable persistent data structures.
-- Macros, homoiconicity, REPL-driven dev.
-- Compiles to plain PHP. No separate runtime, no JVM.
-- Source: `.phel`. Config: `phel-config.php`.
+- Macros, REPL-driven development.
+- Compiles to plain PHP. No separate runtime.
+- Source files end in `.phel`. Config lives in `phel-config.php`.
 
-## CLI cheat sheet
+## CLI
 
 ```bash
-vendor/bin/phel doc <fn>           # function signature + docstring
-vendor/bin/phel eval '<expr>'      # one-shot eval
-vendor/bin/phel repl               # full REPL
-vendor/bin/phel test [path]        # run tests
-vendor/bin/phel run <file>         # run a script
-vendor/bin/phel build              # compile to PHP
-vendor/bin/phel format <file>      # rewrite formatting
-vendor/bin/phel doctor             # env + extension check
+vendor/bin/phel doc <fn>          # signature + docstring (search, not exact match)
+vendor/bin/phel eval '<expr>'     # evaluate and print
+vendor/bin/phel run <file> [args] # run a script; args land in *argv*
+vendor/bin/phel test [path]       # run tests
+vendor/bin/phel repl              # interactive REPL
+vendor/bin/phel build             # compile the project to PHP
+vendor/bin/phel format <file>     # format in place
+vendor/bin/phel lint [path]       # static analysis, exit 1 on errors
+vendor/bin/phel balance <file> --fix  # append dropped closing brackets
+vendor/bin/phel explain PHEL001   # what an error code means
+vendor/bin/phel doctor            # check PHP, extensions, config
 ```
 
-### Reliable multi-line evaluation
-
-Pass a quoted heredoc to `eval -`:
+For multi-line code, pass a quoted heredoc to `eval -`. Nothing inside needs escaping:
 
 ```bash
 vendor/bin/phel eval - <<'PHEL'
@@ -70,93 +71,85 @@ vendor/bin/phel eval - <<'PHEL'
 PHEL
 ```
 
-Prefer this pattern because:
-
-- **No quoting issues:** Everything between `<<'PHEL'` and `PHEL` is treated as literal input.
-- **Consistent pattern:** One approach works for all evaluations, from simple to complex.
-- **Multi-line friendly:** Code keeps its natural, readable formatting.
-- **Easy to extend:** Add more forms without changing the command syntax.
+After you edit a `.phel` file, run `phel balance <file> --fix`. It appends missing closers and reports anything it cannot fix safely.
 
 ## Installed agent skills
 
-Phel ships skill adapters in `vendor/phel-lang/phel-lang/resources/agents/`. Install them for the active agent:
-
 ```bash
-vendor/bin/phel agent-install claude    # or codex, cursor, copilot, aider, gemini
-vendor/bin/phel agent-install --all     # every adapter
+vendor/bin/phel agent-install claude   # or codex, cursor, copilot, aider, gemini
+vendor/bin/phel agent-install --auto   # agents detected in this project
+vendor/bin/phel agent-install --all    # every platform
 ```
 
-After install, the project's `.agents/` folder contains: `RULES.md`, `index.md` (intent map), `tasks/*.md` (HTTP apps, CLI tools, tests, REPL flow, validation), `examples/`. Prefer it over guessing.
+This writes a skill file for the agent and a `.agents/` folder with `RULES.md` (rules and CLI map), `index.md` (intent to recipe map), `quick-syntax.md`, and `tasks/*.md` (HTTP apps, CLI tools, tests, REPL flow, typed functions, macros, schema validation, and more). Read it before guessing.
 
 ## Syntax in 60 seconds
 
 ```phel
-;; Inline comment uses one semicolon.
-;; Standalone comment uses two.
+;; Two semicolons for a standalone comment, one after code.
 
-;; Atoms: nil true false
-;; Numbers: 42 -3 1.5 3.14e2 0xFF 0b1010 017 (octal)
+;; Literals: nil true false
+;; Numbers: 42 -3 1.5 3.14e2 0xFF 0b1010 017 (octal) 1/3 1.5M
 ;; Strings: "hello" "line\nbreak"
 ;; Keywords: :status :user/email
 ;; Symbols: my-var my-ns/fn
-;; Regex literal: #"^\d+$"
+;; Regex: #"^\d+$"
 
-;; Calls: (function arg1 arg2 ...). First element is the operator.
+;; A call: (operator arg1 arg2 ...)
 (+ 1 2 3)                          ; => 6
-(str "Hello, " name)
 
-;; Data structures (all immutable):
+;; Data structures, all immutable:
 [1 2 3]                            ; vector
 {:a 1 :b 2}                        ; map
 #{1 2 3}                           ; set
-'(1 2 3)                           ; list (data, not a call)
+'(1 2 3)                           ; list (quoted, so not a call)
 
-;; PHP assoc array literal (when interop needs one):
+;; Literal PHP assoc array, for interop:
 #php {"k" "v"}
 ```
 
-## Core Forms
+## Core forms
 
 <!-- phel-test: skip -->
 ```phel
-(def x 42)                         ; global binding
-(def- secret 7)                    ; private binding
+(def x 42)                         ; global
+(def- secret 7)                    ; private global
 
 (defn greet [name]                 ; public function
   (str "Hello, " name))
-
 (defn- helper [x] (* x 2))         ; private function
 
-(let [x 1, y 2] (+ x y))           ; local bindings (commas optional)
+(let [x 1, y 2] (+ x y))           ; locals (commas are whitespace)
 
-(if cond then else)
-(when cond expr ...)
-(cond  pred-1 expr-1
-       pred-2 expr-2
-       :else  fallback)
+(if test then else)
+(when test expr ...)
+(cond test-1 expr-1
+      test-2 expr-2
+      :else  fallback)
 (case x 1 "one" 2 "two" "default")
 (condp = x 1 "one" 2 "two" "other")
-
-(do expr1 expr2 ... last)          ; sequence; returns last
+(do expr1 expr2 last)              ; returns last
 
 (loop [acc 0 n 10]
   (if (zero? n) acc (recur (+ acc n) (dec n))))
 
-(for   [x :in xs :when (odd? x)] (* x x))   ; comprehension, returns vector
-(foreach [x xs] (println x))               ; side effects, returns nil
+(for [x :in xs :when (odd? x)] (* x x))  ; returns a vector
+(doseq [x xs] (println x))               ; effects, returns nil
 (dotimes [i 5] (println i))
 
-(fn [x] (* x 2))                   ; anonymous fn
-#(* % 2)                           ; reader shorthand (single arg)
-#(+ %1 %2)                         ; multi-arg shorthand
-#(apply + %&)                      ; variadic shorthand
+(fn [x] (* x 2))
+#(* % 2)                           ; one arg
+#(+ %1 %2)                         ; several args
+#(apply + %&)                      ; variadic
 
 (-> x (f a) (g b))                 ; thread first
-(->> x (f a) (g b))                ; thread last
-(some-> x .a .b)                   ; nil-safe thread first
-(cond-> x pred (f y))              ; conditional thread
+(->> xs (filter odd?) (map inc))   ; thread last
+(some-> m :a :b)                   ; stops at nil
+(cond-> x test (f y))              ; conditional thread
 
-(try expr (catch Exception e (handle e)) (finally cleanup))
+(try (risky)
+  (catch \RuntimeException e (.getMessage e))
+  (finally (cleanup)))
 ```
 
 ## Namespaces
@@ -166,75 +159,66 @@ File `src/my-app/users.phel`:
 ```phel
 (ns my-app.users
   (:require phel.string :as str)
-  (:require phel.html :as h)
   (:use DateTimeImmutable))
 
-(defn full-name [{:first f :last l}]
-  (str/join " " [f l]))
+(defn full-name [{first-name :first last-name :last}]
+  (str/join " " [first-name last-name]))
 ```
 
-Rules:
+- Use two or more segments (`my-app.main`, not `main`), separated by `.`. The `\` separator is deprecated.
+- The file path mirrors the namespace under the source dir. Dashes become underscores in PHP: `my-app.users` compiles to the PHP namespace `my_app\users`.
 
-- Two or more segments required (`my-app.main`, not `main`).
-- File path mirrors namespace under `src/`. Source uses dashes, compiled PHP uses studly case (`my-app.users` ↔ `MyApp\Users`).
-
-## PHP Interop
+## PHP interop
 
 <!-- phel-test: skip -->
 ```phel
-(php/strlen "hi")                          ; call PHP function
-(new DateTimeImmutable "2024-01-15")       ; construct
-(.method obj arg)                          ; instance method
+(php/strlen "hi")                          ; PHP function
+(new DateTimeImmutable "2024-01-15")       ; constructor
+(DateTimeImmutable. "2024-01-15")          ; same, shorthand
+(.format date "Y-m-d")                     ; instance method
 (.-prop obj)                               ; instance property
 (DateTimeImmutable/createFromFormat f s)   ; static method
-DateTimeImmutable/ATOM                     ; static constant
+DateTimeImmutable/ATOM                     ; class constant
 
-;; php/new, php/-> and php/:: are errors in source since 0.52 (PHEL012).
-
-;; Convert Phel collection to PHP array (when handing off to PHP):
-(to-array ["a" "b" "c"])
-
-;; Convert PHP array back to Phel collection:
-(vec (php/explode "," "a,b,c"))            ; => ["a" "b" "c"]
-;; Or with phel.string (returns Phel vector directly):
-;; (phel.string/split "a,b,c" #",")
-
-;; Catch PHP exceptions:
-(try (risky)
-  (catch RuntimeException e (handle e)))
+(to-array ["a" "b" "c"])                   ; Phel vector -> PHP list
+(phel->php {:a 1 :b [1 2]})                ; nested Phel data -> PHP arrays
+(vec (php/explode "," "a,b,c"))            ; PHP list -> ["a" "b" "c"]
+(php->phel (php/json_decode s true))       ; nested PHP arrays -> Phel data
 ```
 
-## Records, Protocols, Multimethods
+Use `phel->php` for a map, not `to-array`. For string splitting, `(str/split "a,b,c" #",")` returns a Phel vector directly.
+
+## Records, protocols, multimethods
 
 ```phel
 (defrecord Point [x y])
 (def p (->Point 1 2))
-(:x p)                             ; => 1     (keyword-as-fn: preferred)
-(get p :x)                         ; => 1     (also valid)
-(map->Point {:x 1 :y 2})           ; => (user.Point 1 2)
+(:x p)                             ; => 1
+(get p :x)                         ; => 1
 
 (defprotocol Drawable
   (draw [this]))
 
 (extend-type :string Drawable
-  (draw [s] (println s)))
+  (draw [s] (str "drawn " s)))
 
 (defmulti area :shape)
-(defmethod area :circle [{:radius r}] (* 3.14 r r))
-(defmethod area :rect   [{:w w :h h}] (* w h))
+(defmethod area :circle [{r :radius}] (* 3 r r))
+(defmethod area :rect   [{w :w h :h}] (* w h))
+(area {:shape :rect :w 2 :h 3})    ; => 6
 ```
+
+`defprotocol` cannot be implemented inline in `defstruct`. Use `extend-type`, or `definterface` for inline methods.
 
 ## Equality and comments
 
-- `=` is value equality across all types. `identical?` is reference equality.
-- Comments: `;` inline, `;;` standalone, `#_` discards the next form, `(comment ...)` ignores its body.
+- `=` is value equality for all types. `identical?` is reference equality.
+- `;` after code, `;;` on its own line, `#_` skips the next form, `(comment ...)` ignores its body. `#` line comments were removed and do not lex.
 
 ```phel
 (= [1 2] [1 2])                    ; => true
 #_(this-form-is-skipped)
 ```
-
-Truthiness is in the [TL;DR](#tl-dr-for-agents).
 
 ## Tests
 
@@ -249,46 +233,39 @@ Truthiness is in the [TL;DR](#tl-dr-for-agents).
          (users/full-name {:first "Ada" :last "Lovelace"}))))
 ```
 
-Run with `vendor/bin/phel test`.
+Run with `vendor/bin/phel test`. Filter with `--filter=name`, find deprecated forms with `--warn-deprecations`.
 
 ## Other gotchas
 
-Beyond the TL;DR:
-
-- **`transduce` with `max`/`min`:** no zero-arity. Pass init: `(transduce xf (fn [a b] (max a b)) 0 coll)`.
-- **No `to-vec` / `to-list` functions.** Use `vec` (PHP array to Phel vector) or `to-array` (Phel to PHP).
-- **`recur` arity must match `loop` bindings.** Mismatched arg count errors at compile time.
-- **`#` line comments were removed.** The lexer rejects them. Use `;` or `;;`.
+- **`transduce` with `max` or `min`:** they have no zero-arity. Pass an init: `(transduce xf (fn [a b] (max a b)) 0 coll)`.
+- **No `to-vec` or `to-list`.** Use `vec` or `to-array`.
+- **`recur` must match the `loop` bindings.** A wrong argument count is a compile error.
 
 ## Phel is not Clojure
 
-Agents trained on Clojure data hallucinate Clojure-only forms in Phel code. Phel is Lisp-on-PHP, not Lisp-on-JVM. Verify with `phel doc <name>` before using anything that "sounds Clojure".
+Agents trained on Clojure invent Clojure-only forms. Check anything that "sounds Clojure" with `phel doc <name>` first.
 
-Known differences:
+- **Strings:** `phel.string`, not `clojure.string`. Some names match, some do not.
+- **Interop is PHP, not Java:** `(new Class arg)`, `(.method obj)`, `(Class/method)`, `Class/CONST`.
+- **Records:** read fields by keyword `(:x p)`. No `.-field` on records.
+- **Numbers:** PHP `int` and `float`, plus Phel ratios (`(/ 1 3)` is `1/3`), big integers (auto-promoted on overflow), and big decimals (`1.5M`).
+- **Reader conditionals** use `:phel` and `:default`: `#?(:phel "phel" :default "other")`.
+- **Concurrency is fiber-based.** `atom`, `future`, `promise`, `pmap`, `async`, `await`, `await-all`, `await-any` exist. `ref`, `agent` and STM do not.
+- **No `clojure.*` namespaces.** Look under `phel.*` instead: `phel.string`, `phel.walk`, `phel.match`, `phel.test`, `phel.html`, `phel.json`. Set operations (`union`, `difference`, `select`, ...) are in core.
+- **Type tags emit PHP declarations:** `^int`, `^string`, `^"?int"` on `defn` params and return.
 
-- **Strings module:** `phel.string`, not `clojure.string`. Some function names match, some don't. Check each.
-- **Interop is PHP, not Java.** `(new Class arg)`, `(.method obj)`, `(Class/method)`, `Class/CONST`. No `Class/.method`, no JVM.
-- **Records:** field access by keyword `(:x p)`. No `.-field` on records.
-- **Numbers:** PHP `int`/`float`, plus Phel `:ratio` (`(/ 1 3)` => `1/3`) `:bigint` (auto-promoted on overflow), and `:bigdec` (`1.5M` literals). No Java `BigInteger` or `BigDecimal` classes: these are Phel types.
-- **Reader conditionals use `:phel`/`:default`,** not `:clj`/`:cljs`. Example: `#?(:phel "phel" :default "other")`.
-- **Concurrency primitives are fiber-based.** `atom`, `future`, `promise`, `pmap`, `async`/`await`, `await-all`, `await-any` all exist (see `phel/core/async.phel`). `ref`, `agent`, STM do not. Verify each with `phel doc`.
-- **No `clojure.*` namespaces.** `clojure.set`, `clojure.walk`, `clojure.spec`, `clojure.test.check`, `core.match`: none. Phel modules live under `phel.*` (`phel.string`, `phel.html`, `phel.test`, etc).
-- **`phel.test`, not `clojure.test`.** Uses `deftest` + `is`.
-- **Type tags emit PHP declarations**, not Java. `^int`, `^string`, `^"?int"` on `defn` params/return.
-
-When in doubt: run `phel doc <name>`. If it prints `No function matches`, the function does not exist. Do not generate code that calls it. The command exits 0 either way, so read the output, not the exit code.
+If `phel doc <name>` prints `No function matches`, the function does not exist. Do not call it. The command exits 0 either way, so read the output.
 
 ## Project layout
 
 ```
 my-app/
-  composer.json         # PHP deps + composer scripts (repl, dev, test, build)
-  phel-config.php       # Phel config; usually one line via forProject()
+  composer.json
+  phel-config.php     # usually one line
   src/
-    main.phel           # entry namespace
-    modules/...
+    my-app/main.phel  # (ns my-app.main)
   tests/
-    modules/...
+    my-app/main-test.phel
 ```
 
 Minimal `phel-config.php`:
@@ -298,35 +275,18 @@ Minimal `phel-config.php`:
 return \Phel\Config\PhelConfig::forProject(\Phel\Config\ProjectLayout::Flat, 'my-app.main');
 ```
 
-Full options: [Configuration](/documentation/reference/configuration).
+All options: [Configuration](/documentation/reference/configuration/).
 
-## Idiomatic style for agents
+## Idiomatic style
 
-TL;DR covers what must not break. These shape what good Phel looks like:
-
-1. **Prefer pure functions.** Push side-effects to the edge. Use `atom` only for shared mutable state.
-2. **Thread, don't nest.** `(->> xs (filter f) (map g) (reduce h 0))` beats deep nesting.
-3. **Stay immutable.** `(conj v x)` returns a new vector. Rebind, don't expect mutation.
-4. **Interop shorthands.** `(.method obj)`, `(.-prop obj)`, `(Class/method)`, `(ClassName.)`. Shorter, idiomatic.
-5. **`^:memoize` for caching.** `(defn ^:memoize f [x] ...)` beats a manual `static $cache` pattern.
-6. **Type tags emit PHP declarations.** `^int`, `^string`, `^"?int"` on `defn` params/return = free PHP type hints.
+1. **Pure functions.** Push side effects to the edges. Use an `atom` only for shared mutable state.
+2. **Thread, don't nest.** `(->> xs (filter f) (map g) (reduce h 0))`.
+3. **Stay immutable.** `(conj v x)` returns a new vector. Rebind the result.
+4. **Cache with `^:memoize`.** `(defn ^:memoize f [x] ...)`, or `^{:memoize-lru 32}` for a bounded cache.
+5. **Tag hot paths.** `(defn ^int square [^int x] (* x x))` emits PHP type hints.
 
 ## Where to look next
 
-In the Phel install:
+After `phel agent-install`: `.agents/index.md`, `.agents/RULES.md` and `.agents/tasks/`. Before install, the same files are in `vendor/phel-lang/phel-lang/resources/agents/`. Every core function's source is in `vendor/phel-lang/phel-lang/src/phel/core/`.
 
-- `.agents/index.md` (after `phel agent-install`): intent → recipe map.
-- `.agents/RULES.md`: canonical rules + CLI map.
-- `.agents/tasks/`: HTTP, CLI, tests, debugging, validation, pattern matching.
-- `vendor/phel-lang/phel-lang/resources/agents/`: the same files before install.
-- `vendor/phel-lang/phel-lang/src/phel/core/`: every core function source.
-
-On this site:
-
-- [Cheat Sheet](/documentation/reference/cheat-sheet): core forms and functions.
-- [Language section](/documentation/language/): types, functions, control flow, macros, interfaces, namespaces, destructuring, recursion.
-- [PHP Interop](/documentation/language/php-interop): every interop form.
-- [Cookbook](/documentation/guides/cookbook): copy-paste recipes.
-- [Rosetta Stone](/documentation/guides/rosetta-stone): PHP to Phel side-by-side.
-- [REPL guide](/documentation/tooling/repl): dev loop.
-- [CLI Commands](/documentation/reference/cli-commands): every subcommand.
+On this site: [Cheat Sheet](/documentation/reference/cheat-sheet/), [PHP Interop](/documentation/language/php-interop/), [Cookbook](/documentation/guides/cookbook/), [Rosetta Stone](/documentation/guides/rosetta-stone/) (PHP next to Phel), [CLI Commands](/documentation/reference/cli-commands/), [Error Reference](/documentation/reference/errors/).
