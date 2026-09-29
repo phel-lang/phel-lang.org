@@ -2,7 +2,7 @@
 title = "Debugging"
 weight = 11
 description = "Debug Phel code step by step: dbg, tap>, trace, stack traces, REPL breakpoints, Xdebug, PHP dump tools, compiled PHP, and profiling."
-aliases = ["/documentation/debugging/", "/documentation/tooling/php-tools/", "/documentation/tooling/php-tools"]
+aliases = ["/documentation/debugging/", "/documentation/tooling/php-tools/"]
 +++
 
 This page takes you from the quickest print to a full step debugger. Start at the top and move down only when the simpler tool does not answer your question.

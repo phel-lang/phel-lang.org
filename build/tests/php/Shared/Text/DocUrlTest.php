@@ -33,6 +33,14 @@ final class DocUrlTest extends TestCase
         );
     }
 
+    public function test_old_slug_maps_to_the_page_that_absorbed_it(): void
+    {
+        self::assertSame(
+            '/documentation/language/error-handling/#ex-info',
+            DocUrl::current('/documentation/exceptions#ex-info'),
+        );
+    }
+
     public function test_current_url_is_unchanged(): void
     {
         self::assertSame(

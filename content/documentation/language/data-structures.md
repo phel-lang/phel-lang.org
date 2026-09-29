@@ -225,7 +225,7 @@ Composition order, early termination, and custom transducers: [Transducers](/doc
 
 ## Data structures as functions
 
-Vectors, maps, and sets are functions of their keys. Keywords are functions of maps. This keeps lookups short, especially with `map`:
+Lists, vectors, maps, and sets are functions of their keys. Keywords are functions of maps. This keeps lookups short, especially with `map`:
 
 ```phel
 ([10 20 30] 1)    ; => 20

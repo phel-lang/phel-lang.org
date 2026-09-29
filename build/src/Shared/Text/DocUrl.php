@@ -12,15 +12,23 @@ namespace PhelWeb\Shared\Text;
  */
 final class DocUrl
 {
+    /** Old slug => page under /documentation/language/. */
     private const LANGUAGE_PAGES = [
-        'control-flow',
-        'data-structures',
-        'functions-and-recursion',
-        'global-and-local-bindings',
-        'interfaces',
-        'macros',
-        'namespaces',
-        'php-interop',
+        'arithmetic' => 'basic-types',
+        'basic-types' => 'basic-types',
+        'control-flow' => 'control-flow',
+        'data-structures' => 'data-structures',
+        'destructuring' => 'destructuring',
+        'error-handling' => 'error-handling',
+        'exceptions' => 'error-handling',
+        'functions-and-recursion' => 'functions-and-recursion',
+        'global-and-local-bindings' => 'global-and-local-bindings',
+        'interfaces' => 'interfaces',
+        'lazy-sequences' => 'lazy-sequences',
+        'macros' => 'macros',
+        'namespaces' => 'namespaces',
+        'php-interop' => 'php-interop',
+        'truth-and-boolean-operations' => 'basic-types',
     ];
 
     private const RENAMED_ANCHORS = [
@@ -36,17 +44,18 @@ final class DocUrl
     public static function current(string $url): string
     {
         $pattern = '#^(?<host>https://phel-lang\.org)?/documentation/(?:language/)?(?<page>'
-            . implode('|', self::LANGUAGE_PAGES)
+            . implode('|', array_keys(self::LANGUAGE_PAGES))
             . ')/?(?:\#(?<anchor>[\w-]+))?$#';
 
         if (preg_match($pattern, $url, $m) !== 1) {
             return $url;
         }
 
+        $page = self::LANGUAGE_PAGES[$m['page']];
         $anchor = $m['anchor'] ?? '';
-        $anchor = self::RENAMED_ANCHORS[$m['page'] . '#' . $anchor] ?? $anchor;
+        $anchor = self::RENAMED_ANCHORS[$page . '#' . $anchor] ?? $anchor;
 
-        return $m['host'] . '/documentation/language/' . $m['page'] . '/'
+        return $m['host'] . '/documentation/language/' . $page . '/'
             . ($anchor === '' ? '' : '#' . $anchor);
     }
 }
