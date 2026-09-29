@@ -5,107 +5,77 @@ description = "Install and configure Xdebug for Phel: breakpoints in .phel files
 aliases = ["/documentation/debug/xdebug-setup"]
 +++
 
-[Xdebug](https://xdebug.org/) gives you step-through debugging: breakpoints, variable inspection, and call-stack analysis. With the VS Code Phel extension you set breakpoints directly in `.phel` files; in other editors you debug the compiled PHP.
+This page gets [Xdebug](https://xdebug.org/) running for Phel so you can set breakpoints, step through code, and inspect variables in your editor. With the VS Code Phel extension you set breakpoints in `.phel` files. Other editors debug the compiled PHP. For when to use Xdebug instead of lighter tools, see [Debugging](/documentation/guides/debugging/).
 
-<details class="dev-note">
-<summary>
-  <span class="dev-note__title">Installation & Configuration</span>
-  <span class="dev-note__chevron">›</span>
-</summary>
-<div class="dev-note__content">
+## Install
 
-## Installation
-
-**Recommended: [PIE](https://github.com/php/pie)** (PHP Installer for Extensions)
-
-PIE replaces PECL. Get latest `pie.phar` from [releases](https://github.com/php/pie/releases):
+Use [PIE](https://github.com/php/pie), the official successor to PECL:
 
 ```bash
-# Install PIE
 wget https://github.com/php/pie/releases/latest/download/pie.phar
 chmod +x pie.phar
 sudo mv pie.phar /usr/local/bin/pie
 
-# Install Xdebug with PIE
 pie install xdebug/xdebug
 ```
 
-**Note:** PIE is the official successor to PECL. `pecl install xdebug` still works where PIE is not set up yet.
-
-**Alternatives:**
+Other options:
 
 ```bash
-# Via system package manager (Ubuntu/Debian)
+# Ubuntu/Debian
 apt-get install php-xdebug
 
-# On macOS with Homebrew: Homebrew's PHP ships pecl
+# macOS with Homebrew (Homebrew's PHP ships pecl)
 brew install php
 pecl install xdebug
 ```
 
-**Docker/containers,** add to your `Dockerfile`:
+In a `Dockerfile`:
 
 ```dockerfile
-# Using PIE (recommended)
 RUN curl -L https://github.com/php/pie/releases/latest/download/pie.phar -o /usr/local/bin/pie && \
     chmod +x /usr/local/bin/pie && \
     pie install xdebug/xdebug
 
-# Or using PECL (legacy)
+# Or with PECL
 RUN pecl install xdebug && \
     docker-php-ext-enable xdebug
 ```
 
-**Verify installation:**
+Check that it loaded:
 
 ```bash
 php -v
-# Should show: "with Xdebug v3.x.x"
+# ... with Xdebug v3.x.x
 ```
 
-<hr>
+## Configure
 
-## Configuration
-
-Configure in `php.ini` or a dedicated file (`/etc/php/conf.d/xdebug.ini`):
+Add this to `php.ini` or a separate file such as `/etc/php/conf.d/xdebug.ini`:
 
 ```ini
 [xdebug]
 zend_extension=xdebug.so
-
-; Xdebug 3.x configuration
 xdebug.mode=debug
 xdebug.start_with_request=yes
 xdebug.client_host=localhost
 xdebug.client_port=9003
-
-; For Docker/VM environments, use host.docker.internal or your host IP
-; xdebug.client_host=host.docker.internal
-
-; Optional: logging for troubleshooting
-; xdebug.log=/tmp/xdebug.log
 ```
 
-**Settings:**
-- `xdebug.mode=debug` enable debugging
-- `xdebug.start_with_request=yes` debug on every request
-- `xdebug.client_port=9003` default port (Xdebug 2.x used 9000)
+| Setting | Purpose |
+|---|---|
+| `xdebug.mode=debug` | Turn on step debugging |
+| `xdebug.start_with_request=yes` | Start a session on every request or CLI run |
+| `xdebug.client_host` | Where your editor listens. In Docker Desktop use `host.docker.internal`, in a VM use the host IP |
+| `xdebug.client_port=9003` | The Xdebug 3 default (Xdebug 2 used 9000). Expose or forward it from containers |
 
-**Containers/VMs:**
-- `xdebug.client_host=host.docker.internal` (Docker Desktop)
-- Or use host IP
-- Expose/forward port 9003
+## Editor setup
 
-</div>
-</details>
+### VS Code
 
-## Editor Setup
+Install the [Phel VS Code extension](https://github.com/phel-lang/phel-vs-code-extension). It provides the `phel` debug adapter. The generic PHP Debug extension only provides `"type": "php"` and cannot step through `.phel` files.
 
-### VSCode
-
-Install the [Phel VS Code extension](https://github.com/phel-lang/phel-vs-code-extension). It ships the `phel` debug adapter that the `launch.json` below uses (the generic PHP Debug extension only provides `"type": "php"` and cannot step through `.phel` files):
-
-Create `.vscode/launch.json` in your Phel project:
+Create `.vscode/launch.json`:
 
 ```json
 {
@@ -130,83 +100,43 @@ Create `.vscode/launch.json` in your Phel project:
 }
 ```
 
-**Configuration Options:**
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `phpDebugPort` | number | 9003 | Xdebug port to listen on |
+| `pathMappings` | object | {} | Container or remote path to local path, for Docker and VMs |
+| `cacheDir` | string | auto | Phel cache directory, read from `phel-config.php` |
+| `skipPhelInternals` | boolean | true | Skip the Phel runtime when stepping |
+| `skipFiles` | string[] | [] | Glob patterns for files to skip when stepping |
 
-| Option              | Type     | Default  | Description                                                 |
-|---------------------|----------|----------|-------------------------------------------------------------|
-| `phpDebugPort`      | number   | 9003     | Xdebug port to listen on                                    |
-| `pathMappings`      | object   | {}       | Path mappings for Docker/remote debugging                   |
-| `cacheDir`          | string   | auto     | Phel cache directory (auto-detected from `phel-config.php`) |
-| `skipPhelInternals` | boolean  | true     | Skip stepping through Phel runtime code                     |
-| `skipFiles`         | string[] | []       | Glob patterns for files to skip when stepping               |
+To debug:
 
-**Path mappings** matter for Docker/VMs. Map container path to local workspace:
-
-- Container: `/var/www/html`
-- Local: `${workspaceFolder}`
-
-**Usage:**
-
-1. Click left of a line number in `.phel` to set a breakpoint.
-2. Press `F5` or "Run and Debug" → "Debug Phel".
+1. Click left of a line number in a `.phel` file to set a breakpoint.
+2. Press `F5`, or open "Run and Debug" and pick "Debug Phel".
 3. Run your Phel code (CLI or web).
-4. Execution pauses at breakpoints with Phel source context.
+4. Execution pauses at the breakpoint. Stack traces show Phel files and lines, and variables show as Phel values (`[3 items]`, `{2 entries}`, `:status`). Hover a breakpoint to see its PHP file and line.
 
-**Commands:**
+Two commands help when a breakpoint does not map: `Phel: Show Compiled PHP Location` shows the mapped PHP line, and `Phel: Clear Source Map Cache` clears cached source maps.
 
-- `Phel: Show Compiled PHP Location` shows the mapped PHP line
-- `Phel: Clear Source Map Cache` clears cached source maps
+To debug at PHP level instead, use the [PHP Debug extension](https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug) with `"type": "php"` and `"port": 9003`, and set breakpoints in the compiled PHP files. The next section explains how to keep them.
 
-{% callout(kind="note") %}
-Cache dir auto-detected from `phel-config.php`.
-{% end %}
+### Other editors: debug the compiled PHP
 
-<details class="dev-note">
-<summary>
-  <span class="dev-note__title">Alternative: Using PHP Debug Extension</span>
-  <span class="dev-note__chevron">›</span>
-</summary>
-<div class="dev-note__content">
+PhpStorm, Emacs, and Neovim have no Phel debug adapter, so you set breakpoints in the PHP that Phel generates. `phel run` deletes those files after each run. Keep them with `withKeepGeneratedTempFiles(true)` (see [Debugging](/documentation/guides/debugging/#keep-the-generated-files)). To debug the compiler itself, set breakpoints in `vendor/phel-lang/phel-lang/src/`.
 
-For PHP-level debugging (or no Phel extension), use the [PHP Debug extension](https://marketplace.visualstudio.com/items?itemName=xdebug.php-debug):
+### PhpStorm
 
-```json
-{
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Listen for Xdebug",
-            "type": "php",
-            "request": "launch",
-            "port": 9003,
-            "pathMappings": {
-                "/var/www/html": "${workspaceFolder}"
-            }
-        }
-    ]
-}
-```
+PhpStorm supports Xdebug out of the box.
 
-Set breakpoints in compiled PHP files (in the temp dir). Use `withKeepGeneratedTempFiles(true)` in `phel-config.php` to preserve them.
+1. `Settings` > `PHP` > `CLI Interpreter`: select a PHP with Xdebug installed.
+2. `Settings` > `PHP` > `Debug`: port `9003`, check "Can accept external connections".
+3. For Docker or a VM, `Settings` > `PHP` > `Servers`: add a server and map the local path to the container path (for example `/Users/you/phel-project` to `/var/www/html`).
+4. Click the phone icon in the toolbar, or `Run` > `Start Listening for PHP Debug Connections`.
 
-</div>
-</details>
-
-### PHPStorm
-
-PHPStorm has built-in Xdebug support.
-
-- **PHP Interpreter:** `Settings` → `PHP` → `CLI Interpreter`. Add/select PHP, verify Xdebug "Installed ✓".
-- **Debug:** `Settings` → `PHP` → `Debug`. Port `9003`. Check "Can accept external connections".
-- **Path Mappings (Docker/VM):** `Settings` → `PHP` → `Servers`. New server. Map local to container (e.g. `/Users/you/phel-project` → `/var/www/html`).
-- **Start listening:** phone icon in the toolbar, or `Run` → `Start Listening for PHP Debug Connections`.
-- Set breakpoints, run.
-
-Guide: [VVV PHPStorm Xdebug Setup](https://varyingvagrantvagrants.org/docs/en-US/references/xdebug-and-phpstorm/).
+More detail: [VVV PhpStorm Xdebug guide](https://varyingvagrantvagrants.org/docs/en-US/references/xdebug-and-phpstorm/).
 
 ### Emacs
 
-Xdebug uses DAP. Set up [dap-mode](https://emacs-lsp.github.io/dap-mode/):
+Use [dap-mode](https://emacs-lsp.github.io/dap-mode/):
 
 ```elisp
 (use-package dap-mode
@@ -225,7 +155,7 @@ Xdebug uses DAP. Set up [dap-mode](https://emacs-lsp.github.io/dap-mode/):
 
 ### Neovim
 
-Set up [nvim-dap](https://github.com/mfussenegger/nvim-dap):
+Use [nvim-dap](https://github.com/mfussenegger/nvim-dap) with the vscode-php-debug adapter:
 
 ```lua
 local dap = require('dap')
@@ -248,82 +178,38 @@ dap.configurations.php = {
 }
 ```
 
-## Debugging Phel code
-
-### With VS Code Phel extension
-
-1. **Breakpoints in `.phel`:** click the gutter. Auto-mapped to PHP lines.
-2. **Source-level traces:** stack traces show Phel file names and line numbers.
-3. **Phel-native variables:** vectors as `[3 items]`, maps as `{2 entries}`, keywords as `:status`, lists as `(5 items)`.
-4. **Skip internals:** stepping skips Phel runtime. Disable with `"skipPhelInternals": false`.
-5. **Hover for mapping:** hover a breakpoint to see the PHP file/line.
-
-### With other editors
-
-Without native Phel support:
-
-1. **Breakpoints in compiled PHP:** Phel compiles to PHP. Use `withKeepGeneratedTempFiles(true)` to inspect output.
-2. **Path mapping:** map container/VM paths to local.
-3. **Compiler debugging:** breakpoints in `vendor/phel-lang/phel-lang/src/`.
-4. **REPL debugging:** start REPL with Xdebug enabled.
-
 ## Troubleshooting
 
-**Connection issues:**
+Check that Xdebug is loaded and configured, and that the port is open:
 
 ```bash
-# Check if Xdebug is loaded
 php -v
-
-# Check Xdebug configuration
 php -i | grep xdebug
-
-# Test if port 9003 is open
 telnet localhost 9003
 ```
 
-**Enable Xdebug logging:**
+Turn on the Xdebug log:
 
 ```ini
 xdebug.log=/tmp/xdebug.log
 xdebug.log_level=7
 ```
 
-**Common issues:**
+| Symptom | Fix |
+|---|---|
+| Editor never connects | Xdebug 3 uses port 9003, not 9000. Check the editor config and the firewall |
+| Connects from Docker fails | Set `xdebug.client_host=host.docker.internal` instead of `localhost` |
+| Fails under WSL2 or a VM | Use the host's network IP as `xdebug.client_host` |
+| Breakpoints never hit | Check path mappings. Run `pwd` inside the container to get the real path |
 
-- **Port:** Xdebug 3.x uses 9003, not 9000. Update editor config.
-- **Firewall:** unblock 9003.
-- **Path mappings:** `pwd` inside container to verify.
-- **Docker:** use `host.docker.internal` instead of `localhost`.
-- **WSL2/VM:** may need host network IP.
-
-**Test connection:**
-
-Simple test:
+To test the connection, run a script with a hard breakpoint. Your debugger should stop on it:
 
 ```php
 <?php
-xdebug_break(); // Hard breakpoint
-echo "Xdebug is working!\n";
-```
-
-Run it, verify the debugger connects.
-
-The same hard breakpoint from Phel code (no-op when Xdebug isn't loaded):
-
-<!-- phel-test: skip -->
-```phel
-(when (php/function_exists "xdebug_break")
-  (php/xdebug_break))
+xdebug_break();
+echo "Xdebug is working\n";
 ```
 
 {% callout(kind="tip") %}
-**No Xdebug at hand?** Phel's built-in [`(break)`](/documentation/guides/debugging/#break-a-repl-breakpoint-in-your-code) pauses execution in a sub-REPL with all lexical locals in scope: no extension or editor setup required.
+No Xdebug? Phel's built-in [`(break)`](/documentation/guides/debugging/#pause-with-break) pauses in a sub-REPL with all locals in scope, with no extension or editor setup.
 {% end %}
-
-## Next steps
-
-- [Debugging](/documentation/guides/debugging/) - the full debugging workflow: `dbg`, `tap>`, stack traces, profiling
-- [Editor support](/documentation/tooling/editor-support/) - install the VS Code Phel extension used above
-- [PHP debugging tools](/documentation/tooling/php-tools/) - lighter-weight `var_dump`/`dump` debugging
-- [Configuration](/documentation/reference/configuration/) - `withKeepGeneratedTempFiles` and other dev settings
