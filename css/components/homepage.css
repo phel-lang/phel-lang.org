@@ -988,6 +988,18 @@
   transform: translate(-50%, -50%) scale(1.08);
 }
 
+@media (max-width: 640px) {
+  .homepage-demo-play {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+
+  .homepage-demo-play svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+}
+
 .homepage-demo-caption {
   margin: var(--space-md) 0 0;
   text-align: center;
