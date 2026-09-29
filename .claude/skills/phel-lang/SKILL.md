@@ -54,7 +54,7 @@ Write the snippet, run it, paste real output. If output differs from what you as
 (extend-type Todo Renderable (render [t] ...)) ; protocol impl per type
 
 (defmulti area :shape)                          ; multimethod
-(defmethod area :circle [{:radius r}] (* 3.14 r r))
+(defmethod area :circle [{r :radius}] (* 3.14 r r))
 
 (into [] (comp (filter odd?) (map inc)) [1 2 3 4 5]) ; transducer
 (re-find #"\d+" "abc123")                       ; regex literal
