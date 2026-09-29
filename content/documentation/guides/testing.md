@@ -5,9 +5,9 @@ description = "Write tests with deftest, is, mocks, and property-based specs, th
 aliases = ["/documentation/testing/"]
 +++
 
-Built-in unit testing with no boilerplate. Define tests as functions, run them from the CLI.
+This page shows you how to write tests with `phel.test`, run them with `phel test`, replace functions with mocks, and check properties against random input. Tests are plain functions, with no classes or setup.
 
-## Quick start
+## Write and run a test
 
 ```phel
 (ns my-app.math-test
@@ -21,15 +21,13 @@ Built-in unit testing with no boilerplate. Define tests as functions, run them f
   (is (not (= "" (str "a" "b")))))
 ```
 
-Run:
+`deftest` defines a test. A test can hold any number of `is` assertions, and it passes when all of them pass. Run every test:
 
 ```bash
 vendor/bin/phel test
 ```
 
-Output:
-
-```
+```text
 Discovering tests...
 Loading 36 namespace(s)...
 ...
@@ -41,28 +39,28 @@ Total: 3
 Time: 00:00.922, Memory: 52.00 MB
 ```
 
-Each dot is one passing assertion. The totals count assertions, not tests.
+Each dot is one passing assertion. The totals count assertions, not tests. `phel test` looks for tests in the folders set by [`withTestDirs`](/documentation/reference/configuration/), `tests/` by default.
 
-{% php_note() %}
-No class boilerplate. Tests are plain functions:
+A test for your own code requires the namespace under test:
 
-```php
-// PHPUnit
-class MathTest extends TestCase {
-    public function testAddition() {
-        $this->assertEquals(4, 2 + 2);
-    }
-}
+<!-- phel-test: skip -->
+```phel
+(ns my-app.cart-test
+  (:require phel.test :refer [deftest is])
+  (:require my-app.cart :refer [add-item total]))
 
-// Phel
-(deftest addition-works
-  (is (= 4 (+ 2 2))))
+(deftest add-item-increases-total
+  (let [cart (add-item [] {:price 10 :qty 2})]
+    (is (= 20 (total cart)))
+    (is (= 1 (count cart)))))
+
+(deftest rejects-negative-price
+  (is (thrown? Exception (add-item [] {:price -5 :qty 1}))))
 ```
-{% end %}
 
 ## Assertions
 
-The `is` macro defines assertions. Optional second argument is a description string shown on failure.
+`is` takes any expression that should be truthy, and an optional message shown on failure:
 
 ```phel
 (ns my-app.is-test
@@ -70,18 +68,42 @@ The `is` macro defines assertions. Optional second argument is a description str
 
 (deftest assertions
   (is (= 4 (+ 2 2)))
-  (is (= 4 (+ 2 2)) "2 + 2 should be 4"))
+  (is (= 4 (+ 2 2)) "2 + 2 should be 4")
+  (is (nil? (get {} :missing))))
 ```
 
-### Equality and predicates
+Three special forms inside `is` check exceptions and output:
 
-<!-- phel-test: skip -->
 ```phel
-(is (= expected actual))           ; equality
-(is (true? value))                 ; predicate
-(is (not (= "x" (str "a" "b"))))  ; negation
-(is (nil? (get {} :missing)))      ; any predicate works
+(ns my-app.special-test
+  (:require phel.test :refer [deftest is]))
+
+(deftest special-assertions
+  (is (thrown? Exception
+        (throw (new Exception "test"))))
+  (is (thrown-with-msg? Exception "test"
+        (throw (new Exception "test"))))
+  (is (output? "hello" (print "hello"))))
 ```
+
+| Form | Passes when |
+|---|---|
+| `(thrown? Class body)` | `body` throws an instance of `Class` |
+| `(thrown-with-msg? Class msg body)` | `body` throws `Class` with message `msg` |
+| `(output? expected body)` | `body` prints exactly `expected` to stdout |
+
+{% php_note() %}
+Each PHPUnit assertion maps to one `is` form:
+
+| PHPUnit | Phel |
+|---|---|
+| `$this->assertEquals(4, 2 + 2)` | `(is (= 4 (+ 2 2)))` |
+| `$this->expectException(Exception::class)` | `(is (thrown? Exception ...))` |
+| `$this->expectExceptionMessage("test")` | `(is (thrown-with-msg? Exception "test" ...))` |
+| `$this->expectOutputString("hello")` | `(is (output? "hello" ...))` |
+{% end %}
+
+### Reading a failure
 
 A failed `=` names the test and its location, then shows a diff. Collections get one line per entry, with `-` for the expected value and `+` for the actual one:
 
@@ -91,7 +113,7 @@ A failed `=` names the test and its location, then shows a diff. Collections get
   (is (= [:a 1 :b 2 :c 3] [:a 1 :b 99 :c 3])))
 ```
 
-```
+```text
 FAIL vector-diff (diff_test.phel:5)
           Form: (= [:a 1 :b 2 :c 3] [:a 1 :b 99 :c 3])
   evaluated to: [:a 1 :b 99 :c 3]
@@ -108,7 +130,7 @@ FAIL vector-diff (diff_test.phel:5)
 
 Strings get a caret under the first mismatch:
 
-```
+```text
 FAIL string-diff (diff_test.phel:8)
           Form: (= "hello" "hallo")
   evaluated to: "hallo"
@@ -119,149 +141,16 @@ FAIL string-diff (diff_test.phel:8)
                 ^
 ```
 
-### Exceptions
+## Choose which tests run
 
-```phel
-(ns my-app.exception-test
-  (:require phel.test :refer [deftest is]))
-
-(deftest exception-assertions
-  ;; assert throws
-  (is (thrown? Exception
-        (throw (new Exception "test"))))
-
-  ;; assert throws with specific message
-  (is (thrown-with-msg? Exception "test"
-        (throw (new Exception "test")))))
-```
-
-### Output
-
-```phel
-(ns my-app.output-test
-  (:require phel.test :refer [deftest is]))
-
-(deftest output-assertion
-  ;; assert what gets printed to stdout
-  (is (output? "hello" (print "hello"))))
-```
-
-{% php_note() %}
-Exception testing more concise than PHPUnit:
-
-```php
-// PHPUnit
-$this->expectException(Exception::class);
-throw new Exception("test");
-
-// or
-$this->expectException(Exception::class);
-$this->expectExceptionMessage("test");
-throw new Exception("test");
-
-// Phel (inline exception assertions)
-(is (thrown? Exception (throw (new Exception "test"))))
-(is (thrown-with-msg? Exception "test" (throw (new Exception "test"))))
-```
-
-The `output?` assertion is similar to PHPUnit's output buffering:
-```php
-// PHPUnit
-$this->expectOutputString("hello");
-echo "hello";
-
-// Phel
-(is (output? "hello" (print "hello")))
-```
-{% end %}
-
-## Defining tests
-
-`deftest` defines a test. Each test can contain any number of `is` assertions. A test passes when all assertions pass.
-
-<!-- phel-test: skip -->
-```phel
-(ns my-app.cart-test
-  (:require phel.test :refer [deftest is])
-  (:require my-app.cart :refer [add-item total]))
-
-(deftest empty-cart-has-zero-total
-  (is (= 0 (total []))))
-
-(deftest add-item-increases-total
-  (let [cart (add-item [] {:price 10 :qty 2})]
-    (is (= 20 (total cart)))
-    (is (= 1 (count cart)))))
-
-(deftest rejects-negative-price
-  (is (thrown? Exception (add-item [] {:price -5 :qty 1}))))
-```
-
-## Running tests
-
-Run via `vendor/bin/phel test`. Picks up tests recursively from [withTestDirs](/documentation/reference/configuration/), defaults to `tests/`.
-
-Pass filenames to run specific files:
+Pass files to run only those, and `--filter` to match test names (a regex):
 
 ```bash
 vendor/bin/phel test tests/main.phel tests/utils.phel
-```
-
-Filter by name with `--filter`:
-
-```bash
-vendor/bin/phel test tests/utils.phel --filter my-test-function
-```
-
-Stop on first failure with `--fail-fast`:
-
-```bash
-vendor/bin/phel test --fail-fast
-```
-
-Print discovered tests without running them (`--list`), or print the N slowest tests after the summary (`--slowest=N`):
-
-```bash
-vendor/bin/phel test --list
-vendor/bin/phel test --slowest=10
-```
-
-`--testdox` for TestDox format. `--quiet` for errors only, `--silent` to silence fully.
-
-Full options: `vendor/bin/phel test --help`.
-
-### Reporters
-
-Pick format with `--reporter=<name>`. Repeatable for multiple formats.
-
-| Reporter    | Description                                 |
-|-------------|---------------------------------------------|
-| `default`   | Human-readable summary (default)            |
-| `testdox`   | Sentence-style names                        |
-| `dot`       | One character per test                      |
-| `tap`       | Test Anything Protocol                      |
-| `junit-xml` | JUnit XML (use `--output=path` for a file)  |
-
-```bash
-vendor/bin/phel test --reporter=dot
-vendor/bin/phel test --reporter=junit-xml --output=build/tests.xml
-vendor/bin/phel test --reporter=tap --reporter=junit-xml --output=build/tests.xml
-```
-
-`phel.test/report` is a multimethod dispatching on event `:type`. Register custom reporters from Phel.
-
-### Selectors
-
-Filter by tag, namespace glob, or regex:
-
-```bash
-vendor/bin/phel test --include=integration
-vendor/bin/phel test --exclude=slow
-vendor/bin/phel test --ns='my-app.http.*'
 vendor/bin/phel test --filter 'user.*login'
 ```
 
-Tag tests with metadata:
+Tag tests with metadata to include or exclude them as a group:
 
 <!-- phel-test: skip -->
 ```phel
@@ -272,83 +161,82 @@ Tag tests with metadata:
   ...)
 ```
 
-Skipped tests emit `:skipped` event.
+| Flag | Effect |
+|---|---|
+| `--filter <regex>` | Only tests whose name matches |
+| `--include=<tag>` / `--exclude=<tag>` | Only, or all but, tests with that tag. Skipped tests emit a `:skipped` event |
+| `--ns='my-app.http.*'` | Only namespaces matching the glob |
+| `--last-failed` | Only the tests that failed last run (read from `.phel/last-failed.txt`) |
+| `--fail-fast` | Stop at the first failure |
+| `--list` | Print the discovered tests without running them |
+| `--repeat=N` | Run each test N times, to stress a flaky test |
+| `--random-order` | Random order with a random seed. Add `--seed=42` to reproduce a run |
+| `--seed=<int>` | Fix the seed for the default order |
+| `--slowest=N` | Print the N slowest tests after the summary |
 
-### Repeat and random order
+`--last-failed --repeat=20` is a quick way to hammer the tests that just failed. `vendor/bin/phel test --help` and [CLI commands](/documentation/reference/cli-commands/#test-your-phel-logic) list every flag.
 
-Re-run each test N times, randomize discovery order, and seed for reproducible runs:
+{% php_note() %}
+`vendor/bin/phpunit tests/MainTest.php --filter testMyFunction` becomes `vendor/bin/phel test tests/main.phel --filter my-test-function`.
+{% end %}
+
+## Watch, parallel, and coverage
+
+Rerun the selected tests on every change to a `.phel` file or `phel-config.php` in the source and test folders. Press `Ctrl+C` to stop:
 
 ```bash
-vendor/bin/phel test --repeat=10            # stress a flaky test
-vendor/bin/phel test --random-order         # random order, random seed
-vendor/bin/phel test --random-order --seed=42  # deterministic
+vendor/bin/phel test --watch --ns='my-app.users.*'
 ```
 
-`--seed=<int>` alone fixes the seed for the default deterministic order.
-
-### Parallel execution
-
-Run namespaces across subprocess workers to speed up large suites:
+Run namespaces across worker processes to speed up a large suite:
 
 ```bash
-vendor/bin/phel test --parallel=auto   # CPU detection, capped at 8 workers
+vendor/bin/phel test --parallel=auto   # detect CPUs, at most 8 workers
 vendor/bin/phel test --parallel=4      # fixed worker count
 vendor/bin/phel test --parallel=max    # every core the kernel reports
 ```
 
-Auto-disabled for `--reporter=tap`, `--list`, and when a profiler hook is installed.
+Parallel mode turns itself off for `--reporter=tap`, `--list`, and when a profiler hook is installed.
 
-### Watch mode
-
-Re-run the selected tests on every change to a `.phel` file or `phel-config.php` under the project source and test directories. Combine it with selectors to tighten the loop to what you are working on:
+Measure line coverage of your `.phel` sources (vendor and core are excluded). It needs the `pcov` or `xdebug` extension and always runs serially:
 
 ```bash
-vendor/bin/phel test --watch
-vendor/bin/phel test --watch --ns='my-app.users.*'   # only this namespace
-```
-
-Press `Ctrl+C` to stop.
-
-### Re-run failures
-
-After a run, re-run only the tests that failed instead of the whole suite. The failing set is read from `<phel-dir>/last-failed.txt` (`.phel/last-failed.txt` by default):
-
-```bash
-vendor/bin/phel test --last-failed
-vendor/bin/phel test --last-failed --repeat=20   # hammer the flaky ones
-```
-
-### Coverage
-
-Collect line coverage mapped back to your `.phel` sources. Requires the `pcov` or `xdebug` extension (you get a clear error otherwise), and runs serially: `--parallel` is disabled for the run. Only project source files count; vendor and core are excluded.
-
-```bash
-vendor/bin/phel test --coverage                      # per-file + total %, as text
+vendor/bin/phel test --coverage                  # per-file and total %, as text
 vendor/bin/phel test --coverage=clover \
-  --coverage-output=coverage.xml                       # Clover XML for CI (Codecov etc.)
+  --coverage-output=coverage.xml                 # Clover XML for CI (Codecov and others)
 ```
 
-{% php_note() %}
-Test command similar to PHPUnit:
+## Reporters
+
+Pick the output format with `--reporter=<name>`. Repeat the flag for several formats at once.
+
+| Reporter | Output |
+|---|---|
+| `default` | Human-readable summary |
+| `testdox` | Sentence-style names (also `--testdox`) |
+| `dot` | One character per test |
+| `tap` | Test Anything Protocol |
+| `junit-xml` | JUnit XML. Use `--output=path` to write a file |
 
 ```bash
-# PHPUnit
-./vendor/bin/phpunit tests/
-./vendor/bin/phpunit tests/MainTest.php
-./vendor/bin/phpunit --filter testMyFunction
-
-# Phel
-vendor/bin/phel test
-vendor/bin/phel test tests/main.phel
-vendor/bin/phel test --filter my-test-function
+vendor/bin/phel test --reporter=tap --reporter=junit-xml --output=build/tests.xml
 ```
 
-Both support filtering, verbose output, specific files.
-{% end %}
+`--quiet` prints errors only, and `--silent` prints nothing. To write your own reporter, add a method to `phel.test/report`, a multimethod that dispatches on the event `:type`.
 
-### Run tests from code
+## Run tests from the REPL or code
 
-Run tests from Phel code with `run-tests`. Takes options map (can be empty) and one or more namespaces.
+`test-ns` runs one namespace from the REPL, without the full suite:
+
+<!-- phel-test: skip -->
+```phel
+(ns my-app.tests
+  (:require phel.repl :refer [test-ns]))
+
+(test-ns "my-app.tests")
+```
+
+`run-tests` runs namespaces from code. It takes an options map (can be empty) and one or more namespaces:
 
 ```phel
 (ns my-app.runner
@@ -357,25 +245,7 @@ Run tests from Phel code with `run-tests`. Takes options map (can be empty) and 
 (run-tests {} 'my.ns.a 'my.ns.b)
 ```
 
-### Interactive testing with `test-ns`
-
-Run tests for a single namespace from the REPL:
-
-<!-- phel-test: skip -->
-```phel
-(ns my-app.tests
-  (:require phel.test :refer [deftest is])
-  (:require phel.repl :refer [test-ns]))
-
-; Run all tests in a namespace (pass namespace as a string)
-(test-ns "my-app.tests")
-```
-
-Useful for REPL-driven feedback without running the full suite.
-
-### Test statistics
-
-Manage stats programmatically:
+To keep REPL runs apart, manage the test counters: `reset-stats` sets them to zero, `get-stats` reads them, and `restore-stats` puts back a saved copy:
 
 <!-- phel-test: skip -->
 ```phel
@@ -383,54 +253,54 @@ Manage stats programmatically:
   (:require phel.test :refer [reset-stats get-stats restore-stats])
   (:require phel.repl :refer [test-ns]))
 
-; Reset test counters to zero
 (reset-stats)
-
-; Get current test statistics
 (get-stats)
 ; => {:failed [], :skipped [], :counts {:failed 0, :error 0, :pass 0, :skipped 0, :total 0}}
 
-; Save and restore stats around a test run
 (def saved (get-stats))
 (test-ns "my-app.tests")
 (restore-stats saved)
 ```
 
-Useful in REPL to isolate or reset state between runs.
-
 ## Mocking
 
-`phel.mock` module replaces functions with test doubles.
-
-### Creating mocks
+`phel.mock` creates test doubles and records their calls. `with-mocks` replaces functions for the length of a block and restores them afterwards:
 
 ```phel
-(ns my-app.tests
+(ns my-app.with-mocks-test
   (:require phel.test :refer [deftest is])
-  (:require phel.mock :refer [mock mock-fn mock-returning mock-throwing
-                               calls call-count called? called-with?
-                               called-once? never-called? reset-mock!
-                               with-mocks]))
+  (:require phel.mock :refer [mock with-mocks called-once?]))
 
-;; Fixed return value
-(def my-mock (mock :ok))
-(my-mock "any" "args")  ; => :ok
+(defn fetch-user [id]
+  ;; ... makes an HTTP call ...
+  )
 
-;; Custom behavior
-(def double-mock (mock-fn #(* % 2)))
-(double-mock 5)  ; => 10
+(deftest test-with-mock
+  (with-mocks [fetch-user (mock {:id 1 :name "Alice"})]
+    (is (= {:id 1 :name "Alice"} (fetch-user 42)))
+    (is (called-once? fetch-user))))
+```
 
-;; Consecutive return values
-(def seq-mock (mock-returning [1 2 3]))
-(seq-mock)  ; => 1
-(seq-mock)  ; => 2
-(seq-mock)  ; => 3
+Four ways to build a mock:
 
-;; Mock that throws
+```phel
+(ns my-app.mocks
+  (:require phel.mock :refer [mock mock-fn mock-returning mock-throwing]))
+
+(def my-mock (mock :ok))            ; fixed return value
+(my-mock "any" "args")              ; => :ok
+
+(def double-mock (mock-fn #(* % 2))) ; custom behavior
+(double-mock 5)                     ; => 10
+
+(def seq-mock (mock-returning [1 2 3])) ; one value per call
+(seq-mock)                          ; => 1
+(seq-mock)                          ; => 2
+
 (def err-mock (mock-throwing (new RuntimeException "fail")))
 ```
 
-### Inspecting calls
+Inspect how a mock was called:
 
 ```phel
 (ns my-app.mock-test
@@ -441,66 +311,34 @@ Useful in REPL to isolate or reset state between runs.
 (m "a" "b")
 (m "c")
 
-(calls m)          ; => [["a" "b"] ["c"]]
-(call-count m)     ; => 2
-(called? m)        ; => true
+(calls m)                 ; => [["a" "b"] ["c"]]
+(call-count m)            ; => 2
+(called? m)               ; => true
 (called-with? m "a" "b")  ; => true
-(called-once? m)   ; => false
-(never-called? m)  ; => false
+(called-once? m)          ; => false
+(never-called? m)         ; => false
 ```
 
-### Replacing functions in tests
-
-`with-mocks` temporarily replaces functions via dynamic binding. Auto-resets after the block:
-
-```phel
-(ns my-app.with-mocks-test
-  (:require phel.test :refer [deftest is])
-  (:require phel.mock :refer [mock with-mocks called-once?]))
-
-(defn fetch-user [id]
-  ;; ... makes HTTP call ...
-  )
-
-(deftest test-with-mock
-  (with-mocks [fetch-user (mock {:id 1 :name "Alice"})]
-    (is (= {:id 1 :name "Alice"} (fetch-user 42)))
-    (is (called-once? fetch-user))))
-```
+`reset-mock!` clears the recorded calls.
 
 {% php_note() %}
-Simpler than Mockery or PHPUnit mocks:
-
-```php
-// PHPUnit
-$mock = $this->createMock(UserService::class);
-$mock->method('find')->willReturn(['id' => 1]);
-
-// Phel
-(with-mocks [find-user (mock {:id 1})]
-  (find-user 42))
-```
-
-No class structure. Mock any function directly.
+No mock classes: `$this->createMock(UserService::class)->method('find')->willReturn(['id' => 1])` becomes `(with-mocks [find-user (mock {:id 1})] ...)`. You mock the function itself.
 {% end %}
 
 ## Property-based testing
 
-Instead of writing specific examples, describe properties that must hold for *any* input. Phel generates random inputs and shrinks failures to the smallest reproducing case.
+A property is a rule that must hold for any input. `defspec` generates random inputs, and when one fails, it shrinks the input to the smallest case that still fails.
 
 ```phel
-(ns my-app.tests
-  (:require phel.test :refer [deftest is])
+(ns my-app.props
   (:require phel.test.gen :as gen :refer [defspec]))
 
-;; Property: reversing twice gives back the original (holds for any vector of ints)
 ;; Shape: (defspec name options args-gen property-fn)
 (defspec reverse-roundtrip
   {}
   (gen/tuple (gen/vector-of gen/int))
   (fn [xs] (= xs (reverse (reverse xs)))))
 
-;; Property: sorting is idempotent (sort of a sorted list is still sorted)
 (defspec sort-idempotent
   {}
   (gen/tuple (gen/vector-of gen/int))
@@ -509,15 +347,6 @@ Instead of writing specific examples, describe properties that must hold for *an
       (= sorted (sort sorted)))))
 ```
 
-On failure, Phel shrinks the input to the smallest case that still fails, then reports `:shrunk-args`, `:original-args`, `:shrink-steps`, and a `:seed` to reproduce the run.
+A failure reports `:shrunk-args`, `:original-args`, `:shrink-steps`, and a `:seed` to reproduce the run. Turn shrinking off with `^:no-shrink` metadata or `:shrink? false`.
 
-Available generators: `gen/int`, `gen/string`, `gen/boolean`, `gen/keyword`, `gen/tuple`, `gen/vector-of`, `gen/map-of`, `gen/one-of`, `gen/frequency`, `gen/such-that`, and more in [phel.test.gen](/documentation/reference/api/test-gen/).
-
-Opt out of shrinking with `^:no-shrink` metadata or `:shrink? false`.
-
-## Next steps
-
-- [Configuration](/documentation/reference/configuration/): point `withTestDirs` at your test folders.
-- [CLI Commands](/documentation/reference/cli-commands): the full `phel test` flag list.
-- [phel.test API](/documentation/reference/api/test): every assertion and helper.
-- [Debugging](/documentation/guides/debugging/): find the bug before you pin it with a test.
+Generators include `gen/int`, `gen/string`, `gen/boolean`, `gen/keyword`, `gen/tuple`, `gen/vector-of`, `gen/map-of`, `gen/one-of`, `gen/frequency`, and `gen/such-that`. The [phel.test.gen API](/documentation/reference/api/test-gen/) lists them all, and the [phel.test API](/documentation/reference/api/test/) lists every assertion and helper.
