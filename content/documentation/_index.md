@@ -7,7 +7,7 @@ insert_anchor_links = "right"
 
 # Documentation
 
-Phel is a functional Lisp that compiles to PHP: persistent data structures, immutability by default, and macros, all running on your existing PHP runtime.
+Phel is a functional Lisp that compiles to PHP: persistent data structures, immutability by default, and macros, all running on your existing PHP runtime. To install it and open a REPL, start with [Getting Started](/documentation/getting-started/).
 
 ## Pick your path
 
@@ -30,26 +30,20 @@ Phel is a functional Lisp that compiles to PHP: persistent data structures, immu
   </a>
 </div>
 
-## New here? Start here
-
-1. [Phel in 5 Minutes](/documentation/phel-in-5-minutes/): never seen a Lisp? Learn to read Phel, no install needed.
-2. [Getting Started](/documentation/getting-started/): zero to a live REPL in under a minute.
-3. [Installation](/documentation/installation/): Composer, PHAR, Docker, or Nix.
-4. [Basic Types](/documentation/language/basic-types/) then [Data Structures](/documentation/language/data-structures/): the core you use everywhere.
-5. [Cheat Sheet](/documentation/reference/cheat-sheet/): keep it open while you code.
-6. [Cookbook](/documentation/guides/cookbook/): copy-paste recipes for real tasks.
-7. [Build a Web App](/documentation/guides/build-a-web-app/): a complete guestbook, end to end.
-
 ## Browse by section
 
 <div class="section-page-list">
   <a href="/documentation/language/" class="section-page-card">
     <h3 class="section-page-card__title">Language</h3>
-    <p class="section-page-card__desc">The core language: types, data structures, bindings, functions, control flow, error handling, namespaces, interfaces, and macros.</p>
+    <p class="section-page-card__desc">Types, data structures, bindings, functions, control flow, errors, namespaces, PHP interop, macros, lazy sequences, and async.</p>
   </a>
   <a href="/documentation/guides/" class="section-page-card">
     <h3 class="section-page-card__title">Guides</h3>
-    <p class="section-page-card__desc">Build a complete web app end to end, transition guides for PHP and Clojure developers, a cookbook of real-world recipes, and one-liners.</p>
+    <p class="section-page-card__desc">Build a web app, move over from PHP or Clojure, cookbook recipes, testing, debugging, performance, and deployment.</p>
+  </a>
+  <a href="/documentation/web/" class="section-page-card">
+    <h3 class="section-page-card__title">Web</h3>
+    <p class="section-page-card__desc">HTTP requests and responses, routing, HTML rendering, and adding Phel to a Symfony or Laravel app.</p>
   </a>
   <a href="/documentation/libraries/" class="section-page-card">
     <h3 class="section-page-card__title">Libraries</h3>
@@ -57,31 +51,13 @@ Phel is a functional Lisp that compiles to PHP: persistent data structures, immu
   </a>
   <a href="/documentation/tooling/" class="section-page-card">
     <h3 class="section-page-card__title">Tooling</h3>
-    <p class="section-page-card__desc">The CLI, the interactive REPL, editor integrations, and debugging with Xdebug.</p>
-  </a>
-  <a href="/documentation/web/" class="section-page-card">
-    <h3 class="section-page-card__title">Web</h3>
-    <p class="section-page-card__desc">Built-in HTTP request and response handling, routing, and HTML rendering.</p>
-  </a>
-  <a href="/documentation/language/php-interop/" class="section-page-card">
-    <h3 class="section-page-card__title">PHP Interop</h3>
-    <p class="section-page-card__desc">Call any PHP function, class, or Composer package directly from Phel.</p>
-  </a>
-  <a href="/documentation/guides/testing/" class="section-page-card">
-    <h3 class="section-page-card__title">Testing</h3>
-    <p class="section-page-card__desc">Write tests with deftest and is, mock dependencies, and run the suite with phel test.</p>
-  </a>
-  <a href="/documentation/guides/deployment/" class="section-page-card">
-    <h3 class="section-page-card__title">Deployment</h3>
-    <p class="section-page-card__desc">Ship on plain PHP-FPM, or keep namespaces warm across requests with FrankenPHP and RoadRunner.</p>
+    <p class="section-page-card__desc">The REPL, editor support, Xdebug, PHP tools, and setup for AI coding agents.</p>
   </a>
   <a href="/documentation/reference/" class="section-page-card">
     <h3 class="section-page-card__title">Reference</h3>
-    <p class="section-page-card__desc">Cheat sheet, agentic-coding guide, and the full auto-generated API for every namespace.</p>
+    <p class="section-page-card__desc">Cheat sheet, CLI commands, configuration, errors, upgrading, stability policy, and the full API.</p>
   </a>
 </div>
-
-Also in the docs: [Configuration](/documentation/reference/configuration/), [Debugging](/documentation/guides/debugging/), [Performance](/documentation/guides/performance/), and the [Stability Policy](/documentation/reference/stability/).
 
 ## Need help?
 
