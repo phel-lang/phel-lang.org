@@ -144,7 +144,7 @@ function area(float $r): float {
   rest) ; => [3 4 5]
 
 (def user {:name "Alice" :age 30})
-(let [{:name name :age age} user]
+(let [{name :name age :age} user]
   (str name " is " age)) ; => "Alice is 30"
 ```
 

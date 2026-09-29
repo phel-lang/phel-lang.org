@@ -62,9 +62,9 @@ See [Data Structures](/documentation/language/data-structures).
 
 ```phel
 (let [[a b & more] [1 2 3 4]] more)              ; => [3 4]
-(let [{:name n} {:name "Alice"}] n)              ; => "Alice"
-(let [{:role r :or {r "guest"}} {}] r)           ; => "guest"
-(defn greet [{:name name}] (str "Hello, " name))
+(let [{n :name} {:name "Alice"}] n)              ; => "Alice"
+(let [{r :role :or {r "guest"}} {}] r)           ; => "guest"
+(defn greet [{name :name}] (str "Hello, " name))
 (greet {:name "Alice"})                          ; => "Hello, Alice"
 ```
 
@@ -86,7 +86,7 @@ Works in `let`, `fn`, `defn`, `loop`, and `for`. See [Destructuring](/documentat
 (point? (point 1 2))               ; => true
 
 (defmulti area :shape)             ; multimethod, dispatch on :shape
-(defmethod area :circle [{:radius r}] (* 3.14 r r))
+(defmethod area :circle [{r :radius}] (* 3.14 r r))
 ```
 
 See [Global and Local Bindings](/documentation/language/global-and-local-bindings).

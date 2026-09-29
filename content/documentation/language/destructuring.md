@@ -49,10 +49,10 @@ A map pattern binds values by key. `:keys` is the common short form: it binds ea
   (str name " is " age)) ; => "Alice is 30"
 ```
 
-The long form pairs a key with a name. Use it to rename, or when keys are not keywords:
+The long form pairs a name with a key, name first. Use it to rename, or when keys are not keywords:
 
 ```phel
-(let [{:name n :age a} {:name "Alice" :age 30}]
+(let [{n :name a :age} {:name "Alice" :age 30}]
   [n a]) ; => ["Alice" 30]
 ```
 

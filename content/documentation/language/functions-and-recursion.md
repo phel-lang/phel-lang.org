@@ -165,10 +165,10 @@ A multimethod picks an implementation from the result of a dispatch function. `d
 ```phel
 (defmulti area :shape)
 
-(defmethod area :rectangle [{:width w :height h}]
+(defmethod area :rectangle [{w :width h :height}]
   (* w h))
 
-(defmethod area :circle [{:radius r}]
+(defmethod area :circle [{r :radius}]
   (* 3 r r))
 
 (defmethod area :default [shape]
