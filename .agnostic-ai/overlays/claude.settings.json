@@ -1,32 +1,4 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "includeCoAuthoredBy": false,
-  "permissions": {
-    "allow": [
-      "Bash(composer *)",
-      "Bash(npm run *)",
-      "Bash(npm ci)",
-      "Bash(zola *)",
-      "Bash(php build/*)",
-      "Bash(./vendor/bin/*)",
-      "Bash(vendor/bin/*)",
-      "Bash(agnostic-ai *)",
-      "Bash(git status*)",
-      "Bash(git diff*)",
-      "Bash(git log*)",
-      "Bash(git show*)",
-      "Bash(gh run *)",
-      "Bash(gh pr view *)",
-      "Bash(gh issue view *)",
-      "Bash(ls *)",
-      "Bash(wc *)"
-    ],
-    "deny": [
-      "Bash(rm -rf /:*)",
-      "Bash(rm -rf ~*)",
-      "Bash(rm -rf $HOME*)",
-      "Bash(rm -rf ..*)",
-      "Bash(sudo:*)"
-    ]
-  }
+  "includeCoAuthoredBy": false
 }

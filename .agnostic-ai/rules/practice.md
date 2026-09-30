@@ -1,12 +1,10 @@
 ---
 name: practice
 description: Structure of the practice modules and their exercise components.
-globs: content/practice/**,templates/components/question.html,templates/components/hint.html,templates/components/solution.html,templates/practice-*.html
+scope: content/practice
 ---
 
 # Practice
-
-Applies to `content/practice/**` and the `question`, `hint` and `solution` components and `templates/practice-*.html`.
 
 - Modules go from zero Lisp to real programs. A module only uses concepts from itself and earlier modules (by `weight`).
 - Front matter: `title`, `weight`, `description`, `[extra] stage` (`Foundations`, `Functional core`, `Real world` or `Projects`), `goals`, `read_first`, `recap`.

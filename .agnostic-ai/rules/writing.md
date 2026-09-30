@@ -1,12 +1,10 @@
 ---
 name: writing
 description: Voice and style for docs, practice and blog content.
-globs: content/**
+scope: content
 ---
 
 # Writing
-
-Applies to `content/**`.
 
 - Plain English for a reader whose second language is English. Short sentences, one idea each, second person.
 - No em or en dashes. Use commas, colons, parentheses or a hyphen.

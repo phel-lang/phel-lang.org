@@ -19,5 +19,35 @@ targets:
 
 on-unsupported: warn
 
+# Codex has no portable permissions: its exec policies mirror
+# .agnostic-ai/settings/permissions.yaml as command prefixes.
+outputs:
+  codex:
+    exec-policies:
+      - pattern: ["composer"]
+        decision: allow
+        justification: Composer scripts build, test and analyse the site.
+      - pattern: ["npm", "run"]
+        decision: allow
+        justification: npm scripts build the CSS and check links.
+      - pattern: ["npm", "ci"]
+        decision: allow
+        justification: Installs the locked Node dependencies.
+      - pattern: ["zola"]
+        decision: allow
+        justification: Builds, checks and serves the site.
+      - pattern: ["php", "build/run-doc-snippets.php"]
+        decision: allow
+        justification: Runs the doc snippets against the Phel runtime.
+      - pattern: ["agnostic-ai"]
+        decision: allow
+        justification: Syncs and checks the agent config.
+      - pattern: ["git", "push"]
+        decision: prompt
+        justification: Pushing to master deploys the site.
+      - pattern: ["sudo"]
+        decision: forbidden
+        justification: Nothing in this repository needs root.
+
 gitignore:
   enabled: true

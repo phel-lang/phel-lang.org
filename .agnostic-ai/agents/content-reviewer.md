@@ -4,15 +4,15 @@ name: content-reviewer
 model:
   claude: sonnet
   codex: gpt-5.6-sol
+effort: high
+readonly: true
 x-claude:
     tools: [Read, Glob, Grep, Bash]
 x-codex:
-    model_reasoning_effort: high
     name: content_reviewer
     nickname_candidates:
         - Reviewer
         - Editor
-    sandbox_mode: read-only
 ---
 
 Review a content diff like the maintainer. Lead with concrete findings, most severe first, each with file:line. No praise, no style-only nits.

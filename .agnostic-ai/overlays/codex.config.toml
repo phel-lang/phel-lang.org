@@ -4,7 +4,7 @@ model_reasoning_effort = "medium"
 developer_instructions = """
 This is the phel-lang.org website repository: a Zola site for the Phel language. Treat AGENTS.md as the source of truth for repository policy. It is generated from .agnostic-ai/: change policy there and run `agnostic-ai sync`, never edit AGENTS.md, .codex/ or .agents/ by hand.
 
-Rules in AGENTS.md that start with "Applies to" only cover the paths they name.
+Directory rules live in the AGENTS.md of their directory (content/, content/practice/).
 Before pushing, run the gate in the verify-site skill: composer build, npm run build-css-prod, zola build, zola check, npm run check:links, and the doc-snippet runner.
 """
 
