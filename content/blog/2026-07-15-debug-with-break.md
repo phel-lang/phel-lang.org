@@ -1,5 +1,5 @@
 +++
-title = "Debug Phel with `(break)`, `dbg` and `inspect`"
+title = "Debug Phel with (break), dbg and inspect"
 aliases = [ "/blog/phel-0-48-step-into" ]
 description = "Stop a running function and query its locals with `(break)`. Print any value in place with `dbg` and `inspect`, without reshaping your code."
 date = 2026-07-15

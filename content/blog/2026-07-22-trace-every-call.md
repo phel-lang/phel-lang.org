@@ -1,5 +1,5 @@
 +++
-title = "Trace Every Call with `phel.trace`"
+title = "Trace Every Call with phel.trace"
 aliases = [ "/blog/phel-0-49-arity-lane" ]
 description = "See every call a function makes, with its arguments and its result, indented by depth. `phel.trace` brings `clojure.tools.trace` to Phel, and multi-arity calls got 1.5-2x faster."
 date = 2026-07-22

@@ -1,5 +1,5 @@
 +++
-title = "Prove a Speedup with `phel bench --ab`"
+title = "Prove a Speedup with phel bench --ab"
 aliases = [ "/blog/phel-0-53-floor-raised" ]
 description = "phel bench --ab runs your benchmarks against a git ref and your working tree in turns, in the same sitting, so a warm laptop cannot fake a speedup. Short type tags like ^map make a fast lookup one word away."
 date = 2026-09-24
@@ -85,15 +85,22 @@ Side A is the ref, `main` here. Side B is your working tree, uncommitted changes
 
 Side A runs from a temporary `git worktree` in the system temp dir. Phel removes it when the run ends, fails or is interrupted. Your working tree is never checked out or stashed. Run the command from the repository root.
 
-The output has one row per benchmark. The [benchmarking guide](https://github.com/phel-lang/phel-lang/blob/main/docs/benchmarking.md) shows the shape:
+Here it is on the orders example, with the plain `reduce` committed on `main` and the transient version in the working tree:
 
 ```text
-benchmark                          a-mean   b-mean  delta signs
-my-app.bench/bench-step           4.912μs  4.103μs -16.47%   5/5
-my-app.bench/bench-render         1.207ms  1.215ms  +0.62%   3/5 noise
+A: main (e12296be2), in /tmp/phel-bench-ab-629609810bb9/tree
+B: the working tree
+pair 1/5
+...
+pair 5/5
+
+benchmark                              a-mean    b-mean   delta signs
+shop.orders-bench/bench-index-by-id 835.321μs 716.892μs -12.15%   5/5
 ```
 
-`delta` is the mean of the per-pair changes, `(B - A) / A`. `signs` counts the pairs that moved in that direction. `5/5` means every pair saw B faster. `3/5` means the pairs disagree, so the row says `noise`. A consistent sign is the signal. A mean that one lucky pair set is not.
+Twice the gain the stored baseline reported, and this time every pair agrees. The whole run took ten seconds.
+
+`delta` is the mean of the per-pair changes, `(B - A) / A`. `signs` counts the pairs that moved in that direction. `5/5` means every pair saw B faster. `3/5` would mean the pairs disagree, and the row would say `noise`. A consistent sign is the signal. A mean that one lucky pair set is not.
 
 ## Turn it into a gate
 
