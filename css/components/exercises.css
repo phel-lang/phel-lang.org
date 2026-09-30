@@ -1,16 +1,319 @@
-.question-block {
-  margin: var(--space-xl) 0 var(--space-md);
+/* ========================================
+   EXERCISE UNIT
+   The question, hint and solution shortcodes render as siblings, so one
+   exercise reads as a single frame through adjacent-sibling selectors.
+   ======================================== */
+
+/* Markdown wraps the shortcodes in a <p> the browser splits in two. */
+.page-content > p:empty {
+  display: none;
 }
 
-.question-block h3 {
+.question-block,
+.exercise-part {
+  --exercise-border: var(--color-light-border);
+  --exercise-surface: var(--color-light-surface);
+
+  background: var(--exercise-surface);
+  border: 1px solid var(--exercise-border);
+  transition: border-color var(--duration-fast) var(--ease-out);
+}
+
+.question-block {
+  margin: var(--space-2xl) 0 0;
+  padding: var(--space-md) var(--space-lg) var(--space-lg);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-bottom: 0;
+  scroll-margin-top: 6rem;
+}
+
+.question-block + .exercise-part,
+.exercise-part + .exercise-part {
+  margin: 0;
+  border-top-color: var(--color-light-border-subtle);
+}
+
+.exercise-solution {
+  margin-bottom: var(--space-2xl);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+.exercise-head > * {
+  margin: 0;
+}
+
+.exercise-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm) var(--space-md);
+}
+
+.question-block .exercise-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: 0;
+  padding: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.exercise-number {
+  color: var(--color-light-text-secondary);
+  font-variant-numeric: tabular-nums;
+  text-decoration: none;
+}
+
+.exercise-number::after {
+  display: none;
+}
+
+.exercise-number:hover {
+  color: var(--color-light-link);
+}
+
+.exercise-kind {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.125rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  line-height: 1.4;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-light-border);
+  color: var(--color-light-text-secondary);
+}
+
+.exercise-body {
+  margin-top: var(--space-md);
+}
+
+.exercise-body > :first-child {
+  margin-top: 0;
+  font-size: 1.0625rem;
+  color: var(--color-light-text-primary);
+}
+
+/* Outranks `.one-column-layout .code-block-wrapper:not(...)`, whose :not()
+   lifts it to four classes, so a closing code block sits flush. */
+.one-column-layout .page-content .question-block .exercise-body > :last-child,
+.one-column-layout .page-content .exercise-part .exercise-part__body > :last-child {
+  margin-bottom: 0;
+}
+
+.one-column-layout .page-content .question-block .exercise-body > :first-child,
+.one-column-layout .page-content .exercise-part /* Done toggle */
+.exercise-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2rem;
+  padding: 0.25rem 0.75rem 0.25rem 0.5rem;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-light-text-secondary);
+  background: transparent;
+  border: 1px solid var(--color-light-border);
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.exercise-check:hover {
+  color: var(--color-light-success);
+  border-color: var(--color-light-success-border);
+}
+
+.exercise-check:focus-visible,
+.exercise-part__summary:focus-visible {
+  outline: 2px solid var(--color-light-link);
+  outline-offset: 2px;
+}
+
+.exercise-check__icon {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.exercise-check__tick {
+  opacity: 0;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.exercise-check[aria-pressed='true'] {
+  color: var(--color-light-success);
+  background: var(--color-light-success-bg);
+  border-color: var(--color-light-success-border);
+}
+
+.exercise-check[aria-pressed='true'] .exercise-check__ring {
+  fill: currentColor;
+}
+
+.exercise-check[aria-pressed='true'] .exercise-check__tick {
+  opacity: 1;
+  stroke: var(--color-light-surface);
+  stroke-width: 2;
+}
+
+/* A finished exercise: the whole frame turns green. */
+.question-block.is-done,
+.question-block.is-done + .exercise-part,
+.question-block.is-done + .exercise-part + .exercise-part {
+  --exercise-border: var(--color-light-success-border);
+}
+
+/* Hint and solution rows */
+.exercise-part {
+  padding: 0 var(--space-lg);
+}
+
+.exercise-part__summary {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: var(--space-xs);
+  padding: var(--space-sm) 0;
+  min-height: 2.75rem;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-light-link);
+  list-style: none;
+  cursor: pointer;
+  border-radius: var(--radius-md);
 }
 
-.question-block .exercise-number {
-  font-weight: 700;
+.exercise-part__summary::-webkit-details-marker {
+  display: none;
+}
+
+.exercise-part__summary:hover {
+  color: var(--color-light-link-hover);
+}
+
+.exercise-part__chevron {
+  width: 1rem;
+  height: 1rem;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.exercise-part[open] > .exercise-part__summary .exercise-part__chevron {
+  transform: rotate(90deg);
+}
+
+.exercise-part__body {
+  padding-bottom: var(--space-lg);
+}
+
+.exercise-part__body > :first-child {
+  margin-top: 0;
+}
+
+.exercise-hint .exercise-part__summary {
+  color: var(--color-light-text-secondary);
+}
+
+.exercise-hint .exercise-part__summary:hover {
+  color: var(--color-light-text-primary);
+}
+
+@media (max-width: 640px) {
+  .question-block,
+  .exercise-part {
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .exercise-part__chevron,
+  .exercise-check,
+  .exercise-check__tick {
+    transition: none;
+  }
+}
+
+/* Dark mode */
+.dark .question-block,
+.dark .exercise-part {
+  --exercise-border: var(--color-dark-border);
+  --exercise-surface: var(--color-dark-surface);
+}
+
+.dark .question-block + .exercise-part,
+.dark .exercise-part + .exercise-part {
+  border-top-color: var(--color-dark-border-subtle);
+}
+
+.dark .question-block.is-done,
+.dark .question-block.is-done + .exercise-part,
+.dark .question-block.is-done + .exercise-part + .exercise-part {
+  --exercise-border: var(--color-dark-success-border);
+}
+
+.dark .exercise-number,
+.dark .exercise-kind,
+.dark .exercise-check,
+.dark .exercise-hint .exercise-part__summary {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .exercise-kind,
+.dark .exercise-check {
+  border-color: var(--color-dark-border);
+}
+
+.dark .exercise-body > :first-child,
+.dark .exercise-hint .exercise-part__summary:hover {
+  color: var(--color-dark-text-primary);
+}
+
+.dark .exercise-number:hover,
+.dark .exercise-part__summary {
+  color: var(--color-dark-text-accent);
+}
+
+.dark .exercise-part__summary:hover {
+  color: var(--color-dark-text-accent-hover);
+}
+
+.dark .exercise-check:hover,
+.dark .exercise-check[aria-pressed='true'] {
+  color: var(--color-dark-success);
+  border-color: var(--color-dark-success-border);
+}
+
+.dark .exercise-check[aria-pressed='true'] {
+  background: var(--color-dark-success-bg);
+}
+
+.dark .exercise-check[aria-pressed='true'] .exercise-check__tick {
+  stroke: var(--color-dark-surface);
+}
+
+.dark .exercise-check:focus-visible,
+.dark .exercise-part__summary:focus-visible {
+  outline-color: var(--color-dark-text-accent);
 }
 
 .difficulty {
@@ -57,61 +360,6 @@
 .dark .difficulty-hard {
   background: rgb(239 68 68 / 0.2);
   color: #f87171;
-}
-
-.exercise-kind {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.125rem 0.55rem;
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  border-radius: var(--radius-full);
-  border: 1px solid var(--color-light-border);
-  background: var(--color-light-bg-secondary);
-  color: var(--color-light-text-secondary);
-  line-height: 1.4;
-}
-
-.dark .exercise-kind {
-  border-color: var(--color-dark-border);
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--color-dark-text-secondary);
-}
-
-.exercise-hint {
-  margin: var(--space-md) 0;
-  border: 1px dashed var(--color-light-border);
-  border-radius: var(--radius-lg);
-  padding: var(--space-sm) var(--space-md);
-}
-
-.exercise-hint > summary {
-  cursor: pointer;
-  font-weight: 600;
-  font-size: var(--text-sm);
-  color: var(--color-light-text-secondary);
-}
-
-.exercise-hint[open] > summary {
-  margin-bottom: var(--space-sm);
-}
-
-.exercise-hint__body > :first-child {
-  margin-top: 0;
-}
-
-.exercise-hint__body > :last-child {
-  margin-bottom: 0;
-}
-
-.dark .exercise-hint {
-  border-color: var(--color-dark-border);
-}
-
-.dark .exercise-hint > summary {
-  color: var(--color-dark-text-secondary);
 }
 
 /* ========================================
@@ -172,46 +420,6 @@
 .dark .module-brief__title,
 .dark .module-recap__title {
   color: var(--color-dark-text-secondary);
-}
-
-.solution {
-  margin: var(--space-xl) 0;
-}
-
-.solution input[type="checkbox"] {
-  display: none;
-}
-
-.solution label.btn::before {
-  content: '→ Show solution';
-}
-
-.solution input[type="checkbox"]:checked ~ label.btn.btn-secondary {
-  background: var(--color-light-link) !important;
-  color: white !important;
-  border-color: var(--color-light-link) !important;
-}
-
-.solution input[type="checkbox"]:checked ~ label.btn::before {
-  content: '← Hide solution';
-}
-
-.solution .solution-content {
-  display: none;
-}
-
-.solution input[type="checkbox"]:checked ~ .solution-content {
-  display: block;
-}
-
-/* ========================================
-   DARK MODE
-   ======================================== */
-
-.dark .solution input[type="checkbox"]:checked ~ .btn.btn-secondary {
-  background: var(--color-dark-text-accent) !important;
-  color: var(--color-dark-bg) !important;
-  border-color: var(--color-dark-text-accent) !important;
 }
 
 /* ========================================

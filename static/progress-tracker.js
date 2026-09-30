@@ -26,11 +26,12 @@
       const p = getProgress();
       const id = exerciseId(pageSlug, index);
       const done = !!p[id];
+      question.classList.toggle('is-done', done);
       const check = question.querySelector('[data-exercise-check]');
       if (check) {
-        check.innerHTML = done ? '&#10003;' : '';
-        check.classList.toggle('completed', done);
-        check.title = done ? 'Completed, click to undo' : 'Mark as done';
+        check.setAttribute('aria-pressed', String(done));
+        const label = check.querySelector('.exercise-check__label');
+        if (label) label.textContent = done ? 'Done' : 'Mark as done';
       }
     }
 

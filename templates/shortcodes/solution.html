@@ -1,7 +1,9 @@
-<div class="solution">
-    <input type="checkbox" id="cb{{ nth }}">
-    <label for="cb{{ nth }}" class="btn btn-secondary"></label>
-    <div class="solution-content">
+<details class="exercise-solution exercise-part">
+    <summary class="exercise-part__summary">
+        <svg class="exercise-part__chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg>
+        Solution
+    </summary>
+    <div class="exercise-part__body">
         {{ body | markdown | safe }}
     </div>
-</div>
+</details>
