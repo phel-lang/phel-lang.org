@@ -1,26 +1,82 @@
 {
   "name": "Phel",
   "scopeName": "source.phel",
-  "fileTypes": ["phel"],
+  "fileTypes": [
+    "phel"
+  ],
   "patterns": [
-    { "include": "#repl-prompt" },
-    { "include": "#reader-skip" },
-    { "include": "#regex-literal" },
-    { "include": "#tagged-literal" },
-    { "include": "#comment" },
-    { "include": "#string" },
-    { "include": "#keyword" },
-    { "include": "#php-interop" },
-    { "include": "#keysym" },
-    { "include": "#literal" },
-    { "include": "#number" },
-    { "include": "#anon-fn-paren" },
-    { "include": "#set-brace" },
-    { "include": "#paren" },
-    { "include": "#bracket" },
-    { "include": "#brace" },
-    { "include": "#anon-fn-arg" },
-    { "include": "#unquote" }
+    {
+      "include": "#repl-prompt"
+    },
+    {
+      "include": "#reader-skip"
+    },
+    {
+      "include": "#regex-literal"
+    },
+    {
+      "include": "#symbolic-number"
+    },
+    {
+      "include": "#reader-macro"
+    },
+    {
+      "include": "#tagged-literal"
+    },
+    {
+      "include": "#comment"
+    },
+    {
+      "include": "#string"
+    },
+    {
+      "include": "#keyword"
+    },
+    {
+      "include": "#php-interop"
+    },
+    {
+      "include": "#character"
+    },
+    {
+      "include": "#metadata"
+    },
+    {
+      "include": "#keysym"
+    },
+    {
+      "include": "#php-member"
+    },
+    {
+      "include": "#php-class"
+    },
+    {
+      "include": "#literal"
+    },
+    {
+      "include": "#number"
+    },
+    {
+      "include": "#anon-fn-paren"
+    },
+    {
+      "include": "#set-brace"
+    },
+    {
+      "include": "#paren"
+    },
+    {
+      "include": "#bracket"
+    },
+    {
+      "include": "#brace"
+    },
+    {
+      "include": "#anon-fn-arg"
+    },
+    {
+      "include": "#unquote"
+    }
   ],
   "repository": {
     "repl-prompt": {
@@ -34,13 +90,8 @@
     "comment": {
       "patterns": [
         {
-          "name": "comment.block.phel",
-          "begin": "#\\|",
-          "end": "\\|#"
-        },
-        {
           "name": "comment.line.phel",
-          "match": "(?:;|#(?![_{\\|(\"?#A-Za-z']))[^\\n]*$"
+          "match": ";[^\\n]*$"
         }
       ]
     },
@@ -58,8 +109,16 @@
           "name": "string.regexp.phel",
           "begin": "#\"",
           "end": "\"",
-          "beginCaptures": { "0": { "name": "punctuation.definition.string.begin.phel" } },
-          "endCaptures": { "0": { "name": "punctuation.definition.string.end.phel" } },
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.phel"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.phel"
+            }
+          },
           "patterns": [
             {
               "name": "constant.character.escape.phel",
@@ -73,7 +132,7 @@
       "patterns": [
         {
           "name": "storage.type.tagged-literal.phel",
-          "match": "#[A-Za-z][A-Za-z0-9_\\-]*"
+          "match": "#[A-Za-z][A-Za-z0-9_.\\-]*(?:/[A-Za-z][A-Za-z0-9_\\-]*)?"
         }
       ]
     },
@@ -86,7 +145,7 @@
           "patterns": [
             {
               "name": "constant.character.escape.phel",
-              "match": "\\\\(x[0-9A-Fa-f]{1,2}|u\\{[0-9A-Fa-f]+\\}|[nrt\\\\\"$])"
+              "match": "\\\\(x[0-9A-Fa-f]{1,2}|u\\{[0-9A-Fa-f]+\\}|[0-7]{1,3}|[nrtvef\\\\\\\"$])"
             }
           ]
         }
@@ -96,7 +155,7 @@
       "patterns": [
         {
           "name": "keyword.control.phel",
-          "match": "(?<=\\()(defstruct|definterface|defmacro-|defmacro|defn-|defn|def-|def|recur|fn|throw|try|catch|finally|loop|ns|quote|dofor|do|if-not|if|when-not|when|apply|let|foreach|for|case|cond|list|vector|hash-map|set|println|print|str|map|filter|reduce|concat|conj|assoc|dissoc|get|get-in|put|push|first|second|rest|count|empty\\?|contains\\?|merge|sort|sort-by|group-by|frequencies|range|take|drop|reverse|partial|comp|identity|not|and|or|true\\?|false\\?|nil\\?|zero\\?|one\\?|even\\?|odd\\?|pos\\?|neg\\?|int\\?|float\\?|string\\?|keyword\\?|symbol\\?|vector\\?|map\\?|set\\?|list\\?|fn\\?|deftest|is|are|thrown\\?|->|->>|as->|some|every\\?|update|update-in|assoc-in|into|distinct|partition|interleave|map-indexed|keep|flat-map|reduce-kv)(?=[\\s\\)\\]\\}])"
+          "match": "(?<=\\()(extend-protocol|definterface|defexception|frequencies|map-indexed|defprotocol|extend-type|satisfies\\?|with-redefs|contains\\?|interleave|trampoline|instance\\?|re-matches|with-mocks|defstruct|defmacro-|keyword\\?|update-in|partition|reduce-kv|when-some|defmethod|defrecord|definline|with-open|defmacro|when-not|hash-map|group-by|identity|string\\?|symbol\\?|vector\\?|thrown\\?|assoc-in|distinct|flat-map|when-let|defmulti|defbench|deftrace|finally|foreach|println|empty\\?|sort-by|reverse|partial|false\\?|float\\?|deftest|every\\?|if-some|binding|dotimes|some->>|cond->>|declare|require|ex-info|ex-data|re-find|testing|comment|defonce|defenum|if-not|vector|filter|reduce|concat|dissoc|get-in|second|true\\?|zero\\?|even\\?|list\\?|update|if-let|some->|cond->|reset!|re-seq|defn-|recur|throw|catch|quote|dofor|apply|print|assoc|first|count|merge|range|nil\\?|one\\?|odd\\?|pos\\?|neg\\?|int\\?|map\\?|set\\?|letfn|doseq|while|condp|match|in-ns|swap!|deref|break|reify|defn|def-|loop|when|case|cond|list|conj|push|rest|sort|take|drop|comp|fn\\?|as->|some|into|keep|set!|atom|load|def|try|let|for|set|str|map|get|put|not|and|are|->>|new|use|dbg|var|fn|ns|do|if|or|is|->)(?=[\\s\\)\\]\\}])"
         }
       ]
     },
@@ -144,11 +203,11 @@
         },
         {
           "name": "constant.numeric.float.phel",
-          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?(?:\\d+\\.\\d+|\\.\\d+)(?:[eE][+-]?\\d+)?(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?(?:\\d+\\.\\d+|\\.\\d+)(?:[eE][+-]?\\d+)?M?(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
         },
         {
           "name": "constant.numeric.integer.phel",
-          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?\\d+(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])[-+]?\\d+(?:_\\d+)*[NM]?(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
         }
       ]
     },
@@ -157,9 +216,21 @@
         {
           "begin": "#\\(",
           "end": "\\)",
-          "beginCaptures": { "0": { "name": "punctuation.section.anon-fn.begin.phel" } },
-          "endCaptures": { "0": { "name": "punctuation.section.anon-fn.end.phel" } },
-          "patterns": [{ "include": "$self" }]
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.anon-fn.begin.phel"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.anon-fn.end.phel"
+            }
+          },
+          "patterns": [
+            {
+              "include": "$self"
+            }
+          ]
         }
       ]
     },
@@ -168,9 +239,21 @@
         {
           "begin": "#\\{",
           "end": "\\}",
-          "beginCaptures": { "0": { "name": "punctuation.section.set.begin.phel" } },
-          "endCaptures": { "0": { "name": "punctuation.section.set.end.phel" } },
-          "patterns": [{ "include": "$self" }]
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.set.begin.phel"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.set.end.phel"
+            }
+          },
+          "patterns": [
+            {
+              "include": "$self"
+            }
+          ]
         }
       ]
     },
@@ -179,9 +262,21 @@
         {
           "begin": "@?\\(",
           "end": "\\)",
-          "beginCaptures": { "0": { "name": "punctuation.paren.open.phel" } },
-          "endCaptures": { "0": { "name": "punctuation.paren.close.phel" } },
-          "patterns": [{ "include": "$self" }]
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.paren.open.phel"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.paren.close.phel"
+            }
+          },
+          "patterns": [
+            {
+              "include": "$self"
+            }
+          ]
         }
       ]
     },
@@ -190,9 +285,21 @@
         {
           "begin": "@?\\[",
           "end": "\\]",
-          "beginCaptures": { "0": { "name": "punctuation.bracket.open.phel" } },
-          "endCaptures": { "0": { "name": "punctuation.bracket.close.phel" } },
-          "patterns": [{ "include": "$self" }]
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.bracket.open.phel"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.bracket.close.phel"
+            }
+          },
+          "patterns": [
+            {
+              "include": "$self"
+            }
+          ]
         }
       ]
     },
@@ -201,9 +308,21 @@
         {
           "begin": "@?\\{",
           "end": "\\}",
-          "beginCaptures": { "0": { "name": "punctuation.brace.open.phel" } },
-          "endCaptures": { "0": { "name": "punctuation.brace.close.phel" } },
-          "patterns": [{ "include": "$self" }]
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.brace.open.phel"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.brace.close.phel"
+            }
+          },
+          "patterns": [
+            {
+              "include": "$self"
+            }
+          ]
         }
       ]
     },
@@ -219,11 +338,83 @@
       "patterns": [
         {
           "name": "keyword.operator.unquote-splicing.phel",
-          "match": "~@|,@"
+          "match": "~@"
         },
         {
           "name": "keyword.operator.unquote.phel",
-          "match": "~|,(?![A-Za-z0-9_])"
+          "match": "~"
+        }
+      ]
+    },
+    "php-member": {
+      "patterns": [
+        {
+          "name": "support.function.method.phel",
+          "match": "(?<=\\()\\.-?[A-Za-z_][A-Za-z0-9_]*(?=[\\s)])"
+        }
+      ]
+    },
+    "php-class": {
+      "patterns": [
+        {
+          "name": "support.class.constructor.phel",
+          "match": "(?<=\\()\\\\?[A-Z][A-Za-z0-9_]*(?:[.\\\\][A-Z][A-Za-z0-9_]*)*\\.(?=[\\s)])"
+        },
+        {
+          "name": "support.class.member.phel",
+          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~\\\\])\\\\?[A-Z][A-Za-z0-9_]*(?:[.\\\\][A-Z][A-Za-z0-9_]*)*/\\$?[A-Za-z_][A-Za-z0-9_]*"
+        },
+        {
+          "name": "support.class.phel",
+          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~\\\\#])\\\\?[A-Z][A-Za-z0-9_]*(?:[.\\\\][A-Z][A-Za-z0-9_]*)*(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+        }
+      ]
+    },
+    "reader-macro": {
+      "patterns": [
+        {
+          "name": "keyword.operator.reader-conditional.phel",
+          "match": "#\\?@?(?=\\()"
+        },
+        {
+          "name": "keyword.operator.var-quote.phel",
+          "match": "#'"
+        },
+        {
+          "name": "keyword.operator.quote.phel",
+          "match": "['`]"
+        },
+        {
+          "name": "keyword.operator.deref.phel",
+          "match": "@(?=[A-Za-z_*!?<>=+\\-])"
+        }
+      ]
+    },
+    "symbolic-number": {
+      "patterns": [
+        {
+          "name": "constant.numeric.symbolic.phel",
+          "match": "##(?:-?Inf|NaN)(?![A-Za-z0-9_\\-?!$%&*+./:<=>@^~])"
+        }
+      ]
+    },
+    "character": {
+      "patterns": [
+        {
+          "name": "constant.character.phel",
+          "match": "(?<![A-Za-z0-9_\\-?!$%&*+./:<=>@^~\\\\])\\\\(?:space|newline|tab|return|formfeed|backspace|u[0-9A-Fa-f]{4}|o[0-7]{1,3}|[^\\sA-Z])(?![A-Za-z0-9_])"
+        }
+      ]
+    },
+    "metadata": {
+      "patterns": [
+        {
+          "name": "constant.other.metadata.phel",
+          "match": "\\^(?=[:{])"
+        },
+        {
+          "name": "constant.other.metadata.phel",
+          "match": "\\^[A-Za-z_][A-Za-z0-9_.\\-?!*]*"
         }
       ]
     }
