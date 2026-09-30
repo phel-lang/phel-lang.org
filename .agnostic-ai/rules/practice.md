@@ -6,6 +6,8 @@ globs: content/practice/**,templates/components/question.html,templates/componen
 
 # Practice
 
+Applies to `content/practice/**` and the `question`, `hint` and `solution` components and `templates/practice-*.html`.
+
 - Modules go from zero Lisp to real programs. A module only uses concepts from itself and earlier modules (by `weight`).
 - Front matter: `title`, `weight`, `description`, `[extra] stage` (`Foundations`, `Functional core`, `Real world` or `Projects`), `goals`, `read_first`, `recap`.
 - An exercise is `{% <question difficulty="..." kind="..."> %}...{% </question> %}`, an optional `{% <hint> %}...{% </hint> %}`, then `{% <solution> %}...{% </solution> %}`. `kind` is one of predict, fill, write, fix, refactor, build.

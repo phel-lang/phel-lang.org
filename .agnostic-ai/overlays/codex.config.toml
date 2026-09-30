@@ -1,0 +1,18 @@
+commit_attribution = ""
+model_reasoning_effort = "medium"
+
+developer_instructions = """
+This is the phel-lang.org website repository: a Zola site for the Phel language. Treat AGENTS.md as the source of truth for repository policy. It is generated from .agnostic-ai/: change policy there and run `agnostic-ai sync`, never edit AGENTS.md, .codex/ or .agents/ by hand.
+
+Rules in AGENTS.md that start with "Applies to" only cover the paths they name.
+Before pushing, run the gate in the verify-site skill: composer build, npm run build-css-prod, zola build, zola check, npm run check:links, and the doc-snippet runner.
+"""
+
+[features]
+hooks = true
+multi_agent = true
+
+[agents]
+max_threads = 6
+max_depth = 1
+job_max_runtime_seconds = 1800

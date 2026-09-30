@@ -4,7 +4,8 @@ name: content-reviewer
 model:
   claude: sonnet
   codex: gpt-5.6-sol
-tools: [Read, Glob, Grep, Bash]
+x-claude:
+    tools: [Read, Glob, Grep, Bash]
 x-codex:
     model_reasoning_effort: high
     name: content_reviewer

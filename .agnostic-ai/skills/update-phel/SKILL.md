@@ -1,7 +1,8 @@
 ---
 name: update-phel
 description: Bump phel-lang/phel-lang dependency to the latest release in this website repo. Triggers on "update phel", "bump phel", "upgrade phel-lang", "new phel release". Handles composer constraint bump, lock refresh, and verifies the post-update hook regenerated config.toml.
-model: sonnet
+x-claude:
+  model: sonnet
 ---
 
 # Update phel-lang to latest

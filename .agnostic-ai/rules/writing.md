@@ -6,6 +6,8 @@ globs: content/**
 
 # Writing
 
+Applies to `content/**`.
+
 - Plain English for a reader whose second language is English. Short sentences, one idea each, second person.
 - No em or en dashes. Use commas, colons, parentheses or a hyphen.
 - No filler adverbs (just, really, basically, actually, simply), no hype, no exclamation marks, no emoji.

@@ -1,4 +1,4 @@
-name: protect-generated
+name: protect-generated-claude
 description: Block Claude Code edits to generated files.
 event: PreToolUse
 matcher: Edit|Write

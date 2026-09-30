@@ -1,7 +1,8 @@
 ---
 name: phel-lang
 description: Write or verify Phel code (Lisp on PHP). Triggers on .phel files, phel-config.php, phel CLI commands, or Phel snippets in markdown docs. Verify any non-trivial snippet against the runtime before claiming it works.
-model: sonnet
+x-claude:
+  model: sonnet
 ---
 
 # Phel

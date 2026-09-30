@@ -1,0 +1,8 @@
+name: protect-generated-codex
+description: Block Codex edits and patches to generated files.
+event: PreToolUse
+matcher: apply_patch|Edit|Write
+target: codex
+command: 'sh -c ''r=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0; s="$r/.agnostic-ai/scripts/protect-generated.sh"; [ -x "$s" ] || exit 0; exec "$s"'''
+timeout: 5
+statusMessage: Checking generated files

@@ -1,7 +1,8 @@
 ---
 name: verify-site
 description: Run the full phel-lang.org gate before a push, then confirm the deploy is live. Trigger on "verify", "check the site", "run the gate", or before pushing content, template or build changes.
-model: sonnet
+x-claude:
+  model: sonnet
 ---
 
 # Verify the site

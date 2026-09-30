@@ -73,6 +73,8 @@ cache/
 /.claude/settings.local.json
 /.claude/skills/
 /.codex/agents/
+/.codex/config.toml
+/.codex/hooks.json
 /AGENTS.md
 /CLAUDE.md
 /agnostic-ai.local.yaml

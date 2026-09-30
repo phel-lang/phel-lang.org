@@ -1,7 +1,8 @@
 ---
 name: commit
 description: Create a git commit following project conventions. Trigger on "commit", "/commit", or requests to commit changes.
-model: sonnet
+x-claude:
+  model: sonnet
 ---
 
 # Commit
