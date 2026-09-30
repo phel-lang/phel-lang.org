@@ -1,7 +1,13 @@
 {% extends "layouts/one-column-layout.html" %}
 
+{% block page_head %}
+    <link rel="preload" href="{{ get_url(path="fonts/brygada-1918-italic-latin.woff2") }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ get_url(path="fonts/brygada-1918-latin.woff2") }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ get_url(path="fonts/departure-mono.woff2") }}" as="font" type="font/woff2" crossorigin>
+{% endblock page_head %}
+
 {% block content %}
-    <div class="homepage-content">
+    <div class="homepage-content ph">
         {{ section.content | safe }}
     </div>
 {% endblock content %}

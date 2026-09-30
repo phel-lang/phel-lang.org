@@ -79,7 +79,6 @@
    landing pages get four cards while the narrower content column of a
    page with a sidebar stays at two. */
 .documentation-landing,
-.homepage-section,
 .page-content {
   container-type: inline-size;
 }

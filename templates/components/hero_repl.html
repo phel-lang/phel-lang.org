@@ -5,7 +5,7 @@
     form as typing. -#}
 {%- component hero_repl() -%}
 {%- set pairs = load_data(path="static/animated-repl-data.json") -%}
-<div class="terminal" role="group" aria-label="Phel REPL session" data-animated-repl>
+<div class="terminal ph-frame" role="group" aria-label="Phel REPL session" data-animated-repl>
 <div class="terminal-header" aria-hidden="true"><span class="terminal-dots"><span class="terminal-dot terminal-dot-red"></span><span class="terminal-dot terminal-dot-yellow"></span><span class="terminal-dot terminal-dot-green"></span></span><span class="terminal-title">phel repl</span><span class="terminal-dots terminal-dots-spacer"></span></div>
 <div class="terminal-body">
 {%- for pair in pairs %}
