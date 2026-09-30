@@ -7,8 +7,8 @@ template = "repl-page.html"
 runtime_version = "0.20"
 +++
 
-{% callout(kind="note") %}
+{% <callout kind="note"> %}
 This REPL runs Phel 0.20, an older build. Syntax added since then fails here: `#(...)` short functions, `~` unquote, dotted namespaces like `app.core`, and `.method` / `new` interop. For the current language, run the [local REPL](/documentation/tooling/repl/) after [installing Phel](/documentation/installation/).
-{% end %}
+{% </callout> %}
 
 Built on [seanmorris/php-wasm](https://github.com/seanmorris/php-wasm) with a patched `phel.phar`. Original demo by [@kambo-1st](https://github.com/kambo-1st).

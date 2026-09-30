@@ -1,17 +1,17 @@
 <ul class=top-navigation>
-    <li class="top-navigation__item {% if current_path and current_path is starting_with('/documentation/') and not current_path is starting_with('/documentation/reference/api/') %}active{% endif %}">
+    <li class="top-navigation__item {% if current_path and current_path is starting_with(pat='/documentation/') and not current_path is starting_with(pat='/documentation/reference/api/') %}active{% endif %}">
         <a href="/documentation/">Documentation</a>
     </li>
-    <li class="top-navigation__item {% if current_path and current_path is starting_with('/documentation/reference/api/') %}active{% endif %}">
+    <li class="top-navigation__item {% if current_path and current_path is starting_with(pat='/documentation/reference/api/') %}active{% endif %}">
         <a href="/documentation/reference/api/">API</a>
     </li>
-    <li class="top-navigation__item {% if current_path and current_path is starting_with('/practice/') %}active{% endif %}">
+    <li class="top-navigation__item {% if current_path and current_path is starting_with(pat='/practice/') %}active{% endif %}">
         <a href="/practice">Practice</a>
     </li>
-    <li class="top-navigation__item {% if current_path and current_path is starting_with('/blog/') %}active{% endif %}">
+    <li class="top-navigation__item {% if current_path and current_path is starting_with(pat='/blog/') %}active{% endif %}">
         <a href="/blog">Blog</a>
     </li>
-    <li class="top-navigation__item {% if current_path and current_path is starting_with('/releases/') %}active{% endif %}">
+    <li class="top-navigation__item {% if current_path and current_path is starting_with(pat='/releases/') %}active{% endif %}">
         <a href="/releases/">Releases</a>
     </li>
 </ul>

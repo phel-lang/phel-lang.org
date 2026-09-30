@@ -1,13 +1,8 @@
 /* ========================================
    EXERCISE UNIT
-   The question, hint and solution shortcodes render as siblings, so one
+   The question, hint and solution components render as siblings, so one
    exercise reads as a single frame through adjacent-sibling selectors.
    ======================================== */
-
-/* Markdown wraps the shortcodes in a <p> the browser splits in two. */
-.page-content > p:empty {
-  display: none;
-}
 
 .question-block,
 .exercise-part {

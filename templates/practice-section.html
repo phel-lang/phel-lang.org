@@ -43,7 +43,7 @@
             {% elif loop.first %}
                 <div class="practice-card-grid">
             {% endif %}
-            {% set slug = page.path | trim_end_matches(pat="/") | split(pat="/") | last %}
+            {% set slug = page.path | trim_end(pat="/") | split(pat="/") | last %}
             {% set parts = page.content | split(pat="question-block") %}
             {% set exercise_count = parts | length - 1 %}
             <a href="{{ page.path }}" class="practice-card" data-slug="{{ slug }}" data-total="{{ exercise_count }}">

@@ -1,3 +1,4 @@
+{%- component php_note() -%}
 <details class="dev-note dev-note--php">
     <summary>
         <span class="dev-note__label">PHP</span>
@@ -5,6 +6,7 @@
         <span class="dev-note__chevron" aria-hidden="true">›</span>
     </summary>
     <div class="dev-note__content">
-        {{ body | markdown | safe }}
+        {{ body | markdown | trim | safe }}
     </div>
 </details>
+{%- endcomponent php_note -%}

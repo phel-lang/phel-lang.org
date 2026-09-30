@@ -62,9 +62,9 @@ Survived:
   /home/ada/shop/src/app/price.phel:4 [literal-num] (> total 100) -> (> total 101)
 ```
 
-{% callout(kind="warning") %}
+{% <callout kind="warning"> %}
 Every mutant survives and the MSI reads 0%? Your `phel-config.php` probably sets `->withOptimizationLevel(2)`, which `phel init` writes by default. At that level `phel mutate` reports every mutant as survived, whatever your tests check. Levels 0 and 1 give the real result, so lower it while you run `phel mutate`. The fix is tracked in [#3396](https://github.com/phel-lang/phel-lang/issues/3396).
-{% end %}
+{% </callout> %}
 
 Read the two survivors. One moves the line to "100 or more". The other moves it to "over 101". Your tests pass with either, because nothing checks an order of exactly 100 or 101.
 

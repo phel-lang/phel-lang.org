@@ -3,7 +3,7 @@
 {% block sidebar_extra %}{% endblock sidebar_extra %}
 
 {% block structured_data %}
-{% if page.path is starting_with("/documentation/") %}
+{% if page.path is starting_with(pat="/documentation/") %}
 {% set doc_dates = load_data(path="data/doc-dates.json", required=false) %}
 {% set updated = "" %}
 {% if doc_dates %}{% set updated = doc_dates | get(key=page.relative_path, default="") %}{% endif %}
@@ -32,7 +32,7 @@
     {% set crumb_page = page %}
     {% include "partials/breadcrumb.html" %}
     <h1>{{page.title}}</h1>
-    {% if page.path is starting_with("/documentation/") %}
+    {% if page.path is starting_with(pat="/documentation/") %}
         <div class="page-meta">
             {% if page.extra.difficulty is defined %}
                 <span class="page-meta__badge page-meta__badge--{{ page.extra.difficulty }}">{{ page.extra.difficulty | title }}</span>
@@ -50,7 +50,7 @@
             {% endif %}
         </div>
     {% endif %}
-    {% set show_toc = page.path is starting_with("/documentation/") and page.toc and page.toc | length >= 2 %}
+    {% set show_toc = page.path is starting_with(pat="/documentation/") and page.toc and page.toc | length >= 2 %}
     {% if show_toc %}
         {% include "page/table-of-content-mobile.html" %}
     {% endif %}

@@ -100,9 +100,9 @@ Run it:
 frankenphp php-server --root . --worker ./worker.php
 ```
 
-{% php_note() %}
+{% <php_note> %}
 **State is per-worker.** FrankenPHP runs several worker instances, each with its own memory. An in-process value (an `atom`, a cache) is shared across requests handled by the *same* worker, not across all of them. For global state, use Redis, APCu, or a database. Append `,1` to the worker path (`--worker ./worker.php,1`) to pin a single worker.
-{% end %}
+{% </php_note> %}
 
 ## RoadRunner
 
@@ -159,9 +159,9 @@ Run it:
 ./rr serve
 ```
 
-{% php_note() %}
+{% <php_note> %}
 **State is per-worker here too.** RoadRunner starts one worker per CPU core by default. An `atom` counting hits goes up once per request that lands on *its* worker, not once per request. Pin a single worker with `pool: { num_workers: 1 }` under `http`, or keep shared state in Redis, APCu, or a database.
-{% end %}
+{% </php_note> %}
 
 ## When you do not need a worker runtime
 

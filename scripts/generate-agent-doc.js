@@ -6,7 +6,7 @@
  * Reads:  content/documentation/reference/agentic-coding.md
  * Writes: static/agentic-coding.md
  *
- * Strips the Zola TOML frontmatter. The file uses no shortcodes, so the body
+ * Strips the Zola TOML frontmatter. The file uses no Tera tags, so the body
  * passes through verbatim.
  */
 

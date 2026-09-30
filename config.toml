@@ -7,6 +7,13 @@ description = "The official website of the Phel language. Phel is a functional p
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = false
 
+# Generated pages never call components, and Phel samples in them can hold `{{` or `{#`.
+skip_content_templating = [
+  "documentation/reference/api/**",
+  "documentation/reference/errors.md",
+  "releases/**",
+]
+
 # Whether to build a search index to be used later on by a JavaScript library
 build_search_index = true
 
@@ -24,8 +31,10 @@ feed_filenames = ["atom.xml"]
 
 [markdown.highlighting]
 style = "class"
-theme = "github-light"
+light_theme = "phel-light"
+dark_theme = "phel-dark"
 extra_grammars = ["syntaxes/phel.tmLanguage.json", "syntaxes/clojure.tmLanguage.json"]
+extra_themes = ["syntaxes/phel-light.theme.json", "syntaxes/phel-dark.theme.json"]
 
 [extra]
 # Put all your custom variables here

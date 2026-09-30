@@ -1,6 +1,6 @@
-{% if page.ancestors %}
+{% if page?.ancestors %}
     {% set ancestor_path = page.ancestors | reverse | first %}
-{% elif section.ancestors %}
+{% elif section?.ancestors %}
     {% set ancestor_path = section.ancestors | reverse | first %}
 {% endif %}
 
@@ -10,7 +10,7 @@
     <ol class="site-navigation">
         {% set doc_section = get_section(path=ancestor_path) %}
         {% set is_main_documentation = ancestor_path == "documentation/_index.md" %}
-        {% set is_documentation_subsection = ancestor_path is containing("documentation") and not is_main_documentation %}
+        {% set is_documentation_subsection = ancestor_path is containing(pat="documentation") and not is_main_documentation %}
 
         {% if is_main_documentation or is_documentation_subsection %}
             {% set main_doc_section = get_section(path="documentation/_index.md") %}
@@ -34,7 +34,7 @@
                             {% endfor %}
                             {% for nested_path in subsection.subsections %}
                                 {% set nested = get_section(path=nested_path) %}
-                                {% if current_path is starting_with(nested.path) %}
+                                {% if current_path is starting_with(pat=nested.path) %}
                                     {% set_global has_active_child = true %}
                                 {% endif %}
                             {% endfor %}
@@ -58,14 +58,14 @@
                                         {% endfor %}
                                         {% for nested_path in subsection.subsections %}
                                             {% set nested = get_section(path=nested_path) %}
-                                            <li class="site-navigation__entry {% if current_path is starting_with(nested.path) %}active{% endif %}">
-                                                <a href="{{ nested.path }}"{% if current_path == nested.path %} aria-current="page"{% elif current_path is starting_with(nested.path) %} aria-current="true"{% endif %}>{{ nested.title }}</a>
+                                            <li class="site-navigation__entry {% if current_path is starting_with(pat=nested.path) %}active{% endif %}">
+                                                <a href="{{ nested.path }}"{% if current_path == nested.path %} aria-current="page"{% elif current_path is starting_with(pat=nested.path) %} aria-current="true"{% endif %}>{{ nested.title }}</a>
                                             </li>
                                         {% endfor %}
                                     </ol>
                                 {% endif %}
                             </li>
-                            {% set_global rendered_subsections = rendered_subsections | concat(with=subsection_path) %}
+                            {% set_global rendered_subsections = [...rendered_subsections, subsection_path] %}
                         {% endif %}
                     {% endif %}
                 {% endfor %}
@@ -83,7 +83,7 @@
                     {% endfor %}
                     {% for nested_path in subsection.subsections %}
                         {% set nested = get_section(path=nested_path) %}
-                        {% if current_path is starting_with(nested.path) %}
+                        {% if current_path is starting_with(pat=nested.path) %}
                             {% set_global has_active_child = true %}
                         {% endif %}
                     {% endfor %}
@@ -107,8 +107,8 @@
                                 {% endfor %}
                                 {% for nested_path in subsection.subsections %}
                                     {% set nested = get_section(path=nested_path) %}
-                                    <li class="site-navigation__entry {% if current_path is starting_with(nested.path) %}active{% endif %}">
-                                        <a href="{{ nested.path }}"{% if current_path == nested.path %} aria-current="page"{% elif current_path is starting_with(nested.path) %} aria-current="true"{% endif %}>{{ nested.title }}</a>
+                                    <li class="site-navigation__entry {% if current_path is starting_with(pat=nested.path) %}active{% endif %}">
+                                        <a href="{{ nested.path }}"{% if current_path == nested.path %} aria-current="page"{% elif current_path is starting_with(pat=nested.path) %} aria-current="true"{% endif %}>{{ nested.title }}</a>
                                     </li>
                                 {% endfor %}
                             </ol>

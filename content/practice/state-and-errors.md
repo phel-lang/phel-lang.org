@@ -38,7 +38,7 @@ An atom holds one value that can change. Read it with `@` (or `deref`). Change i
 @visits             ; => 100
 ```
 
-{% question(difficulty="easy", kind="predict") %}
+{% <question difficulty="easy" kind="predict"> %}
 What is the last value?
 ```phel
 (def counter (atom 0))
@@ -46,8 +46,8 @@ What is the last value?
 (swap! counter + 5)
 @counter
 ```
-{% end %}
-{% solution() %}
+{% </question> %}
+{% <solution> %}
 ```phel
 (def counter (atom 0))
 (swap! counter inc)
@@ -55,9 +55,9 @@ What is the last value?
 @counter ; => 6
 ```
 `swap!` calls the function with the current value first, then any extra arguments. So `(swap! counter + 5)` computes `(+ 1 5)`.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="easy", kind="predict") %}
+{% <question difficulty="easy" kind="predict"> %}
 What does this return?
 ```phel
 (def score (atom 10))
@@ -66,8 +66,8 @@ What does this return?
   (reset! score 0)
   [before @score])
 ```
-{% end %}
-{% solution() %}
+{% </question> %}
+{% <solution> %}
 ```phel
 (def score (atom 10))
 
@@ -76,9 +76,9 @@ What does this return?
   [before @score]) ; => [10 0]
 ```
 `@score` gives you the value inside the atom at that moment. The value `10` is immutable: `reset!` points the atom at a new value, and `before` still holds the old one.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="easy", kind="fill") %}
+{% <question difficulty="easy" kind="fill"> %}
 The cart atom holds a map. Fill the blanks to add one to `:count` and add `"pen"` to `:items`.
 <!-- phel-test: skip -->
 ```phel
@@ -89,8 +89,8 @@ The cart atom holds a map. Fill the blanks to add one to `:count` and add `"pen"
 
 @cart ; => {:items ["pen"], :count 1}
 ```
-{% end %}
-{% solution() %}
+{% </question> %}
+{% <solution> %}
 ```phel
 (def cart (atom {:items [] :count 0}))
 
@@ -100,7 +100,7 @@ The cart atom holds a map. Fill the blanks to add one to `:count` and add `"pen"
 @cart ; => {:items ["pen"], :count 1}
 ```
 `(swap! cart update :count inc)` runs `(update current-cart :count inc)`. Everything you know about updating maps works inside `swap!`.
-{% end %}
+{% </solution> %}
 
 ## Pure logic first
 
@@ -113,14 +113,14 @@ Keep the rules in pure functions: they take a value and return a new value. The 
 (add-visit {"/home" 1} "/home") ; => {"/home" 2}
 ```
 
-{% question(difficulty="easy", kind="write") %}
+{% <question difficulty="easy" kind="write"> %}
 Write a pure function `deposit`. It takes an account map and an amount, and returns the account with a higher `:balance`. No atom yet.
 <!-- phel-test: skip -->
 ```phel
 (deposit {:owner "Ada" :balance 100} 50) ; => {:owner "Ada", :balance 150}
 ```
-{% end %}
-{% solution() %}
+{% </question> %}
+{% <solution> %}
 ```phel
 (defn deposit [account amount]
   (update account :balance + amount))
@@ -128,9 +128,9 @@ Write a pure function `deposit`. It takes an account map and an amount, and retu
 (deposit {:owner "Ada" :balance 100} 50) ; => {:owner "Ada", :balance 150}
 ```
 `update` passes extra arguments to the function, so this runs `(+ 100 50)`. The same `(fn [x] (+ x amount))` works too, but is longer.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="write") %}
+{% <question difficulty="medium" kind="write"> %}
 Now wire `deposit` to an atom. Write `deposit!`, which takes the atom and an amount, updates the atom, and returns the new account. Do not change `deposit`.
 <!-- phel-test: skip -->
 ```phel
@@ -139,11 +139,11 @@ Now wire `deposit` to an atom. Write `deposit!`, which takes the atom and an amo
 (deposit! account 50) ; => {:owner "Ada", :balance 150}
 @account              ; => {:owner "Ada", :balance 150}
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `swap!` takes the atom, a function, and extra arguments for that function. `deposit` already has the right shape: account first, amount second.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn deposit [account amount]
   (update account :balance + amount))
@@ -157,9 +157,9 @@ Now wire `deposit` to an atom. Write `deposit!`, which takes the atom and an amo
 @account              ; => {:owner "Ada", :balance 150}
 ```
 The `!` at the end of the name is a convention: it warns the reader that the function changes state. `deposit` holds the rule; `deposit!` is one line of wiring.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="refactor") %}
+{% <question difficulty="medium" kind="refactor"> %}
 This `withdraw!` works, but the rule and the state are tangled. It reads the atom twice and you cannot test the subtraction without an atom. Split it into a pure `withdraw` and one `swap!` call.
 ```phel
 (def account (atom {:owner "Ada" :balance 100}))
@@ -169,11 +169,11 @@ This `withdraw!` works, but the rule and the state are tangled. It reads the ato
 
 (withdraw! 30) ; => {:owner "Ada", :balance 70}
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Write `withdraw` like `deposit`: account in, account out. Then let `swap!` pass the current value to it.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn withdraw [account amount]
   (update account :balance - amount))
@@ -183,7 +183,7 @@ Write `withdraw` like `deposit`: account in, account out. Then let `swap!` pass 
 (swap! account withdraw 30) ; => {:owner "Ada", :balance 70}
 ```
 `withdraw` now works on any account map, including one in a test. `swap!` reads and writes in one step. The old version read the atom twice, and another update between those reads would be lost.
-{% end %}
+{% </solution> %}
 
 ## Throwing errors
 
@@ -199,7 +199,7 @@ Write `withdraw` like `deposit`: account in, account out. Then let `swap!` pass 
 
 In PHP you would write `throw new \Exception(...)` and `catch (\Exception $e)`. `ex-info` is still a PHP exception, with a data map attached.
 
-{% question(difficulty="easy", kind="predict") %}
+{% <question difficulty="easy" kind="predict"> %}
 What does this return?
 ```phel
 (try
@@ -207,8 +207,8 @@ What does this return?
   (catch \Exception e
     (- (:got (ex-data e)) (:max (ex-data e)))))
 ```
-{% end %}
-{% solution() %}
+{% </question> %}
+{% <solution> %}
 ```phel
 (try
   (throw (ex-info "Too large" {:max 100 :got 250}))
@@ -217,9 +217,9 @@ What does this return?
 ; => 150
 ```
 `ex-data` returns the map you passed to `ex-info`. The handler can compute with it instead of parsing the message string.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="predict") %}
+{% <question difficulty="medium" kind="predict"> %}
 What does this print, and what does it return?
 ```phel
 (try
@@ -232,11 +232,11 @@ What does this print, and what does it return?
   (finally
     (println "done")))
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 After a `throw`, no more lines of the body run. The value of `finally` is thrown away.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (try
   (println "start")
@@ -251,9 +251,9 @@ After a `throw`, no more lines of the body run. The value of `finally` is thrown
 ; => :failed
 ```
 `"after"` never prints. The `catch` value `:failed` is the result of the whole `try`. `finally` runs for cleanup, like closing a file, but it does not change the result.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="write") %}
+{% <question difficulty="medium" kind="write"> %}
 Change `withdraw` so it refuses to go below zero. When the amount is larger than the balance, throw an `ex-info` with the message `"Insufficient funds"` and the data `{:balance ... :amount ...}`.
 <!-- phel-test: skip -->
 ```phel
@@ -265,11 +265,11 @@ Change `withdraw` so it refuses to go below zero. When the amount is larger than
     [(ex-message e) (ex-data e)]))
 ; => ["Insufficient funds" {:balance 100, :amount 500}]
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Check first with `when`, throw inside it, then do the normal `update` as the last form.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn withdraw [account amount]
   (when (> amount (:balance account))
@@ -286,9 +286,9 @@ Check first with `when`, throw inside it, then do the normal `update` as the las
 ; => ["Insufficient funds" {:balance 100, :amount 500}]
 ```
 The function is still pure: same input, same result or same error. The data map tells the caller exactly what went wrong, so it can show a useful message.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="fix") %}
+{% <question difficulty="medium" kind="fix"> %}
 After a failed withdrawal, the account is left at `-400`. The error is thrown, but too late. Fix `withdraw!` so a failed withdrawal leaves the atom unchanged.
 <!-- phel-test: skip -->
 ```phel
@@ -302,11 +302,11 @@ After a failed withdrawal, the account is left at `-400`. The error is thrown, b
 (try (withdraw! 500) (catch \Exception e (ex-message e)))
 @account ; => {:owner "Ada", :balance -400} (wrong)
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Check before you change, not after. If the function you give to `swap!` throws, `swap!` does not store anything.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn withdraw [account amount]
   (when (> amount (:balance account))
@@ -323,7 +323,7 @@ Check before you change, not after. If the function you give to `swap!` throws, 
 @account ; => {:owner "Ada", :balance 100}
 ```
 Validation now lives in the pure `withdraw`, which runs inside `swap!`. When it throws, the new value is never stored, so the atom never holds an invalid balance.
-{% end %}
+{% </solution> %}
 
 ## Errors as data
 
@@ -344,7 +344,7 @@ Which one to use?
 - **Throw** when the caller cannot sensibly go on: a broken rule deep inside your logic, a bug, a failed database call. The error travels up until someone who can handle it catches it.
 - **Return data** when failure is a normal, expected answer: user input that does not validate, a form with several wrong fields. The caller must handle it anyway, and data is easier to inspect, collect, and test.
 
-{% question(difficulty="medium", kind="write") %}
+{% <question difficulty="medium" kind="write"> %}
 Write `validate-transfer`. It returns a vector of every problem it finds, or `[]` when the transfer is valid. Throwing could only report the first problem; a form should show all of them.
 
 - `"amount is required"` when there is no `:amount`
@@ -358,11 +358,11 @@ Write `validate-transfer`. It returns a vector of every problem it finds, or `[]
 ; => ["amount must be positive" "cannot transfer to yourself"]
 (validate-transfer {:from "Ada" :to "Linus"}) ; => ["amount is required"]
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Build a vector of `[failed? message]` pairs. Keep the pairs whose first element is truthy, then take the messages. Careful: `(<= nil 0)` is not a check you want to run.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn validate-transfer [{:keys [from to amount]}]
   (let [checks [[(nil? amount) "amount is required"]
@@ -379,9 +379,9 @@ Build a vector of `[failed? message]` pairs. Keep the pairs whose first element 
 (validate-transfer {:from "Ada" :to "Linus"}) ; => ["amount is required"]
 ```
 Each rule is one line of data, so adding a rule is adding a pair. `(and amount ...)` skips the comparison when the amount is missing.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="hard", kind="write") %}
+{% <question difficulty="hard" kind="write"> %}
 Write `deposit!` again, this time for untrusted input. It returns `{:ok new-account}` and updates the atom when the amount is a positive number. Otherwise it returns `{:error message}` and leaves the atom alone. Reuse the pure `deposit`, and put the input check in its own pure function `amount-error`, which returns a message or `nil`.
 <!-- phel-test: skip -->
 ```phel
@@ -392,11 +392,11 @@ Write `deposit!` again, this time for untrusted input. It returns `{:ok new-acco
 (deposit! account "ten")  ; => {:error "amount must be a number"}
 @account                  ; => {:owner "Ada", :balance 150}
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `amount-error` is a `cond` with no `:else`, so it returns `nil` when every check passes. In `deposit!`, `if-let` binds the message when there is one.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn deposit [account amount]
   (update account :balance + amount))
@@ -419,9 +419,9 @@ Write `deposit!` again, this time for untrusted input. It returns `{:ok new-acco
 @account                 ; => {:owner "Ada", :balance 150}
 ```
 Two pure functions hold the rules, and `deposit!` is the only place that touches state. Bad input is an expected answer here, so it comes back as data instead of an exception.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="hard", kind="write") %}
+{% <question difficulty="hard" kind="write"> %}
 Your `withdraw` throws, but a web handler wants data: a status code and a body. Write `handle-withdraw`, which calls `withdraw` and turns the result, or the error, into a response map. Do not change `withdraw`.
 <!-- phel-test: skip -->
 ```phel
@@ -431,11 +431,11 @@ Your `withdraw` throws, but a web handler wants data: a status code and a body. 
 (handle-withdraw {:owner "Ada" :balance 100} 500)
 ; => {:status 422, :error "Insufficient funds", :details {:balance 100, :amount 500}}
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Wrap the call in `try`. The success map goes in the body, the error map goes in the `catch`.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn withdraw [account amount]
   (when (> amount (:balance account))
@@ -456,4 +456,4 @@ Wrap the call in `try`. The success map goes in the body, the error map goes in 
 ; => {:status 422, :error "Insufficient funds", :details {:balance 100, :amount 500}}
 ```
 This is the common split: throw deep inside the logic, and turn errors into data at the edge of the program, where you know who the answer is for. The `ex-data` map passes straight through to the response.
-{% end %}
+{% </solution> %}

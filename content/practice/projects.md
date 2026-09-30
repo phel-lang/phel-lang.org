@@ -31,7 +31,7 @@ This module has no new concepts. You build six small programs, and each one uses
 
 You build a tool that reads a piece of text and prints its most common words as a small bar chart. It draws on strings, maps, and sequence pipelines, plus one PHP function for lowercase text.
 
-{% question(difficulty="easy", kind="build") %}
+{% <question difficulty="easy" kind="build"> %}
 Write `words`: it takes a string and returns a vector of lowercase words. A word is a run of letters, and an apostrophe counts as a letter. Digits and punctuation are dropped.
 
 <!-- phel-test: skip -->
@@ -39,11 +39,11 @@ Write `words`: it takes a string and returns a vector of lowercase words. A word
 (words "The cat saw the Cat.") ; => ["the" "cat" "saw" "the" "cat"]
 (words "It's 9 o'clock!")      ; => ["it's" "o'clock"]
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Lowercase first with `php/strtolower`. Then `re-seq` with a regex such as `#"[a-z']+"` returns every match.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn words [text]
   (re-seq #"[a-z']+" (php/strtolower text)))
@@ -52,9 +52,9 @@ Lowercase first with `php/strtolower`. Then `re-seq` with a regex such as `#"[a-
 (words "It's 9 o'clock!")      ; => ["it's" "o'clock"]
 ```
 Lowercasing before matching means "The" and "the" count as the same word, and the regex only needs lowercase letters.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="easy", kind="build") %}
+{% <question difficulty="easy" kind="build"> %}
 Write `count-words`: it counts each word in a text, but skips common filler words from a `stop-words` set.
 
 <!-- phel-test: skip -->
@@ -64,11 +64,11 @@ Write `count-words`: it counts each word in a text, but skips common filler word
 (count-words "The cat and the hat saw a cat.")
 ; => {"cat" 2, "hat" 1, "saw" 1}
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 A `->>` pipeline: `words`, then `remove` the stop words, then `frequencies`.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn words [text]
   (re-seq #"[a-z']+" (php/strtolower text)))
@@ -84,9 +84,9 @@ A `->>` pipeline: `words`, then `remove` the stop words, then `frequencies`.
 ; => {"cat" 2, "hat" 1, "saw" 1}
 ```
 Each line of the pipeline does one job, and you can read it top to bottom. `frequencies` returns a map from each word to its count.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="build") %}
+{% <question difficulty="medium" kind="build"> %}
 Write `top-words`: it returns the `n` most common words as `[word count]` pairs. Higher counts come first. When two words have the same count, sort them alphabetically.
 
 <!-- phel-test: skip -->
@@ -94,11 +94,11 @@ Write `top-words`: it returns the `n` most common words as `[word count]` pairs.
 (top-words 2 "The cat and the hat saw a cat. The hat was red.")
 ; => (["cat" 2] ["hat" 2])
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 A map is a sequence of `[key value]` pairs, so you can `sort-by` it. Sort by a vector key: the negated count first, then the word.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn words [text]
   (re-seq #"[a-z']+" (php/strtolower text)))
@@ -119,9 +119,9 @@ A map is a sequence of `[key value]` pairs, so you can `sort-by` it. Sort by a v
 ; => (["cat" 2] ["hat" 2])
 ```
 Vectors compare item by item, so the key `[(- total) word]` sorts by count (largest first, because it is negated) and breaks ties by word. Sorting by count alone would leave ties in an unpredictable order.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="build") %}
+{% <question difficulty="medium" kind="build"> %}
 Finish the tool. Write `report-line`, which turns one `[word count]` pair into a line with a bar of `#` characters, and `report`, which prints the top `n` lines for a text.
 
 <!-- phel-test: skip -->
@@ -135,11 +135,11 @@ Finish the tool. Write `report-line`, which turns one `[word count]` pair into a
 ```
 
 `(format "%-8s %2d %s" ...)` works like PHP's `sprintf`: `%-8s` pads a string to 8 characters, `%2d` right-aligns a number in 2.
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `php/str_repeat` builds the bar. In `report`, use `foreach` for the printing, since it is a side effect.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn words [text]
   (re-seq #"[a-z']+" (php/strtolower text)))
@@ -173,13 +173,13 @@ Finish the tool. Write `report-line`, which turns one `[word count]` pair into a
 ;; jumps     1 #
 ```
 Only `report` prints. Everything before it returns data, so you can test each piece in the REPL on its own. In PHP you would reach for `str_word_count` and `arsort`; here the same job is one short pipeline.
-{% end %}
+{% </solution> %}
 
 ## Shopping cart with discounts
 
 You build a cart that holds products, adds up prices, applies discount rules, and prints a receipt. It draws on maps, multi-arity functions, `for`, `case`, and destructuring. Prices are whole cents, so the math stays exact.
 
-{% question(difficulty="easy", kind="build") %}
+{% <question difficulty="easy" kind="build"> %}
 The cart is a map from product keyword to quantity. Write `add-item`, which adds a quantity to the cart. When you leave out the quantity, it adds 1.
 
 <!-- phel-test: skip -->
@@ -190,11 +190,11 @@ The cart is a map from product keyword to quantity. Write `add-item`, which adds
     (add-item :apple))
 ; => {:apple 4, :bread 1}
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Use two arities. `(get cart sku 0)` gives the current quantity, or 0 when the product is not in the cart yet.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn add-item
   ([cart sku] (add-item cart sku 1))
@@ -208,9 +208,9 @@ Use two arities. `(get cart sku 0)` gives the current quantity, or 0 when the pr
 ; => {:apple 4, :bread 1}
 ```
 The short arity calls the long one with a default, so the logic lives in one place. The cart is never changed; each call returns a new map.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="build") %}
+{% <question difficulty="medium" kind="build"> %}
 Add a product `catalog`, then write `line-items` and `subtotal`. `line-items` returns one map per product with its name, quantity, and line total. `subtotal` adds up all line totals.
 
 <!-- phel-test: skip -->
@@ -225,11 +225,11 @@ Add a product `catalog`, then write `line-items` and `subtotal`. `line-items` re
 (first (line-items cart)) ; => {:sku :apple, :name "Apple", :qty 4, :total 200}
 (subtotal cart)           ; => 1380
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `for` with `:pairs` walks a map as `[key value]` pairs. A `:let` inside `for` can destructure the catalog entry.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (def catalog
   {:apple  {:name "Apple" :price 50}
@@ -255,9 +255,9 @@ Add a product `catalog`, then write `line-items` and `subtotal`. `line-items` re
 (subtotal cart)           ; => 1380
 ```
 `line-items` shapes the raw cart into rows that are easy to sum and to print later. The keyword `:total` works as a function, so `(map :total ...)` pulls one field out of every row.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="build") %}
+{% <question difficulty="medium" kind="build"> %}
 Discounts are data, not code. Write `discount-amount`, which takes the cart and one rule and returns how many cents it takes off. Support two rule types:
 
 - `:bulk`: when the cart has at least `:min-qty` of `:sku`, take `:percent` off that product's line.
@@ -273,11 +273,11 @@ Any other type takes nothing off. Round down to whole cents.
 
 (map #(discount-amount cart %) discounts) ; => (40 150)
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Destructure `:type` from the rule and branch with `case`. `quot` divides and drops the remainder.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (def catalog
   {:apple  {:name "Apple" :price 50}
@@ -319,9 +319,9 @@ Destructure `:type` from the rule and branch with `case`. `quot` divides and dro
 (map #(discount-amount cart %) discounts) ; => (40 150)
 ```
 Because rules are plain maps, a shop owner could store them in a database or a config file. Adding a new rule type means adding one `case` branch.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="build") %}
+{% <question difficulty="medium" kind="build"> %}
 Finish the cart. Write `checkout`, which returns the subtotal, the total discount, and the final total, and `print-receipt`, which prints each line and the three sums. Show money as `13.80`.
 
 <!-- phel-test: skip -->
@@ -336,11 +336,11 @@ Finish the cart. Write `checkout`, which returns the subtotal, the total discoun
 ;; Discount       -1.90
 ;; Total          11.90
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 A small `money` helper can format cents with `(format "%d.%02d" (quot cents 100) (mod cents 100))`. Destructure each line item in the `foreach` binding.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (def catalog
   {:apple  {:name "Apple" :price 50}
@@ -406,13 +406,13 @@ A small `money` helper can format cents with `(format "%d.%02d" (quot cents 100)
 ;; Total          11.90
 ```
 Storing cents as integers avoids float rounding errors like `0.1 + 0.2`. A common mistake is to format with `(/ cents 100)`: in Phel, `(/ 1380 100)` gives the ratio `69/5`, not a decimal.
-{% end %}
+{% </solution> %}
 
 ## Text adventure
 
 You build a tiny text adventure: rooms, doors, a locked door, and items to pick up. The whole game is one map, and every command is a function from the old game to a new one. It draws on nested maps, `get-in`/`update-in`, `cond`, `case`, and `reduce`.
 
-{% question(difficulty="easy", kind="build") %}
+{% <question difficulty="easy" kind="build"> %}
 Here is the world. Write `describe`, which returns a sentence about a room: its name, the items you see (only when there are any), and its exits in alphabetical order.
 
 ```phel
@@ -430,11 +430,11 @@ Here is the world. Write `describe`, which returns a sentence about a room: its 
 (describe world :kitchen)
 ; => "You are in the Kitchen. You see: key. Exits: west."
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `(name :north)` returns `"north"`. To join strings with `", "`, turn the list into a PHP array with `to-php-array` and pass it to `php/implode`. `(seq items)` is `nil` for an empty set.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (def world
   {:hall    {:name "Hall" :exits {:north :library :east :kitchen} :items #{}}
@@ -458,9 +458,9 @@ Here is the world. Write `describe`, which returns a sentence about a room: its 
 ; => "You are in the Kitchen. You see: key. Exits: west."
 ```
 `str` skips `nil`, so the `when` drops the "You see" part for empty rooms. The room's name is bound to `title`, not `name`, so it does not hide the `name` function.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="build") %}
+{% <question difficulty="medium" kind="build"> %}
 The game state is a map: `{:rooms world :here :hall :inventory #{} :message ""}`. Write `go`, which moves the player in a direction and sets `:message`. Three cases:
 
 - no exit that way: stay, message "You cannot go that way."
@@ -473,11 +473,11 @@ The game state is a map: `{:rooms world :here :hall :inventory #{} :message ""}`
 (:message (go start :north)) ; => "The door is locked. You need the key."
 (:message (go start :east))  ; => "You are in the Kitchen. You see: key. Exits: west."
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `(get-in rooms [here :exits direction])` finds the target, or `nil`. A `cond` with three branches covers the cases in order.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (def world
   {:hall    {:name "Hall" :exits {:north :library :east :kitchen} :items #{}}
@@ -516,9 +516,9 @@ The game state is a map: `{:rooms world :here :hall :inventory #{} :message ""}`
 (:message (go start :east))  ; => "You are in the Kitchen. You see: key. Exits: west."
 ```
 `go` never prints. It returns a new game, and the message travels inside it. That keeps the rules easy to test.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="build") %}
+{% <question difficulty="medium" kind="build"> %}
 Write `take-item`. When the item is in the current room, move it from the room's `:items` set to `:inventory`. Otherwise, leave the game as it is and set a message.
 
 <!-- phel-test: skip -->
@@ -530,11 +530,11 @@ Write `take-item`. When the item is in the current room, move it from the room's
 (:message (take-item start :key)) ; => "There is no key here."
 (:here (-> g (go :west) (go :north))) ; => :library
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `disj` removes a value from a set, like `dissoc` for maps. `update-in` reaches the room's items, `update` reaches the inventory.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (def world
   {:hall    {:name "Hall" :exits {:north :library :east :kitchen} :items #{}}
@@ -585,9 +585,9 @@ Write `take-item`. When the item is in the current room, move it from the room's
 (:here (-> g (go :west) (go :north))) ; => :library
 ```
 The key leaves the kitchen and enters the inventory in one `->` chain. Now the locked door opens, because `go` finds `:key` in the inventory.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="hard", kind="build") %}
+{% <question difficulty="hard" kind="build"> %}
 Make the game playable from text commands. Write `parse-command` (turns `"Go North"` into `["go" :north]`), `run-command` (handles `go`, `take`, `look`, and unknown verbs), and `play`, which runs a list of commands in order, prints each command and its message, and returns the final game.
 
 <!-- phel-test: skip -->
@@ -602,11 +602,11 @@ Make the game playable from text commands. Write `parse-command` (turns `"Go Nor
 ;; You are in the Kitchen. You see: key. Exits: west.
 ;; ...
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `keyword` turns a string into a keyword. `play` is a `reduce` over the commands, with the game as the accumulator.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (def world
   {:hall    {:name "Hall" :exits {:north :library :east :kitchen} :items #{}}
@@ -693,13 +693,13 @@ Make the game playable from text commands. Write `parse-command` (turns `"Go Nor
 (:inventory final) ; => #{:key :book}
 ```
 The whole game is a `reduce`: each command turns one game value into the next. To make it interactive, read lines with `php/readline` in a loop and call `run-command` on each one; the rules stay the same.
-{% end %}
+{% </solution> %}
 
 ## Bank account ledger
 
 You build an account that accepts deposits and withdrawals, rejects bad ones with clear error data, and keeps a history. The rules are pure functions; one atom holds the current account. It draws on `case`, `cond`, `if-let`, `ex-info`, `try`/`catch`, and atoms.
 
-{% question(difficulty="easy", kind="build") %}
+{% <question difficulty="easy" kind="build"> %}
 Write `apply-tx`, a pure function that applies one transaction to an account map. A transaction is `{:type :deposit :amount 50}` or `{:type :withdraw :amount 30}`.
 
 <!-- phel-test: skip -->
@@ -710,11 +710,11 @@ Write `apply-tx`, a pure function that applies one transaction to an account map
                                {:type :withdraw :amount 30}])
 ; => {:balance 70}
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `(update account :balance + amount)` calls `(+ old-balance amount)`.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn apply-tx [account {type :type amount :amount}]
   (case type
@@ -728,9 +728,9 @@ Write `apply-tx`, a pure function that applies one transaction to an account map
 ; => {:balance 70}
 ```
 Because `apply-tx` takes the account first and a transaction second, it fits `reduce` directly: a list of transactions folds into a final balance.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="build") %}
+{% <question difficulty="medium" kind="build"> %}
 Write `validate-tx`. It returns `nil` when a transaction is fine, or a map that describes the problem:
 
 - unknown type: `{:error :unknown-type :type ...}`
@@ -745,11 +745,11 @@ Write `validate-tx`. It returns `nil` when a transaction is fine, or a map that 
 (validate-tx {:balance 10} {:type :withdraw :amount 50})
 ; => {:error :insufficient-funds, :balance 10, :amount 50}
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 A `cond` without an `:else` branch returns `nil` when no test matches. `int?` and `pos?` check the amount.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn apply-tx [account {type :type amount :amount}]
   (case type
@@ -774,9 +774,9 @@ A `cond` without an `:else` branch returns `nil` when no test matches. `int?` an
 ; => {:error :insufficient-funds, :balance 10, :amount 50}
 ```
 Errors as data are easy to test and to show to a user. The order of the checks matters: the type check runs first, so the later checks can trust the type.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="hard", kind="build") %}
+{% <question difficulty="hard" kind="build"> %}
 Now add state. Write `record-tx`, which throws an `ex-info` with the problem map when a transaction is invalid, and otherwise applies it and adds it to `:history` together with the new balance. Then hold the account in an atom and write `transact!`, which returns `{:ok balance}` or `{:rejected problem}`.
 
 <!-- phel-test: skip -->
@@ -788,11 +788,11 @@ Now add state. Write `record-tx`, which throws an `ex-info` with the problem map
 ; => {:rejected {:error :insufficient-funds, :balance 100, :amount 500}}
 (transact! {:type :withdraw :amount 40})  ; => {:ok 60}
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `swap!` passes the current value as the first argument, then your extra arguments, and returns the new value. When the function throws, the atom keeps its old value. Use `if-let` on the result of `validate-tx`.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn apply-tx [account {type :type amount :amount}]
   (case type
@@ -832,9 +832,9 @@ Now add state. Write `record-tx`, which throws an `ex-info` with the problem map
 (:balance @account) ; => 60
 ```
 `record-tx` is still pure: give it an account and a transaction, get a new account or an exception. Only `transact!` touches the atom, and its name ends in `!` to say so.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="build") %}
+{% <question difficulty="medium" kind="build"> %}
 Finish the ledger. Write `statement-line`, which formats one history entry, and `run-batch!`, which resets the account, runs a list of transactions, prints the statement and the number of rejected transactions, and returns the final balance.
 
 <!-- phel-test: skip -->
@@ -850,11 +850,11 @@ Finish the ledger. Write `statement-line`, which formats one history entry, and 
 ;; Rejected: 2
 ; => 175
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `map` is lazy: `(map transact! txs)` runs nothing until someone reads the result. Force it with `(into [] ...)` before you print the history.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn apply-tx [account {type :type amount :amount}]
   (case type
@@ -910,13 +910,13 @@ Finish the ledger. Write `statement-line`, which formats one history entry, and 
 ; => 175
 ```
 With a plain `(map transact! txs)`, the history prints empty, because no transaction has run yet when `foreach` reads the atom. Laziness and side effects do not mix; force the sequence first.
-{% end %}
+{% </solution> %}
 
 ## RPN calculator
 
 You build a calculator for Reverse Polish Notation, where the operator comes after its numbers: `3 4 +` means `3 + 4`. A stack holds the numbers. It draws on PHP string functions, `reduce`, destructuring, `ex-info`, and catching a PHP exception.
 
-{% question(difficulty="easy", kind="build") %}
+{% <question difficulty="easy" kind="build"> %}
 Write `tokenize`: split a line on whitespace and turn numeric tokens into integers. Other tokens stay strings.
 
 <!-- phel-test: skip -->
@@ -924,11 +924,11 @@ Write `tokenize`: split a line on whitespace and turn numeric tokens into intege
 (tokenize "3 4 +")          ; => (3 4 "+")
 (tokenize "  10 2 8 * + ")  ; => (10 2 8 "*" "+")
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `re-seq` with `#"\S+"` finds every run of non-space characters. `php/is_numeric` and `php/intval` handle the numbers.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn parse-token [token]
   (if (php/is_numeric token)
@@ -942,9 +942,9 @@ Write `tokenize`: split a line on whitespace and turn numeric tokens into intege
 (tokenize "  10 2 8 * + ")  ; => (10 2 8 "*" "+")
 ```
 Matching the tokens is safer than splitting on a single space, because extra spaces would give empty strings. `php/is_numeric` also accepts `"-3"`, so negative numbers work.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="build") %}
+{% <question difficulty="medium" kind="build"> %}
 The stack is a list, with the top first. Write `push-token`: a number goes on top of the stack; an operator takes the top two numbers, applies itself, and puts the result on top. Use this map of operators:
 
 ```phel
@@ -957,11 +957,11 @@ The stack is a list, with the top first. Write `push-token`: a number goes on to
 (reduce push-token '() [3 4 "+"])  ; => (7)
 (reduce push-token '() [10 2 "-"]) ; => (8)
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `conj` on a list adds to the front. Destructure the stack as `[b a & more]`: the top is the second operand, so `10 2 -` is `(- 10 2)`.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn parse-token [token]
   (if (php/is_numeric token)
@@ -986,9 +986,9 @@ The stack is a list, with the top first. Write `push-token`: a number goes on to
 (reduce push-token '() (tokenize "10 2 8 * +")) ; => (26)
 ```
 The operators are ordinary functions stored in a map, so one branch handles all four. Getting `a` and `b` in the wrong order is the classic bug: `10 2 -` would give `-8`.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="build") %}
+{% <question difficulty="medium" kind="build"> %}
 Write `evaluate`, which runs a whole line and returns the single number left on the stack. Throw an `ex-info` with a clear message when:
 
 - a token is not a number or a known operator: "Unknown token: x"
@@ -1001,11 +1001,11 @@ Write `evaluate`, which runs a whole line and returns the single number left on 
 (evaluate "7 2 /")             ; => 7/2
 (evaluate "1 +")               ; throws "Not enough numbers for +"
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Check the cases with `cond` inside the step function before you destructure. Then `reduce` over the tokens and look at the final stack.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn parse-token [token]
   (if (php/is_numeric token)
@@ -1046,9 +1046,9 @@ Check the cases with `cond` inside the step function before you destructure. The
 ; => "Not enough numbers for +"
 ```
 `/` on two integers gives an exact ratio in Phel, so `7 2 /` is `7/2`, not `3.5`. The data map in each `ex-info` records the token and the stack, which helps when you debug a long expression.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="hard", kind="build") %}
+{% <question difficulty="hard" kind="build"> %}
 Finish the calculator with `calc`, which never throws. It returns `"3 4 + = 7"` on success and `"... -> error: ..."` on failure. Dividing by zero raises PHP's own `DivisionByZeroError`; catch it and print "division by zero".
 
 <!-- phel-test: skip -->
@@ -1057,11 +1057,11 @@ Finish the calculator with `calc`, which never throws. It returns `"3 4 + = 7"` 
 (calc "1 0 /") ; => "1 0 / -> error: division by zero"
 (calc "2 3 ^") ; => "2 3 ^ -> error: Unknown token: ^"
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 A `try` can have several `catch` clauses. The first one whose class matches wins, so put the specific class before `\Exception`.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn parse-token [token]
   (if (php/is_numeric token)
@@ -1113,13 +1113,13 @@ A `try` can have several `catch` clauses. The first one whose class matches wins
 ;; 2 3 ^ -> error: Unknown token: ^
 ```
 `DivisionByZeroError` is a PHP `Error`, not an `Exception`, so the `\Exception` clause would not catch it; it needs its own clause. In PHP you would write the same thing as `catch (DivisionByZeroError $e)`.
-{% end %}
+{% </solution> %}
 
 ## Conway's Game of Life
 
 You build a small simulation. The board is a grid of cells, each alive or dead. On every tick, a live cell with 2 or 3 live neighbors survives, a dead cell with exactly 3 comes to life, and every other cell dies or stays dead. It draws on sets, `for` comprehensions, `frequencies`, `iterate`, and laziness.
 
-{% question(difficulty="easy", kind="build") %}
+{% <question difficulty="easy" kind="build"> %}
 A cell is a `[x y]` vector. Write `neighbors`, which returns the 8 cells around a cell.
 
 <!-- phel-test: skip -->
@@ -1128,11 +1128,11 @@ A cell is a `[x y]` vector. Write `neighbors`, which returns the 8 cells around 
 ; => [[-1 -1] [-1 0] [-1 1] [0 -1] [0 1] [1 -1] [1 0] [1 1]]
 (count (neighbors [5 5])) ; => 8
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Two `for` bindings over `[-1 0 1]` give 9 offsets. Skip `[0 0]` with `:when`.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn neighbors [[x y]]
   (for [dx :in [-1 0 1]
@@ -1145,9 +1145,9 @@ Two `for` bindings over `[-1 0 1]` give 9 offsets. Skip `[0 0]` with `:when`.
 (count (neighbors [5 5])) ; => 8
 ```
 Destructuring `[x y]` in the parameter list keeps the body short. The board has no edges: negative coordinates are fine.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="hard", kind="build") %}
+{% <question difficulty="hard" kind="build"> %}
 The board is a set of live cells. Write `step`, which returns the next board. A "blinker" (three cells in a row) flips between horizontal and vertical:
 
 <!-- phel-test: skip -->
@@ -1157,11 +1157,11 @@ The board is a set of live cells. Write `step`, which returns the next board. A 
 (= (step blinker) #{[1 0] [1 1] [1 2]}) ; => true
 (= blinker (step (step blinker)))      ; => true
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Only cells next to a live cell can be alive next tick. `(mapcat neighbors board)` lists every neighbor of every live cell, and `frequencies` then tells you how many live neighbors each of those cells has.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn neighbors [[x y]]
   (for [dx :in [-1 0 1]
@@ -1181,9 +1181,9 @@ Only cells next to a live cell can be alive next tick. `(mapcat neighbors board)
 (= blinker (step (step blinker)))      ; => true
 ```
 This is the whole rule set in four lines. The common first attempt loops over every cell of a fixed grid and counts neighbors one by one; storing only live cells in a set makes the board infinite and the code shorter.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="build") %}
+{% <question difficulty="medium" kind="build"> %}
 Add input and output. Write `parse-board`, which reads a board from strings (`#` is alive, `.` is dead), and `render`, which turns a board back into a vector of strings for a given width and height.
 
 <!-- phel-test: skip -->
@@ -1193,11 +1193,11 @@ Add input and output. Write `parse-board`, which reads a board from strings (`#`
 (render (step (parse-board ["..." "###" "..."])) 3 3)
 ; => [".#." ".#." ".#."]
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `php/str_split` turns a string into an array of characters. `for` with `:pairs` over a vector gives `[index value]`, which is `[y row]` for rows and `[x char]` for characters.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn neighbors [[x y]]
   (for [dx :in [-1 0 1]
@@ -1228,9 +1228,9 @@ Add input and output. Write `parse-board`, which reads a board from strings (`#`
 ; => [".#." ".#." ".#."]
 ```
 `parse-board` and `render` are opposites, so `(render (parse-board rows) w h)` gives back `rows`. That makes a quick check that both are right.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="hard", kind="build") %}
+{% <question difficulty="hard" kind="build"> %}
 Run the simulation. Write `run-life`, which takes the starting rows and a number of generations and prints each generation. Try it with a "glider", a shape that moves one cell diagonally every 4 generations.
 
 <!-- phel-test: skip -->
@@ -1246,11 +1246,11 @@ Run the simulation. Write `run-life`, which takes the starting rows and a number
 ;; ###...
 ;; ...
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `(iterate step board)` is the infinite, lazy sequence of all future boards. `take` the ones you need, then print them.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn neighbors [[x y]]
   (for [dx :in [-1 0 1]
@@ -1309,4 +1309,4 @@ Run the simulation. Write `run-life`, which takes the starting rows and a number
 ;; ......
 ```
 `iterate` describes every future board, but laziness means only the boards you `take` are computed. The rules live in `step`, a pure function; `run-life` only prints. Try a larger board and more generations to watch the glider travel.
-{% end %}
+{% </solution> %}

@@ -3,137 +3,29 @@
  * Tuned to the phel-lang.org dark palette (violet accent, slate neutrals on #212830 bg).
  * Scoped under `.dark` so it can be loaded alongside the light theme without
  * relying on prefers-color-scheme or runtime media-attr swaps.
+ *
+ * The token colors live in syntaxes/phel-dark.theme.json. Zola numbers the
+ * classes by sorted color and writes them to public/giallo-dark.css on each
+ * build: after you change the theme, copy its rules here under `.dark`,
+ * without the background.
  */
 
-.dark .z-code {
-  color: #cbd5e1; /* slate-300 base text */
-}
+/* A token the dark theme leaves at the base color must drop its light color. */
+.dark :where([class*="z-l-"]) { color: inherit; font-style: inherit; font-weight: inherit; }
 
-/* Comments and REPL prompts */
-.dark .z-comment,
-.dark .z-punctuation.z-definition.z-comment {
-  color: #94a3b8; /* slate-400: 5.47:1 on the #262c36 code bg */
-  font-style: italic;
-}
+.dark .z-d-code { color: #CBD5E1; }
 
-/* Strings */
-.dark .z-string,
-.dark .z-constant.z-other.z-symbol,
-.dark .z-entity.z-other.z-inherited-class {
-  color: #7ee2b8; /* teal-light */
-}
-.dark .z-punctuation.z-definition.z-string {
-  color: #7ee2b8;
-}
-
-/* Regex literals and character escapes */
-.dark .z-string.z-regexp,
-.dark .z-constant.z-character.z-escape {
-  color: #67e8f9; /* cyan-300 */
-}
-
-/* Keywords: defn, def, if, when, cond, let, ns, recur, try, catch, ... */
-.dark .z-keyword {
-  color: #c4b5fd; /* violet-300 */
-}
-.dark .z-keyword.z-operator {
-  color: #c4b5fd;
-}
-
-/* Storage (tagged literals like #uuid, #inst) */
-.dark .z-storage {
-  color: #f9a8d4; /* pink-300 */
-}
-
-/* PHP interop (php/..., php/new, php/->) and other support functions */
-.dark .z-support,
-.dark .z-support.z-function,
-.dark .z-support.z-function.z-any-method {
-  color: #f9a8d4; /* pink-300 */
-}
-
-/* Keysyms (:keys, :ns, :refer, :as) */
-.dark .z-constant.z-other.z-keyword {
-  color: #67e8f9; /* cyan-300 */
-}
-
-/* Literals (true / false / nil) */
-.dark .z-constant.z-language {
-  color: #93c5fd; /* blue-300 */
-}
-
-/* Numeric constants */
-.dark .z-constant.z-numeric {
-  color: #fbbf24; /* amber-400 */
-}
-
-/* Generic constant fallback */
-.dark .z-constant {
-  color: #fbbf24;
-}
-
-/* Anonymous-fn arg (%, %1, %&) */
-.dark .z-variable.z-parameter.z-anon-fn,
-.dark .z-variable.z-parameter {
-  color: #fbbf24;
-}
-
-.dark .z-variable {
-  color: #fca5a5; /* red-300 */
-}
-
-/* Function/class identifiers (used by other grammars) */
-.dark .z-entity.z-name.z-function,
-.dark .z-meta.z-require,
-.dark .z-keyword.z-other.z-special-method {
-  color: #93c5fd; /* blue-300 */
-}
-
-.dark .z-support.z-class,
-.dark .z-entity.z-name.z-class,
-.dark .z-entity.z-name.z-type.z-class {
-  color: #fbbf24;
-}
-
-.dark .z-entity.z-name.z-tag {
-  color: #fca5a5;
-}
-
-.dark .z-entity.z-other.z-attribute-name {
-  color: #fbbf24;
-}
-
-/* Structural punctuation: parens, brackets, braces, anon-fn #(...) */
-.dark .z-punctuation.z-paren,
-.dark .z-punctuation.z-bracket,
-.dark .z-punctuation.z-brace,
-.dark .z-punctuation.z-section {
-  color: #94a3b8; /* slate-400 */
-}
-
-/* Markdown / diff niceties retained from upstream theme */
-.dark .z-markup.z-heading .z-punctuation.z-definition.z-heading,
-.dark .z-entity.z-name.z-section {
-  color: #93c5fd;
-}
-.dark .z-markup.z-bold,
-.dark .z-punctuation.z-definition.z-bold {
-  color: #fbbf24;
-  font-weight: bold;
-}
-.dark .z-markup.z-italic,
-.dark .z-punctuation.z-definition.z-italic {
-  color: #c4b5fd;
-  font-style: italic;
-}
-.dark .z-markup.z-raw.z-inline { color: #7ee2b8; }
-.dark .z-markup.z-list { color: #fca5a5; }
-.dark .z-markup.z-quote { color: #fbbf24; }
-.dark .z-markup.z-inserted { color: #7ee2b8; }
-.dark .z-markup.z-deleted { color: #fca5a5; }
-.dark .z-markup.z-changed { color: #c4b5fd; }
-
-.dark .z-invalid.z-illegal {
-  color: #1f2937;
-  background-color: #fca5a5;
-}
+.dark .z-d-1 { color: #1F2937; }
+.dark .z-d-2 { color: #67E8F9; }
+.dark .z-d-3 { color: #7EE2B8; }
+.dark .z-d-4 { color: #94A3B8; }
+.dark .z-d-5 { color: #C4B5FD; }
+.dark .z-d-6 { color: #F9A8D4; }
+.dark .z-d-7 { color: #FBBF24; }
+.dark .z-d-8 { color: #FCA5A5; }
+.dark .z-d-bg1 { background-color: #FCA5A5; }
+.dark .z-d-b { font-weight: bold; }
+.dark .z-d-i { font-style: italic; }
+.dark .z-d-u { text-decoration: underline; }
+.dark .z-d-s { text-decoration: line-through; }
+.dark .z-d-us { text-decoration: underline line-through; }

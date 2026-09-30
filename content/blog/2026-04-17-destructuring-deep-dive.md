@@ -1,6 +1,5 @@
 +++
 title = "Destructuring Deep Dive in Phel"
-aliases = [ "/blog/destructuring-deep-dive" ]
 description = "Pull apart nested vectors and maps, use :keys, :or, :as, & rest, and destructure JSON payloads the way Clojure developers do."
 
 [extra]

@@ -1,18 +1,23 @@
-{#- Usage: {% question(difficulty="easy", kind="predict") %}Markdown{% end %}
+{#- Usage: {% <question difficulty="easy" kind="predict"> %}Markdown{% </question> %}
     difficulty: easy | medium | hard
-    kind: predict | fill | write | fix | refactor | build -#}
-{%- set kind = kind | default(value="") -%}
-{%- set difficulty = difficulty | default(value="") -%}
+    kind: predict | fill | write | fix | refactor | build
+    Components cannot count their calls, so the exercise number is left as
+    <!--exercise-n--> and practice-page.html fills it in page order. -#}
+{%- component question(difficulty: string = "", kind: string = "") -%}
 {%- if kind and kind not in ["predict", "fill", "write", "fix", "refactor", "build"] -%}
     {{ throw(message="question: unknown kind '" ~ kind ~ "', expected predict, fill, write, fix, refactor or build") }}
 {%- endif -%}
 {%- if kind == "fill" -%}{%- set kind_label = "Fill in" -%}{%- else -%}{%- set kind_label = kind | capitalize -%}{%- endif -%}
-<div class="question-block" id="exercise-{{ nth }}" data-exercise-index="{{ nth }}">
+<div class="question-block" id="exercise-<!--exercise-n-->" data-exercise-index="<!--exercise-n-->">
     <div class="exercise-head">
         <h3 class="exercise-title">
-            <a class="exercise-number" href="#exercise-{{ nth }}">Exercise {{ nth }}</a>
-            {% if kind %}<span class="exercise-kind">{{ kind_label }}</span>{% endif %}
-            {% if difficulty %}<span class="difficulty difficulty-{{ difficulty }}">{{ difficulty }}</span>{% endif %}
+            <a class="exercise-number" href="#exercise-<!--exercise-n-->">Exercise <!--exercise-n--></a>
+            {%- if kind %}
+            <span class="exercise-kind">{{ kind_label }}</span>
+            {%- endif %}
+            {%- if difficulty %}
+            <span class="difficulty difficulty-{{ difficulty }}">{{ difficulty }}</span>
+            {%- endif %}
         </h3>
         <button type="button" class="exercise-check" data-exercise-check aria-pressed="false">
             <svg class="exercise-check__icon" viewBox="0 0 16 16" aria-hidden="true"><circle class="exercise-check__ring" cx="8" cy="8" r="6.5"/><path class="exercise-check__tick" d="M5 8.2l2 2 4-4.4"/></svg>
@@ -20,6 +25,7 @@
         </button>
     </div>
     <div class="exercise-body">
-        {{ body | markdown | safe }}
+        {{ body | markdown | trim | safe }}
     </div>
 </div>
+{%- endcomponent question -%}

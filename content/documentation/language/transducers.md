@@ -46,7 +46,7 @@ A reducing function has three arities: 0 for the start value, 1 to finish, 2 for
 (transduce (map inc) (completing conj) [1 2 3]) ; => [2 3 4]
 ```
 
-## Transducer-producing functions {#transducer-producing-functions}
+## Transducer-producing functions { #transducer-producing-functions }
 
 Most sequence functions have two forms. With a collection they return a lazy sequence. Without one they return a transducer: `(map f)`, `(filter pred)`.
 

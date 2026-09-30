@@ -7,7 +7,7 @@
  * Reads:  the curated PAGES list below (content/**.md)
  * Writes: static/llms-full.txt
  *
- * Each page has its Zola TOML frontmatter and Tera shortcodes stripped, then is
+ * Each page has its Zola TOML frontmatter and Tera tags stripped, then is
  * emitted under an `# <title>` header with its canonical source URL.
  */
 
@@ -49,9 +49,10 @@ function titleFrom(frontmatter, fallback) {
   return m ? m[1] : fallback;
 }
 
-// Drop Tera shortcodes: paired `{% name(...) %}...{% end %}` keep their inner
-// text (just remove the tags), and `{{ ... }}` variables are removed outright.
-function stripShortcodes(body) {
+// Drop Tera tags: block components `{% <name ...> %}...{% </name> %}` and
+// `{% raw %}` markers keep their inner text (just remove the tags), and
+// `{{ ... }}` expressions such as `{{ <phel_version /> }}` are removed outright.
+function stripTemplateTags(body) {
   return body
     .replace(/\{%[^%]*%\}/g, '')
     .replace(/\{\{[^}]*\}\}/g, '')
@@ -89,7 +90,7 @@ function main() {
       '',
       `> Source: ${urlFor(relPath)}`,
       '',
-      stripShortcodes(body),
+      stripTemplateTags(body),
       '',
       '---',
       '',

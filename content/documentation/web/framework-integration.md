@@ -9,9 +9,9 @@ After this page you can add Phel to an existing Symfony, Laravel, or plain PHP p
 
 To serve HTTP with Phel itself instead, see [Request and Response](/documentation/web/http-request-and-response/) and [Routing](/documentation/web/routing/).
 
-{% php_note() %}
+{% <php_note> %}
 Phel installs as a Composer package and compiles to plain PHP. Your framework never knows it is calling Lisp: it sees ordinary classes and methods.
-{% end %}
+{% </php_note> %}
 
 ## Core idea
 
@@ -21,9 +21,9 @@ Phel installs as a Composer package and compiles to plain PHP. Your framework ne
 4. Export PHP wrappers under your framework's `App\` PSR-4 root via `phel export`.
 5. In production, run `phel build` at deploy and `require 'build/app/main.php'` at boot; in development, `\Phel::run($root, 'app.main')` compiles on first call. One [load guard](/documentation/guides/deployment/#loading-phel-prod-vs-dev) picks the right path.
 
-{% callout(kind="warning") %}
+{% <callout kind="warning"> %}
 Namespaces need at least two segments (`shop.pricing`, not `pricing`). A single-segment namespace exports invalid PHP.
-{% end %}
+{% </callout> %}
 
 There are two ways to call Phel from PHP:
 
@@ -282,7 +282,7 @@ $rows = $conn->executeQuery($sql, $params)->fetchAllAssociative();
 
 phel-pdo can also wrap an existing PDO handle so its map-returning helpers run on the host's pooled connection.
 
-### When you need the object {#when-you-really-need-the-object}
+### When you need the object { #when-you-really-need-the-object }
 
 Some PHP APIs require a typed instance, such as a DTO or a value object. Convert at the boundary: `hydrate` builds an instance from a map without running its constructor, and `bean` reads its public properties back into a map with keyword keys. Keep maps everywhere else.
 

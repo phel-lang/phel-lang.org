@@ -7,9 +7,9 @@ aliases = ["/documentation/routing"]
 
 After this page you can map URLs and HTTP methods to handlers, read path parameters, add middleware, and build URLs from route names. The `phel.router` namespace turns a route table into one request-to-response function, so you do not write `cond` by hand.
 
-{% php_note() %}
+{% <php_note> %}
 Like a Symfony or Laravel router, but routes are plain Phel data: a vector of `[path data]` pairs. No annotations, no config files. It builds on the Symfony routing component, which ships with Phel.
-{% end %}
+{% </php_note> %}
 
 ## Define routes and build the app
 

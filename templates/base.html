@@ -6,23 +6,23 @@
 
   {# ---------- Resolved metadata ---------- #}
   {% set site_name = config.title %}
-  {% set page_title = page.title | default(value=section.title | default(value=config.title)) %}
-  {% set seo_title = page.extra.seo_title | default(value=section.extra.seo_title | default(value="")) %}
+  {% set page_title = page?.title or section?.title or config.title %}
+  {% set seo_title = page?.extra?.seo_title or section?.extra?.seo_title or "" %}
   {% if seo_title %}
     {% set full_title = seo_title %}
   {% else %}
-    {% set full_title = page.title | default(value=section.title | default(value="")) %}
+    {% set full_title = page?.title or section?.title or "" %}
     {% if full_title and full_title != config.title %}
       {% set full_title = full_title ~ " | " ~ config.title %}
     {% else %}
       {% set full_title = config.title %}
     {% endif %}
   {% endif %}
-  {% set page_desc = page.description | default(value=section.description | default(value=config.description)) %}
-  {% set page_url = current_url | default(value=config.base_url ~ "/") %}
-  {% set og_image = page.extra.og_image | default(value=section.extra.og_image | default(value=config.base_url ~ "/images/og-default.png")) %}
-  {% set og_image_width = page.extra.og_image_width | default(value=section.extra.og_image_width | default(value=1200)) %}
-  {% set og_image_height = page.extra.og_image_height | default(value=section.extra.og_image_height | default(value=630)) %}
+  {% set page_desc = page?.description or section?.description or config.description %}
+  {% set page_url = current_url or config.base_url ~ "/" %}
+  {% set og_image = page?.extra?.og_image or section?.extra?.og_image or config.base_url ~ "/images/og-default.png" %}
+  {% set og_image_width = page?.extra?.og_image_width or section?.extra?.og_image_width or 1200 %}
+  {% set og_image_height = page?.extra?.og_image_height or section?.extra?.og_image_height or 630 %}
   {% block og_type %}{% set og_type = "website" %}{% endblock og_type %}
   {# Pages whose front matter is generated re-set full_title, page_title or page_desc here. #}
   {% block seo_meta %}{% endblock seo_meta %}

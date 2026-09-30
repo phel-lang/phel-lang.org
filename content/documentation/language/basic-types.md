@@ -92,9 +92,9 @@ Other common numeric functions:
 
 `floor`, `ceil`, `round`, `sqrt`, and the rest are in the [core API](/documentation/reference/api/core/).
 
-{% php_note() %}
+{% <php_note> %}
 `%` and `**` behave like PHP's. `(+)` and `(*)` return the identity values `0` and `1`, which makes them safe to use with `reduce` and `apply` on empty collections.
-{% end %}
+{% </php_note> %}
 
 ### Bitwise operators
 
@@ -154,9 +154,9 @@ A keyword starts with `:`. It names a constant. Keywords are interned, so compar
 
 A keyword is also a function: called with a map, it looks itself up.
 
-{% php_note() %}
+{% <php_note> %}
 Use keywords where PHP code uses string array keys or class constants. `{:name "Alice"}` is the idiomatic form of `['name' => 'Alice']`.
-{% end %}
+{% </php_note> %}
 
 ## Symbols
 
@@ -204,9 +204,9 @@ Only `false` and `nil` are falsy. Every other value is truthy, including `0`, `"
 (false? nil) ; => false
 ```
 
-{% php_note() %}
+{% <php_note> %}
 In PHP, `0`, `""`, `"0"`, and `[]` are falsy. In Phel they are truthy. To test for an empty collection, use `empty?`. To test for zero, use `zero?`.
-{% end %}
+{% </php_note> %}
 
 ## Equality and comparison
 
@@ -238,9 +238,9 @@ Comparison operators take any number of arguments and check that the order holds
 (>= 5 5)   ; => true
 ```
 
-{% php_note() %}
+{% <php_note> %}
 `=` is not PHP's `==`. It never converts types. `identical?` is close to `===`. When you need PHP's loose comparison, call it directly: `(php/== 5 "5")` returns `true`.
-{% end %}
+{% </php_note> %}
 
 ## Logical operations
 
@@ -274,9 +274,9 @@ Comparison operators take any number of arguments and check that the order holds
 
 The [`comment`](/documentation/reference/api/core/#comment) macro ignores its body and returns `nil`. The body must still be valid Phel.
 
-{% callout(kind="warning") %}
+{% <callout kind="warning"> %}
 **Removed:** `#` line comments and `#| ... |#` blocks no longer parse. Use `;` for lines, and `#_` or `(comment ...)` for whole forms.
-{% end %}
+{% </callout> %}
 
 ## Regex literals
 
@@ -294,9 +294,9 @@ The [`comment`](/documentation/reference/api/core/#comment) macro ignores its bo
 
 With capture groups, the result is a vector: the full match, then each group.
 
-{% clojure_note() %}
+{% <clojure_note> %}
 Same `#"..."` syntax as Clojure. The engine is PHP PCRE, not Java regex, so some details differ.
-{% end %}
+{% </clojure_note> %}
 
 ## Tagged literals
 

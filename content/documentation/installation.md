@@ -38,9 +38,9 @@ vendor/bin/phel init my-app    # scaffold phel-config.php + src/
 
 Then run every command as `vendor/bin/phel <cmd>`, for example `vendor/bin/phel repl`. `phel init` has more layouts and templates: see [CLI Commands](/documentation/reference/cli-commands/).
 
-{% php_note() %}
+{% <php_note> %}
 **Does this replace my PHP app?** No. Phel lives next to your PHP code. Call compiled Phel namespaces from PHP after `require 'vendor/autoload.php'`, or call PHP from Phel. Add it to any Composer project (Laravel, Symfony, a WordPress plugin) and use it where a Lisp fits better. See [Framework Integration](/documentation/web/framework-integration/).
-{% end %}
+{% </php_note> %}
 
 ## PHAR (no project setup)
 
@@ -142,9 +142,9 @@ nix shell nixpkgs#phel
 phel repl
 ```
 
-{% callout(kind="note") %}
+{% <callout kind="note"> %}
 The nixpkgs version can be behind the latest release. Check it with `nix eval nixpkgs#phel.version`. For the newest release, use Composer or the PHAR.
-{% end %}
+{% </callout> %}
 
 ### Project `shell.nix`
 
@@ -175,7 +175,7 @@ phel doctor               # Nix / global
 
 It checks the PHP extensions Phel needs (`json`, `mbstring`, `readline`), your source and test directories, OPcache, and the cache size, and names anything that is missing.
 
-{% clojure_note() %}
+{% <clojure_note> %}
 How the toolchain maps from `lein` and `deps.edn`:
 
 | Clojure                    | Phel                                         |
@@ -188,7 +188,7 @@ How the toolchain maps from `lein` and `deps.edn`:
 | nREPL                      | `phel nrepl` (bencode over TCP)              |
 
 Editors connect through nREPL and LSP. See [Editor Support](/documentation/tooling/editor-support/).
-{% end %}
+{% </clojure_note> %}
 
 ## Upgrading
 

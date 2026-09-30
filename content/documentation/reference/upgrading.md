@@ -97,13 +97,13 @@ Everything that printed a deprecation notice in 0.49 is gone. Run your tests wit
 | `phel index --out` | `--output` (`-o`) |
 | `phel config --json` | `--format=json` (`-f json`) |
 
-{% callout(kind="warning") %}
+{% <callout kind="warning"> %}
 `,` and `foo$` fail silently. `,` is now whitespace, so `` `(f ,x) `` still parses but quotes `x` instead of unquoting it. `foo$` is now an ordinary symbol, so a macro that binds `tmp$` compiles but loses its unique name. Search everything that generates Phel, not only `.phel` files:
 
 ```bash
 grep -rnE ",[A-Za-z0-9_(\[{'\`~@:*+-]" --include='*.phel' src/ tests/
 ```
-{% end %}
+{% </callout> %}
 
 [0.50 release notes](/releases/0-50-the-last-zero/).
 

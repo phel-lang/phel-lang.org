@@ -40,9 +40,9 @@ Most functions are in `phel.core` and need no require. The exception is `delay`,
 (pmap (fn [x] (* x x)) [1 2 3 4]) ; => [1 4 9 16]
 ```
 
-{% clojure_note() %}
+{% <clojure_note> %}
 `clojure.core/pmap` uses a thread pool. Phel's `pmap` uses fibers on one thread, like ClojureScript and Basilisp.
-{% end %}
+{% </clojure_note> %}
 
 ## Two layers
 
@@ -61,9 +61,9 @@ The AMPHP layer uses `amphp/amp` v3. The loop runs on its own, so you never call
 
 `(delay seconds)` pauses. At the top level it works like `php/sleep`. Inside an `async` or `future` body it pauses only the current task, and it can be cancelled.
 
-{% callout(kind="note") %}
+{% <callout kind="note"> %}
 **Not Clojure's `delay`.** `clojure.core/delay` wraps a lazy value; it does not sleep. Phel keeps `delay` in `phel.async`, not `phel.core`, so portable `.cljc` code sees the difference.
-{% end %}
+{% </callout> %}
 
 ### `future`, timeouts and cancellation
 

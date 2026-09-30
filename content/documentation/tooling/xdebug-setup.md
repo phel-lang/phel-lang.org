@@ -210,6 +210,6 @@ xdebug_break();
 echo "Xdebug is working\n";
 ```
 
-{% callout(kind="tip") %}
+{% <callout kind="tip"> %}
 No Xdebug? Phel's built-in [`(break)`](/documentation/guides/debugging/#pause-with-break) pauses in a sub-REPL with all locals in scope, with no extension or editor setup.
-{% end %}
+{% </callout> %}

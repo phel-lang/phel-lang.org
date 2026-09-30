@@ -1,6 +1,6 @@
-{#- Usage: {% callout(kind="note") %}Markdown body{% end %}
+{#- Usage: {% <callout kind="note"> %}Markdown body{% </callout> %}
     kind: note | tip | warning | deprecated. Anything else fails the build. -#}
-{%- set kind = kind | default(value="note") -%}
+{%- component callout(kind: string = "note") -%}
 {%- if kind == "note" -%}
     {%- set label = "Note" -%}
     {%- set icon = '<circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path>' -%}
@@ -22,6 +22,7 @@
         <span>{{ label }}</span>
     </div>
     <div class="callout__content">
-        {{ body | markdown | safe }}
+        {{ body | markdown | trim | safe }}
     </div>
 </div>
+{%- endcomponent callout -%}

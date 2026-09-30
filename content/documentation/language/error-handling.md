@@ -10,9 +10,9 @@ difficulty = "intermediate"
 
 After this page you can raise errors with `throw`, handle them with `try`/`catch`/`finally`, and attach data to an error with `ex-info`. Phel uses PHP exceptions, so any PHP `Throwable` works here.
 
-{% callout(kind="note") %}
+{% <callout kind="note"> %}
 Looking for a `[PHEL...]` compiler error code? See the [Error Reference](/documentation/reference/errors/).
-{% end %}
+{% </callout> %}
 
 ## Throw and catch
 
@@ -37,7 +37,7 @@ A `finally` clause always runs last, whether the body threw or not. Use it for c
   (finally (print "cleanup"))) ; => "recovered", and prints "cleanup"
 ```
 
-{% php_note() %}
+{% <php_note> %}
 Same exceptions, different shape:
 
 ```php
@@ -53,7 +53,7 @@ try {
   (throw (RuntimeException. "disk full"))
   (catch \Exception e (.getMessage e)))
 ```
-{% end %}
+{% </php_note> %}
 
 ## Attach data with `ex-info`
 
@@ -94,9 +94,9 @@ Pass the original exception as a third argument to keep the failure trail:
 ; => "save failed <- io fail"
 ```
 
-{% clojure_note() %}
+{% <clojure_note> %}
 `ex-info`, `ex-data`, `ex-message` and `ex-cause` work as in Clojure. The value is a PHP exception that extends `\Exception`, so `catch \Exception` catches it.
-{% end %}
+{% </clojure_note> %}
 
 ## Define exception types
 

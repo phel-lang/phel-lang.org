@@ -131,6 +131,6 @@ Source, test and vendor dirs must be relative. `phel config` and `phel doctor` r
 | `PHEL_TEST_WORKERS` | Worker count for `phel test --parallel` and `phel mutate --parallel` |
 | `NO_COLOR` | Turns off colored output |
 
-{% callout(kind="note") %}
+{% <callout kind="note"> %}
 The old `setX()` setters were removed in 0.46. Use the `with*()` methods.
-{% end %}
+{% </callout> %}

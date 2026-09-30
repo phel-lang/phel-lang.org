@@ -48,7 +48,8 @@
                 </div>
             </div>
             {% endif %}
-            {{page.content | safe}}
+            {#- Each part after the first opens one question block, so its index is the exercise number. -#}
+            {%- for part in parts %}{% if not loop.first %}question-block{% endif %}{{ part | replace(from="<!--exercise-n-->", to=loop.index0 | str) | safe }}{% endfor %}
 
             {% if page.extra.recap %}
             <div class="module-recap">

@@ -1,6 +1,5 @@
 +++
 title = "REPL-Driven Development in Phel"
-aliases = [ "/blog/repl-driven-development" ]
 description = "Live functions, *1 chaining, load-file reloads, tap> debugging. The Lisp workflow on PHP."
 date = 2026-05-13
 

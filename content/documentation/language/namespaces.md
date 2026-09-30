@@ -24,7 +24,7 @@ Every Phel file starts with `ns`. The name has parts separated by `.`, and the l
 
 `ns` also sets `*ns*` to the current namespace name. The backslash separator (`hello\world`) still parses but prints a deprecation warning.
 
-{% php_note() %}
+{% <php_note> %}
 ```php
 // PHP
 namespace My\Custom\Module;
@@ -41,7 +41,7 @@ use My\Phel\Module as Utilities;
 ```
 
 Phel uses `.` between namespace parts, `:require` for Phel modules and `:use` for PHP classes. You call a module function with `/`, not `::`.
-{% end %}
+{% </php_note> %}
 
 ## Require a Phel module
 

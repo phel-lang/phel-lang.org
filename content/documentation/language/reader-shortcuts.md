@@ -67,17 +67,17 @@ Quasiquote is like quote, but lets you evaluate parts of the form. `~` inserts t
 (let [xs [2 3 4]] `(1 ~@xs 5)) ; => (1 2 3 4 5)
 ```
 
-{% callout(kind="warning") %}
+{% <callout kind="warning"> %}
 **Removed in 0.50:** `,` (unquote) and `,@` (unquote-splicing). Use `~` and `~@`. `,` is now whitespace, so `` `(f ,x) `` still parses but *quotes* `x` instead of unquoting it. There is no error, only a wrong expansion.
-{% end %}
+{% </callout> %}
 
 ### Auto-gensym `name#`
 
 Inside a quasiquote, a symbol that ends in `#` becomes a fresh unique name. The same `name#` maps to the same generated name everywhere in that template. This keeps macro locals from clashing with user code. See [Macros](/documentation/language/macros/#hygiene-and-gensym).
 
-{% callout(kind="warning") %}
+{% <callout kind="warning"> %}
 **Removed in 0.50:** the `name$` suffix. Use `name#`.
-{% end %}
+{% </callout> %}
 
 ## Reader conditionals `#?()` and `#?@()`
 
@@ -115,9 +115,9 @@ Atoms: [Global and local bindings](/documentation/language/global-and-local-bind
 
 When to use a named `fn` instead: [Functions and Recursion](/documentation/language/functions-and-recursion/#anonymous-function-fn).
 
-{% callout(kind="warning") %}
+{% <callout kind="warning"> %}
 **Removed in 0.50:** the `|(...)` form with `$`, `$1`, `$&`. Use `#(...)` with `%`.
-{% end %}
+{% </callout> %}
 
 ## Regex literals `#"..."`
 

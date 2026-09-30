@@ -104,9 +104,9 @@ A map pattern with integer keys reads a vector by index. It helps when you need 
   third) ; => 30
 ```
 
-{% clojure_note() %}
+{% <clojure_note> %}
 `:keys`, `:strs`, `:or`, and `:as` work in map patterns as in Clojure. Vector patterns do not support `:as`: `(let [[a :as all] [1 2]] all)` fails with `PHEL008 Cannot destructure Keyword`. Bind the vector to a name first, then destructure it.
-{% end %}
+{% </clojure_note> %}
 
 ## In function parameters
 
@@ -139,6 +139,6 @@ Any parameter can be a pattern:
   [v k]) ; => [[1 :a] [2 :b]]
 ```
 
-{% php_note() %}
+{% <php_note> %}
 PHP has `[$a, $b] = $arr;` and `['a' => $x] = $arr;`. Phel patterns also nest, take the rest with `&`, give defaults with `:or`, and work directly in function parameters. `{:keys [role] :or {role "guest"}}` replaces `$role = $data['role'] ?? 'guest';`.
-{% end %}
+{% </php_note> %}

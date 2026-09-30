@@ -27,7 +27,7 @@ A call to `(unless false "yes" "no")` becomes `(if (not false) "yes" "no")` befo
 
 This works because Phel code is data. The call is a plain list, and a macro changes that list with ordinary Phel functions. `defn`, `when`, `and`, `or`, `->` and `->>` are macros in the standard library, not compiler syntax.
 
-{% php_note() %}
+{% <php_note> %}
 PHP has no macros. The usual replacements each have a limit:
 
 - `eval()` runs at runtime and cannot be linted or type-checked.
@@ -35,7 +35,7 @@ PHP has no macros. The usual replacements each have a limit:
 - Attributes are metadata only. They cannot change the code they annotate.
 
 Phel macros run inside the compiler, produce normal Phel code, and you can inspect the result with `macroexpand`.
-{% end %}
+{% </php_note> %}
 
 ## Quasiquote
 
@@ -59,9 +59,9 @@ A small `defn` built with all three:
 
 Quasiquote also qualifies the symbols it contains: `not` becomes `phel.core/not`. So the expansion still works when the caller has a local named `not`.
 
-{% clojure_note() %}
+{% <clojure_note> %}
 Same quasiquote, unquote and splicing tokens as Clojure.
-{% end %}
+{% </clojure_note> %}
 
 ## Expand a macro
 

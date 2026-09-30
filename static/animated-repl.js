@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // The transcript is server-rendered by the hero_repl shortcode from REAL
+  // The transcript is server-rendered by the hero_repl component from REAL
   // `phel repl` output (build/generate-repl-showcase.php), so the terminal is
   // never empty and never drifts from what Phel prints. This script only
   // replays the last form as typing, then reveals its result.

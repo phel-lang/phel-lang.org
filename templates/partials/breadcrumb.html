@@ -24,7 +24,7 @@
 {% set_global rendered_ancestors = [] %}
 {% for ancestor_path in ancestors %}
   {% if ancestor_path not in hide %}
-    {% set_global rendered_ancestors = rendered_ancestors | concat(with=ancestor_path) %}
+    {% set_global rendered_ancestors = [...rendered_ancestors, ancestor_path] %}
   {% endif %}
 {% endfor %}
 
@@ -37,7 +37,7 @@
   {% endfor %}
   <strong>{{ self_title }}</strong>
 </nav>
-{% set self_url = crumb_page.permalink | default(value=crumb_section.permalink | default(value="")) %}
+{% set self_url = crumb_page?.permalink or crumb_section?.permalink or "" %}
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",

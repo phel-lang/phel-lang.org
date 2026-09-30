@@ -92,7 +92,7 @@ Three special forms inside `is` check exceptions and output:
 | `(thrown-with-msg? Class msg body)` | `body` throws `Class` with message `msg` |
 | `(output? expected body)` | `body` prints exactly `expected` to stdout |
 
-{% php_note() %}
+{% <php_note> %}
 Each PHPUnit assertion maps to one `is` form:
 
 | PHPUnit | Phel |
@@ -101,7 +101,7 @@ Each PHPUnit assertion maps to one `is` form:
 | `$this->expectException(Exception::class)` | `(is (thrown? Exception ...))` |
 | `$this->expectExceptionMessage("test")` | `(is (thrown-with-msg? Exception "test" ...))` |
 | `$this->expectOutputString("hello")` | `(is (output? "hello" ...))` |
-{% end %}
+{% </php_note> %}
 
 ### Reading a failure
 
@@ -176,9 +176,9 @@ Tag tests with metadata to include or exclude them as a group:
 
 `--last-failed --repeat=20` is a quick way to hammer the tests that just failed. `vendor/bin/phel test --help` and [CLI commands](/documentation/reference/cli-commands/#test) list every flag.
 
-{% php_note() %}
+{% <php_note> %}
 `vendor/bin/phpunit tests/MainTest.php --filter testMyFunction` becomes `vendor/bin/phel test tests/main.phel --filter my-test-function`.
-{% end %}
+{% </php_note> %}
 
 ## Watch, parallel, and coverage
 
@@ -321,9 +321,9 @@ Inspect how a mock was called:
 
 `reset-mock!` clears the recorded calls.
 
-{% php_note() %}
+{% <php_note> %}
 No mock classes: `$this->createMock(UserService::class)->method('find')->willReturn(['id' => 1])` becomes `(with-mocks [find-user (mock {:id 1})] ...)`. You mock the function itself.
-{% end %}
+{% </php_note> %}
 
 ## Property-based testing
 

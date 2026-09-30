@@ -34,7 +34,7 @@ Every form on this page is an expression: it returns a value. There are no state
 
 Only `false` and `nil` are falsy. `0`, `""`, and `[]` are truthy. See [Truthiness](/documentation/language/basic-types/#truthiness).
 
-## Do {#statements-do}
+## Do { #statements-do }
 
 Each branch of `if` is one form. `do` groups several forms and returns the value of the last one:
 
@@ -87,9 +87,9 @@ Each branch of `if` is one form. `do` groups several forms and returns the value
 (ticket-price 70) ; => 7
 ```
 
-{% php_note() %}
+{% <php_note> %}
 `cond` replaces a chain of `if` / `elseif` / `else`. Each branch returns a value, so there is no `$result` variable to assign.
-{% end %}
+{% </php_note> %}
 
 ## Case
 
@@ -108,9 +108,9 @@ Each branch of `if` is one form. `do` groups several forms and returns the value
 
 Group constants in a list to share one result: `(case n (1 2 3) :small :big)`.
 
-{% php_note() %}
+{% <php_note> %}
 `case` is like `switch` or `match` in PHP, with no `break` and no fall-through. The test values must be literals, not expressions.
-{% end %}
+{% </php_note> %}
 
 ## Condp
 
@@ -223,11 +223,11 @@ Several bindings nest, like nested loops:
   (assoc m k (inc v))) ; => {:a 2 :b 3 :c 4}
 ```
 
-{% clojure_note() %}
+{% <clojure_note> %}
 Like Clojure's `for`, but it returns a vector, not a lazy sequence, and each binding names its verb (`:in`, `:range`, ...). `:reduce` is a Phel extension.
-{% end %}
+{% </clojure_note> %}
 
-## Side effects: foreach and dofor {#foreach}
+## Side effects: foreach and dofor { #foreach }
 
 `for` is for building values. For side effects such as printing or writing to a database, use `foreach` or `dofor`. Both return `nil`:
 
@@ -277,7 +277,7 @@ Use `->` for maps and objects, where the subject goes first. Use `->>` for seque
 (build-user "Bob" false) ; => {:name "Bob"}
 ```
 
-## Errors {#try-catch-and-finally}
+## Errors { #try-catch-and-finally }
 
 `throw` raises any PHP `Throwable`. `try` catches it by type:
 

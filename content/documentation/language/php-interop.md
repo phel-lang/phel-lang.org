@@ -23,9 +23,9 @@ Phel compiles to PHP, so every PHP function, class and Composer package is avail
 
 These are the only spellings. The old `php/new`, `php/->` and `php/::` forms are rejected since Phel 0.52 (error `PHEL012`).
 
-{% clojure_note() %}
+{% <clojure_note> %}
 Same spelling as Clojure: `.method`, `.-field`, `Class/member`, and `->` for chaining.
-{% end %}
+{% </clojure_note> %}
 
 ## Call a PHP function
 
@@ -46,7 +46,7 @@ For a namespaced function, write the namespace with dots. The backslash form sti
 (php/Amp/trapSignal [php/SIGINT php/SIGTERM])   ; same, slash before the name
 ```
 
-### PHP functions as values {#php-first-class-callable}
+### PHP functions as values { #php-first-class-callable }
 
 A `php/` function is a value. Bind it, pass it to `map`, or `apply` it:
 
@@ -64,7 +64,7 @@ When a PHP library needs a native PHP callable, use `php/callable`. It works lik
   (.format (parse "Y-m-d" "2026-06-06") "Y-m-d")) ; => "2026-06-06"
 ```
 
-## Create an object {#php-class-instantiation}
+## Create an object { #php-class-instantiation }
 
 Add a dot after the class name. Import the class with `:use` so you write the namespace once:
 
@@ -79,7 +79,7 @@ Add a dot after the class name. Import the class with `:use` so you write the na
 
 Global PHP classes such as `DateTime` also work without `:use`.
 
-## Call methods and properties {#method-and-property-call}
+## Call methods and properties { #method-and-property-call }
 
 `.method` calls a method. `.-field` reads a public property. The name is part of the symbol, not an evaluated value:
 
@@ -99,7 +99,7 @@ Chain calls with `->`. Each step receives the result of the previous one:
     (.format "Y-m-d"))   ; => "2024-03-11"
 ```
 
-### Set a property {#php-set-object-properties}
+### Set a property { #php-set-object-properties }
 
 `set!` assigns a public property. This mutates the PHP object, so keep it at the edge of your code:
 
@@ -109,7 +109,7 @@ Chain calls with `->`. Each step receives the result of the previous one:
 (.-name user) ; => "Ada"
 ```
 
-## Static methods and constants {#php-static-method-and-property-call}
+## Static methods and constants { #php-static-method-and-property-call }
 
 `Class/member` calls a static method or reads a class constant:
 

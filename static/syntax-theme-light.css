@@ -1,139 +1,30 @@
 /*
  * Phel light syntax theme
  * Tuned to the phel-lang.org palette (indigo/violet accent, slate neutrals).
- * Applies to every fenced code block Zola emits, Phel gets the full treatment,
- * other languages inherit the same token colors via shared z-* classes.
+ *
+ * The token colors live in syntaxes/phel-light.theme.json. Zola numbers the
+ * classes by sorted color and writes them to public/giallo-light.css on each
+ * build: after you change the theme, copy its rules here without the
+ * background. Numbers: 1 cyan-700 (regex, escapes), 2 teal-700 (strings),
+ * 3 comments (4.97:1 on the #f1f5f9 code bg), 4 slate-500 (punctuation),
+ * 5 violet-600 (keywords), 6 amber-700 (constants), 7 red-700 (variables),
+ * 8 pink-700 (storage, support), 9 invalid text.
  */
 
-.z-code {
-  color: #334155; /* slate-700 base text */
-}
+.z-l-code { color: #334155; }
 
-/* Comments and REPL prompts ("user:1>", "user:2>", "....:3>") */
-.z-comment,
-.z-punctuation.z-definition.z-comment {
-  color: #5b6b80; /* between slate-500 and 600: 4.97:1 on the #f1f5f9 code bg */
-  font-style: italic;
-}
-
-/* Strings */
-.z-string,
-.z-constant.z-other.z-symbol,
-.z-entity.z-other.z-inherited-class {
-  color: #0e7c66; /* teal-700 */
-}
-.z-punctuation.z-definition.z-string {
-  color: #0e7c66;
-}
-
-/* Regex literals and character escapes */
-.z-string.z-regexp,
-.z-constant.z-character.z-escape {
-  color: #0e7490; /* cyan-700: 4.89:1 on the #f1f5f9 code bg (cyan-600 was 3.36) */
-}
-
-/* Keywords: defn, def, if, when, cond, let, ns, recur, try, catch, ... */
-.z-keyword {
-  color: #7c3aed; /* violet-600 (site accent family) */
-}
-.z-keyword.z-operator {
-  color: #7c3aed;
-}
-
-/* Storage (tagged literals like #uuid, #inst) */
-.z-storage {
-  color: #be185d; /* pink-700 */
-}
-
-/* PHP interop (php/..., php/new, php/->) and other support functions */
-.z-support,
-.z-support.z-function,
-.z-support.z-function.z-any-method {
-  color: #be185d; /* pink-700 */
-}
-
-/* Keysyms (:keys, :ns, :refer, :as) */
-.z-constant.z-other.z-keyword {
-  color: #0e7490; /* cyan-700: 4.89:1 on the #f1f5f9 code bg (cyan-600 was 3.36) */
-}
-
-/* Literals (true / false / nil) */
-.z-constant.z-language {
-  color: #1d4ed8; /* blue-700 */
-}
-
-/* Numeric constants */
-.z-constant.z-numeric {
-  color: #b45309; /* amber-700 */
-}
-
-/* Generic constant fallback */
-.z-constant {
-  color: #b45309;
-}
-
-/* Anonymous-fn arg (%, %1, %&) */
-.z-variable.z-parameter.z-anon-fn,
-.z-variable.z-parameter {
-  color: #b45309;
-}
-
-.z-variable {
-  color: #b91c1c; /* red-700 */
-}
-
-/* Function/class identifiers (used by other grammars like PHP, JS) */
-.z-entity.z-name.z-function,
-.z-meta.z-require,
-.z-keyword.z-other.z-special-method {
-  color: #1e40af; /* blue-800 */
-}
-
-.z-support.z-class,
-.z-entity.z-name.z-class,
-.z-entity.z-name.z-type.z-class {
-  color: #b45309;
-}
-
-.z-entity.z-name.z-tag {
-  color: #b91c1c;
-}
-
-.z-entity.z-other.z-attribute-name {
-  color: #b45309;
-}
-
-/* Structural punctuation: parens, brackets, braces, anon-fn #(...) */
-.z-punctuation.z-paren,
-.z-punctuation.z-bracket,
-.z-punctuation.z-brace,
-.z-punctuation.z-section {
-  color: #64748b; /* slate-500 */
-}
-
-/* Markdown / diff niceties retained from upstream theme */
-.z-markup.z-heading .z-punctuation.z-definition.z-heading,
-.z-entity.z-name.z-section {
-  color: #1e40af;
-}
-.z-markup.z-bold,
-.z-punctuation.z-definition.z-bold {
-  color: #b45309;
-  font-weight: bold;
-}
-.z-markup.z-italic,
-.z-punctuation.z-definition.z-italic {
-  color: #7c3aed;
-  font-style: italic;
-}
-.z-markup.z-raw.z-inline { color: #0e7c66; }
-.z-markup.z-list { color: #b91c1c; }
-.z-markup.z-quote { color: #b45309; }
-.z-markup.z-inserted { color: #0e7c66; }
-.z-markup.z-deleted { color: #b91c1c; }
-.z-markup.z-changed { color: #7c3aed; }
-
-.z-invalid.z-illegal {
-  color: #fef2f2;
-  background-color: #b91c1c;
-}
+.z-l-1 { color: #0E7490; }
+.z-l-2 { color: #0E7C66; }
+.z-l-3 { color: #5B6B80; }
+.z-l-4 { color: #64748B; }
+.z-l-5 { color: #7C3AED; }
+.z-l-6 { color: #B45309; }
+.z-l-7 { color: #B91C1C; }
+.z-l-8 { color: #BE185D; }
+.z-l-9 { color: #FEF2F2; }
+.z-l-bg1 { background-color: #B91C1C; }
+.z-l-b { font-weight: bold; }
+.z-l-i { font-style: italic; }
+.z-l-u { text-decoration: underline; }
+.z-l-s { text-decoration: line-through; }
+.z-l-us { text-decoration: underline line-through; }

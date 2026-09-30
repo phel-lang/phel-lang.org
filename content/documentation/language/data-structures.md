@@ -20,9 +20,9 @@ config     ; => {:theme "dark" :lang "en"}
 new-config ; => {:theme "light" :lang "en"}
 ```
 
-{% php_note() %}
+{% <php_note> %}
 PHP arrays copy on write, and code that holds a reference can change them in place. A Phel function can never change the data you pass to it. When you need a mutable PHP array for interop, create one with `(php/array)` and change it with `php/aset`.
-{% end %}
+{% </php_note> %}
 
 ## Choosing a collection
 
@@ -93,9 +93,9 @@ Add or replace keys with `assoc`. Remove them with `dissoc`. Combine maps with `
 
 `keys`, `vals`, and `select-keys` read parts of a map: `(select-keys {:a 1 :b 2 :c 3} [:a :c])` returns `{:a 1 :c 3}`.
 
-{% php_note() %}
+{% <php_note> %}
 A map is like a PHP associative array with two differences: keys can be any type, and `assoc` returns a new map instead of changing the old one.
-{% end %}
+{% </php_note> %}
 
 ### Map entries
 
@@ -163,7 +163,7 @@ A queue prints as `<-(...)-<`: items enter on the right and leave on the left.
 
 ## Working with collections
 
-### Adding with `conj` {#adding-elements-with-conj}
+### Adding with `conj` { #adding-elements-with-conj }
 
 `conj` adds where it is cheapest for the type:
 
@@ -296,8 +296,8 @@ Keep a transient local to one function. Never share it.
 
 `keywordize-keys` and `stringify-keys` convert map keys at every level, which helps with decoded JSON. `walk`, `prewalk-replace`, and `postwalk-replace` are in the [walk API](/documentation/reference/api/walk/).
 
-{% clojure_note() %}
+{% <clojure_note> %}
 `conj`, `assoc`, `dissoc`, `disj`, `get`, `get-in`, `assoc-in`, `update`, and `update-in` behave as in Clojure. The old Phel names `push`, `put`, and `unset` were removed.
-{% end %}
+{% </clojure_note> %}
 
 Next: [Global and local bindings](/documentation/language/global-and-local-bindings/) shows how to name these values with `def` and `let`.

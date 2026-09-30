@@ -7,9 +7,9 @@ aliases = ["/documentation/cheat-sheet"]
 
 The forms and functions you reach for every day, one block per topic. For every function and its full signature, see the [API reference](/documentation/reference/api/). For how a form works, follow the link under each block.
 
-{% callout(kind="tip") %}
+{% <callout kind="tip"> %}
 **AI agents:** load [Agentic Coding](/documentation/reference/agentic-coding) first for the truncation-safe rules and PHP-interop gotchas.
-{% end %}
+{% </callout> %}
 
 ## Basic syntax
 

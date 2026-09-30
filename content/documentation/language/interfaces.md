@@ -45,9 +45,9 @@ After this page you can define shared behavior for several types. Use an interfa
 
 Each method becomes a normal function: call it with the struct first, pass it to `map`, compose it. Each struct also gets a predicate (`circle?`).
 
-{% callout(kind="note") %}
+{% <callout kind="note"> %}
 Only structs implement interfaces, and a Phel interface cannot extend another interface. For structs themselves, see [Structs](/documentation/language/data-structures/#structs).
-{% end %}
+{% </callout> %}
 
 ### Several interfaces on one struct
 

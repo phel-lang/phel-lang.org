@@ -1,6 +1,5 @@
 +++
 title = "PHP Interop in Phel: Modern Syntax"
-aliases = [ "/blog/php-interop-modern-syntax" ]
 description = "Named arguments, by-reference output, PHP magic methods, typed wrappers, native enums. Calling PHP from a Lisp, the 2026 way."
 date = 2026-06-06
 +++

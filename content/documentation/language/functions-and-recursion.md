@@ -97,13 +97,13 @@ Parameters can take vectors and maps apart by shape, as in `(defn area [{:keys [
 
 Use `fn` when the body is more than one short expression or when a name for the argument helps the reader.
 
-{% php_note() %}
+{% <php_note> %}
 `#(* % 2)` is like PHP's arrow function `fn($x) => $x * 2`. Unlike PHP closures, a Phel `fn` captures every local it uses without a `use (...)` clause.
-{% end %}
+{% </php_note> %}
 
-{% callout(kind="warning") %}
+{% <callout kind="warning"> %}
 **Removed in 0.50:** `|(...)` with `$`, `$1`, `$&`. Use `#(...)` with `%`. **Removed:** the `function?` predicate. Use `fn?`.
-{% end %}
+{% </callout> %}
 
 ## Apply and compose
 

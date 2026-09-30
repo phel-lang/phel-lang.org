@@ -36,52 +36,52 @@ A quote (`'`) stops evaluation. `'(+ 1 2)` is not the number 3: it is a list wit
 '(+ 1 2) ; => (+ 1 2)
 ```
 
-{% question(difficulty="easy", kind="predict") %}
+{% <question difficulty="easy" kind="predict"> %}
 What does each line return?
 ```phel
 (first '(+ 1 2))
 (rest '(+ 1 2))
 (count '(* 2 (+ 1 3)))
 ```
-{% end %}
-{% solution() %}
+{% </question> %}
+{% <solution> %}
 ```phel
 (first '(+ 1 2))       ; => +
 (rest '(+ 1 2))        ; => (1 2)
 (count '(* 2 (+ 1 3))) ; => 3
 ```
 A quoted form is an ordinary list. The nested `(+ 1 3)` counts as one item: it is a list inside the list.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="easy", kind="predict") %}
+{% <question difficulty="easy" kind="predict"> %}
 What is printed, and what is returned?
 ```phel
 '(println "hi")
 ```
-{% end %}
-{% solution() %}
+{% </question> %}
+{% <solution> %}
 ```phel
 '(println "hi") ; => (println "hi")
 ```
 Nothing is printed. The quote keeps the form as data, so `println` never runs. You get back a list of a symbol and a string.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="easy", kind="predict") %}
+{% <question difficulty="easy" kind="predict"> %}
 What does each `type` call return?
 ```phel
 (type '(+ 1 2))
 (type (first '(+ 1 2)))
 (type (last '(+ 1 2)))
 ```
-{% end %}
-{% solution() %}
+{% </question> %}
+{% <solution> %}
 ```phel
 (type '(+ 1 2))         ; => :list
 (type (first '(+ 1 2))) ; => :symbol
 (type (last '(+ 1 2)))  ; => :int
 ```
 Code is built from the same values you already know: lists, symbols, numbers, strings, keywords. That is why a macro can work on code with normal Phel functions.
-{% end %}
+{% </solution> %}
 
 ## Running code you built: `eval`
 
@@ -92,35 +92,35 @@ Code is built from the same values you already know: lists, symbols, numbers, st
 (eval (list '- 10 4))   ; => 6
 ```
 
-{% question(difficulty="easy", kind="fill") %}
+{% <question difficulty="easy" kind="fill"> %}
 Fill in the blank so the built form multiplies its numbers:
 <!-- phel-test: skip -->
 ```phel
 (eval (list ___ 2 3)) ; => 6
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 You need the symbol for multiplication, not the function itself.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (eval (list '* 2 3)) ; => 6
 ```
 `'*` is the symbol. `(list '* 2 3)` builds the form `(* 2 3)`, and `eval` runs it.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="write") %}
+{% <question difficulty="medium" kind="write"> %}
 Write `swap-op`. It takes a form and a new operator symbol and returns the same form with the operator replaced.
 <!-- phel-test: skip -->
 ```phel
 (swap-op '(+ 2 3) '*)        ; => (* 2 3)
 (eval (swap-op '(+ 2 3) '*)) ; => 6
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 The operator is the `first` item. Keep the `rest` and put the new operator in front with `cons`.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn swap-op [form op]
   (cons op (rest form)))
@@ -131,7 +131,7 @@ The operator is the `first` item. Keep the `rest` and put the new operator in fr
 This is a code transformation, written as a normal function. A macro does the same work, but the compiler calls it for you.
 
 In real programs you rarely need `eval`. It is here to show that built code can run.
-{% end %}
+{% </solution> %}
 
 ## Syntax-quote: code templates
 
@@ -146,7 +146,7 @@ Building code with `list` gets hard to read. Syntax-quote (`` ` ``) writes a tem
 
 Syntax-quote also writes the full name of core symbols, such as `phel.core/+`. The code still means `+`, even if the caller has a local with the same name.
 
-{% question(difficulty="medium", kind="predict") %}
+{% <question difficulty="medium" kind="predict"> %}
 What does each line return? Look closely at the difference between `~` and `~@`.
 ```phel
 (let [nums [1 2 3]]
@@ -158,11 +158,11 @@ What does each line return? Look closely at the difference between `~` and `~@`.
 (let [nums [1 2 3]]
   (eval `(+ ~@nums)))
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `~` inserts one value. `~@` opens the collection and inserts what is inside.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (let [nums [1 2 3]]
   `(+ ~nums))           ; => (phel.core/+ [1 2 3])
@@ -174,7 +174,7 @@ What does each line return? Look closely at the difference between `~` and `~@`.
   (eval `(+ ~@nums)))   ; => 6
 ```
 With `~` the vector becomes one argument, and `(+ [1 2 3])` would fail. With `~@` each number becomes its own argument.
-{% end %}
+{% </solution> %}
 
 ## Writing a macro
 
@@ -197,7 +197,7 @@ With `~` the vector becomes one argument, and `(+ [1 2 3])` would fail. With `~@
 ; => (do (println "hi") (println "hi"))
 ```
 
-{% question(difficulty="medium", kind="write") %}
+{% <question difficulty="medium" kind="write"> %}
 Write `unless`, the opposite of `if`: when the test is falsy it returns `then`, otherwise `else`. Only the chosen branch may run.
 <!-- phel-test: skip -->
 ```phel
@@ -205,11 +205,11 @@ Write `unless`, the opposite of `if`: when the test is falsy it returns `then`, 
 (unless (= 1 1) "yes" "no")      ; => "no"
 (unless true (println "boom") 1) ; => 1, and nothing is printed
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Return an `if` form with the test wrapped in `not`. Use syntax-quote and `~` for the three parts.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defmacro unless [test then else]
   `(if (not ~test) ~then ~else))
@@ -219,9 +219,9 @@ Return an `if` form with the test wrapped in `not`. Use syntax-quote and `~` for
 (unless true (println "boom") 1) ; => 1
 ```
 The call becomes `(if (not true) (println "boom") 1)`. `if` runs only one branch, so `"boom"` is never printed.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="predict") %}
+{% <question difficulty="medium" kind="predict"> %}
 Here is `unless` as a function instead of a macro. What is printed, and what is returned?
 ```phel
 (defn unless-fn [test then else]
@@ -229,11 +229,11 @@ Here is `unless` as a function instead of a macro. What is printed, and what is 
 
 (unless-fn true (println "boom") 1)
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 When do function arguments run: before the call or inside it?
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn unless-fn [test then else]
   (if (not test) then else))
@@ -241,9 +241,9 @@ When do function arguments run: before the call or inside it?
 (unless-fn true (println "boom") 1) ; prints "boom", => 1
 ```
 A function evaluates all its arguments before the body runs, so `"boom"` is printed even though that branch is not chosen. Control over evaluation is the main reason to write a macro.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="predict") %}
+{% <question difficulty="medium" kind="predict"> %}
 What does `macroexpand-1` return here?
 ```phel
 (defmacro unless [test then else]
@@ -251,11 +251,11 @@ What does `macroexpand-1` return here?
 
 (macroexpand-1 '(unless (empty? xs) "has items" "empty"))
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `not` is written inside the syntax-quote, so it gets its full name. The arguments are inserted as they were written.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defmacro unless [test then else]
   `(if (not ~test) ~then ~else))
@@ -264,7 +264,7 @@ What does `macroexpand-1` return here?
 ; => (if (phel.core/not (empty? xs)) "has items" "empty")
 ```
 `xs` does not need to exist: expanding only rewrites code, it does not run it. When a macro misbehaves, expand it and read the result.
-{% end %}
+{% </solution> %}
 
 ## Hygiene: safe names and single evaluation
 
@@ -281,7 +281,7 @@ A macro that binds a local can hide a name the caller uses. End the name with `#
 
 The number after `tmp__` changes on each expansion.
 
-{% question(difficulty="medium", kind="fix") %}
+{% <question difficulty="medium" kind="fix"> %}
 `add-ten` works with a literal, but gives a wrong answer when the caller has a local named `n`. Find the problem and fix it.
 <!-- phel-test: skip -->
 ```phel
@@ -292,11 +292,11 @@ The number after `tmp__` changes on each expansion.
 (add-ten 1)             ; => 11
 (let [n 1] (add-ten n)) ; => 20, expected 11
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Expand `(add-ten n)` and read the `let`. Which `n` does the inserted `n` refer to?
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defmacro add-ten [x]
   `(let [n# 10]
@@ -306,9 +306,9 @@ Expand `(add-ten n)` and read the `let`. Which `n` does the inserted `n` refer t
 (let [n 1] (add-ten n)) ; => 11
 ```
 The broken version expands to `(let [n 10] (+ n n))`: the macro's `n` hides the caller's `n`. With `n#`, the macro's local gets a unique name that cannot clash.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="hard", kind="fix") %}
+{% <question difficulty="hard" kind="fix"> %}
 `square` looks right, but `(square (next-id))` would call `next-id` twice. Show the problem with `println`, then fix the macro so its argument runs once.
 <!-- phel-test: skip -->
 ```phel
@@ -317,11 +317,11 @@ The broken version expands to `(let [n 10] (+ n n))`: the macro's `n` hides the 
 
 (square (do (println "run") 3)) ; prints "run" two times, => 9
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Expand it. The argument is code, and `~x` pastes that code in two places. Bind it to a local first.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defmacro square [x]
   `(let [v# ~x]
@@ -330,9 +330,9 @@ Expand it. The argument is code, and `~x` pastes that code in two places. Bind i
 (square (do (println "run") 3)) ; prints "run" once, => 9
 ```
 A macro copies code, not values. When an argument appears more than once in the template, bind it once with a `name#` local.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="hard", kind="write") %}
+{% <question difficulty="hard" kind="write"> %}
 Write `with-timing`. It takes a label and any number of body forms, runs the body, prints the label and the time in milliseconds, and returns the body's result. Use `(php/microtime true)` for the current time in seconds.
 <!-- phel-test: skip -->
 ```phel
@@ -340,11 +340,11 @@ Write `with-timing`. It takes a label and any number of body forms, runs the bod
 ; prints something like: sum 0.1 ms
 ; => 499500
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Take the body with `& body` and splice it into a `do` with `~@`. You need two locals, one for the start time and one for the result: both need `#`.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defmacro with-timing [label & body]
   `(let [start#  (php/microtime true)
@@ -355,13 +355,13 @@ Take the body with `& body` and splice it into a `do` with `~@`. You need two lo
 (with-timing "sum" (reduce + (range 1000))) ; => 499500
 ```
 A function could not do this: it would receive the result, already computed, and have nothing left to time. The macro wraps the code itself.
-{% end %}
+{% </solution> %}
 
 ## When not to write a macro
 
 A macro is not a value. You cannot pass it to `map`, store it in a map, or `apply` it. Write a macro only for new syntax or for control over evaluation. Everything else is a function.
 
-{% question(difficulty="medium", kind="refactor") %}
+{% <question difficulty="medium" kind="refactor"> %}
 `(map add-tax [10 20])` fails with a `Too few arguments` error. Rewrite `add-tax` so that it works with `map`.
 <!-- phel-test: skip -->
 ```phel
@@ -371,11 +371,11 @@ A macro is not a value. You cannot pass it to `map`, store it in a map, or `appl
 (add-tax 10)            ; => 12.1
 (map add-tax [10 20])   ; fails
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Does `add-tax` need to control when its argument runs?
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn add-tax [price]
   (* price 1.21))
@@ -386,4 +386,4 @@ Does `add-tax` need to control when its argument runs?
 `add-tax` only computes a value from a value, so it should be a function. Reach for a function first, and write a macro only when a function cannot do the job.
 
 Learn more: [When to write a macro](/documentation/language/macros/#when-to-write-a-macro)
-{% end %}
+{% </solution> %}

@@ -10,7 +10,7 @@ difficulty = "advanced"
 
 A lazy sequence computes its values only when you read them. After this page you can work with infinite or expensive sequences, build your own with `lazy-seq`, and avoid the usual laziness bugs.
 
-## Built-in lazy functions {#built-in-lazy-functions}
+## Built-in lazy functions { #built-in-lazy-functions }
 
 You rarely write a lazy sequence by hand. These core functions already return one:
 
@@ -136,6 +136,6 @@ Force a lazy result before you compare it, so errors inside it surface in the te
 
 Use lazy sequences for large or infinite sources, when you read only part of the data, and to compose steps over a stream. Avoid them when you read every value right away, or read the same sequence many times. To run `map`, `filter` and `take` in one pass with no intermediate sequences, use [Transducers](/documentation/language/transducers/).
 
-{% clojure_note() %}
+{% <clojure_note> %}
 Phel follows the [Clojure sequence model](https://clojure.org/reference/sequences).
-{% end %}
+{% </clojure_note> %}

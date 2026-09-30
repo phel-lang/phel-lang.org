@@ -1,6 +1,5 @@
 +++
 title = "Pattern Matching: Writing Cleaner Code with Less Conditional Logic"
-aliases = [ "/blog/pattern-matching" ]
 description = "Trade if/elseif chains for case and cond, with PHP-friendly examples that show when each match shines."
 +++
 

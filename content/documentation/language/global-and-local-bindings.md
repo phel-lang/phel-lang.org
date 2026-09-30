@@ -67,9 +67,9 @@ Bindings are immutable. An inner `let` can shadow an outer name, but it never ch
 
 The full rules are on [Destructuring](/documentation/language/destructuring/).
 
-{% php_note() %}
+{% <php_note> %}
 A PHP variable can be reassigned at any time. A Phel local cannot. To compute a new value, bind a new name or pass the value to a function. This removes a whole class of "who changed this variable" bugs.
-{% end %}
+{% </php_note> %}
 
 ## Atoms
 
@@ -94,9 +94,9 @@ An atom holds one value that can change over time. Use it for application state,
 
 Functions that change state end in `!` by convention. Prefer plain immutable values, and keep atoms at the edges of your program.
 
-{% callout(kind="note") %}
+{% <callout kind="note"> %}
 The old atom names `var`, `var?`, and `set!` are gone. Use `atom`, `atom?`, and `reset!`. `var` and `#'sym` now return a [Var handle](#variables).
-{% end %}
+{% </callout> %}
 
 ## Dynamic binding
 
@@ -124,9 +124,9 @@ A dynamic var is a global that can take a different value for the duration of a 
   (greet)) ; => "Hello i386 user"
 ```
 
-`with-bindings` does the same as `binding` from a map of Var handles to values: `(with-bindings {#'*env* "test"} (current-env))`. More stubbing techniques are in [Testing](/documentation/guides/testing/#mocking).
+`with-bindings` does the same as `binding` from a map of Var handles to values: {% raw %}`(with-bindings {#'*env* "test"} (current-env))`{% endraw %}. More stubbing techniques are in [Testing](/documentation/guides/testing/#mocking).
 
-## Vars {#variables}
+## Vars { #variables }
 
 Every `def` creates a `Var`. `(var name)`, or the `#'name` shorthand, returns the Var itself instead of its value:
 

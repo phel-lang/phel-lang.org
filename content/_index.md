@@ -27,13 +27,13 @@ aliases = ["/documentation/why-phel/"]
     </ul>
   </div>
   <div class="homepage-hero-aside">
-    {{ hero_repl() }}
+    {{ <hero_repl /> }}
   </div>
 </section>
 
 <section class="homepage-section compile-showcase" aria-labelledby="phel-in-php-out">
 
-## Phel in, PHP out {#phel-in-php-out}
+## Phel in, PHP out { #phel-in-php-out }
 
 <p class="compile-showcase-lede">The compiler emits plain PHP. The <code>-&gt;&gt;</code> macro expands away. PHP functions are called directly.</p>
 

@@ -40,7 +40,7 @@ A recursive function calls itself on a smaller problem. It needs a base case: an
 (countdown 3) ; => [:liftoff 1 2 3]
 ```
 
-{% question(difficulty="easy", kind="predict") %}
+{% <question difficulty="easy" kind="predict"> %}
 What does `(fact 5)` return?
 <!-- phel-test: skip -->
 ```phel
@@ -51,8 +51,8 @@ What does `(fact 5)` return?
 
 (fact 5)
 ```
-{% end %}
-{% solution() %}
+{% </question> %}
+{% <solution> %}
 ```phel
 (defn fact [n]
   (if (<= n 1)
@@ -62,20 +62,20 @@ What does `(fact 5)` return?
 (fact 5) ; => 120
 ```
 `(fact 5)` is `(* 5 (fact 4))`, which is `(* 5 (* 4 (fact 3)))`, and so on down to the base case `(fact 1)`, which returns 1.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="write") %}
+{% <question difficulty="medium" kind="write"> %}
 Write `my-count` without using `count`. Use recursion with `empty?`, `rest`, and `inc`.
 <!-- phel-test: skip -->
 ```phel
 (my-count [:a :b :c]) ; => 3
 (my-count [])         ; => 0
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 The count of an empty collection is 0. The count of any other collection is one more than the count of its `rest`.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn my-count [xs]
   (if (empty? xs)
@@ -86,9 +86,9 @@ The count of an empty collection is 0. The count of any other collection is one 
 (my-count [])         ; => 0
 ```
 Every recursive function has the same shape: check the base case first, then call yourself on a smaller input.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="fix") %}
+{% <question difficulty="medium" kind="fix"> %}
 This function should add all numbers in a vector, but it never finishes. Fix it.
 <!-- phel-test: skip -->
 ```phel
@@ -97,11 +97,11 @@ This function should add all numbers in a vector, but it never finishes. Fix it.
 
 (sum-all [1 2 3]) ; expected => 6
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 What should happen when `xs` is empty?
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn sum-all [xs]
   (if (empty? xs)
@@ -111,7 +111,7 @@ What should happen when `xs` is empty?
 (sum-all [1 2 3]) ; => 6
 ```
 There was no base case. `(rest [])` is `[]` again, so the function kept calling itself with an empty vector until the program ran out of memory.
-{% end %}
+{% </solution> %}
 
 ## loop and recur
 
@@ -138,7 +138,7 @@ Compare two ways to add the numbers from 1 to n:
 
 Both give the same answer. With `n` set to one million, `sum-to-slow` keeps a million calls waiting: in our test the process needed about 430 MB of memory, more than the 128 MB limit many PHP servers use. `sum-to` stayed at about 33 MB, the same as a program that does nothing. `loop` sets the starting values, and `recur` must be the last thing the code does (the tail position), so there is nothing left to wait for.
 
-{% question(difficulty="easy", kind="fill") %}
+{% <question difficulty="easy" kind="fill"> %}
 Fill in the blanks so the loop returns the numbers 1 to 10 in a vector.
 <!-- phel-test: skip -->
 ```phel
@@ -149,8 +149,8 @@ Fill in the blanks so the loop returns the numbers 1 to 10 in a vector.
     (recur (conj v i) ___)))
 ; => [1 2 3 4 5 6 7 8 9 10]
 ```
-{% end %}
-{% solution() %}
+{% </question> %}
+{% <solution> %}
 ```phel
 (loop [v []
        i 1]
@@ -160,19 +160,19 @@ Fill in the blanks so the loop returns the numbers 1 to 10 in a vector.
 ; => [1 2 3 4 5 6 7 8 9 10]
 ```
 `recur` takes one new value for each `loop` binding, in the same order. When the loop ends, you return the accumulated vector.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="write") %}
+{% <question difficulty="medium" kind="write"> %}
 Use `loop` and `recur` to add the numbers from 1 to 100.
 <!-- phel-test: skip -->
 ```phel
 ; => 5050
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Carry two values: the current number and the running total.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (loop [i 1
        total 0]
@@ -182,9 +182,9 @@ Carry two values: the current number and the running total.
 ; => 5050
 ```
 This is the accumulator pattern: carry the result so far in a loop binding and return it at the end. `(reduce + (range 1 101))` gives the same answer; use `loop` when the steps do not fit a single `reduce`.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="refactor") %}
+{% <question difficulty="medium" kind="refactor"> %}
 This recursive `my-count` works on small inputs but needs more and more memory on large ones. Rewrite it with `loop` and `recur` so it counts a million items safely.
 <!-- phel-test: skip -->
 ```phel
@@ -195,11 +195,11 @@ This recursive `my-count` works on small inputs but needs more and more memory o
 
 (my-count (range 1000000)) ; => 1000000
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 The call is not in tail position because `inc` runs after it returns. Move the counting into an accumulator.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn my-count [xs]
   (loop [xs xs
@@ -211,9 +211,9 @@ The call is not in tail position because `inc` runs after it returns. Move the c
 (my-count (range 1000000)) ; => 1000000
 ```
 The accumulator `n` holds the count so far, so there is nothing left to do after `recur`. Moving the pending work into an accumulator is how you turn most recursions into loops.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="fix") %}
+{% <question difficulty="medium" kind="fix"> %}
 This does not compile: Phel says `Can't call 'recur here`. Fix it so `(fact 5)` returns 120.
 <!-- phel-test: skip -->
 ```phel
@@ -222,11 +222,11 @@ This does not compile: Phel says `Can't call 'recur here`. Fix it so `(fact 5)` 
     1
     (* n (recur (dec n)))))
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `recur` must be the last call. Here `*` still needs its result. Add an accumulator with `loop`.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn fact [n]
   (loop [n n
@@ -238,9 +238,9 @@ This does not compile: Phel says `Can't call 'recur here`. Fix it so `(fact 5)` 
 (fact 5) ; => 120
 ```
 Phel checks the tail position when it compiles. Multiply into `acc` first, then `recur`: now nothing waits for the result.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="hard", kind="write") %}
+{% <question difficulty="hard" kind="write"> %}
 The Collatz rule: if `n` is even, divide it by 2; if odd, compute `3n + 1`. Repeat until you reach 1. Write `collatz-steps` that returns how many steps that takes.
 <!-- phel-test: skip -->
 ```phel
@@ -248,11 +248,11 @@ The Collatz rule: if `n` is even, divide it by 2; if odd, compute `3n + 1`. Repe
 (collatz-steps 6)  ; => 8
 (collatz-steps 27) ; => 111
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Carry `n` and a step counter in a `loop`. `cond` has three cases: done, even, odd.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (defn collatz-steps [n]
   (loop [n n
@@ -267,7 +267,7 @@ Carry `n` and a step counter in a `loop`. `cond` has three cases: done, even, od
 (collatz-steps 27) ; => 111
 ```
 You cannot know in advance how many steps you need, so `map` or `range` do not fit. `recur` works in any branch of `cond`, as long as it is the last call in that branch.
-{% end %}
+{% </solution> %}
 
 ## for comprehensions
 
@@ -277,23 +277,23 @@ You cannot know in advance how many steps you need, so `map` or `range` do not f
 (for [x :in [1 2 3]] (* x 10)) ; => [10 20 30]
 ```
 
-{% question(difficulty="easy", kind="predict") %}
+{% <question difficulty="easy" kind="predict"> %}
 What does each `for` return?
 <!-- phel-test: skip -->
 ```phel
 (for [x :in [1 2 3 4 5 6] :when (even? x)] (* x x))
 (for [n :range [1 20] :when (= 0 (rem n 5))] n)
 ```
-{% end %}
-{% solution() %}
+{% </question> %}
+{% <solution> %}
 ```phel
 (for [x :in [1 2 3 4 5 6] :when (even? x)] (* x x)) ; => [4 16 36]
 (for [n :range [1 20] :when (= 0 (rem n 5))] n)     ; => [5 10 15]
 ```
 `:when` drops the items that fail the test. `:range [1 20]` works like `(range 1 20)`, so 20 is not included.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="write") %}
+{% <question difficulty="medium" kind="write"> %}
 Build every `[suit rank]` pair for this small deck with `for`.
 <!-- phel-test: skip -->
 ```phel
@@ -302,11 +302,11 @@ Build every `[suit rank]` pair for this small deck with `for`.
 ; => [[:hearts :ace] [:hearts :king] [:hearts :queen] [:diamonds :ace] ... ]
 ; 12 pairs in total
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Give `for` two bindings, one after the other.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (def suits [:hearts :diamonds :clubs :spades])
 (def ranks [:ace :king :queen])
@@ -320,9 +320,9 @@ Give `for` two bindings, one after the other.
 (count deck)  ; => 12
 ```
 Two bindings act like nested loops. The last binding changes fastest. In PHP you would write two nested `foreach` loops and push into an array.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="medium", kind="fill") %}
+{% <question difficulty="medium" kind="fill"> %}
 Fill in the blanks: square the numbers 1 to 5 and keep only the squares above 5.
 <!-- phel-test: skip -->
 ```phel
@@ -332,11 +332,11 @@ Fill in the blanks: square the numbers 1 to 5 and keep only the squares above 5.
   sq)
 ; => [9 16 25]
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 One clause names a value, the other one filters.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (for [x :range [1 6]
       :let [sq (* x x)]
@@ -345,7 +345,7 @@ One clause names a value, the other one filters.
 ; => [9 16 25]
 ```
 `:let` computes `sq` once, so both the test and the result can use it.
-{% end %}
+{% </solution> %}
 
 ## Side effects: foreach and dotimes
 
@@ -356,15 +356,15 @@ One clause names a value, the other one filters.
   (println "Hi" name))
 ```
 
-{% question(difficulty="easy", kind="predict") %}
+{% <question difficulty="easy" kind="predict"> %}
 What does this print, and what does the whole expression return?
 <!-- phel-test: skip -->
 ```phel
 (dotimes [i 3]
   (println "Line" (inc i)))
 ```
-{% end %}
-{% solution() %}
+{% </question> %}
+{% <solution> %}
 ```phel
 (dotimes [i 3]
   (println "Line" (inc i)))
@@ -375,7 +375,7 @@ What does this print, and what does the whole expression return?
 ; => nil
 ```
 `dotimes` counts `i` from 0 up to, but not including, 3. It returns `nil` because it exists for the printing, not for a result. If you need the lines as data, use `for` or `map`.
-{% end %}
+{% </solution> %}
 
 ## Lazy sequences
 
@@ -387,7 +387,7 @@ What does this print, and what does the whole expression return?
 
 Laziness matters because you can describe "all the numbers" and let the consumer decide where to stop. `map` and `filter` are lazy too, so a pipeline over an infinite sequence does only the work needed for the answer.
 
-{% question(difficulty="medium", kind="predict") %}
+{% <question difficulty="medium" kind="predict"> %}
 What does each call return?
 <!-- phel-test: skip -->
 ```phel
@@ -396,11 +396,11 @@ What does each call return?
 (repeat 3 "ab")
 (take-while #(< % 100) (iterate #(* 3 %) 1))
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 `iterate` calls the function on its last result, again and again.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (take 5 (iterate #(* 2 %) 1))                ; => (1 2 4 8 16)
 (take 5 (cycle [:red :green]))               ; => (:red :green :red :green :red)
@@ -408,19 +408,19 @@ What does each call return?
 (take-while #(< % 100) (iterate #(* 3 %) 1)) ; => (1 3 9 27 81)
 ```
 `repeat` with a count is not infinite, so it returns a plain vector. `take-while` stops at the first item that fails the test, so it works well on an infinite sequence.
-{% end %}
+{% </solution> %}
 
-{% question(difficulty="hard", kind="write") %}
+{% <question difficulty="hard" kind="write"> %}
 Find the first square number greater than 1000. Do not guess an upper limit: start from `(range)`, which counts up forever.
 <!-- phel-test: skip -->
 ```phel
 ; => 1024
 ```
-{% end %}
-{% hint() %}
+{% </question> %}
+{% <hint> %}
 Build the squares with `map`, keep the big ones with `filter`, and take the `first`. A `->>` pipeline reads well here.
-{% end %}
-{% solution() %}
+{% </hint> %}
+{% <solution> %}
 ```phel
 (->> (range)
      (map #(* % %))
@@ -429,4 +429,4 @@ Build the squares with `map`, keep the big ones with `filter`, and take the `fir
 ; => 1024
 ```
 This works because every step is lazy: `first` asks for one item, so Phel squares only a few dozen numbers and stops. A `loop` would work too, but the pipeline says what you want instead of how to count.
-{% end %}
+{% </solution> %}

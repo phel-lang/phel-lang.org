@@ -68,9 +68,9 @@ Use `if` or `when` inside the tree. A `nil` body renders nothing:
 (html [:ul (for [i :in [3 4 5]] [:li i])])          ; => "<ul><li>3</li><li>4</li><li>5</li></ul>"
 ```
 
-{% callout(kind="warning") %}
+{% <callout kind="warning"> %}
 Write each `for` inside the vector literal you pass to `html`. `html` is a macro: it walks that literal at compile time and splices the `for` results into the parent. A `for` inside a helper function is not spliced, and `html` fails with an error like `[:li 1] is not a valid element name`.
-{% end %}
+{% </callout> %}
 
 <!-- phel-test: skip -->
 ```phel

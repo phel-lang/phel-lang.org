@@ -1,9 +1,11 @@
-<details class="exercise-solution exercise-part">
+{%- component hint() -%}
+<details class="exercise-hint exercise-part">
     <summary class="exercise-part__summary">
         <svg class="exercise-part__chevron" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 4l4 4-4 4"/></svg>
-        Solution
+        Hint
     </summary>
     <div class="exercise-part__body">
-        {{ body | markdown | safe }}
+        {{ body | markdown | trim | safe }}
     </div>
 </details>
+{%- endcomponent hint -%}
