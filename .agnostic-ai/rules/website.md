@@ -13,9 +13,10 @@ description: Build, check and deploy the Zola site, and which files are generate
 - Build with Zola 0.23.6, the version CI and deploy pin.
 - Content is a Tera template. Components live in `templates/components/`: `{{ <name arg="x" /> }}` inline, `{% <name arg="x"> %}body{% </name> %}` with a body. Wrap a literal `{{`, `{%` or `{#` in content in `{% raw %}...{% endraw %}`, around the whole fence for a code block. Write heading ids as `{ #id }`: `{#id}` opens a Tera comment. Generated pages skip templating (`skip_content_templating` in `config.toml`).
 - Syntax colors come from `syntaxes/phel-light.theme.json` and `syntaxes/phel-dark.theme.json`. After changing a theme, copy the rules of `public/giallo-light.css` and `public/giallo-dark.css` into `static/syntax-theme-light.css` and `static/syntax-theme-dark.css` (dark ones under `.dark`).
-- `zola build` then `zola check --skip-external-links`. Zola does not check absolute `/documentation/...` links or their `#anchors`, so check those against `public/` too.
+- `zola build`, then `zola check --skip-external-links`, then `npm run check:links`. Zola only checks `@/` links; `check:links` checks every absolute internal link and `#anchor` in `public/`.
 - `php build/run-doc-snippets.php [path ...]`: runs every ```phel block in `content/` against the real runtime. It must report no regressions. Mark a block that cannot run standalone with `<!-- phel-test: skip -->` on the line above the fence.
 - `vendor/bin/phpunit` and `composer phpstan` for the PHP in `build/`.
+- The `verify-site` skill runs the whole gate in order. Run it once per change set, not after each edit.
 
 ## Generated, never edit by hand
 

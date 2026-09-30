@@ -17,6 +17,7 @@
     "generate-agent-doc": "node ./scripts/generate-agent-doc.js",
     "generate-llms-full": "node ./scripts/generate-llms-full.js",
     "generate-doc-dates": "node ./scripts/generate-doc-dates.js",
+    "check:links": "node ./scripts/check-internal-links.js",
     "prebuild-css": "node ./scripts/concat-tailwind.js && node ./scripts/generate-agent-doc.js && node ./scripts/generate-llms-full.js && node ./scripts/generate-doc-dates.js",
     "build-css": "npm run prebuild-css && postcss ./css/tailwind.entry.css -o ./static/tailwind.css --watch",
     "build-css-dev": "concurrently \"node ./scripts/concat-tailwind.js --watch\" \"postcss ./css/tailwind.entry.css -o ./static/tailwind.css --watch\" --names \"CONCAT,TAILWIND\" --prefix-colors \"yellow,cyan\"",

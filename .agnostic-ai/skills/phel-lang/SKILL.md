@@ -13,25 +13,23 @@ Lisp dialect compiling to PHP. Persistent data structures. PHP interop via `php/
 Any Phel snippet added to docs/blog/cookbook MUST be runtime-checked. Examples that "look right" silently rot. Two ways:
 
 ```bash
-# Simple one-shot eval
-./vendor/bin/phel run -e '(println (map inc [1 2 3]))'
+# One expression
+./vendor/bin/phel eval '(map inc [1 2 3])'
 
-# Reliable multi-line one-shot eval with heredoc
+# Several forms, from stdin (quoted heredoc: no shell escaping)
 ./vendor/bin/phel eval - <<'PHEL'
-(ns app)
+(ns scratch.check)
 (println (+ 40 2))
 PHEL
 
-# REPL session for exploration
+# A file, when the sample defines a namespace or needs output
+./vendor/bin/phel run path/to/scratch.phel
+
+# Exploration
 ./vendor/bin/phel repl
 ```
 
-Prefer the quoted heredoc because:
-
-- **No quoting issues:** Everything between `<<'PHEL'` and `PHEL` is treated as literal input.
-- **Consistent pattern:** One approach works for all evaluations, from simple to complex.
-- **Multi-line friendly:** Code keeps its natural, readable formatting.
-- **Easy to extend:** Add more forms without changing the command syntax.
+In docs, `php build/run-doc-snippets.php <file.md>` runs every ```phel block of a page the way CI does.
 
 Write the snippet, run it, paste real output. If output differs from what you assumed, fix the doc - not the runtime.
 
@@ -41,8 +39,13 @@ Write the snippet, run it, paste real output. If output differs from what you as
 - `extends?` works only on primitive type keywords (`:string`, `:int`). Returns `false` for struct types. Use `satisfies?` on instances instead.
 - CLI args: `*argv*` (vector of user args, excludes program name); `*program*` for the script path. Not `argv` (removed in 0.45) or `php/$argv`.
 - Side effects: `doseq` / `foreach`. Build sequences: `for`. Mixing causes wrong return shape.
-- String module: `phel\string` (not `phel\str`).
+- Namespaces use dots: `phel.string`, `app.core`. The backslash form (`phel\string`) is deprecated and warns with `--warn-deprecations`. Give app code at least two segments (`app.core`, not `app`).
 - REPL output: vectors print as `[1 2]`, lazy seqs (`map`, `filter`) as `(1 2)`. Prompt is `user:N>`. Match the runtime output in docs.
+
+- Map destructuring is binding-first: `{n :name}`, or `{:keys [name]}`. Key-first pairs (`{:name n}`) are deprecated since 0.51.
+- `php/new`, `php/->` and `php/::` are rejected (PHEL012). Use `(new Foo)`, `(.method obj)`, `Foo/static`.
+- `/` on two integers returns a ratio: `(/ 1 2)` is `1/2`. Use `4.0` or `(float x)` when a float is meant.
+- `catch \Exception` does not catch PHP `\Error` (for example `DivisionByZeroError`); catch `\Throwable` for both.
 
 ## Core syntax
 
@@ -63,7 +66,7 @@ Write the snippet, run it, paste real output. If output differs from what you as
 ## PHP interop
 
 ```phel
-(DateTimeImmutable. "2026-01-01")          ; constructor shorthand
+(new DateTimeImmutable "2026-01-01")       ; constructor (also `(DateTimeImmutable. ...)`)
 (.format obj "Y-m-d")                       ; method shorthand
 (.-prop obj)                                ; property shorthand
 DateTimeImmutable/ATOM                      ; static constant
@@ -75,7 +78,7 @@ DateTimeImmutable/ATOM                      ; static constant
 
 - Docs: `content/documentation/`, `content/blog/`
 - Phel scratch: `local/main.phel`
-- Build artifacts: `build/phel-config.php`, `.phel/`
-- CLI: `./vendor/bin/phel <run|repl|test|build>`
+- Build config for the snippet runner: `build/phel-config.php`. Compile cache: `.phel/`
+- CLI: `./vendor/bin/phel <run|eval|repl|test|build>`
 
 For full language reference: `content/documentation/language/` and `content/documentation/reference/`.

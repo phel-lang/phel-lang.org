@@ -28,8 +28,9 @@ This repo pins `phel-lang/phel-lang` in `composer.json` and mirrors the active v
 4. **Verify.**
    ```bash
    git diff config.toml          # should show phel_version bump
-   composer test                 # phpunit (45+ tests), must pass
+   composer test                 # phpunit, must pass
    composer test:snippets        # runs every ```phel doc block against the new runtime
+   composer build && zola build && npm run check:links   # generated API pages still link
    ```
    `composer test:snippets` is the important one for a version bump: a new
    Phel release can rename core fns, move namespaces, or change printed
@@ -39,11 +40,11 @@ This repo pins `phel-lang/phel-lang` in `composer.json` and mirrors the active v
 
 5. **Scan prose for stale version strings.** The snippet harness only runs ` ```phel ` blocks, so versions written in prose, JSON examples, and upgrade headings drift silently (they are never executed). After bumping to vX.Y.Z, grep for and update any that still name an older version:
    ```bash
-   grep -rnE '"phel-lang/phel-lang": *"\^0\.[0-9]+"|^## Upgrading|var-dumper' content/
+   grep -rnE 'phel-lang/phel-lang[":]+ *\^?0\.[0-9]+|var-dumper' content/
    ```
    Update at least:
-   - `content/documentation/installation.md` - the `## Upgrading to ...` heading, the `composer require phel-lang/phel-lang:^X.Y` command, and a short breaking-changes list for the new minor (pull from the release notes).
-   - `content/documentation/guides/coming-from-clojure.md` - the example `composer.json` pin.
+   - `content/documentation/installation.md` - the `## Upgrading` section and any `composer require phel-lang/phel-lang:^X.Y` command.
+   - `content/documentation/reference/upgrading.md` - add a section for the new minor with its breaking changes (pull from the release notes), newest first.
    - `content/documentation/guides/debugging.md` (section `### PHP dump functions`) - the `symfony/var-dumper` constraint should match this repo's own `composer.json`.
 
    These prose fixes belong in the same commit or a follow-up `docs:` commit.
@@ -92,8 +93,8 @@ breaks blocks via renamed core fns, moved/renamed namespaces, or changed
 printed output (`; =>` comments). Triage each reported `file:line  [error]`:
 
 - **Behaviour/name actually changed in Phel** -> update the snippet to the new
-  API and fix any `; =>` output comment to the real runtime output (Phel
-  vectors print as `@[...]`, strings keep quotes). This is the common case and
+  API and fix any `; =>` output comment to the real runtime output (vectors
+  print as `[1 2]`, strings keep their quotes). This is the common case and
   the whole point of the check.
 - **Genuinely non-runnable block** (syntax template with placeholder ids, REPL
   transcript, intentional-error demo, web/server-context) -> add an

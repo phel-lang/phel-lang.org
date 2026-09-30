@@ -1,0 +1,8 @@
+name: protect-generated
+description: Block Claude Code edits to generated files.
+event: PreToolUse
+matcher: Edit|Write
+target: claude
+command: 'sh -c ''r=$(git rev-parse --show-toplevel 2>/dev/null) || exit 0; s="$r/.agnostic-ai/scripts/protect-generated.sh"; [ -x "$s" ] || exit 0; exec "$s"'''
+timeout: 5
+statusMessage: Checking generated files
