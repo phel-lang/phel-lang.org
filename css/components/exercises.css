@@ -103,7 +103,11 @@
 }
 
 .one-column-layout .page-content .question-block .exercise-body > :first-child,
-.one-column-layout .page-content .exercise-part /* Done toggle */
+.one-column-layout .page-content .exercise-part .exercise-part__body > :first-child {
+  margin-top: 0;
+}
+
+/* Done toggle */
 .exercise-check {
   display: inline-flex;
   align-items: center;
