@@ -1,30 +1,6 @@
 /* Homepage: an editorial page that sets every claim beside the code that
    proves it. Scoped to `.ph`; the rest of the site keeps its own look. */
 
-@font-face {
-  font-family: 'Brygada 1918';
-  font-style: normal;
-  font-weight: 400 700;
-  font-display: swap;
-  src: url('/fonts/brygada-1918-latin.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Brygada 1918';
-  font-style: italic;
-  font-weight: 400 700;
-  font-display: swap;
-  src: url('/fonts/brygada-1918-italic-latin.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Departure Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/departure-mono.woff2') format('woff2');
-}
-
 :root {
   --ph-canvas: #f4f2f8;
   --ph-panel: #fbfaff;
@@ -39,8 +15,8 @@
   --ph-accent-hover: #3f1f8f;
   --ph-on-accent: #ffffff;
   --ph-selection: rgb(81 45 168 / 0.18);
-  --ph-serif: 'Brygada 1918', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
-  --ph-label: 'Departure Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --ph-serif: var(--font-display);
+  --ph-label: var(--font-label);
   --ph-ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 

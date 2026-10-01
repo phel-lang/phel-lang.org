@@ -108,7 +108,7 @@
 .dark pre {
   background: var(--color-dark-code-bg);
   border-color: var(--color-dark-border);
-  box-shadow: var(--shadow-dark-sm);
+  box-shadow: none;
 }
 
 .dark pre::-webkit-scrollbar-thumb {

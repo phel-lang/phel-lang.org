@@ -1,3 +1,27 @@
+@font-face {
+  font-family: 'Brygada 1918';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/brygada-1918-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Brygada 1918';
+  font-style: italic;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url('/fonts/brygada-1918-italic-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Departure Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/departure-mono.woff2') format('woff2');
+}
+
 /* Motion is opt-in: page cross-fades and smooth scrolling only run for
    visitors who have not asked the OS to reduce motion. */
 @media (prefers-reduced-motion: no-preference) {
@@ -225,6 +249,31 @@ h6 {
   margin: 1em 0 0.5em;
 }
 
+/* Page titles and section headings share the homepage's italic serif.
+   Smaller headings and UI titles stay in the sans so docs stay scannable. */
+main h1,
+main :is(.page-content, .blog-entry, .documentation-landing) h2:not([class], #page-toc-title),
+.post-card__title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 450;
+  letter-spacing: -0.01em;
+}
+
+main :is(h1, h2) code {
+  font-style: normal;
+}
+
+main h1 {
+  font-size: clamp(2.25rem, 5vw, 3rem);
+  line-height: 1.08;
+}
+
+main :is(.page-content, .blog-entry, .documentation-landing) h2:not([class], #page-toc-title) {
+  font-size: clamp(1.75rem, 3.6vw, 2.25rem);
+  line-height: 1.15;
+}
+
 /* Heading links */
 h1 a,
 h2 a,
@@ -370,7 +419,7 @@ pre {
   border-radius: var(--radius-lg);
   overflow-x: auto;
   max-width: 100%;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   line-height: 1.6;
   position: relative;
 }
