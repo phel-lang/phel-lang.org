@@ -11,7 +11,7 @@
   --color-light-text-primary: #1b1726;
   --color-light-text-secondary: #3d3850;
   --color-light-text-muted: #5f5973;
-  --color-light-text-accent: #915bd5;
+  --color-light-text-accent: #7f48c4;
   --color-light-link: #512da8;
   --color-light-link-hover: #6d3fc2;
   --color-light-deprecated: #b45309;
@@ -49,7 +49,7 @@
 
   /* Code */
   --color-light-code-bg: #fbfaff;
-  --color-light-code-inline-bg: #ebe8f2;
+  --color-light-code-inline-bg: #e3dfed;
   --color-dark-code-bg: #1b1824;
   --color-dark-code-inline-bg: #262134;
 
@@ -63,8 +63,8 @@
   --color-dark-table-header: #262134;
 
   /* Blockquote */
-  --color-light-blockquote-bg: #eff6ff;
-  --color-light-blockquote-border: #afc4e7;
+  --color-light-blockquote-bg: #efebf8;
+  --color-light-blockquote-border: #c9bde6;
   --color-dark-blockquote-bg: #1b1824;
   --color-dark-blockquote-border: #3d3554;
 
