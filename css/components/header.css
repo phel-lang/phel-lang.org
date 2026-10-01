@@ -6,7 +6,7 @@
   right: 0;
   height: var(--header-height);
   z-index: var(--z-fixed);
-  background: rgba(244, 242, 248, 0.85);
+  background: rgba(244, 242, 248, 0.94);
   backdrop-filter: blur(var(--backdrop-blur-header)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--backdrop-blur-header)) saturate(180%);
   border-bottom: 1px solid var(--color-light-border);
