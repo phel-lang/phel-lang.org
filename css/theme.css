@@ -6,30 +6,30 @@
 
 @theme {
   /* Modern Color Palette - Light Mode */
-  --color-light-bg: #ffffff;
-  --color-light-bg-secondary: #f8fafc;
-  --color-light-text-primary: #0f172a;
-  --color-light-text-secondary: #475569;
-  --color-light-text-muted: #64748b;
+  --color-light-bg: #f4f2f8;
+  --color-light-bg-secondary: #ebe8f2;
+  --color-light-text-primary: #1b1726;
+  --color-light-text-secondary: #3d3850;
+  --color-light-text-muted: #5f5973;
   --color-light-text-accent: #915bd5;
   --color-light-link: #512da8;
   --color-light-link-hover: #6d3fc2;
   --color-light-deprecated: #b45309;
-  --color-light-border: #e2e8f0;
-  --color-light-border-subtle: #f1f5f9;
+  --color-light-border: #ddd8e8;
+  --color-light-border-subtle: #ebe8f2;
 
   /* Modern Color Palette - Dark Mode */
-  --color-dark-bg: #212830;
-  --color-dark-bg-secondary: #252525;
-  --color-dark-text-primary: #f1f5f9;
-  --color-dark-text-secondary: #cbd5e1;
-  --color-dark-text-muted: #94a3b8;
+  --color-dark-bg: #14121b;
+  --color-dark-bg-secondary: #1b1824;
+  --color-dark-text-primary: #ece8f5;
+  --color-dark-text-secondary: #c4bfd2;
+  --color-dark-text-muted: #9a94ab;
   --color-dark-text-accent: #bfa4ff;
   --color-dark-text-accent-hover: #c2acf5;
   --color-dark-deprecated: #fbbf24;
   --color-dark-link: #d1c7e5;
-  --color-dark-border: #3a3a3a;
-  --color-dark-border-subtle: #2a2a2a;
+  --color-dark-border: #2e2a3b;
+  --color-dark-border-subtle: #221e2e;
 
   /* Success: a finished exercise, a full progress bar */
   --color-light-success: #15803d;
@@ -38,35 +38,35 @@
   --color-dark-success: #4ade80;
   --color-dark-success-bg: rgba(74, 222, 128, 0.08);
   --color-dark-success-border: rgba(74, 222, 128, 0.45);
-  --color-dark-header-footer-border: #151a24;
-  --color-dark-header-bg: #151a24cc;
+  --color-dark-header-footer-border: #221e2e;
+  --color-dark-header-bg: #14121bcc;
 
   /* Card & Surface Colors */
-  --color-light-surface: #ffffff;
-  --color-light-surface-hover: #f8fafc;
-  --color-dark-surface: #2a313cfa;
-  --color-dark-surface-hover: #262c36;
+  --color-light-surface: #fbfaff;
+  --color-light-surface-hover: #f4f2f8;
+  --color-dark-surface: #1b1824;
+  --color-dark-surface-hover: #221e2e;
 
   /* Code */
-  --color-light-code-bg: #f1f5f9;
-  --color-light-code-inline-bg: #e2e8f0;
-  --color-dark-code-bg: #262c36;
-  --color-dark-code-inline-bg: #2f3741;
+  --color-light-code-bg: #fbfaff;
+  --color-light-code-inline-bg: #ebe8f2;
+  --color-dark-code-bg: #1b1824;
+  --color-dark-code-inline-bg: #262134;
 
   /* Anchor Links */
-  --color-light-anchor: #64748b; /* text-muted: 4.8:1 on white */
+  --color-light-anchor: #5f5973; /* text-muted: 6:1 on the lavender ground */
   --color-dark-anchor: #bccccc;
 
   /* Table header: one step off the surface it sits on, lighter in dark
      mode so the header row reads as raised rather than sunken. */
-  --color-light-table-header: #f8fafc;
-  --color-dark-table-header: #323a47;
+  --color-light-table-header: #ebe8f2;
+  --color-dark-table-header: #262134;
 
   /* Blockquote */
   --color-light-blockquote-bg: #eff6ff;
   --color-light-blockquote-border: #afc4e7;
-  --color-dark-blockquote-bg: #2a313c;
-  --color-dark-blockquote-border: #466173;
+  --color-dark-blockquote-bg: #1b1824;
+  --color-dark-blockquote-border: #3d3554;
 
   /* Callouts: one accent per kind for the border, icon and label,
      dark enough to clear 4.5:1 on its own tint. Deprecated reuses the
@@ -80,16 +80,16 @@
   --color-light-callout-deprecated: var(--color-light-deprecated);
   --color-light-callout-deprecated-bg: #fffbeb;
   --color-dark-callout-note: #93c5fd;
-  --color-dark-callout-note-bg: #1f2b3d;
+  --color-dark-callout-note-bg: #1a2033;
   --color-dark-callout-tip: #86efac;
-  --color-dark-callout-tip-bg: #1d2f2a;
+  --color-dark-callout-tip-bg: #182621;
   --color-dark-callout-warning: #fca5a5;
-  --color-dark-callout-warning-bg: #35262c;
+  --color-dark-callout-warning-bg: #2a1a22;
   --color-dark-callout-deprecated: var(--color-dark-deprecated);
-  --color-dark-callout-deprecated-bg: #332d22;
+  --color-dark-callout-deprecated-bg: #282219;
 
   /* Extended Color Palette */
-  --color-gray-darker: #252525;
+  --color-gray-darker: #1b1726;
   --color-gray-dark: #475569;
   --color-gray-base: #64748b;
   --color-gray-light: #94a3b8;

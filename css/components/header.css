@@ -6,13 +6,10 @@
   right: 0;
   height: var(--header-height);
   z-index: var(--z-fixed);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(244, 242, 248, 0.85);
   backdrop-filter: blur(var(--backdrop-blur-header)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--backdrop-blur-header)) saturate(180%);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.3);
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.02),
-    0 2px 4px -1px rgba(0, 0, 0, 0.01);
+  border-bottom: 1px solid var(--color-light-border);
   transition: all var(--duration-normal) var(--ease-out);
 }
 
@@ -46,7 +43,7 @@
     left: 0;
     right: 0;
     z-index: var(--z-modal);
-    background: rgba(255, 255, 255, 0.98);
+    background: rgba(244, 242, 248, 0.98);
   }
 
   body.menu-open .site-header__container {
@@ -57,7 +54,7 @@
 
   body.menu-open.dark .site-header,
   .dark body.menu-open .site-header {
-    background: #151a24f6;
+    background: #14121bf6;
   }
 }
 
@@ -147,7 +144,7 @@
     stroke: var(--color-light-link);
     stroke-width: 5px;
     fill: transparent;
-    filter: drop-shadow(0 2px 4px rgba(99, 102, 241, 0.1));
+    filter: drop-shadow(0 2px 4px rgba(81, 45, 168, 0.1));
     flex-shrink: 0;
   }
 
@@ -298,7 +295,7 @@
   bottom: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(255, 255, 255, 0.98);
+  background: rgba(244, 242, 248, 0.98);
   backdrop-filter: blur(var(--backdrop-blur-lg));
   -webkit-backdrop-filter: blur(var(--backdrop-blur-lg));
   z-index: var(--z-modal-backdrop);
@@ -461,13 +458,11 @@ body.menu-open {
   backdrop-filter: blur(var(--backdrop-blur-header)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--backdrop-blur-header)) saturate(180%);
   border-bottom-color: var(--color-dark-header-footer-border);
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.3),
-    0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  box-shadow: none;
 }
 
 .dark .site-header.scrolled {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: none;
 }
 
 .dark .site-header__logo .phel-logo {
@@ -514,7 +509,7 @@ body.menu-open {
   }
 
   .dark .mobile-menu-overlay.active {
-    background: #151a24f6;
+    background: #14121bf6;
   }
 
   .dark .mobile-menu__nav a {

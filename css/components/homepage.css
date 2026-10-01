@@ -60,16 +60,6 @@
   --ph-selection: rgb(191 164 255 / 0.28);
 }
 
-html body:has(.ph),
-html body:has(.ph) .layout-container {
-  background: var(--ph-canvas);
-}
-
-body:has(.ph) .site-header {
-  background: color-mix(in srgb, var(--ph-canvas) 82%, transparent);
-  border-bottom-color: var(--ph-line);
-}
-
 .one-column-layout:has(.ph) {
   max-width: 76rem;
 }

@@ -412,12 +412,12 @@ li code {
 
 /* Modern Selection */
 ::selection {
-  background: rgba(99, 102, 241, 0.2);
+  background: rgba(81, 45, 168, 0.2);
   color: inherit;
 }
 
 ::-moz-selection {
-  background: rgba(99, 102, 241, 0.2);
+  background: rgba(81, 45, 168, 0.2);
   color: inherit;
 }
 

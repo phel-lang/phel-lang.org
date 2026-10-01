@@ -275,14 +275,14 @@
   background: var(--color-light-surface);
   border-color: var(--color-light-link);
   color: var(--color-light-link);
-  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.1);
+  box-shadow: 0 2px 4px rgba(81, 45, 168, 0.1);
 }
 
 .search-filter--active {
   background: var(--color-light-link);
   border-color: var(--color-light-link);
   color: white;
-  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.25);
+  box-shadow: 0 2px 8px rgba(81, 45, 168, 0.25);
 }
 
 .search-filter--active:hover {
@@ -290,7 +290,7 @@
   border-color: var(--color-light-link);
   color: white;
   opacity: 0.95;
-  box-shadow: 0 3px 10px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 3px 10px rgba(81, 45, 168, 0.3);
 }
 
 @media (max-width: 768px) {
@@ -467,7 +467,7 @@
 .search-results__item .desc strong {
   color: var(--color-light-link);
   font-weight: 700;
-  background: rgba(99, 102, 241, 0.1);
+  background: rgba(81, 45, 168, 0.1);
   padding: 0.1em 0;
   border-radius: var(--radius-sm);
 }
@@ -475,7 +475,7 @@
 .search-results__item .fn-name strong {
   color: inherit;
   font-weight: inherit;
-  background: rgba(99, 102, 241, 0.15);
+  background: rgba(81, 45, 168, 0.15);
   padding: 0.1em 0;
   border-radius: var(--radius-sm);
 }
@@ -483,7 +483,7 @@
 /* Documentation titles - highlighted matches get slightly bolder */
 .search-results__item .title strong {
   font-weight: 700;
-  background: rgba(99, 102, 241, 0.12);
+  background: rgba(81, 45, 168, 0.12);
   padding: 0.1em 0;
   border-radius: var(--radius-sm);
 }
@@ -545,13 +545,13 @@
    ======================================== */
 
 .dark .site-header__search-trigger {
-  background-color: #1d232f;
+  background-color: var(--color-dark-bg-secondary);
   color: var(--color-dark-text-primary);
-  border-color: #3a3a3a;
+  border-color: var(--color-dark-border);
 }
 
 .dark .site-header__search-trigger:hover {
-  border-color: #4a4a4a;
+  border-color: #3d3554;
   background-color: var(--color-dark-surface);
   box-shadow: var(--shadow-dark-sm);
 }
@@ -567,7 +567,7 @@
 .dark .site-header__search-trigger .search-shortcut {
   color: var(--color-dark-text-muted);
   background-color: rgba(255, 255, 255, 0.05);
-  border-color: #3a3a3a;
+  border-color: var(--color-dark-border);
 }
 
 .dark .search-modal__backdrop {
