@@ -1,0 +1,559 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-30T14:13:07+00:00",
+  "title": "Design System: Phel homepage",
+  "extensions": {
+    "colorMeta": {
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Lavender Paper",
+        "canonical": "#f4f2f8",
+        "tonalRamp": [
+          "#0c0a0e",
+          "#262428",
+          "#434146",
+          "#626065",
+          "#838187",
+          "#a6a4a9",
+          "#cac8ce",
+          "#efedf3"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Panel",
+        "canonical": "#fbfaff",
+        "tonalRamp": [
+          "#0b0b0e",
+          "#252428",
+          "#424145",
+          "#616065",
+          "#828286",
+          "#a5a4a9",
+          "#c9c8cd",
+          "#efeef3"
+        ]
+      },
+      "panel-bar": {
+        "role": "neutral",
+        "displayName": "Panel Bar",
+        "canonical": "#efecf6",
+        "tonalRamp": [
+          "#0c0a10",
+          "#26242b",
+          "#434048",
+          "#626068",
+          "#83818a",
+          "#a6a3ad",
+          "#cac7d1",
+          "#f0edf7"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "rgb(56 36 110 / 0.14)",
+        "tonalRamp": [
+          "#110039",
+          "#28105a",
+          "#44327d",
+          "#6252a0",
+          "#8374c6",
+          "#a597ec",
+          "#c9bbff",
+          "#eee1ff"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "canonical": "rgb(56 36 110 / 0.3)",
+        "tonalRamp": [
+          "#110039",
+          "#28105a",
+          "#44327d",
+          "#6252a0",
+          "#8374c6",
+          "#a597ec",
+          "#c9bbff",
+          "#eee1ff"
+        ]
+      },
+      "grid": {
+        "role": "neutral",
+        "displayName": "Grid",
+        "canonical": "rgb(81 45 168 / 0.05)",
+        "tonalRamp": [
+          "#190050",
+          "#2d0073",
+          "#461f98",
+          "#6345be",
+          "#8369e5",
+          "#a58dff",
+          "#c8b2ff",
+          "#edd8ff"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#1b1726",
+        "tonalRamp": [
+          "#0c0816",
+          "#262232",
+          "#433f50",
+          "#625e70",
+          "#847f92",
+          "#a6a2b6",
+          "#cac6db",
+          "#f0ebff"
+        ]
+      },
+      "copy": {
+        "role": "neutral",
+        "displayName": "Copy",
+        "canonical": "#3d3850",
+        "tonalRamp": [
+          "#0c071b",
+          "#262137",
+          "#433e56",
+          "#625d77",
+          "#837e99",
+          "#a6a1bd",
+          "#cac5e2",
+          "#efeaff"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted",
+        "canonical": "#5f5973",
+        "tonalRamp": [
+          "#0d071b",
+          "#272137",
+          "#443e56",
+          "#635d77",
+          "#847e99",
+          "#a7a0bd",
+          "#cbc4e2",
+          "#f0e9ff"
+        ]
+      },
+      "phel-purple": {
+        "role": "primary",
+        "displayName": "Phel Purple",
+        "canonical": "#512da8",
+        "tonalRamp": [
+          "#190050",
+          "#2d0073",
+          "#461f98",
+          "#6345be",
+          "#8369e5",
+          "#a58dff",
+          "#c8b2ff",
+          "#edd8ff"
+        ]
+      },
+      "phel-purple-deep": {
+        "role": "primary",
+        "displayName": "Deep Purple",
+        "canonical": "#3f1f8f",
+        "tonalRamp": [
+          "#16004c",
+          "#2a0070",
+          "#432594",
+          "#6049ba",
+          "#7f6de1",
+          "#a191ff",
+          "#c4b5ff",
+          "#e9dbff"
+        ]
+      },
+      "on-accent": {
+        "role": "primary",
+        "displayName": "On Accent",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#a5a5a5",
+          "#c9c9c9",
+          "#eeeeee"
+        ]
+      },
+      "canvas-dark": {
+        "role": "neutral",
+        "displayName": "Violet Ink",
+        "canonical": "#14121b",
+        "tonalRamp": [
+          "#0c0a12",
+          "#25232d",
+          "#42404b",
+          "#625f6b",
+          "#83808c",
+          "#a5a3b0",
+          "#cac7d4",
+          "#efecfa"
+        ]
+      },
+      "panel-dark": {
+        "role": "neutral",
+        "displayName": "Panel (dark)",
+        "canonical": "#1b1824",
+        "tonalRamp": [
+          "#0c0914",
+          "#26232f",
+          "#43404d",
+          "#625f6d",
+          "#83808f",
+          "#a6a2b3",
+          "#cac6d7",
+          "#efecfd"
+        ]
+      },
+      "panel-bar-dark": {
+        "role": "neutral",
+        "displayName": "Panel Bar (dark)",
+        "canonical": "#221e2e",
+        "tonalRamp": [
+          "#0c0816",
+          "#262232",
+          "#433f51",
+          "#625e71",
+          "#837f93",
+          "#a6a2b7",
+          "#cac6db",
+          "#f0ebff"
+        ]
+      },
+      "line-dark": {
+        "role": "neutral",
+        "displayName": "Hairline (dark)",
+        "canonical": "rgb(214 204 250 / 0.12)",
+        "tonalRamp": [
+          "#0e0422",
+          "#281e40",
+          "#443b60",
+          "#645a82",
+          "#857ba5",
+          "#a79ec9",
+          "#ccc2ef",
+          "#f1e7ff"
+        ]
+      },
+      "line-strong-dark": {
+        "role": "neutral",
+        "displayName": "Strong Hairline (dark)",
+        "canonical": "rgb(214 204 250 / 0.26)",
+        "tonalRamp": [
+          "#0e0422",
+          "#281e40",
+          "#443b60",
+          "#645a82",
+          "#857ba5",
+          "#a79ec9",
+          "#ccc2ef",
+          "#f1e7ff"
+        ]
+      },
+      "grid-dark": {
+        "role": "neutral",
+        "displayName": "Grid (dark)",
+        "canonical": "rgb(214 204 250 / 0.035)",
+        "tonalRamp": [
+          "#0e0422",
+          "#281e40",
+          "#443b60",
+          "#645a82",
+          "#857ba5",
+          "#a79ec9",
+          "#ccc2ef",
+          "#f1e7ff"
+        ]
+      },
+      "text-dark": {
+        "role": "neutral",
+        "displayName": "Ink (dark)",
+        "canonical": "#ece8f5",
+        "tonalRamp": [
+          "#0c0912",
+          "#26232d",
+          "#43404a",
+          "#635f6a",
+          "#84808c",
+          "#a6a3af",
+          "#cbc7d3",
+          "#f0ecf9"
+        ]
+      },
+      "copy-dark": {
+        "role": "neutral",
+        "displayName": "Copy (dark)",
+        "canonical": "#c4bfd2",
+        "tonalRamp": [
+          "#0c0915",
+          "#262231",
+          "#433f4f",
+          "#635e6f",
+          "#847f91",
+          "#a7a2b4",
+          "#cbc6d9",
+          "#f0ebff"
+        ]
+      },
+      "muted-dark": {
+        "role": "neutral",
+        "displayName": "Muted (dark)",
+        "canonical": "#9a94ab",
+        "tonalRamp": [
+          "#0d0818",
+          "#272134",
+          "#443e52",
+          "#635d73",
+          "#847e95",
+          "#a7a1b8",
+          "#cbc5dd",
+          "#f1eaff"
+        ]
+      },
+      "lilac": {
+        "role": "primary",
+        "displayName": "Lilac (dark accent)",
+        "canonical": "#bfa4ff",
+        "tonalRamp": [
+          "#150039",
+          "#2e095a",
+          "#4b2d7d",
+          "#6a4ea1",
+          "#8b70c6",
+          "#ae93ec",
+          "#d2b7ff",
+          "#f7dcff"
+        ]
+      },
+      "lilac-light": {
+        "role": "primary",
+        "displayName": "Pale Lilac",
+        "canonical": "#d4c2ff",
+        "tonalRamp": [
+          "#110029",
+          "#2b1948",
+          "#483669",
+          "#67568c",
+          "#8977af",
+          "#ab9ad4",
+          "#d0befa",
+          "#f5e3ff"
+        ]
+      },
+      "on-accent-dark": {
+        "role": "primary",
+        "displayName": "On Accent (dark)",
+        "canonical": "#16121f",
+        "tonalRamp": [
+          "#0d0915",
+          "#262230",
+          "#433f4e",
+          "#635e6f",
+          "#847f91",
+          "#a7a2b4",
+          "#cbc6d9",
+          "#f0ebfe"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero headline only, Brygada italic."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Story beat, FAQ and close titles, Brygada italic."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "FAQ questions."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "Hero introduction."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Prose, Brygada roman."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Departure Mono for commands, pane bars, tabs, facts and button labels."
+      },
+      "code": {
+        "displayName": "Code",
+        "purpose": "Code blocks and the REPL, the site's Fira Code stack."
+      }
+    },
+    "shadows": [
+      {
+        "name": "frame-lift",
+        "value": "0 18px 40px -24px rgb(20 10 50 / 0.28)",
+        "purpose": "Framed panels in light mode."
+      },
+      {
+        "name": "frame-lift-dark",
+        "value": "0 24px 48px -28px rgb(0 0 0 / 0.7)",
+        "purpose": "Framed panels in dark mode."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ph-ease",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "House easing for every homepage transition."
+      },
+      {
+        "name": "hover-color",
+        "value": "180ms",
+        "purpose": "Button background and border changes."
+      },
+      {
+        "name": "paren-slide",
+        "value": "260ms, 3px outward",
+        "purpose": "Parens on s-expression buttons on hover."
+      },
+      {
+        "name": "mark-draw",
+        "value": "1.6s, 120ms stagger",
+        "purpose": "Elephant mark strokes draw on load."
+      },
+      {
+        "name": "beat-focus",
+        "value": "view timeline, opacity 0.72 to 1",
+        "purpose": "Beat prose comes into focus while in view, desktop only."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "stack",
+        "value": "900px"
+      },
+      {
+        "name": "narrow",
+        "value": "560px"
+      }
+    ],
+    "scope": "Whole site. Shared tokens in css/theme.css; the homepage is the full expression under .ph; docs, practice and API keep a sans body; blog posts use the serif body."
+  },
+  "components": [
+    {
+      "name": "Primary S-expression Button",
+      "kind": "button",
+      "refersTo": "button-sx-primary",
+      "description": "Main call to action, written as a Lisp form; parens slide outward on hover.",
+      "html": "<a class=\"ds-sx ds-sx--primary\" href=\"#\"><span class=\"ds-paren\">(</span>Try it in your browser<span class=\"ds-paren\">)</span></a>",
+      "css": ".ds-sx{display:inline-flex;align-items:center;gap:.15em;min-height:2.75rem;padding:.55rem 1.1rem;font-family:'Departure Mono',ui-monospace,Menlo,monospace;font-size:.9rem;letter-spacing:.02em;line-height:1;text-decoration:none;border-radius:0;transition:background-color 180ms cubic-bezier(.16,1,.3,1),border-color 180ms cubic-bezier(.16,1,.3,1)}.ds-sx--primary{color:#fff;background:#512da8;border:1px solid #512da8}.ds-sx--primary .ds-paren{color:color-mix(in srgb,#fff 62%,#512da8);transition:transform 260ms cubic-bezier(.16,1,.3,1)}.ds-sx--primary:hover{background:#3f1f8f;border-color:#3f1f8f}.ds-sx--primary:hover .ds-paren:first-child{transform:translateX(-3px)}.ds-sx--primary:hover .ds-paren:last-child{transform:translateX(3px)}.ds-sx:focus-visible{outline:2px solid #512da8;outline-offset:3px}"
+    },
+    {
+      "name": "Secondary S-expression Button",
+      "kind": "button",
+      "refersTo": "button-sx",
+      "description": "Secondary action; hairline edge, purple parens.",
+      "html": "<a class=\"ds-sx2\" href=\"#\"><span class=\"ds-paren2\">(</span>Read the docs<span class=\"ds-paren2\">)</span></a>",
+      "css": ".ds-sx2{display:inline-flex;align-items:center;gap:.15em;min-height:2.75rem;padding:.55rem 1.1rem;font-family:'Departure Mono',ui-monospace,Menlo,monospace;font-size:.9rem;letter-spacing:.02em;line-height:1;color:#1b1726;background:transparent;border:1px solid rgb(56 36 110 / .3);border-radius:0;text-decoration:none;transition:border-color 180ms cubic-bezier(.16,1,.3,1)}.ds-paren2{color:#512da8;transition:transform 260ms cubic-bezier(.16,1,.3,1)}.ds-sx2:hover{border-color:#512da8}.ds-sx2:hover .ds-paren2:first-child{transform:translateX(-3px)}.ds-sx2:hover .ds-paren2:last-child{transform:translateX(3px)}.ds-sx2:focus-visible{outline:2px solid #512da8;outline-offset:3px}"
+    },
+    {
+      "name": "Framed Pane",
+      "kind": "card",
+      "refersTo": "frame",
+      "description": "Hairline panel with corner ticks and a mono label bar; holds every proof.",
+      "html": "<figure class=\"ds-frame\"><figcaption class=\"ds-bar\"><span>You write Phel</span><span class=\"ds-meta\">metadata trimmed</span></figcaption><pre class=\"ds-code\">(defn slugify [title]\n  (-&gt;&gt; title php/trim))</pre></figure>",
+      "css": ".ds-frame{--t:rgb(56 36 110 / .3);margin:0;max-width:30rem;background:linear-gradient(var(--t),var(--t)) top left/9px 1px,linear-gradient(var(--t),var(--t)) top left/1px 9px,linear-gradient(var(--t),var(--t)) top right/9px 1px,linear-gradient(var(--t),var(--t)) top right/1px 9px,linear-gradient(var(--t),var(--t)) bottom left/9px 1px,linear-gradient(var(--t),var(--t)) bottom left/1px 9px,linear-gradient(var(--t),var(--t)) bottom right/9px 1px,linear-gradient(var(--t),var(--t)) bottom right/1px 9px,#fbfaff;background-repeat:no-repeat;border:1px solid rgb(56 36 110 / .14);box-shadow:0 18px 40px -24px rgb(20 10 50 / .28)}.ds-bar{display:flex;justify-content:space-between;gap:1rem;padding:.7rem 1rem;font-family:'Departure Mono',ui-monospace,Menlo,monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#5f5973;background:#efecf6;border-bottom:1px solid rgb(56 36 110 / .14)}.ds-bar span:first-child{color:#1b1726}.ds-meta{text-transform:none;letter-spacing:.02em}.ds-code{margin:0;padding:1.1rem 1.25rem 1.25rem;font-family:'Fira Code',Menlo,monospace;font-size:.875rem;line-height:1.65;color:#1b1726}"
+    },
+    {
+      "name": "Install Console Tabs",
+      "kind": "nav",
+      "refersTo": "console-tab",
+      "description": "Mono uppercase tabs in the console bar; active tab takes the panel tone and an accent underline.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button class=\"ds-tab is-active\" role=\"tab\">Docker</button><button class=\"ds-tab\" role=\"tab\">Composer</button><button class=\"ds-tab\" role=\"tab\">PHAR</button></div>",
+      "css": ".ds-tabs{display:inline-flex;background:#efecf6;border:1px solid rgb(56 36 110 / .14)}.ds-tab{min-height:2.75rem;padding:0 1rem;font-family:'Departure Mono',ui-monospace,Menlo,monospace;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:#5f5973;background:transparent;border:0;border-left:1px solid rgb(56 36 110 / .14);box-shadow:inset 0 -2px 0 transparent;cursor:pointer;transition:color 160ms cubic-bezier(.16,1,.3,1),box-shadow 160ms cubic-bezier(.16,1,.3,1)}.ds-tab:first-child{border-left:0}.ds-tab:hover{color:#1b1726}.ds-tab.is-active{color:#1b1726;background:#fbfaff;box-shadow:inset 0 -2px 0 #512da8}.ds-tab:focus-visible{outline:2px solid #512da8;outline-offset:-3px}"
+    },
+    {
+      "name": "REPL Transcript",
+      "kind": "custom",
+      "refersTo": "frame",
+      "description": "Real phel repl output in a frame; accent prompt, muted results, block cursor.",
+      "html": "<div class=\"ds-repl\"><div class=\"ds-repl-bar\">phel repl</div><div class=\"ds-repl-body\"><div><span class=\"ds-prompt\">user:1&gt; </span>(map inc [1 2 3])</div><div class=\"ds-res\">(2 3 4)</div><div><span class=\"ds-prompt\">user:2&gt; </span><span class=\"ds-cur\"></span></div></div></div>",
+      "css": ".ds-repl{max-width:28rem;background:#fbfaff;border:1px solid rgb(56 36 110 / .14);box-shadow:0 18px 40px -24px rgb(20 10 50 / .28);font-family:'Fira Code',Menlo,monospace}.ds-repl-bar{padding:.7rem 1rem;font-family:'Departure Mono',ui-monospace,Menlo,monospace;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#1b1726;background:#efecf6;border-bottom:1px solid rgb(56 36 110 / .14)}.ds-repl-body{padding:1.1rem 1.25rem 1.25rem;font-size:.875rem;line-height:1.7;color:#3d3850}.ds-prompt{color:#512da8}.ds-res{color:#5f5973}.ds-cur{display:inline-block;width:.6em;height:1.1em;vertical-align:text-bottom;background:#512da8}"
+    },
+    {
+      "name": "FAQ Row",
+      "kind": "custom",
+      "refersTo": "faq-question",
+      "description": "Native details row between hairlines, accent plus that turns to a cross when open.",
+      "html": "<details class=\"ds-faq\"><summary>Do I need to know Lisp?</summary><p>No. The docs start from zero.</p></details>",
+      "css": ".ds-faq{max-width:40rem;border-top:1px solid rgb(56 36 110 / .14);border-bottom:1px solid rgb(56 36 110 / .14);font-family:'Brygada 1918',Georgia,serif}.ds-faq summary{display:flex;justify-content:space-between;align-items:center;gap:1.5rem;padding:1.15rem .25rem;font-size:1.2rem;color:#1b1726;cursor:pointer;list-style:none}.ds-faq summary::-webkit-details-marker{display:none}.ds-faq summary::after{content:'';flex:none;width:11px;height:11px;background:linear-gradient(#512da8,#512da8) center/11px 1.5px no-repeat,linear-gradient(#512da8,#512da8) center/1.5px 11px no-repeat;transition:transform 240ms cubic-bezier(.16,1,.3,1)}.ds-faq[open] summary::after{transform:rotate(45deg)}.ds-faq summary:hover{color:#512da8}.ds-faq summary:focus-visible{outline:2px solid #512da8;outline-offset:3px}.ds-faq p{margin:0;padding:0 .25rem 1.4rem;font-size:1.05rem;color:#3d3850}"
+    },
+    {
+      "name": "Inline Code Chip",
+      "kind": "chip",
+      "refersTo": "frame",
+      "description": "Inline code in prose: square hairline chip on the panel tone.",
+      "html": "<p class=\"ds-p\">The <code class=\"ds-chip\">-&gt;&gt;</code> macro expands away.</p>",
+      "css": ".ds-p{font-family:'Brygada 1918',Georgia,serif;font-size:1.125rem;color:#3d3850}.ds-chip{padding:.08em .38em;font-family:'Fira Code',Menlo,monospace;font-size:.8em;color:#1b1726;background:#fbfaff;border:1px solid rgb(56 36 110 / .14);border-radius:0}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Well-Set Book",
+    "overview": "This system covers the whole site. Shared values live in `css/theme.css`: the lavender `#f4f2f8` and violet ink `#14121b` grounds, Phel purple as the accent, and square radius tokens; the fonts load from `css/base.css`. The homepage (`content/_index.md`, `templates/index.html`, `templates/components/hero_repl.html`, `css/components/homepage.css`) is the full expression, scoped under `.ph` with its own `--ph-*` tokens. Other pages take a lighter form by section. Docs, practice and the API keep a sans body so they stay quick to scan, and set page titles and content section headings in Brygada italic. Blog posts set their body in the roman serif. Blog and release cards use mono labels and paren buttons. Smaller headings and interface titles stay in the sans everywhere.\n\nThe homepage reads like a quietly typeset book about a language. An italic serif carries the headlines, a roman serif carries the prose, and a pixel mono speaks only for commands, labels and the s-expression buttons. The page has one accent, Phel purple, and otherwise stays in near-neutral violet paper and ink. Proof sits beside every claim: a real REPL transcript, real `phel compile` output, runnable snippets and DOOM. Each story beat pins its prose on the right while the taller proof scrolls past on the left.\n\nSurfaces are hairline panels with a small tick at each corner, laid on a faint 20px grid that fades out from the centre of the hero and the closing panel. Corners are square everywhere. Motion is small and purposeful: the elephant mark draws its outline on load, the last REPL form replays as typing, and parens on the buttons step outward on hover. The page refuses the SaaS stack of centered hero, card grid and repeated centered sections.",
+    "keyCharacteristics": [
+      "Whole site: the full world on the homepage; shared palette, headings and square shapes everywhere else.",
+      "One accent (Phel purple, lilac in dark mode) on a violet-tinted neutral canvas.",
+      "Brygada 1918 italic for headings, roman for prose; Departure Mono for labels and commands; Fira Code for code.",
+      "Square corners, hairline borders, corner ticks, a faint 20px grid.",
+      "Claims pinned beside the code that proves them."
+    ],
+    "rules": [
+      {
+        "name": "The One Voice Rule",
+        "body": "Purple is the only hue on the page apart from syntax highlighting and the DOOM still. No second accent, no gradients of color.",
+        "section": "colors"
+      },
+      {
+        "name": "The Scope Rule",
+        "body": "Homepage colors are `--ph-*` custom properties. Never reuse them outside `.ph`, and never pull the site's theme accents into `.ph`.",
+        "section": "colors"
+      },
+      {
+        "name": "The Machine Voice Rule",
+        "body": "Departure Mono is for what you type or what the machine labels. Never set prose or headings in it.",
+        "section": "typography"
+      },
+      {
+        "name": "The Italic Heading Rule",
+        "body": "Every heading on the homepage is Brygada italic at weight 450, balanced. The one exception is the console title, which is a label.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Shadow Rule",
+        "body": "Only framed panels cast a shadow, and only the frame lift. Buttons, tabs, chips and the FAQ stay flat.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** keep homepage-only styles under `.ph` with `--ph-*` tokens, and put shared values in `css/theme.css` with a `.dark` override.",
+      "**Do** put a real artifact beside each claim: a REPL transcript, compile output or a runnable snippet.",
+      "**Do** frame proof in a pane with a mono label bar and corner ticks.",
+      "**Do** write calls to action as s-expressions: `(Try it in your browser)`.",
+      "**Do** wrap motion in `prefers-reduced-motion: no-preference`."
+    ],
+    "donts": [
+      "**Don't** set docs, practice or API body text in the serif, or use Departure Mono beyond commands, labels and card metadata.",
+      "**Don't** round corners or add a second accent hue.",
+      "**Don't** set prose or headings in Departure Mono.",
+      "**Don't** fall back to the SaaS stack of centered hero, feature card grid and repeated centered sections.",
+      "**Don't** add testimonials, adoption numbers or benchmarks; none exist."
+    ]
+  }
+}
