@@ -37,7 +37,7 @@
             {% elif page.summary %}
             <p class="post-card__excerpt">{{ page.summary | striptags }}</p>
             {% endif %}
-            <span class="post-card__cta">Read post →</span>
+            <span class="post-card__cta"><span class="post-card__paren" aria-hidden="true">(</span>Read post<span class="post-card__paren" aria-hidden="true">)</span></span>
         </a>
     </div>
     {% endfor %}

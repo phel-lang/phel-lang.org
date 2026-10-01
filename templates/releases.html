@@ -19,7 +19,7 @@
             {% elif page.summary %}
             <p class="post-card__excerpt">{{ page.summary | striptags }}</p>
             {% endif %}
-            <span class="post-card__cta">View release →</span>
+            <span class="post-card__cta"><span class="post-card__paren" aria-hidden="true">(</span>View release<span class="post-card__paren" aria-hidden="true">)</span></span>
         </a>
         {% set versions = page.extra.versions | default(value=[]) %}
         {% if versions | length > 1 %}
