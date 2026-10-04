@@ -129,6 +129,26 @@ A form Phel now says another way was used as source.
 
 **Learn more:** [PHP interop](/documentation/language/php-interop/).
 
+### PHEL013 : Unresolved refer
+
+A `:refer` in an `ns` form names something the required namespace does not define.
+
+**Common cause:** A typo in the referred name, or a name the namespace keeps private (`defn-`, `def-`). Phel checks it when the required namespace is already loaded, which it is for every file a run, test or build loads.
+
+**Fix:** Check the spelling against the namespace, or drop the name from the `:refer` vector.
+
+**Learn more:** [Namespaces](/documentation/language/namespaces/).
+
+### PHEL014 : Missing namespace
+
+A `(:require ...)` names a namespace Phel cannot find.
+
+**Common cause:** No source file on the searched directories declares it, it is not loaded, and Phel does not ship it. Usually a typo, or a file outside the configured source directories. The error note lists the directories searched.
+
+**Fix:** Check the spelling against the `ns` form of the file you mean, or add its directory to the src, test or vendor dirs.
+
+**Learn more:** [Namespaces](/documentation/language/namespaces/), [Configuration](/documentation/reference/configuration/).
+
 ## Parser errors
 
 Raised while parsing tokens into forms, almost always an unbalanced or unterminated bracket.
@@ -183,7 +203,7 @@ A general parser error.
 
 ## Reader errors
 
-Raised while reading quote / quasiquote forms.
+Raised while reading forms: quote and quasiquote, and map and set literals.
 
 ### PHEL202 : Invalid splice
 
@@ -192,6 +212,14 @@ A splicing unquote (`~@`) is invalid.
 **Common cause:** `~@` was used outside a quasiquote, or in a position where a sequence cannot be spliced.
 
 **Fix:** Use `~@` inside a quasiquote, splicing into a list or vector.
+
+### PHEL203 : Duplicate key
+
+A map or set literal holds the same constant key twice, so one entry would be lost.
+
+**Common cause:** A repeated keyword, string, number, boolean or `nil`, as in `{:a 1 :a 2}`. Numbers compare by value, so `{1/2 :a 2/4 :b}` repeats a key. A symbol or a call is not checked: it keeps the last value, as `hash-map` and `hash-set` do.
+
+**Fix:** Remove the repeated key, or rename the one you meant to be different.
 
 ### PHEL210 : Reader error
 
