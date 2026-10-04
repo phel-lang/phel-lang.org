@@ -20,7 +20,7 @@ final class ErrorReferenceGenerator
     private const CATEGORIES = [
         'PHEL0' => ['Analyzer errors', 'Raised while analyzing forms: undefined names, wrong arity, type and binding problems. The bulk of day-to-day errors.'],
         'PHEL1' => ['Parser errors', 'Raised while parsing tokens into forms, almost always an unbalanced or unterminated bracket.'],
-        'PHEL2' => ['Reader errors', 'Raised while reading quote / quasiquote forms.'],
+        'PHEL2' => ['Reader errors', 'Raised while reading forms: quote and quasiquote, and map and set literals.'],
         'PHEL3' => ['Lexer errors', 'Raised while turning source text into tokens: invalid characters or unterminated strings.'],
         'PHEL4' => ['Runtime errors', 'Raised while compiled code runs, not while it compiles: the program was well formed and the values it met were not.'],
     ];
@@ -97,6 +97,18 @@ final class ErrorReferenceGenerator
             'fix' => 'Use the replacement the message names: `(new \\Foo arg)`, `(.method obj arg)` / `(.-field obj)`, `(\\Foo/method arg)` / `\\Foo/CONST`, and `(alter-var-root (var v) f)`.',
             'learnMore' => '[PHP interop](/documentation/language/php-interop/).',
         ],
+        'PHEL013' => [
+            'meaning' => 'A `:refer` in an `ns` form names something the required namespace does not define.',
+            'cause' => 'A typo in the referred name, or a name the namespace keeps private (`defn-`, `def-`). Phel checks it when the required namespace is already loaded, which it is for every file a run, test or build loads.',
+            'fix' => 'Check the spelling against the namespace, or drop the name from the `:refer` vector.',
+            'learnMore' => '[Namespaces](/documentation/language/namespaces/).',
+        ],
+        'PHEL014' => [
+            'meaning' => 'A `(:require ...)` names a namespace Phel cannot find.',
+            'cause' => 'No source file on the searched directories declares it, it is not loaded, and Phel does not ship it. Usually a typo, or a file outside the configured source directories. The error note lists the directories searched.',
+            'fix' => 'Check the spelling against the `ns` form of the file you mean, or add its directory to the src, test or vendor dirs.',
+            'learnMore' => '[Namespaces](/documentation/language/namespaces/), [Configuration](/documentation/reference/configuration/).',
+        ],
         'PHEL100' => [
             'meaning' => 'A list was not closed.',
             'cause' => 'A missing `)`.',
@@ -131,6 +143,11 @@ final class ErrorReferenceGenerator
             'meaning' => 'A splicing unquote (`~@`) is invalid.',
             'cause' => '`~@` was used outside a quasiquote, or in a position where a sequence cannot be spliced.',
             'fix' => 'Use `~@` inside a quasiquote, splicing into a list or vector.',
+        ],
+        'PHEL203' => [
+            'meaning' => 'A map or set literal holds the same constant key twice, so one entry would be lost.',
+            'cause' => 'A repeated keyword, string, number, boolean or `nil`, as in `{:a 1 :a 2}`. Numbers compare by value, so `{1/2 :a 2/4 :b}` repeats a key. A symbol or a call is not checked: it keeps the last value, as `hash-map` and `hash-set` do.',
+            'fix' => 'Remove the repeated key, or rename the one you meant to be different.',
         ],
         'PHEL210' => [
             'meaning' => 'A general reader error.',

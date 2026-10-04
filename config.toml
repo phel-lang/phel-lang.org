@@ -40,4 +40,4 @@ extra_themes = ["syntaxes/phel-light.theme.json", "syntaxes/phel-dark.theme.json
 # Put all your custom variables here
 
 repo_content_url = "https://github.com/phel-lang/phel-lang.org/edit/master/content/"
-phel_version = "v0.53.0"
+phel_version = "v0.54.0"

@@ -16,7 +16,7 @@ After this page you can work the way Lisp programmers do: keep a REPL running, t
 Type an expression and press Enter:
 
 ```phel
-Welcome to the Phel Repl (v0.53.0)
+Welcome to the Phel Repl (v0.54.0)
 Type (exit) or press Ctrl-D to exit.
 user:1> (* 6 7)
 42

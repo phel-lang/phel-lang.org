@@ -14,6 +14,8 @@ After this page you can raise errors with `throw`, handle them with `try`/`catch
 Looking for a `[PHEL...]` compiler error code? See the [Error Reference](/documentation/reference/errors/).
 {% </callout> %}
 
+<a id="try-catch-finally"></a><a id="throwing"></a>
+
 ## Throw and catch
 
 `throw` raises any value that implements PHP's `Throwable`. `try` runs its body and returns the last value. When the body throws, the first `catch` clause whose type matches handles it, and its value becomes the result:
@@ -97,6 +99,8 @@ Pass the original exception as a third argument to keep the failure trail:
 {% <clojure_note> %}
 `ex-info`, `ex-data`, `ex-message` and `ex-cause` work as in Clojure. The value is a PHP exception that extends `\Exception`, so `catch \Exception` catches it.
 {% </clojure_note> %}
+
+<a id="custom-exception-types-with-defexception"></a>
 
 ## Define exception types
 

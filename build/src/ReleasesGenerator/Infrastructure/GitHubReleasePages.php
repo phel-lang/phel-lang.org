@@ -60,7 +60,7 @@ final readonly class GitHubReleasePages
         $releases = [];
         foreach ($rawReleases as $raw) {
             $release = Release::fromArray($raw);
-            if ($release->hasValidVersion()) {
+            if ($release->isStable()) {
                 $releases[] = $release;
             }
         }
