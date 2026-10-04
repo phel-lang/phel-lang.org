@@ -1,11 +1,11 @@
 +++
 title = "Upgrading"
 weight = 5
-description = "What breaks in each Phel release from 0.53 back to 0.37, the one-line fix for each change, and the steps to run after every bump."
+description = "What breaks in each Phel release from 0.54 back to 0.37, the one-line fix for each change, and the steps to run after every bump."
 aliases = ["/documentation/upgrading/"]
 +++
 
-This page lists every breaking change from 0.53 back to 0.37, with the fix for each. Newest first. Read each section between your current version and the target. The full changelog for each version is in [Releases](/releases/).
+This page lists every breaking change from 0.54 back to 0.37, with the fix for each. Newest first. Read each section between your current version and the target. The full changelog for each version is in [Releases](/releases/).
 
 ## How to upgrade
 
@@ -18,7 +18,7 @@ This page lists every breaking change from 0.53 back to 0.37, with the fix for e
 2. Bump the version and clear the compiled cache:
 
    ```bash
-   composer require phel-lang/phel-lang:^0.53
+   composer require phel-lang/phel-lang:^0.54
    vendor/bin/phel cache:clear
    ```
 
@@ -27,6 +27,19 @@ This page lists every breaking change from 0.53 back to 0.37, with the fix for e
 Never skip the cache clear. Compiled PHP from an older install can reference renamed core types and fail to load.
 
 Going to 1.0 from 0.49 or later? Follow [the 1.0 upgrade guide](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/upgrade-0.49-to-1.0.md). What a version number promises is on [Stability Policy](/documentation/reference/stability/). Releases older than 0.37 are in [the changelog](https://github.com/phel-lang/phel-lang/blob/main/CHANGELOG.md).
+
+## 0.54
+
+| Old | New |
+|---|---|
+| `{:a 1 :a 2}` read as `{:a 2}` | `PHEL203` error. Remove the repeated key |
+| `(defn sq [n] ...)` then `(sq 3 4)` ran | `PHEL002` error. Pass one argument per parameter |
+| `{:my/keys [a]}` read `:a` | Reads `:my/a`. Write `{:keys [a]}` to read `:a` |
+| A `:refer` of a name the namespace does not define failed at the call, or never | `PHEL013` error at the `ns` form. Drop the name or define it |
+| `transduce` with a reducer that has only a 2-arity | Fails when it completes. Wrap the reducer in `completing` |
+| Implementing `CompilerFacadeInterface` | Add `withoutDeprecations()`, `rejectSupersededForms()` and `findSimilarNames()` |
+
+A `:refer` of a private name fails the same way. `^:dynamic` and `^:redef` fns skip the argument count check. The last row affects PHP code that implements Phel's PHP API only. [0.54 release notes](/releases/0-54-road-to-one/).
 
 ## 0.53
 
