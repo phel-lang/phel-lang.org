@@ -136,6 +136,8 @@ php/MY_SETTING                     ; => "on"
 
 For command-line arguments use `*argv*`, not `$argv`.
 
+<a id="by-reference-arguments"></a>
+
 ## Named and by-reference arguments
 
 PHP 8 named arguments go after a `:&` marker, as `:name value` pairs. They work for functions, constructors, instance methods and static methods:
