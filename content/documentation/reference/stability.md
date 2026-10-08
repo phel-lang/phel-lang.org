@@ -7,7 +7,7 @@ aliases = ["/documentation/stability/"]
 
 This page tells you what a Phel version promises, what the promise covers, and how deprecations reach you.
 
-Phel is at **{{ <phel_version /> }}**. This page describes what `1.x` will guarantee. `0.x` can still break, and [the changelog](https://github.com/phel-lang/phel-lang/blob/main/CHANGELOG.md) marks each such change **BREAKING**.
+Phel is at **{{ <phel_version /> }}**. Every `1.x` release keeps these promises.
 
 ## Three promises
 

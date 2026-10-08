@@ -62,7 +62,7 @@ php phel.phar repl
 
   <ul class="ph-facts" aria-label="Production facts">
     <li>Requires <strong>PHP 8.5+</strong></li>
-    <li>Pre-1.0. Read the <a href="/documentation/reference/stability/">stability policy</a></li>
+    <li>Stable 1.x. Read the <a href="/documentation/reference/stability/">stability policy</a></li>
     <li>PHP-FPM, FrankenPHP or RoadRunner. <a href="/documentation/guides/deployment/">Deploy guide</a></li>
   </ul>
 </section>
@@ -287,7 +287,7 @@ php phel.phar repl
   </details>
   <details class="faq-item" id="is-phel-production-ready">
     <summary class="faq-q">Is Phel production-ready?</summary>
-    <div class="faq-a">Phel is pre-1.0, but the core language and tooling are stable and tested: a good fit for side projects, CLI apps, internal tools, and prototypes. Breaking changes can still land between minor releases, so it isn't LTS-grade enterprise-stable yet. The <a href="/documentation/reference/stability/">stability policy</a> spells out what <code>1.0</code> will freeze, and the <a href="/documentation/guides/deployment/">deployment guide</a> covers FPM and worker runtimes. The community is small but active; <a href="https://github.com/phel-lang/awesome-phel">awesome-phel</a> lists libraries, tools, and projects.</div>
+    <div class="faq-a">Phel is at 1.x. Code that compiles on <code>1.0.0</code> compiles on every later <code>1.x</code>, and breaking changes wait for a new major release. The <a href="/documentation/reference/stability/">stability policy</a> spells out what <code>1.x</code> freezes, and the <a href="/documentation/guides/deployment/">deployment guide</a> covers FPM and worker runtimes. The community is small but active; <a href="https://github.com/phel-lang/awesome-phel">awesome-phel</a> lists libraries, tools, and projects.</div>
   </details>
   <details class="faq-item" id="can-i-call-php-libraries">
     <summary class="faq-q">Can I call PHP libraries from Phel?</summary>

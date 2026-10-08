@@ -1,11 +1,11 @@
 +++
 title = "Upgrading"
 weight = 5
-description = "What breaks in each Phel release from 0.54 back to 0.37, the one-line fix for each change, and the steps to run after every bump."
+description = "What breaks in each Phel release from 1.0 back to 0.37, the one-line fix for each change, and the steps to run after every bump."
 aliases = ["/documentation/upgrading/"]
 +++
 
-This page lists every breaking change from 0.54 back to 0.37, with the fix for each. Newest first. Read each section between your current version and the target. The full changelog for each version is in [Releases](/releases/).
+This page lists every breaking change from 1.0 back to 0.37, with the fix for each. Newest first. Read each section between your current version and the target. The full changelog for each version is in [Releases](/releases/).
 
 ## How to upgrade
 
@@ -18,7 +18,7 @@ This page lists every breaking change from 0.54 back to 0.37, with the fix for e
 2. Bump the version and clear the compiled cache:
 
    ```bash
-   composer require phel-lang/phel-lang:^0.54
+   composer require phel-lang/phel-lang:^1.0
    vendor/bin/phel cache:clear
    ```
 
@@ -26,7 +26,13 @@ This page lists every breaking change from 0.54 back to 0.37, with the fix for e
 
 Never skip the cache clear. Compiled PHP from an older install can reference renamed core types and fail to load.
 
-Going to 1.0 from 0.49 or later? Follow [the 1.0 upgrade guide](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/upgrade-0.49-to-1.0.md). What a version number promises is on [Stability Policy](/documentation/reference/stability/). Releases older than 0.37 are in [the changelog](https://github.com/phel-lang/phel-lang/blob/main/CHANGELOG.md).
+What a version number promises is on [Stability Policy](/documentation/reference/stability/). Releases older than 0.37 are in [the changelog](https://github.com/phel-lang/phel-lang/blob/main/CHANGELOG.md).
+
+## 1.0
+
+`1.0` adds no features. It removes the deprecated surface and keeps what remains stable for every `1.x` release.
+
+Coming from 0.49 or later, follow [the 1.0 upgrade guide](https://github.com/phel-lang/phel-lang/blob/main/docs/migration/upgrade-0.49-to-1.0.md) step by step. It covers the PHP and dependency floors, the removed deprecations, code the compiler now rejects, and code that compiles but behaves differently. From a release older than 0.49, first work through the sections below from your version up to 0.49.
 
 ## 0.54
 
