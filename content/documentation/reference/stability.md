@@ -1,7 +1,7 @@
 +++
 title = "Stability Policy"
 weight = 6
-description = "What a Phel version promises: language and embedding stability for 1.x, which PHP symbols are public, how deprecations work, and PHP support."
+description = "What a Phel version promises: language, embedding and command-line stability for 1.x, which PHP symbols are public, how deprecations work, and PHP support."
 aliases = ["/documentation/stability/"]
 +++
 
@@ -9,10 +9,11 @@ This page tells you what a Phel version promises, what the promise covers, and h
 
 Phel is at **{{ <phel_version /> }}**. This page describes what `1.x` will guarantee. `0.x` can still break, and [the changelog](https://github.com/phel-lang/phel-lang/blob/main/CHANGELOG.md) marks each such change **BREAKING**.
 
-## Two promises
+## Three promises
 
 1. **Language stability.** Phel source that compiles on `1.0.0` compiles on every later `1.x`. Reader syntax, special forms and the public `phel.*` core API do not break inside the major. The frozen list is [the language surface spec](https://github.com/phel-lang/phel-lang/blob/main/docs/spec/language-surface.md).
 2. **Embedding stability.** The PHP symbols listed under [Public PHP API](#public-php-api) follow semver, so a project that calls Phel from PHP can take `1.x` updates without reading a diff.
+3. **Command-line stability.** The parts of `phel` a program reads, listed under [Command-line interface](#command-line-interface), follow semver, so an editor plugin or a CI script can take `1.x` updates the same way.
 
 ## Public PHP API
 
@@ -94,6 +95,37 @@ Platform-sensitive parts: path separators, `readline` in the REPL, and `phel wat
 
 See [Configuration](/documentation/reference/configuration/).
 
+## Command-line interface
+
+Read this if a program runs `phel`: an editor plugin, a CI step, a script. What a program reads is covered. What a person reads is not.
+
+Covered, changed only in a major:
+
+| Surface | What is frozen |
+|---|---|
+| Commands | every command `phel list` shows, except the ones under "Not covered" below, with their aliases |
+| Options | every option a command's `--help` lists, with the values it documents |
+| Exit codes | `0` nothing to fail on, `1` found something, `2` could not run as asked, with the problem on stderr |
+| Positions | every line and column a command prints counts from 1 |
+| Paths | a JSON field naming a file is absolute; `--format=github` prints `file=` relative to the working directory |
+| Machine output | in `--format=json`, `--format=github`, `test --reporter=tap` and `test --reporter=junit-xml`, stdout carries that output and nothing else |
+| Fields | the field names and meaning of every machine output; fields are only added, so ignore the ones you do not know |
+| `--format` | picks the output format on every command, and `text` is the default |
+| `api-daemon` | its methods, including `version`, which reports the running Phel version (so does the LSP) |
+| nREPL | Phel's own ops `reload` and `run-tests`, and the `.nrepl-port` file |
+| Environment variables | the documented ones; a switch reads `1/true/yes/on` and `0/false/no/off`, and any other value exits 2 naming the variable |
+| `config --format=json` | the values after environment variables, with every config key |
+
+Not covered:
+
+- Human text: messages, tables, colours, help wording, progress lines and every `text` format. Match on an error code or a field, never on a message.
+- Command prefixes such as `phel li` for `phel lint`. A new command can make one ambiguous.
+- Symfony's `help`, `list` and `completion`, and the Gacela commands (`cache:warm`, `debug:*`, `list:modules`, `profile:report`, `validate:config`).
+- Hidden worker commands, `profile --format=json`, the `bench` baseline file, and the OPcache switches.
+- What a program run by `run`, `eval`, `test` or `repl` prints, and the exit code it picks.
+
+The full list, the output shapes and the exit codes per command: [the CLI reference](https://github.com/phel-lang/phel-lang/blob/main/docs/cli-reference.md). Why the line falls there: [ADR 0022](https://github.com/phel-lang/phel-lang/blob/main/docs/adr/0022-the-cli-machine-surface-is-under-semver.md).
+
 ## Not covered
 
 These are outside semver, before and after `1.0`:
@@ -102,7 +134,7 @@ These are outside semver, before and after `1.0`:
 - The wording and layout of diagnostics. Match on [error codes](/documentation/reference/errors/), not messages.
 - The `.phel/cache/` file format. A version bump invalidates it.
 - Anything under `tests/`, `tools/`, `build/` or `resources/` in the Phel repository.
-- The nREPL and LSP wire protocols beyond the upstream specifications.
+- The nREPL and LSP wire protocols beyond the upstream specifications and the surfaces listed under [Command-line interface](#command-line-interface).
 
 ## Upgrading
 
