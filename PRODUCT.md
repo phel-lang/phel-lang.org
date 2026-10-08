@@ -27,7 +27,7 @@ A real Lisp (macros, persistent data structures, REPL-driven development) that d
 - Zola 0.23.6 static site, Tera 2 templates and components; CSS concatenated and built with Tailwind 4; deployed over FTP from `master`.
 - Light and dark themes via a `.dark` class on `<html>`; both must work.
 - Every ```phel block in `content/` runs against the real runtime; homepage snippets must stay valid.
-- Requires PHP 8.5+. Pre-1.0 with a published stability policy.
+- Requires PHP 8.5+. 1.x, with a published stability policy.
 - The browser REPL downloads about 80 MB; desktop recommended.
 
 ## Brand Commitments
@@ -46,4 +46,4 @@ A real Lisp (macros, persistent data structures, REPL-driven development) that d
 
 - Prove with real code and real output, not claims.
 - One step from curiosity to a running REPL.
-- Honest about maturity: pre-1.0, PHP 8.5+, the trade-offs of persistent data.
+- Honest about maturity: the 1.x stability policy, PHP 8.5+, the trade-offs of persistent data.
