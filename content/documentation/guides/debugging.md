@@ -5,7 +5,7 @@ description = "Debug Phel code step by step: dbg, tap>, trace, stack traces, REP
 aliases = ["/documentation/debugging/", "/documentation/tooling/php-tools/"]
 +++
 
-This page takes you from the quickest print to a full step debugger. Start at the top and move down only when the simpler tool does not answer your question.
+Start with the simplest tool that answers your question.
 
 | Question | Tool |
 |---|---|
@@ -16,7 +16,7 @@ This page takes you from the quickest print to a full step debugger. Start at th
 | What are the locals at this line? | [`(break)`](#pause-with-break) |
 | I need IDE breakpoints and stepping | [Xdebug](#step-through-with-xdebug) |
 | What PHP does my Phel become? | [`phel compile`](#inspect-the-compiled-php) |
-| It works, but it is slow | [`phel profile`](#find-the-slow-part) |
+| It works, but it is slow | [`phel profile`](/documentation/reference/cli-commands/#profile) |
 
 ## Print a value with dbg
 
@@ -65,42 +65,11 @@ For large nested data, use `phel.pprint`:
 
 ### PHP dump functions
 
-Every PHP function works through the `php/` prefix, so `var_dump` is always available:
-
-```phel
-(php/var_dump (+ 3 3))
-;; stdout: int(6)
-```
-
-For richer output (colors, collapsible HTML in the browser, circular references), add [Symfony VarDumper](https://symfony.com/doc/current/components/var_dumper.html) as a dev dependency:
-
-```json
-"require-dev": {
-    "symfony/var-dumper": "^7.4"
-}
-```
-
-Then `dump` prints a value and continues, and `dd` prints it and stops the script:
-
-<!-- phel-test: skip -->
-```phel
-(php/dump (+ 4 4))   ; prints 8, keeps running
-(php/dd (+ 5 5))     ; prints 10, then exits
-```
-
-These PHP tools print Phel collections as PHP objects, with all their internal fields. Use them for PHP objects from interop code, and `dbg` or `pprint` for Phel data.
+`(php/var_dump x)` always works, and with [Symfony VarDumper](https://symfony.com/doc/current/components/var_dumper.html) as a dev dependency, `php/dump` prints and continues while `php/dd` prints and exits. These print Phel collections as PHP objects with all their internal fields, so use them for PHP objects from interop code, and `dbg` or `pprint` for Phel data.
 
 ## Watch values with tap>
 
-`tap>` sends a value to every handler registered with `add-tap`. The code that calls `tap>` does not know who listens, so you can leave the calls in place and attach a handler only when you need it:
-
-```phel
-(add-tap println)                    ; attach a handler
-(tap> {:event :login :user "alice"}) ; anywhere in your code
-(remove-tap println)                 ; detach it
-```
-
-The REPL registers a printing tap on start, so `(tap> x)` shows up there with no setup. Remove it with `(remove-tap phel.repl/print-tap)`. The [REPL guide](/documentation/tooling/repl/#debug-helpers) shows how to collect tapped values in an atom.
+`tap>` sends a value to every handler registered with `add-tap`, so you can leave `(tap> x)` calls in place and attach a handler such as `(add-tap println)` only when you need it. The REPL prints tapped values with no setup; the [REPL guide](/documentation/tooling/repl/#debug-helpers) covers that and how to collect them in an atom.
 
 ## Trace function calls
 
@@ -160,9 +129,7 @@ Output (paths shortened):
 ```
 
 - The first line has the error code. `vendor/bin/phel explain PHEL404` explains it and shows the smallest program that raises it. All codes are listed in [Error codes](/documentation/reference/errors/).
-- Each `#N file.phel:line : (fn args...)` frame is your code or a core function it called, with the real arguments.
 - Runtime internals collapse into `... N internal frames`. Pass `--stack-trace` to see them. The full trace is always in `.phel/error.log`.
-- Many errors end with a `hint:` line, for example a missing `(:require ...)` for an undefined symbol.
 
 ## Pause with break
 
@@ -194,24 +161,9 @@ At the `break>` prompt, evaluate any expression with those locals. Commands:
 
 Without a terminal (CI, pipes, parallel test workers, cron), `(break)` prints `--- breakpoint skipped ---` and continues, so a forgotten one never hangs a job.
 
-In the plain [REPL](/documentation/tooling/repl/), `*1`, `*2`, `*3` hold recent results and `*e` holds the last exception. Use `macroexpand-1` and `macroexpand` to see what a macro produces:
-
-```phel
-(macroexpand-1 '(when x y))
-; => (if x (do y))
-```
-
 ## Step through with Xdebug
 
-For IDE breakpoints, watches, and stepping, use [Xdebug](https://xdebug.org/). With the VS Code Phel extension you set breakpoints in `.phel` files and see Phel values. Other editors (PhpStorm, Emacs, Neovim) debug the compiled PHP. [Xdebug Setup](/documentation/tooling/xdebug-setup/) covers install and editor config.
-
-To stop the connected debugger at a line from code (a no-op without Xdebug):
-
-<!-- phel-test: skip -->
-```phel
-(when (php/function_exists "xdebug_break")
-  (php/xdebug_break))
-```
+For IDE breakpoints, watches, and stepping, see [Xdebug Setup](/documentation/tooling/xdebug-setup/). `(php/xdebug_break)` stops the connected debugger at a line from code.
 
 ## Inspect the compiled PHP
 
@@ -221,24 +173,7 @@ To stop the connected debugger at a line from code (a no-op without Xdebug):
 vendor/bin/phel compile '(defn greet [name] (str "Hello, " name "!"))'
 ```
 
-Output, trimmed:
-
-```php
-\Phel::addDefinition(
-  "user",
-  "greet",
-  new class() extends \Phel\Lang\AbstractFn {
-    public const BOUND_TO = "user\\greet";
-
-    public function __invoke($name): string {
-      return (\Phel\Lang\Registry::readRoot("phel.core", "str"))->__invoke("Hello, ", $name, "!");
-    }
-  },
-  // ... location and metadata
-);
-```
-
-Every `defn` becomes a class that extends `AbstractFn`, registered under its namespace. Core functions are looked up through the registry. Use this to debug interop, report a compiler bug, or see why something is slow.
+Every `defn` becomes a class that extends `AbstractFn`, registered under its namespace. Use this to debug interop, report a compiler bug, or see why something is slow.
 
 ### Keep the generated files
 
@@ -252,34 +187,4 @@ return (require __DIR__ . '/phel-config.php')
 ;
 ```
 
-Add `phel-config-local.php` to `.gitignore` so your dev settings stay out of the shared config. See [Configuration](/documentation/reference/configuration/) for other dev settings.
-
-### Show all PHP errors
-
-To see every PHP warning, notice, and deprecation during development, turn on error reporting in the same file:
-
-```php
-<?php # phel-config-local.php
-
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
-
-return (require __DIR__ . '/phel-config.php')
-    ->withKeepGeneratedTempFiles(true)
-;
-```
-
-## Find the slow part
-
-When the code is correct but slow, measure before you change anything:
-
-```bash
-vendor/bin/phel profile src/main.phel
-```
-
-It reports call counts and self and total time per function, plus compile phase costs. Sort with `--sort=total|self|calls|avg` and export with `--format=json`. [Performance](/documentation/guides/performance/) explains what to do with the results.
-
-## Keep the loop short
-
-- `vendor/bin/phel watch` reloads namespaces when files change, so you skip startup cost between tries.
-- `vendor/bin/phel test --filter <name>` reruns one test. Once you find the bug, pin it with a [test](/documentation/guides/testing/).
+Add `phel-config-local.php` to `.gitignore` so your dev settings stay out of the shared config. The same file can turn on `error_reporting(E_ALL)` and `display_errors` to show every PHP warning. See [Configuration](/documentation/reference/configuration/) for other dev settings.

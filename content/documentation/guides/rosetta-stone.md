@@ -60,34 +60,6 @@ echo "Hello $userName";
 
 <div class="rosetta-item" data-category="variables">
 
-### Constants
-
-<div class="rosetta-compare">
-<div class="rosetta-php">
-
-**PHP**
-
-```php
-const TAX_RATE = 0.21;
-define('APP_NAME', 'MyApp');
-```
-
-</div>
-<div class="rosetta-phel">
-
-**Phel**
-
-```phel
-(def tax-rate 0.21)
-(def app-name "MyApp")
-```
-
-</div>
-</div>
-</div>
-
-<div class="rosetta-item" data-category="variables">
-
 ### Local bindings (let)
 
 <div class="rosetta-compare">
@@ -113,72 +85,6 @@ function area(float $r): float {
   (let [pi 3.14159
         squared (* r r)]
     (* pi squared)))
-```
-
-</div>
-</div>
-</div>
-
-<div class="rosetta-item" data-category="variables">
-
-### Destructuring
-
-<div class="rosetta-compare">
-<div class="rosetta-php">
-
-**PHP**
-
-```php
-[$first, $second, ...$rest] = [1, 2, 3, 4, 5];
-
-['name' => $name, 'age' => $age] = $user;
-```
-
-</div>
-<div class="rosetta-phel">
-
-**Phel**
-
-```phel
-(let [[a b & rest] [1 2 3 4 5]]
-  rest) ; => [3 4 5]
-
-(def user {:name "Alice" :age 30})
-(let [{name :name age :age} user]
-  (str name " is " age)) ; => "Alice is 30"
-```
-
-</div>
-</div>
-</div>
-
-<div class="rosetta-item" data-category="variables">
-
-### Type checking
-
-<div class="rosetta-compare">
-<div class="rosetta-php">
-
-**PHP**
-
-```php
-is_string($x);    // true/false
-is_int($x);       // true/false
-is_null($x);      // true/false
-is_array($x);     // true/false
-```
-
-</div>
-<div class="rosetta-phel">
-
-**Phel**
-
-```phel
-(def x "hello")
-(string? x)       ; true/false
-(int? x)          ; true/false
-(nil? x)          ; true/false
-(vector? x)       ; true/false
 ```
 
 </div>
@@ -321,38 +227,6 @@ function greet(?string $name): string {
 ```phel
 (defn ^string greet [^"?string" name]
   (str "Hello, " (or name "World")))
-```
-
-</div>
-</div>
-</div>
-
-<div class="rosetta-item" data-category="functions">
-
-### Memoize
-
-<div class="rosetta-compare">
-<div class="rosetta-php">
-
-**PHP**
-
-```php
-function fib(int $n): int {
-    static $cache = [];
-    if (isset($cache[$n])) return $cache[$n];
-    return $cache[$n] = $n < 2 ? $n : fib($n-1) + fib($n-2);
-}
-```
-
-</div>
-<div class="rosetta-phel">
-
-**Phel**
-
-```phel
-(defn ^:memoize fib [n]
-  (if (< n 2) n
-    (+ (fib (- n 1)) (fib (- n 2)))))
 ```
 
 </div>
@@ -663,72 +537,6 @@ $joined = implode("-", $parts);      // "a-b-c"
 </div>
 </div>
 
-<div class="rosetta-item" data-category="strings">
-
-### Substring / search
-
-<div class="rosetta-compare">
-<div class="rosetta-php">
-
-**PHP**
-
-```php
-$sub = substr("Hello World", 0, 5);     // "Hello"
-$pos = strpos("Hello World", "World");   // 6
-$has = str_contains("Hello", "ell");     // true
-$upper = strtoupper("hello");            // "HELLO"
-```
-
-</div>
-<div class="rosetta-phel">
-
-**Phel**
-
-```phel
-(ns my-app
-  (:require phel.string :as str))
-
-(str/subs "Hello World" 0 5)       ; => "Hello"
-(php/strpos "Hello World" "World") ; => 6 (PHP interop)
-(str/includes? "Hello" "ell")      ; => true
-(str/upper-case "hello")           ; => "HELLO"
-```
-
-</div>
-</div>
-</div>
-
-<div class="rosetta-item" data-category="strings">
-
-### Regex
-
-<div class="rosetta-compare">
-<div class="rosetta-php">
-
-**PHP**
-
-```php
-preg_match('/\d+/', 'abc123', $m);
-$found = $m[0];              // "123"
-
-$has = preg_match('/^\d+$/', '123') === 1; // true
-```
-
-</div>
-<div class="rosetta-phel">
-
-**Phel**
-
-```phel
-(re-find #"\d+" "abc123")    ; => "123"
-(re-matches #"^\d+$" "123")  ; => "123" (full match)
-(re-matches #"^\d+$" "abc")  ; => nil (no match)
-```
-
-</div>
-</div>
-</div>
-
 <!-- ==================== CONTROL FLOW ==================== -->
 
 <div class="rosetta-item rosetta-group" data-category="control">
@@ -956,79 +764,12 @@ while ($n > 0) {
 </div>
 </div>
 
-<div class="rosetta-item" data-category="loops">
-
-### List comprehension / for
-
-<div class="rosetta-compare">
-<div class="rosetta-php">
-
-**PHP**
-
-```php
-$evens = [];
-foreach (range(0, 9) as $x) {
-    if ($x % 2 === 0) {
-        $evens[] = $x * $x;
-    }
-}
-// [0, 4, 16, 36, 64]
-```
-
-</div>
-<div class="rosetta-phel">
-
-**Phel**
-
-```phel
-(for [x :range [0 10]
-      :when (even? x)]
-  (* x x))
-; => [0 4 16 36 64]
-```
-
-</div>
-</div>
-</div>
-
 <!-- ==================== OOP / INTEROP ==================== -->
 
 <div class="rosetta-item rosetta-group" data-category="oop">
 
 ## OOP and interop
 
-</div>
-
-<div class="rosetta-item" data-category="oop">
-
-### Create object
-
-<div class="rosetta-compare">
-<div class="rosetta-php">
-
-**PHP**
-
-```php
-$now = new DateTime();
-$date = new DateTimeImmutable("2024-01-15");
-```
-
-</div>
-<div class="rosetta-phel">
-
-**Phel**
-
-```phel
-(ns my.module
-  (:use DateTime DateTimeImmutable))
-
-(def now (DateTime.))                        ; shorthand
-(def date (DateTimeImmutable. "2024-01-15")) ; shorthand
-;; also: (new DateTime)
-```
-
-</div>
-</div>
 </div>
 
 <div class="rosetta-item" data-category="oop">
@@ -1067,107 +808,12 @@ $result = $date->modify("+1 month")->format("Y-m-d");
 </div>
 </div>
 
-<div class="rosetta-item" data-category="oop">
-
-### Static method / constant
-
-<div class="rosetta-compare">
-<div class="rosetta-php">
-
-**PHP**
-
-```php
-$atomFormat = DateTimeImmutable::ATOM;
-$parsed = DateTimeImmutable::createFromFormat(
-    "Y-m-d",
-    "2024-03-22"
-);
-```
-
-</div>
-<div class="rosetta-phel">
-
-**Phel**
-
-```phel
-(def atom-format DateTimeImmutable/ATOM)
-
-(def parsed
-  (DateTimeImmutable/createFromFormat "Y-m-d" "2024-03-22"))
-```
-
-</div>
-</div>
-</div>
-
 <!-- ==================== FUNCTIONAL ==================== -->
 
 <div class="rosetta-item rosetta-group" data-category="functional">
 
 ## Functional
 
-</div>
-
-<div class="rosetta-item" data-category="functional">
-
-### Map
-
-<div class="rosetta-compare">
-<div class="rosetta-php">
-
-**PHP**
-
-```php
-$doubled = array_map(
-    fn($x) => $x * 2,
-    [1, 2, 3, 4]
-);
-// [2, 4, 6, 8]
-```
-
-</div>
-<div class="rosetta-phel">
-
-**Phel**
-
-```phel
-(map #(* % 2) [1 2 3 4])
-; => (2 4 6 8)
-```
-
-</div>
-</div>
-</div>
-
-<div class="rosetta-item" data-category="functional">
-
-### Filter
-
-<div class="rosetta-compare">
-<div class="rosetta-php">
-
-**PHP**
-
-```php
-$evens = array_filter(
-    [1, 2, 3, 4, 5, 6],
-    fn($x) => $x % 2 === 0
-);
-// [2, 4, 6]
-```
-
-</div>
-<div class="rosetta-phel">
-
-**Phel**
-
-```phel
-(filter even? [1 2 3 4 5 6])
-; => (2 4 6)
-```
-
-</div>
-</div>
 </div>
 
 <div class="rosetta-item" data-category="functional">
@@ -1213,9 +859,3 @@ $result = implode(", ",
 </div>
 </div>
 </div>
-
-## Next steps
-
-- [Cookbook](/documentation/guides/cookbook/) - ready-made recipes for common tasks
-- [PHP interop](/documentation/language/php-interop/) - reach into the PHP standard library and Composer packages
-- [Data structures](/documentation/language/data-structures/) - how Phel collections differ from PHP arrays
