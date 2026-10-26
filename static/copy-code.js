@@ -62,15 +62,23 @@ document.addEventListener('DOMContentLoaded', function() {
       wrapper.appendChild(pre);
     }
 
-    // Language chip for documentation code blocks. Decorative: the code
-    // itself is what a screen reader should read.
-    const lang = (pre.querySelector('code[data-lang]')?.dataset.lang || '').toLowerCase();
-    if (CODE_LANG_LABELS[lang] && pre.closest('.page-content')) {
-      const label = document.createElement('span');
-      label.className = 'code-lang';
-      label.setAttribute('aria-hidden', 'true');
-      label.textContent = CODE_LANG_LABELS[lang];
-      pre.parentElement.appendChild(label);
+    // Blocks in docs, practice and posts sit under a title bar, as on the
+    // homepage: the language on the left (decorative, the code is what a
+    // screen reader should read), the copy button on the right.
+    let bar = null;
+    if (pre.closest('.page-content, .blog-entry, .release-entry')) {
+      bar = document.createElement('div');
+      bar.className = 'code-bar';
+      const lang = (pre.querySelector('code[data-lang]')?.dataset.lang || '').toLowerCase();
+      if (CODE_LANG_LABELS[lang]) {
+        const label = document.createElement('span');
+        label.className = 'code-lang';
+        label.setAttribute('aria-hidden', 'true');
+        label.textContent = CODE_LANG_LABELS[lang];
+        bar.appendChild(label);
+      }
+      pre.parentElement.classList.add('code-block-wrapper--pane');
+      pre.parentElement.insertBefore(bar, pre);
     }
 
     const copyButton = document.createElement('button');
@@ -84,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
       </svg>
     `;
 
-    pre.parentElement.appendChild(copyButton);
+    (bar || pre.parentElement).appendChild(copyButton);
 
     // Handle copy
     copyButton.addEventListener('click', async () => {
