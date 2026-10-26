@@ -5,11 +5,9 @@ description = "Render HTML from Phel data structures: vectors are elements, maps
 aliases = ["/documentation/html-rendering"]
 +++
 
-After this page you can build HTML pages from plain Phel data and send them as a response body. Vectors are elements, maps are attributes, and every value is escaped. There is no template language.
-
 ## Elements and attributes
 
-`html` from `phel.html` turns a vector into an HTML string. The first item is the tag (keyword or string), an optional map holds the attributes, and the rest is the body: strings, numbers, nested vectors, or lists of them.
+`html` from `phel.html` turns a vector into an HTML string, with no template language. The first item is the tag (keyword or string), an optional map holds the attributes, and the rest is the body: strings, numbers, nested vectors, or lists of them.
 
 ```phel
 (ns my-app
@@ -49,7 +47,6 @@ An attribute set to `true` renders as `name="name"`. An attribute set to `false`
 (ns my-app
   (:require phel.html :refer [html]))
 
-(html [:div {:class [:a "b"]}])             ; => "<div class=\"a b\"></div>"
 (html [:div {:class {:a true :b false}}])   ; => "<div class=\"a\"></div>"
 (html [:div {:style {:background "green" :color "red"}} "bar"])
 ; => "<div style=\"background:green;color:red;\">bar</div>"
@@ -63,7 +60,6 @@ Use `if` or `when` inside the tree. A `nil` body renders nothing:
 (ns my-app
   (:require phel.html :refer [html]))
 
-(html [:div [:p "a"] (if false [:p "b"] [:p "c"])])  ; => "<div><p>a</p><p>c</p></div>"
 (html [:div [:p "a"] (when false [:p "b"])])         ; => "<div><p>a</p></div>"
 (html [:ul (for [i :in [3 4 5]] [:li i])])          ; => "<ul><li>3</li><li>4</li><li>5</li></ul>"
 ```
@@ -91,41 +87,16 @@ Keep the loop inline and move the markup for one item into a helper:
 ; => "<ul><li>1</li><li>2</li></ul>"
 ```
 
-## Composing reusable fragments
+## Pages and responses
 
-A function that returns a vector is a component. Combine components like any other values, then pass the result to `html` once. The rule above still applies: keep every `for` in the literal you pass to `html`.
+A function that returns a vector is a component; combine components like any other values and pass the result to `html` once. `doctype` accepts `:html5`, `:xhtml-transitional`, `:xhtml-strict`, and `:html4`:
 
 ```phel
 (ns my-app
   (:require phel.html :refer [html doctype]))
 
-(defn nav-link [url label]
-  [:a {:href url} label])
-
-(defn layout [title content]
-  [:html
-   [:head [:title title]]
-   [:body
-    [:nav (nav-link "/" "Home") (nav-link "/about" "About")]
-    content]])
-
-(html (layout "Home" [:p "Welcome"]))
-; => "<html><head><title>Home</title></head><body><nav><a href=\"/\">Home</a><a href=\"/about\">About</a></nav><p>Welcome</p></body></html>"
-
 (html (doctype :html5) [:div])
 ; => "<!DOCTYPE html>\n<div></div>"
 ```
 
-`doctype` accepts `:html5`, `:xhtml-transitional`, `:xhtml-strict`, and `:html4`.
-
-## Send it as a response
-
-Pass the string to `html-response`, which also sets the `Content-Type` header:
-
-<!-- phel-test: skip -->
-```phel
-(defn home [request]
-  (http/html-response 200 (html (doctype :html5) (layout "Home" [:p "Welcome"]))))
-```
-
-See [Request and Response](/documentation/web/http-request-and-response/) for the rest of the cycle, and the [html API reference](/documentation/reference/api/html/) for every helper.
+Send the string with [`html-response`](/documentation/web/http-request-and-response/#build-a-response). Every helper is in the [html API reference](/documentation/reference/api/html/).

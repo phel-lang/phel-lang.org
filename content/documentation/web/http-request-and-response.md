@@ -5,11 +5,9 @@ description = "Read an HTTP request, build and emit a response, and test handler
 aliases = ["/documentation/http-request-and-response"]
 +++
 
-After this page you can read an incoming HTTP request, build a response, send it, and test a handler without a web server. Everything lives in `phel.http`.
-
 ## The request-response cycle
 
-A web entry point does three things: read the request from PHP's globals, turn it into a response, and send the response:
+Everything lives in `phel.http`. A web entry point reads the request from PHP's globals, turns it into a response, and sends it with `emit-response` (once, at the end of the request):
 
 <!-- phel-test: skip -->
 ```phel
@@ -26,13 +24,11 @@ A web entry point does three things: read the request from PHP's globals, turn i
     (http/emit-response))
 ```
 
-`handle` is a plain function from a request to a response. `request-from-globals` works only inside a web request (PHP-FPM, mod_php, or `php -S`). From the REPL or a test, build the request with `request-from-map` instead (see [Test without a server](#test-without-a-server)).
-
-Branching by hand is fine for two or three paths. For more, use the [router](/documentation/web/routing/).
+`handle` is a plain function from a request to a response. `request-from-globals` works only inside a web request (PHP-FPM, mod_php, or `php -S`); from the REPL or a test, use `request-from-map` (see [Test without a server](#test-without-a-server)). For more than a few paths, use the [router](/documentation/web/routing/).
 
 ## Read the request
 
-PHP spreads a request over `$_SERVER`, `$_GET`, `$_POST`, `$_COOKIE`, and `$_FILES`. `request-from-globals` collects them into one struct. Read its fields with `get` and `get-in`:
+`request-from-globals` collects `$_SERVER`, `$_GET`, `$_POST`, `$_COOKIE`, and `$_FILES` into one struct. Read its fields with `get` and `get-in`:
 
 | Field | Value |
 |---|---|
@@ -69,7 +65,7 @@ Form fields and query parameters keep the string keys PHP gives them:
 
 ## Build a response
 
-A response is a struct with `:status`, `:headers`, `:body`, `:version`, and `:reason`. Four helpers build one:
+A response is a struct with `:status`, `:headers`, `:body`, `:version`, and `:reason`. `response-from-map` builds any response, and `response-from-string`, `html-response`, and `json-response` cover the common cases:
 
 ```phel
 (ns my-app
@@ -78,42 +74,18 @@ A response is a struct with `:status`, `:headers`, `:body`, `:version`, and `:re
 (http/response-from-map {:status 201 :headers {:location "/users/1"} :body ""})
 ; => (phel.http.response 201 {:location "/users/1"} "" "1.1" "Created")
 
-(http/response-from-string "Hello World")
-; => (phel.http.response 200 {} "Hello World" "1.1" "OK")
-
-(http/html-response 200 "<h1>Hi</h1>")
-; => (phel.http.response 200 {:content-type "text/html; charset=utf-8"} "<h1>Hi</h1>" "1.1" "OK")
-
 (http/json-response 200 {:message "pong"})
 ; => (phel.http.response 200 {:content-type "application/json"} "{\"message\":\"pong\"}" "1.1" "OK")
 ```
 
-`html-response` and `json-response` set the `Content-Type` header. `json-response` also encodes the body. For the HTML body itself, see [HTML Rendering](/documentation/web/html-rendering/).
-
-## Send the response
-
-`emit-response` writes the status line, the headers, and the body to the client:
-
-<!-- phel-test: skip -->
-```phel
-(http/emit-response (http/response-from-map {:status 404 :body "Page not found"}))
-```
-
-Call it once, at the end of the request.
+`html-response` and `json-response` set the `Content-Type` header; `json-response` also encodes the body. For the HTML body, see [HTML Rendering](/documentation/web/html-rendering/).
 
 ## Test without a server
 
-`request-from-map` builds a request from a map. It accepts the same keys as the table above, and `:uri` can be a string. Missing keys get empty defaults. With it, you can call any handler and check the response in plain Phel:
+`request-from-map` takes the keys from the table above; `:uri` can be a string and missing keys get empty defaults. Call the `handle` function from the first example and check the response:
 
+<!-- phel-test: skip -->
 ```phel
-(ns my-app
-  (:require phel.http :as http))
-
-(defn handle [request]
-  (if (= "/" (get-in request [:uri :path]))
-    (http/html-response 200 "<h1>Home</h1>")
-    (http/response-from-map {:status 404 :body "Not found"})))
-
 (get (handle (http/request-from-map {:method "GET" :uri "/"})) :status)
 ; => 200
 (get (handle (http/request-from-map {:method "GET" :uri "/missing"})) :status)

@@ -5,11 +5,7 @@ description = "Define routes, match a request method and path to a handler, add 
 aliases = ["/documentation/routing"]
 +++
 
-After this page you can map URLs and HTTP methods to handlers, read path parameters, add middleware, and build URLs from route names. The `phel.router` namespace turns a route table into one request-to-response function, so you do not write `cond` by hand.
-
-{% <php_note> %}
-Like a Symfony or Laravel router, but routes are plain Phel data: a vector of `[path data]` pairs. No annotations, no config files. It builds on the Symfony routing component, which ships with Phel.
-{% </php_note> %}
+`phel.router` turns a route table into one request-to-response function. Routes are plain Phel data, a vector of `[path data]` pairs, and matching uses the Symfony routing component, which ships with Phel.
 
 ## Define routes and build the app
 
@@ -42,28 +38,11 @@ A route is `[path data]`, where `data` is a map. Put a handler under a method ke
 ; => 404
 ```
 
-A handler takes a request and returns a response (see [Request and Response](/documentation/web/http-request-and-response/)). `app` is itself a handler, so the entry point stays the same: `(-> (http/request-from-globals) (app) (http/emit-response))`.
+`app` is itself a [handler](/documentation/web/http-request-and-response/), so the entry point stays the same: `(-> (http/request-from-globals) (app) (http/emit-response))`.
 
 ## Path parameters
 
-`{id}` in a path matches one segment. The value arrives under `[:attributes :match :path-params]` as a string: `/users/42` gives `{:id "42"}`. Convert it with `parse-long` when you need a number:
-
-```phel
-(ns my-app
-  (:require phel.http :as http)
-  (:require phel.router :as router))
-
-(defn next-user [request]
-  (let [id (parse-long (get-in request [:attributes :match :path-params :id]))]
-    (http/response-from-map {:status 200 :body (str (inc id))})))
-
-(def app (router/handler (router/router [["/users/{id}" {:get {:handler next-user}}]])))
-
-(get (app (http/request-from-map {:method "GET" :uri "/users/41"})) :body)
-; => "42"
-```
-
-The route's data map is also on the request, under `[:attributes :route-data]`.
+`{id}` in a path matches one segment. The value arrives under `[:attributes :match :path-params]` as a string, as in `show-user` above; convert it with `parse-long` when you need a number. The route's data map is on the request under `[:attributes :route-data]`.
 
 ## Nested routes and middleware
 
@@ -104,15 +83,7 @@ Routes nest: a child adds its path to the parent's path and inherits the parent'
 
 ## Error responses
 
-The router answers with a plain response when it cannot dispatch. Override each case in the `handler` options:
-
-| Option | When it runs | Default |
-|---|---|---|
-| `:not-found` | no route matches the path | 404 "Not found" |
-| `:method-not-allowed` | the path matches, the method does not | 405 "Method not allowed" |
-| `:not-acceptable` | the matched handler returns `nil` | 406 "Not acceptable" |
-| `:default-handler` | any of the three above without its own option | |
-| `:middleware` | every matched route | none |
+When it cannot dispatch, the router answers 404 (no route matches), 405 (the path matches, the method does not), or 406 (the handler returned `nil`). Override them in the `handler` options with `:not-found`, `:method-not-allowed`, `:not-acceptable`, or one `:default-handler` for all three:
 
 ```phel
 (ns my-app
@@ -150,15 +121,6 @@ Give a route a `:name` to build its URL with `generate`, so links do not break w
 
 `match-by-name` returns the route's `:template` and `:data` for a name.
 
-## Faster routing with compiled-router
+For large tables, `compiled-router` is a drop-in for `router` and about 3x faster. It compiles at macro-expansion time, so the routes must be a literal vector at the call site.
 
-`compiled-router` compiles the route table with Symfony's compiled matcher, about 3x faster for large tables. The compilation runs at macro-expansion time, so the routes must be a literal vector at the call site, not built from runtime values. Use `router` when routes are dynamic.
-
-<!-- phel-test: skip -->
-```phel
-(router/handler
-  (router/compiled-router
-    [["/ping" {:get {:handler pong}}]]))
-```
-
-For every function and option, see the [router API reference](/documentation/reference/api/router/). Next, build the response body with [HTML Rendering](/documentation/web/html-rendering/).
+For every function and option, see the [router API reference](/documentation/reference/api/router/).
