@@ -1,6 +1,5 @@
 .site-footer {
-  background: var(--color-light-bg-secondary);
-  border-top: 1px solid var(--color-light-border);
+  border-top: 1px solid var(--ph-line);
   margin-top: var(--space-3xl);
   padding: var(--space-2xl) 0 var(--space-lg);
   width: 100%;
@@ -103,14 +102,16 @@
   gap: var(--space-xl);
 }
 
-.footer-column h3 {
-  font-size: var(--text-sm);
-  font-weight: 700;
-  color: var(--color-light-text-primary);
+.footer-column h3,
+.dark .footer-column h3 {
+  font-family: var(--ph-label);
+  font-size: var(--text-xs);
+  font-weight: 400;
+  color: var(--ph-muted);
   margin: 0 0 var(--space-md) 0;
   padding: 0;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
 }
 
 .footer-column {
@@ -240,10 +241,6 @@
     gap: var(--space-lg);
   }
 
-  .footer-column h3 {
-    font-size: var(--text-base);
-  }
-
   .footer-column {
     margin-top: 0;
   }
@@ -293,8 +290,7 @@
    ======================================== */
 
 .dark .site-footer {
-  background: var(--color-dark-header-bg);
-  border-top-color: var(--color-dark-header-footer-border);
+  border-top-color: var(--ph-line);
 }
 
 .dark .footer-logo .phel-logo {
@@ -319,10 +315,6 @@
   background: var(--color-dark-text-accent);
   border-color: var(--color-dark-text-accent);
   color: var(--color-dark-bg);
-}
-
-.dark .footer-column h3 {
-  color: var(--color-dark-text-primary);
 }
 
 .dark .footer-column ul li a {

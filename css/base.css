@@ -252,7 +252,10 @@ h6 {
 /* Page titles and section headings share the homepage's italic serif.
    Smaller headings and UI titles stay in the sans so docs stay scannable. */
 main h1,
-main :is(.page-content, .blog-entry, .documentation-landing) h2:not([class], #page-toc-title),
+main
+  :is(.page-content, .blog-entry, .documentation-landing, .release-entry, .simple-page)
+  h2:not([class], #page-toc-title),
+main h2.practice-stage,
 :is(.post-card, .section-page-card, .practice-card) :is(h2, h3)[class$='__title'] {
   font-family: var(--font-display);
   font-style: italic;
@@ -269,7 +272,9 @@ main h1 {
   line-height: 1.08;
 }
 
-main :is(.page-content, .blog-entry, .documentation-landing) h2:not([class], #page-toc-title) {
+main
+  :is(.page-content, .blog-entry, .documentation-landing, .release-entry, .simple-page)
+  h2:not([class], #page-toc-title) {
   font-size: clamp(1.75rem, 3.6vw, 2.25rem);
   line-height: 1.15;
 }

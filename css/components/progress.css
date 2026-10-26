@@ -173,7 +173,7 @@
 
 .practice-stage {
   margin: var(--space-2xl) 0 var(--space-md);
-  font-size: var(--text-xl);
+  font-size: var(--text-2xl);
 }
 
 .practice-card-grid {
