@@ -70,22 +70,26 @@
   justify-content: center;
   width: 36px;
   height: 36px;
-  border-radius: var(--radius-md);
-  background: var(--color-light-surface);
-  border: 1px solid var(--color-light-border);
-  color: var(--color-light-text-primary);
+  border: 1px solid var(--ph-line-strong);
   text-decoration: none;
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    border-color 180ms var(--ph-ease),
+    color 180ms var(--ph-ease);
+}
+
+.footer-social a,
+.dark .footer-social a {
+  color: var(--ph-text);
 }
 
 .footer-social a::after {
   display: none;
 }
 
-.footer-social a:hover {
-  background: var(--color-light-link);
-  border-color: var(--color-light-link);
-  color: white;
+.footer-social a:hover,
+.dark .footer-social a:hover {
+  border-color: var(--ph-accent);
+  color: var(--ph-accent);
 }
 
 .footer-social svg {
@@ -152,7 +156,7 @@
 .footer-bottom {
   margin-top: var(--space-2xl);
   padding-top: var(--space-xl);
-  border-top: 1px solid var(--color-light-border);
+  border-top: 1px solid var(--ph-line);
   width: 100%;
 }
 
@@ -183,22 +187,21 @@
 }
 
 .footer-badge {
+  font-family: var(--ph-label);
   font-size: var(--text-xs);
-  color: var(--color-light-text-secondary);
+  letter-spacing: 0.02em;
+  color: var(--ph-copy);
   white-space: nowrap;
 }
 
 .footer-badge-separator {
-  color: var(--color-light-text-muted);
+  color: var(--ph-muted);
 }
 
 .footer-badge-version {
-  background: var(--color-light-link);
-  color: white;
   padding: 2px var(--space-sm);
-  border-radius: var(--radius-full);
-  font-weight: 600;
-  font-size: 0.65rem;
+  color: var(--ph-accent);
+  border: 1px solid var(--ph-line-strong);
 }
 
 /* Desktop Layout */
@@ -305,18 +308,6 @@
   color: var(--color-dark-text-secondary);
 }
 
-.dark .footer-social a {
-  background: var(--color-dark-surface);
-  border-color: var(--color-dark-border);
-  color: var(--color-dark-text-primary);
-}
-
-.dark .footer-social a:hover {
-  background: var(--color-dark-text-accent);
-  border-color: var(--color-dark-text-accent);
-  color: var(--color-dark-bg);
-}
-
 .dark .footer-column ul li a {
   color: var(--color-dark-text-secondary);
 }
@@ -325,23 +316,6 @@
   color: var(--color-dark-text-accent);
 }
 
-.dark .footer-bottom {
-  border-top-color: var(--color-dark-border);
-}
-
 .dark .footer-copyright {
   color: var(--color-dark-text-secondary);
-}
-
-.dark .footer-badge {
-  color: var(--color-dark-text-secondary);
-}
-
-.dark .footer-badge-separator {
-  color: var(--color-dark-text-muted);
-}
-
-.dark .footer-badge-version {
-  background: var(--color-dark-text-accent);
-  color: var(--color-dark-bg);
 }
