@@ -9,7 +9,7 @@ page_template = "practice-page.html"
 
 Learn Phel by doing. Eleven modules take you from reading your first form to building small programs. Each module adds one layer and only uses what came before, so you can go in order and never meet an idea you have not seen.
 
-**Set up a REPL first.** [Install Phel](/documentation/installation/) and run `vendor/bin/phel repl`. The [browser REPL](/repl/) needs no install, but it runs an older Phel (0.20), so some exercises from module 3 on will not work there.
+**Set up a REPL first.** [Install Phel](/documentation/installation/) and run `vendor/bin/phel repl`.
 
 **How each exercise works:**
 

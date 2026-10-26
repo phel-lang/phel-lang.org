@@ -26,7 +26,7 @@ recap = [
 ]
 +++
 
-This is your first contact with a Lisp. The syntax looks strange for about ten minutes, then it becomes the simplest syntax you have used. Open a [REPL](/documentation/tooling/repl/) (or [the browser REPL](/repl/)) and type every example. Guess first, then run: a wrong guess teaches you more than a right one.
+This is your first contact with a Lisp. The syntax looks strange for about ten minutes, then it becomes the simplest syntax you have used. Open a [REPL](/documentation/tooling/repl/) and type every example. Guess first, then run: a wrong guess teaches you more than a right one.
 
 ## Reading a form
 
