@@ -8,22 +8,11 @@ aliases = ["/documentation/lazy-sequences"]
 difficulty = "advanced"
 +++
 
-A lazy sequence computes its values only when you read them. After this page you can work with infinite or expensive sequences, build your own with `lazy-seq`, and avoid the usual laziness bugs.
+A lazy sequence computes its values only when you read them. Use one for large or infinite sources, or when you read only part of the data.
 
 ## Built-in lazy functions { #built-in-lazy-functions }
 
-You rarely write a lazy sequence by hand. These core functions already return one:
-
-| Function | Returns |
-|---|---|
-| `range` | numbers; `(range)` never ends |
-| `iterate` | `x`, `(f x)`, `(f (f x))`, ... forever |
-| `repeat` | the same value forever, or `n` times |
-| `cycle` | the items of a collection, repeated forever |
-| `map`, `filter`, `remove` | a transformed sequence |
-| `take`, `drop`, `take-while` | part of a sequence |
-
-Chain them freely. Only the values you read are computed, so infinite sources are safe as long as something limits them:
+You rarely write a lazy sequence by hand: `range`, `iterate`, `repeat`, `cycle`, `map`, `filter`, `take`, and `drop` already return one. Chain them freely. Only the values you read are computed, so infinite sources are safe as long as something limits them:
 
 ```phel
 (->> (range)            ; 0, 1, 2, ... forever
@@ -63,36 +52,7 @@ For side effects over a collection, prefer `foreach` or `doseq`. They are eager 
 (take 10 (fib-seq)) ; => (0 1 1 2 3 5 8 13 21 34)
 ```
 
-`realized?` tells whether a lazy sequence has run its body yet:
-
-```phel
-(def s (lazy-seq [1 2 3]))
-
-(realized? s) ; => false
-(first s)     ; => 1
-(realized? s) ; => true
-```
-
-### `lazy-cat`
-
-`lazy-cat` joins collections. It expands to `concat` and evaluates its arguments right away:
-
-```phel
-(lazy-cat [1 2] (range 3 6)) ; => (1 2 3 4 5)
-```
-
-So `lazy-cat` cannot build a recursive infinite sequence. The recursive call runs before anything else and never returns:
-
-<!-- phel-test: skip -->
-```phel
-;; Wrong: stack overflow
-(defn ints [n]
-  (lazy-seq (lazy-cat [n] (ints (inc n)))))
-
-;; Right: cons defers the recursive call
-(defn ints [n]
-  (lazy-seq (cons n (ints (inc n)))))
-```
+`realized?` tells whether a lazy sequence has run its body yet. Use `cons`, not `lazy-cat`, for the recursive step: `lazy-cat` evaluates its arguments right away, so the recursive call never returns.
 
 ## Pitfalls
 
@@ -123,19 +83,4 @@ When a name holds the start of a large sequence, every realized value stays in m
 (println (last (range 1000000)))
 ```
 
-### Tests
-
-Force a lazy result before you compare it, so errors inside it surface in the test:
-
-<!-- phel-test: skip -->
-```phel
-(is (= expected (doall lazy-result)))
-```
-
-## When to use them
-
-Use lazy sequences for large or infinite sources, when you read only part of the data, and to compose steps over a stream. Avoid them when you read every value right away, or read the same sequence many times. To run `map`, `filter` and `take` in one pass with no intermediate sequences, use [Transducers](/documentation/language/transducers/).
-
-{% <clojure_note> %}
-Phel follows the [Clojure sequence model](https://clojure.org/reference/sequences).
-{% </clojure_note> %}
+To run `map`, `filter` and `take` in one pass with no intermediate sequences, use [Transducers](/documentation/language/transducers/).

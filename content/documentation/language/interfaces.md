@@ -8,7 +8,7 @@ aliases = ["/documentation/interfaces"]
 difficulty = "advanced"
 +++
 
-After this page you can define shared behavior for several types. Use an interface when you own the type (a struct), a protocol when you add behavior to a type you do not own, and a hierarchy when multimethods should dispatch on "is a" relations.
+Use an interface when you own the type (a struct), a protocol when you add behavior to a type you do not own, and a hierarchy when multimethods should dispatch on "is a" relations.
 
 | Tool | Works on | Where you implement it |
 |---|---|---|
@@ -49,39 +49,7 @@ Each method becomes a normal function: call it with the struct first, pass it to
 Only structs implement interfaces, and a Phel interface cannot extend another interface. For structs themselves, see [Structs](/documentation/language/data-structures/#structs).
 {% </callout> %}
 
-### Several interfaces on one struct
-
-List each interface followed by its methods. To call another interface method on the same struct from inside a method, use the [method-call form](/documentation/language/php-interop/#method-and-property-call) on `this`:
-
-```phel
-(definterface Describable
-  (describe [this]))
-
-(definterface HasSummary
-  (summary [this]))
-
-(defstruct product [name price]
-  Describable
-  (describe [this] (str name ": $" price))
-  HasSummary
-  (summary [this] (str "Product - " (.describe this))))
-
-(summary (product "Pen" 2)) ; => "Product - Pen: $2"
-```
-
-### PHP interfaces
-
-Phel interfaces compile to PHP interfaces, and a struct can implement any PHP interface the same way:
-
-```phel
-(defstruct email [address]
-  \Stringable
-  (__toString [this] address))
-
-(php/strval (email "ada@example.com")) ; => "ada@example.com"
-```
-
-For typed signatures, attributes and `\JsonSerializable` support, see [Typed PHP from Phel definitions](/documentation/web/framework-integration/#typed-php-from-phel-definitions).
+A struct can implement several interfaces: list each one followed by its methods. To call another interface method on the same struct, use the [method-call form](/documentation/language/php-interop/#method-and-property-call) on `this`, as in `(.describe this)`. A struct can also implement any PHP interface the same way, such as `\Stringable` with a `__toString` method. For typed signatures, attributes and `\JsonSerializable` support, see [Typed PHP from Phel definitions](/documentation/web/framework-integration/#typed-php-from-phel-definitions).
 
 ## Protocols
 
@@ -126,21 +94,7 @@ A struct cannot implement a protocol inside `defstruct`. Use `extend-type` with 
 
 ### Check support
 
-`satisfies?` checks a value. `extends?` checks a type keyword such as `:string` or `:int`, and returns `false` for struct types, so use `satisfies?` on an instance there:
-
-```phel
-(defprotocol Printable
-  (to-string [this]))
-
-(extend-type :int
-  Printable
-  (to-string [this] (str "int:" this)))
-
-(satisfies? Printable 42)    ; => true
-(satisfies? Printable "a")   ; => false
-(extends? Printable :int)    ; => true
-(extends? Printable :array)  ; => false
-```
+`satisfies?` checks a value: `(satisfies? Printable 42)`. `extends?` checks a type keyword such as `:int`, and returns `false` for struct types, so use `satisfies?` on an instance there.
 
 ## Hierarchies
 
@@ -167,20 +121,4 @@ A struct cannot implement a protocol inside `defstruct`. Use `extend-type` with 
 
 ### Query and change the hierarchy
 
-Relations are transitive. `isa?`, `parents`, `ancestors` and `descendants` read them, and `underive` removes one:
-
-```phel
-(derive :shapes/rectangle :shapes/shape)
-(derive :shapes/square :shapes/rectangle)
-
-(isa? :shapes/square :shapes/shape)     ; => true
-(isa? :shapes/shape :shapes/square)     ; => false
-(parents :shapes/square)                ; => #{:shapes/rectangle}
-(ancestors :shapes/square)              ; => #{:shapes/rectangle :shapes/shape}
-(descendants :shapes/shape)             ; => #{:shapes/rectangle :shapes/square}
-
-(underive :shapes/square :shapes/rectangle)
-(isa? :shapes/square :shapes/rectangle) ; => false
-```
-
-These functions work on one global hierarchy. `(make-hierarchy)` returns the empty hierarchy shape, `{:parents {}, :descendants {}, :ancestors {}}`.
+Relations are transitive: after `(derive :shapes/square :shapes/rectangle)`, `(isa? :shapes/square :shapes/shape)` is `true`. `parents`, `ancestors` and `descendants` read the one global hierarchy, and `underive` removes a relation.

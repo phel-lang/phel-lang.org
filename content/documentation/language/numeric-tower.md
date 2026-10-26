@@ -7,8 +7,6 @@ description = "Phel's five numeric shapes (int, BigInt, Ratio, BigDecimal, float
 difficulty = "intermediate"
 +++
 
-After this page you can pick the right number type for exact money math, large integers, and fractions, and predict what arithmetic returns when types mix.
-
 Phel numbers come in **five shapes**. Arithmetic, comparisons, and predicates work across all of them. For literal syntax and the everyday operators, see [Basic Types](/documentation/language/basic-types/#numbers).
 
 ## The five shapes
@@ -31,7 +29,6 @@ A number with an `M` suffix reads as a `BigDecimal` and prints with the `M` suff
 (println 1.5M)               ; 1.5M (a BigDecimal)
 (println (+ 0.1M 0.2M))      ; 0.3M (no float drift)
 (println (bigdec "3.14159")) ; 3.14159M
-(println (bigdec? 1.5M))     ; true
 ```
 
 Contrast with `float`. The sum prints as `0.3`, but it is not `0.3`:
@@ -43,15 +40,7 @@ Contrast with `float`. The sum prints as `0.3`, but it is not `0.3`:
 
 ## Promoting integers: `bigint` and `+'`
 
-Promote explicitly with the constructors. A `BigInt` prints as a plain integer (no suffix):
-
-```phel
-(println (bigint 42))                            ; 42 (a BigInt)
-(println (bigint "1000000000000000000000"))
-(println (bigint? (bigint 42)))                  ; true
-```
-
-The promoting operators `+'`, `-'`, `*'`, `inc'`, and `dec'` switch to `BigInt` on overflow instead of wrapping. Use them whenever overflow is possible:
+Promote explicitly with `bigint`. A `BigInt` prints as a plain integer (no suffix). The promoting operators `+'`, `-'`, `*'`, `inc'`, and `dec'` switch to `BigInt` on overflow instead of wrapping. Use them whenever overflow is possible:
 
 ```phel
 (println (*' 1000000000 1000000000 1000000000)) ; 1000000000000000000000000000
@@ -60,29 +49,11 @@ The promoting operators `+'`, `-'`, `*'`, `inc'`, and `dec'` switch to `BigInt` 
 
 The plain ops (`+`, `*`, `inc`, ...) stay in native `int` and wrap on overflow, matching PHP.
 
-## Large integer literals lex as `float`
-
-PHP's lexer parses an oversize integer literal as a `float`, and so does Phel's:
-
-```phel
-(println (float? 12345678901234567890)) ; true (PHP int range overflow)
-```
-
-Wrap the value in a string and pass it to `bigint` to keep full precision:
-
-```phel
-(println (bigint "12345678901234567890"))
-```
+An oversize integer literal such as `12345678901234567890` reads as a `float`, as in PHP. Pass it as a string to keep full precision: `(bigint "12345678901234567890")`.
 
 ## Floats to exact: `rationalize`
 
-`rationalize` converts a `float` to an exact `Ratio`. It uses the **shortest decimal that converts back** to the same `float`, so binary noise digits do not leak in:
-
-```phel
-(println (rationalize 0.1)) ; 1/10
-```
-
-It returns `1/10`, not `10000000000000001/100000000000000000`. Floats with no short decimal representation (such as `(/ 1.0 3.0)`) keep their round-trip representation as a `Ratio`. Passing `##Inf`, `##-Inf`, or `##NaN` throws an `InvalidArgumentException`.
+`rationalize` converts a `float` to an exact `Ratio`, using the shortest decimal that converts back to the same `float`. So `(rationalize 0.1)` returns `1/10`, not `10000000000000001/100000000000000000`. Passing `##Inf` or `##NaN` throws.
 
 A `Ratio` is always reduced, and it becomes an integer when the result is whole:
 
@@ -92,37 +63,4 @@ A `Ratio` is always reduced, and it becomes an integer when the result is whole:
 (println (/ 4 2))           ; 2 (collapses to int)
 ```
 
-## Gotchas
-
-### `bit-shift-right` is arithmetic
-
-`bit-shift-right` performs an arithmetic (sign-preserving) shift, matching PHP's `>>`. There is no `unsigned-bit-shift-right`; for a logical shift use a mask:
-
-```phel
-(println (bit-and (bit-shift-right -8 1) 0x7FFFFFFFFFFFFFFF))
-```
-
-### `==` arity-1 asserts numeric
-
-In Clojure, `(== x)` returns `true` for any single argument. Phel's `==` requires a number and throws otherwise. Single-argument `==` is a numeric assertion, not an identity check:
-
-```phel
-(println (== 5)) ; true
-(println (try (== :a)
-              (catch \Exception e (.getMessage e))))
-; Argument must be a number, got: :a
-```
-
-## Quick reference
-
-| Need | Use |
-|------|-----|
-| Exact integer beyond PHP `int` | `(bigint "...")` or promoting ops `+'`, `*'` |
-| Exact non-integer ratio | `Ratio` literal `1/2`, `(/ a b)`, `(rationalize x)` |
-| Exact decimal (money, etc.) | `BigDecimal` literal `1.5M`, `(bigdec "...")` |
-| Inexact decimal | native `float` |
-| Predicate | `int?`, `bigint?`, `ratio?`, `bigdec?`, `decimal?`, `float?`, `number?` |
-| Numerator / denominator | `numerator`, `denominator` |
-| Float to exact | `rationalize` |
-
-The full list of numeric functions and predicates is in the [core API](/documentation/reference/api/core/).
+Predicates for each shape: `int?`, `bigint?`, `ratio?`, `bigdec?`, `decimal?`, `float?`, `number?`. The full list of numeric functions is in the [core API](/documentation/reference/api/core/).

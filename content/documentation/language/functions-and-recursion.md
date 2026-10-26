@@ -8,8 +8,6 @@ aliases = ["/documentation/functions-and-recursion"]
 difficulty = "intermediate"
 +++
 
-After this page you can define named and anonymous functions, give them several arities, recurse without growing the stack, and dispatch on data with multimethods.
-
 ## Global functions
 
 <!-- phel-test: skip -->
@@ -98,12 +96,8 @@ Parameters can take vectors and maps apart by shape, as in `(defn area [{:keys [
 Use `fn` when the body is more than one short expression or when a name for the argument helps the reader.
 
 {% <php_note> %}
-`#(* % 2)` is like PHP's arrow function `fn($x) => $x * 2`. Unlike PHP closures, a Phel `fn` captures every local it uses without a `use (...)` clause.
+Unlike PHP closures, a Phel `fn` captures every local it uses without a `use (...)` clause.
 {% </php_note> %}
-
-{% <callout kind="warning"> %}
-**Removed in 0.50:** `|(...)` with `$`, `$1`, `$&`. Use `#(...)` with `%`. **Removed:** the `function?` predicate. Use `fn?`.
-{% </callout> %}
 
 ## Apply and compose
 
@@ -125,16 +119,7 @@ The [core API](/documentation/reference/api/core/) lists more helpers such as `j
 
 ## Recursion
 
-A function can call itself. Each call adds a PHP stack frame, so deep recursion can hit PHP's nesting limit:
-
-```phel
-(defn sum-list [coll]
-  (if (empty? coll)
-    0
-    (+ (first coll) (sum-list (rest coll)))))
-
-(sum-list [1 2 3 4 5]) ; => 15
-```
+A function can call itself. Each call adds a PHP stack frame, so deep recursion can hit PHP's nesting limit.
 
 `recur` jumps back to the start of the function, or of the closest `loop`, with new argument values. It compiles to a PHP `while` loop, so it runs in constant stack space. `recur` must be the last thing the function does:
 
@@ -192,11 +177,9 @@ Metadata on a `defn` can wrap the body:
 (defn ^{:memoize-lru 128} lookup [k]
   (slow-lookup k))
 
-(defn ^:async fetch [url]
-  (http/get url))
 ```
 
-`^:memoize` caches every result forever. `^{:memoize-lru N}` keeps the `N` most recent results. They desugar to [`memoize`](/documentation/reference/api/core/#memoize) and [`memoize-lru`](/documentation/reference/api/core/#memoize-lru), and recursive self-calls also use the cache. `^:async` wraps the body in `async` and returns an `Amp\Future`: see [Async](/documentation/language/async/).
+`^:memoize` caches every result forever. `^{:memoize-lru N}` keeps the `N` most recent results. They desugar to [`memoize`](/documentation/reference/api/core/#memoize) and [`memoize-lru`](/documentation/reference/api/core/#memoize-lru), and recursive self-calls also use the cache. `^:async` is covered in [Async](/documentation/language/async/).
 
 ## Return and parameter types (`:tag`)
 
@@ -209,17 +192,6 @@ Type hints become PHP type declarations, and the compiler checks them:
   (when (seq name) (str "hi " name)))
 ```
 
-Write a hint as `^int`, `^"?int"`, `^"\\Foo\\Bar"`, or `^{:tag "..."}`. The compiler also infers return types from the last expression and parameter types from how the body uses them. It adds inferred types to the PHP signature of single-arity functions and reports mismatches at compile time.
+Write a hint as `^int`, `^"?int"`, `^"\\Foo\\Bar"`, or `^{:tag "..."}`. The compiler also infers types for single-arity functions and reports mismatches at compile time.
 
-## Passing by reference
-
-`^:reference` metadata passes a PHP variable by reference, like PHP's `&$arr`:
-
-```phel
-(defn add-to-array [^:reference arr]
-  (php/apush arr 10))
-```
-
-It works on plain function parameters only, not with destructuring. Prefer returning a new value over changing a PHP array in place.
-
-Next: [Destructuring](/documentation/language/destructuring/) shows every way to take arguments apart by shape.
+To pass a PHP array by reference (`&$arr`), see [PHP interop](/documentation/language/php-interop/#by-reference-arguments).

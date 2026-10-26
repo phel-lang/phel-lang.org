@@ -8,7 +8,7 @@ aliases = ["/documentation/macros"]
 difficulty = "advanced"
 +++
 
-A macro runs at compile time. It receives code as data, rewrites it, and returns new code for the compiler. After this page you can write a macro, check what it expands to, and avoid name clashes in the generated code.
+A macro runs at compile time. It receives code as data, rewrites it, and returns new code for the compiler.
 
 Most code does not need macros. Write a function first, and read [When to write a macro](#when-to-write-a-macro) before you reach for one.
 
@@ -28,18 +28,14 @@ A call to `(unless false "yes" "no")` becomes `(if (not false) "yes" "no")` befo
 This works because Phel code is data. The call is a plain list, and a macro changes that list with ordinary Phel functions. `defn`, `when`, `and`, `or`, `->` and `->>` are macros in the standard library, not compiler syntax.
 
 {% <php_note> %}
-PHP has no macros. The usual replacements each have a limit:
-
-- `eval()` runs at runtime and cannot be linted or type-checked.
-- Code generation writes files to disk and needs a build step.
-- Attributes are metadata only. They cannot change the code they annotate.
-
-Phel macros run inside the compiler, produce normal Phel code, and you can inspect the result with `macroexpand`.
+PHP has no macros. Unlike `eval()` or code generation, Phel macros run inside the compiler and produce normal Phel code that you can inspect with `macroexpand`.
 {% </php_note> %}
 
-## Quasiquote
+## Quote and quasiquote { #quote }
 
-The macro body above is a template. Three reader shortcuts build it:
+The single quote returns a form without evaluating it: `'x` is short for `(quote x)`, and `'(print 1 2 3)` is a list, so nothing is printed. This is how code stays data.
+
+<span id="quasiquote"></span>The macro body above is a template. Quasiquote is quote with holes. Three reader shortcuts build it:
 
 | Shortcut | Name | Effect |
 |---|---|---|
@@ -97,18 +93,6 @@ A macro that binds its own local can hide a name the caller uses. Add `#` to the
 
 `tmp__1` cannot clash with a `tmp` the caller already has. Outside a quasiquote, call `(gensym)` to get a unique symbol such as `__phel_1`. Use `name#` or `gensym` whenever a macro binds a local the user did not write.
 
-## Quote
-
-The single quote returns a form without evaluating it. `'x` is short for `(quote x)`. Macros depend on this: it is how code stays data.
-
-```phel
-'my-sym        ; => my-sym, a symbol
-'(print 1 2 3) ; => (print 1 2 3), a list. Nothing is printed.
-(quote 1)      ; => 1, literals evaluate to themselves
-```
-
-Quasiquote is quote with holes: `~` marks the parts that should be evaluated.
-
 ## When to write a macro
 
 Prefer a function. Functions are easier to read, test, compose and pass around. Write a macro only when a function cannot do the job:
@@ -117,4 +101,4 @@ Prefer a function. Functions are easier to read, test, compose and pass around. 
 - **Control flow** that must skip or reorder the evaluation of its arguments.
 - **Compile-time work**, when code must be generated or checked before the program runs.
 
-If passing values or functions gives the same result, write a function. For a longer walkthrough, read [Writing your first macro](/blog/writing-your-first-macro/). Every reader shortcut, including `` ` `` and `name#`, is listed on [Reader shortcuts](/documentation/language/reader-shortcuts/).
+For a longer walkthrough, read [Writing your first macro](/blog/writing-your-first-macro/).

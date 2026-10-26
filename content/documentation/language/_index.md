@@ -11,6 +11,6 @@ insert_after = "Installation"
 numbered = true
 +++
 
-These pages teach the Phel language in order. The first six (**Basic Types** through **Destructuring**) cover what you need to write everyday Phel. The pages after them each go deeper into one topic, such as macros or PHP interop, and you can read them in any order.
+The first six (**Basic Types** through **Destructuring**) cover what you need to write everyday Phel. The pages after them each go deeper into one topic, such as macros or PHP interop, and you can read them in any order.
 
 For every function and its signature, use the [API reference](/documentation/reference/api/).
