@@ -115,7 +115,7 @@ Use the same `phel-config.php` with `->withTestDirs(['tests/phel'])` and `->with
 
 ## Plain PHP
 
-Use `PhelConfig::forProject(mainNamespace: 'app.main')`, and put the guard in your entry script after `require __DIR__ . '/vendor/autoload.php'`, with `__DIR__` as the root.
+Use `PhelConfig::forProject(mainNamespace: 'app.main')->withSrcDirs(['phel'])`, since `forProject` looks in `src/` by default. Put the guard in your entry script after `require __DIR__ . '/vendor/autoload.php'`, with `__DIR__` as the root.
 
 ## Typed PHP from Phel definitions
 

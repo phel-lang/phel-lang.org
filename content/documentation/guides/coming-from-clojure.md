@@ -31,7 +31,7 @@ Most Clojure forms work the same in Phel, so this page lists what is different: 
 | JVM, JARs, classpath | PHP 8.5+ | Compiles to PHP and runs with your PHP binary |
 | `deps.edn`, Leiningen | Composer (`composer.json`) + `phel-config.php` | `composer require phel-lang/phel-lang` |
 | `lein repl`, `lein test`, uberjar | `phel repl`, `phel test`, `phel build` | `phel build` compiles to PHP |
-| `(:require [foo.bar :as b])` | `(:require foo.bar :as b)` | No vector around each clause. `clojure.string` is `phel.string`. See [Namespaces](/documentation/language/namespaces/) |
+| `(:require [foo.bar :as b])` | `(:require foo.bar :as b)` | The vector is optional. `clojure.string` is `phel.string`. See [Namespaces](/documentation/language/namespaces/) |
 | `(:import (java.time Instant))` | `(:use DateTimeImmutable)` | `:use` imports PHP classes |
 | Java interop `(Math/pow 2 10)` | `(php/pow 2 10)` | Any PHP function through `php/`. See [PHP Interop](/documentation/language/php-interop/) |
 | `(.method obj)`, `(Class/static)`, `(Class.)` | same | Works on PHP objects and classes |

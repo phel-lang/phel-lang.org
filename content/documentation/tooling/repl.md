@@ -120,7 +120,7 @@ Run `(dir "phel.repl")` for the full list.
 
 ## Debug helpers
 
-The REPL prints every `(tap> x)` with no setup; [Debugging](/documentation/guides/debugging/#watch-values-with-tap) covers `tap>`, `dbg`, breakpoints, and stack traces. To collect tapped values, for example during a test, register a handler that adds to an atom:
+The REPL prints every `(tap> x)` with no setup; [Debugging](/documentation/guides/debugging/#watch-values-with-tap) covers `tap>`, `dbg`, breakpoints, and stack traces. Turn the printer off with `(remove-tap phel.repl/print-tap)`. To collect tapped values, for example during a test, register a handler that adds to an atom:
 
 ```phel
 (def tapped (atom []))

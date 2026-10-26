@@ -154,7 +154,9 @@ Tag tests with metadata to include or exclude them as a group:
 | `--include=<tag>` / `--exclude=<tag>` | Only, or all but, tests with that tag. Skipped tests emit a `:skipped` event |
 | `--ns='my-app.http.*'` | Only namespaces matching the glob |
 | `--last-failed` | Only the tests that failed last run (read from `.phel/last-failed.txt`) |
+| `--changed[=REF]` | Only tests affected by changed files: uncommitted changes, or `git diff REF` |
 | `--fail-fast` | Stop at the first failure |
+| `--fail-on-focus` | Exit non-zero when a `^:focus` test narrowed the run. Always on when `CI` is set |
 | `--list` | Print the discovered tests without running them |
 | `--repeat=N` | Run each test N times, to stress a flaky test |
 | `--random-order` | Random order with a random seed. Add `--seed=42` to reproduce a run |
@@ -195,7 +197,7 @@ vendor/bin/phel test --coverage=clover \
 
 ## Reporters
 
-Pick the output format with `--reporter=<name>`: `default`, `testdox` (also `--testdox`), `dot`, `tap`, or `junit-xml` (write it to a file with `--output=path`). Repeat the flag for several formats at once. `--quiet` prints errors only, and `--silent` prints nothing. To write your own reporter, add a method to `phel.test/report`, a multimethod that dispatches on the event `:type`.
+Pick the output format with `--reporter=<name>`: `default`, `testdox` (also `--testdox`), `dot`, `tap`, `junit-xml` (write it to a file with `--output=path`), or `github`, which is added next to the default one on GitHub Actions. Repeat the flag for several formats at once. `--quiet` prints errors only, and `--silent` prints nothing. To write your own reporter, add a method to `phel.test/report`, a multimethod that dispatches on the event `:type`.
 
 ## Run tests from the REPL or code
 

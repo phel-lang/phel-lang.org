@@ -163,7 +163,7 @@ Without a terminal (CI, pipes, parallel test workers, cron), `(break)` prints `-
 
 ## Step through with Xdebug
 
-For IDE breakpoints, watches, and stepping, see [Xdebug Setup](/documentation/tooling/xdebug-setup/). `(php/xdebug_break)` stops the connected debugger at a line from code.
+For IDE breakpoints, watches, and stepping, see [Xdebug Setup](/documentation/tooling/xdebug-setup/). `(php/xdebug_break)` stops the connected debugger at a line from code. It needs the Xdebug extension loaded; without it the call fails.
 
 ## Inspect the compiled PHP
 

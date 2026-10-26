@@ -43,7 +43,6 @@ If you only fetch one URL, fetch the agent reference:
 - [Testing](https://phel-lang.org/documentation/guides/testing/)
 - [Debugging](https://phel-lang.org/documentation/guides/debugging/)
 - [Deployment and performance](https://phel-lang.org/documentation/guides/deployment/)
-- [Deployment](https://phel-lang.org/documentation/guides/deployment/)
 
 ## Web
 

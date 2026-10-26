@@ -70,6 +70,8 @@ They also work inside `ns`, so each platform can require its own libraries:
      :clj  (:require [clojure.data.json :as json])))
 ```
 
+Phel accepts both the vector form (`[phel.json :as json]`) and the list form (`phel.json :as json`) inside `:require`, so the same `ns` parses on both sides.
+
 ## Tagged literals `#<tag> form`
 
 A tagged literal passes the next form to the tag's reader function while the code is read. Three tags are built in:

@@ -305,6 +305,8 @@ Mutates every `defn` and reports the mutants your tests do not catch. The unmuta
 | `--only=IDS` | Comma-separated mutator ids |
 | `--min-msi=N`, `--min-covered-msi=N` | Exit 1 below this score (percent) |
 | `--changed[=REF]` | Mutate only changed files |
+| `--tests=PATH` | Tests to run against each mutant. Repeatable. Default: the test dirs |
+| `--parallel=N` | Worker count, or `auto` |
 
 ## Check your environment
 
