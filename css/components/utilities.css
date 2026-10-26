@@ -7,59 +7,62 @@
    BUTTONS
    ======================================== */
 
-/* Base button styles */
+/* Same frame as the homepage `ph-sx` buttons: label font, hairline border,
+   square corners. The tokens switch in dark mode, so no dark overrides. */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-sm);
-  padding: var(--space-sm) var(--space-md);
-  font-size: var(--text-sm);
-  font-weight: 600;
+  min-height: 2.75rem;
+  padding: 0.55rem 1.1rem;
+  font-family: var(--ph-label);
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
   text-decoration: none;
-  border-radius: var(--radius-md);
+  background: transparent;
+  border: 1px solid var(--ph-line-strong);
+  border-radius: 0;
   cursor: pointer;
-  transition: all var(--duration-fast) var(--ease-out);
   user-select: none;
-  border: 1px solid transparent;
+  transition:
+    background-color 180ms var(--ph-ease),
+    border-color 180ms var(--ph-ease),
+    color 180ms var(--ph-ease);
 }
 
-/* Prose links get an underline on hover; buttons keep their flat surface. */
 a.btn:hover {
   text-decoration: none;
 }
 
-/* Button variants.
-   Buttons that are links must repeat their color on every state: the global
-   `a:hover` rules are more specific than a bare `.btn-*` class and would
-   otherwise repaint the label in the link color, on top of a link-colored
-   background. */
-.btn-primary {
-  background: var(--color-light-link);
-  color: white;
-  border-color: var(--color-light-link);
+/* Doubled class: the label colour must beat `.dark a` and the prose
+   `a:hover` rules, which load later or carry an element selector. */
+.btn.btn-primary {
+  color: var(--ph-on-accent);
+  background: var(--ph-accent);
+  border-color: var(--ph-accent);
 }
 
-.btn-primary:hover {
-  background: var(--color-light-link-hover);
-  border-color: var(--color-light-link-hover);
-  color: white;
+.btn.btn-primary:hover {
+  color: var(--ph-on-accent);
+  background: var(--ph-accent-hover);
+  border-color: var(--ph-accent-hover);
 }
 
-.btn-secondary {
-  background: var(--color-light-surface);
-  color: var(--color-light-text-primary);
-  border-color: var(--color-light-border);
+.btn.btn-secondary,
+.btn.btn-secondary:hover {
+  color: var(--ph-text);
 }
 
-.btn-secondary:hover {
-  background: var(--color-light-surface-hover);
-  border-color: var(--color-light-link);
-  color: var(--color-light-link);
+.btn.btn-secondary:hover {
+  border-color: var(--ph-accent);
 }
+
 .btn-lg {
-  padding: var(--space-md) var(--space-lg);
-  font-size: var(--text-base);
+  min-height: 3rem;
+  padding: 0.7rem 1.4rem;
+  font-size: 1rem;
 }
 
 /* ========================================
@@ -101,32 +104,4 @@ a.btn:hover {
 
 .inline-block {
   display: inline-block;
-}
-
-/* ========================================
-   DARK MODE
-   ======================================== */
-
-.dark .btn-primary {
-  background: var(--color-dark-text-accent);
-  color: var(--color-dark-bg);
-  border-color: var(--color-dark-text-accent);
-}
-
-.dark .btn-primary:hover {
-  background: var(--color-dark-text-accent-hover);
-  border-color: var(--color-dark-text-accent-hover);
-  color: var(--color-dark-bg);
-}
-
-.dark .btn-secondary {
-  background: var(--color-dark-surface);
-  color: var(--color-dark-text-primary);
-  border-color: var(--color-dark-border);
-}
-
-.dark .btn-secondary:hover {
-  background: var(--color-dark-surface-hover);
-  border-color: var(--color-dark-text-accent);
-  color: var(--color-dark-text-accent);
 }

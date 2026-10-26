@@ -1,40 +1,5 @@
 /* Homepage: an editorial page that sets every claim beside the code that
-   proves it. Scoped to `.ph`; the rest of the site keeps its own look. */
-
-:root {
-  --ph-canvas: #f4f2f8;
-  --ph-panel: #fbfaff;
-  --ph-panel-bar: #efecf6;
-  --ph-line: rgb(56 36 110 / 0.14);
-  --ph-line-strong: rgb(56 36 110 / 0.3);
-  --ph-grid: rgb(81 45 168 / 0.05);
-  --ph-text: #1b1726;
-  --ph-copy: #3d3850;
-  --ph-muted: #5f5973;
-  --ph-accent: #512da8;
-  --ph-accent-hover: #3f1f8f;
-  --ph-on-accent: #ffffff;
-  --ph-selection: rgb(81 45 168 / 0.18);
-  --ph-serif: var(--font-display);
-  --ph-label: var(--font-label);
-  --ph-ease: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.dark {
-  --ph-canvas: #14121b;
-  --ph-panel: #1b1824;
-  --ph-panel-bar: #221e2e;
-  --ph-line: rgb(214 204 250 / 0.12);
-  --ph-line-strong: rgb(214 204 250 / 0.26);
-  --ph-grid: rgb(214 204 250 / 0.035);
-  --ph-text: #ece8f5;
-  --ph-copy: #c4bfd2;
-  --ph-muted: #9a94ab;
-  --ph-accent: #bfa4ff;
-  --ph-accent-hover: #d4c2ff;
-  --ph-on-accent: #16121f;
-  --ph-selection: rgb(191 164 255 / 0.28);
-}
+   proves it. Scoped to `.ph`. */
 
 .one-column-layout:has(.ph) {
   max-width: 76rem;

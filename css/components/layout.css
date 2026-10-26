@@ -185,17 +185,6 @@
   }
 }
 
-/* Related navigation buttons now use .btn from utilities */
-.related-container .btn {
-  color: var(--color-light-link);
-}
-
-.related-container .btn:hover,
-.two-column-layout__content .related-container a.btn:hover,
-.documentation__content .related-container a.btn:hover {
-  text-decoration: none;
-}
-
 /* When the page has no previous link (e.g. first release), push the
    lone next link to the right so the row mirrors the usual layout. */
 .related-container .link--next:only-child {
@@ -208,6 +197,7 @@
 
 .related-container .link > span:not(.link__title) {
   flex-shrink: 0;
+  color: var(--ph-accent);
 }
 
 /* Back to Top Button */
@@ -307,15 +297,6 @@
   box-shadow: none;
 }
 
-/* Related container dark mode - btn styles inherited, add link color */
-.dark .related-container .btn {
-  color: var(--color-dark-text-accent);
-}
-
-.dark .related-container .link > span:not(.link-title) {
-  color: var(--color-dark-text-accent);
-}
-
 .dark .back-to-top-button,
 .dark #back-to-top-button {
   background: var(--color-dark-surface);
@@ -341,49 +322,35 @@
   align-items: center;
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-lg);
-  color: var(--color-light-text-muted);
+  color: var(--ph-muted);
   text-decoration: none;
+  font-family: var(--ph-label);
   font-size: var(--text-sm);
-  font-weight: 600;
-  border-radius: var(--radius-full);
-  background: var(--color-light-bg-secondary);
-  border: 1px solid var(--color-light-border);
-  transition: all var(--duration-fast) var(--ease-out);
+  letter-spacing: 0.02em;
+  border: 1px solid var(--ph-line);
+  transition:
+    border-color 180ms var(--ph-ease),
+    color 180ms var(--ph-ease);
 }
 
-.edit-page-link a:hover {
-  color: var(--color-light-link);
-  background: var(--color-light-surface);
-  border-color: var(--color-light-link);
-  box-shadow: var(--shadow-sm);
+.edit-page-link a:hover,
+.dark .edit-page-link a:hover {
+  color: var(--ph-text);
+  border-color: var(--ph-accent);
   text-decoration: none;
+}
+
+.dark .edit-page-link a {
+  color: var(--ph-muted);
 }
 
 .edit-page-link svg {
   flex-shrink: 0;
-  opacity: 0.7;
   stroke-width: 2.5;
 }
 
 .edit-page-link a::after {
   display: none;
-}
-
-.edit-page-link a:hover svg {
-  opacity: 1;
-}
-
-.dark .edit-page-link a {
-  color: var(--color-dark-text-muted);
-  background: var(--color-dark-surface);
-  border-color: var(--color-dark-border);
-}
-
-.dark .edit-page-link a:hover {
-  color: var(--color-dark-text-accent);
-  border-color: var(--color-dark-text-accent);
-  box-shadow: var(--shadow-dark-sm);
-  text-decoration: none;
 }
 
 /* ========================================

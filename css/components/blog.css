@@ -129,10 +129,6 @@
   margin: var(--space-3xl) 0;
 }
 
-.pagination .btn {
-  color: var(--color-light-link);
-}
-
 .pagination__btn--previous {
   margin-right: auto;
 }
@@ -182,11 +178,6 @@
   color: var(--color-dark-text-muted);
 }
 
-
-/* Pagination dark mode - inherit from .btn-secondary, add link color */
-.dark .pagination .btn {
-  color: var(--color-dark-text-accent);
-}
 
 .dark .post-card__cta {
   color: var(--color-dark-text-primary);

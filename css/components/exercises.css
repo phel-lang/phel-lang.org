@@ -453,17 +453,3 @@
   text-align: right;
 }
 
-/* ========================================
-   DARK MODE - PAGE NAVIGATION
-   ======================================== */
-
-.dark .page-navigation a.btn.btn-secondary {
-  color: var(--color-dark-text-accent);
-  border-color: var(--color-dark-text-accent);
-}
-
-.dark .page-navigation a.btn.btn-secondary:hover {
-  background: var(--color-dark-text-accent);
-  color: var(--color-dark-bg);
-}
-
