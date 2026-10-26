@@ -58,7 +58,8 @@ function main() {
   for (const [source, href] of links) {
     const [rawPath, fragment = ''] = href.split('#');
     let target = rawPath.split('?')[0] || source;
-    if (!target.endsWith('/') && !path.posix.basename(target).includes('.')) target += '/';
+    const isFile = fs.statSync(path.join(PUBLIC, target), { throwIfNoEntry: false })?.isFile();
+    if (!target.endsWith('/') && !path.posix.basename(target).includes('.') && !isFile) target += '/';
 
     let problem = null;
     if (target.endsWith('/')) {
