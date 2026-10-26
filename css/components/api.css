@@ -26,7 +26,7 @@
 .api-recent__clear {
   background: transparent;
   border: none;
-  color: #ef4444;
+  color: var(--status-bad);
   cursor: pointer;
   padding: var(--space-xs);
   border-radius: var(--radius-sm);
@@ -45,13 +45,7 @@
 }
 
 .api-recent__clear:hover {
-  background: rgba(239, 68, 68, 0.1);
-  color: #dc2626;
-}
-
-.api-recent__clear:hover {
-  background: var(--color-light-surface-hover);
-  color: var(--color-light-link);
+  background: var(--status-bad-bg);
 }
 
 ul.api-recent__list {
@@ -114,15 +108,6 @@ ul.api-recent__list > li:before {
 
 .dark .api-recent__head {
   color: var(--color-dark-text-secondary);
-}
-
-.dark .api-recent__clear {
-  color: #f87171;
-}
-
-.dark .api-recent__clear:hover {
-  background: rgba(248, 113, 113, 0.15);
-  color: #fca5a5;
 }
 
 .dark ul.api-recent__list {

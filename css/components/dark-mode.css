@@ -150,16 +150,6 @@
   background: var(--color-dark-surface-hover);
 }
 
-/* Dark HR */
-.dark hr {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--color-dark-border) 20%,
-    var(--color-dark-border) 80%,
-    transparent
-  );
-}
 
 /* Dark layout components */
 .dark .one-column-layout,

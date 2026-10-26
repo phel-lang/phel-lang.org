@@ -49,7 +49,7 @@ pre:focus-visible {
 .copy-code-button svg {
   width: 20px;
   height: 20px;
-  stroke: #475569;
+  stroke: var(--color-light-text-muted);
   stroke-width: 2;
 }
 

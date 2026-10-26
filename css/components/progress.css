@@ -74,8 +74,9 @@
   transition: transform 0.4s ease;
 }
 
-.progress-tracker-reset:hover {
-  color: #dc2626;
+.progress-tracker-reset:hover,
+.dark .progress-tracker-reset:hover {
+  color: var(--status-bad);
 }
 
 .progress-tracker-reset:hover svg {
@@ -87,7 +88,7 @@
 }
 
 .progress-tracker-reset:focus-visible {
-  outline: 2px solid rgb(239 68 68 / 0.5);
+  outline: 2px solid var(--status-bad-line);
   outline-offset: 2px;
 }
 
@@ -97,10 +98,6 @@
 
 .dark .progress-tracker-reset {
   color: var(--color-dark-text-muted);
-}
-
-.dark .progress-tracker-reset:hover {
-  color: #f87171;
 }
 
 .dark .progress-tracker-count {
@@ -130,12 +127,12 @@
 }
 
 .progress-tracker.all-complete .progress-tracker-fill {
-  background: #22c55e;
+  background: var(--status-ok);
 }
 
 .progress-tracker.all-complete .progress-tracker-label::after {
   content: ' - All done!';
-  color: #22c55e;
+  color: var(--status-ok);
   font-weight: 400;
 }
 
@@ -171,7 +168,7 @@
 }
 
 .practice-overview.all-complete .progress-tracker-fill {
-  background: #22c55e;
+  background: var(--status-ok);
 }
 
 .practice-stage {
@@ -248,17 +245,9 @@
 }
 
 .practice-card.is-complete {
-  border-color: var(--color-light-success);
+  border-color: var(--status-ok);
 }
 
 .practice-card.is-complete .progress-tracker-fill {
-  background: var(--color-light-success);
-}
-
-.dark .practice-card.is-complete {
-  border-color: var(--color-dark-success);
-}
-
-.dark .practice-card.is-complete .progress-tracker-fill {
-  background: var(--color-dark-success);
+  background: var(--status-ok);
 }

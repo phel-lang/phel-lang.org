@@ -186,6 +186,32 @@
   --z-tooltip: 1070;
 }
 
+/* Status tones: ok (done, beginner), warn (medium, deprecated), bad
+   (hard, destructive). Each text colour clears 4.5:1 on its own tint.
+   The tint and line are mixed here, so a `.dark` swap of the base colour
+   updates all three. */
+:root {
+  --status-ok: var(--color-light-success);
+  --status-warn: var(--color-light-deprecated);
+  --status-bad: var(--color-light-callout-warning);
+}
+
+.dark {
+  --status-ok: var(--color-dark-success);
+  --status-warn: var(--color-dark-deprecated);
+  --status-bad: var(--color-dark-callout-warning);
+}
+
+:root,
+.dark {
+  --status-ok-bg: color-mix(in srgb, var(--status-ok) 12%, transparent);
+  --status-ok-line: color-mix(in srgb, var(--status-ok) 40%, transparent);
+  --status-warn-bg: color-mix(in srgb, var(--status-warn) 12%, transparent);
+  --status-warn-line: color-mix(in srgb, var(--status-warn) 40%, transparent);
+  --status-bad-bg: color-mix(in srgb, var(--status-bad) 12%, transparent);
+  --status-bad-line: color-mix(in srgb, var(--status-bad) 40%, transparent);
+}
+
 /* Editorial tokens. The homepage introduced them; buttons and other shared
    components use them too, so they live here. */
 :root {

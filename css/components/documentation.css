@@ -320,16 +320,16 @@ h6:hover .zola-anchor {
   transform: rotate(90deg);
 }
 
-/* Brand hues darkened until the white 12.75px label clears 4.5:1 at both
-   gradient stops (PHP 6.4 / 8.4, Clojure 5.3 / 7.2). The label carries its
-   own background, so the same pair holds in light and dark mode. */
+/* Brand hues darkened until the white 12.75px label clears 4.5:1
+   (PHP 6.4, Clojure 5.3). The label carries its own background, so the
+   same colour holds in light and dark mode. */
 .dev-note--php .dev-note__label {
-  background: linear-gradient(135deg, #4f5b93 0%, #3f4a80 100%);
+  background: #4f5b93;
   color: white;
 }
 
 .dev-note--clojure .dev-note__label {
-  background: linear-gradient(135deg, #3d7a1f 0%, #2f6317 100%);
+  background: #3d7a1f;
   color: white;
 }
 
@@ -520,28 +520,28 @@ h6:hover .zola-anchor {
   display: inline-flex;
   align-items: center;
   padding: 0.1rem 0.55rem;
-  border-radius: 999px;
-  font-weight: 600;
+  font-family: var(--ph-label);
+  letter-spacing: 0.02em;
   line-height: 1.6;
   border: 1px solid transparent;
 }
 
 .page-meta__badge--beginner {
-  background: #e7f6ec;
-  color: #1a7f43;
-  border-color: #b7e4c7;
+  background: var(--status-ok-bg);
+  color: var(--status-ok);
+  border-color: var(--status-ok-line);
 }
 
 .page-meta__badge--intermediate {
-  background: #fdf3e0;
-  color: #9a6a00;
-  border-color: #f5d99a;
+  background: var(--status-warn-bg);
+  color: var(--status-warn);
+  border-color: var(--status-warn-line);
 }
 
 .page-meta__badge--advanced {
-  background: #fbe9e9;
-  color: #b23434;
-  border-color: #f2c4c4;
+  background: var(--status-bad-bg);
+  color: var(--status-bad);
+  border-color: var(--status-bad-line);
 }
 
 .page-meta__readtime,
@@ -552,24 +552,6 @@ h6:hover .zola-anchor {
 .page-meta__readtime + .page-meta__updated::before {
   content: '·';
   margin-right: 0.5rem;
-}
-
-.dark .page-meta__badge--beginner {
-  background: rgba(45, 168, 96, 0.16);
-  color: #6ee7a0;
-  border-color: rgba(45, 168, 96, 0.4);
-}
-
-.dark .page-meta__badge--intermediate {
-  background: rgba(214, 158, 46, 0.16);
-  color: #f2c368;
-  border-color: rgba(214, 158, 46, 0.4);
-}
-
-.dark .page-meta__badge--advanced {
-  background: rgba(214, 78, 78, 0.16);
-  color: #f19595;
-  border-color: rgba(214, 78, 78, 0.4);
 }
 
 .dark .page-meta__readtime,

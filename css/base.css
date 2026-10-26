@@ -297,15 +297,8 @@ h3 a:focus {
   text-decoration: none;
 }
 
-/* Modern HR with gradient */
 hr {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--color-light-border) 20%,
-    var(--color-light-border) 80%,
-    transparent
-  );
+  background: var(--ph-line);
   height: 1px;
   border: 0;
   margin: 2.5em 0;
@@ -644,37 +637,18 @@ td code {
 }
 
 .error-page .error-page__tag {
-  font-family: var(--font-mono);
+  font-family: var(--ph-serif);
   font-size: clamp(5rem, 16vw, 9rem);
-  font-weight: 800;
+  font-style: italic;
+  font-weight: 450;
   line-height: 0.95;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
   margin: 0 0 0.25rem;
-  background: linear-gradient(
-    135deg,
-    var(--color-light-text-accent) 0%,
-    var(--color-light-link) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
-}
-
-.dark .error-page .error-page__tag {
-  background: linear-gradient(
-    135deg,
-    var(--color-dark-text-accent) 0%,
-    var(--color-dark-link) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
+  color: var(--ph-accent);
 }
 
 .error-page .error-page__title {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
-  font-weight: 700;
   margin: 0 0 0.875rem;
   line-height: 1.2;
 }
@@ -745,6 +719,11 @@ td code {
   margin: 0 auto 2.25rem;
   padding: 0;
   text-align: left;
+}
+
+/* Grid gap spaces the columns; the global `* + *` margin would stagger them. */
+.error-page .error-page__groups > * {
+  margin-top: 0;
 }
 
 .error-page .error-page__group {
