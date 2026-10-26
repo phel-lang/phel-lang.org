@@ -18,20 +18,8 @@
   position: relative;
   display: block;
   padding: var(--space-lg) var(--space-xl);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-light-border);
-  background: var(--color-light-surface);
   text-decoration: none;
   color: inherit;
-  box-shadow: none;
-  transition: box-shadow var(--duration-fast) var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out);
-}
-
-.post-card:hover,
-.post-card:focus-visible {
-  border-color: var(--color-light-link);
-  box-shadow: none;
 }
 
 .post-card__meta {
@@ -146,16 +134,7 @@
 }
 
 .dark .post-card {
-  background: var(--color-dark-surface);
-  border-color: var(--color-dark-border);
-  box-shadow: none;
   color: var(--color-dark-text-primary);
-}
-
-.dark .post-card:hover,
-.dark .post-card:focus-visible {
-  border-color: var(--color-dark-text-accent);
-  box-shadow: none;
 }
 
 .dark .post-card__meta {

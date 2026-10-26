@@ -253,7 +253,7 @@ h6 {
    Smaller headings and UI titles stay in the sans so docs stay scannable. */
 main h1,
 main :is(.page-content, .blog-entry, .documentation-landing) h2:not([class], #page-toc-title),
-.post-card__title {
+:is(.post-card, .section-page-card, .practice-card) :is(h2, h3)[class$='__title'] {
   font-family: var(--font-display);
   font-style: italic;
   font-weight: 450;

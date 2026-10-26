@@ -66,6 +66,42 @@ a.btn:hover {
 }
 
 /* ========================================
+   CARDS
+   One frame for every list of linked cards: hairline border on the panel
+   colour, accent border on hover, square corners, no shadow.
+   ======================================== */
+
+:is(.section-page-card, .api-ns-card, .practice-card, .post-card) {
+  background: var(--ph-panel);
+  border: 1px solid var(--ph-line);
+  border-radius: 0;
+  box-shadow: none;
+  transition: border-color 180ms var(--ph-ease);
+}
+
+:is(.section-page-card, .practice-card, .post-card):is(:hover, :focus-visible),
+.api-ns-card:has(.api-ns-card__link:hover) {
+  border-color: var(--ph-accent);
+}
+
+/* Numbered step chip shared by doc and practice cards. */
+:is(.section-page-card__step, .practice-card__step) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  font-family: var(--ph-label);
+  font-size: var(--text-xs);
+  font-style: normal;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: var(--ph-accent);
+  border: 1px solid var(--ph-line-strong);
+}
+
+/* ========================================
    BADGES
    ======================================== */
 
