@@ -73,11 +73,11 @@ php phel.phar repl
 
 ## Why Phel? { #why-phel }
 
-<p><strong>Against vanilla PHP: more expression, same runtime.</strong> Macros, persistent collections, and a REPL, without leaving the PHP ecosystem. Composer, FPM, shared hosting all work.</p>
+<p><strong>Coming from PHP: less code, same stack.</strong> Data that never changes under you, macros that remove boilerplate, and a REPL to try each function as you write it. Phel compiles to plain PHP, so Composer, PHP-FPM and shared hosting keep working.</p>
 
-<p><strong>Against Clojure: Lisp without the JVM.</strong> Same Lisp ideas as Clojure, deployed like a PHP app. No JVM warmup, no AOT pipeline, no extra hosting target.</p>
+<p><strong>Coming from Clojure: the same ideas, no JVM.</strong> Persistent collections, threading macros and REPL-driven work, deployed like any PHP app. No JVM startup and no extra server to run.</p>
 
-<p><strong>Against PHP FP libraries: a language, not a library.</strong> Real homoiconic syntax, real macros, real tail-call elimination. A library can't extend PHP's grammar. Phel doesn't need to.</p>
+<p><strong>Tried functional PHP libraries? This is a language.</strong> A library can only add functions. Phel adds syntax: macros write new forms, and <code>loop</code> with <code>recur</code> runs deep recursion in constant memory.</p>
 
 </div>
 <div class="ph-beat-demo">
