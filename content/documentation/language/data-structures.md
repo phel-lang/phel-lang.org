@@ -8,8 +8,6 @@ aliases = ["/documentation/data-structures"]
 difficulty = "beginner"
 +++
 
-After this page you can create, read, and update Phel's collections: vectors, maps, sets, lists, queues, and structs.
-
 All Phel collections are **persistent**: they never change. An update returns a new collection that shares most of its structure with the old one, so updates stay cheap and the original stays valid.
 
 ```phel
@@ -38,13 +36,7 @@ PHP arrays copy on write, and code that holds a reference can change them in pla
 
 A vector is an indexed sequence. Reading by index and appending at the end are fast.
 
-```phel
-[1 2 3]          ; literal
-(vector 1 2 3)   ; => [1 2 3]
-(vec '(1 2 3))   ; => [1 2 3], from any collection
-```
-
-Read by index with `get` (or `nth`). `get` returns `nil`, or a default, when the index is missing:
+`(vector 1 2 3)` builds one from arguments and `(vec '(1 2 3))` from any collection. Read by index with `get` (or `nth`). `get` returns `nil`, or a default, when the index is missing:
 
 ```phel
 (get [10 20 30] 0)       ; => 10
@@ -68,12 +60,7 @@ Add at the end with `conj`. Replace by index with `assoc`. Drop the last element
 
 A map stores key-value pairs, each key once. Keys are usually keywords, but any value can be a key.
 
-```phel
-{:name "Alice" :age 30}         ; literal
-(hash-map :name "Alice" :age 30) ; same map
-```
-
-Read with `get`, or call the keyword as a function. Both accept a default:
+Build one with a literal, `{:name "Alice" :age 30}`, or with `hash-map`. Read with `get`, or call the keyword as a function. Both accept a default:
 
 ```phel
 (get {:a 1 :b 2} :a)      ; => 1
@@ -93,20 +80,7 @@ Add or replace keys with `assoc`. Remove them with `dissoc`. Combine maps with `
 
 `keys`, `vals`, and `select-keys` read parts of a map: `(select-keys {:a 1 :b 2 :c 3} [:a :c])` returns `{:a 1 :c 3}`.
 
-{% <php_note> %}
-A map is like a PHP associative array with two differences: keys can be any type, and `assoc` returns a new map instead of changing the old one.
-{% </php_note> %}
-
-### Map entries
-
-Calling `seq` or `first` on a map gives map entries. An entry is equal to a `[key value]` vector:
-
-```phel
-(first {:a 1 :b 2})       ; => [:a 1]
-(key (map-entry :a 1))    ; => :a
-(val (map-entry :a 1))    ; => 1
-(= (map-entry :a 1) [:a 1]) ; => true
-```
+Calling `seq` or `first` on a map gives map entries, which are equal to `[key value]` vectors: `(first {:a 1})` returns `[:a 1]`.
 
 ## Sets
 
@@ -123,16 +97,7 @@ A set holds unique values. Testing membership is fast.
 (contains? #{1 2 3} 2)    ; => true
 ```
 
-Set algebra functions are in core:
-
-```phel
-(union #{1 2} #{2 3})        ; => #{1 2 3}
-(intersection #{1 2} #{2 3}) ; => #{2}
-(difference #{1 2} #{2 3})   ; => #{1}
-(subset? #{1} #{1 2})        ; => true
-```
-
-`symmetric-difference` and `superset?` are also available. See the [core API](/documentation/reference/api/core/).
+Set algebra is in core: `union`, `intersection`, `difference`, `subset?`, and `superset?`. For example, `(union #{1 2} #{2 3})` returns `#{1 2 3}`. See the [core API](/documentation/reference/api/core/).
 
 ## Lists
 
@@ -211,17 +176,7 @@ The `-in` functions take a path of keys and indexes:
 
 ### Transducers
 
-`map`, `filter`, `take`, and similar functions return a **transducer** when you call them without a collection. A transducer is a reusable transformation. Pass it as the middle argument of `into`, or compose several with `comp`:
-
-```phel
-(into [] (map inc) [1 2 3]) ; => [2 3 4]
-
-(def xf (comp (filter odd?) (map #(* % 10))))
-(into [] xf [1 2 3 4 5])       ; => [10 30 50]
-(transduce xf + 0 [1 2 3 4 5]) ; => 90
-```
-
-Composition order, early termination, and custom transducers: [Transducers](/documentation/language/transducers/).
+`into` also takes a transformation as its middle argument: `(into [] (map inc) [1 2 3])` returns `[2 3 4]`. See [Transducers](/documentation/language/transducers/).
 
 ## Data structures as functions
 
@@ -267,37 +222,8 @@ A custom `__invoke` must take exactly one argument or be variadic, because a str
 
 ## Transients
 
-A transient is a mutable version of a vector, map, or set (lists have none). Use one as a fast builder inside a function, then turn it back into a persistent collection. Both conversions are cheap:
-
-```phel
-(defn php-array-to-map [arr]
-  (let [res (transient {})]
-    (foreach [k v arr]
-      (assoc res k v))  ; changes res in place
-    (persistent res)))
-
-(php-array-to-map (php-associative-array "a" 1 "b" 2)) ; => {"a" 1 "b" 2}
-```
-
-Keep a transient local to one function. Never share it.
+`transient` turns a vector, map, or set into a mutable builder, and `persistent` turns it back. Both conversions are cheap. Use one only inside a single function, never share it.
 
 ## Walking data structures
 
-`phel.walk` transforms every level of nested data. `postwalk` visits children before their parent. `prewalk` visits the parent first:
-
-```phel
-(ns my-app
-  (:require phel.walk :refer [postwalk]))
-
-(postwalk #(if (number? %) (* % 2) %)
-          {:a 1 :b [2 3] :c {:d 4}})
-; => {:a 2 :b [4 6] :c {:d 8}}
-```
-
-`keywordize-keys` and `stringify-keys` convert map keys at every level, which helps with decoded JSON. `walk`, `prewalk-replace`, and `postwalk-replace` are in the [walk API](/documentation/reference/api/walk/).
-
-{% <clojure_note> %}
-`conj`, `assoc`, `dissoc`, `disj`, `get`, `get-in`, `assoc-in`, `update`, and `update-in` behave as in Clojure. The old Phel names `push`, `put`, and `unset` were removed.
-{% </clojure_note> %}
-
-Next: [Global and local bindings](/documentation/language/global-and-local-bindings/) shows how to name these values with `def` and `let`.
+`phel.walk` transforms every level of nested data: `postwalk`, `prewalk`, and `keywordize-keys` (handy for decoded JSON). See the [walk API](/documentation/reference/api/walk/).

@@ -280,7 +280,7 @@ php phel.phar repl
   </details>
   <details class="faq-item" id="how-fast-is-phel">
     <summary class="faq-q">How fast is Phel?</summary>
-    <div class="faq-a">Phel compiles to plain PHP, so most code runs at PHP speed. The cost is in the persistent data structures: an update builds a new structure that shares most of the old one (O(log32 n)), which is slower than writing to a PHP array. For web, CLI, and data work you will not notice it. In a hot loop over millions of elements, use native PHP arrays through <a href="/documentation/language/php-interop/">interop</a>. See <a href="/documentation/guides/performance/">Performance</a>.</div>
+    <div class="faq-a">Phel compiles to plain PHP, so most code runs at PHP speed. The cost is in the persistent data structures: an update builds a new structure that shares most of the old one (O(log32 n)), which is slower than writing to a PHP array. For web, CLI, and data work you will not notice it. In a hot loop over millions of elements, use native PHP arrays through <a href="/documentation/language/php-interop/">interop</a>. See <a href="/documentation/guides/deployment/#performance">Performance</a>.</div>
   </details>
   <details class="faq-item" id="how-do-i-debug-phel">
     <summary class="faq-q">How do I debug Phel, and which editors work?</summary>

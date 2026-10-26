@@ -8,8 +8,6 @@ aliases = ["/documentation/control-flow"]
 difficulty = "beginner"
 +++
 
-After this page you can branch with `if`, `when`, `cond`, `case`, and `match`, repeat work with `for` and `loop`, and write pipelines with the threading macros.
-
 Every form on this page is an expression: it returns a value. There are no statements.
 
 ## If
@@ -32,7 +30,7 @@ Every form on this page is an expression: it returns a value. There are no state
 (if false 10)   ; => nil
 ```
 
-Only `false` and `nil` are falsy. `0`, `""`, and `[]` are truthy. See [Truthiness](/documentation/language/basic-types/#truthiness).
+Only `false` and `nil` are falsy. See [Truthiness](/documentation/language/basic-types/#truthiness).
 
 ## Do { #statements-do }
 
@@ -87,10 +85,6 @@ Each branch of `if` is one form. `do` groups several forms and returns the value
 (ticket-price 70) ; => 7
 ```
 
-{% <php_note> %}
-`cond` replaces a chain of `if` / `elseif` / `else`. Each branch returns a value, so there is no `$result` variable to assign.
-{% </php_note> %}
-
 ## Case
 
 `case` compares a value against constants. It returns the result for the first match. A last lone form is the default. Without a default, no match returns `nil`:
@@ -108,26 +102,11 @@ Each branch of `if` is one form. `do` groups several forms and returns the value
 
 Group constants in a list to share one result: `(case n (1 2 3) :small :big)`.
 
-{% <php_note> %}
-`case` is like `switch` or `match` in PHP, with no `break` and no fall-through. The test values must be literals, not expressions.
-{% </php_note> %}
+The test values must be literals, not expressions. There is no fall-through.
 
 ## Condp
 
-`condp` is `cond` with a shared predicate. `(condp pred expr a x b y default)` tests `(pred a expr)`, then `(pred b expr)`, and so on. A last lone form is the default:
-
-```phel
-(defn size [n]
-  (condp < n
-    100 :large
-    10  :medium
-    :small))
-
-(size 500) ; => :large
-(size 5)   ; => :small
-```
-
-Without a default, no match throws. Use `case` to compare against constants, and `condp` when the comparison is a function.
+`condp` is `cond` with a shared predicate: `(condp < n 100 :large 10 :medium :small)` tests `(< 100 n)`, then `(< 10 n)`, and returns `:small` when none matches. Without a default, no match throws.
 
 ## Match
 
@@ -156,16 +135,10 @@ The subject is a vector of one or more values. Each pattern is a vector of the s
 | Pattern | Matches |
 | --- | --- |
 | `42`, `:key`, `"s"` | an equal value |
-| `_` | anything, binds nothing |
-| `sym` | anything, binds it to `sym` |
-| `[a b]` | a vector of exactly 2 elements |
 | `[head & tail]` | a vector, binding the rest to `tail` |
-| `{:k sym}` | a map with key `:k`, binding its value |
-| `(pat :as name)` | `pat`, and binds the whole value to `name` |
 | `(pat :guard pred)` | `pat`, when `(pred value)` is truthy |
-| `(:or a b)` | any of the alternatives (no bindings inside) |
 
-A `:guard` runs on the raw value, and numeric predicates accept non-numbers: `(pos? [1 2])` is truthy. Put literal and structural patterns before an open numeric guard. Full API: [match reference](/documentation/reference/api/match/).
+A `:guard` runs on the raw value, and numeric predicates accept non-numbers: `(pos? [1 2])` is truthy. Put literal and structural patterns before an open numeric guard. More patterns (`_`, `:as`, `:or`, maps) are in the [match reference](/documentation/reference/api/match/).
 
 ## Loop
 
@@ -224,7 +197,7 @@ Several bindings nest, like nested loops:
 ```
 
 {% <clojure_note> %}
-Like Clojure's `for`, but it returns a vector, not a lazy sequence, and each binding names its verb (`:in`, `:range`, ...). `:reduce` is a Phel extension.
+Unlike Clojure's `for`, it returns a vector, not a lazy sequence.
 {% </clojure_note> %}
 
 ## Side effects: foreach and dofor { #foreach }
@@ -277,14 +250,5 @@ Use `->` for maps and objects, where the subject goes first. Use `->>` for seque
 (build-user "Bob" false) ; => {:name "Bob"}
 ```
 
-## Errors { #try-catch-and-finally }
 
-`throw` raises any PHP `Throwable`. `try` catches it by type:
-
-```phel
-(try
-  (throw (Exception. "boom"))
-  (catch \Exception e "recovered")) ; => "recovered"
-```
-
-`finally`, structured errors with `ex-info`, and when to throw at all: [Error handling](/documentation/language/error-handling/).
+To throw and catch exceptions, see [Error handling](/documentation/language/error-handling/).

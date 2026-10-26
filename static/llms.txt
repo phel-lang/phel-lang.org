@@ -32,7 +32,6 @@ If you only fetch one URL, fetch the agent reference:
 - [Macros](https://phel-lang.org/documentation/language/macros/)
 - [Lazy Sequences](https://phel-lang.org/documentation/language/lazy-sequences/)
 - [Transducers](https://phel-lang.org/documentation/language/transducers/)
-- [Reader Conditionals](https://phel-lang.org/documentation/language/reader-conditionals/)
 - [Async and Concurrency](https://phel-lang.org/documentation/language/async/)
 
 ## Guides
@@ -43,8 +42,7 @@ If you only fetch one URL, fetch the agent reference:
 - [Cookbook](https://phel-lang.org/documentation/guides/cookbook/)
 - [Testing](https://phel-lang.org/documentation/guides/testing/)
 - [Debugging](https://phel-lang.org/documentation/guides/debugging/)
-- [Performance](https://phel-lang.org/documentation/guides/performance/)
-- [Deployment](https://phel-lang.org/documentation/guides/deployment/)
+- [Deployment and performance](https://phel-lang.org/documentation/guides/deployment/)
 
 ## Web
 
@@ -57,14 +55,13 @@ If you only fetch one URL, fetch the agent reference:
 
 - [Schema Validation](https://phel-lang.org/documentation/libraries/schema/)
 - [Data Formats](https://phel-lang.org/documentation/libraries/data-formats/): EDN and Transit.
-- [AI Module](https://phel-lang.org/documentation/libraries/ai/): provider-agnostic LLM client.
+- [AI Module](https://phel-lang.org/documentation/reference/api/ai/): provider-agnostic LLM client.
 
 ## Tooling
 
 - [REPL](https://phel-lang.org/documentation/tooling/repl/)
 - [Editor Support](https://phel-lang.org/documentation/tooling/editor-support/)
 - [Xdebug Setup](https://phel-lang.org/documentation/tooling/xdebug-setup/)
-- [AI Agents](https://phel-lang.org/documentation/tooling/ai-agents/): connect a coding agent with `phel agent-install`.
 
 ## Reference
 

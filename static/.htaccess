@@ -1,5 +1,9 @@
 ErrorDocument 404 /404.html
 
+# Pages dropped in favour of the generated API reference
+RedirectMatch 301 ^/documentation/libraries/ai/?$ /documentation/reference/api/ai/
+RedirectMatch 301 ^/documentation/guides/ai/?$ /documentation/reference/api/ai/
+
 # Redirect /phar to latest Phel release
 Redirect 301 /phar https://github.com/phel-lang/phel-lang/releases/latest/download/phel.phar
 

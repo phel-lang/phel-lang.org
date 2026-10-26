@@ -1,15 +1,14 @@
 +++
 title = "Reader Shortcuts"
 weight = 8
-description = "Catalog of the Phel reader macros and special syntax: literals, quote/quasiquote, tagged literals, anonymous functions, reader conditionals, and metadata."
+description = "Catalog of the Phel reader macros and special syntax: literals, quote/quasiquote, tagged literals, anonymous functions, reader conditionals for shared .cljc files, and metadata."
+aliases = ["/documentation/language/reader-conditionals/"]
 
 [extra]
 difficulty = "intermediate"
 +++
 
-After this page you can read any Phel shortcut syntax and know the plain form it stands for.
-
-The **reader** turns source text into Phel data before the compiler sees it. On the way, it expands a few short `#`-prefixed and single-character forms into ordinary forms. Topics with their own page are linked, not repeated.
+The **reader** turns source text into Phel data before the compiler sees it. On the way, it expands a few short `#`-prefixed and single-character forms into ordinary forms.
 
 ## Quick reference
 
@@ -36,98 +35,42 @@ The **reader** turns source text into Phel data before the compiler sees it. On 
 | `#_`        | Form comment       | skip the next form                             | `#_ expr`                        |
 | `^`         | Metadata           | attach metadata to the next form               | `^:private`                      |
 
-## Collection literals
+Most rows have a home page: collections in [Data Structures](/documentation/language/data-structures/), quote, quasiquote and `name#` in [Macros](/documentation/language/macros/#hygiene-and-gensym), `@` and atoms in [Global and local bindings](/documentation/language/global-and-local-bindings/#atoms), `#(...)` in [Functions and Recursion](/documentation/language/functions-and-recursion/#anonymous-function-fn), regex and comments in [Basic Types](/documentation/language/basic-types/#regex-literals). The sections below cover the rest.
 
-Each collection literal is a shorter way to call its constructor:
+## Reader conditionals
 
-```phel
-[1 2 3]       ; => [1 2 3]      same as (vector 1 2 3)
-{:a 1 :b 2}   ; => {:a 1 :b 2}  same as (hash-map :a 1 :b 2)
-#{1 2 3}      ; => #{1 2 3}     same as (hash-set 1 2 3)
-'(1 2 3)      ; => (1 2 3)      same as (list 1 2 3)
-```
+`#?()` and `#?@()` let one `.cljc` file hold code for Phel and Clojure. Phel finds `.cljc` files next to `.phel` files. Both forms resolve while the file is parsed, so the compiler only sees the selected form.
 
-Operations on each collection: [Data Structures](/documentation/language/data-structures/).
+`#?()` reads key and form pairs and keeps one:
 
-## Quote `'`
+1. `:phel` wins when present, in any position.
+2. Otherwise `:default` is used.
+3. With neither, the whole form is dropped, as if it were whitespace.
 
-Quote returns the next form as data instead of evaluating it:
+Other keys (`:clj`, `:cljs`) are ignored.
 
 ```phel
-'x            ; => x          the symbol x, same as (quote x)
-'(+ 1 2)      ; => (+ 1 2)    the list, not 3
+#?(:default 0 :phel 42) ; => 42
+#?(:clj 99 :default 0)  ; => 0
+[1 #?(:clj 99) 2]       ; => [1 2]
 ```
 
-## Quasiquote `` ` ``
-
-Quasiquote is like quote, but lets you evaluate parts of the form. `~` inserts the value of one form. `~@` splices in the elements of a sequence. Macros are built on it:
+`#?@()` splices the items of the chosen vector or list into the surrounding form. At the top level of a file it is an error, because there is no parent form:
 
 ```phel
-(let [x 5]   `(1 ~x 3))        ; => (1 5 3)
-(let [xs [2 3 4]] `(1 ~@xs 5)) ; => (1 2 3 4 5)
+[1 #?@(:phel [2 3]) 4] ; => [1 2 3 4]
 ```
 
-{% <callout kind="warning"> %}
-**Removed in 0.50:** `,` (unquote) and `,@` (unquote-splicing). Use `~` and `~@`. `,` is now whitespace, so `` `(f ,x) `` still parses but *quotes* `x` instead of unquoting it. There is no error, only a wrong expansion.
-{% </callout> %}
+They also work inside `ns`, so each platform can require its own libraries:
 
-### Auto-gensym `name#`
-
-Inside a quasiquote, a symbol that ends in `#` becomes a fresh unique name. The same `name#` maps to the same generated name everywhere in that template. This keeps macro locals from clashing with user code. See [Macros](/documentation/language/macros/#hygiene-and-gensym).
-
-{% <callout kind="warning"> %}
-**Removed in 0.50:** the `name$` suffix. Use `name#`.
-{% </callout> %}
-
-## Reader conditionals `#?()` and `#?@()`
-
-`#?()` picks one form by platform key: Phel uses `:phel`, then falls back to `:default`. `#?@()` splices a platform-specific collection into the surrounding one. With them, one `.cljc` file can compile under both Phel and Clojure. See [Reader Conditionals](/documentation/language/reader-conditionals/).
-
-## Deref `@`
-
-`@x` is `(deref x)`. It reads the current value of an atom:
-
+<!-- phel-test: skip -->
 ```phel
-(def counter (atom 41))
-(swap! counter inc)
-@counter ; => 42
+(ns app.http
+  #?(:phel (:require [phel.json :as json])
+     :clj  (:require [clojure.data.json :as json])))
 ```
 
-Atoms: [Global and local bindings](/documentation/language/global-and-local-bindings/#atoms).
-
-## Var-quote `#'`
-
-`#'my-fn` returns the Var for a global definition, the same as `(var my-fn)`. A call through the Var always uses the current definition, which is what makes redefining functions in the REPL work:
-
-```phel
-(def greeting "hello")
-(deref #'greeting) ; => "hello"
-```
-
-## Anonymous functions `#(...)`
-
-`#(...)` defines a short function. `%` (or `%1`) is the first argument, `%2` the second, and `%&` the rest:
-
-```phel
-(map #(* % 2) [1 2 3])          ; => (2 4 6)
-(reduce #(+ %1 %2) 0 [1 2 3 4]) ; => 10
-```
-
-When to use a named `fn` instead: [Functions and Recursion](/documentation/language/functions-and-recursion/#anonymous-function-fn).
-
-{% <callout kind="warning"> %}
-**Removed in 0.50:** the `|(...)` form with `$`, `$1`, `$&`. Use `#(...)` with `%`.
-{% </callout> %}
-
-## Regex literals `#"..."`
-
-`#"..."` is a PCRE pattern, the same as `(re-pattern "...")`. Backslashes do not need doubling:
-
-```phel
-(re-find #"\d+" "abc123") ; => "123"
-```
-
-Matching functions: [Basic Types](/documentation/language/basic-types/#regex-literals).
+Phel accepts both the vector form (`[phel.json :as json]`) and the list form (`phel.json :as json`) inside `:require`, so the same `ns` parses on both sides.
 
 ## Tagged literals `#<tag> form`
 
@@ -171,16 +114,6 @@ After that, any source file can use the tag:
 ```
 
 Only the outer form becomes a PHP array. Nested forms stay Phel data. More on PHP arrays: [PHP interop](/documentation/language/php-interop/).
-
-## Comments
-
-`;` comments to the end of the line. `#_` skips the next form:
-
-```phel
-[1 #_(+ 2 3) 4] ; => [1 4]
-```
-
-Comment styles and the `comment` macro: [Basic Types](/documentation/language/basic-types/#comments).
 
 ## Metadata `^`
 

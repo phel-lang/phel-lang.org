@@ -8,8 +8,6 @@ aliases = ["/documentation/basic-types", "/documentation/arithmetic", "/document
 difficulty = "beginner"
 +++
 
-After this page you can write Phel's literal values, do arithmetic, compare values, and know which values count as true in a condition.
-
 ## Nil, true, false
 
 ```phel
@@ -35,18 +33,7 @@ Integers and floats are PHP's native `int` and `float`. Integers can be written 
 1.2e3           ; => 1200.0
 ```
 
-Phel also has exact number types:
-
-```phel
-1/2                ; Ratio
-(numerator 1/2)    ; => 1
-(denominator 1/2)  ; => 2
-1.5M               ; BigDecimal (M suffix)
-(bigdec "0.1")     ; => 0.1M
-(bigint "100000000000000000000") ; BigInt, beyond PHP's int range
-```
-
-How these types mix in arithmetic, and when each one appears: [Numeric tower](/documentation/language/numeric-tower/).
+Phel also has exact types: ratios (`1/2`), BigDecimal (`1.5M`), and BigInt. See [Numeric tower](/documentation/language/numeric-tower/).
 
 ## Arithmetic operators
 
@@ -78,38 +65,7 @@ Dividing two integers gives a `Ratio` when the result is not whole. Use a float 
 (float (/ 10 3))  ; => 3.3333333333333
 ```
 
-Other common numeric functions:
-
-| Function | Meaning | Example |
-|----------|---------|---------|
-| `quot` | integer quotient | `(quot 7 2)` => `3` |
-| `rem`, `%` | remainder (sign of the dividend) | `(rem -7 2)` => `-1` |
-| `mod` | modulo (sign of the divisor) | `(mod -7 2)` => `1` |
-| `**` | power | `(** 2 10)` => `1024` |
-| `inc`, `dec` | add or subtract one | `(inc 5)` => `6` |
-| `min`, `max` | smallest, largest | `(max 1 5 3)` => `5` |
-| `nan?` | is the value `NAN` | `(nan? (php/log -1))` => `true` |
-
-`floor`, `ceil`, `round`, `sqrt`, and the rest are in the [core API](/documentation/reference/api/core/).
-
-{% <php_note> %}
-`%` and `**` behave like PHP's. `(+)` and `(*)` return the identity values `0` and `1`, which makes them safe to use with `reduce` and `apply` on empty collections.
-{% </php_note> %}
-
-### Bitwise operators
-
-Bitwise operations are named functions instead of PHP's `&`, `|`, `^`, `~`, `<<`, `>>`:
-
-```phel
-(bit-and 0b1100 0b1001)   ; => 8
-(bit-or 0b1100 0b1001)    ; => 13
-(bit-xor 0b1100 0b1001)   ; => 5
-(bit-not 0b0111)          ; => -8
-(bit-shift-left 0b1101 1) ; => 26
-(bit-shift-right 0b1101 1) ; => 6
-```
-
-`bit-set`, `bit-clear`, `bit-flip`, and `bit-test` work on the bit at an index: `(bit-test 0b1011 0)` returns `true`.
+`rem` keeps the sign of the dividend and `mod` the sign of the divisor: `(rem -7 2)` is `-1`, `(mod -7 2)` is `1`. `quot`, `**`, `inc`, `dec`, `min`, `max`, `floor`, `round`, and the bitwise functions (`bit-and`, `bit-or`, `bit-shift-left`, ...) are in the [core API](/documentation/reference/api/core/).
 
 ## Strings
 
@@ -160,30 +116,7 @@ Use keywords where PHP code uses string array keys or class constants. `{:name "
 
 ## Symbols
 
-A symbol names a function or a value. It can hold letters, digits, and most punctuation. A `/` separates a namespace from a name:
-
-<!-- phel-test: skip -->
-```phel
-my-function
-snake_case_name
-valid?
-my-module/my-function
-```
-
-When Phel evaluates a symbol, it looks up the value bound to that name. Quote it (`'my-function`) to keep the symbol itself as data.
-
-## Collections
-
-Four literals, one per core collection:
-
-```phel
-'(1 2 3)    ; list
-[1 2 3]     ; vector
-{:a 1 :b 2} ; map
-#{1 2 3}    ; set
-```
-
-Quote a list to keep it as data. Unquoted, `(f 1 2)` calls `f`. Reading, adding, and updating each one: [Data structures](/documentation/language/data-structures/).
+A symbol such as `valid?` or `my-module/my-function` names a function or a value. A `/` separates a namespace from a name. When Phel evaluates a symbol, it looks up the value bound to that name. Quote it (`'my-function`) to keep the symbol itself as data.
 
 ## Truthiness
 
@@ -274,10 +207,6 @@ Comparison operators take any number of arguments and check that the order holds
 
 The [`comment`](/documentation/reference/api/core/#comment) macro ignores its body and returns `nil`. The body must still be valid Phel.
 
-{% <callout kind="warning"> %}
-**Removed:** `#` line comments and `#| ... |#` blocks no longer parse. Use `;` for lines, and `#_` or `(comment ...)` for whole forms.
-{% </callout> %}
-
 ## Regex literals
 
 `#"..."` is a PCRE pattern. You do not need to double the backslashes:
@@ -300,16 +229,4 @@ Same `#"..."` syntax as Clojure. The engine is PHP PCRE, not Java regex, so some
 
 ## Tagged literals
 
-A tag before a form turns it into another value while the code is read. Three tags are built in:
-
-```phel
-#inst "2026-04-20T12:00:00Z"                  ; a \DateTimeImmutable
-#uuid "550e8400-e29b-41d4-a716-446655440000"  ; a UUID value
-#regex "\\d+"                                 ; a PCRE pattern string
-```
-
-`#php` builds a native PHP array: `#php [1 2 3]` and `#php {"a" 1}`. Only the outer form becomes a PHP array; nested forms stay Phel data.
-
-You can register your own tags. See [Reader shortcuts](/documentation/language/reader-shortcuts/), which also lists `#(...)` for short anonymous functions and `@` for reading an atom.
-
-Next: [Data structures](/documentation/language/data-structures/) shows how to read and update lists, vectors, maps, and sets.
+`#inst`, `#uuid`, `#php`, and your own tags are covered in [Reader shortcuts](/documentation/language/reader-shortcuts/#tagged-literals-tag-form).

@@ -5,8 +5,6 @@ description = "Every phel-config.php option with its default, the local override
 aliases = ["/documentation/configuration/"]
 +++
 
-This page lists every option in `phel-config.php`, with its default, so you can change how Phel finds, builds, caches and exports your code.
-
 ## Minimal config
 
 Phel reads `phel-config.php` from the project root. It returns a `PhelConfig`. Most projects need only the factory:
@@ -45,13 +43,7 @@ Without a `phel-config.php`, Phel detects the layout: `Nested` if `src/phel/` or
 
 ## Local overrides
 
-An optional `phel-config-local.php` next to `phel-config.php` overrides its values. Use it for machine-specific settings. `phel init` adds it to `.gitignore`. It returns a `PhelConfig` or an array keyed by the config keys below:
-
-```php
-<?php
-// phel-config-local.php
-return ['optimization-level' => 0, 'warn-deprecations' => true];
-```
+An optional `phel-config-local.php` next to `phel-config.php` overrides its values on one machine. `phel init` adds it to `.gitignore`. It returns a `PhelConfig` or an array keyed by the config keys below, such as `['optimization-level' => 0]`.
 
 ## Full reference
 
@@ -65,7 +57,7 @@ Every method on `PhelConfig`, the key it sets (what `phel config` prints and wha
 | `withSrcDirs` | `src-dirs` | `['src']` | Source roots for `run`, `test`, `build` and namespace lookup |
 | `withTestDirs` | `test-dirs` | `['tests']` | Dirs `phel test` walks |
 | `withVendorDir` | `vendor-dir` | `'vendor'` | Composer vendor dir, relative to the project root |
-| `withAppModulePaths` | `app-module-paths` | `[]` (whole root) | Dirs Gacela scans for modules. Set it only if you define Gacela modules and `list:modules` or `cache:warm` fails on a file that cannot load alone |
+| `withAppModulePaths` | `app-module-paths` | `[]` (whole root) | Dirs Gacela scans for modules. Set it only when `list:modules` or `cache:warm` fails on a file that cannot load alone |
 
 Source, test and vendor dirs must be relative. `phel config` and `phel doctor` report absolute ones.
 
@@ -78,7 +70,7 @@ Source, test and vendor dirs must be relative. `phel config` and `phel doctor` r
 | `withMainPhpPath` | `out.main-php-path` | `<dest dir>/index.php` | Entry PHP file. A bare filename goes under the dest dir; `.php` is added if missing |
 | `withIgnoreWhenBuilding` | `ignore-when-building` | `[]` | Skip files whose path contains one of these strings |
 | `withNoCacheWhenBuilding` | `no-cache-when-building` | `[]` | Always recompile files whose output path contains one of these strings |
-| `withOptimizationLevel` | `optimization-level` | `0` | `2` turns on `^:pure` inlining and self tail-call rewriting for `build`, `run` and `test`. The REPL stays at `0`. See [Performance](/documentation/guides/performance/#optimization-levels) |
+| `withOptimizationLevel` | `optimization-level` | `0` | `2` turns on `^:pure` inlining and self tail-call rewriting for `build`, `run` and `test`. The REPL stays at `0`. See [Optimization levels](#optimization-levels) |
 | `withStripSymbolMeta` | `strip-symbol-meta` | `false` | `phel build` drops docstrings, arglists and source locations. Smaller, faster output, but `phel doc` and `(meta ...)` return `nil` on built defs. Production only |
 | `withEnableAsserts` | `asserts-enabled` | `true` | When `false`, `(assert ...)` forms are removed from compiled code |
 | `withBuildConfig` | `out` | | Replace the build config with a `PhelBuildConfig`, or patch it with a closure: `fn (PhelBuildConfig $b) => $b->withDestDir('dist')` |
@@ -110,7 +102,7 @@ Source, test and vendor dirs must be relative. `phel config` and `phel doctor` r
 | `withEnableNamespaceCache` | `enable-namespace-cache` | `true` | Cache the file-to-namespace map so builds skip re-reading `(ns ...)` forms |
 | `withEnableCompiledCodeCache` | `enable-compiled-code-cache` | `true` | Cache compiled PHP per file, keyed by source hash |
 | `withEnableIntermediateCache` | `enable-intermediate-cache` | `false` | Experimental. Cache the read result per file, so warm rebuilds start at analysis |
-| `withCacheEnvVars` | `cache-env-vars` | `[]` | Env vars that join the compiled-code cache key. Use it when a macro reads `(php/getenv ...)`. Values are hashed, never stored. Changing one recompiles the whole project |
+| `withCacheEnvVars` | `cache-env-vars` | `[]` | Env vars that join the compiled-code cache key. Use it when a macro reads `(php/getenv ...)`. Values are hashed. Changing one recompiles the whole project |
 | `withTempDir` | `temp-dir` | system temp + `/phel/tmp` | Short-lived compile output, such as `(load ...)` |
 | `withKeepGeneratedTempFiles` | `keep-generated-temp-files` | `false` | Keep temp files for compiler debugging |
 | `withErrorLogFile` | `error-log-file` | `'.phel/error.log'` | File that runtime and compile errors are appended to |
@@ -121,6 +113,22 @@ Source, test and vendor dirs must be relative. `phel config` and `phel doctor` r
 |---|---|---|---|
 | `withWarnDeprecations` | `warn-deprecations` | `false` | Print deprecation notices to stderr. See [Stability](/documentation/reference/stability/#deprecations) |
 
+## Optimization levels
+
+| Level | Effect |
+|---|---|
+| `0` | Off (default). No inlining, no tail-call rewrite. |
+| `1` | Same as `0` today. Reserved for inlining single-expression private `defn-`. |
+| `2` | Inlines `^:pure` calls and rewrites self-recursive tail calls into a loop. |
+
+The level applies to `build`, `run`, `test`, `eval` and `compile`. The REPL and nREPL always use `0`, so redefining a function behaves as you expect. `phel build -O2` overrides the level for one build.
+
+At level `2`:
+
+- `^:pure` is your promise that a single-arity `defn` has no side effects. The compiler trusts it and does not check.
+- Deep self-recursion no longer overflows the PHP stack, but stack traces inside the rewritten loop are shorter.
+- Changing the level clears the compiled-code cache, so the next run recompiles everything once.
+
 ## Environment variables
 
 | Variable | Effect |
@@ -130,7 +138,3 @@ Source, test and vendor dirs must be relative. `phel config` and `phel doctor` r
 | `PHEL_WARN_DEPRECATIONS=1` | Same as `--warn-deprecations` or `withWarnDeprecations(true)` |
 | `PHEL_TEST_WORKERS` | Worker count for `phel test --parallel` and `phel mutate --parallel` |
 | `NO_COLOR` | Turns off colored output |
-
-{% <callout kind="note"> %}
-The old `setX()` setters were removed in 0.46. Use the `with*()` methods.
-{% </callout> %}

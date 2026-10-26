@@ -5,7 +5,7 @@ description = "Every built-in phel command with its flags and an example: init, 
 aliases = ["/documentation/cli-commands", "/documentation/tooling/cli-commands/"]
 +++
 
-This page lists every `phel` command with its main flags and a working example. Run `vendor/bin/phel list` for the list and `vendor/bin/phel help <command>` for every flag of one command.
+Each command below shows its main flags and an example. `vendor/bin/phel help <command>` prints every flag of one command.
 
 ## Overview
 
@@ -63,10 +63,7 @@ Writes `phel-config.php`, a main namespace, a test, and a `.gitignore` in the cu
 
 | Flag | Effect |
 |---|---|
-| `--nested` | Nested layout |
-| `-m`, `--minimal` | Root layout |
-| `-t`, `--template[=NAME]` | Scaffold from a bundled template. Without a value, lists them |
-| `--list-templates` | List templates (`http-json-api`, `todo-app`, `cli-wordcount`) |
+| `-t`, `--template[=NAME]` | Scaffold from a bundled template (`http-json-api`, `todo-app`, `cli-wordcount`). Without a value, lists them |
 | `--dry-run` | Show what would be created |
 | `--force` | Overwrite existing files |
 | `--no-gitignore`, `--no-tests` | Skip those files |
@@ -89,8 +86,6 @@ Arguments after the path reach your code as `*argv*`, here `["--name" "Alice"]`.
 | `--debug[=FILTER]` | Line-by-line trace to `./phel-debug.log`. Optional file filter, e.g. `--debug="core"` |
 | `--stack-trace` | Show every stack frame |
 
-See [Getting Started](/documentation/getting-started/).
-
 ## Test
 
 ```bash
@@ -99,28 +94,7 @@ vendor/bin/phel test tests/app/math-test.phel
 vendor/bin/phel test --filter=greet --parallel=auto
 ```
 
-| Flag | Effect |
-|---|---|
-| `-f`, `--filter=REGEX` | Match test names. Repeatable |
-| `--include=TAG`, `--exclude=TAG` | Run or skip tagged tests. Repeatable. `--exclude` wins |
-| `--ns=GLOB` | Match namespaces. `*` is one segment, `**` any. Repeatable |
-| `--list` | List the selected tests without running them |
-| `--fail-fast` | Stop at the first failure |
-| `--reporter=NAME` | `default`, `testdox`, `dot`, `tap`, `junit-xml`, `github`. Repeatable. `github` is added on GitHub Actions |
-| `--testdox` | Same as `--reporter=testdox` |
-| `-o`, `--output=PATH` | Write the `junit-xml` report to a file |
-| `--parallel=N` | Run namespaces in workers: a number, `auto` (CPU count, max 8), or `max` |
-| `--watch` | Re-run on every `.phel` or `phel-config.php` change |
-| `--last-failed` | Re-run only the tests that failed last time |
-| `--changed[=REF]` | Run only tests affected by changed files (uncommitted, or `git diff REF`) |
-| `--repeat=N` | Run each test N times, to find flaky tests |
-| `--random-order`, `--seed=INT` | Shuffle test order, reproducibly with a seed |
-| `--fail-on-focus` | Exit non-zero when a `^:focus` test narrowed the run. Always on when `CI` is set |
-| `--slowest=N` | Print the N slowest tests |
-| `--coverage[=FORMAT]` | Line coverage via pcov or xdebug: `text`, `clover`, `html`, `per-test` |
-| `--coverage-output=PATH` | Write the coverage report to a file (a dir for `html`) |
-
-See [Testing](/documentation/guides/testing/) for how to write tests and use these flags.
+Other flags select tests by tag or namespace, pick a reporter, re-run failures, shuffle order, and measure coverage. [Testing](/documentation/guides/testing/#choose-which-tests-run) explains each one.
 
 ## Evaluate an expression
 
@@ -162,7 +136,7 @@ Compiles every namespace to PHP in the build dir (`out/` by default). When `with
 |---|---|
 | `--cache`, `--no-cache` | Use or skip the build cache |
 | `--source-map`, `--no-source-map` | Emit source maps |
-| `-O`, `--optimization-level=N` | Override the configured level. `2` inlines `^:pure` calls and rewrites self tail calls. See [Performance](/documentation/guides/performance/#optimization-levels) |
+| `-O`, `--optimization-level=N` | Override the configured level. `2` inlines `^:pure` calls and rewrites self tail calls. See [Optimization levels](/documentation/reference/configuration/#optimization-levels) |
 | `--report` | Print namespace count, compiled size per namespace, total size and build time |
 | `--timing` | Print compile time per phase (lex, parse, read, analyze, emit). Pair with `--no-cache` |
 
@@ -304,8 +278,6 @@ Runs a script and reports per-function call counts and timings, plus compile-pha
 | `--top=N` | Rows in the table (default 20) |
 | `-s`, `--sort=KEY` | `self` (default), `total`, `calls`, `avg` |
 | `-f`, `--format=FORMAT` | `table` (default), `json`, `both` |
-| `-o`, `--output=PATH` | Write the JSON report to a file |
-| `--no-compile-phases` | Skip the compile-phase report |
 
 ## Bench
 
@@ -330,23 +302,16 @@ Mutates every `defn` and reports the mutants your tests do not catch. The unmuta
 
 | Flag | Effect |
 |---|---|
-| `--tests=PATH` | Tests to run. Repeatable. Default: test dirs |
 | `--only=IDS` | Comma-separated mutator ids |
 | `--min-msi=N`, `--min-covered-msi=N` | Exit 1 below this score (percent) |
-| `--reporter=FORMAT`, `-o PATH` | `text` or `json`, optionally to a file |
-| `--parallel=N` | Workers: a number or `auto` |
 | `--changed[=REF]` | Mutate only changed files |
-| `--timeout-factor=N` | A mutant slower than N times the baseline counts as killed (default 3) |
+| `--tests=PATH` | Tests to run against each mutant. Repeatable. Default: the test dirs |
+| `--parallel=N` | Worker count, or `auto` |
 
 ## Check your environment
 
 ```bash
 vendor/bin/phel doctor
-# Checking requirements:
-#  - json extension: OK
-#  - mbstring extension: OK
-#  - readline extension: OK
-# ...
 ```
 
 Checks the PHP version and extensions, module health, your config, and OPcache, and prints a fix for anything missing. Run it first when Phel fails before your code loads.
@@ -355,19 +320,10 @@ Checks the PHP version and extensions, module health, your config, and OPcache, 
 
 ```bash
 vendor/bin/phel config
-# Sources:
-#  - project root: /path/to/project
-#  - phel-config.php: found (/path/to/project/phel-config.php)
-#  - phel-config-local.php: not present
-#  - PHEL_DIR env: (unset)
-#
-# Effective config:
-# { "src-dirs": ["src"], "test-dirs": ["tests"], ... }
-
 vendor/bin/phel config --format=json
 ```
 
-Shows the merged config and where each part came from, then validation warnings. Use it when `phel-config.php`, `phel-config-local.php` or `PHEL_DIR` does not take effect. See [Configuration](/documentation/reference/configuration/).
+Shows the merged config and where each part came from, then validation warnings. Use it when `phel-config.php`, `phel-config-local.php` or `PHEL_DIR` does not take effect.
 
 ## Caches
 
@@ -392,34 +348,20 @@ vendor/bin/phel ns                                    # list loaded namespaces
 vendor/bin/phel ns phel.core --simple                 # inspect one, names only
 ```
 
-The Gacela framework also adds `debug:container`, `debug:dependencies`, `debug:modules`, `list:modules`, `profile:report` and `validate:config`. They inspect Phel's internal modules.
+`vendor/bin/phel list` also shows `debug:*`, `list:modules`, `profile:report` and `validate:config`. They inspect Phel's internal modules.
 
 ## Agent install
 
 ```bash
 vendor/bin/phel agent-install --auto     # agents detected in this project
-vendor/bin/phel agent-install claude     # one platform
-vendor/bin/phel agent-install --all      # every platform
-vendor/bin/phel agent-install --check    # exit 1 if installed docs are stale
 ```
 
-Writes a skill file for Claude, Cursor, Codex, Gemini, Copilot or Aider, plus a shared `.agents/` docs tree. Re-running updates only what changed upstream and keeps files you edited. An existing skill file is backed up to `.pre-phel.bak`.
-
-| Flag | Effect |
-|---|---|
-| `--no-docs` | Skip the `.agents/` docs tree |
-| `--with-examples` | Also copy example projects into `.agents/examples/` |
-| `--dry-run` | Show what would be written |
-| `--force` | Overwrite without the skill backup, and overwrite edited docs (backing them up) |
-| `--uninstall` | Remove skill files and restore `.pre-phel.bak` |
-
-See [AI agents](/documentation/tooling/ai-agents/).
+Installs a skill file and a shared `.agents/` docs tree for Claude, Cursor, Codex, Gemini, Copilot or Aider. Platforms and flags: [Agentic Coding](/documentation/reference/agentic-coding/#installed-agent-skills).
 
 ## Shell completion
 
 ```bash
-vendor/bin/phel completion zsh > completion.sh && source completion.sh
-eval "$(vendor/bin/phel completion zsh)"   # or in ~/.zshrc
+eval "$(vendor/bin/phel completion zsh)"   # or bash, fish; add to your shell rc file
 ```
 
-Supports `bash`, `zsh` and `fish`. Without an argument it reads `$SHELL`.
+Without an argument it reads `$SHELL`.

@@ -5,11 +5,11 @@ description = "Validate, coerce, and generate data with phel.schema, using plain
 aliases = ["/documentation/guides/schema"]
 +++
 
-After this page you can check incoming data against a schema, turn form strings into typed values, and report what is wrong in a readable way. `phel.schema` ships with Phel. A schema is plain Phel data (a keyword or a vector), so you build, combine, and store schemas like any other value.
+A `phel.schema` schema is plain Phel data (a keyword or a vector), so you build, combine, and store schemas like any other value.
 
 ## Validate a form
 
-The most common task: a form arrives as a map of strings, and you want typed, checked data. Describe the shape once, then `coerce` the input and `validate` the result:
+A form arrives as a map of strings, and you want typed, checked data. Describe the shape once, `coerce` the input, and `validate` the result. When validation fails, `explain` says where and why (it returns `nil` when the value conforms):
 
 ```phel
 (ns my-app.signup
@@ -27,25 +27,8 @@ The most common task: a form arrives as a map of strings, and you want typed, ch
 (def input (s/coerce Signup (keywordize-keys form)))
 input                   ; => {:name "Ada", :email "ada@example.com", :age 36}
 (s/validate Signup input) ; => true
-```
-
-- `coerce` converts values (`"36"` to `36`), not keys. Form data has string keys, so convert them with `keywordize-keys` first.
-- `{:closed true}` rejects keys the schema does not list. Maps are open by default.
-- `{:optional true}` on an entry lets the key be missing.
-
-When validation fails, `explain` says where and why. It returns `nil` when the value conforms:
-
-```phel
-(ns my-app.signup
-  (:require phel.schema :as s))
-
-(def Signup
-  [:map {:closed true}
-   [:name  :string]
-   [:email [:re #"^[^@]+@[^@]+$"]]])
 
 (def result (s/explain Signup {:name "Ada" :email "nope"}))
-
 (get result :errors)
 ; => [{:path [:map :email], :in [:email], :schema [:re "/^[^@]+@[^@]+\$/"], :value "nope", :type :mismatch}]
 
@@ -53,6 +36,10 @@ When validation fails, `explain` says where and why. It returns `nil` when the v
 ; Schema [:map ...] failed for value {:name Ada, :email nope}
 ;   [:email] -> mismatch: expected [:re /^[^@]+@[^@]+$/], got nope
 ```
+
+- `coerce` converts values (`"36"` to `36`), not keys. Form data has string keys, so convert them with `keywordize-keys` first.
+- `{:closed true}` rejects keys the schema does not list. Maps are open by default.
+- `{:optional true}` on an entry lets the key be missing.
 
 Each error has `:path` (position in the schema), `:in` (position in the value), `:schema`, `:value`, and `:type`. Use `:in` to attach a message to the right form field.
 
@@ -87,18 +74,9 @@ Nest vectors to describe nested data:
 ; => true
 ```
 
-## Operations
+## Conform and generate
 
-| Function | Returns |
-|---|---|
-| `(validate schema value)` | `true` or `false` |
-| `(explain schema value)` | `nil` on success, `{:schema s :value v :errors [...]}` on failure |
-| `(human-readable-explain result)` | an `explain` result as a multi-line string |
-| `(coerce schema value)` | the value with loose types converted to the schema's types |
-| `(conform schema value)` | the coerced value, or `:phel.schema/invalid` |
-| `(generate schema)` | a random value that fits the schema |
-
-`conform` never throws. Compare its result with `s/invalid-marker` to branch:
+`conform` coerces and returns the value, or `:phel.schema/invalid` instead of throwing. Compare its result with `s/invalid-marker` to branch:
 
 ```phel
 (ns my-app.conform
@@ -108,7 +86,7 @@ Nest vectors to describe nested data:
 (= (s/conform :int "x") s/invalid-marker)     ; => true
 ```
 
-`generate` feeds property-based tests: `phel.test.gen` builds generators from the same schemas with `schema->gen`. See [Testing](/documentation/guides/testing/).
+`(s/generate schema)` returns a random value that fits the schema, for property-based tests: `phel.test.gen` builds generators from the same schemas with `schema->gen`. See [Testing](/documentation/guides/testing/).
 
 ## Named schemas
 
@@ -150,7 +128,7 @@ A call with arguments that fail the schema throws:
 (add! "x" 2) ; throws: argument 0 failed schema
 ```
 
-Turn checks on or off globally with `set-schema-check!`, read the setting with `schema-check?`, or scope it to a function with `with-schema-check`. With checks off, instrumented functions run at full speed in production and stay checked in development.
+Turn checks on or off globally with `set-schema-check!`, read the setting with `schema-check?`, or scope it with `with-schema-check`. With checks off, instrumented functions run at full speed.
 
 ## Pitfalls
 

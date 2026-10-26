@@ -7,4 +7,4 @@ template = "section-page.html"
 description = "Build web apps in Phel: HTTP request and response handling, routing, and HTML rendering from plain data structures."
 +++
 
-Built-in support for the full request lifecycle. Read an incoming **request**, match it with the **router**, and return a **response**, rendering HTML straight from Phel data structures. Read the pages in order for the end-to-end flow. Already have a Symfony or Laravel app? **Framework Integration** shows how to add Phel without rewriting it.
+Read a request, route it, and return a response with HTML built from Phel data. For a walkthrough, see [Build a Web App](/documentation/guides/build-a-web-app/).

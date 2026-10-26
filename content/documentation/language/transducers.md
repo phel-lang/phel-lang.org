@@ -7,18 +7,11 @@ description = "Build reusable transformation pipelines that run in one pass, con
 difficulty = "advanced"
 +++
 
-A transducer is a transformation step (map, filter, take) that does not know where its input comes from or where its output goes. After this page you can compose transducers into one-pass pipelines, reuse one pipeline with different consumers, and write your own.
+A transducer is a transformation step (map, filter, take) that does not know where its input comes from or where its output goes.
 
 ## Why use them
 
-A lazy pipeline builds an intermediate sequence at every step. A transducer pipeline fuses the steps into one pass:
-
-```phel
-(filter even? (map inc [1 2 3 4 5]))               ; => (2 4 6), two intermediate sequences
-(sequence (comp (map inc) (filter even?)) [1 2 3 4 5]) ; => [2 4 6], one pass
-```
-
-Define the pipeline once and feed it to any consumer:
+A lazy pipeline builds an intermediate sequence at every step. A transducer pipeline fuses the steps into one pass. Define the pipeline once and feed it to any consumer:
 
 ```phel
 (def xf (comp (filter even?) (map inc)))
@@ -28,7 +21,7 @@ Define the pipeline once and feed it to any consumer:
 (transduce xf + [1 2 3 4 5 6]) ; => 15
 ```
 
-Use lazy sequences and `->>` for a simple one-off chain. Use transducers for multi-step pipelines, for a transformation you reuse across sources or destinations, or when the result is not a sequence (a sum, a map, a side effect). For `into` and the basics, see [Data structures](/documentation/language/data-structures/#transducers).
+Use lazy sequences and `->>` for a simple one-off chain. Use transducers for multi-step pipelines, for a transformation you reuse across sources or destinations, or when the result is not a sequence (a sum, a map, a side effect).
 
 ## Consume a transducer
 
@@ -48,9 +41,7 @@ A reducing function has three arities: 0 for the start value, 1 to finish, 2 for
 
 ## Transducer-producing functions { #transducer-producing-functions }
 
-Most sequence functions have two forms. With a collection they return a lazy sequence. Without one they return a transducer: `(map f)`, `(filter pred)`.
-
-The functions that work this way: `map`, `filter`, `remove`, `keep`, `keep-indexed`, `mapcat`, `take`, `drop`, `take-while`, `drop-while`, `take-nth`, `distinct`, `dedupe` and `interpose`. `cat` is always a transducer: it flattens nested collections one level. Each is described in the [API reference](/documentation/reference/api/).
+Most sequence functions (`map`, `filter`, `remove`, `keep`, `mapcat`, `take`, `drop`, `take-while`, `distinct`, `dedupe`, ...) return a transducer when called without a collection. `cat` is always a transducer: it flattens nested collections one level. See the [API reference](/documentation/reference/api/).
 
 ## Compose with `comp`
 
@@ -125,20 +116,4 @@ A stateful transducer keeps state in a volatile, created inside `(fn [rf] ...)` 
 (sequence (batch 3) [1 2 3 4 5 6 7]) ; => [[1 2 3] [4 5 6] [7]]
 ```
 
-### Stop from inside
-
-Wrap the step result in `reduced` to end the pipeline. This `take-until` keeps items up to and including the first one that matches `pred`:
-
-```phel
-(defn take-until [pred]
-  (fn [rf]
-    (fn
-      ([] (rf))
-      ([result] (rf result))
-      ([result input]
-       (if (pred input)
-         (reduced (rf result input))
-         (rf result input))))))
-
-(sequence (take-until #(> % 3)) [1 2 3 4 5]) ; => [1 2 3 4]
-```
+To end the pipeline from inside a step, wrap the step result in `reduced`, as in [Stop early](#stop-early).

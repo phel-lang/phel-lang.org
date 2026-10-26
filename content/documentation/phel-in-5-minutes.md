@@ -4,9 +4,7 @@ weight = 1
 description = "Never seen a Lisp? Read Phel code in five minutes. One rule, four literals, one escape hatch to all of PHP. No install required."
 +++
 
-Phel is a [Lisp](https://en.wikipedia.org/wiki/Lisp_(programming_language)) that compiles to PHP. After this page you can read Phel code, even if you have never used a Lisp. No install needed.
-
-This page covers syntax only. For why you would use Phel, see the [common questions](/#common-questions). To run code, see [Getting Started](/documentation/getting-started/).
+Phel is a [Lisp](https://en.wikipedia.org/wiki/Lisp_(programming_language)) that compiles to PHP. After this page you can read Phel code, even if you have never used a Lisp.
 
 ## The one rule
 
@@ -33,23 +31,13 @@ Math works the same way, because `+` is a function too:
 (* 3 (+ 1 2))  ; => 9
 ```
 
-Read the last one inside-out, like nested PHP calls: `(+ 1 2)` is `3`, then `(* 3 3)` is `9`. The same PHP would be `3 * (1 + 2)`.
-
-## Reading nested calls
-
-Nested calls keep the same shape as in PHP. This PHP:
-
-```php
-strtoupper(trim("  hello  "));
-```
-
-is this Phel:
+Nested calls keep the same shape as in PHP, and the innermost parentheses run first. `3 * (1 + 2)` is `(* 3 (+ 1 2))`, and `strtoupper(trim("  hello  "))` is:
 
 ```phel
 (php/strtoupper (php/trim "  hello  "))  ; => "HELLO"
 ```
 
-The innermost parentheses run first. The `php/` prefix calls a PHP function; see [the escape hatch](#the-escape-hatch-php) below.
+The `php/` prefix calls a PHP function; see [the escape hatch](#the-escape-hatch-php) below.
 
 ## The four data literals
 
@@ -67,8 +55,6 @@ There are **no commas** inside `[...]` or `{...}`; whitespace separates items. A
 ```phel
 (get {:name "Ada" :age 36} :name)  ; => "Ada"
 ```
-
-`get` is a function, `{:name ...}` is its first argument, `:name` is its second. One rule, still holding.
 
 ## Naming things
 
@@ -104,7 +90,7 @@ Anything prefixed with `php/` calls into PHP. Every PHP function is one prefix a
 
 ## Putting it together
 
-This complete program uses only what is above. Read it top to bottom:
+This complete program uses only what is above:
 
 ```phel
 (defn greet [name]
@@ -116,10 +102,6 @@ This complete program uses only what is above. Read it top to bottom:
 ; prints: (Hello, Ada! Hello, Alan! Hello, Grace!)
 ```
 
-`str` joins values into a string. `map` applies `greet` to every item in the vector, like PHP's `array_map`. It returns a lazy sequence, which prints in parentheses. `println` prints the result. If you can follow this, you can read Phel.
+`str` joins values into a string. `map` applies `greet` to every item, like PHP's `array_map`, and returns a lazy sequence, which prints in parentheses.
 
-## Next steps
-
-- [Getting Started](/documentation/getting-started/): install Phel and open a live REPL.
-- [Rosetta Stone: PHP to Phel](/documentation/guides/rosetta-stone/): the same tasks side by side in both languages.
-- [Cheat Sheet](/documentation/reference/cheat-sheet/): every core form on one page, to keep open while you code.
+To run code, see [Getting Started](/documentation/getting-started/). To see common PHP tasks side by side, see the [Rosetta Stone](/documentation/guides/rosetta-stone/).

@@ -4,8 +4,6 @@ weight = 2
 description = "Create a Phel project, try the REPL, run your first file, and learn the project layout."
 +++
 
-This page takes you from nothing to a working Phel project: a live REPL, a file you wrote, and a project layout you understand.
-
 ## Requirements
 
 - **PHP 8.5+** (`php -v`)
@@ -19,8 +17,6 @@ No PHP on your machine, or you want the PHAR, Docker, or Nix? See [Installation]
 composer create-project --stability dev phel-lang/cli-skeleton example-app
 cd example-app
 ```
-
-The skeleton is a small CLI app with tests and Composer scripts already wired.
 
 ## Open the REPL
 
@@ -81,15 +77,9 @@ The `ns` form names the namespace. Every file starts with one. The skeleton's ow
 
 ```
 example-app/
-├── composer.json       ; PHP deps + phel scripts
 ├── phel-config.php     ; project config (main namespace, build output)
-├── src/
-│   ├── main.phel       ; entry namespace, run by composer dev
-│   ├── commands/       ; CLI commands
-│   └── core/           ; pure logic the commands call
-└── tests/
-    ├── commands/
-    └── core/
+├── src/main.phel       ; entry namespace, run by composer dev
+└── tests/              ; run by composer test
 ```
 
 Every command runs as `vendor/bin/phel <cmd>`. The skeleton adds Composer shortcuts:
@@ -103,14 +93,6 @@ Every command runs as `vendor/bin/phel <cmd>`. The skeleton adds Composer shortc
 | `composer format` | `phel format` |
 
 See [CLI Commands](/documentation/reference/cli-commands/) for every command and [Configuration](/documentation/reference/configuration/) for `phel-config.php`.
-
-## Verify your setup
-
-```bash
-vendor/bin/phel doctor
-```
-
-It checks the PHP extensions Phel needs, your source and test directories, OPcache, and the cache size. Run `composer test` to confirm the skeleton's tests pass.
 
 ## Next steps
 

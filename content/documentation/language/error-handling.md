@@ -8,7 +8,7 @@ aliases = ["/documentation/error-handling", "/documentation/exceptions"]
 difficulty = "intermediate"
 +++
 
-After this page you can raise errors with `throw`, handle them with `try`/`catch`/`finally`, and attach data to an error with `ex-info`. Phel uses PHP exceptions, so any PHP `Throwable` works here.
+Phel uses PHP exceptions, so any PHP `Throwable` works with `throw` and `try`.
 
 {% <callout kind="note"> %}
 Looking for a `[PHEL...]` compiler error code? See the [Error Reference](/documentation/reference/errors/).
@@ -39,24 +39,6 @@ A `finally` clause always runs last, whether the body threw or not. Use it for c
   (finally (print "cleanup"))) ; => "recovered", and prints "cleanup"
 ```
 
-{% <php_note> %}
-Same exceptions, different shape:
-
-```php
-try {
-    throw new \RuntimeException("disk full");
-} catch (\Exception $e) {
-    echo $e->getMessage();
-}
-```
-
-```phel
-(try
-  (throw (RuntimeException. "disk full"))
-  (catch \Exception e (.getMessage e)))
-```
-{% </php_note> %}
-
 ## Attach data with `ex-info`
 
 A message alone is hard for code to act on. `ex-info` builds an exception that carries a data map, so a handler can branch on data instead of parsing strings:
@@ -71,15 +53,7 @@ A message alone is hard for code to act on. `ex-info` builds an exception that c
       "unknown error"))) ; => "not found"
 ```
 
-Read the parts back with `ex-message`, `ex-data` and `ex-cause`:
-
-```phel
-(def err (ex-info "Validation failed" {:field :email}))
-
-(ex-message err) ; => "Validation failed"
-(ex-data err)    ; => {:field :email}
-(ex-cause err)   ; => nil
-```
+Read the parts back with `ex-message`, `ex-data` and `ex-cause`.
 
 ### Keep the cause
 
@@ -140,16 +114,3 @@ For more PHP interop, see [PHP Interop](/documentation/language/php-interop/).
 ## Throw or return nil
 
 Throw when continuing would be a bug or the caller cannot go on: invalid arguments, broken invariants, failed I/O. Return `nil` when absence is expected and the caller can handle it: a lookup miss, an empty parse, an optional field. Callers handle `nil` with [`if-let` or `when-let`](/documentation/language/control-flow/#when-if-not-and-binding-conditionals), or a default.
-
-```phel
-(defn find-user [users id]
-  (get users id)) ; nil when not present
-
-(defn charge-card [amount]
-  (when (<= amount 0)
-    (throw (ex-info "Invalid charge amount" {:amount amount})))
-  amount)
-
-(find-user {} 42) ; => nil
-(charge-card 10)  ; => 10
-```

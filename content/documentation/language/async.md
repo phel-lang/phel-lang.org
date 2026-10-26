@@ -7,9 +7,7 @@ description = "Run work concurrently with Phel's two fiber-based layers: top-lev
 difficulty = "advanced"
 +++
 
-After this page you can run independent work at the same time, wait for the results, and set timeouts and cancellation. Phel builds on PHP fibers: tasks overlap on one thread while they wait for IO or timers. CPU work does not run in parallel across cores.
-
-Most functions are in `phel.core` and need no require. The exception is `delay`, which is in `phel.async`. Every signature is in the [async API reference](/documentation/reference/api/async/).
+Phel builds on PHP fibers: tasks overlap on one thread while they wait for IO or timers. CPU work does not run in parallel across cores. Most functions are in `phel.core`; `delay` is in `phel.async`. Every signature is in the [async API reference](/documentation/reference/api/async/).
 
 ## Run tasks concurrently
 
@@ -30,10 +28,6 @@ Most functions are in `phel.core` and need no require. The exception is `delay`,
 
 `await` waits for one future. `await-any` returns the value of the first future to finish. It does not cancel the others; use `future-cancel` for that.
 
-```phel
-(await (async (+ 1 2))) ; => 3
-```
-
 `pmap` is a concurrent `map`, with results in input order. It helps IO-bound work only, because fibers share one thread:
 
 ```phel
@@ -44,18 +38,9 @@ Most functions are in `phel.core` and need no require. The exception is `delay`,
 `clojure.core/pmap` uses a thread pool. Phel's `pmap` uses fibers on one thread, like ClojureScript and Basilisp.
 {% </clojure_note> %}
 
-## Two layers
-
-Phel has two layers on top of fibers. Pick one by context:
-
-| Need | Layer | Functions |
-|------|-------|-----------|
-| IO, timers, fan-out, AMPHP libraries (HTTP clients, servers) | AMPHP event loop | `async`, `await`, `await-all`, `await-any`, `pmap`, `future`, `future-cancel`, `delay` |
-| Plain script or REPL, hand a value between tasks, no event loop | fiber scheduler | `promise`, `deliver`, `future-fiber`, `future-call` |
-
-The AMPHP layer uses `amphp/amp` v3. The loop runs on its own, so you never call `Loop::run`. Dynamic `binding`s are carried into each `async` task, as with Clojure's `future`.
-
 ## AMPHP layer
+
+Everything above runs on the AMPHP event loop (`amphp/amp` v3). Use it for IO, timers, fan-out, and AMPHP libraries such as HTTP clients. The loop runs on its own, so you never call `Loop::run`. Dynamic `binding`s are carried into each `async` task, as with Clojure's `future`.
 
 ### `delay`
 
@@ -103,16 +88,7 @@ This example cancels a slow task when a sibling fails:
 
 An exception thrown inside a task comes out of `await` or `deref`, so catch it there. See [Error handling](/documentation/language/error-handling/).
 
-### `^:async` functions
-
-`^:async` on a `defn` wraps each body in `async`, so the function returns a future. `^{:async false}` turns it off without removing the key:
-
-```phel
-(defn ^:async add-one [x]
-  (+ x 1))
-
-(await (add-one 2)) ; => 3
-```
+`^:async` on a `defn` wraps each body in `async`, so the function returns a future. `^{:async false}` turns it off without removing the key.
 
 ## Fiber layer
 
@@ -132,26 +108,11 @@ A promise hands a value from one task to another. `deliver` sets it once. Later 
   @inbox) ; => {:event :ready}
 ```
 
-The 3-argument `deref` works here too:
-
-```phel
-(let [p (promise)]
-  (deref p 25 :timed-out)) ; => :timed-out
-```
-
 An exception inside `future-fiber` or `future-call` is thrown again on `deref`.
 
-## Functions that work on both layers
+## Mixing the layers
 
-| Form | Does |
-|------|------|
-| `(deref x)` / `@x` | waits until the value is ready |
-| `(deref x timeout-ms fallback)` | returns `fallback` if not ready within `timeout-ms` |
-| `(realized? x)` | `true` once a value is available |
-| `(future-done? x)` | `true` once finished in any way, cancellation included |
-| `(future? x)` | `true` for values from `future` and `future-fiber` |
-
-`async` returns a bare `Amp\Future`, so `future?` is `false` for it. `await`, `await-all` and `await-any` accept bare `Amp\Future` values from AMPHP libraries as they are. To use a fiber-layer result in AMPHP code, `deref` it inside an `async` block.
+`deref` (with or without a timeout), `realized?`, `future-done?`, and `future?` work on both layers. `async` returns a bare `Amp\Future`, so `future?` is `false` for it. `await`, `await-all` and `await-any` accept bare `Amp\Future` values from AMPHP libraries as they are. To use a fiber-layer result in AMPHP code, `deref` it inside an `async` block.
 
 ## Pitfalls
 

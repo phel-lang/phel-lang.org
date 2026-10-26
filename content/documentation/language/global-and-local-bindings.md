@@ -8,8 +8,6 @@ aliases = ["/documentation/global-and-local-bindings"]
 difficulty = "beginner"
 +++
 
-After this page you can name values: `def` for globals, `let` for locals, `atom` for the rare value that must change, and `binding` for dynamic vars.
-
 ## Definition (def)
 
 <!-- phel-test: skip -->
@@ -58,18 +56,7 @@ Bindings are immutable. An inner `let` can shadow an outer name, but it never ch
   [(let [x 10] x) x]) ; => [10 1]
 ```
 
-`let` can also take a vector or map apart by shape:
-
-```phel
-(let [{:keys [name age]} {:name "Alice" :age 30}]
-  (str name " is " age)) ; => "Alice is 30"
-```
-
-The full rules are on [Destructuring](/documentation/language/destructuring/).
-
-{% <php_note> %}
-A PHP variable can be reassigned at any time. A Phel local cannot. To compute a new value, bind a new name or pass the value to a function. This removes a whole class of "who changed this variable" bugs.
-{% </php_note> %}
+`let` can also take a vector or map apart by shape: see [Destructuring](/documentation/language/destructuring/).
 
 ## Atoms
 
@@ -93,10 +80,6 @@ An atom holds one value that can change over time. Use it for application state,
 ```
 
 Functions that change state end in `!` by convention. Prefer plain immutable values, and keep atoms at the edges of your program.
-
-{% <callout kind="note"> %}
-The old atom names `var`, `var?`, and `set!` are gone. Use `atom`, `atom?`, and `reset!`. `var` and `#'sym` now return a [Var handle](#variables).
-{% </callout> %}
 
 ## Dynamic binding
 
@@ -124,28 +107,8 @@ A dynamic var is a global that can take a different value for the duration of a 
   (greet)) ; => "Hello i386 user"
 ```
 
-`with-bindings` does the same as `binding` from a map of Var handles to values: {% raw %}`(with-bindings {#'*env* "test"} (current-env))`{% endraw %}. More stubbing techniques are in [Testing](/documentation/guides/testing/#mocking).
+More stubbing techniques are in [Testing](/documentation/guides/testing/#mocking).
 
 ## Vars { #variables }
 
-Every `def` creates a `Var`. `(var name)`, or the `#'name` shorthand, returns the Var itself instead of its value:
-
-```phel
-(def my-name "phel")
-
-#'my-name           ; => #'user/my-name
-(var? #'my-name)    ; => true
-(deref #'my-name)   ; => "phel"
-```
-
-Change the value of a Var with `alter-var-root`:
-
-```phel
-(def total 0)
-(alter-var-root #'total inc)
-total ; => 1
-```
-
-Most code never needs Var handles. They are useful for REPL tools and for watching a global with `add-watch`. The full list is in the [core API](/documentation/reference/api/core/).
-
-Next: [Control flow](/documentation/language/control-flow/) shows how to branch and loop.
+Every `def` creates a `Var`. `(var name)`, or the `#'name` shorthand, returns the Var itself instead of its value: `(deref #'my-name)` reads it, `alter-var-root` changes it, and `with-bindings` rebinds dynamic Vars from a map. A call through a Var always uses the current definition, which is what makes redefining functions in the REPL work. Most code never needs Var handles. See the [core API](/documentation/reference/api/core/).

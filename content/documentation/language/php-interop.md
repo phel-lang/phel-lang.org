@@ -5,7 +5,7 @@ description = "Call PHP functions, create objects, convert PHP arrays, use Compo
 aliases = ["/documentation/php-interop/"]
 +++
 
-Phel compiles to PHP, so every PHP function, class and Composer package is available. After this page you can call PHP code from Phel, move data between PHP arrays and Phel collections, and call Phel from an existing PHP app.
+Phel compiles to PHP, so every PHP function, class and Composer package is available.
 
 ## Quick reference
 
@@ -20,8 +20,6 @@ Phel compiles to PHP, so every PHP function, class and Composer package is avail
 | `(ClassName/method args)`      | `ClassName::method(args)`   |
 | `ClassName/MEMBER`             | `ClassName::MEMBER`         |
 | `php/PHP_EOL`                  | `PHP_EOL`                   |
-
-These are the only spellings. The old `php/new`, `php/->` and `php/::` forms are rejected since Phel 0.52 (error `PHEL012`).
 
 {% <clojure_note> %}
 Same spelling as Clojure: `.method`, `.-field`, `Class/member`, and `->` for chaining.
@@ -38,13 +36,7 @@ Put `php/` in front of the function name:
 
 Phel has its own function for most tasks (`count`, `str`, `map`). Reach for `php/` when Phel has no equivalent or a library expects a PHP call.
 
-For a namespaced function, write the namespace with dots. The backslash form still works but is deprecated:
-
-<!-- phel-test: skip -->
-```phel
-(php/Amp.trapSignal [php/SIGINT php/SIGTERM])   ; Amp\trapSignal(...)
-(php/Amp/trapSignal [php/SIGINT php/SIGTERM])   ; same, slash before the name
-```
+For a namespaced function, write the namespace with dots: `(php/Amp.trapSignal [php/SIGINT])` calls `Amp\trapSignal(...)`.
 
 ### PHP functions as values { #php-first-class-callable }
 
@@ -124,17 +116,7 @@ DateTimeImmutable/ATOM ; => "Y-m-d\\TH:i:sP"
 
 ## Global constants and superglobals
 
-Global constants and superglobals use the same `php/` prefix:
-
-```phel
-php/PHP_INT_MAX                    ; => 9223372036854775807
-(php/define "MY_SETTING" "on")
-php/MY_SETTING                     ; => "on"
-
-(get php/$_SERVER "REQUEST_METHOD") ; $_SERVER['REQUEST_METHOD']
-```
-
-For command-line arguments use `*argv*`, not `$argv`.
+Global constants and superglobals use the same `php/` prefix: `php/PHP_INT_MAX`, `(get php/$_SERVER "REQUEST_METHOD")`. For command-line arguments use `*argv*`, not `$argv`.
 
 <a id="by-reference-arguments"></a>
 
@@ -154,6 +136,8 @@ Some PHP functions write to a `&$ref` parameter (`preg_match`, `sort`). Wrap a `
   (php/preg_match "/(\d+)/" "order-42" (php/ref matches))
   (php/aget matches 1)) ; => "42"
 ```
+
+To make your own Phel function take an argument by reference, like PHP's `&$arr`, mark the parameter `^:reference`: `(defn add-to-array [^:reference arr] (php/apush arr 10))`. It works on plain parameters only, not with destructuring. Prefer returning a new value.
 
 ## PHP arrays and Phel collections
 
@@ -194,24 +178,9 @@ When you must mutate a PHP array, use these seven forms. Use them only on PHP ar
 
 `path` is a vector of keys and indexes. A missing key reads as `nil` at any depth. `php/aset-in` creates missing arrays along the path. `php/aunset-in` removes only the last key and keeps the parents, even when they become empty.
 
-```phel
-(def data (php/array))
-(php/aset data "id" 42)
-(php/aset-in data ["user" "profile" "name"] "Charlie")
-(php/apush data "extra")
-
-(php/aget-in data ["user" "profile" "name"]) ; => "Charlie"
-(php/aget-in data ["user" "missing" "name"]) ; => nil
-data ; => <PHP-Array ["id":42, "user":<PHP-Array ["profile":<PHP-Array ["name":"Charlie"]>]>, 0:"extra"]>
-```
-
 ## Use Composer packages
 
-Install a package with Composer as usual. Phel loads `vendor/autoload.php`, so its classes are ready to use. Import them with `:use`, writing the namespace with dots:
-
-```bash
-composer require symfony/string
-```
+Install a package with `composer require` as usual. Phel loads `vendor/autoload.php`, so its classes are ready to use. Import them with `:use`, writing the namespace with dots:
 
 ```phel
 (ns my.module
@@ -222,7 +191,7 @@ composer require symfony/string
     (.toString))   ; => "helloWorld"
 ```
 
-A backslash namespace in `:use` (`Symfony\Component\...`) still compiles but prints a deprecation warning. For framework setups (Symfony, Laravel), see [Framework integration](/documentation/web/framework-integration/).
+For framework setups (Symfony, Laravel), see [Framework integration](/documentation/web/framework-integration/).
 
 ## Types, objects and enums
 
@@ -234,14 +203,7 @@ A backslash namespace in `:use` (`Symfony\Component\...`) still compiles but pri
 
 ### Map to typed object and back
 
-`hydrate` builds a typed PHP object from a Phel map without calling the constructor, like an ORM rehydrating an entity. `bean` reads an object's public properties back into a map with keyword keys:
-
-<!-- phel-test: skip -->
-```phel
-;; class App\Point { public int $x; public int $y; }
-(def p (hydrate "App\\Point" {:x 1 :y 2})) ; => App\Point instance
-(bean p)                                    ; => {:x 1 :y 2}
-```
+`hydrate` builds a typed PHP object from a Phel map without calling the constructor: `(hydrate "App\\Point" {:x 1 :y 2})`. `bean` reads an object's public properties back into a map with keyword keys.
 
 ### Native enums and exceptions
 
@@ -252,54 +214,17 @@ A backslash namespace in `:use` (`Symfony\Component\...`) still compiles but pri
 ;; emits: enum Status: string { case active = "active"; case inactive = "inactive"; }
 ```
 
-`defexception` defines an exception class with the parent you choose, so framework `catch` blocks match it by type:
+`defexception` defines a PHP exception class with the parent you choose: see [Error Handling](/documentation/language/error-handling/#custom-exception-types-with-defexception). `phel.reflect` reads PHP 8 attributes and converts enum cases to keywords and back: see the [reflect API](/documentation/reference/api/reflect).
 
-```phel
-(defexception NotFound \RuntimeException)
-
-(try
-  (throw (NotFound "missing"))
-  (catch \RuntimeException e (.getMessage e))) ; => "missing"
-```
-
-`phel.reflect` reads PHP 8 attributes (`class-attributes`, `method-attributes`, `property-attributes`) and converts enum cases to keywords and back (`enum-values`, `enum->keyword`, `keyword->enum`). See the [reflect API](/documentation/reference/api/reflect).
-
-### Magic methods on structs
-
-A `defstruct` is a real PHP class. An inline `:php` block adds magic methods such as `__toString` or `__invoke`. See [Structs](/documentation/language/data-structures/#structs):
-
-```phel
-(defstruct money [cents]
-  :php
-  (__toString [this] (str "$" (/ (get this :cents) 100))))
-
-(php/strval (money 500)) ; => "$5"
-```
+A `defstruct` is a real PHP class. A `:php` block adds magic methods such as `__toString`: see [Structs](/documentation/language/data-structures/#structs).
 
 ## Catch PHP exceptions
 
-PHP exceptions reach Phel unchanged. Catch them by class name, or catch `\Throwable` for anything:
-
-```phel
-(try
-  (php/intdiv 1 0)
-  (catch \DivisionByZeroError e
-    (.getMessage e)))
-; => "Division by zero"
-```
-
-`finally`, `ex-info` and re-throwing are on [Error Handling](/documentation/language/error-handling/).
+PHP exceptions reach Phel unchanged. Catch them by class name, or `\Throwable` for anything. See [Error Handling](/documentation/language/error-handling/).
 
 ## `__DIR__` and `__FILE__`
 
-`__DIR__` and `__FILE__` point to your `.phel` source file, not to the generated PHP. `*file*` holds the same absolute path as `__FILE__`:
-
-<!-- phel-test: skip -->
-```phel
-(php/file_get_contents (str __DIR__ "/data.json"))
-```
-
-The compiler fixes these paths at compile time. A `phel build` on a CI machine keeps the CI machine's paths. If the build output moves to another machine, resolve files from a root directory you pass in at runtime.
+`__DIR__` and `__FILE__` (and `*file*`) point to your `.phel` source file, not to the generated PHP. The compiler fixes these paths at compile time. A `phel build` on a CI machine keeps the CI machine's paths. If the build output moves to another machine, resolve files from a root directory you pass in at runtime.
 
 ## Calling Phel from PHP
 
@@ -316,41 +241,8 @@ Mark each function to export with `:export` metadata:
   (+ a b c))
 ```
 
-Set `withExportFromDirectories`, `withExportNamespacePrefix` and `withExportTargetDirectory` in `phel-config.php` (see [Configuration](/documentation/reference/configuration/#full-reference)), then run `vendor/bin/phel export`. Each namespace becomes a PHP class with one static method per exported function. From the [CLI skeleton example](https://github.com/phel-lang/cli-skeleton/blob/main/example/using-exported-phel-function.php):
+Run `vendor/bin/phel export` (export options are in [Configuration](/documentation/reference/configuration/#full-reference)). Each namespace becomes a PHP class with one static method per exported function, so PHP calls `Adder::adder(1, 2, 3)` after `Phel::run(...)` loads the namespace. See the [CLI skeleton example](https://github.com/phel-lang/cli-skeleton/blob/main/example/using-exported-phel-function.php) and [Framework integration](/documentation/web/framework-integration/), which also covers typed PHP output.
 
-```php
-<?php declare(strict_types=1);
-
-use Phel\Phel;
-use PhelGenerated\CliSkeleton\Core\Adder;
-
-$projectRootDir = dirname(__DIR__);
-require $projectRootDir . '/vendor/autoload.php';
-
-Phel::run($projectRootDir, 'cli-skeleton.core.adder'); // loads the namespace
-
-echo Adder::adder(1, 2, 3); // 6
-```
-
-### Manually
-
-`PhelCallerTrait` calls any Phel function from a PHP class:
-
-```php
-<?php
-use Phel\Interop\PhelCallerTrait;
-
-class MyExistingClass {
-  use PhelCallerTrait;
-
-  public function myExistingMethod(...$arguments) {
-    return $this->callPhel('my.phel.namespace', 'phel-function-name', ...$arguments);
-  }
-}
-```
-
-### Typed and annotated output
-
-When a framework needs typed PHP, add metadata such as `^{:tag T}`, `^{:php/attr [...]}`, `^{:php/doc "..."}` or `^:php/readonly`. Forms without it compile as before. The full table and a Doctrine entity example are in [Typed PHP from Phel definitions](/documentation/web/framework-integration/#typed-php-from-phel-definitions).
+Without export, a PHP class can `use Phel\Interop\PhelCallerTrait` and call `$this->callPhel('my.phel.namespace', 'phel-function-name', ...$arguments)`.
 
 Every `php/*` builtin is listed in the [PHP API reference](/documentation/reference/api/php).

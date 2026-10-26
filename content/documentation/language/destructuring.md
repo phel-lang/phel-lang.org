@@ -8,8 +8,6 @@ aliases = ["/documentation/destructuring"]
 difficulty = "intermediate"
 +++
 
-After this page you can pull values out of vectors and maps by describing their shape, instead of calling `get` and `first` by hand.
-
 Destructuring works everywhere Phel binds names: `let`, `defn` and `fn` parameters, `loop`, and `for`.
 
 ## Sequential
@@ -95,14 +93,7 @@ Map and vector patterns mix freely:
   (+ x y)) ; => 7
 ```
 
-### By index
-
-A map pattern with integer keys reads a vector by index. It helps when you need one position from a long vector:
-
-```phel
-(let [{2 third} [10 20 30 40]]
-  third) ; => 30
-```
+A map pattern with integer keys reads a vector by index: `(let [{2 third} [10 20 30 40]] third)` returns `30`.
 
 {% <clojure_note> %}
 `:keys`, `:strs`, `:or`, and `:as` work in map patterns as in Clojure. Vector patterns do not support `:as`: `(let [[a :as all] [1 2]] all)` fails with `PHEL008 Cannot destructure Keyword`. Bind the vector to a name first, then destructure it.
@@ -110,35 +101,14 @@ A map pattern with integer keys reads a vector by index. It helps when you need 
 
 ## In function parameters
 
-Any parameter can be a pattern:
+Any parameter can be a pattern. The same patterns work in `loop` and `for` bindings:
 
 ```phel
 (defn greet [{:keys [name role] :or {role "member"}}]
   (str "Hello " name " (" role ")"))
 
-(greet {:name "Alice" :role "admin"}) ; => "Hello Alice (admin)"
-(greet {:name "Bob"})                 ; => "Hello Bob (member)"
-
-(defn distance [[x1 y1] [x2 y2]]
-  (php/sqrt (+ (* (- x2 x1) (- x2 x1))
-               (* (- y2 y1) (- y2 y1)))))
-
-(distance [0 0] [3 4]) ; => 5.0
-```
-
-## In `loop` and `for`
-
-```phel
-(loop [[head & tail] [1 2 3 4 5]
-       acc 0]
-  (if (nil? head)
-    acc
-    (recur tail (+ acc head)))) ; => 15
+(greet {:name "Bob"}) ; => "Hello Bob (member)"
 
 (for [[k v] :pairs {:a 1 :b 2}]
   [v k]) ; => [[1 :a] [2 :b]]
 ```
-
-{% <php_note> %}
-PHP has `[$a, $b] = $arr;` and `['a' => $x] = $arr;`. Phel patterns also nest, take the rest with `&`, give defaults with `:or`, and work directly in function parameters. `{:keys [role] :or {role "guest"}}` replaces `$role = $data['role'] ?? 'guest';`.
-{% </php_note> %}

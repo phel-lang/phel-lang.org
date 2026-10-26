@@ -2,12 +2,10 @@
 title = "Agentic Coding"
 weight = 7
 description = "Single-page Phel reference for AI coding agents (Claude Code, Codex, Cursor, Copilot, Aider, Gemini). Self-contained syntax, idioms, interop, gotchas."
-aliases = ["/documentation/llms", "/documentation/ai-agents"]
+aliases = ["/documentation/llms", "/documentation/ai-agents", "/documentation/tooling/ai-agents/", "/documentation/agent-setup", "/documentation/ai-setup", "/documentation/reference/agent-setup/"]
 +++
 
-A one-page Phel reference for AI coding agents (Claude Code, Codex, Cursor, Copilot, Aider, Gemini). If an agent can load only one doc, load this one. It is self-contained, so it repeats some of the cheat sheet.
-
-> **Want this installed as a skill?** [AI Agents](/documentation/tooling/ai-agents/) sets up your tool with one `phel agent-install` command.
+A one-page Phel reference for AI coding agents (Claude Code, Codex, Cursor, Copilot, Aider, Gemini). If an agent can load only one doc, load this one. To build AI features in Phel instead (LLM chat, embeddings, tool use), see the [AI module API](/documentation/reference/api/ai/).
 
 <div class="agent-doc-cta">
   <a href="/agentic-coding.md" class="btn btn-primary btn-lg" download>
@@ -37,20 +35,13 @@ Rules first, reasons second. Check with `phel doc` before you deviate.
 | `(new Foo arg)`, `(.m obj)`, `(Foo/m)` | `php/new`, `php/->`, `php/::` | Those are a `PHEL012` error since 0.52 |
 | Check Clojure-looking forms first ([Phel is not Clojure](#phel-is-not-clojure)) | porting Clojure blindly | PHP target: different stdlib and concurrency |
 
-## What Phel is
-
-A functional Lisp that compiles to PHP. Runs on PHP 8.5+, installs with Composer, and calls any PHP code.
-
-- Immutable persistent data structures.
-- Macros, REPL-driven development.
-- Compiles to plain PHP. No separate runtime.
-- Source files end in `.phel`. Config lives in `phel-config.php`.
+Phel is a functional Lisp that compiles to plain PHP (8.5+), with immutable data and macros. Source files end in `.phel`; config lives in `phel-config.php` (see [Configuration](/documentation/reference/configuration/)).
 
 ## CLI
 
 ```bash
 vendor/bin/phel doc <fn>          # signature + docstring (search, not exact match)
-vendor/bin/phel eval '<expr>'     # evaluate and print
+vendor/bin/phel eval '<expr>'     # evaluate and print; `eval -` reads stdin
 vendor/bin/phel run <file> [args] # run a script; args land in *argv*
 vendor/bin/phel test [path]       # run tests
 vendor/bin/phel repl              # interactive REPL
@@ -62,26 +53,44 @@ vendor/bin/phel explain PHEL001   # what an error code means
 vendor/bin/phel doctor            # check PHP, extensions, config
 ```
 
-For multi-line code, pass a quoted heredoc to `eval -`. Nothing inside needs escaping:
-
-```bash
-vendor/bin/phel eval - <<'PHEL'
-(ns app)
-(println (+ 40 2))
-PHEL
-```
-
-After you edit a `.phel` file, run `phel balance <file> --fix`. It appends missing closers and reports anything it cannot fix safely.
+For multi-line code, pipe a quoted heredoc (`<<'PHEL' ... PHEL`) into `phel eval -`, so nothing needs escaping. After you edit a `.phel` file, run `phel balance <file> --fix`. It appends missing closers and reports anything it cannot fix safely.
 
 ## Installed agent skills
 
+One command installs a skill file for each agent plus a shared `.agents/` docs tree:
+
 ```bash
-vendor/bin/phel agent-install claude   # or codex, cursor, copilot, aider, gemini
+composer require phel-lang/phel-lang
 vendor/bin/phel agent-install --auto   # agents detected in this project
+vendor/bin/phel agent-install claude   # one platform
 vendor/bin/phel agent-install --all    # every platform
 ```
 
-This writes a skill file for the agent and a `.agents/` folder with `RULES.md` (rules and CLI map), `index.md` (intent to recipe map), `quick-syntax.md`, and `tasks/*.md` (HTTP apps, CLI tools, tests, REPL flow, typed functions, macros, schema validation, and more). Read it before guessing.
+`--auto` looks for `.claude/`, `.cursor/`, `AGENTS.md`, `.github/copilot-instructions.md`, and similar files. An existing skill file is backed up to `*.pre-phel.bak` before it is replaced. Run the command again after you update Phel: it writes only new or changed docs and keeps files you edited.
+
+| Platform | Argument | File installed |
+|----------|----------|----------------|
+| Claude Code | `claude` | `.claude/skills/phel-lang/SKILL.md` |
+| Cursor | `cursor` | `.cursor/rules/phel.mdc` |
+| Codex | `codex` | `AGENTS.md` |
+| GitHub Copilot | `copilot` | `.github/copilot-instructions.md` |
+| Gemini | `gemini` | `GEMINI.md` |
+| Aider | `aider` | `CONVENTIONS.md` |
+
+| Flag | Effect |
+|------|--------|
+| `--auto` | install only for agents found in the project |
+| `--all` | install for every platform |
+| `--with-examples` | also copy `.agents/examples/` (small runnable projects) |
+| `--no-docs` | install only the skill file, not `.agents/` |
+| `--dry-run` | print what would be written, change nothing |
+| `--force` | replace the skill file without a backup, and replace docs you edited (after backing them up) |
+| `--uninstall` | remove the skill file and restore its backup |
+| `--check` | compare the installed docs version with the bundled one; exit 1 when they differ |
+
+The skill file tells the agent to read `.agents/RULES.md` (hard rules and CLI map), then `quick-syntax.md`, then `index.md` (task to recipe map), then `tasks/*.md` (HTTP apps, CLI tools, tests, macros, errors, schema validation, and more). Before install, the same files are in `vendor/phel-lang/phel-lang/resources/agents/`. Every core function's source is in `vendor/phel-lang/phel-lang/src/phel/core/`.
+
+Agents that cannot run `phel` can fetch `https://phel-lang.org/agentic-coding.md` (this page) or `https://phel-lang.org/llms.txt` (a link index of all docs).
 
 ## Syntax in 60 seconds
 
@@ -114,38 +123,25 @@ This writes a skill file for the agent and a `.agents/` folder with `RULES.md` (
 ```phel
 (def x 42)                         ; global
 (def- secret 7)                    ; private global
-
 (defn greet [name]                 ; public function
   (str "Hello, " name))
 (defn- helper [x] (* x 2))         ; private function
-
 (let [x 1, y 2] (+ x y))           ; locals (commas are whitespace)
-
-(if test then else)
-(when test expr ...)
 (cond test-1 expr-1
-      test-2 expr-2
       :else  fallback)
-(case x 1 "one" 2 "two" "default")
-(condp = x 1 "one" 2 "two" "other")
-(do expr1 expr2 last)              ; returns last
 
 (loop [acc 0 n 10]
   (if (zero? n) acc (recur (+ acc n) (dec n))))
 
 (for [x :in xs :when (odd? x)] (* x x))  ; returns a vector
 (doseq [x xs] (println x))               ; effects, returns nil
-(dotimes [i 5] (println i))
 
-(fn [x] (* x 2))
 #(* % 2)                           ; one arg
 #(+ %1 %2)                         ; several args
 #(apply + %&)                      ; variadic
 
-(-> x (f a) (g b))                 ; thread first
 (->> xs (filter odd?) (map inc))   ; thread last
 (some-> m :a :b)                   ; stops at nil
-(cond-> x test (f y))              ; conditional thread
 
 (try (risky)
   (catch \RuntimeException e (.getMessage e))
@@ -240,6 +236,7 @@ Run with `vendor/bin/phel test`. Filter with `--filter=name`, find deprecated fo
 - **`transduce` with `max` or `min`:** they have no zero-arity. Pass an init: `(transduce xf (fn [a b] (max a b)) 0 coll)`.
 - **No `to-vec` or `to-list`.** Use `vec` or `to-array`.
 - **`recur` must match the `loop` bindings.** A wrong argument count is a compile error.
+- **Cache with `^:memoize`:** `(defn ^:memoize f [x] ...)`, or `^{:memoize-lru 32}` for a bounded cache.
 
 ## Phel is not Clojure
 
@@ -256,37 +253,4 @@ Agents trained on Clojure invent Clojure-only forms. Check anything that "sounds
 
 If `phel doc <name>` prints `No function matches`, the function does not exist. Do not call it. The command exits 0 either way, so read the output.
 
-## Project layout
-
-```
-my-app/
-  composer.json
-  phel-config.php     # usually one line
-  src/
-    my-app/main.phel  # (ns my-app.main)
-  tests/
-    my-app/main-test.phel
-```
-
-Minimal `phel-config.php`:
-
-```php
-<?php
-return \Phel\Config\PhelConfig::forProject(\Phel\Config\ProjectLayout::Flat, 'my-app.main');
-```
-
-All options: [Configuration](/documentation/reference/configuration/).
-
-## Idiomatic style
-
-1. **Pure functions.** Push side effects to the edges. Use an `atom` only for shared mutable state.
-2. **Thread, don't nest.** `(->> xs (filter f) (map g) (reduce h 0))`.
-3. **Stay immutable.** `(conj v x)` returns a new vector. Rebind the result.
-4. **Cache with `^:memoize`.** `(defn ^:memoize f [x] ...)`, or `^{:memoize-lru 32}` for a bounded cache.
-5. **Tag hot paths.** `(defn ^int square [^int x] (* x x))` emits PHP type hints.
-
-## Where to look next
-
-After `phel agent-install`: `.agents/index.md`, `.agents/RULES.md` and `.agents/tasks/`. Before install, the same files are in `vendor/phel-lang/phel-lang/resources/agents/`. Every core function's source is in `vendor/phel-lang/phel-lang/src/phel/core/`.
-
-On this site: [Cheat Sheet](/documentation/reference/cheat-sheet/), [PHP Interop](/documentation/language/php-interop/), [Cookbook](/documentation/guides/cookbook/), [Rosetta Stone](/documentation/guides/rosetta-stone/) (PHP next to Phel), [CLI Commands](/documentation/reference/cli-commands/), [Error Reference](/documentation/reference/errors/).
+More on this site: [Cheat Sheet](/documentation/reference/cheat-sheet/), [PHP Interop](/documentation/language/php-interop/), [Cookbook](/documentation/guides/cookbook/), [CLI Commands](/documentation/reference/cli-commands/), [Error Reference](/documentation/reference/errors/).

@@ -8,8 +8,6 @@ aliases = ["/documentation/namespaces"]
 difficulty = "intermediate"
 +++
 
-After this page you can split code across files, load Phel modules and PHP classes into a file, and write namespaced keywords.
-
 ## Declare a namespace
 
 Every Phel file starts with `ns`. The name has parts separated by `.`, and the last part matches the file name. Use one namespace per file. Each part starts with a letter or underscore, followed by letters, numbers, underscores or dashes. Use kebab-case (`my.user-service`); the compiler turns dashes into a valid PHP namespace.
@@ -25,21 +23,6 @@ Every Phel file starts with `ns`. The name has parts separated by `.`, and the l
 `ns` also sets `*ns*` to the current namespace name. The backslash separator (`hello\world`) still parses but prints a deprecation warning.
 
 {% <php_note> %}
-```php
-// PHP
-namespace My\Custom\Module;
-use Some\Php\ClassName;
-use My\Phel\Module as Utilities;
-```
-
-<!-- phel-test: skip -->
-```phel
-;; Phel
-(ns my.custom.module
-  (:use Some.Php.ClassName)
-  (:require my.phel.module :as utilities))
-```
-
 Phel uses `.` between namespace parts, `:require` for Phel modules and `:use` for PHP classes. You call a module function with `/`, not `::`.
 {% </php_note> %}
 
@@ -84,18 +67,7 @@ Without `:as`, the alias is the last part of the name (`util` here).
 
 Prefer `:as` for most names. The prefix shows where a function comes from. Keep `:refer` for a few names you call often.
 
-### Shadowed names
-
-A local definition hides a core function with the same short name. The full name still reaches the original:
-
-```phel
-(ns hello-world.http-client)
-
-(defn get [uri]
-  {:status 200 :body "Hello World"})
-
-(phel.core/get (get "https://example.com") :status) ; => 200
-```
+A local definition hides a core function with the same short name. The full name, such as `phel.core/get`, still reaches the original.
 
 ## Use a PHP class
 

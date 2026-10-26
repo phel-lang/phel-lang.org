@@ -1,37 +1,19 @@
 +++
 title = "Deployment"
 weight = 13
-description = "Deploy Phel apps on plain PHP-FPM or keep namespaces warm across requests with FrankenPHP and RoadRunner worker runtimes."
-aliases = ["/documentation/deployment/"]
+description = "Deploy Phel apps on plain PHP-FPM or keep namespaces warm across requests with FrankenPHP and RoadRunner worker runtimes, and keep the CLI fast with opcache."
+aliases = ["/documentation/deployment/", "/documentation/guides/performance/", "/documentation/performance/"]
 +++
 
-This page shows you how to ship a Phel app: build it ahead of time, load it once per process, and run it on PHP-FPM or on a worker runtime (FrankenPHP, RoadRunner).
-
-PHP shares nothing between requests by default. Every request starts fresh, so Phel namespaces do not persist. [`phel build`](/documentation/reference/cli-commands/#build-the-project) compiles your namespaces to PHP ahead of time and opcache caches the bytecode, so no request parses Phel (see [Performance](/documentation/guides/performance/) for the cache setup). Each request still runs the top-level forms of every loaded namespace to register its `def`s.
+PHP shares nothing between requests by default. Every request starts fresh, so Phel namespaces do not persist. [`phel build`](/documentation/reference/cli-commands/#build-the-project) compiles your namespaces to PHP ahead of time and opcache caches the bytecode, so no request parses Phel. Each request still runs the top-level forms of every loaded namespace to register its `def`s.
 
 A **worker runtime** keeps the PHP process alive across requests. Namespaces load once at boot, and in-memory state survives between requests, close to the JVM and Clojure model.
 
 ## What a request pays
 
-One measurement (PHP 8.5, Phel 0.53, Apple M4 Pro, a host that boots and then calls `phel.core/str`, median of 15 runs, 5 for the cold column):
+Calling Phel from PHP costs about 0.1µs per call, so the boundary is never the cost. Loading namespaces is the cost, and compiling them is the expensive part: in one measurement a cold cache took 20 times longer than a warm one. Never let a request compile. Ship `phel build` output or a warm `.phel/cache`. Opcache takes another third off the load time and most of the memory.
 
-| | cold `.phel/cache` | warm cache, no opcache | warm cache + opcache file cache |
-|---|---|---|---|
-| `vendor/autoload.php` | 1ms | 1ms | 1ms |
-| `Phel::bootstrap()` | 7ms | 5ms | 4ms |
-| load `phel.core` | 1054ms | 48ms | 33ms |
-| **first call reachable after** | **1062ms** | **54ms** | **38ms** |
-| peak memory | 88MB | 20MB | 6MB |
-| per call after that | 0.1µs | 0.1µs | 0.1µs |
-
-What this means:
-
-- Calling Phel from PHP costs 0.1µs per call. The boundary is never the cost.
-- Loading namespaces is the cost, and compiling them is the expensive part: a cold cache costs 20 times a warm one. Never let a request compile. Ship `phel build` output or a warm `.phel/cache`.
-- Opcache takes another third off the load time and most of the memory.
-- Under PHP-FPM every request pays the whole column. A worker runtime pays it once per process.
-
-The absolute figures move with the machine and with how much your app loads, so measure your own:
+Under PHP-FPM every request pays the load. A worker runtime pays it once per process. Measure your own app:
 
 ```php
 require 'vendor/autoload.php';
@@ -100,21 +82,9 @@ Run it:
 frankenphp php-server --root . --worker ./worker.php
 ```
 
-{% <php_note> %}
-**State is per-worker.** FrankenPHP runs several worker instances, each with its own memory. An in-process value (an `atom`, a cache) is shared across requests handled by the *same* worker, not across all of them. For global state, use Redis, APCu, or a database. Append `,1` to the worker path (`--worker ./worker.php,1`) to pin a single worker.
-{% </php_note> %}
-
 ## RoadRunner
 
-RoadRunner is a Go server that keeps PHP workers alive and hands them PSR-7 requests. The worker has the same shape as the FrankenPHP one. Install the worker library, a PSR-7 implementation, and the `rr` binary:
-
-```bash
-composer require spiral/roadrunner-http nyholm/psr7
-composer require --dev spiral/roadrunner-cli
-vendor/bin/rr get-binary    # downloads ./rr
-```
-
-`worker.php`:
+RoadRunner is a Go server that keeps PHP workers alive and hands them PSR-7 requests. It needs `spiral/roadrunner-http`, a PSR-7 implementation such as `nyholm/psr7`, and the `rr` binary. The worker has the same shape as the FrankenPHP one:
 
 ```php
 <?php
@@ -141,28 +111,47 @@ while ($request = $psr7->waitRequest()) {
 }
 ```
 
-`.rr.yaml`:
-
-```yaml
-version: "3"
-
-server:
-  command: "php worker.php"
-
-http:
-  address: 0.0.0.0:8080
-```
-
-Run it:
-
-```bash
-./rr serve
-```
+Point `server.command` in `.rr.yaml` at `php worker.php`, set `http.address`, and run `./rr serve`.
 
 {% <php_note> %}
-**State is per-worker here too.** RoadRunner starts one worker per CPU core by default. An `atom` counting hits goes up once per request that lands on *its* worker, not once per request. Pin a single worker with `pool: { num_workers: 1 }` under `http`, or keep shared state in Redis, APCu, or a database.
+**State is per-worker.** Both runtimes start several workers, each with its own memory (RoadRunner starts one per CPU core). An `atom` or cache is shared across requests handled by the *same* worker, not across all of them. For global state, use Redis, APCu, or a database. To pin a single worker, append `,1` to the FrankenPHP worker path (`--worker ./worker.php,1`) or set `pool: { num_workers: 1 }` under `http` in `.rr.yaml`.
 {% </php_note> %}
 
 ## When you do not need a worker runtime
 
-Plain PHP-FPM with opcache is fine for most apps. The last column of the table is the boot cost each request pays (38ms in that measurement). Use a worker runtime when that cost shows up in profiling, or when you want in-memory state (caches, connection pools) to live across requests.
+Plain PHP-FPM with opcache is fine for most apps. Use a worker runtime when the per-request boot cost shows up in profiling, or when you want in-memory state (caches, connection pools) to live across requests.
+
+## Performance
+
+### Opcache for the CLI
+
+Each `vendor/bin/phel` call is a fresh PHP process. Without CLI opcache, PHP parses every `.php` file again on every run. The `phel` binary fixes this for you: when the opcache extension is loaded and `pcntl` is available, it restarts itself with a file cache under `.phel/opcache/`. `vendor/bin/phel doctor` shows the status under `Checking performance`. Set `PHEL_NO_OPCACHE_REEXEC=1` to turn this off and keep your own opcache settings.
+
+Configure opcache yourself when `pcntl` is missing, or when you run PHP directly instead of the `phel` binary:
+
+```ini
+; /your/php/conf.d/ext-opcache.ini (find it with `php --ini`)
+opcache.enable_cli=1
+opcache.file_cache=/tmp/php-opcache
+opcache.memory_consumption=256
+opcache.max_accelerated_files=20000
+opcache.interned_strings_buffer=16
+```
+
+Create the cache directory with `mkdir -p /tmp/php-opcache`, and again after a reboot empties `/tmp`. With a warm cache, repeat runs of `vendor/bin/phel test` drop from seconds to under one second.
+
+`vendor/bin/phel` also sets `memory_limit` to `-1`. If you call PHP directly or embed Phel, raise the limit yourself: on large projects the compiler can use more than 128M.
+
+### The compiled-code cache
+
+Phel stores the PHP compiled from each `.phel` file under `.phel/cache/`, keyed by an `md5` of the source. On a mismatch it recompiles that file and every file that depends on it. Opcache then skips parsing the generated PHP again. The cache flags live in [Configuration](/documentation/reference/configuration/).
+
+If a run behaves oddly (stale compiled code, missing definitions, a crash on a cache hit), clear the caches. This also clears `.phel/opcache/`; wipe a manual file cache such as `/tmp/php-opcache` yourself.
+
+```bash
+vendor/bin/phel cache:clear
+```
+
+### Faster code
+
+Profile before you change code: [`phel profile`](/documentation/reference/cli-commands/#profile) shows per-function timings. Then see [type tags](/documentation/language/functions-and-recursion/#return-and-parameter-types-tag), [memoization](/documentation/language/functions-and-recursion/#defn-metadata-shortcuts), and [Configuration](/documentation/reference/configuration/) for compiler optimization levels.

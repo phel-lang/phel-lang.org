@@ -5,7 +5,7 @@ description = "Write tests with deftest, is, mocks, and property-based specs, th
 aliases = ["/documentation/testing/"]
 +++
 
-This page shows you how to write tests with `phel.test`, run them with `phel test`, replace functions with mocks, and check properties against random input. Tests are plain functions, with no classes or setup.
+Tests are plain functions, with no classes or setup.
 
 ## Write and run a test
 
@@ -105,7 +105,7 @@ Each PHPUnit assertion maps to one `is` form:
 
 ### Reading a failure
 
-A failed `=` names the test and its location, then shows a diff. Collections get one line per entry, with `-` for the expected value and `+` for the actual one:
+A failed `=` names the test and its location, then shows a diff. Collections get one line per entry, with `-` for the expected value and `+` for the actual one. Strings get a caret under the first mismatch.
 
 <!-- phel-test: skip -->
 ```phel
@@ -126,19 +126,6 @@ FAIL vector-diff (diff_test.phel:5)
     + [3] 99
       [4] :c
       [5] 3
-```
-
-Strings get a caret under the first mismatch:
-
-```text
-FAIL string-diff (diff_test.phel:8)
-          Form: (= "hello" "hallo")
-  evaluated to: "hallo"
-    but is not: = to "hello"
-  String diff (first mismatch at index 1):
-    expected: "hello"
-    actual:   "hallo"
-                ^
 ```
 
 ## Choose which tests run
@@ -167,14 +154,16 @@ Tag tests with metadata to include or exclude them as a group:
 | `--include=<tag>` / `--exclude=<tag>` | Only, or all but, tests with that tag. Skipped tests emit a `:skipped` event |
 | `--ns='my-app.http.*'` | Only namespaces matching the glob |
 | `--last-failed` | Only the tests that failed last run (read from `.phel/last-failed.txt`) |
+| `--changed[=REF]` | Only tests affected by changed files: uncommitted changes, or `git diff REF` |
 | `--fail-fast` | Stop at the first failure |
+| `--fail-on-focus` | Exit non-zero when a `^:focus` test narrowed the run. Always on when `CI` is set |
 | `--list` | Print the discovered tests without running them |
 | `--repeat=N` | Run each test N times, to stress a flaky test |
 | `--random-order` | Random order with a random seed. Add `--seed=42` to reproduce a run |
 | `--seed=<int>` | Fix the seed for the default order |
 | `--slowest=N` | Print the N slowest tests after the summary |
 
-`--last-failed --repeat=20` is a quick way to hammer the tests that just failed. `vendor/bin/phel test --help` and [CLI commands](/documentation/reference/cli-commands/#test) list every flag.
+`--last-failed --repeat=20` is a quick way to hammer the tests that just failed. `vendor/bin/phel test --help` lists every flag.
 
 {% <php_note> %}
 `vendor/bin/phpunit tests/MainTest.php --filter testMyFunction` becomes `vendor/bin/phel test tests/main.phel --filter my-test-function`.
@@ -208,21 +197,7 @@ vendor/bin/phel test --coverage=clover \
 
 ## Reporters
 
-Pick the output format with `--reporter=<name>`. Repeat the flag for several formats at once.
-
-| Reporter | Output |
-|---|---|
-| `default` | Human-readable summary |
-| `testdox` | Sentence-style names (also `--testdox`) |
-| `dot` | One character per test |
-| `tap` | Test Anything Protocol |
-| `junit-xml` | JUnit XML. Use `--output=path` to write a file |
-
-```bash
-vendor/bin/phel test --reporter=tap --reporter=junit-xml --output=build/tests.xml
-```
-
-`--quiet` prints errors only, and `--silent` prints nothing. To write your own reporter, add a method to `phel.test/report`, a multimethod that dispatches on the event `:type`.
+Pick the output format with `--reporter=<name>`: `default`, `testdox` (also `--testdox`), `dot`, `tap`, `junit-xml` (write it to a file with `--output=path`), or `github`, which is added next to the default one on GitHub Actions. Repeat the flag for several formats at once. `--quiet` prints errors only, and `--silent` prints nothing. To write your own reporter, add a method to `phel.test/report`, a multimethod that dispatches on the event `:type`.
 
 ## Run tests from the REPL or code
 
@@ -245,23 +220,6 @@ vendor/bin/phel test --reporter=tap --reporter=junit-xml --output=build/tests.xm
 (run-tests {} 'my.ns.a 'my.ns.b)
 ```
 
-To keep REPL runs apart, manage the test counters: `reset-stats` sets them to zero, `get-stats` reads them, and `restore-stats` puts back a saved copy:
-
-<!-- phel-test: skip -->
-```phel
-(ns my-app.stats
-  (:require phel.test :refer [reset-stats get-stats restore-stats])
-  (:require phel.repl :refer [test-ns]))
-
-(reset-stats)
-(get-stats)
-; => {:failed [], :skipped [], :counts {:failed 0, :error 0, :pass 0, :skipped 0, :total 0}}
-
-(def saved (get-stats))
-(test-ns "my-app.tests")
-(restore-stats saved)
-```
-
 ## Mocking
 
 `phel.mock` creates test doubles and records their calls. `with-mocks` replaces functions for the length of a block and restores them afterwards:
@@ -281,45 +239,18 @@ To keep REPL runs apart, manage the test counters: `reset-stats` sets them to ze
     (is (called-once? fetch-user))))
 ```
 
-Four ways to build a mock:
-
-```phel
-(ns my-app.mocks
-  (:require phel.mock :refer [mock mock-fn mock-returning mock-throwing]))
-
-(def my-mock (mock :ok))            ; fixed return value
-(my-mock "any" "args")              ; => :ok
-
-(def double-mock (mock-fn #(* % 2))) ; custom behavior
-(double-mock 5)                     ; => 10
-
-(def seq-mock (mock-returning [1 2 3])) ; one value per call
-(seq-mock)                          ; => 1
-(seq-mock)                          ; => 2
-
-(def err-mock (mock-throwing (new RuntimeException "fail")))
-```
-
-Inspect how a mock was called:
+Build a mock with `mock` (fixed return value), `mock-fn` (custom behavior), `mock-returning` (one value per call), or `mock-throwing`. Inspect it with `calls`, `call-count`, `called?`, `called-with?`, `called-once?`, and `never-called?`, and clear the recorded calls with `reset-mock!`:
 
 ```phel
 (ns my-app.mock-test
-  (:require phel.mock :refer [mock calls call-count called?
-                              called-with? called-once? never-called?]))
+  (:require phel.mock :refer [mock-returning calls called-with?]))
 
-(def m (mock :result))
-(m "a" "b")
-(m "c")
-
+(def m (mock-returning [1 2]))
+(m "a" "b")               ; => 1
+(m "c")                   ; => 2
 (calls m)                 ; => [["a" "b"] ["c"]]
-(call-count m)            ; => 2
-(called? m)               ; => true
 (called-with? m "a" "b")  ; => true
-(called-once? m)          ; => false
-(never-called? m)         ; => false
 ```
-
-`reset-mock!` clears the recorded calls.
 
 {% <php_note> %}
 No mock classes: `$this->createMock(UserService::class)->method('find')->willReturn(['id' => 1])` becomes `(with-mocks [find-user (mock {:id 1})] ...)`. You mock the function itself.
@@ -349,4 +280,4 @@ A property is a rule that must hold for any input. `defspec` generates random in
 
 A failure reports `:shrunk-args`, `:original-args`, `:shrink-steps`, and a `:seed` to reproduce the run. Turn shrinking off with `^:no-shrink` metadata or `:shrink? false`.
 
-Generators include `gen/int`, `gen/string`, `gen/boolean`, `gen/keyword`, `gen/tuple`, `gen/vector-of`, `gen/map-of`, `gen/one-of`, `gen/frequency`, and `gen/such-that`. The [phel.test.gen API](/documentation/reference/api/test-gen/) lists them all, and the [phel.test API](/documentation/reference/api/test/) lists every assertion and helper.
+The [phel.test.gen API](/documentation/reference/api/test-gen/) lists every generator, and the [phel.test API](/documentation/reference/api/test/) lists every assertion and helper.

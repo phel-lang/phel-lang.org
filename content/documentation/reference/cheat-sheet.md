@@ -5,11 +5,7 @@ description = "The Phel forms and core functions you use every day, one screen p
 aliases = ["/documentation/cheat-sheet"]
 +++
 
-The forms and functions you reach for every day, one block per topic. For every function and its full signature, see the [API reference](/documentation/reference/api/). For how a form works, follow the link under each block.
-
-{% <callout kind="tip"> %}
-**AI agents:** load [Agentic Coding](/documentation/reference/agentic-coding) first for the truncation-safe rules and PHP-interop gotchas.
-{% </callout> %}
+The forms and functions you reach for every day, one block per topic. For every function and its full signature, see the [API reference](/documentation/reference/api/). For how a form works, see the [Language](/documentation/language/) pages.
 
 ## Basic syntax
 
@@ -30,7 +26,7 @@ my-var  my-module/fn          ; symbols
 #?(:phel a :default b)        ; reader conditional (.cljc)
 ```
 
-`#` and `#| |#` comments were removed: use `;`. See [Basic Types](/documentation/language/basic-types) and [Reader Shortcuts](/documentation/language/reader-shortcuts).
+`#` and `#| |#` comments were removed: use `;`.
 
 ## Data structures
 
@@ -56,8 +52,6 @@ my-var  my-module/fn          ; symbols
 (keys {:a 1})  (vals {:a 1})       ; => [:a] [1]
 ```
 
-See [Data Structures](/documentation/language/data-structures).
-
 ## Destructuring
 
 ```phel
@@ -68,7 +62,7 @@ See [Data Structures](/documentation/language/data-structures).
 (greet {:name "Alice"})                          ; => "Hello, Alice"
 ```
 
-Works in `let`, `fn`, `defn`, `loop`, and `for`. See [Destructuring](/documentation/language/destructuring).
+Works in `let`, `fn`, `defn`, `loop`, and `for`.
 
 ## Defining things
 
@@ -88,8 +82,6 @@ Works in `let`, `fn`, `defn`, `loop`, and `for`. See [Destructuring](/documentat
 (defmulti area :shape)             ; multimethod, dispatch on :shape
 (defmethod area :circle [{r :radius}] (* 3.14 r r))
 ```
-
-See [Global and Local Bindings](/documentation/language/global-and-local-bindings).
 
 ## Functions
 
@@ -113,8 +105,6 @@ See [Global and Local Bindings](/documentation/language/global-and-local-binding
 (defn ^int add [^int a ^int b] (+ a b))   ; PHP type declarations
 ```
 
-See [Functions and Recursion](/documentation/language/functions-and-recursion).
-
 ## Control flow
 
 ```phel
@@ -135,7 +125,7 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion).
 (dotimes [i 3] (print i))          ; prints 012
 ```
 
-`for` builds a vector. `foreach`, `doseq`, and `dotimes` run side effects. See [Control Flow](/documentation/language/control-flow).
+`for` builds a vector. `foreach`, `doseq`, and `dotimes` run side effects.
 
 ## Collections
 
@@ -164,7 +154,7 @@ See [Functions and Recursion](/documentation/language/functions-and-recursion).
 (every? pos? [1 2 3])              ; => true
 ```
 
-Sorted collections, set relations (`subseq`, `select`, `index`), and `phel.walk` helpers are in the [API reference](/documentation/reference/api/core/). See [Data Structures](/documentation/language/data-structures).
+Sorted collections, set relations (`subseq`, `select`, `index`), and `phel.walk` helpers are in the [API reference](/documentation/reference/api/core/).
 
 ## Lazy sequences
 
@@ -221,8 +211,6 @@ Sorted collections, set relations (`subseq`, `select`, `index`), and `phel.walk`
 (str/blank? "  ")                  ; => true
 ```
 
-Full list: [phel.string](/documentation/reference/api/string/).
-
 ## Regular expressions
 
 ```phel
@@ -264,8 +252,6 @@ Full list: [phel.string](/documentation/reference/api/string/).
 (ex-cause e)                       ; => wrapped exception or nil
 ```
 
-See [Error Handling](/documentation/language/error-handling).
-
 ## Structs and interfaces
 
 ```phel
@@ -278,8 +264,6 @@ See [Error Handling](/documentation/language/error-handling).
 (area (circle 2))                  ; => 12
 (:radius (circle 2))               ; => 2
 ```
-
-See [Interfaces](/documentation/language/interfaces).
 
 ## Protocols
 
@@ -298,7 +282,7 @@ Dispatch on the type of the first argument. Unlike interfaces, you can extend a 
 (satisfies? Describe (dog "Rex"))  ; => true
 ```
 
-A struct cannot implement a protocol inline: use `extend-type`. See [Interfaces](/documentation/language/interfaces).
+A struct cannot implement a protocol inline: use `extend-type`.
 
 ## Transducers
 
@@ -310,7 +294,7 @@ A struct cannot implement a protocol inline: use `extend-type`. See [Interfaces]
 (into [] cat [[1 2] [3]])          ; => [1 2 3]
 ```
 
-`map`, `filter`, `take`, `drop`, `partition-all` and others return a transducer when called without a collection. See [Transducers](/documentation/language/transducers).
+`map`, `filter`, `take`, `drop`, `partition-all` and others return a transducer when called without a collection.
 
 ## PHP interop
 
@@ -324,10 +308,8 @@ A struct cannot implement a protocol inline: use `extend-type`. See [Interfaces]
 | `DateTime/ATOM` | `DateTime::ATOM` |
 | `(php/aget arr 0)` | `$arr[0] ?? null` |
 | `(php/aset arr "k" "v")` | `$arr["k"] = "v"` |
-| `(to-php-array [1 2])` | `[1, 2]` |
+| `(to-array [1 2])` | `[1, 2]` |
 | `(php-array-to-map arr)` | Phel map from a PHP array |
-
-See [PHP Interop](/documentation/language/php-interop).
 
 ## Namespaces
 
@@ -340,77 +322,3 @@ See [PHP Interop](/documentation/language/php-interop).
   (:use DateTimeImmutable)                     ; PHP class
   (:use Some.Long.Name :as Short))
 ```
-
-See [Namespaces](/documentation/language/namespaces).
-
-## Testing
-
-```phel
-(ns my-app.tests
-  (:require phel.test :refer [deftest is are]))
-
-(deftest math-test
-  (is (= 4 (+ 2 2)) "optional message")
-  (is (thrown? Exception (throw (Exception. "boom"))))
-  (are [expected x] (= expected (inc x))
-    2 1
-    3 2))
-```
-
-```bash
-./vendor/bin/phel test                    # all tests
-./vendor/bin/phel test --filter math-test # by name
-```
-
-See [Testing](/documentation/guides/testing).
-
-## Async
-
-```phel
-(def f (async (+ 1 2)))
-(await f)                          ; => 3
-(await-all [(async 1) (async 2)])  ; => [1 2]
-(pmap inc [1 2 3])                 ; => [2 3 4]
-(force (delay (+ 1 2)))            ; => 3 (evaluated once, then cached)
-```
-
-See [Async](/documentation/language/async).
-
-## Arithmetic
-
-```phel
-(/ 10 3)                           ; => 10/3 (exact Ratio)
-(/ 10.0 3)                         ; => 3.3333333333333
-(quot 10 3)  (rem 10 3)            ; => 3 1
-(mod -10 3)                        ; => 2
-(** 2 10)                          ; => 1024
-(parse-long "42")                  ; => 42
-(parse-double "3.14")              ; => 3.14
-(min 3 1 2)  (max 3 1 2)           ; => 1 3
-```
-
-See [Numeric Tower](/documentation/language/numeric-tower).
-
-## REPL and debugging
-
-<!-- phel-test: skip -->
-```phel
-(doc map)                          ; docstring
-(source my-fn)                     ; source code as a string
-(macroexpand '(when true 1))       ; expand a macro
-(dbg (* w h))                      ; print [file:line] form => value, return value
-(inspect x)                        ; structural view of any value
-(break)                            ; pause in a sub-REPL over the local bindings
-(tap> {:event :login})             ; send a value to every tap
-```
-
-See [REPL](/documentation/tooling/repl) and [Debugging](/documentation/guides/debugging).
-
-## More in the API reference
-
-- Printing: `pr-str`, `prn`, `println-str` in [phel.core](/documentation/reference/api/core/)
-- Data walking: `postwalk`, `keywordize-keys` in [phel.walk](/documentation/reference/api/walk/)
-- Serialization: [phel.edn](/documentation/reference/api/edn/), [phel.transit](/documentation/reference/api/transit/), [phel.json](/documentation/reference/api/json/)
-- Hierarchies: `derive`, `isa?`, `ancestors` in [phel.core](/documentation/reference/api/core/)
-- Reflection: [phel.reflect](/documentation/reference/api/reflect/)
-- Tracing: `deftrace`, `dotrace` in [phel.trace](/documentation/reference/api/trace/)
