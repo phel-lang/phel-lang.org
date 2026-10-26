@@ -61,13 +61,10 @@
   font-weight: 600;
 }
 
-/* Sidebar section with toggle. Grid rows animate open/closed to the list's
-   real height, so a section with many pages is never clipped by a fixed
-   max-height cap. */
+/* Sidebar section with toggle. Opens and closes instantly. */
 .sidebar-section {
   display: grid;
   grid-template-rows: auto 1fr;
-  transition: grid-template-rows var(--duration-normal, 0.25s) var(--ease-out);
 }
 
 .sidebar-section.collapsed {
@@ -144,21 +141,11 @@
 .sidebar-subsection {
   min-height: 0;
   overflow: hidden;
-  opacity: 1;
-  visibility: visible;
-  transition:
-    opacity var(--duration-fast, 0.15s) var(--ease-out),
-    visibility 0s;
 }
 
-/* visibility (not only opacity) takes the hidden links out of the tab
-   order; it flips after the collapse animation has finished. */
+/* visibility takes the hidden links out of the tab order. */
 .sidebar-section.collapsed .sidebar-subsection {
-  opacity: 0;
   visibility: hidden;
-  transition:
-    opacity var(--duration-fast, 0.15s) var(--ease-out),
-    visibility 0s linear var(--duration-normal, 0.25s);
 }
 
 .sidebar-section:not(.collapsed) .subsection-toggle svg {
