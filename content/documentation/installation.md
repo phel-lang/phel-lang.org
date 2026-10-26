@@ -87,8 +87,8 @@ bash <(curl -sL https://phel-lang.org/get) repl
 
 What it does:
 
-- Downloads a [static PHP build](https://github.com/crazywhalecc/static-php-cli) and the Phel PHAR into `${TMPDIR:-/tmp}/phel-quick`
-- Checks the PHP tarball against a SHA-256 pinned in the script
+- Downloads a [static PHP build](https://github.com/crazywhalecc/static-php-cli) and the Phel PHAR into a private temporary cache
+- Checks the default PHP tarball against a SHA-256 pinned in the script, using `shasum` or `sha256sum`
 - Writes a small `phel` wrapper next to them
 - Runs your command
 
@@ -118,15 +118,19 @@ Only `phel` goes on `PATH`. Your system `php`, if you have one, is untouched.
 | Variable       | Default                      | Effect                                |
 |----------------|------------------------------|---------------------------------------|
 | `PHEL_VERSION` | `latest`                     | Pin a Phel release, e.g. `0.50.0`     |
-| `PHP_VERSION`  | `8.4.18`                     | Pin a static PHP build                |
-| `PREFIX`       | `${TMPDIR:-/tmp}/phel-quick` | Where everything is downloaded        |
+| `PHP_VERSION`  | `8.5.8`                      | Pin a static PHP build                |
+| `PREFIX`       | See below                    | Where everything is downloaded        |
 | `PHEL_FORCE`   | `0`                          | `1` re-downloads instead of reusing   |
 
 ```bash
-PHEL_VERSION=0.50.0 PHP_VERSION=8.5.8 bash <(curl -sL https://phel-lang.org/get) repl
+PHEL_VERSION=0.50.0 PHP_VERSION=8.4.18 bash <(curl -sL https://phel-lang.org/get) repl
 ```
 
 > `PHP_VERSION` must name a build static-php-cli has actually published, and they lag upstream PHP. Check the [listing](https://dl.static-php.dev/static-php-cli/common/). Overriding it skips checksum verification, since only the default build has a pinned sum.
+
+When `TMPDIR` is set, `PREFIX` defaults to `${TMPDIR%/}/phel-quick`. Otherwise it defaults to `/tmp/phel-quick-$UID`, keeping caches belonging to different users separate. The cache directory is restricted to its owner. `latest` is resolved on each launch and cached under its concrete Phel version, so a newly released version is picked up without `PHEL_FORCE=1`. If the release cannot be resolved, the newest concrete version already in the cache is used.
+
+Connections time out after 10 seconds. Artifact downloads are retried if they remain below 1 KiB/s for 30 seconds, and partial downloads are removed if the transfer ultimately fails.
 
 ### Read it before you run it
 
@@ -151,7 +155,7 @@ Everything Phel itself does works the same: `repl`, `run`, `test`, `eval`, `buil
 Remove it when you are done:
 
 ```bash
-rm -rf "${TMPDIR:-/tmp}/phel-quick"
+rm -rf "${TMPDIR:-/tmp}/phel-quick"*
 ```
 
 ### Community alternative
