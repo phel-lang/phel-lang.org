@@ -1,8 +1,12 @@
 # https://help.github.com/en/categories/automating-your-workflow-with-github-actions
 
 on:
-  - pull_request
-  - push
+  pull_request:
+  push:
+  # The static PHP build the quick-launch script pins can be pulled upstream;
+  # a weekly run notices that without waiting for a push.
+  schedule:
+    - cron: '0 6 * * 1'
 
 name: CI
 
@@ -46,6 +50,193 @@ jobs:
 
       - name: Run documentation snippets against the Phel runtime
         run: composer test:snippets
+
+  quick-launch:
+    name: Quick launch script on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Lint the script
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          shellcheck static/get
+          grep -Fq -- '--connect-timeout 10 --speed-limit 1024 --speed-time 30' static/get
+          grep -Fq -- '--connect-timeout 10 --max-time 30' static/get
+
+      - name: Parse the tagged URL from the redirect chain
+        run: |
+          definitions="$(sed '/^if _phel_get_sourced; then/,$d' static/get)"
+          url="$(
+            printf '%s\r\n' \
+              'location: https://github.com/phel-lang/phel-lang/releases/latest/download/phel.phar' \
+              'Location: https://github.com/phel-lang/phel-lang/releases/download/v0.51.0/phel.phar' \
+              'location: https://release-assets.githubusercontent.com/github-production-release-asset/blob?token=redacted' \
+            | bash -c 'eval "$1"; _phel_get_latest_url_from_headers' _ "$definitions"
+          )"
+          test "$url" = 'https://github.com/phel-lang/phel-lang/releases/download/v0.51.0/phel.phar'
+
+      - name: Seed the legacy latest cache path
+        run: |
+          if [ -n "${TMPDIR:-}" ]; then
+            prefix="${TMPDIR%/}/phel-quick"
+          else
+            prefix="/tmp/phel-quick-$(id -u)"
+          fi
+          mkdir -p "$prefix/phel-latest"
+          printf stale > "$prefix/phel-latest/phel.phar"
+
+      - name: Concurrently download PHP and Phel, report the version
+        run: |
+          run_dir="$(mktemp -d)"
+          bash static/get --version >"$run_dir/first.out" 2>"$run_dir/first.err" &
+          first_pid=$!
+          bash static/get --version >"$run_dir/second.out" 2>"$run_dir/second.err" &
+          second_pid=$!
+          if ! wait "$first_pid"; then
+            cat "$run_dir/first.err"
+            exit 1
+          fi
+          if ! wait "$second_pid"; then
+            cat "$run_dir/second.err"
+            exit 1
+          fi
+          out="$(cat "$run_dir/first.out")"
+          test "$(cat "$run_dir/second.out")" = "$out"
+          case "$out" in
+            'Phel v'*) version="${out#Phel v}" ;;
+            *) echo "unexpected version output: $out"; exit 1 ;;
+          esac
+
+          if [ -n "${TMPDIR:-}" ]; then
+            prefix="${TMPDIR%/}/phel-quick"
+          else
+            prefix="/tmp/phel-quick-$(id -u)"
+          fi
+          test ! -L "$prefix"
+          test -O "$prefix"
+          if [ "$RUNNER_OS" = macOS ]; then
+            mode="$(stat -f '%Lp' "$prefix")"
+          else
+            mode="$(stat -c '%a' "$prefix")"
+          fi
+          test "$mode" = 700 || { echo "expected cache mode 700, got: $mode"; exit 1; }
+          test "$(cat "$prefix/phel-latest/phel.phar")" = stale
+          test -f "$prefix/phel-$version/phel.phar"
+          for staging_path in \
+            "$prefix".php-download.* \
+            "$prefix".phar-download.* \
+            "$prefix".wrapper.*; do
+            test ! -e "$staging_path"
+          done
+          printf '%s\n' "$version" > "$RUNNER_TEMP/phel-latest-version"
+
+      - name: Evaluate an expression
+        run: |
+          out="$(bash static/get eval '(+ 1 2)' | perl -pe 's/\e\[[0-9;]*m//g')"
+          test "$out" = "3" || { echo "expected 3, got: $out"; exit 1; }
+
+      - name: Reuse the cached download
+        run: |
+          log="$(mktemp)"
+          bash static/get --version 2>"$log"
+          if grep -q 'downloading' "$log"; then
+            echo "warm launch unexpectedly downloaded an artifact"
+            cat "$log"
+            exit 1
+          fi
+
+      - name: Reject an unsafe cache symlink
+        run: |
+          cache_target="$(mktemp -d)"
+          cache_link="$cache_target-link"
+          ln -s "$cache_target" "$cache_link"
+          if PREFIX="$cache_link" bash static/get --version >/dev/null 2>&1; then
+            echo "accepted a symlinked cache root"
+            exit 1
+          fi
+          ln -s "$cache_target" "$cache_target/untrusted-entry"
+          if PREFIX="$cache_target" bash static/get --version >/dev/null 2>&1; then
+            echo "accepted a cache containing a symlink"
+            exit 1
+          fi
+
+      - name: Require a checksum command for the pinned PHP build
+        run: |
+          tool_dir="$(mktemp -d)"
+          for command_name in chmod curl find id mkdir mktemp mv tar uname; do
+            ln -s "$(command -v "$command_name")" "$tool_dir/$command_name"
+          done
+          if out="$(PATH="$tool_dir" PREFIX="$RUNNER_TEMP/phel-no-sha" /bin/bash static/get --version 2>&1)"; then
+            echo "accepted a pinned PHP archive without a checksum command"
+            exit 1
+          fi
+          case "$out" in
+            *'missing required SHA-256 command'*) ;;
+            *) echo "unexpected failure: $out"; exit 1 ;;
+          esac
+
+      - name: Sourced mode puts phel on PATH (bash)
+        run: bash -c 'source static/get && phel --version'
+
+      - name: Sourced mode puts phel on PATH (zsh)
+        if: runner.os == 'macOS'
+        run: zsh -c 'source static/get && phel --version'
+
+      - name: Pinning PHEL_VERSION resolves that release
+        run: |
+          out="$(PHEL_VERSION=0.50.0 bash static/get --version)"
+          case "$out" in *0.50.0*) ;; *) echo "expected 0.50.0, got: $out"; exit 1 ;; esac
+
+      - name: Offline latest uses the newest concrete cache
+        run: |
+          expected="$(cat "$RUNNER_TEMP/phel-latest-version")"
+          log="$(mktemp)"
+          out="$(
+            HTTPS_PROXY=http://127.0.0.1:9 \
+            https_proxy=http://127.0.0.1:9 \
+            ALL_PROXY=http://127.0.0.1:9 \
+            all_proxy=http://127.0.0.1:9 \
+            NO_PROXY= no_proxy= \
+            bash static/get --version 2>"$log"
+          )"
+          case "$out" in
+            *"$expected"*) ;;
+            *) echo "expected cached $expected, got: $out"; exit 1 ;;
+          esac
+          grep -q "using cached Phel $expected" "$log"
+
+      - name: A failed download must not abort the sourcing shell
+        run: |
+          out="$(bash -c 'PHP_VERSION=9.9.9 source static/get; echo still-alive' 2>/dev/null)"
+          case "$out" in *still-alive*) ;; *) echo "sourcing killed the shell"; exit 1 ;; esac
+          if [ -n "${TMPDIR:-}" ]; then
+            prefix="${TMPDIR%/}/phel-quick"
+          else
+            prefix="/tmp/phel-quick-$(id -u)"
+          fi
+          for staging_path in \
+            "$prefix".php-download.* \
+            "$prefix".phar-download.* \
+            "$prefix".wrapper.*; do
+            test ! -e "$staging_path"
+          done
+
+      - name: Sourced commands preserve their failure status
+        run: |
+          direct_status=0
+          bash static/get command-that-does-not-exist >/dev/null 2>&1 || direct_status=$?
+          sourced_status=0
+          bash -c 'source static/get command-that-does-not-exist' >/dev/null 2>&1 || sourced_status=$?
+          test "$direct_status" -ne 0 || { echo "test command unexpectedly succeeded"; exit 1; }
+          test "$sourced_status" -eq "$direct_status" || {
+            echo "expected status $direct_status, got: $sourced_status"
+            exit 1
+          }
 
   build:
     name: Build site

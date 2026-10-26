@@ -9,7 +9,7 @@ description = "Create a Phel project, try the REPL, run your first file, and lea
 - **PHP 8.5+** (`php -v`)
 - **[Composer](https://getcomposer.org/)** (`composer --version`)
 
-No PHP on your machine, or you want the PHAR, Docker, or Nix? See [Installation](/documentation/installation/).
+No PHP on your machine? [Quick launch](/documentation/installation/#quick-launch-no-php-no-docker) runs Phel with one command. For the PHAR, Docker, or Nix, see [Installation](/documentation/installation/).
 
 ## Create a project
 

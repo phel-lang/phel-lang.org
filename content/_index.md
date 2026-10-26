@@ -17,6 +17,7 @@ aliases = ["/documentation/why-phel/"]
       <h2 id="try-it-in-30-seconds" class="ph-console-title">Try it in 30 seconds</h2>
       <div class="ph-console-tabs" role="tablist" aria-label="Install Phel">
         <button class="homepage-tab-btn is-active" data-tab="docker" role="tab" aria-selected="true" tabindex="0">Docker</button>
+        <button class="homepage-tab-btn" data-tab="shell" role="tab" aria-selected="false" tabindex="-1">Shell</button>
         <button class="homepage-tab-btn" data-tab="composer" role="tab" aria-selected="false" tabindex="-1">Composer</button>
         <button class="homepage-tab-btn" data-tab="phar" role="tab" aria-selected="false" tabindex="-1">PHAR</button>
       </div>
@@ -30,6 +31,16 @@ aliases = ["/documentation/why-phel/"]
 docker run --rm -it php:8.5-cli sh -c \
   "curl -sL https://phel-lang.org/phar -o /tmp/phel.phar \
   && php /tmp/phel.phar repl"
+```
+
+  </div>
+
+  <div class="homepage-tab-panel" data-panel="shell" role="tabpanel" hidden>
+
+<p class="ph-console-caption">No Docker, no PHP, no root. Linux and macOS. <a href="/get">Read the script</a> first.</p>
+
+```bash
+bash <(curl -sL https://phel-lang.org/get) repl
 ```
 
   </div>

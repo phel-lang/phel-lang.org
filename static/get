@@ -1,0 +1,421 @@
+#!/usr/bin/env bash
+# shellcheck shell=bash
+#
+# Phel quick launch: a REPL without PHP, Composer or Docker.
+#
+#   bash <(curl -sL https://phel-lang.org/get) repl   # one-off REPL
+#   source <(curl -sL https://phel-lang.org/get)      # put `phel` on PATH for this shell
+#
+# Downloads a static PHP build and the Phel phar into a temp directory. Nothing
+# is installed system-wide, nothing needs root. Remove it all with:
+#
+#   rm -rf "${TMPDIR:-/tmp}/phel-quick"*
+#
+# Knobs: PHEL_VERSION (default latest), PHP_VERSION, PREFIX, PHEL_FORCE=1.
+#
+# MIT licensed. Source: https://github.com/phel-lang/phel-lang.org/blob/master/static/get
+# The one-liner approach follows ingydotnet's clojure.cc / in-1.cc.
+
+_PHEL_GET_PHP_DEFAULT=8.5.8
+
+_phel_get_say() { printf '[phel] %s\n' "$*" >&2; }
+
+# static-php-cli publishes no checksum files, so the sums for the default build
+# are pinned here. Bumping _PHEL_GET_PHP_DEFAULT means re-pinning all four.
+_phel_get_sha256() {
+  [ "$1" = "$_PHEL_GET_PHP_DEFAULT" ] || return 0
+  case "$2" in
+    linux-x86_64)  echo 517a18e0f0874de35669fe134eb3c52508e128a6d1da5bf890760cb800ada410 ;;
+    linux-aarch64) echo af995ef6b3187b39932a00714dfb97e44bfa40a9243c4c29f61f19d583950753 ;;
+    macos-x86_64)  echo 05751000c6643f82e8377ed19d55bc159f84bbed46ace1fcc6f62be9866c787c ;;
+    macos-aarch64) echo cba9bd8b38b51ef2c7cebf02af689e4481bbd07f65edc0b63d3a43b04e0c9db7 ;;
+  esac
+}
+
+_phel_get_sha256_of() {
+  if command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$1" | cut -d' ' -f1
+  elif command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$1" | cut -d' ' -f1
+  else
+    return 1
+  fi
+}
+
+_phel_get_fetch() {
+  curl -fsSL --connect-timeout 10 --speed-limit 1024 --speed-time 30 \
+    --retry 3 --retry-delay 2 -o "$1" "$2"
+}
+
+_phel_get_check_path() {
+  if [ -L "$1" ]; then
+    _phel_get_say "refusing to use symlinked cache path: $1"
+    return 1
+  fi
+  if [ -e "$1" ] && [ ! -O "$1" ]; then
+    _phel_get_say "refusing to use cache path owned by another user: $1"
+    return 1
+  fi
+}
+
+_phel_get_prepare_prefix() {
+  local prefix="$1" old_umask result_code unsafe_path
+
+  _phel_get_check_path "$prefix" || return 1
+  if [ ! -e "$prefix" ]; then
+    old_umask="$(umask)"
+    umask 077
+    mkdir -p "$prefix"
+    result_code=$?
+    umask "$old_umask"
+    [ "$result_code" -eq 0 ] || return "$result_code"
+  fi
+  _phel_get_check_path "$prefix" || return 1
+  if [ ! -d "$prefix" ]; then
+    _phel_get_say "cache path is not a directory: $prefix"
+    return 1
+  fi
+  chmod 700 "$prefix" || return 1
+  if ! unsafe_path="$(find "$prefix" -type l -print -quit)"; then
+    _phel_get_say "could not inspect cache paths under: $prefix"
+    return 1
+  fi
+  if [ -n "$unsafe_path" ]; then
+    _phel_get_say "refusing to use cache containing a symlink: $unsafe_path"
+    return 1
+  fi
+  if ! unsafe_path="$(find "$prefix" ! -user "$(id -u)" -print -quit)"; then
+    _phel_get_say "could not inspect cache ownership under: $prefix"
+    return 1
+  fi
+  if [ -n "$unsafe_path" ]; then
+    _phel_get_say "refusing to use cache path owned by another user: $unsafe_path"
+    return 1
+  fi
+}
+
+_phel_get_latest_url_from_headers() {
+  local line value url
+
+  while IFS= read -r line || [ -n "$line" ]; do
+    line="${line%$'\r'}"
+    case "$line" in
+      [Ll][Oo][Cc][Aa][Tt][Ii][Oo][Nn]:*)
+        value="${line#*:}"
+        value="${value# }"
+        value="${value%%\?*}"
+        case "$value" in
+          https://github.com/phel-lang/phel-lang/releases/download/v*/phel.phar)
+            url="$value"
+            ;;
+        esac
+        ;;
+    esac
+  done
+  [ -n "$url" ] || return 1
+  printf '%s\n' "$url"
+}
+
+_phel_get_cached_latest() {
+  # shellcheck disable=SC2016 # The variables below belong to PHP, not the shell.
+  "$2" -r '
+    $best = null;
+    foreach (glob($argv[1] . "/phel-*/phel.phar") ?: [] as $phar) {
+        $version = substr(basename(dirname($phar)), 5);
+        if (!preg_match("/^[0-9][0-9A-Za-z._-]*$/D", $version)) {
+            continue;
+        }
+        if ($best === null || version_compare($version, $best, ">")) {
+            $best = $version;
+        }
+    }
+    if ($best === null) {
+        exit(1);
+    }
+    echo $best;
+  ' "$1"
+}
+
+_phel_get_resolve_latest() {
+  local prefix="$1" php_bin="$2" force="$3"
+  local headers url version_path cached_version
+
+  if headers="$(curl -fsSLI --connect-timeout 10 --max-time 30 \
+    --retry 3 --retry-delay 2 https://phel-lang.org/phar)" && \
+    url="$(printf '%s\n' "$headers" | _phel_get_latest_url_from_headers)"; then
+    :
+  elif [ "$force" != 1 ] && \
+    cached_version="$(_phel_get_cached_latest "$prefix" "$php_bin")"; then
+    _PHEL_GET_PHEL_VERSION="$cached_version"
+    _PHEL_GET_PHAR_URL=
+    _phel_get_say "could not resolve the latest Phel release, using cached Phel $cached_version"
+    return 0
+  else
+    _phel_get_say "could not resolve the latest Phel release and no cached release is available"
+    return 1
+  fi
+  case "$url" in
+    */releases/download/v*/phel.phar)
+      version_path="${url%/phel.phar}"
+      _PHEL_GET_PHEL_VERSION="${version_path##*/v}"
+      ;;
+    *)
+      _phel_get_say "latest Phel release resolved to an unexpected URL: $url"
+      return 1
+      ;;
+  esac
+  case "$_PHEL_GET_PHEL_VERSION" in
+    ''|*[!0-9A-Za-z._-]*)
+      _phel_get_say "latest Phel release has an invalid version"
+      return 1
+      ;;
+  esac
+  _PHEL_GET_PHAR_URL="$url"
+}
+
+_phel_get_verify() {
+  local file="$1" want="$2" got
+  if [ -z "$want" ]; then
+    _phel_get_say "no pinned checksum for this build, skipping verification"
+    return 0
+  fi
+  if ! got="$(_phel_get_sha256_of "$file")"; then
+    _phel_get_say "missing required SHA-256 command: shasum or sha256sum"
+    rm -f "$file"
+    return 1
+  fi
+  if [ "$got" != "$want" ]; then
+    _phel_get_say "checksum mismatch, refusing to run"
+    _phel_get_say "  expected $want"
+    _phel_get_say "  got      $got"
+    rm -f "$file"
+    return 1
+  fi
+}
+
+_phel_get_main() {
+  local php_version="${PHP_VERSION:-$_PHEL_GET_PHP_DEFAULT}"
+  local phel_version="${PHEL_VERSION:-latest}"
+  local force="${PHEL_FORCE:-0}"
+  local tmp default_prefix prefix os arch platform cmd cache_path
+
+  for cmd in chmod curl find id mkdir mktemp mv tar uname; do
+    if ! command -v "$cmd" >/dev/null 2>&1; then
+      _phel_get_say "missing required command: $cmd"
+      return 1
+    fi
+  done
+
+  if [ -n "${TMPDIR:-}" ]; then
+    tmp="${TMPDIR%/}"
+    default_prefix="$tmp/phel-quick"
+  else
+    tmp=/tmp
+    default_prefix="$tmp/phel-quick-$(id -u)"
+  fi
+  prefix="${PREFIX:-$default_prefix}"
+  prefix="${prefix%/}"
+  _phel_get_prepare_prefix "$prefix" || return 1
+
+  case "$(uname -s)" in
+    Darwin) os=macos ;;
+    Linux)  os=linux ;;
+    *)
+      _phel_get_say "unsupported OS: $(uname -s)"
+      _phel_get_say "use WSL, or Docker: https://phel-lang.org/documentation/installation/"
+      return 1 ;;
+  esac
+  case "$(uname -m)" in
+    arm64|aarch64) arch=aarch64 ;;
+    x86_64|amd64)  arch=x86_64 ;;
+    *)
+      _phel_get_say "unsupported architecture: $(uname -m)"
+      _phel_get_say "see https://phel-lang.org/documentation/installation/ for other methods"
+      return 1 ;;
+  esac
+  platform="$os-$arch"
+
+  local php_dir="$prefix/php-$php_version"
+  local php_bin="$php_dir/php"
+  local bin_dir="$prefix/bin"
+  local wrapper="$bin_dir/phel"
+
+  for cache_path in "$php_dir" "$php_bin" "$bin_dir" "$wrapper"; do
+    _phel_get_check_path "$cache_path" || return 1
+  done
+
+  if [ ! -x "$php_bin" ] || [ "$force" = 1 ]; then
+    local php_stage tarball candidate_php php_sha256
+    php_sha256="$(_phel_get_sha256 "$php_version" "$platform")"
+    if [ -n "$php_sha256" ] && \
+      ! command -v shasum >/dev/null 2>&1 && \
+      ! command -v sha256sum >/dev/null 2>&1; then
+      _phel_get_say "missing required SHA-256 command: shasum or sha256sum"
+      return 1
+    fi
+    _phel_get_say "downloading PHP $php_version for $platform"
+    mkdir -p "$php_dir" || return 1
+    php_stage="$(mktemp -d "$prefix.php-download.XXXXXX")" || return 1
+    tarball="$php_stage/php.tar.gz"
+    candidate_php="$php_stage/php"
+    if ! _phel_get_fetch "$tarball" \
+      "https://dl.static-php.dev/static-php-cli/common/php-$php_version-cli-$platform.tar.gz"; then
+      _phel_get_say "could not download PHP $php_version for $platform"
+      _phel_get_say "static-php-cli lags upstream PHP; pick a published build with PHP_VERSION=..."
+      _phel_get_say "listing: https://dl.static-php.dev/static-php-cli/common/"
+      rm -rf "$php_stage"
+      rmdir "$php_dir" 2>/dev/null
+      return 1
+    fi
+    if ! _phel_get_verify "$tarball" "$php_sha256"; then
+      rm -rf "$php_stage"
+      rmdir "$php_dir" 2>/dev/null
+      return 1
+    fi
+    if ! tar xzf "$tarball" -C "$php_stage"; then
+      rm -rf "$php_stage"
+      return 1
+    fi
+    rm -f "$tarball"
+    if ! _phel_get_check_path "$candidate_php" || [ ! -x "$candidate_php" ] || \
+      ! "$candidate_php" -v 2>/dev/null | grep -q "PHP $php_version"; then
+      _phel_get_say "the downloaded PHP does not report version $php_version, refusing to run"
+      rm -rf "$php_stage"
+      return 1
+    fi
+    if ! mv -f "$candidate_php" "$php_bin"; then
+      rm -rf "$php_stage"
+      return 1
+    fi
+    rm -rf "$php_stage"
+  fi
+
+  _phel_get_check_path "$php_bin" || return 1
+
+  if ! "$php_bin" -v 2>/dev/null | grep -q "PHP $php_version"; then
+    _phel_get_say "the downloaded PHP does not report version $php_version, refusing to run"
+    return 1
+  fi
+
+  if [ "$phel_version" = latest ]; then
+    _phel_get_resolve_latest "$prefix" "$php_bin" "$force" || return 1
+    phel_version="$_PHEL_GET_PHEL_VERSION"
+    local phar_url="$_PHEL_GET_PHAR_URL"
+  else
+    local phar_url="https://github.com/phel-lang/phel-lang/releases/download/v$phel_version/phel.phar"
+  fi
+  local phar_dir="$prefix/phel-$phel_version"
+  local phar="$phar_dir/phel.phar"
+
+  for cache_path in "$phar_dir" "$phar"; do
+    _phel_get_check_path "$cache_path" || return 1
+  done
+
+  if [ ! -f "$phar" ] || [ "$force" = 1 ]; then
+    local phar_stage phar_tmp
+    _phel_get_say "downloading Phel ($phel_version)"
+    mkdir -p "$phar_dir" || return 1
+    phar_stage="$(mktemp -d "$prefix.phar-download.XXXXXX")" || return 1
+    phar_tmp="$phar_stage/phel.phar"
+    if ! _phel_get_fetch "$phar_tmp" "$phar_url"; then
+      _phel_get_say "could not download the Phel phar from $phar_url"
+      _phel_get_say "releases: https://github.com/phel-lang/phel-lang/releases"
+      rm -rf "$phar_stage"
+      rmdir "$phar_dir" 2>/dev/null
+      return 1
+    fi
+    if ! _phel_get_check_path "$phar_tmp" || \
+      ! (cd "$phar_stage" && "$php_bin" "$phar_tmp" --version >/dev/null 2>&1); then
+      _phel_get_say "the downloaded Phel phar does not run, refusing to continue"
+      rm -rf "$phar_stage"
+      return 1
+    fi
+    if ! mv -f "$phar_tmp" "$phar"; then
+      rm -rf "$phar_stage"
+      return 1
+    fi
+    rm -rf "$phar_stage"
+  fi
+
+  _phel_get_check_path "$phar" || return 1
+
+  # Checked from $prefix, not the caller's cwd: a project's phel-config.php is
+  # loaded on startup and its errors would look like a broken download.
+  if ! (cd "$prefix" && "$php_bin" "$phar" --version >/dev/null 2>&1); then
+    _phel_get_say "the downloaded Phel phar does not run, refusing to continue"
+    return 1
+  fi
+
+  mkdir -p "$bin_dir" || return 1
+  local wrapper_tmp
+  wrapper_tmp="$(mktemp "$prefix.wrapper.XXXXXX")" || return 1
+  # The static `common` PHP build has no readline, so the REPL falls back to
+  # plain fgets. rlwrap restores history and line editing when it is installed.
+  if ! cat > "$wrapper_tmp" <<WRAPPER
+#!/bin/sh
+# Generated by https://phel-lang.org/get - safe to delete.
+if command -v rlwrap >/dev/null 2>&1 && { [ "\$#" -eq 0 ] || [ "\$1" = repl ]; }; then
+  exec rlwrap "$php_bin" "$phar" "\$@"
+fi
+exec "$php_bin" "$phar" "\$@"
+WRAPPER
+  then
+    rm -f "$wrapper_tmp"
+    return 1
+  fi
+  if ! chmod 700 "$wrapper_tmp" || ! mv -f "$wrapper_tmp" "$wrapper"; then
+    rm -f "$wrapper_tmp"
+    return 1
+  fi
+
+  _PHEL_GET_BIN="$bin_dir"
+}
+
+_phel_get_sourced() {
+  if [ -n "${BASH_SOURCE+x}" ]; then
+    [ "${BASH_SOURCE[0]}" != "$0" ]
+    return
+  fi
+  case "${ZSH_EVAL_CONTEXT-}" in
+    *:file*) return 0 ;;
+  esac
+  return 1
+}
+
+_phel_get_cleanup() {
+  local result_code="$1"
+  unset -f _phel_get_say _phel_get_sha256 _phel_get_sha256_of _phel_get_fetch \
+    _phel_get_check_path _phel_get_prepare_prefix _phel_get_latest_url_from_headers \
+    _phel_get_cached_latest _phel_get_resolve_latest _phel_get_verify \
+    _phel_get_main _phel_get_sourced _phel_get_cleanup 2>/dev/null
+  unset _PHEL_GET_BIN _PHEL_GET_PHAR_URL _PHEL_GET_PHEL_VERSION \
+    _PHEL_GET_PHP_DEFAULT _phel_get_status
+  return "$result_code"
+}
+
+if _phel_get_sourced; then
+  if _phel_get_main; then
+    _phel_get_status=0
+  else
+    _phel_get_status=$?
+  fi
+  if [ "$_phel_get_status" -eq 0 ]; then
+    case ":$PATH:" in
+      *":$_PHEL_GET_BIN:"*) ;;
+      *) PATH="$_PHEL_GET_BIN:$PATH"; export PATH ;;
+    esac
+    _phel_get_say "phel is on PATH for this shell: $_PHEL_GET_BIN/phel"
+    if [ "$#" -gt 0 ]; then
+      if "$_PHEL_GET_BIN/phel" "$@"; then
+        _phel_get_status=0
+      else
+        _phel_get_status=$?
+      fi
+    fi
+  fi
+  _phel_get_cleanup "$_phel_get_status"
+  return $?
+fi
+
+_phel_get_main || exit $?
+exec "$_PHEL_GET_BIN/phel" "$@"

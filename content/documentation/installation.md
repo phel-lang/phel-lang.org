@@ -1,10 +1,10 @@
 +++
 title = "Installation"
 weight = 3
-description = "Install Phel with Composer, the PHAR, Docker, or Nix, then check your setup with phel doctor."
+description = "Install Phel with Composer, the PHAR, a one-line script, Docker, or Nix, then check your setup with phel doctor."
 +++
 
-All methods need **PHP 8.5+**, except Docker, which brings its own PHP.
+All methods need **PHP 8.5+**, except [Quick launch](#quick-launch-no-php-no-docker) and Docker, which bring their own PHP.
 
 ## Which method?
 
@@ -13,7 +13,8 @@ All methods need **PHP 8.5+**, except Docker, which brings its own PHP.
 | New project with tests + scripts   | [Getting Started](/documentation/getting-started/) |
 | Add to existing Composer project   | [Composer require](#composer-recommended)          |
 | Run a single file, no setup        | [PHAR](#phar-no-project-setup)                    |
-| **No PHP installed** (Docker only) | [Docker](#docker-no-php-required)                 |
+| **No PHP**, no Docker              | [Quick launch](#quick-launch-no-php-no-docker)    |
+| **No PHP**, Docker available       | [Docker](#docker-no-php-required)                 |
 | Reproducible dev shells            | [Nix](#nix)                                       |
 
 ## Composer (recommended)
@@ -51,6 +52,41 @@ chmod +x phel.phar
 sudo mv phel.phar /usr/local/bin/phel
 phel repl
 ```
+
+## Quick launch (no PHP, no Docker)
+
+One command, no PHP and no container. Linux and macOS, x86_64 and arm64.
+
+```bash
+bash <(curl -sL https://phel-lang.org/get) repl
+```
+
+It downloads a [static PHP build](https://github.com/crazywhalecc/static-php-cli) and the Phel PHAR into a private temporary folder, checks the PHP download against a pinned SHA-256, and runs your command. Nothing needs root. Later runs reuse the download.
+
+Do not pipe it into bash (`curl ... | bash`): bash takes over stdin and the REPL exits at once. On other shells, download the script first with `curl -sL https://phel-lang.org/get -o /tmp/phel-get`, then run `bash /tmp/phel-get repl`.
+
+To keep `phel` on `PATH` for the shell session:
+
+```bash
+source <(curl -sL https://phel-lang.org/get)
+phel run src/main.phel
+```
+
+| Variable | Default | Effect |
+|---|---|---|
+| `PHEL_VERSION` | `latest` | Pin a Phel release, e.g. `0.50.0` |
+| `PHP_VERSION` | `8.5.8` | Pin a [static PHP build](https://dl.static-php.dev/static-php-cli/common/). Only the default has a pinned checksum |
+| `PREFIX` | `${TMPDIR}/phel-quick`, or `/tmp/phel-quick-$UID` | Where everything is downloaded |
+| `PHEL_FORCE` | `0` | `1` downloads again instead of reusing |
+
+Differences from a normal install:
+
+- **No readline**, so the REPL has no history or arrow keys. Install `rlwrap` and the script uses it.
+- **No OPcache**, so each run compiles again.
+- **Fixed extensions:** `json`, `mbstring`, `curl`, `openssl`, `gd`, `gmp`, `bcmath`, `pdo_mysql`, `pdo_pgsql`, `pdo_sqlite`, `redis`, `soap`, `sockets` and `zip`. No PECL, no `php.ini`.
+- **No Windows.** Use WSL or [Docker](#docker-no-php-required).
+
+The script runs on your machine, so [read it first](https://github.com/phel-lang/phel-lang.org/blob/master/static/get). Remove everything with `rm -rf "${TMPDIR:-/tmp}/phel-quick"*`.
 
 ## Docker (no PHP required)
 
