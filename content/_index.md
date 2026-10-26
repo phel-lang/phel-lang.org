@@ -8,10 +8,9 @@ aliases = ["/documentation/why-phel/"]
   <h1 id="ph-title" class="ph-title">Functional Lisp <span class="ph-title-accent">for PHP developers</span></h1>
   <p class="ph-lede">Phel compiles a Lisp dialect to PHP. Macros, persistent data structures, and REPL-driven development on any PHP host.</p>
   <div class="ph-actions">
-    <a href="/repl/" class="ph-sx ph-sx--primary"><span class="ph-paren" aria-hidden="true">(</span>Try it in your browser<span class="ph-paren" aria-hidden="true">)</span></a>
-    <a href="/documentation/" class="ph-sx"><span class="ph-paren" aria-hidden="true">(</span>Read the docs<span class="ph-paren" aria-hidden="true">)</span></a>
+    <a href="/documentation/getting-started/" class="ph-sx ph-sx--primary"><span class="ph-paren" aria-hidden="true">(</span>Get started<span class="ph-paren" aria-hidden="true">)</span></a>
+    <a href="/practice/" class="ph-sx"><span class="ph-paren" aria-hidden="true">(</span>Practice exercises<span class="ph-paren" aria-hidden="true">)</span></a>
   </div>
-  <p class="ph-note">The browser REPL downloads about 80 MB. Desktop recommended.</p>
 
   <div class="ph-console ph-frame" data-homepage-tabs>
     <div class="ph-console-bar">
@@ -74,11 +73,11 @@ php phel.phar repl
 
 ## Why Phel? { #why-phel }
 
-<p><strong>Against vanilla PHP: more expression, same runtime.</strong> Macros, persistent collections, and a REPL, without leaving the PHP ecosystem. Composer, FPM, shared hosting all work.</p>
+<p><strong>Coming from PHP: less code, same stack.</strong> Data that never changes under you, macros that remove boilerplate, and a REPL to try each function as you write it. Phel compiles to plain PHP, so Composer, PHP-FPM and shared hosting keep working.</p>
 
-<p><strong>Against Clojure: Lisp without the JVM.</strong> Same Lisp ideas as Clojure, deployed like a PHP app. No JVM warmup, no AOT pipeline, no extra hosting target.</p>
+<p><strong>Coming from Clojure: the same ideas, no JVM.</strong> Persistent collections, threading macros and REPL-driven work, deployed like any PHP app. No JVM startup and no extra server to run.</p>
 
-<p><strong>Against PHP FP libraries: a language, not a library.</strong> Real homoiconic syntax, real macros, real tail-call elimination. A library can't extend PHP's grammar. Phel doesn't need to.</p>
+<p><strong>Tried functional PHP libraries? This is a language.</strong> A library can only add functions. Phel adds syntax: macros write new forms, and <code>loop</code> with <code>recur</code> runs deep recursion in constant memory.</p>
 
 </div>
 <div class="ph-beat-demo">
@@ -252,24 +251,6 @@ php phel.phar repl
 </div>
 </section>
 
-<section class="ph-beat" aria-labelledby="doom-written-in-phel">
-<div class="ph-beat-text">
-
-## DOOM, written in Phel { #doom-written-in-phel }
-
-<p>A Lisp that compiles to PHP runs a full game. <a href="https://chemaclass.github.io/phel-doom/">Play it in your browser</a>.</p>
-
-</div>
-<div class="ph-beat-demo">
-<figure class="ph-pane ph-frame ph-video">
-<a class="homepage-demo-video" href="https://www.youtube.com/watch?v=Gvz95m4wAkQ" data-youtube-id="Gvz95m4wAkQ" aria-label="Play video: How I built DOOM in a Lisp that compiles to PHP">
-<img src="/images/phel-doom.jpg" width="960" height="540" loading="lazy" alt="DOOM running in the browser, written in Phel">
-<span class="ph-play" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>
-</a>
-</figure>
-</div>
-</section>
-
 </div>
 
 <section class="ph-faq" aria-labelledby="common-questions">
@@ -315,7 +296,7 @@ php phel.phar repl
   </details>
   <details class="faq-item" id="where-do-i-get-help">
     <summary class="faq-q">Where do I get help?</summary>
-    <div class="faq-a">Open a thread on <a href="https://github.com/phel-lang/phel-lang/discussions">GitHub Discussions</a>, file an issue on <a href="https://github.com/phel-lang/phel-lang/issues">GitHub</a>, or read the <a href="/documentation/">full documentation</a>.</div>
+    <div class="faq-a">Open a thread on <a href="https://github.com/phel-lang/phel-lang/discussions">GitHub Discussions</a>, file an issue on <a href="https://github.com/phel-lang/phel-lang/issues">GitHub</a>, or read the <a href="/documentation/getting-started/">documentation</a>.</div>
   </details>
 </div>
 
@@ -328,6 +309,5 @@ php phel.phar repl
   <div class="ph-actions">
     <a href="/documentation/getting-started/" class="ph-sx ph-sx--primary"><span class="ph-paren" aria-hidden="true">(</span>Get started<span class="ph-paren" aria-hidden="true">)</span></a>
     <a href="/practice/" class="ph-sx"><span class="ph-paren" aria-hidden="true">(</span>Practice exercises<span class="ph-paren" aria-hidden="true">)</span></a>
-    <a href="/repl/" class="ph-sx"><span class="ph-paren" aria-hidden="true">(</span>Try it in your browser<span class="ph-paren" aria-hidden="true">)</span></a>
   </div>
 </section>

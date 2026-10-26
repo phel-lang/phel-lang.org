@@ -2,3 +2,6 @@ ErrorDocument 404 /404.html
 
 # Redirect /phar to latest Phel release
 Redirect 301 /phar https://github.com/phel-lang/phel-lang/releases/latest/download/phel.phar
+
+# The browser REPL is gone; send old links to Getting started
+RedirectMatch 301 ^/repl/?$ /documentation/getting-started/

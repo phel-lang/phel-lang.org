@@ -16,7 +16,7 @@ Inferred from the site's copy, not interviewed:
 
 ## Product Purpose
 
-phel-lang.org is the home of the Phel language: a Lisp dialect that compiles to PHP. The site convinces newcomers to try it (browser REPL, Docker, Composer, PHAR), then teaches and supports them (documentation, API reference, practice journey, blog, releases). Success is a visitor who runs their first Phel form.
+phel-lang.org is the home of the Phel language: a Lisp dialect that compiles to PHP. The site convinces newcomers to try it (Docker, a one-line script, Composer, PHAR), then teaches and supports them (documentation, API reference, practice journey, blog, releases). Success is a visitor who runs their first Phel form.
 
 ## Positioning
 
@@ -28,7 +28,6 @@ A real Lisp (macros, persistent data structures, REPL-driven development) that d
 - Light and dark themes via a `.dark` class on `<html>`; both must work.
 - Every ```phel block in `content/` runs against the real runtime; homepage snippets must stay valid.
 - Requires PHP 8.5+. Pre-1.0 with a published stability policy.
-- The browser REPL downloads about 80 MB; desktop recommended.
 
 ## Brand Commitments
 
@@ -39,7 +38,6 @@ A real Lisp (macros, persistent data structures, REPL-driven development) that d
 
 - Real REPL transcript captured from `phel repl` (`static/animated-repl-data.json`).
 - Real `phel compile` output for the homepage `slugify` example.
-- DOOM written in Phel: video and playable build (`static/images/phel-doom.jpg`).
 - No testimonials, adoption numbers or benchmarks exist; never invent them.
 
 ## Product Principles

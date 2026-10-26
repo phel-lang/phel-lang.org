@@ -9,7 +9,7 @@ related_targets: ["templates/index.html"]
 
 Mode: Persuade. Scope: homepage only; header, footer and docs keep the incumbent look. All current copy and facts stay; only structure and presentation change. Code-led (no image generation).
 
-Audience: PHP devs and Lispers deciding whether to try Phel. Action: open the browser REPL or run an install command. Proof: real REPL transcript, real `phel compile` output, runnable snippets, DOOM.
+Audience: PHP devs and Lispers deciding whether to try Phel. Action: run an install command. Proof: real REPL transcript, real `phel compile` output, runnable snippets.
 
 ## Direction contract
 
