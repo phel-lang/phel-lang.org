@@ -1,14 +1,16 @@
 +++
-title = "Control flow"
+title = "Control Flow"
 weight = 4
-description = "Branch, loop, and build collections with if, cond, case, loop/recur, for, and thread macros like cond->"
+description = "Branch, loop, and build collections with if, cond, case, match, loop/recur, for, and the threading macros"
 aliases = ["/documentation/control-flow"]
 
 [extra]
 difficulty = "beginner"
 +++
 
-Everything that decides what runs next: conditionals (`if`, `cond`, `case`), iteration (`loop`/`recur`, `foreach`, `for`), and conditional threading.
+After this page you can branch with `if`, `when`, `cond`, `case`, and `match`, repeat work with `for` and `loop`, and write pipelines with the threading macros.
+
+Every form on this page is an expression: it returns a value. There are no statements.
 
 ## If
 
@@ -17,198 +19,123 @@ Everything that decides what runs next: conditionals (`if`, `cond`, `case`), ite
 (if test then else?)
 ```
 
-Evaluates _test_. If truthy, returns _then_; if falsy, returns _else_ (or `nil`).
-
-Only `false` and `nil` are falsy. Everything else truthy. PHP equivalent: `test !== null && test !== false`.
+`if` evaluates `test`. When it is truthy, `if` returns `then`. Otherwise it returns `else`, or `nil` when there is no `else`:
 
 ```phel
-;; Basic if examples
-(if true 10) ; Evaluates to 10
-(if false 10) ; Evaluates to nil
-(if true (print 1) (print 2)) ; Prints 1 but not 2
-
-;; Important: Only false and nil are falsy!
-(if 0 (print 1) (print 2)) ; Prints 1 (0 is truthy!)
-(if nil (print 1) (print 2)) ; Prints 2 (nil is falsy)
-(if [] (print 1) (print 2)) ; Prints 1 (empty vector is truthy!)
-
-;; Practical examples
 (defn greet [name]
   (if name
     (str "Hello, " name)
     "Hello, stranger"))
 
-(greet "Alice")  ; => "Hello, Alice"
-(greet nil)      ; => "Hello, stranger"
-
-;; Using if for validation
-(defn divide [a b]
-  (if (= b 0)
-    nil
-    (/ a b)))
-
-(divide 10 2)  ; => 5
-(divide 10 0)  ; => nil
+(greet "Alice") ; => "Hello, Alice"
+(greet nil)     ; => "Hello, stranger"
+(if false 10)   ; => nil
 ```
 
-## Case
+Only `false` and `nil` are falsy. `0`, `""`, and `[]` are truthy. See [Truthiness](/documentation/language/basic-types/#truthiness).
 
-<!-- phel-test: skip -->
-```phel
-(case test & pairs)
-```
+## Do { #statements-do }
 
-Evaluates _test_, matches against first item of each pair. Returns the matching second item, or `nil` if no match.
+Each branch of `if` is one form. `do` groups several forms and returns the value of the last one:
 
 ```phel
-;; Basic case examples
-(case (+ 7 5)
-  3 :small
-  12 :big) ; Evaluates to :big
-
-(case (+ 7 5)
-  3 :small
-  15 :big) ; Evaluates to nil (no match)
-
-(case (+ 7 5)) ; Evaluates to nil (no pairs)
-
-;; Practical examples
-(defn http-status-message [code]
-  (case code
-    200 "OK"
-    201 "Created"
-    400 "Bad Request"
-    404 "Not Found"
-    500 "Internal Server Error"))
-
-(http-status-message 200)  ; => "OK"
-(http-status-message 404)  ; => "Not Found"
-(http-status-message 999)  ; => nil
-
-;; Using case with keywords
-(defn animal-sound [animal]
-  (case animal
-    :dog "Woof!"
-    :cat "Meow!"
-    :cow "Moo!"
-    :duck "Quack!"))
-
-(animal-sound :dog)   ; => "Woof!"
-(animal-sound :fish)  ; => nil
+(if true
+  (do (println "saving")
+      :saved)
+  :skipped) ; prints "saving", => :saved
 ```
 
-{% php_note() %}
-Like PHP `switch`, more concise:
+## When, if-not, and binding conditionals
 
-```php
-// PHP
-switch ($value) {
-    case 3:
-        $result = 'small';
-        break;
-    case 12:
-        $result = 'big';
-        break;
-    default:
-        $result = null;
-}
+`when` is `if` with no `else`. Its body can hold several forms, so you do not need `do`. It returns `nil` when the test is falsy. `when-not` and `if-not` flip the test:
 
-// Phel
-(case value
-  3 :small
-  12 :big)
+```phel
+(when (pos? 5) :positive)              ; => :positive
+(when (pos? -5) :positive)             ; => nil
+(if-not (empty? []) :has-items :empty) ; => :empty
 ```
 
-No `break`, no fall-through.
-{% end %}
+`if-let` and `when-let` bind a value and branch on it in one step. The name exists only in the truthy branch. Use them when a lookup can miss:
+
+```phel
+(def users {1 "Alice" 2 "Bob"})
+
+(if-let [name (get users 1)]
+  (str "Found " name)
+  "No user")        ; => "Found Alice"
+
+(when-let [name (get users 9)]
+  (str "Hi " name)) ; => nil
+```
+
+`if-some` and `when-some` work the same way but only treat `nil` as missing, so a `false` value still takes the first branch.
 
 ## Cond
 
-<!-- phel-test: skip -->
-```phel
-(cond & pairs)
-```
-
-Walks pairs. First pair whose test is truthy: returns its second expression. No match returns `nil`.
+`cond` takes test and result pairs. It returns the result of the first truthy test, or `nil` when none matches. Use `:else` as the last test for a default:
 
 ```phel
-;; Basic cond examples
-(cond
-  (neg? 5) :negative
-  (pos? 5) :positive)  ; Evaluates to :positive
-
-(cond
-  (neg? 5) :negative
-  (neg? 3) :negative) ; Evaluates to nil (no match)
-
-(cond) ; Evaluates to nil (no pairs)
-
-;; Practical examples
-(defn classify-number [n]
-  (cond
-    (< n 0) "negative"
-    (= n 0) "zero"
-    (> n 0) "positive"))
-
-(classify-number -5)  ; => "negative"
-(classify-number 0)   ; => "zero"
-(classify-number 10)  ; => "positive"
-
-;; Using cond for complex conditions
 (defn ticket-price [age]
   (cond
-    (< age 3) 0          ; Free for toddlers
-    (< age 12) 5         ; Child price
-    (< age 65) 10        ; Adult price
-    :else 7))            ; Senior discount
+    (< age 3)  0
+    (< age 12) 5
+    (< age 65) 10
+    :else      7))
 
-(ticket-price 2)   ; => 0
-(ticket-price 10)  ; => 5
-(ticket-price 30)  ; => 10
-(ticket-price 70)  ; => 7
-
-;; Combining multiple conditions
-(defn water-state [temp]
-  (cond
-    (<= temp 0) :ice
-    (and (> temp 0) (< temp 100)) :liquid
-    (>= temp 100) :steam))
-
-(water-state -5)   ; => :ice
-(water-state 25)   ; => :liquid
-(water-state 105)  ; => :steam
+(ticket-price 2)  ; => 0
+(ticket-price 30) ; => 10
+(ticket-price 70) ; => 7
 ```
 
-{% php_note() %}
-Like a chain of `if`/`elseif`:
+{% <php_note> %}
+`cond` replaces a chain of `if` / `elseif` / `else`. Each branch returns a value, so there is no `$result` variable to assign.
+{% </php_note> %}
 
-```php
-// PHP
-if ($value < 0) {
-    $result = 'negative';
-} elseif ($value > 0) {
-    $result = 'positive';
-} else {
-    $result = null;
-}
+## Case
 
-// Phel
-(cond
-  (neg? value) :negative
-  (pos? value) :positive)
+`case` compares a value against constants. It returns the result for the first match. A last lone form is the default. Without a default, no match returns `nil`:
+
+```phel
+(defn status-text [code]
+  (case code
+    200 "OK"
+    404 "Not Found"
+    "Unknown"))
+
+(status-text 200) ; => "OK"
+(status-text 999) ; => "Unknown"
 ```
 
-Cleaner than nested `if`. Use `:else` as a default.
-{% end %}
+Group constants in a list to share one result: `(case n (1 2 3) :small :big)`.
 
-For destructuring-by-shape (matching the structure of vectors and maps, not just running predicates), see [Match](#match) below.
+{% <php_note> %}
+`case` is like `switch` or `match` in PHP, with no `break` and no fall-through. The test values must be literals, not expressions.
+{% </php_note> %}
+
+## Condp
+
+`condp` is `cond` with a shared predicate. `(condp pred expr a x b y default)` tests `(pred a expr)`, then `(pred b expr)`, and so on. A last lone form is the default:
+
+```phel
+(defn size [n]
+  (condp < n
+    100 :large
+    10  :medium
+    :small))
+
+(size 500) ; => :large
+(size 5)   ; => :small
+```
+
+Without a default, no match throws. Use `case` to compare against constants, and `condp` when the comparison is a function.
 
 ## Match
 
-`match` lives in `phel.match` and dispatches by _shape_: it destructures the subject and binds names in one step. It expands to nested `cond` + `let` at compile time, so there is no runtime overhead beyond the checks you write.
+`match` from `phel.match` dispatches on the *shape* of a value. It checks the structure and binds names in one step:
 
 ```phel
-(ns my-app.main (:require phel.match :refer [match]))
+(ns my-app.main
+  (:require phel.match :refer [match]))
 
 (defn describe [x]
   (match [x]
@@ -224,335 +151,140 @@ For destructuring-by-shape (matching the structure of vectors and maps, not just
 (describe 5)                        ; => "positive"
 ```
 
-The subject is a vector of one or more targets; every pattern is a vector whose length must equal the target count.
-
-### Pattern kinds
+The subject is a vector of one or more values. Each pattern is a vector of the same length. `:else` must be the last clause.
 
 | Pattern | Matches |
 | --- | --- |
-| `42`, `:key`, `"s"` | literal equality |
-| `_` | wildcard (matches anything, binds nothing) |
-| `sym` | binds the target to `sym` |
-| `[a b c]` | a vector of exactly 3 elements, recursively matched |
-| `[head & tail]` | a vector, binding the remaining slice to `tail` |
-| `{:k sym}` | a map with key `:k`, binding its value to `sym` |
-| `(pat :as name)` | matches `pat`, also binds the whole subject to `name` |
-| `(pat :guard pred)` | matches `pat`, then requires `(pred subject)` truthy |
-| `(:or alt1 alt2 ...)` | any alternative matches (literal/structural only, no bindings) |
+| `42`, `:key`, `"s"` | an equal value |
+| `_` | anything, binds nothing |
+| `sym` | anything, binds it to `sym` |
+| `[a b]` | a vector of exactly 2 elements |
+| `[head & tail]` | a vector, binding the rest to `tail` |
+| `{:k sym}` | a map with key `:k`, binding its value |
+| `(pat :as name)` | `pat`, and binds the whole value to `name` |
+| `(pat :guard pred)` | `pat`, when `(pred value)` is truthy |
+| `(:or a b)` | any of the alternatives (no bindings inside) |
 
-### Guards
-
-A `:guard` adds a runtime predicate on top of a structural pattern:
-
-```phel
-(ns my-app.main (:require phel.match :refer [match]))
-
-(defn sign [n]
-  (match [n]
-    [(x :guard neg?)] "negative"
-    [(x :guard pos?)] "positive"
-    :else             "zero"))
-
-(sign -3) ; => "negative"
-(sign 7)  ; => "positive"
-(sign 0)  ; => "zero"
-```
-
-### Rest binding
-
-End a vector pattern with `& rest` to capture the remaining slice:
-
-```phel
-(ns my-app.main (:require phel.match :refer [match]))
-
-(match [[10 20 30]]
-  [[head & tail]] (str head ":" (count tail))) ; => "10:2"
-```
-
-### Pitfalls
-
-* Each pattern vector's length must equal the target count.
-* `:else` must be the final clause.
-* `:or` alternatives may not introduce bindings; they are literal or structural only.
-* Nested patterns bind left-to-right; a later binding shadows an earlier one with the same name.
-* A `:guard` predicate runs against the raw value. Numeric predicates coerce non-numbers, so `(pos? [1 2])` is truthy. Put literal and structural patterns _before_ an open numeric guard.
-
-See also [`phel.schema`](/documentation/reference/api/schema/) for shapes reusable across validation and matching, and `case`/`cond`/`condp` above for simpler dispatch without destructuring. Full API: [match reference](/documentation/reference/api/match/).
+A `:guard` runs on the raw value, and numeric predicates accept non-numbers: `(pos? [1 2])` is truthy. Put literal and structural patterns before an open numeric guard. Full API: [match reference](/documentation/reference/api/match/).
 
 ## Loop
 
-<!-- phel-test: skip -->
-```phel
-(loop [bindings*] expr*)
-```
-
-Creates a lexical context with bindings and a recursion point at the top.
-
-<!-- phel-test: skip -->
-```phel
-(recur expr*)
-```
-
-Evaluates expressions and rebinds at the recursion point. Recursion point is a `fn` or `loop`. Arities must match exactly.
-
-`recur` compiles to a PHP `while` loop, avoiding _Maximum function nesting level_ errors. Using `recur` for tail-recursive functions and the tail-call story are covered in [Functions and Recursion](/documentation/language/functions-and-recursion/#recursion).
+`loop` binds names like `let` and marks a point that `recur` can jump back to with new values:
 
 ```phel
-;; Basic loop example - sum numbers from 1 to 10
-(loop [sum 0
-       cnt 10]
-  (if (= cnt 0)
-    sum
-    (recur (+ cnt sum) (dec cnt))))  ; => 55
-
-;; Finding an element in a vector
-(defn find-index [pred coll]
-  (loop [idx 0
-         items coll]
-    (cond
-      (empty? items) nil
-      (pred (first items)) idx
-      :else (recur (inc idx) (rest items)))))
-
-(find-index even? [1 3 5 8 9])  ; => 3
-(find-index neg? [1 2 3])       ; => nil
-
-;; Building a result with loop
-(defn reverse-vec [v]
-  (loop [result []
-         remaining v]
-    (if (empty? remaining)
-      result
-      (recur (conj result (last remaining))
-             (pop remaining)))))
-
-(reverse-vec [1 2 3 4])  ; => [4 3 2 1]
+(loop [i 0
+       acc []]
+  (if (< i 3)
+    (recur (inc i) (conj acc i))
+    acc)) ; => [0 1 2]
 ```
 
-## Foreach
+`recur` must be in tail position, and it must pass one value per binding. It compiles to a PHP `while` loop, so it never grows the call stack. `recur` also works directly in a function body: see [Recursion](/documentation/language/functions-and-recursion/#recursion).
 
-<!-- phel-test: skip -->
-```phel
-(foreach [value valueExpr] expr*)
-(foreach [key value valueExpr] expr*)
-```
-
-Iterate any PHP data structure for side-effects. Always returns `nil`. Prefer `loop` when possible.
-
-```phel
-(foreach [v [1 2 3]]
-  (print v)) ; Prints 1, 2 and 3
-
-(foreach [k v {"a" 1 "b" 2}]
-  (print k)
-  (print v)) ; Prints "a", 1, "b" and 2
-```
-
-{% php_note() %}
-Mirrors PHP `foreach`:
-
-```php
-// PHP
-foreach ([1, 2, 3] as $v) {
-    print($v);
-}
-
-foreach (["a" => 1, "b" => 2] as $k => $v) {
-    print($k);
-    print($v);
-}
-
-// Phel
-(foreach [v [1 2 3]]
-  (print v))
-
-(foreach [k v {"a" 1 "b" 2}]
-  (print k)
-  (print v))
-```
-
-**Note:** Use `for` or `loop` to return values. `foreach` is side-effects only.
-{% end %}
+Most loops are shorter with `for`, `map`, `filter`, or `reduce`. Use `loop` when the next step depends on state that those do not carry.
 
 ## For
 
-`for` builds collections from existing ones. Combines `foreach`, `let`, `if`, `reduce`.
-
-<!-- phel-test: skip -->
-```phel
-(for head body+)
-```
-
-`head` is a vector of bindings and modifiers. A binding is `binding :verb expr` where `binding` works as in `let` and `:verb` is one of:
-
-* `:range` loop over a range
-* `:in` values of a collection
-* `:keys` keys/indexes of a collection
-* `:pairs` key-value pairs
-
-Modifiers (form `:modifier argument`):
-
-* `:while` break when expression is falsy
-* `:let` additional bindings
-* `:when` evaluate body only when condition is true
-* `:reduce [acc init]` reduce instead of returning a list. `acc` starts at `init`. Unlike `when` inside `reduce`, `:when` works cleanly with `:reduce`
+`for` builds a vector from one or more collections. It combines iteration, filtering, and local bindings:
 
 ```phel
-(for [x :range [0 3]] x) ; Evaluates to [0 1 2]
-(for [x :range [3 0 -1]] x) ; Evaluates to [3 2 1]
-
-(for [x :in [1 2 3]] (inc x)) ; Evaluates to [2 3 4]
-(for [x :in {:a 1 :b 2 :c 3}] x) ; Evaluates to [1 2 3]
-
-(for [x :keys [1 2 3]] x) ; Evaluates to [0 1 2]
-(for [x :keys {:a 1 :b 2 :c 3}] x) ; Evaluates to [:a :b :c]
-
-(for [[k v] :pairs {:a 1 :b 2 :c 3}] [v k]) ; Evaluates to [[1 :a] [2 :b] [3 :c]]
-(for [[k v] :pairs [1 2 3]] [k v]) ; Evaluates to [[0 1] [1 2] [2 3]]
-(for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}]]
-  (assoc m k (inc v))) ; Evaluates to {:a 2, :b 3, :c 4}
-(for [[k v] :pairs {:a 1 :b 2 :c 3} :reduce [m {}] :let [x (inc v)]]
-  (assoc m k x)) ; Evaluates to {:a 2, :b 3, :c 4}
-(for [[k v] :pairs {:a 1 :b 2 :c 3} :when (contains-value? [:a :c] k) :reduce [acc {}]]
-    (assoc acc k v)) ; Evaluates to {:a 1, :c 3}
-
-(for [x :in [2 2 2 3 3 4 5 6 6] :while (even? x)] x) ; Evaluates to [2 2 2]
-(for [x :in [2 2 2 3 3 4 5 6 6] :when (even? x)] x) ; Evaluates to [2 2 2 4 6 6]
-
-(for [x :in [1 2 3] :let [y (inc x)]] [x y]) ; Evaluates to [[1 2] [2 3] [3 4]]
-
-(for [x :range [0 4] y :range [0 x]] [x y]) ; Evaluates to [[1 0] [2 0] [2 1] [3 0] [3 1] [3 2]]
+(for [x :in [1 2 3 4 5 6]
+      :when (even? x)]
+  (* x x)) ; => [4 16 36]
 ```
 
-{% php_note() %}
-List comprehension, not PHP's `for`:
+Each binding is `name :verb expr`. The name can destructure, like in `let`:
 
-```php
-// PHP - manual array building
-$result = [];
-foreach (range(1, 3) as $x) {
-    $result[] = $x + 1;
-}
+| Verb | Iterates over | Example | Result |
+|------|---------------|---------|--------|
+| `:in` | values | `(for [x :in [1 2]] x)` | `[1 2]` |
+| `:range` | a `[start end step?]` range | `(for [x :range [0 3]] x)` | `[0 1 2]` |
+| `:keys` | keys or indexes | `(for [k :keys {:a 1 :b 2}] k)` | `[:a :b]` |
+| `:pairs` | `[key value]` pairs | `(for [[k v] :pairs {:a 1}] [v k])` | `[[1 :a]]` |
 
-// Phel - declarative comprehension
-(for [x :in [1 2 3]] (inc x))  ; [2 3 4]
-```
+Modifiers go after a binding:
 
-Combines iteration, filtering (`:when`), early termination (`:while`), reduction (`:reduce`), nested loops.
-{% end %}
+| Modifier | Effect |
+|----------|--------|
+| `:when test` | skip items where `test` is falsy |
+| `:while test` | stop at the first item where `test` is falsy |
+| `:let [bindings]` | bind more names |
+| `:reduce [acc init]` | fold into `acc` instead of building a vector |
 
-{% clojure_note() %}
-Like Clojure `for` (`:let`, `:when`, nesting). `:reduce` is a Phel extension.
-{% end %}
-
-## Do
-
-<!-- phel-test: skip -->
-```phel
-(do expr*)
-```
-
-Evaluates expressions in order. Returns the last value, or `nil` if empty.
+Several bindings nest, like nested loops:
 
 ```phel
-(do 1 2 3 4) ; Evaluates to 4
-(do (print 1) (print 2) (print 3)) ; Print 1, 2, and 3
+(for [x :in [1 2]
+      y :in [:a :b]]
+  [x y]) ; => [[1 :a] [1 :b] [2 :a] [2 :b]]
+
+(for [[k v] :pairs {:a 1 :b 2 :c 3}
+      :reduce [m {}]]
+  (assoc m k (inc v))) ; => {:a 2 :b 3 :c 4}
 ```
 
-## Dofor
+{% <clojure_note> %}
+Like Clojure's `for`, but it returns a vector, not a lazy sequence, and each binding names its verb (`:in`, `:range`, ...). `:reduce` is a Phel extension.
+{% </clojure_note> %}
 
-Like `for` but for side-effects. Returns `nil` like `foreach`.
+## Side effects: foreach and dofor { #foreach }
+
+`for` is for building values. For side effects such as printing or writing to a database, use `foreach` or `dofor`. Both return `nil`:
 
 ```phel
-(dofor [x :in [1 2 3]] (print x)) ; Prints 1, 2, 3, returns nil
-(dofor [x :in [2 3 4 5] :when (even? x)] (print x)) ; Prints 2, 4, returns nil
+(foreach [v [1 2 3]]
+  (println v)) ; prints 1, 2, 3
+
+(foreach [k v {"a" 1 "b" 2}]
+  (println k v)) ; prints a 1, b 2
+
+(dofor [x :in [1 2 3 4] :when (even? x)]
+  (println x)) ; prints 2, 4
 ```
 
-## Conditional threading
+`foreach` iterates any PHP iterable, like PHP's `foreach`. `dofor` takes the same bindings and modifiers as `for`.
 
-### cond->
+## Threading
 
-<!-- phel-test: skip -->
+`->` (thread-first) passes a value as the first argument of each form in turn. `->>` (thread-last) passes it as the last. Read them top to bottom, like a pipeline:
+
 ```phel
-(cond-> expr & clauses)
+(-> 5 (+ 3) (* 2)) ; => 16, same as (* (+ 5 3) 2)
+
+(->> [1 2 3 4]
+     (map inc)
+     (filter even?)) ; => (2 4)
 ```
 
-Threads expression through each form whose test is truthy (thread-first). Skips forms with falsy tests.
+Use `->` for maps and objects, where the subject goes first. Use `->>` for sequence functions, where the collection goes last.
+
+`some->` and `some->>` stop at the first `nil`:
 
 ```phel
-(cond-> 1
-  true inc
-  false (* 42)
-  true (* 3))  ; => 6
-
-;; Only applies inc (true) and (* 3) (true), skips (* 42) (false)
-;; 1 -> (inc 1) -> 2 -> (* 2 3) -> 6
-
-(defn maybe-transform [data opts]
-  (cond-> data
-    (:uppercase opts) (phel.string/upper-case)
-    (:trim opts)      (phel.string/trim)
-    (:prefix opts)    (#(str (:prefix opts) %))))
+(some-> {:user {:name "Ada"}} :user :name phel.string/upper-case) ; => "ADA"
+(some-> {:user nil} :user :name phel.string/upper-case)           ; => nil
 ```
 
-### cond->>
+`cond->` and `cond->>` apply each step only when its test is truthy:
 
-<!-- phel-test: skip -->
 ```phel
-(cond->> expr & clauses)
+(defn build-user [name admin?]
+  (cond-> {:name name}
+    admin?      (assoc :role :admin)
+    (= name "") (assoc :error "empty name")))
+
+(build-user "Ada" true)  ; => {:name "Ada" :role :admin}
+(build-user "Bob" false) ; => {:name "Bob"}
 ```
 
-Like `cond->` but threads as last arg (thread-last).
+## Errors { #try-catch-and-finally }
+
+`throw` raises any PHP `Throwable`. `try` catches it by type:
 
 ```phel
-(cond->> [1 2 3 4 5]
-  true (map inc)
-  false (filter odd?)
-  true (take 3))  ; => @[2 3 4]
-
-;; Only applies (map inc) and (take 3), skips (filter odd?)
-```
-
-## Exceptions
-
-<!-- phel-test: skip -->
-```phel
-(throw expr)
-```
-
-Evaluates _expr_ and throws it. Must implement PHP `Throwable`.
-
-## Try, catch, and finally
-
-<!-- phel-test: skip -->
-```phel
-(try expr* catch-clause* finally-clause?)
-```
-
-Evaluates expressions. No exception: returns last value. Matching _catch-clause_: returns its value. No match: exception propagates. _finally-clause_ runs before return.
-
-```phel
-(try) ; Evaluates to nil
-
 (try
-  (throw (Exception.))
-  (catch Exception e "error")) ; Evaluates to "error"
-
-(try
-  (+ 1 1)
-  (finally (print "test"))) ; Evaluates to 2 and prints "test"
-
-(try
-  (throw (Exception.))
-  (catch Exception e "error")
-  (finally (print "test"))) ; Evaluates to "error" and prints "test"
+  (throw (Exception. "boom"))
+  (catch \Exception e "recovered")) ; => "recovered"
 ```
 
-For catching PHP exceptions, structured errors with `ex-info`/`ex-data`, exception chaining, and guidance on when to throw, see [Error handling](/documentation/language/error-handling/).
-
-## Next steps
-
-- [Match reference](/documentation/reference/api/match/) - all `match` pattern kinds and the full API
-- [Error handling](/documentation/language/error-handling/) - throw, catch, and structured errors in depth
-- [Functions and recursion](/documentation/language/functions-and-recursion/) - `loop`/`recur` and tail calls
-- [Cheat sheet](/documentation/reference/cheat-sheet/) - keep it open while coding
+`finally`, structured errors with `ex-info`, and when to throw at all: [Error handling](/documentation/language/error-handling/).

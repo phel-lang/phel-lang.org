@@ -1,0 +1,101 @@
+/* ========================================
+   Browser REPL page
+   The REPL is the task, so it takes the wide container and most of the
+   viewport height; the notes sit below it.
+   ======================================== */
+
+.one-column-layout:has(.repl-page) {
+  max-width: var(--container-wide);
+}
+
+.repl-page {
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-2xl);
+}
+
+.repl-page__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-xs) var(--space-lg);
+  margin-bottom: var(--space-md);
+}
+
+.repl-page__header h1 {
+  margin: 0;
+}
+
+.repl-page__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs) var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-sm);
+  color: var(--color-light-text-secondary);
+}
+
+/* Reset the global `ul li` dot bullet; items are separated by a middle dot. */
+.repl-page__meta li {
+  margin: 0;
+  padding-left: 0;
+}
+
+.repl-page__meta li::before {
+  content: none;
+}
+
+.repl-page__meta li + li::before {
+  content: '·';
+  position: static;
+  width: auto;
+  height: auto;
+  margin-right: var(--space-md);
+  border-radius: 0;
+  background: none;
+  color: var(--color-light-text-muted);
+}
+
+.wasm-repl-frame {
+  display: block;
+  width: 100%;
+  height: clamp(28rem, calc(100dvh - 15rem), 56rem);
+  border: 1px solid var(--color-light-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-light-bg);
+}
+
+.repl-page__notes {
+  max-width: 44rem;
+  margin-top: var(--space-lg);
+  font-size: var(--text-sm);
+  color: var(--color-light-text-secondary);
+}
+
+.repl-page__notes .callout {
+  max-width: none;
+  margin-top: 0;
+}
+
+.dark .repl-page__meta,
+.dark .repl-page__notes {
+  color: var(--color-dark-text-secondary);
+}
+
+.dark .repl-page__meta li + li::before {
+  background: none;
+  color: var(--color-dark-text-muted);
+}
+
+.dark .wasm-repl-frame {
+  border-color: var(--color-dark-border);
+  background: var(--color-dark-bg);
+}
+
+@media (max-width: 767px) {
+  .wasm-repl-frame {
+    height: clamp(32rem, calc(100dvh - 10rem), 44rem);
+  }
+}

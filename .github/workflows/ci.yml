@@ -18,7 +18,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.4']
+        php: ['8.5']
     steps:
       - uses: actions/checkout@v6
 
@@ -242,11 +242,15 @@ jobs:
     name: Build site
     runs-on: ubuntu-latest
     steps:
+      # Full history: scripts/generate-doc-dates.js reads each page's last
+      # commit date, which a shallow clone reports as the checkout date.
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.5'
           coverage: none
           tools: composer
 
@@ -272,8 +276,8 @@ jobs:
 
       - name: Install Zola
         run: |
-          ZOLA_VERSION="0.22.1"
-          curl -sL "https://github.com/getzola/zola/releases/download/v${ZOLA_VERSION}/zola-v${ZOLA_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xz -C /usr/local/bin
+          ZOLA_VERSION="0.23.6"
+          curl -sL "https://github.com/getzola/zola/releases/download/v${ZOLA_VERSION}/zola-v${ZOLA_VERSION}-x86_64-unknown-linux-gnu.tar.gz" | tar xz -C /usr/local/bin zola
 
       - name: Build site
         run: zola build

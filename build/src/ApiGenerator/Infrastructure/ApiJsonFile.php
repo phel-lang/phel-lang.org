@@ -6,6 +6,7 @@ namespace PhelWeb\ApiGenerator\Infrastructure;
 
 use Phel\Shared\Api\PhelFunction;
 use Phel\Shared\Facade\ApiFacadeInterface;
+use PhelWeb\Shared\Text\DocUrl;
 
 use function json_encode;
 
@@ -59,7 +60,7 @@ final readonly class ApiJsonFile
             'doc' => $fn->doc,
             'signatures' => $fn->signatures,
             'githubUrl' => $fn->githubUrl,
-            'docUrl' => $fn->docUrl,
+            'docUrl' => DocUrl::current($fn->docUrl),
             'meta' => $fn->meta,
         ];
     }

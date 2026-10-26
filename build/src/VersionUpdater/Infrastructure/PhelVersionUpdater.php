@@ -10,6 +10,9 @@ final readonly class PhelVersionUpdater
 {
     private const string REGEX_PHEL_VERSION_FINDER = '/^phel_version\s*=\s*"[^"]*"/m';
 
+    /** Phel marks a build off an untagged commit as `<tag>-beta#<short sha>`. */
+    private const string REGEX_DEV_BUILD_SUFFIX = '/-beta#[0-9a-f]+$/i';
+
     public function __construct(
         private ConsoleFacadeInterface $consoleFacade,
         private string $configFile,
@@ -21,7 +24,7 @@ final readonly class PhelVersionUpdater
         $configContent = (string) file_get_contents($this->configFile);
 
         $fullVersion = $this->consoleFacade->getVersion();
-        $phelVersion = preg_replace('/-.*$/', '', $fullVersion) ?? $fullVersion;
+        $phelVersion = preg_replace(self::REGEX_DEV_BUILD_SUFFIX, '', $fullVersion) ?? $fullVersion;
         $updatedContent = preg_replace(
             self::REGEX_PHEL_VERSION_FINDER,
             'phel_version = "' . $phelVersion . '"',

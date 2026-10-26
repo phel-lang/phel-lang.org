@@ -20,6 +20,7 @@ namespace PhelWeb\ReleasesGenerator\Domain;
  *     published_at: string,
  *     html_url: string,
  *     assets: list<TGitHubAssetPayload>,
+ *     prerelease?: bool,
  *     ...
  * }
  */
@@ -35,6 +36,7 @@ final readonly class Release
         public string $publishedAt,
         public string $htmlUrl,
         public array $assets,
+        public bool $prerelease = false,
     ) {
     }
 
@@ -55,6 +57,7 @@ final readonly class Release
             publishedAt: $data['published_at'],
             htmlUrl: $data['html_url'],
             assets: $assets,
+            prerelease: $data['prerelease'] ?? false,
         );
     }
 
@@ -103,10 +106,12 @@ final readonly class Release
         return "{$major}.{$minor}.{$patch}";
     }
 
-    public function hasValidVersion(): bool
+    /**
+     * Pre-releases get no page: they would list as the final version they lead up to.
+     */
+    public function isStable(): bool
     {
-        $parsed = $this->tryParseVersion();
-        return $parsed !== null;
+        return !$this->prerelease && $this->tryParseVersion() !== null;
     }
 
     /**
@@ -127,7 +132,7 @@ final readonly class Release
     private function tryParseVersion(): ?array
     {
         $stripped = ltrim($this->tagName, 'vV');
-        if (!preg_match('/^(\d+)\.(\d+)(?:\.(\d+))?/', $stripped, $m)) {
+        if (!preg_match('/^(\d+)\.(\d+)(?:\.(\d+))?$/', $stripped, $m)) {
             return null;
         }
         return [(int) $m[1], (int) $m[2], isset($m[3]) ? (int) $m[3] : 0];

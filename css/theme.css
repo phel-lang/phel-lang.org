@@ -6,72 +6,103 @@
 
 @theme {
   /* Modern Color Palette - Light Mode */
-  --color-light-bg: #ffffff;
-  --color-light-bg-secondary: #f8fafc;
-  --color-light-text-primary: #0f172a;
-  --color-light-text-secondary: #475569;
-  --color-light-text-muted: #64748b;
-  --color-light-text-accent: #915bd5;
+  --color-light-bg: #f4f2f8;
+  --color-light-bg-secondary: #ebe8f2;
+  --color-light-text-primary: #1b1726;
+  --color-light-text-secondary: #3d3850;
+  --color-light-text-muted: #5f5973;
+  --color-light-text-accent: #7f48c4;
   --color-light-link: #512da8;
   --color-light-link-hover: #6d3fc2;
   --color-light-deprecated: #b45309;
-  --color-light-border: #e2e8f0;
-  --color-light-border-subtle: #f1f5f9;
-  
+  --color-light-border: #ddd8e8;
+  --color-light-border-subtle: #ebe8f2;
+
   /* Modern Color Palette - Dark Mode */
-  --color-dark-bg: #212830;
-  --color-dark-bg-secondary: #252525;
-  --color-dark-text-primary: #f1f5f9;
-  --color-dark-text-secondary: #cbd5e1;
-  --color-dark-text-muted: #94a3b8;
+  --color-dark-bg: #14121b;
+  --color-dark-bg-secondary: #1b1824;
+  --color-dark-text-primary: #ece8f5;
+  --color-dark-text-secondary: #c4bfd2;
+  --color-dark-text-muted: #9a94ab;
   --color-dark-text-accent: #bfa4ff;
   --color-dark-text-accent-hover: #c2acf5;
   --color-dark-deprecated: #fbbf24;
   --color-dark-link: #d1c7e5;
-  --color-dark-border: #3a3a3a;
-  --color-dark-border-subtle: #2a2a2a;
-  --color-dark-header-footer-border: #151a24;
-  --color-dark-header-bg: #151a24cc;
-  
+  --color-dark-border: #2e2a3b;
+  --color-dark-border-subtle: #221e2e;
+
+  /* Success: a finished exercise, a full progress bar */
+  --color-light-success: #15803d;
+  --color-light-success-bg: #f0fdf4;
+  --color-light-success-border: #86efac;
+  --color-dark-success: #4ade80;
+  --color-dark-success-bg: rgba(74, 222, 128, 0.08);
+  --color-dark-success-border: rgba(74, 222, 128, 0.45);
+  --color-dark-header-footer-border: #221e2e;
+  --color-dark-header-bg: #14121bf0;
+
   /* Card & Surface Colors */
-  --color-light-surface: #ffffff;
-  --color-light-surface-hover: #f8fafc;
-  --color-dark-surface: #2a313cfa;
-  --color-dark-surface-hover: #262c36;
-  
+  --color-light-surface: #fbfaff;
+  --color-light-surface-hover: #f4f2f8;
+  --color-dark-surface: #1b1824;
+  --color-dark-surface-hover: #221e2e;
+
   /* Code */
-  --color-light-code-bg: #f1f5f9;
-  --color-light-code-inline-bg: #e2e8f0;
-  --color-dark-code-bg: #262c36;
-  --color-dark-code-inline-bg: #2f3741;
-  
+  --color-light-code-bg: #fbfaff;
+  --color-light-code-inline-bg: #e3dfed;
+  --color-dark-code-bg: #1b1824;
+  --color-dark-code-inline-bg: #262134;
+
   /* Anchor Links */
-  --color-light-anchor: #bbb;
+  --color-light-anchor: #5f5973; /* text-muted: 6:1 on the lavender ground */
   --color-dark-anchor: #bccccc;
-  
+
   /* Table header: one step off the surface it sits on, lighter in dark
      mode so the header row reads as raised rather than sunken. */
-  --color-light-table-header: #f8fafc;
-  --color-dark-table-header: #323a47;
+  --color-light-table-header: #ebe8f2;
+  --color-dark-table-header: #262134;
 
   /* Blockquote */
-  --color-light-blockquote-bg: #eff6ff;
-  --color-light-blockquote-border: #afc4e7;
-  --color-dark-blockquote-bg: #2a313c;
-  --color-dark-blockquote-border: #466173;
-  
+  --color-light-blockquote-bg: #efebf8;
+  --color-light-blockquote-border: #c9bde6;
+  --color-dark-blockquote-bg: #1b1824;
+  --color-dark-blockquote-border: #3d3554;
+
+  /* Callouts: one accent per kind for the border, icon and label,
+     dark enough to clear 4.5:1 on its own tint. Deprecated reuses the
+     amber that marks deprecated functions in the API reference. */
+  --color-light-callout-note: #1d4ed8;
+  --color-light-callout-note-bg: #eff6ff;
+  --color-light-callout-tip: #15803d;
+  --color-light-callout-tip-bg: #f0fdf4;
+  --color-light-callout-warning: #b91c1c;
+  --color-light-callout-warning-bg: #fef2f2;
+  --color-light-callout-deprecated: var(--color-light-deprecated);
+  --color-light-callout-deprecated-bg: #fffbeb;
+  --color-dark-callout-note: #93c5fd;
+  --color-dark-callout-note-bg: #1a2033;
+  --color-dark-callout-tip: #86efac;
+  --color-dark-callout-tip-bg: #182621;
+  --color-dark-callout-warning: #fca5a5;
+  --color-dark-callout-warning-bg: #2a1a22;
+  --color-dark-callout-deprecated: var(--color-dark-deprecated);
+  --color-dark-callout-deprecated-bg: #282219;
 
   /* Extended Color Palette */
-  --color-gray-darker: #252525;
+  --color-gray-darker: #1b1726;
   --color-gray-dark: #475569;
   --color-gray-base: #64748b;
   --color-gray-light: #94a3b8;
   --color-gray-lighter: #cbd5e1;
 
   /* Typography */
-  --font-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-primary:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-display: 'Brygada 1918', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --font-label: 'Departure Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
   --font-mono: 'Fira Code', 'JetBrains Mono', 'Cascadia Code', 'Consolas', 'Monaco', monospace;
-  --font-inter: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
+  --font-inter:
+    Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, sans-serif;
 
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -95,13 +126,13 @@
   --leading-relaxed: 1.7;
   --container-content: 56rem;
   --container-wide: 80rem;
-  
-  /* Border Radius - Modern rounded corners */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.5rem;
-  --radius-lg: 0.75rem;
-  --radius-xl: 1rem;
-  --radius-2xl: 1.5rem;
+
+  /* Border radius: square corners everywhere; only pills stay round */
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
   --radius-full: 9999px;
 
   /* Spacing System */
@@ -121,12 +152,12 @@
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
-  
+
   /* Dark mode shadows */
   --shadow-dark-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
   --shadow-dark-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
   --shadow-dark-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
-  
+
   /* Glassmorphism */
   --backdrop-blur-sm: 8px;
   --backdrop-blur-md: 12px;
@@ -144,8 +175,7 @@
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
-  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  
+
   /* Z-index layers */
   --z-dropdown: 1000;
   --z-sticky: 1020;
@@ -165,4 +195,3 @@
     border-color: var(--color-gray-200, currentcolor);
   }
 }
-

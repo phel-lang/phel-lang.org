@@ -8,6 +8,14 @@
   margin: 0;
 }
 
+/* Overflowing blocks get tabindex="0" from copy-code.js so the keyboard can
+   scroll them; the focus ring shows where that scroll input lands. It sits
+   inset because the wrapper's overflow clips anything drawn outside. */
+pre:focus-visible {
+  outline: 2px solid var(--color-light-link);
+  outline-offset: -2px;
+}
+
 /* Preserve default margins for wrapped pre elements not in homepage */
 .two-column-layout .code-block-wrapper,
 .blog-entry .code-block-wrapper,
@@ -22,12 +30,15 @@
   width: 36px;
   height: 36px;
   opacity: 0;
-  transition: opacity 200ms ease-in-out, background-color 200ms ease-in-out, transform 200ms ease-in-out;
+  transition:
+    opacity 200ms ease-in-out,
+    background-color 200ms ease-in-out,
+    transform 200ms ease-in-out;
   cursor: pointer;
-  background-color: rgba(255, 255, 255, 0.95);
-  border: 1px solid #d1d5db;
+  background-color: var(--color-light-surface);
+  border: 1px solid var(--color-light-border);
   border-radius: var(--radius-md);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: none;
   z-index: 100;
   display: flex;
   align-items: center;
@@ -57,7 +68,7 @@
 }
 
 .copy-code-button:hover {
-  background-color: #f3f4f6;
+  background-color: var(--color-light-bg-secondary);
   transform: scale(1.05);
 }
 
@@ -70,21 +81,60 @@
   stroke: white;
 }
 
+/* Language chip (copy-code.js, documentation blocks only). It shares the
+   top-right corner with the copy button and steps aside when the button
+   appears; on touch screens the button is always shown, so the chip sits
+   to its left instead. */
+.code-lang {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.75rem;
+  margin: 0;
+  padding: 0 var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--color-light-text-secondary);
+  background: var(--color-light-code-bg);
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 200ms ease-in-out;
+}
+
+.code-block-wrapper:hover .code-lang,
+.code-block-wrapper:focus-within .code-lang {
+  opacity: 0;
+}
+
+@media (hover: none) {
+  .code-lang,
+  .code-block-wrapper:hover .code-lang,
+  .code-block-wrapper:focus-within .code-lang {
+    right: calc(0.75rem + 36px + var(--space-sm));
+    opacity: 1;
+  }
+}
+
 /* ========================================
    DARK MODE
    ======================================== */
 
+.dark pre:focus-visible {
+  outline-color: var(--color-dark-text-accent);
+}
+
 .dark .copy-code-button {
-  background-color: rgba(42, 49, 60, 0.95);
-  border-color: #475569;
+  background-color: var(--color-dark-bg-secondary);
+  border-color: var(--color-dark-border);
 }
 
 .dark .copy-code-button svg {
-  stroke: #cbd5e1;
+  stroke: var(--color-dark-text-secondary);
 }
 
 .dark .copy-code-button:hover {
-  background-color: #2f3741;
+  background-color: var(--color-dark-code-inline-bg);
 }
 
 .dark .copy-code-button.copied {
@@ -96,3 +146,7 @@
   stroke: white;
 }
 
+.dark .code-lang {
+  color: var(--color-dark-text-muted);
+  background: var(--color-dark-code-bg);
+}

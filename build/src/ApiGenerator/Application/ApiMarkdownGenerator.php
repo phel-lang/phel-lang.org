@@ -6,6 +6,7 @@ namespace PhelWeb\ApiGenerator\Application;
 
 use Phel\Shared\Api\PhelFunction;
 use Phel\Shared\Facade\ApiFacadeInterface;
+use PhelWeb\Shared\Text\DocUrl;
 use PhelWeb\Shared\Text\EmDash;
 use PhelWeb\Shared\Text\ZolaAnchor;
 
@@ -15,6 +16,7 @@ final readonly class ApiMarkdownGenerator
 
     public function __construct(
         private ApiFacadeInterface $apiFacade,
+        private ApiNamespaceCatalog $catalog = new ApiNamespaceCatalog(),
     ) {
     }
 
@@ -62,11 +64,16 @@ final readonly class ApiMarkdownGenerator
     }
 
     /**
+     * The index is one raw HTML block (no blank lines) so markdown leaves the
+     * nested cards alone.
+     *
      * @param array<string, list<PhelFunction>> $groupedByNamespace
      * @return list<string>
      */
     private function buildIndexFile(array $groupedByNamespace): array
     {
+        $counts = array_map(count(...), $groupedByNamespace);
+
         $lines = [
             '+++',
             'title = "API"',
@@ -78,26 +85,116 @@ final readonly class ApiMarkdownGenerator
             'aliases = ["/api", "/documentation/api"]',
             '+++',
             '',
-            '> **Tip:** This documentation is also available in JSON format at [`/api.json`](/api.json).',
-            '',
-            'Browse the API by namespace:',
+            sprintf(
+                '%d namespaces and %s functions, grouped by area.',
+                count($counts),
+                number_format(array_sum($counts)),
+            ),
             '',
         ];
 
-        ksort($groupedByNamespace);
-        $lines[] = '<ul class="api-namespace-grid">';
-        foreach ($groupedByNamespace as $namespace => $functions) {
-            $slug = $this->namespaceSlug($namespace);
-            $count = count($functions);
+        $groups = $this->catalog->group(array_keys($counts));
+        if ($groups === []) {
+            return $lines;
+        }
+
+        $lines[] = '<nav class="api-index-toc" aria-label="API categories">';
+        $lines[] = '<ul>';
+        foreach (array_keys($groups) as $category) {
             $lines[] = sprintf(
-                '<li><a href="/documentation/reference/api/%s/"><span class="api-namespace-grid__name">%s</span><span class="api-namespace-grid__count">%d</span></a></li>',
-                $slug,
-                htmlspecialchars($namespace),
-                $count,
+                '<li><a href="#%s">%s</a></li>',
+                ZolaAnchor::fromHeading($category),
+                htmlspecialchars($category),
             );
         }
         $lines[] = '</ul>';
+        $lines[] = '</nav>';
+
+        foreach ($groups as $category => $namespaces) {
+            $anchor = ZolaAnchor::fromHeading($category);
+            $lines[] = sprintf('<section class="api-index-group" aria-labelledby="%s">', $anchor);
+            $lines[] = sprintf('<h2 id="%s">%s</h2>', $anchor, htmlspecialchars($category));
+            $lines[] = '<ul class="api-namespace-grid">';
+            foreach ($this->nestSubNamespaces($namespaces) as $namespace => $subNamespaces) {
+                $lines = array_merge($lines, $this->buildNamespaceCard($namespace, $subNamespaces, $counts));
+            }
+            $lines[] = '</ul>';
+            $lines[] = '</section>';
+        }
+
+        $lines[] = '<p class="api-index-json">The full API is also available as JSON at <a href="/api.json"><code>/api.json</code></a>.</p>';
         $lines[] = '';
+
+        return $lines;
+    }
+
+    /**
+     * Folds `a.b` under `a` when `a` is in the same list, so the index shows
+     * one card per family. Orphans keep their own card.
+     *
+     * @param list<string> $namespaces
+     * @return array<string, list<string>>
+     */
+    private function nestSubNamespaces(array $namespaces): array
+    {
+        $nested = [];
+        foreach ($namespaces as $namespace) {
+            $root = explode('.', $namespace, 2)[0];
+            if ($root !== $namespace && in_array($root, $namespaces, true)) {
+                continue;
+            }
+            $nested[$namespace] = [];
+        }
+
+        foreach ($namespaces as $namespace) {
+            $root = explode('.', $namespace, 2)[0];
+            if ($root !== $namespace && isset($nested[$root])) {
+                $nested[$root][] = $namespace;
+            }
+        }
+
+        return array_map(static function (array $subs): array {
+            sort($subs);
+            return $subs;
+        }, $nested);
+    }
+
+    /**
+     * @param list<string> $subNamespaces
+     * @param array<string, int> $counts
+     * @return list<string>
+     */
+    private function buildNamespaceCard(string $namespace, array $subNamespaces, array $counts): array
+    {
+        $description = $this->catalog->descriptionOf($namespace);
+
+        $lines = [
+            '<li class="api-ns-card">',
+            sprintf(
+                '<a class="api-ns-card__link" href="/documentation/reference/api/%s/"><span class="api-ns-card__head"><span class="api-namespace-grid__name">%s</span><span class="api-namespace-grid__count">%d</span></span>%s</a>',
+                $this->namespaceSlug($namespace),
+                htmlspecialchars($namespace),
+                $counts[$namespace],
+                $description === null
+                    ? ''
+                    : sprintf('<span class="api-ns-card__desc">%s</span>', htmlspecialchars($description)),
+            ),
+        ];
+
+        if ($subNamespaces !== []) {
+            $lines[] = sprintf('<ul class="api-ns-card__subs" aria-label="%s sub-namespaces">', htmlspecialchars($namespace));
+            foreach ($subNamespaces as $sub) {
+                $lines[] = sprintf(
+                    '<li><a href="/documentation/reference/api/%s/"><code>%s</code><span class="api-ns-card__sub-count">%d</span></a></li>',
+                    $this->namespaceSlug($sub),
+                    htmlspecialchars($sub),
+                    $counts[$sub],
+                );
+            }
+            $lines[] = '</ul>';
+        }
+
+        $lines[] = '</li>';
 
         return $lines;
     }
@@ -110,9 +207,11 @@ final readonly class ApiMarkdownGenerator
     private function buildNamespaceFile(string $namespace, array $functions, array $functionMap): array
     {
         $count = count($functions);
+        $description = $this->catalog->descriptionOf($namespace);
         $lines = [
             '+++',
             sprintf('title = "%s"', addslashes($namespace)),
+            ...($description === null ? [] : [sprintf('description = "%s"', addslashes($description))]),
             'template = "page-api-namespace.html"',
             '',
             '[extra]',
@@ -171,9 +270,9 @@ final readonly class ApiMarkdownGenerator
             $lines[] = $deprecation;
         }
 
-        // Render doc fences as clojure so Zola highlights them. with-mock-wrapper
-        // and with-mocks ship indented doc blocks that need de-indenting first.
-        $input = preg_replace('/```phel/', '```clojure', $fn->doc) ?? $fn->doc;
+        // with-mock-wrapper and with-mocks ship indented doc blocks that need
+        // de-indenting first.
+        $input = $fn->doc;
         if ($fn->name === 'with-mock-wrapper' || $fn->name === 'with-mocks') {
             $input = preg_replace('/^[ \t]+/m', '', $input) ?? $input;
             $input = preg_replace('/(?<!\n)\n(```phel)/', "\n\n$1", $input) ?? $input;
@@ -203,18 +302,16 @@ final readonly class ApiMarkdownGenerator
         }
 
         $message = sprintf(
-            '<small><span style="color: red; font-weight: bold;">Deprecated</span>: %s',
+            '<small><span class="api-deprecated">Deprecated</span>: %s',
             (string) $fn->meta['deprecated'],
         );
 
         if (isset($fn->meta['superseded-by'])) {
             $supersededBy = (string) $fn->meta['superseded-by'];
             $href = $this->buildFunctionHref($namespace, $supersededBy, $functionMap);
-            $message .= sprintf(
-                ' &mdash; Use [`%s`](%s) instead',
-                $supersededBy,
-                $href,
-            );
+            $message .= $href === null
+                ? sprintf(' &mdash; Use `%s` instead', $supersededBy)
+                : sprintf(' &mdash; Use [`%s`](%s) instead', $supersededBy, $href);
         }
 
         return $message . '</small>';
@@ -233,7 +330,7 @@ final readonly class ApiMarkdownGenerator
             '',
             '**Example:**',
             '',
-            '```clojure',
+            '```phel',
             (string) $fn->meta['example'],
             '```',
         ];
@@ -264,7 +361,7 @@ final readonly class ApiMarkdownGenerator
             if ($fn->githubUrl !== '') {
                 $lines[] = '<div><a href="' . $fn->githubUrl . '">View source</a></div>';
             } elseif ($fn->docUrl !== '') {
-                $lines[] = '<div><a href="' . $fn->docUrl . '">Read more</a></div>';
+                $lines[] = '<div><a href="' . DocUrl::current($fn->docUrl) . '">Read more</a></div>';
             }
         }
 
@@ -303,21 +400,26 @@ final readonly class ApiMarkdownGenerator
         return array_map(
             function (string $func) use ($currentNamespace, $functionMap) {
                 $href = $this->buildFunctionHref($currentNamespace, $func, $functionMap);
-                return sprintf('<a href="%s"><code>%s</code></a>', $href, htmlspecialchars($func));
+                return $href === null
+                    ? sprintf('<code>%s</code>', htmlspecialchars($func))
+                    : sprintf('<a href="%s"><code>%s</code></a>', $href, htmlspecialchars($func));
             },
             $functionNames,
         );
     }
 
     /**
+     * Null when the name matches no documented function: a link to an anchor
+     * Zola never emitted is worse than no link.
+     *
      * @param array<string, PhelFunction> $functionMap
      */
-    private function buildFunctionHref(string $currentNamespace, string $name, array $functionMap): string
+    private function buildFunctionHref(string $currentNamespace, string $name, array $functionMap): ?string
     {
-        $target = $functionMap[$name] ?? null;
+        $target = $this->resolveFunction($currentNamespace, $name, $functionMap);
 
         if ($target === null) {
-            return '#' . ZolaAnchor::fromHeading($name);
+            return null;
         }
 
         $anchor = ZolaAnchor::fromHeading($target->nameWithNamespace());
@@ -326,5 +428,29 @@ final readonly class ApiMarkdownGenerator
         }
 
         return '/documentation/reference/api/' . $this->namespaceSlug($target->namespace) . '/#' . $anchor;
+    }
+
+    /**
+     * A bare name prefers the referring namespace, then core, then any
+     * namespace. A qualified name may carry the full Phel namespace
+     * (`phel.schema/validate`, or the older `phel\schema/validate`), while the
+     * API keys it the short way (`schema/validate`, core without a prefix).
+     *
+     * @param array<string, PhelFunction> $functionMap
+     */
+    private function resolveFunction(string $currentNamespace, string $name, array $functionMap): ?PhelFunction
+    {
+        $slash = strpos($name, '/');
+        if ($slash === false || $slash === 0) {
+            return $functionMap[$currentNamespace . '/' . $name] ?? $functionMap[$name] ?? null;
+        }
+
+        $namespace = str_replace('\\', '.', substr($name, 0, $slash));
+        $namespace = str_starts_with($namespace, 'phel.') ? substr($namespace, 5) : $namespace;
+        $bareName = substr($name, $slash + 1);
+
+        return $namespace === 'core'
+            ? $functionMap[$bareName] ?? null
+            : $functionMap[$namespace . '/' . $bareName] ?? null;
     }
 }

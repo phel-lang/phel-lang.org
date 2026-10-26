@@ -16,7 +16,7 @@
 {% endblock article_meta %}
 
 {% block structured_data %}
-{% set post_desc = page.description | default(value=page.summary | default(value=config.description) | striptags) %}
+{% set post_desc = page.description or (page.summary or config.description) | striptags %}
 {% set post_image = page.extra.og_image | default(value=config.base_url ~ "/images/og-default.png") %}
 {% set author_name = page.extra.author | default(value="Phel Team") %}
 <script type="application/ld+json">
@@ -48,7 +48,7 @@
     <h1>{{page.title}}</h1>
     {% if page.date %}
       <div class="meta">
-        Published <time datetime="{{page.date}}">{{ page.date | date(format="%b, %e %Y") }}</time>
+        Published <time datetime="{{page.date}}">{{ page.date | date(format="%B %-d, %Y") }}</time>
         {% if page.reading_time %} · {{ page.reading_time }} min read{% endif %}
       </div>
     {% endif %}

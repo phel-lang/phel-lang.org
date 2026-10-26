@@ -37,6 +37,14 @@ final class SnippetExtractorTest extends TestCase
         self::assertFalse($snippets[0]['skip']);
     }
 
+    public function test_does_not_cover_generated_api_pages(): void
+    {
+        self::assertFalse($this->extractor->coversFile('/site/content/documentation/reference/api/core.md'));
+        self::assertFalse($this->extractor->coversFile('content/documentation/reference/api/_index.md'));
+        self::assertTrue($this->extractor->coversFile('/site/content/documentation/reference/cheat-sheet.md'));
+        self::assertTrue($this->extractor->coversFile('content/documentation/language/control-flow.md'));
+    }
+
     public function test_ignores_non_phel_fences(): void
     {
         $md = [
@@ -112,6 +120,24 @@ final class SnippetExtractorTest extends TestCase
 
         self::assertTrue($snippets[0]['skip']);
         self::assertSame('marked', $snippets[0]['skipReason']);
+    }
+
+    public function test_marker_sees_through_a_raw_block(): void
+    {
+        $md = [
+            '<!-- phel-test: skip -->',
+            '{% raw %}',
+            '```phel',
+            '(str "{{" name "}}")',
+            '```',
+            '{% endraw %}',
+        ];
+
+        $snippets = $this->extractor->extract($md, 'doc.md');
+
+        self::assertCount(1, $snippets);
+        self::assertTrue($snippets[0]['skip']);
+        self::assertSame('(str "{{" name "}}")', $snippets[0]['code']);
     }
 
     public function test_marker_only_applies_to_immediately_following_block(): void

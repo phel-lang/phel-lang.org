@@ -1,0 +1,15 @@
+name: phel-lang.org
+setup:
+  - composer install
+  - npm ci
+  - composer build
+  - npm run build-css-prod
+dev-commands:
+  - name: Serve
+    command: npm run dev
+  - name: Build
+    command: zola build
+  - name: Check links
+    command: npm run check:links
+  - name: Doc snippets
+    command: php build/run-doc-snippets.php

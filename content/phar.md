@@ -1,7 +1,6 @@
 +++
 title = "Download Phel PHAR"
 template = "page.html"
-aliases = ["/phar"]
 +++
 
 Redirecting to the latest Phel PHAR release...

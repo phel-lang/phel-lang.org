@@ -1,36 +1,36 @@
 +++
 title = "Build a Web App"
 weight = 1
-description = "An end-to-end tutorial: build a complete guestbook web app in Phel with routing, HTML rendering, and request handling. Every snippet runs."
+description = "An end-to-end tutorial: build a guestbook web app in Phel from an empty folder, with routing, HTML rendering, and request handling."
 +++
 
-This tutorial builds a small but complete web app, a guestbook that lists
-messages and lets visitors post new ones, using three built-in namespaces:
-`phel.html` for the page, `phel.http` for requests and responses, and
-`phel.router` for dispatch. You will end with a single file you can serve with
-`php -S`.
+This tutorial builds a small, complete web app from an empty folder: a guestbook that lists messages and lets visitors post new ones. At the end you serve it with `php -S` and use it in the browser.
 
-Every code block here is a self-contained program you can paste into a file and
-run with `phel run`, and each is checked against the runtime on every build.
-Sections 1 to 4 are runnable steps that introduce one idea at a time; section 5
-assembles them into the final `src/guestbook.phel` you keep. The trick that makes
-a web handler runnable without a server is `request-from-map`: it builds a request
-struct in memory, so you can call your app and inspect the response in plain Phel,
-no browser required.
+It uses four built-in namespaces: `phel.html` for the page, `phel.http` for requests and responses, `phel.router` for dispatch, and `phel.json` to store messages in a file.
 
-## Prerequisites
+You build the app in one file, `src/guestbook/app.phel`. Each step replaces the contents of that file with a complete program, and you run it with `vendor/bin/phel run src/guestbook/app.phel`. Steps 1 to 4 introduce one idea each. Step 5 is the final app. Step 6 serves it.
 
-Phel installed in a project (see [Getting Started](/documentation/getting-started/)).
-Run each step below with `vendor/bin/phel run <file>.phel` to follow along; the
-finished file lands in section 5.
+The trick that makes a web handler testable without a server is `request-from-map`: it builds a request in memory, so you can call your app and read the response in plain Phel.
+
+## 0. Create the project
+
+You need PHP 8.5+ and Composer (see [Installation](/documentation/installation/)). In an empty folder:
+
+```bash
+mkdir guestbook && cd guestbook
+composer require phel-lang/phel-lang
+vendor/bin/phel init guestbook
+mkdir -p src/guestbook
+```
+
+`phel init` writes `phel-config.php` and a sample `src/main.phel`. You can ignore the sample. Create `src/guestbook/app.phel` for the next step.
 
 ## 1. Hold the state
 
-The guestbook needs somewhere to keep messages. An `atom` holds a vector and
-`swap!` updates it. Start there:
+The guestbook needs a place for messages. An `atom` holds a vector, and `swap!` updates it:
 
 ```phel
-(ns guestbook)
+(ns guestbook.app)
 
 (def messages (atom []))
 
@@ -40,21 +40,18 @@ The guestbook needs somewhere to keep messages. An `atom` holds a vector and
 (add-message! "Ada" "First!")
 (add-message! "Alan" "Hello from Phel")
 
-(deref messages)
-; => [{:name "Ada", :text "First!"} {:name "Alan", :text "Hello from Phel"}]
+(prn (deref messages))
+; prints [{:name "Ada", :text "First!"} {:name "Alan", :text "Hello from Phel"}]
 ```
 
-`messages` is the whole database for now. Section 5 swaps it for a file.
+The atom lives only as long as one PHP process. A web server starts every request with fresh state, so under `php -S` the atom is empty again on the next request. Step 5 replaces it with a file.
 
 ## 2. Render the page
 
-HTML is plain Phel data: a vector is an element, a leading keyword is the tag,
-an optional map is attributes (see [HTML Rendering](/documentation/web/html-rendering/)).
-A function that returns such a vector is a reusable component. Pass the final
-tree to `html` once:
+HTML is plain Phel data: a vector is an element, a leading keyword is the tag, and an optional map holds the attributes (see [HTML Rendering](/documentation/web/html-rendering/)). A function that returns such a vector is a reusable component. Pass the final tree to `html` once:
 
 ```phel
-(ns guestbook
+(ns guestbook.app
   (:require phel.html :refer [html doctype]))
 
 (defn entry-view [entry]
@@ -73,22 +70,18 @@ tree to `html` once:
        [:input {:type "text" :name "message" :placeholder "Message"}]
        [:button "Sign"]]]]))
 
-(php/str_contains (page [{:name "Ada" :text "Hi"}]) "<strong>Ada</strong>")
-; => true
+(prn (php/str_contains (page [{:name "Ada" :text "<b>Hi</b>"}]) "<strong>Ada</strong>: &lt;b&gt;Hi&lt;/b&gt;"))
+; prints true
 ```
 
-`html` auto-escapes every value, so a message of `<script>` renders as harmless
-text. No template language, just data.
+`html` escapes every value, so a message like `<b>Hi</b>` renders as text, not markup. There is no template language, only data.
 
 ## 3. Handle a request
 
-A handler is a one-argument function `request -> response`. `home` renders the
-page; `sign` reads the submitted form from `:parsed-body`, stores it, and
-redirects back with a `303`. Build requests with `request-from-map` to call them
-directly:
+A handler is a function from a request to a response. `home` renders the page. `sign` reads the submitted form from `:parsed-body`, stores it, and redirects back with a `303`. Form fields arrive as a map with string keys, named after the `<input>` elements:
 
 ```phel
-(ns guestbook
+(ns guestbook.app
   (:require phel.http :as http))
 
 (def messages (atom []))
@@ -98,26 +91,23 @@ directly:
 
 (defn sign [request]
   (let [body (get request :parsed-body)]
-    (swap! messages conj {:name (get body :name) :text (get body :message)})
+    (swap! messages conj {:name (get body "name") :text (get body "message")})
     (http/response-from-map {:status 303 :headers {"Location" "/"} :body ""})))
 
 (let [req (http/request-from-map
-            {:method "POST" :uri "/" :parsed-body {:name "Ada" :message "Hi"}})]
-  [(get (sign req) :status) (deref messages)])
-; => [303 [{:name "Ada", :text "Hi"}]]
+            {:method "POST" :uri "/" :parsed-body {"name" "Ada" "message" "Hi"}})]
+  (prn [(get (sign req) :status) (deref messages)]))
+; prints [303 [{:name "Ada", :text "Hi"}]]
 ```
 
-The handler returns a response struct; `sign` sets `:status 303` and a
-`Location` header so the browser reloads the list after posting.
+The `303` status and the `Location` header make the browser load the list again after a post.
 
 ## 4. Route requests to handlers
 
-`phel.router` maps a `[path data]` table to handlers, matching both path and
-method, so you skip hand-written `cond`. `router/handler` turns the table into
-one `request -> response` function, the whole app:
+`phel.router` maps a table of `[path data]` pairs to handlers and matches both path and method. `router/handler` turns the table into one request-to-response function, which is the whole app:
 
 ```phel
-(ns guestbook
+(ns guestbook.app
   (:require phel.http :as http)
   (:require phel.router :as router))
 
@@ -128,7 +118,7 @@ one `request -> response` function, the whole app:
 
 (defn sign [request]
   (let [body (get request :parsed-body)]
-    (swap! messages conj {:name (get body :name) :text (get body :message)})
+    (swap! messages conj {:name (get body "name") :text (get body "message")})
     (http/response-from-map {:status 303 :headers {"Location" "/"} :body ""})))
 
 (def routes
@@ -137,35 +127,39 @@ one `request -> response` function, the whole app:
 
 (def app (router/handler (router/router routes)))
 
-; POST a message, then GET the list, all in memory
-(let [post-req (http/request-from-map {:method "POST" :uri "/" :parsed-body {:name "Ada" :message "Hi"}})
-      get-req  (http/request-from-map {:method "GET" :uri "/"})]
-  (app post-req)
-  (get-in (app get-req) [:body]))
-; => "messages: 1"
+(app (http/request-from-map {:method "POST" :uri "/" :parsed-body {"name" "Ada" "message" "Hi"}}))
+(prn (get (app (http/request-from-map {:method "GET" :uri "/"})) :body))
+; prints "messages: 1"
+(prn (get (app (http/request-from-map {:method "GET" :uri "/missing"})) :status))
+; prints 404
 ```
 
-`app` is everything: routing, dispatch, your handlers. A `GET /missing` would
-get a 404 from the router without touching your code. Here `home` returns a stub
-body to keep the focus on routing; the complete app below renders the real page.
+The router answers unknown paths with a `404` without calling your code. `home` returns a short text here to keep the focus on routing. The next step renders the real page.
 
 ## 5. The complete app
 
-Assemble the pieces into one `src/guestbook.phel`. This is the whole app: state,
-the `page` component from section 2, the real `home` (which now renders
-`(page ...)`), `sign`, the routes, and `app`. It is a complete program, copy it
-as is:
+Now assemble the pieces. One change: the atom goes. PHP forgets it when each request ends, so messages move to a JSON file that every request reads and writes. The file lives in the system temp directory, outside the web root, so nobody can download it.
+
+Replace `src/guestbook/app.phel` with the full app:
 
 ```phel
-(ns guestbook
+(ns guestbook.app
   (:require phel.html :refer [html doctype])
   (:require phel.http :as http)
+  (:require phel.json :as json)
   (:require phel.router :as router))
 
-(def messages (atom []))
+(def messages-file (str (php/sys_get_temp_dir) "/guestbook-messages.json"))
+
+(defn load-messages []
+  (if (php/is_file messages-file)
+    (json/decode (php/file_get_contents messages-file))
+    []))
 
 (defn add-message! [name text]
-  (swap! messages conj {:name name :text text}))
+  (php/file_put_contents
+    messages-file
+    (json/encode (conj (load-messages) {:name name :text text}))))
 
 (defn entry-view [entry]
   [:li [:strong (get entry :name)] ": " (get entry :text)])
@@ -184,11 +178,11 @@ as is:
        [:button "Sign"]]]]))
 
 (defn home [request]
-  (http/response-from-map {:status 200 :body (page (deref messages))}))
+  (http/response-from-map {:status 200 :body (page (load-messages))}))
 
 (defn sign [request]
   (let [body (get request :parsed-body)]
-    (add-message! (get body :name) (get body :message))
+    (add-message! (get body "name") (get body "message"))
     (http/response-from-map {:status 303 :headers {"Location" "/"} :body ""})))
 
 (def routes
@@ -197,43 +191,28 @@ as is:
 
 (def app (router/handler (router/router routes)))
 
-; Quick in-memory check (delete before serving): post a message, render the
-; list, confirm the rendered page actually shows it.
-(let [post (http/request-from-map {:method "POST" :uri "/" :parsed-body {:name "Ada" :message "Hello"}})
-      _    (app post)
-      body (get (app (http/request-from-map {:method "GET" :uri "/"})) :body)]
-  (php/str_contains body "<strong>Ada</strong>: Hello"))
-; => true
+; Quick check, replaced in step 6
+(app (http/request-from-map {:method "POST" :uri "/" :parsed-body {"name" "Ada" "message" "Hello"}}))
+(prn (php/str_contains (get (app (http/request-from-map {:method "GET" :uri "/"})) :body)
+                       "<strong>Ada</strong>: Hello"))
+; prints true
 ```
 
-The check posts a message and confirms the rendered HTML contains it, proving the
-whole request to response path before any server is involved.
+The check posts a message, renders the list, and confirms the HTML contains it. That proves the whole request-to-response path before a server is involved. It also writes to the messages file, so the message is still there on the next run.
 
 ## 6. Serve it
 
-A Phel web app is served through a tiny PHP front controller that boots Phel and
-runs your namespace. The project layout is three files:
-
-```text
-composer.json          # requires phel-lang/phel-lang
-public/index.php       # front controller
-src/guestbook.phel     # the app from section 5
-```
-
-`public/index.php` boots Phel and runs the `guestbook` namespace:
+A web server needs a PHP entry file that boots Phel and loads your namespace. Create `public/index.php`:
 
 ```php
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
 
-\Phel::run(__DIR__ . '/..', 'guestbook');
+\Phel::run(__DIR__ . '/..', 'guestbook.app');
 ```
 
-Then add the entry point at the bottom of `src/guestbook.phel`: read the request
-from PHP's globals, run `app`, emit the response. Guard it with
-`(when-not *build-mode* ...)` so it only runs when serving, not when the file is
-compiled or required by tests:
+In `src/guestbook/app.phel`, replace the quick check at the bottom with the entry point. It reads the request from PHP's globals, runs `app`, and sends the response:
 
 <!-- phel-test: skip -->
 ```phel
@@ -243,28 +222,27 @@ compiled or required by tests:
       (http/emit-response)))
 ```
 
-Install dependencies and start PHP's built-in server with `public` as the web
-root:
+The `*build-mode*` guard skips this code when `phel build` or `phel test` loads the file. From now on, run the app through the server, not with `phel run`: `request-from-globals` fails outside a web request.
+
+Your project now has these files:
+
+```text
+composer.json
+phel-config.php
+public/index.php         # entry file for the web server
+src/guestbook/app.phel   # the app
+```
+
+Start PHP's built-in server with `public` as the web root:
 
 ```bash
-composer install
 php -S 127.0.0.1:8000 -t public
 ```
 
-Open `http://127.0.0.1:8000/`, sign the guestbook, watch the list grow. (Messages
-live in the atom, so they reset when the server restarts: the first item under
-**Where to go next** fixes that.)
+Open `http://127.0.0.1:8000/` and sign the guestbook. Each request is a new PHP process, but the messages stay: they live in the JSON file, not in memory. Restart the server and they are still there.
 
 ## Where to go next
 
-- **Persist to disk.** Swap the atom for a file: read messages with
-  [`phel.json`](/documentation/reference/api/json/) on start, write on each
-  `sign`. The handler code does not change, only `messages`.
-- **Validate input.** Reject empty names before `swap!`, return a `400` with an
-  error message in the page.
-- **Add pages.** A second route `["/about" {:get {:handler about}}]` and a
-  shared `layout` component (see [HTML Rendering](/documentation/web/html-rendering/#composing-reusable-fragments)).
-
-Reference: [Routing](/documentation/web/routing/),
-[Request and Response](/documentation/web/http-request-and-response/),
-[HTML Rendering](/documentation/web/html-rendering/).
+- **Use a database.** Two requests writing the file at the same time can lose a message. Replace `load-messages` and `add-message!` with SQL through [phel-pdo](https://github.com/phel-lang/phel-pdo) (see [Persistence](/documentation/web/framework-integration/#persistence-maps-not-entities)). The handlers stay the same.
+- **Validate input.** Reject an empty name before `add-message!` and return a `400` with an error in the page. [Schema](/documentation/libraries/schema/) can describe the form.
+- **Deploy it.** Compile ahead of time with `phel build` (see [Deployment](/documentation/guides/deployment/)).

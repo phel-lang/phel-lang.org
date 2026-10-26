@@ -4,10 +4,13 @@ weight = 4
 sort_by = "weight"
 insert_anchor_links = "right"
 template = "section-page.html"
-description = "Learn the Phel language: types, data structures, bindings, functions, control flow, error handling, namespaces, interfaces, and macros."
+description = "Learn the Phel language: types, data structures, bindings, functions, control flow, error handling, namespaces, PHP interop, interfaces, and macros."
 
 [extra]
-insert_after = "Why Phel?"
+insert_after = "Installation"
+numbered = true
 +++
 
-A functional Lisp that compiles to PHP. The pages below are ordered as a guided path: start with **Basic Types** and **Data Structures**, then work down. Already know the basics? Jump straight to any topic.
+These pages teach the Phel language in order. The first six (**Basic Types** through **Destructuring**) cover what you need to write everyday Phel. The pages after them each go deeper into one topic, such as macros or PHP interop, and you can read them in any order.
+
+For every function and its signature, use the [API reference](/documentation/reference/api/).

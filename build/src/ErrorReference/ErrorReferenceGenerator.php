@@ -20,8 +20,9 @@ final class ErrorReferenceGenerator
     private const CATEGORIES = [
         'PHEL0' => ['Analyzer errors', 'Raised while analyzing forms: undefined names, wrong arity, type and binding problems. The bulk of day-to-day errors.'],
         'PHEL1' => ['Parser errors', 'Raised while parsing tokens into forms, almost always an unbalanced or unterminated bracket.'],
-        'PHEL2' => ['Reader errors', 'Raised while reading quote / quasiquote forms.'],
+        'PHEL2' => ['Reader errors', 'Raised while reading forms: quote and quasiquote, and map and set literals.'],
         'PHEL3' => ['Lexer errors', 'Raised while turning source text into tokens: invalid characters or unterminated strings.'],
+        'PHEL4' => ['Runtime errors', 'Raised while compiled code runs, not while it compiles: the program was well formed and the values it met were not.'],
     ];
 
     /**
@@ -34,7 +35,7 @@ final class ErrorReferenceGenerator
         'PHEL001' => [
             'meaning' => 'A symbol could not be resolved to a definition in the current scope.',
             'cause' => 'A typo, a missing `(:require ...)` for the namespace the symbol lives in, an alias that does not match, or using a binding before it is defined.',
-            'fix' => 'Check the spelling, require the namespace (e.g. `(:require phel\string :as str)` for `str/...`), or move the definition above its first use. The error message suggests near matches.',
+            'fix' => 'Check the spelling, require the namespace (e.g. `(:require phel.string :as str)` for `str/...`), or move the definition above its first use. The error message suggests near matches.',
         ],
         'PHEL002' => [
             'meaning' => 'A function was called with the wrong number of arguments.',
@@ -90,6 +91,24 @@ final class ErrorReferenceGenerator
             'cause' => 'A non-callable value (a number, string, keyword used wrongly) sits in the head position of a list, often an extra pair of parentheses.',
             'fix' => 'Remove the stray parentheses, or put a function in the call position.',
         ],
+        'PHEL012' => [
+            'meaning' => 'A form Phel now says another way was used as source.',
+            'cause' => '`php/new`, `php/->`, `php/::` or `set-var` was written by hand. The compiler still emits them, but they are no longer accepted in source.',
+            'fix' => 'Use the replacement the message names: `(new \\Foo arg)`, `(.method obj arg)` / `(.-field obj)`, `(\\Foo/method arg)` / `\\Foo/CONST`, and `(alter-var-root (var v) f)`.',
+            'learnMore' => '[PHP interop](/documentation/language/php-interop/).',
+        ],
+        'PHEL013' => [
+            'meaning' => 'A `:refer` in an `ns` form names something the required namespace does not define.',
+            'cause' => 'A typo in the referred name, or a name the namespace keeps private (`defn-`, `def-`). Phel checks it when the required namespace is already loaded, which it is for every file a run, test or build loads.',
+            'fix' => 'Check the spelling against the namespace, or drop the name from the `:refer` vector.',
+            'learnMore' => '[Namespaces](/documentation/language/namespaces/).',
+        ],
+        'PHEL014' => [
+            'meaning' => 'A `(:require ...)` names a namespace Phel cannot find.',
+            'cause' => 'No source file on the searched directories declares it, it is not loaded, and Phel does not ship it. Usually a typo, or a file outside the configured source directories. The error note lists the directories searched.',
+            'fix' => 'Check the spelling against the `ns` form of the file you mean, or add its directory to the src, test or vendor dirs.',
+            'learnMore' => '[Namespaces](/documentation/language/namespaces/), [Configuration](/documentation/reference/configuration/).',
+        ],
         'PHEL100' => [
             'meaning' => 'A list was not closed.',
             'cause' => 'A missing `)`.',
@@ -120,30 +139,20 @@ final class ErrorReferenceGenerator
             'cause' => 'The token stream could not be assembled into valid forms for a reason not covered by a more specific code.',
             'fix' => 'Check the indicated location for malformed structure.',
         ],
-        'PHEL200' => [
-            'meaning' => 'A `quote` form is malformed.',
-            'cause' => '`quote` was given the wrong number of arguments.',
-            'fix' => 'Use `(quote x)` or the `\'x` shorthand with a single form.',
-        ],
-        'PHEL201' => [
-            'meaning' => 'An unquote (`~`) is invalid.',
-            'cause' => '`~` was used outside a quasiquote (`` ` ``) or with a wrong argument shape.',
-            'fix' => 'Only use `~` inside a quasiquoted form.',
-        ],
         'PHEL202' => [
             'meaning' => 'A splicing unquote (`~@`) is invalid.',
             'cause' => '`~@` was used outside a quasiquote, or in a position where a sequence cannot be spliced.',
             'fix' => 'Use `~@` inside a quasiquote, splicing into a list or vector.',
         ],
+        'PHEL203' => [
+            'meaning' => 'A map or set literal holds the same constant key twice, so one entry would be lost.',
+            'cause' => 'A repeated keyword, string, number, boolean or `nil`, as in `{:a 1 :a 2}`. Numbers compare by value, so `{1/2 :a 2/4 :b}` repeats a key. A symbol or a call is not checked: it keeps the last value, as `hash-map` and `hash-set` do.',
+            'fix' => 'Remove the repeated key, or rename the one you meant to be different.',
+        ],
         'PHEL210' => [
             'meaning' => 'A general reader error.',
             'cause' => 'A reader macro could not be read for a reason not covered by a more specific code.',
             'fix' => 'Check the quote/quasiquote forms at the indicated location.',
-        ],
-        'PHEL300' => [
-            'meaning' => 'An invalid character was found in the source.',
-            'cause' => 'A character that is not valid Phel syntax at that position.',
-            'fix' => 'Remove or escape the character.',
         ],
         'PHEL301' => [
             'meaning' => 'A string was not closed.',
@@ -154,6 +163,32 @@ final class ErrorReferenceGenerator
             'meaning' => 'A general lexer error.',
             'cause' => 'The source could not be tokenized for a reason not covered by a more specific code.',
             'fix' => 'Check the indicated location for stray or invalid characters.',
+        ],
+        'PHEL400' => [
+            'meaning' => 'A value that is not a function was called at runtime.',
+            'cause' => 'The head of the list is a name or an expression the analyzer could not check, and it evaluated to a non-callable value.',
+            'fix' => 'Call a function, or read the value with an accessor such as `get`, `nth` or `first`.',
+        ],
+        'PHEL401' => [
+            'meaning' => 'A function was called with the wrong number of arguments at runtime.',
+            'cause' => 'The callee is a value the analyzer has no arity for, such as a local closure, so the mismatch only surfaces when it runs.',
+            'fix' => 'Pass one argument per declared parameter.',
+        ],
+        'PHEL402' => [
+            'meaning' => 'A value of the wrong type reached a PHP function or method.',
+            'cause' => 'Most of these come from `php/` interop calls whose callee declares a type the argument does not satisfy.',
+            'fix' => 'Convert the value to the type the callee declares before passing it.',
+            'learnMore' => '[PHP interop](/documentation/language/php-interop/).',
+        ],
+        'PHEL403' => [
+            'meaning' => 'An indexed read asked for a position the collection does not have.',
+            'cause' => '`nth` (and other indexed reads) past the end of a collection. `get` returns `nil` instead of throwing.',
+            'fix' => 'Check the index against `(count coll)`, or use `get` with a default.',
+        ],
+        'PHEL404' => [
+            'meaning' => 'A division or remainder had zero on the right.',
+            'cause' => '`/`, `%`, `rem` and `php/intdiv` all raise it when the divisor is zero.',
+            'fix' => 'Guard the divisor before dividing.',
         ],
     ];
 
@@ -195,13 +230,13 @@ final class ErrorReferenceGenerator
         $out = <<<'MD'
             +++
             title = "Error Reference"
-            weight = 3
-            description = "Every Phel compiler error code (PHEL001-PHEL310), what it means, and how to fix it."
+            weight = 4
+            description = "Every Phel error code (PHEL001-PHEL404), what it means, and how to fix it."
             +++
 
-            > This page is the canonical index of compiler error **codes**. To learn how to `throw`, `catch`, and attach data to errors in your own code, see [Error handling](/documentation/language/error-handling/).
+            > This page is the canonical index of error **codes**. To learn how to `throw`, `catch`, and attach data to errors in your own code, see [Error handling](/documentation/language/error-handling/).
 
-            Phel compiler errors are tagged with a stable code like `[PHEL001]`. The code
+            Phel errors are tagged with a stable code like `[PHEL001]`. The code
             survives wording changes, so it is the reliable thing to search for. An error
             prints as the code, a message, the source location, a snippet of the offending
             code, and often a hint:
@@ -211,7 +246,8 @@ final class ErrorReferenceGenerator
             in src/app.phel:12
             ```
 
-            Codes are grouped by the compiler stage that raises them.
+            Codes are grouped by the stage that raises them. Run `phel explain PHEL001`
+            to print the same explanation in the terminal.
 
             MD;
 

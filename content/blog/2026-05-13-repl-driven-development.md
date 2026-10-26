@@ -1,6 +1,5 @@
 +++
 title = "REPL-Driven Development in Phel"
-aliases = [ "/blog/repl-driven-development" ]
 description = "Live functions, *1 chaining, load-file reloads, tap> debugging. The Lisp workflow on PHP."
 date = 2026-05-13
 
@@ -50,7 +49,7 @@ Three transformations, no variable names. On a throw, `*e` holds the exception:
 ```phel
 user:4> (/ 1 0)
 ; => exception
-user:5> (php/-> *e (getMessage))
+user:5> (.getMessage *e)
 "Division by zero"
 ```
 
@@ -128,10 +127,10 @@ phel.core/last
 
 ```phel
 user:1> (use DateTimeImmutable)
-user:2> (def now (php/new DateTimeImmutable))
-user:3> (php/-> now (format "l, F j, Y"))
+user:2> (def now (new DateTimeImmutable))
+user:3> (.format now "l, F j, Y")
 "Wednesday, May 13, 2026"
-user:4> (php/-> now (modify "+3 days") (format "Y-m-d"))
+user:4> (-> now (.modify "+3 days") (.format "Y-m-d"))
 "2026-05-16"
 ```
 

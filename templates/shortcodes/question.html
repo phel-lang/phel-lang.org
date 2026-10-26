@@ -1,8 +1,0 @@
-<div class="question-block" id="exercise-{{ nth }}" data-exercise-index="{{ nth }}">
-    <h3>
-        <button type="button" class="exercise-check" data-exercise-check aria-label="Toggle completion" title="Mark as done"></button>
-        <span class="exercise-number">Exercise {{ nth }}</span>
-        {% if difficulty %}<span class="difficulty difficulty-{{ difficulty }}">{{ difficulty }}</span>{% endif %}
-    </h3>
-    {{ body | markdown | safe }}
-</div>

@@ -13,13 +13,13 @@
                 <time class="post-card__date" datetime="{{ page.date }}">{{ page.date | date(format="%B %-d, %Y") }}</time>
             </div>
             {% endif %}
-            <h2 class="post-card__title">{{ page.title }}</h2>
+            <h2 class="post-card__title">{{ page.title | trim_start(pat="Release: ") }}</h2>
             {% if page.description %}
             <p class="post-card__excerpt">{{ page.description }}</p>
             {% elif page.summary %}
             <p class="post-card__excerpt">{{ page.summary | striptags }}</p>
             {% endif %}
-            <span class="post-card__cta">View release →</span>
+            <span class="post-card__cta"><span class="post-card__paren" aria-hidden="true">(</span>View release<span class="post-card__paren" aria-hidden="true">)</span></span>
         </a>
         {% set versions = page.extra.versions | default(value=[]) %}
         {% if versions | length > 1 %}

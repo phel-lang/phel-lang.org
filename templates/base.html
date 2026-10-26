@@ -6,24 +6,26 @@
 
   {# ---------- Resolved metadata ---------- #}
   {% set site_name = config.title %}
-  {% set page_title = page.title | default(value=section.title | default(value=config.title)) %}
-  {% set seo_title = page.extra.seo_title | default(value=section.extra.seo_title | default(value="")) %}
+  {% set page_title = page?.title or section?.title or config.title %}
+  {% set seo_title = page?.extra?.seo_title or section?.extra?.seo_title or "" %}
   {% if seo_title %}
     {% set full_title = seo_title %}
   {% else %}
-    {% set full_title = page.title | default(value=section.title | default(value="")) %}
+    {% set full_title = page?.title or section?.title or "" %}
     {% if full_title and full_title != config.title %}
       {% set full_title = full_title ~ " | " ~ config.title %}
     {% else %}
       {% set full_title = config.title %}
     {% endif %}
   {% endif %}
-  {% set page_desc = page.description | default(value=section.description | default(value=config.description)) %}
-  {% set page_url = current_url | default(value=config.base_url ~ "/") %}
-  {% set og_image = page.extra.og_image | default(value=section.extra.og_image | default(value=config.base_url ~ "/images/og-default.png")) %}
-  {% set og_image_width = page.extra.og_image_width | default(value=section.extra.og_image_width | default(value=1200)) %}
-  {% set og_image_height = page.extra.og_image_height | default(value=section.extra.og_image_height | default(value=630)) %}
+  {% set page_desc = page?.description or section?.description or config.description %}
+  {% set page_url = current_url or config.base_url ~ "/" %}
+  {% set og_image = page?.extra?.og_image or section?.extra?.og_image or config.base_url ~ "/images/og-default.png" %}
+  {% set og_image_width = page?.extra?.og_image_width or section?.extra?.og_image_width or 1200 %}
+  {% set og_image_height = page?.extra?.og_image_height or section?.extra?.og_image_height or 630 %}
   {% block og_type %}{% set og_type = "website" %}{% endblock og_type %}
+  {# Pages whose front matter is generated re-set full_title, page_title or page_desc here. #}
+  {% block seo_meta %}{% endblock seo_meta %}
 
   <!-- Prevent flash of light mode - must run before any rendering -->
   <script>
@@ -49,7 +51,8 @@
   <title>{{ full_title }}</title>
   <meta name="description" content="{{ page_desc }}">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#1d4ed8">
+  <meta name="theme-color" content="#512da8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#14121b" media="(prefers-color-scheme: dark)">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="canonical" href="{{ page_url | safe }}">
 
@@ -79,12 +82,14 @@
   <link rel="alternate" type="application/atom+xml" title="{{ config.title }} Blog" href="{{ config.base_url | safe }}/blog/atom.xml">
 
   {# ---------- Styles & icons ---------- #}
-  <link rel="stylesheet" href="/tailwind.css"/>
-  <link rel="stylesheet" href="/syntax-theme-light.css" />
-  <link rel="stylesheet" href="/syntax-theme-dark.css" />
-  <link rel="alternate icon" type="image/png" href="/favicon-32.png">
-  <link rel="icon" type="image/png" href="/favicon-512.png">
+  <link rel="stylesheet" href="{{ get_url(path="tailwind.css", cachebust=true) }}"/>
+  <link rel="stylesheet" href="{{ get_url(path="syntax-theme-light.css", cachebust=true) }}" />
+  <link rel="stylesheet" href="{{ get_url(path="syntax-theme-dark.css", cachebust=true) }}" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="preload" href="{{ get_url(path="fonts/brygada-1918-italic-latin.woff2") }}" as="font" type="font/woff2" crossorigin>
+  {% block page_head %}{% endblock page_head %}
 
   {# ---------- Structured data ---------- #}
   {% block structured_data %}
@@ -107,18 +112,18 @@
   <button onclick="backToTop()" id="back-to-top-button" class="back-to-top-button" title="Go to top">Top</button>
 
   {# Always-on: header UI, navigation, content affordances, search shell. #}
-  <script type="text/javascript" src="/mobile-menu.js"></script>
-  <script type="text/javascript" src="/dark-mode.js"></script>
-  <script type="text/javascript" src="/sidebar-toggle.js"></script>
-  <script type="text/javascript" src="/subsection-toggle.js"></script>
-  <script type="text/javascript" src="/sidebar-prev-next.js" defer></script>
-  <script type="text/javascript" src="/toc-scrollspy.js" defer></script>
-  <script type="text/javascript" src="/copy-code.js" defer></script>
-  <script type="text/javascript" src="/copy-anchor-link.js" defer></script>
-  <script type="text/javascript" src="/search.js" defer></script>
-  <script type="text/javascript" src="/back_to_top.js" defer></script>
-  <script type="text/javascript" src="/easter-eggs.js" defer></script>
-  <script type="text/javascript" src="/keyboard-nav.js" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="mobile-menu.js", cachebust=true) }}"></script>
+  <script type="text/javascript" src="{{ get_url(path="dark-mode.js", cachebust=true) }}"></script>
+  <script type="text/javascript" src="{{ get_url(path="sidebar-toggle.js", cachebust=true) }}"></script>
+  <script type="text/javascript" src="{{ get_url(path="subsection-toggle.js", cachebust=true) }}"></script>
+  <script type="text/javascript" src="{{ get_url(path="sidebar-prev-next.js", cachebust=true) }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="toc-scrollspy.js", cachebust=true) }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="copy-code.js", cachebust=true) }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="copy-anchor-link.js", cachebust=true) }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="search.js", cachebust=true) }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="back_to_top.js", cachebust=true) }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="easter-eggs.js", cachebust=true) }}" defer></script>
+  <script type="text/javascript" src="{{ get_url(path="keyboard-nav.js", cachebust=true) }}" defer></script>
 
   {# Page-specific scripts injected by individual templates. #}
   {% block page_scripts %}{% endblock page_scripts %}

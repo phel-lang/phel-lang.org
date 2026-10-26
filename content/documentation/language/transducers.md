@@ -1,224 +1,144 @@
 +++
 title = "Transducers"
-weight = 12
-description = "Build composable, allocation-free transformation pipelines that decouple the transformation from the consumer, and write your own custom transducers"
+weight = 15
+description = "Build reusable transformation pipelines that run in one pass, consume them with into, transduce and sequence, and write your own transducers."
 
 [extra]
 difficulty = "advanced"
 +++
 
-Transducers are composable transformation pipelines that decouple *what* you do to a sequence of values (map, filter, take) from *how* you consume the result (build a vector, sum, write to a file). They turn one reducing function into another, fusing every step into a single pass with no intermediate collections.
+A transducer is a transformation step (map, filter, take) that does not know where its input comes from or where its output goes. After this page you can compose transducers into one-pass pipelines, reuse one pipeline with different consumers, and write your own.
 
-A normal pipeline allocates at every step; transducers fuse the steps:
+## Why use them
+
+A lazy pipeline builds an intermediate sequence at every step. A transducer pipeline fuses the steps into one pass:
 
 ```phel
-(ns example\transducers)
-
-; Two intermediate lazy sequences
-(filter even? (map inc [1 2 3 4 5]))   ; => (2 4 6)
-
-; No intermediate collections
-(sequence (comp (map inc) (filter even?)) [1 2 3 4 5])
-; => [2 4 6]
+(filter even? (map inc [1 2 3 4 5]))               ; => (2 4 6), two intermediate sequences
+(sequence (comp (map inc) (filter even?)) [1 2 3 4 5]) ; => [2 4 6], one pass
 ```
 
-The [Data Structures](/documentation/language/data-structures/#transducers) page introduces `into` and the basic transducer producers. This page goes deeper: composition order, early termination, stateful transducers, and writing your own.
-
-## Three ways to consume a transducer
+Define the pipeline once and feed it to any consumer:
 
 ```phel
-(ns example\consume)
+(def xf (comp (filter even?) (map inc)))
 
-; transduce - apply a transducer, then reduce
-(transduce (map inc) + [1 2 3])   ; => 9   (2 + 3 + 4)
-(transduce (filter even?) + 0 [1 2 3 4 5 6])   ; => 12  (0 + 2 + 4 + 6, explicit init)
-
-; into - pour transformed elements into a collection
-(into [] (map inc) [1 2 3])   ; => [2 3 4]
-(into #{} (filter odd?) [1 2 3 4 5])   ; => #{1 3 5}
-
-; sequence - a vector of transformed results; shorthand for (into [] xf coll)
-(sequence (filter even?) [1 2 3 4 5 6])   ; => [2 4 6]
+(into [] xf [1 2 3 4 5 6])     ; => [3 5 7]
+(into #{} xf [1 2 3 4 5 6])    ; => #{3 5 7}
+(transduce xf + [1 2 3 4 5 6]) ; => 15
 ```
 
-## Transducer-producing functions
+Use lazy sequences and `->>` for a simple one-off chain. Use transducers for multi-step pipelines, for a transformation you reuse across sources or destinations, or when the result is not a sequence (a sum, a map, a side effect). For `into` and the basics, see [Data structures](/documentation/language/data-structures/#transducers).
 
-Most sequence functions are dual-purpose: called **with** a collection they return a lazy sequence; called **without** one they return a transducer.
+## Consume a transducer
 
-| Function | Transducer form | Description |
-|---|---|---|
-| `map` | `(map f)` | Apply `f` to each element |
-| `filter` | `(filter pred)` | Keep elements where `(pred x)` is truthy |
-| `remove` | `(remove pred)` | Keep elements where `(pred x)` is falsy |
-| `take` | `(take n)` | Take first `n` elements, then stop |
-| `drop` | `(drop n)` | Skip first `n` elements |
-| `take-while` | `(take-while pred)` | Take while `(pred x)` is truthy, then stop |
-| `drop-while` | `(drop-while pred)` | Skip while `(pred x)` is truthy |
-| `take-nth` | `(take-nth n)` | Take every nth element |
-| `keep` | `(keep f)` | Keep non-nil results of `(f x)` |
-| `keep-indexed` | `(keep-indexed f)` | Keep non-nil results of `(f index x)` |
-| `distinct` | `(distinct)` | Remove duplicates |
-| `dedupe` | `(dedupe)` | Remove consecutive duplicates |
-| `mapcat` | `(mapcat f)` | Map then concatenate (flatten one level) |
-| `interpose` | `(interpose sep)` | Insert `sep` between elements |
-| `cat` | `cat` | Concatenate nested collections (not dual-purpose; always a transducer) |
+| Function | Does | Example | Result |
+|---|---|---|---|
+| `into` | pours the results into a collection | `(into #{} (filter odd?) [1 2 3 4 5])` | `#{1 3 5}` |
+| `transduce` | transforms, then reduces | `(transduce (map inc) + [1 2 3])` | `9` |
+| `sequence` | returns the results; same as `(into [] xf coll)` | `(sequence (filter even?) [1 2 3 4])` | `[2 4]` |
 
-## Composing transducers
+`transduce` takes an optional start value before the collection: `(transduce (filter even?) + 100 [1 2 3 4])` returns `106`.
 
-`comp` builds a pipeline. Transducers compose **left-to-right** (leftmost runs first), the opposite of normal function composition and matching the order of `->>`:
+A reducing function has three arities: 0 for the start value, 1 to finish, 2 for each step. `completing` turns a plain 2-arity function into a full one, with `identity` as the finish step:
 
 ```phel
-(ns example\compose)
+(transduce (map inc) (completing conj) [1 2 3]) ; => [2 3 4]
+```
 
+## Transducer-producing functions { #transducer-producing-functions }
+
+Most sequence functions have two forms. With a collection they return a lazy sequence. Without one they return a transducer: `(map f)`, `(filter pred)`.
+
+The functions that work this way: `map`, `filter`, `remove`, `keep`, `keep-indexed`, `mapcat`, `take`, `drop`, `take-while`, `drop-while`, `take-nth`, `distinct`, `dedupe` and `interpose`. `cat` is always a transducer: it flattens nested collections one level. Each is described in the [API reference](/documentation/reference/api/).
+
+## Compose with `comp`
+
+`comp` builds a pipeline. The leftmost transducer runs first, in the same order as `->>`:
+
+```phel
 (def xf (comp
-          (filter even?)   ; 1. keep even numbers
-          (map #(* % %))   ; 2. square them
-          (take 3)))   ; 3. stop after 3 results
+          (filter even?)  ; 1. keep even numbers
+          (map #(* % %))  ; 2. square them
+          (take 3)))      ; 3. stop after 3 results
 
-(sequence xf (range 1 20))   ; => [4 16 36]
-
-; Equivalent lazy-sequence version (creates intermediates):
-(->> (range 1 20)
-     (filter even?)
-     (map #(* % %))
-     (take 3))   ; => (4 16 36)
+(sequence xf (range 1 20)) ; => [4 16 36]
 ```
 
-## Early termination
+This is the opposite of `comp` on plain functions, where the rightmost runs first.
 
-A reducing function signals "stop" by wrapping its return value in `reduced`:
+## Stop early
+
+A reducing function stops the reduction by wrapping its result in `reduced`:
 
 ```phel
-(ns example\reduced)
-
-; Sum until the accumulator exceeds 10
+;; Sum until the total goes over 10
 (reduce
   (fn [acc x] (if (> acc 10) (reduced acc) (+ acc x)))
   0
-  [1 2 3 4 5 6 7 8 9 10])   ; => 15
+  [1 2 3 4 5 6 7 8 9 10]) ; => 15
 ```
 
-- `(reduced x)` wraps `x` to signal early termination
-- `(reduced? x)` is true if `x` is a wrapped `Reduced` value
-- `(unreduced x)` unwraps a `Reduced` value; returns `x` unchanged if not reduced
+`reduced?` checks for a wrapped value, and `unreduced` unwraps it (a plain value comes back unchanged). `take` and `take-while` use `reduced`, so `(transduce (take 2) conj [1 2 3 4 5])` returns `[1 2]` without reading the rest.
 
-`take` and `take-while` use `reduced` internally, so the outer `reduce`/`transduce` stops rather than walking the rest:
+## Write your own
 
-```phel
-(ns example\early-stop)
+A transducer takes a reducing function `rf` and returns a new one with three arities:
 
-(transduce (take 2) conj [1 2 3 4 5])   ; => [1 2]  (does not touch the rest)
-```
-
-## Stateful transducers
-
-Some transducers need mutable state across steps (counters, seen-sets). Phel provides volatile references:
-
-- `(volatile! val)` creates a mutable reference initialized to `val`
-- `@vol` (deref) reads the current value
-- `(vreset! vol new-val)` sets a new value, returns `new-val`
-- `(vswap! vol f & args)` applies `f` to current value + args, sets and returns the result
-
-`distinct`, for example, keeps a volatile hash-set of elements it has already emitted; on each step it checks membership before passing the value downstream.
-
-## Custom transducers
-
-A transducer takes a reducing function `rf` and returns a new one handling three arities:
-
-- **0** (init): return `(rf)`, delegate downstream init
-- **1** (completion): return `(rf result)`, optionally flush state
-- **2** (step): the transformation logic
-
-Dispatch on arity with a variadic `[& args]` plus `case (count args)`, the shape Phel's own core transducers use internally. It works correctly when the returned fn closes over `rf` or other state. (A multi-arity `fn` with `([] ...) ([result] ...) ([result input] ...)` clauses reads cleaner but does not currently compile for transducers, so prefer the variadic form.)
+- **0** (init): return `(rf)`.
+- **1** (completion): return `(rf result)`, after flushing any buffered state.
+- **2** (step): the transformation.
 
 ```phel
-(ns example\custom)
-
-; A transducer that doubles every element
 (defn map-double []
   (fn [rf]
-    (fn [& args]
-      (case (count args)
-        0 (rf)
-        1 (rf (first args))
-        2 (rf (first args) (* 2 (second args)))))))
+    (fn
+      ([] (rf))
+      ([result] (rf result))
+      ([result input] (rf result (* 2 input))))))
 
-(sequence (map-double) [1 2 3])   ; => [2 4 6]
+(sequence (map-double) [1 2 3]) ; => [2 4 6]
 ```
 
-### Custom completion logic
+### Keep state and flush it
 
-Override the 1-arity branch to flush buffered state. This `batch` transducer groups elements into vectors of `n`, emitting any partial final group on completion:
+A stateful transducer keeps state in a volatile, created inside `(fn [rf] ...)` so each use starts fresh. `volatile!` creates it, `@` reads it, `vreset!` sets it and `vswap!` updates it with a function. This `batch` groups items into vectors of `n` and flushes the last partial group on completion:
 
 ```phel
-(ns example\batch)
-
 (defn batch [n]
   (fn [rf]
     (let [buf (volatile! [])]
-      (fn [& args]
-        (case (count args)
-          0 (rf)
-          1 (let [result (first args)
-                  b @buf]
-              ; flush remaining items on completion
-              (if (empty? b)
-                (rf result)
-                (rf (rf result b))))
-          2 (let [result (first args)
-                  input (second args)]
-              (let [b (vswap! buf conj input)]
-                (if (= (count b) n)
-                  (do (vreset! buf [])
-                      (rf result b))
-                  result))))))))
+      (fn
+        ([] (rf))
+        ([result]
+         (let [b @buf]
+           (if (empty? b)
+             (rf result)
+             (rf (rf result b)))))
+        ([result input]
+         (let [b (vswap! buf conj input)]
+           (if (= (count b) n)
+             (do (vreset! buf [])
+                 (rf result b))
+             result)))))))
 
-(sequence (batch 3) [1 2 3 4 5 6 7])   ; => [[1 2 3] [4 5 6] [7]]
+(sequence (batch 3) [1 2 3 4 5 6 7]) ; => [[1 2 3] [4 5 6] [7]]
 ```
 
-### With early termination
+### Stop from inside
 
-Wrap the step result in `reduced` to stop the pipeline. This `take-until` keeps elements until `pred` first returns true, inclusive:
+Wrap the step result in `reduced` to end the pipeline. This `take-until` keeps items up to and including the first one that matches `pred`:
 
 ```phel
-(ns example\take-until)
-
 (defn take-until [pred]
   (fn [rf]
-    (fn [& args]
-      (case (count args)
-        0 (rf)
-        1 (rf (first args))
-        2 (let [result (first args)
-                input (second args)]
-            (if (pred input)
-              (reduced (rf result input))
-              (rf result input)))))))
+    (fn
+      ([] (rf))
+      ([result] (rf result))
+      ([result input]
+       (if (pred input)
+         (reduced (rf result input))
+         (rf result input))))))
 
-(sequence (take-until #(> % 3)) [1 2 3 4 5])   ; => [1 2 3 4]
+(sequence (take-until #(> % 3)) [1 2 3 4 5]) ; => [1 2 3 4]
 ```
-
-## Transducers vs lazy sequences
-
-Each [dual-purpose function](#transducer-producing-functions) works both ways: with a collection it returns a lazy sequence, without one it returns a transducer. When to use which:
-
-- **Lazy sequences** for simple linear pipelines; compose with `->>`.
-- **Transducers** to avoid intermediates in multi-step pipelines, to reuse one transformation across multiple sources or destinations, or to reduce into something that isn't a sequence (sums, maps, side effects).
-
-```phel
-(ns example\reuse)
-
-; Define once, reuse with different consumers
-(def xf (comp (filter even?) (map inc)))
-
-(sequence xf [1 2 3 4 5 6])   ; => [3 5 7]
-(transduce xf + [1 2 3 4 5 6])   ; => 15
-(into #{} xf [1 2 3 4 5 6])   ; => #{3 5 7}
-```
-
-## See also
-
-- [Data structures](/documentation/language/data-structures/#transducers) - `into`, `reduce`, and the basic transducer producers
-- [Control flow](/documentation/language/control-flow/) - iterate and build collections with `for` and `loop`
-- [Cookbook -- Data processing with transducers](/documentation/guides/cookbook/#data-processing-with-transducers) - a worked real-world pipeline
-- [Cheat sheet -- Transducers](/documentation/reference/cheat-sheet/#transducers) - keep it open while coding

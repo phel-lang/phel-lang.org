@@ -1,6 +1,5 @@
 +++
 title = "PHP Interop in Phel: Modern Syntax"
-aliases = [ "/blog/php-interop-modern-syntax" ]
 description = "Named arguments, by-reference output, PHP magic methods, typed wrappers, native enums. Calling PHP from a Lisp, the 2026 way."
 date = 2026-06-06
 +++
@@ -16,29 +15,28 @@ Any PHP function takes a `php/` prefix:
 (php/strtoupper "phel") ; => "PHEL"
 ```
 
-Classes get terse shorthands that expand to the verbose `php/*` forms:
+Classes get terse Clojure-style forms:
 
-| Shorthand | Expands to |
+| Form | What it does |
 |---|---|
-| `(ClassName. args)` | `(php/new ClassName args)` |
-| `(.method obj args)` | `(php/-> obj (method args))` |
-| `(.-field obj)` | `(php/-> obj field)` |
-| `(ClassName/method args)` | `(php/:: ClassName (method args))` |
+| `(new ClassName args)` or `(ClassName. args)` | construct an object |
+| `(.method obj args)` | call an instance method |
+| `(.-field obj)` | read an instance property |
+| `(ClassName/method args)`, `ClassName/CONST` | static member |
 
 ```phel
-(php/-> (php/new \DateTimeImmutable "2024-03-10")
-        (modify "+1 day")
-        (format "Y-m-d")) ; => "2024-03-11"
+(-> (new \DateTimeImmutable "2024-03-10")
+    (.modify "+1 day")
+    (.format "Y-m-d")) ; => "2024-03-11"
 ```
 
 ## Named arguments
 
-PHP 8 named arguments map cleanly to keywords. Put them after a `:&` marker as `:key value` pairs. Works in `php/new`, `php/->`, and `php/::`:
+PHP 8 named arguments map cleanly to keywords. Put them after a `:&` marker as `:key value` pairs. Works in constructors, instance methods, and static calls:
 
 ```phel
-(let [dt (php/:: \DateTime
-                 (createFromFormat :& :format "Y-m-d" :datetime "2026-06-06"))]
-  (php/-> dt (format "Y-m-d"))) ; => "2026-06-06"
+(let [dt (\DateTime/createFromFormat :& :format "Y-m-d" :datetime "2026-06-06")]
+  (.format dt "Y-m-d")) ; => "2026-06-06"
 ```
 
 Order no longer matters, and you skip the positional-argument guessing game.
@@ -109,7 +107,7 @@ When generated PHP must satisfy a framework, opt-in metadata enriches it. `^{:ta
 
 (try
   (throw (NotFound "missing"))
-  (catch \RuntimeException e (php/-> e (getMessage)))) ; => "missing"
+  (catch \RuntimeException e (.getMessage e))) ; => "missing"
 ```
 
 ## Catching PHP exceptions
@@ -120,11 +118,11 @@ Native exceptions cross the boundary unchanged. Catch them by class, or `\Throwa
 (try
   (php/intdiv 1 0)
   (catch \DivisionByZeroError e
-    (php/-> e (getMessage)))) ; => "Division by zero"
+    (.getMessage e))) ; => "Division by zero"
 ```
 
 ## Where to go next
 
 The interop layer is small but covers the whole surface: functions, classes, arrays, magic methods, named arguments, references, and typed output. Reach for Phel's immutable data structures by default, and drop to `php/*` exactly where a PHP library expects it.
 
-Full reference: [PHP Interop](/documentation/php-interop/).
+Full reference: [PHP Interop](/documentation/language/php-interop/).

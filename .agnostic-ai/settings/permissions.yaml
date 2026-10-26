@@ -1,0 +1,25 @@
+# Codex gets the same policy as exec-policies in agnostic-ai.yaml.
+targets: [claude]
+permissions:
+  allow:
+    - Bash(composer:*)
+    - Bash(npm run:*)
+    - Bash(npm ci)
+    - Bash(zola:*)
+    - Bash(php build/:*)
+    - Bash(./vendor/bin/:*)
+    - Bash(vendor/bin/:*)
+    - Bash(agnostic-ai:*)
+    - Bash(git status:*)
+    - Bash(git diff:*)
+    - Bash(git log:*)
+    - Bash(git show:*)
+    - Bash(gh run:*)
+    - Bash(gh pr view:*)
+    - Bash(gh issue view:*)
+  ask:
+    - Bash(git push:*)
+  deny:
+    - Bash(rm -rf /:*)
+    - Bash(rm -rf ~:*)
+    - Bash(sudo:*)

@@ -2,16 +2,13 @@
 .terminal {
   --t-header-bg: #e5e7eb;
   --t-header-border: rgba(0, 0, 0, 0.06);
-  --t-title: #6b7280;
+  --t-title: #4b5563;
   --t-body-bg: #ffffff;
   --t-input: #1f2937;
   --t-output: #6b7280;
   --t-result: #0369a1;
   --t-shell: #047857;
   --t-prompt: #b45309;
-  --t-replay-border: #d1d5db;
-  --t-replay-text: #6b7280;
-  --t-replay-hover: #0369a1;
   --t-scrollbar: #d1d5db;
 
   border-radius: var(--radius-lg);
@@ -35,9 +32,6 @@
   --t-result: #7ec8e3;
   --t-shell: #28c840;
   --t-prompt: #ffbd2e;
-  --t-replay-border: #555;
-  --t-replay-text: #999;
-  --t-replay-hover: #7ec8e3;
   --t-scrollbar: #444;
 }
 
@@ -65,6 +59,10 @@
 .terminal-dot-yellow { background: #ffbd2e; }
 .terminal-dot-green { background: #28c840; }
 
+.terminal-dots-spacer {
+  width: 48px;
+}
+
 .terminal-title {
   color: var(--t-title);
   font-size: 13px;
@@ -74,7 +72,6 @@
 .terminal-body {
   background: var(--t-body-bg);
   padding: 1rem 1.25rem;
-  min-height: 320px;
   line-height: 1.6;
 }
 
@@ -106,26 +103,25 @@
   user-select: none;
 }
 
-.terminal-replay {
-  text-align: center;
-  margin-top: 0.75rem;
+.terminal-cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 1.1em;
+  vertical-align: text-bottom;
+  background: var(--t-input);
+  animation: terminal-blink 1.1s steps(1) infinite;
 }
 
-.terminal-replay-btn {
-  background: transparent;
-  border: 1px solid var(--t-replay-border);
-  color: var(--t-replay-text);
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--radius-md);
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 13px;
-  transition: all 0.2s;
+@keyframes terminal-blink {
+  50% {
+    opacity: 0;
+  }
 }
 
-.terminal-replay-btn:hover {
-  border-color: var(--t-replay-hover);
-  color: var(--t-replay-hover);
+@media (prefers-reduced-motion: reduce) {
+  .terminal-cursor {
+    animation: none;
+  }
 }
 
 /* Scrollbar styling for terminal */

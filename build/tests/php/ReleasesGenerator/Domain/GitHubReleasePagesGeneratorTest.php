@@ -40,6 +40,21 @@ final class GitHubReleasePagesGeneratorTest extends TestCase
         self::assertStringContainsString('description = "This is a great release with many improvements."', $result);
     }
 
+    public function test_section_heading_uses_hyphen_separator_instead_of_en_dash(): void
+    {
+        $release = $this->makeRelease(
+            tagName: 'v0.22.0',
+            name: '0.22.0 – Metadata conditions',
+            body: 'Notes.',
+            publishedAt: '2025-09-23T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release]);
+
+        self::assertStringContainsString('## 0.22.0 - Metadata conditions', $result);
+        self::assertStringNotContainsString('–', $result);
+    }
+
     public function test_slug_includes_name_suffix_when_present(): void
     {
         $release = $this->makeRelease(
@@ -220,6 +235,129 @@ final class GitHubReleasePagesGeneratorTest extends TestCase
         self::assertStringNotContainsString('[@example]', $result);
     }
 
+    public function test_bare_compare_url_becomes_labelled_link(): void
+    {
+        $release = $this->makeRelease(
+            tagName: 'v0.18.0',
+            name: '0.18.0',
+            body: '**Full Changelog**: https://github.com/phel-lang/phel-lang/compare/v0.17.0...v0.18.0',
+            publishedAt: '2025-06-18T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release]);
+
+        self::assertStringContainsString(
+            '**Full Changelog**: [v0.17.0...v0.18.0](https://github.com/phel-lang/phel-lang/compare/v0.17.0...v0.18.0)',
+            $result,
+        );
+    }
+
+    public function test_compare_url_already_inside_markdown_link_is_not_wrapped_again(): void
+    {
+        $release = $this->makeRelease(
+            tagName: 'v0.19.1',
+            name: '0.19.1',
+            body: '**Full Changelog**: [v0.19.0…v0.19.1](https://github.com/phel-lang/phel-lang/compare/v0.19.0...v0.19.1)',
+            publishedAt: '2025-08-03T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release]);
+
+        self::assertStringContainsString(
+            '**Full Changelog**: [v0.19.0…v0.19.1](https://github.com/phel-lang/phel-lang/compare/v0.19.0...v0.19.1)',
+            $result,
+        );
+        self::assertStringNotContainsString('([v0.19.0', $result);
+    }
+
+    public function test_repo_relative_links_become_absolute_github_urls_at_release_tag(): void
+    {
+        $release = $this->makeRelease(
+            tagName: 'v0.51.0',
+            name: '0.51.0',
+            body: "- See [ADR 0016](docs/adr/0016-bare-names.md).\n- And [guide](./docs/guide.md).",
+            publishedAt: '2026-09-05T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release]);
+
+        self::assertStringContainsString(
+            '[ADR 0016](https://github.com/phel-lang/phel-lang/blob/v0.51.0/docs/adr/0016-bare-names.md)',
+            $result,
+        );
+        self::assertStringContainsString(
+            '[guide](https://github.com/phel-lang/phel-lang/blob/v0.51.0/docs/guide.md)',
+            $result,
+        );
+    }
+
+    public function test_absolute_root_and_anchor_links_are_left_untouched(): void
+    {
+        $release = $this->makeRelease(
+            tagName: 'v0.51.0',
+            name: '0.51.0',
+            body: '[a](https://example.com/x) [b](/documentation/) [c](#usage) [d](mailto:hi@example.com)',
+            publishedAt: '2026-09-05T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release]);
+
+        self::assertStringContainsString(
+            '[a](https://example.com/x) [b](/documentation/) [c](#usage) [d](mailto:hi@example.com)',
+            $result,
+        );
+    }
+
+    public function test_legacy_blog_release_links_map_to_release_pages(): void
+    {
+        $release = $this->makeRelease(
+            tagName: 'v0.8.0',
+            name: '0.8.0',
+            body: 'See the [blog post](https://phel-lang.org/blog/release-0-8/) and [older](/blog/release-0-7/).',
+            publishedAt: '2023-01-16T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent(
+            [$release],
+            ['0.7' => '0-7-improved-core-library', '0.8' => '0-8-json-support'],
+        );
+
+        self::assertStringContainsString(
+            'See the [blog post](/releases/0-8-json-support/) and [older](/releases/0-7-improved-core-library/).',
+            $result,
+        );
+        self::assertStringNotContainsString('/blog/', $result);
+    }
+
+    public function test_bare_legacy_blog_release_url_becomes_link_to_release_page(): void
+    {
+        $release = $this->makeRelease(
+            tagName: 'v0.17.0',
+            name: '0.17.0',
+            body: "> TL;DR: macros.\n\nhttps://phel-lang.org/blog/release-0-17/\n\n### Features",
+            publishedAt: '2025-06-01T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release], ['0.17' => '0-17-macroverse']);
+
+        self::assertStringContainsString("\n[Release 0.17](/releases/0-17-macroverse/)\n", $result);
+        self::assertStringNotContainsString('/blog/', $result);
+    }
+
+    public function test_legacy_blog_release_link_falls_back_to_minor_alias_when_slug_unknown(): void
+    {
+        $release = $this->makeRelease(
+            tagName: 'v0.9.0',
+            name: '0.9.0',
+            body: 'See the [blog post](https://phel-lang.org/blog/release-0-9/).',
+            publishedAt: '2023-02-05T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release]);
+
+        self::assertStringContainsString('[blog post](/releases/v0-9/)', $result);
+    }
+
     public function test_extract_description_truncates_long_text(): void
     {
         $longText = str_repeat('This is a very long description. ', 20);
@@ -234,6 +372,52 @@ final class GitHubReleasePagesGeneratorTest extends TestCase
 
         self::assertStringContainsString('description =', $result);
         self::assertStringContainsString('...', $result);
+    }
+
+    public function test_extract_description_strips_inline_markdown(): void
+    {
+        $release = $this->makeRelease(
+            tagName: 'v0.23.0',
+            name: '0.23.0',
+            body: 'New `phel eval` command, **faster** boot. See the [blog post](https://phel-lang.org/blog/x/) and `*program*`.',
+            publishedAt: '2025-10-05T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release]);
+
+        self::assertStringContainsString(
+            'description = "New phel eval command, faster boot. See the blog post and *program*."',
+            $result,
+        );
+    }
+
+    public function test_extract_description_truncates_after_stripping_links(): void
+    {
+        $url = 'https://github.com/phel-lang/phel-lang/blob/master/CHANGELOG.md';
+        $release = $this->makeRelease(
+            tagName: 'v0.23.0',
+            name: '0.23.0',
+            body: str_repeat('Lots of small improvements. ', 5) . "See the [Changelog]({$url}) for more.",
+            publishedAt: '2025-10-05T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release]);
+
+        self::assertMatchesRegularExpression('/^description = "[^\n]*See the Changelog for more\."$/m', $result);
+    }
+
+    public function test_extract_description_strips_em_dashes(): void
+    {
+        $release = $this->makeRelease(
+            tagName: 'v0.23.0',
+            name: '0.23.0',
+            body: 'Faster boot — and fewer surprises.',
+            publishedAt: '2025-10-05T10:00:00Z',
+        );
+
+        $result = $this->generator->generateMinorPageContent([$release]);
+
+        self::assertStringContainsString('description = "Faster boot, and fewer surprises."', $result);
     }
 
     public function test_empty_release_list_throws(): void

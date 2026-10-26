@@ -37,6 +37,9 @@ cache/
 # Full-content LLM bundle (generated from curated content pages)
 /static/llms-full.txt
 
+# Docs "Last updated" dates (generated from git history)
+/data/doc-dates.json
+
 # CSS files (generated)
 /css/tailwind.entry.css
 /static/tailwind.css
@@ -49,3 +52,39 @@ cache/
 
 # WASM REPL binaries (fetched by scripts/fetch-wasm-repl.sh)
 /static/wasm-repl/build/
+
+# AI CLI state and output: generated from .agnostic-ai/ by `agnostic-ai sync`,
+# plus local sessions and worktrees.
+/.claude/
+/.codex/
+/.agents/
+
+# >>> agnostic-ai (managed) >>>
+# Generated paths. Edit specs, not this block. Run `agnostic-ai sync` to refresh.
+# Not committed: a fresh clone or `git worktree` lacks these until `agnostic-ai sync` runs (e.g. a post-checkout hook).
+/.agents/skills/
+/.agnostic-ai/.sync-state
+/.agnostic-ai/local/
+/.agnostic-ai/packs/
+/.claude/.agnostic-ai-permissions.json
+/.claude/agent-memory-local/
+/.claude/agents/
+/.claude/hooks/
+/.claude/launch.json
+/.claude/rules/
+/.claude/scheduled_tasks.lock
+/.claude/settings.json
+/.claude/settings.local.json
+/.claude/skills/
+/.claude/worktrees/
+/.codex/agents/
+/.codex/config.toml
+/.codex/environments/
+/.codex/hooks.json
+/.codex/rules/
+/AGENTS.md
+/CLAUDE.md
+/agnostic-ai.local.yaml
+/content/AGENTS.md
+/content/practice/AGENTS.md
+# <<< agnostic-ai (managed) <<<

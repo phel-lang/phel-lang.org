@@ -1,0 +1,12 @@
+{%- component clojure_note() -%}
+<details class="dev-note dev-note--clojure">
+    <summary>
+        <span class="dev-note__label">Clojure</span>
+        <span class="dev-note__title">Coming from Clojure?</span>
+        <span class="dev-note__chevron" aria-hidden="true">›</span>
+    </summary>
+    <div class="dev-note__content">
+        {{ body | markdown | trim | safe }}
+    </div>
+</details>
+{%- endcomponent clojure_note -%}

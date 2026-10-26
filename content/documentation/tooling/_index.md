@@ -1,10 +1,10 @@
 +++
 title = "Tooling"
-weight = 61
+weight = 40
 sort_by = "weight"
 insert_anchor_links = "right"
 template = "section-page.html"
-description = "The Phel developer toolkit: CLI commands, the interactive REPL, editor integrations, and step debugging with Xdebug."
+description = "The tools around your editor: the interactive REPL, editor integrations, Xdebug step debugging, and setup for AI coding agents."
 +++
 
-Everything around writing Phel day to day. The **CLI** drives building, formatting, testing, and exporting; the **REPL** is where you explore and iterate; **editor support**, **Xdebug**, and **PHP debugging tools** (`dump`/`dd`) wire Phel into your workflow.
+The tools you use every day around the code. For every command and flag, see [CLI Commands](/documentation/reference/cli-commands/).

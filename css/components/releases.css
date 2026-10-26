@@ -8,7 +8,11 @@
 }
 
 .release-entry .meta {
-  color: var(--color-gray-light);
+  color: var(--color-light-text-muted);
+}
+
+.dark .release-entry .meta {
+  color: var(--color-dark-text-muted);
 }
 
 .post-card__patches {

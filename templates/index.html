@@ -1,13 +1,18 @@
 {% extends "layouts/one-column-layout.html" %}
 
+{% block page_head %}
+    <link rel="preload" href="{{ get_url(path="fonts/brygada-1918-latin.woff2") }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ get_url(path="fonts/departure-mono.woff2") }}" as="font" type="font/woff2" crossorigin>
+{% endblock page_head %}
+
 {% block content %}
-    <div class="homepage-content">
+    <div class="homepage-content ph">
         {{ section.content | safe }}
     </div>
 {% endblock content %}
 
 {% block page_scripts %}
-    <script type="text/javascript" src="/animated-repl.js" defer></script>
-    <script type="text/javascript" src="/homepage-tabs.js" defer></script>
-    <script type="text/javascript" src="/gh-stats.js" defer></script>
+    <script type="text/javascript" src="{{ get_url(path="animated-repl.js", cachebust=true) }}" defer></script>
+    <script type="text/javascript" src="{{ get_url(path="homepage-tabs.js", cachebust=true) }}" defer></script>
+    <script type="text/javascript" src="{{ get_url(path="homepage-demo.js", cachebust=true) }}" defer></script>
 {% endblock page_scripts %}

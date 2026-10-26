@@ -26,6 +26,7 @@ const parts = [
   'css/components/exercises.css',
   'css/components/releases.css',
   'css/components/rosetta-stone.css',
+  'css/components/repl-page.css',
   
   // 4. Features
   'css/components/search.css',
