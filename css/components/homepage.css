@@ -453,6 +453,44 @@ html .ph :is(p, li) code {
   padding: clamp(3rem, 8vh, 5rem) 0;
 }
 
+.ph-optional {
+  border-top: 1px solid var(--ph-line);
+  border-bottom: 1px solid var(--ph-line);
+  scroll-margin-top: calc(var(--header-height) + 2rem);
+}
+
+.ph-optional summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 0.25rem;
+  cursor: pointer;
+}
+
+.ph-optional summary::-webkit-details-marker {
+  display: none;
+}
+
+.ph .ph-optional summary h2 {
+  margin: 0;
+  font-size: clamp(2rem, 3.4vw, 2.75rem);
+}
+
+.ph-optional summary::after {
+  content: '+';
+  color: var(--ph-accent);
+  font-size: 1.5rem;
+}
+
+.ph-optional[open] summary::after {
+  content: '−';
+}
+
+.ph-optional[open] .ph-beat {
+  padding: 1rem 0 1.5rem;
+}
+
 .ph-beat {
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);

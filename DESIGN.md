@@ -182,7 +182,7 @@ A violet-tinted paper and ink palette with a single purple voice; dark mode swap
 
 ## Layout
 
-The homepage widens the one-column layout to 76rem. The hero is centered: mark, headline, lede, buttons, a note, the install console (max 44rem), a follow-up link and a centered mono facts line. After the hero, the story is a stack of beats with `clamp(5rem, 14vh, 9rem)` between them. Each beat is a two-column grid (`1.25fr` proof on the left, `1fr` prose on the right, gap `clamp(2.5rem, 5vw, 5rem)`); the prose column is sticky below the header so it stays in view while the taller proof scrolls. The FAQ is a single centered column (max 46rem) and the close is a framed centered panel.
+The homepage widens the one-column layout to 76rem. The hero is centered: mark, headline, lede, buttons, a compact REPL example, the install console (max 44rem), follow-up links and a centered mono facts line. After the hero, the story is a stack of beats with `clamp(5rem, 14vh, 9rem)` between them. Each beat is a two-column grid (`1.25fr` proof on the left, `1fr` prose on the right, gap `clamp(2.5rem, 5vw, 5rem)`); the prose column is sticky below the header so it stays in view while the taller proof scrolls. Optional pipeline, macro and test examples sit in native disclosures; the compile and interop examples stay visible. The FAQ is a single centered column (max 46rem) and the close is a framed centered panel.
 
 At 900px and below, beats collapse to one column with prose first and stickiness off. At 560px and below, buttons stack full width, the console bar stacks its title above equal-width tabs, and the facts line stacks.
 
@@ -218,7 +218,7 @@ The container for every proof: panel background, hairline border, corner ticks, 
 A frame with a label bar (panel bar tone, uppercase mono label in ink, optional sentence-case meta on the right such as "metadata trimmed") above an unstyled code block padded `1.1rem 1.25rem 1.25rem`. The copy button is a square 2.25rem hairline box.
 
 ### Install console
-A frame whose bar holds the uppercase title and three tabs (Docker, Composer, PHAR). Tabs are mono uppercase, divided by hairlines; the active tab takes the panel tone and a 2px inset accent underline. Each panel shows a muted serif caption then the command.
+A frame whose bar holds the uppercase title and four tabs (Docker, Shell, Composer, PHAR). Tabs are mono uppercase, divided by hairlines; the active tab takes the panel tone and a 2px inset accent underline. Each panel shows a muted serif caption then the command.
 
 ### REPL transcript
 Server-rendered from a real `phel repl` session; the header drops the window dots and shows the "phel repl" label. Prompts in accent, results muted, a purple block cursor; the last form replays as typing.

@@ -156,10 +156,10 @@ php phel.phar repl
 </div>
 </section>
 
-<section class="ph-beat" aria-labelledby="threading-pipelines">
+<details class="ph-optional" id="threading-pipelines">
+<summary><h2>Threading pipelines</h2></summary>
+<section class="ph-beat" aria-label="Threading pipelines">
 <div class="ph-beat-text">
-
-## Threading pipelines { #threading-pipelines }
 
 - Reads top to bottom, no nested calls
 - Each step is one pure function
@@ -182,6 +182,7 @@ php phel.phar repl
 </figure>
 </div>
 </section>
+</details>
 
 <section class="ph-beat" aria-labelledby="direct-php-interop">
 <div class="ph-beat-text">
@@ -214,10 +215,10 @@ php phel.phar repl
 </div>
 </section>
 
-<section class="ph-beat" aria-labelledby="code-as-data">
+<details class="ph-optional" id="code-as-data">
+<summary><h2>Code as data</h2></summary>
+<section class="ph-beat" aria-label="Code as data">
 <div class="ph-beat-text">
-
-## Code as data { #code-as-data }
 
 - `defmacro` extends the language at compile time
 - Backtick + `~`, `~@` build syntax trees
@@ -242,11 +243,12 @@ php phel.phar repl
 </figure>
 </div>
 </section>
+</details>
 
-<section class="ph-beat" aria-labelledby="tests-are-functions">
+<details class="ph-optional" id="tests-are-functions">
+<summary><h2>Tests are functions</h2></summary>
+<section class="ph-beat" aria-label="Tests are functions">
 <div class="ph-beat-text">
-
-## Tests are functions { #tests-are-functions }
 
 - `deftest` + `is`, no extra framework
 - Plain Phel, REPL-friendly
@@ -273,6 +275,7 @@ php phel.phar repl
 </figure>
 </div>
 </section>
+</details>
 
 </div>
 

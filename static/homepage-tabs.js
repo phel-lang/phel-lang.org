@@ -72,7 +72,22 @@
     });
   }
 
+  function openLinkedDisclosure() {
+    var id;
+    try {
+      id = decodeURIComponent(window.location.hash.slice(1));
+    } catch (error) {
+      return;
+    }
+    var target = document.getElementById(id);
+    if (!target) return;
+    var disclosure = target.closest('details.ph-optional');
+    if (disclosure) disclosure.open = true;
+  }
+
   function init() {
+    openLinkedDisclosure();
+    window.addEventListener('hashchange', openLinkedDisclosure);
     document.querySelectorAll('[data-homepage-tabs]').forEach(initTabs);
   }
 
