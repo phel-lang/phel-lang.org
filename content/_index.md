@@ -8,7 +8,7 @@ aliases = ["/documentation/why-phel/"]
   <h1 id="ph-title" class="ph-title">Functional Lisp <span class="ph-title-accent">for PHP developers</span></h1>
   <p class="ph-lede">Phel compiles a Lisp dialect to PHP. Macros, persistent data structures, and REPL-driven development on any PHP host.</p>
   <div class="ph-actions">
-    <a href="/documentation/getting-started/" class="ph-sx ph-sx--primary"><span class="ph-paren" aria-hidden="true">(</span>Get started<span class="ph-paren" aria-hidden="true">)</span></a>
+    <a href="#try-it-in-30-seconds" class="ph-sx ph-sx--primary"><span class="ph-paren" aria-hidden="true">(</span>Try Phel<span class="ph-paren" aria-hidden="true">)</span></a>
     <a href="/practice/" class="ph-sx"><span class="ph-paren" aria-hidden="true">(</span>Practice exercises<span class="ph-paren" aria-hidden="true">)</span></a>
   </div>
 
@@ -78,7 +78,7 @@ php phel.phar repl
   </div>
   </div>
 
-  <p class="ph-followup">Full walkthrough in the <a href="/documentation/installation/">installation guide</a>.</p>
+  <p class="ph-followup">Full walkthrough in the <a href="/documentation/installation/">installation guide</a>, then follow <a href="/documentation/getting-started/">Getting Started</a>.</p>
 
   <ul class="ph-facts" aria-label="Production facts">
     <li>Requires <strong>PHP 8.5+</strong></li>
@@ -328,7 +328,7 @@ php phel.phar repl
   <h2 id="final-cta-title" class="ph-close-title">Write your first Phel function today</h2>
   <p class="ph-close-lede">Install it, open a REPL, write a function. Then drill the basics in Practice.</p>
   <div class="ph-actions">
-    <a href="/documentation/getting-started/" class="ph-sx ph-sx--primary"><span class="ph-paren" aria-hidden="true">(</span>Get started<span class="ph-paren" aria-hidden="true">)</span></a>
+    <a href="#try-it-in-30-seconds" class="ph-sx ph-sx--primary"><span class="ph-paren" aria-hidden="true">(</span>Try Phel<span class="ph-paren" aria-hidden="true">)</span></a>
     <a href="/practice/" class="ph-sx"><span class="ph-paren" aria-hidden="true">(</span>Practice exercises<span class="ph-paren" aria-hidden="true">)</span></a>
   </div>
 </section>
