@@ -22,20 +22,21 @@ aliases = ["/documentation/why-phel/"]
 
   </figure>
 
+  <noscript><style>.ph-console-tabs { display: none; }</style></noscript>
   <div class="ph-console ph-frame" data-homepage-tabs>
     <div class="ph-console-bar">
       <h2 id="try-it-in-30-seconds" class="ph-console-title">Try it in 30 seconds</h2>
-      <div class="ph-console-tabs" role="tablist" aria-label="Install Phel">
-        <button class="homepage-tab-btn is-active" data-tab="docker" role="tab" aria-selected="true" tabindex="0">Docker</button>
-        <button class="homepage-tab-btn" data-tab="shell" role="tab" aria-selected="false" tabindex="-1">Shell</button>
-        <button class="homepage-tab-btn" data-tab="composer" role="tab" aria-selected="false" tabindex="-1">Composer</button>
-        <button class="homepage-tab-btn" data-tab="phar" role="tab" aria-selected="false" tabindex="-1">PHAR</button>
+      <div class="ph-console-tabs" aria-label="Install Phel">
+        <button class="homepage-tab-btn is-active" id="install-tab-docker" data-tab="docker" aria-controls="install-panel-docker">Docker</button>
+        <button class="homepage-tab-btn" id="install-tab-shell" data-tab="shell" aria-controls="install-panel-shell">Shell</button>
+        <button class="homepage-tab-btn" id="install-tab-composer" data-tab="composer" aria-controls="install-panel-composer">Composer</button>
+        <button class="homepage-tab-btn" id="install-tab-phar" data-tab="phar" aria-controls="install-panel-phar">PHAR</button>
       </div>
     </div>
 
-  <div class="homepage-tab-panel is-active" data-panel="docker" role="tabpanel">
+  <div class="homepage-tab-panel is-active" id="install-panel-docker" data-panel="docker" aria-labelledby="install-tab-docker">
 
-<p class="ph-console-caption">Try without installing anything. Drops you into a REPL.</p>
+<p class="ph-console-caption"><strong>Docker:</strong> Requires Docker. Downloads the PHP image and Phel PHAR, then opens a REPL.</p>
 
 ```bash
 docker run --rm -it php:8.5-cli sh -c \
@@ -45,9 +46,9 @@ docker run --rm -it php:8.5-cli sh -c \
 
   </div>
 
-  <div class="homepage-tab-panel" data-panel="shell" role="tabpanel" hidden>
+  <div class="homepage-tab-panel" id="install-panel-shell" data-panel="shell" aria-labelledby="install-tab-shell">
 
-<p class="ph-console-caption">No Docker, no PHP, no root. Linux and macOS. <a href="/get">Read the script</a> first.</p>
+<p class="ph-console-caption"><strong>Shell:</strong> Requires Bash and curl on Linux or macOS. Downloads PHP and Phel, no Docker or root needed. <a href="/get">Read the script</a> first.</p>
 
 ```bash
 bash <(curl -sL https://phel-lang.org/get) repl
@@ -55,9 +56,9 @@ bash <(curl -sL https://phel-lang.org/get) repl
 
   </div>
 
-  <div class="homepage-tab-panel" data-panel="composer" role="tabpanel" hidden>
+  <div class="homepage-tab-panel" id="install-panel-composer" data-panel="composer" aria-labelledby="install-tab-composer">
 
-<p class="ph-console-caption">Add to an existing PHP project.</p>
+<p class="ph-console-caption"><strong>Composer:</strong> Requires PHP 8.5+ and Composer. Add Phel to an existing PHP project.</p>
 
 ```bash
 composer require phel-lang/phel-lang
@@ -66,9 +67,9 @@ vendor/bin/phel repl
 
   </div>
 
-  <div class="homepage-tab-panel" data-panel="phar" role="tabpanel" hidden>
+  <div class="homepage-tab-panel" id="install-panel-phar" data-panel="phar" aria-labelledby="install-tab-phar">
 
-<p class="ph-console-caption">Single-file binary, no Composer required.</p>
+<p class="ph-console-caption"><strong>PHAR:</strong> Requires PHP 8.5+ and curl. No Composer required.</p>
 
 ```bash
 curl -L https://phel-lang.org/phar -o phel.phar
@@ -78,6 +79,7 @@ php phel.phar repl
   </div>
   </div>
 
+  <p class="ph-followup">At the REPL prompt, enter <code>(map inc [1 2 3])</code> to see <code>(2 3 4)</code>.</p>
   <p class="ph-followup">Full walkthrough in the <a href="/documentation/installation/">installation guide</a>, then follow <a href="/documentation/getting-started/">Getting Started</a>.</p>
 
   <ul class="ph-facts" aria-label="Production facts">
