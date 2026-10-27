@@ -215,6 +215,12 @@ html .ph :is(p, li) code {
 }
 
 /* Install console */
+.ph-first-example {
+  width: min(100%, 44rem);
+  margin: 2rem auto 0;
+  text-align: left;
+}
+
 .ph-console {
   width: min(100%, 44rem);
   margin-top: clamp(2.5rem, 6vh, 3.5rem);
