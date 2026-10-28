@@ -23,7 +23,7 @@ final class ExpectedValueRewriterTest extends TestCase
 
         self::assertSame(
             '(let [__expected (quote 3) __actual (+ 1 2)] (when-not (or (= __expected __actual) (= (pr-str __expected) (pr-str __actual))) '
-            . '(println (str "PHEL-DOC-MISMATCH doc.md:10 expected " (pr-str __expected) " got " (pr-str __actual)))))',
+            . '(println (str "\nPHEL-DOC-MISMATCH doc.md:10 expected " (pr-str __expected) " got " (pr-str __actual)))))',
             $result['code'],
         );
         self::assertCount(1, $result['expectations']);
@@ -41,6 +41,47 @@ final class ExpectedValueRewriterTest extends TestCase
 
         self::assertCount(3, $result['expectations']);
         self::assertSame(6, substr_count($result['code'], "\n") + 1);
+    }
+
+    public function test_runner_detects_mismatches_after_printed_output(): void
+    {
+        $file = tempnam(sys_get_temp_dir(), 'phel-doc-expectations-');
+        self::assertIsString($file);
+        $root = dirname(__DIR__, 4);
+
+        try {
+            file_put_contents($file, <<<'MARKDOWN'
+```phel
+(do (print "cleanup") "recovered") ; => "wrong"
+```
+
+```phel
+"recovered" ; => "wrong"
+```
+
+```phel
+(do (print "cleanup") "recovered") ; => "recovered"
+```
+MARKDOWN);
+            $process = proc_open(
+                [PHP_BINARY, $root . '/build/run-doc-snippets.php', $file],
+                [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['redirect', 1]],
+                $pipes,
+                $root,
+            );
+            self::assertIsResource($process);
+            fclose($pipes[0]);
+            $output = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+            $exit = proc_close($process);
+
+            self::assertSame(1, $exit, $output);
+            self::assertStringContainsString('Expectations: checked 3, mismatched 2, unverifiable 0', $output);
+            self::assertStringContainsString($file . ':2  expected "wrong" got "recovered"', $output);
+            self::assertStringContainsString($file . ':6  expected "wrong" got "recovered"', $output);
+        } finally {
+            unlink($file);
+        }
     }
 
     public function test_multi_line_form_is_wrapped_from_its_first_line(): void

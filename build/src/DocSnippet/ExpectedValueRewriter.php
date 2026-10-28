@@ -208,7 +208,7 @@ final class ExpectedValueRewriter
     {
         $head = '(let [__expected (quote ' . $expected . ') __actual ';
         $tail = '] (when-not (or (= __expected __actual) (= (pr-str __expected) (pr-str __actual))) '
-            . '(println (str "' . self::MISMATCH_MARKER . ' ' . addcslashes($location, '"\\')
+            . '(println (str "\n' . self::MISMATCH_MARKER . ' ' . addcslashes($location, '"\\')
             . ' expected " (pr-str __expected) " got " (pr-str __actual)))))';
 
         if ($sameLine && $start === $commentLine) {
