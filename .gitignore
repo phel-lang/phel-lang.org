@@ -83,4 +83,5 @@ cache/
 /agnostic-ai.local.yaml
 /content/AGENTS.md
 /content/practice/AGENTS.md
+/.agnostic-ai/.command-lock
 # <<< agnostic-ai (managed) <<<
