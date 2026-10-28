@@ -534,6 +534,12 @@ html .ph :is(p, li) code {
   grid-row: 2;
 }
 
+.ph-beat--stacked .ph-compile {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+}
+
 .ph-aside {
   font-size: 1rem;
   color: var(--ph-muted);
@@ -682,6 +688,10 @@ html .ph :is(p, li) code {
 
   .ph-story {
     gap: 4.5rem;
+  }
+
+  .ph-beat--stacked .ph-compile {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   @supports (animation-timeline: view()) {

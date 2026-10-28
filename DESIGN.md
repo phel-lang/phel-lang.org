@@ -182,9 +182,9 @@ A violet-tinted paper and ink palette with a single purple voice; dark mode swap
 
 ## Layout
 
-The homepage widens the one-column layout to 76rem. The hero is centered: headline, lede, buttons, the install console (max 44rem), follow-up links and a centered mono facts line. After the hero, the story is a stack of beats with `clamp(5rem, 14vh, 9rem)` between them. Each beat is a two-column grid (`1.25fr` proof on the left, `1fr` prose on the right, gap `clamp(2.5rem, 5vw, 5rem)`); the prose column is sticky below the header so it stays in view while the taller proof scrolls. The Why Phel and compile beats stack instead: full-width prose under the title, the proof below it. Optional pipeline, macro and test examples sit in native disclosures; the compile and interop examples stay visible. The FAQ is a single centered column (max 46rem) and the close is a framed centered panel.
+The homepage widens the one-column layout to 76rem. The hero is centered: headline, lede, buttons, the install console (max 44rem), follow-up links and a centered mono facts line. After the hero, the story is a stack of beats with `clamp(5rem, 14vh, 9rem)` between them. Each beat is a two-column grid (`1.25fr` proof on the left, `1fr` prose on the right, gap `clamp(2.5rem, 5vw, 5rem)`); the prose column is sticky below the header so it stays in view while the taller proof scrolls. The Why Phel and compile beats stack instead: full-width prose under the title, the proof below it, with the Phel and PHP panes side by side. Optional pipeline, macro and test examples sit in native disclosures; the compile and interop examples stay visible. The FAQ is a single centered column (max 46rem) and the close is a framed centered panel.
 
-At 900px and below, beats collapse to one column with prose first and stickiness off. At 560px and below, buttons stack full width, the console bar stacks its title above equal-width tabs, and the facts line stacks.
+At 900px and below, beats collapse to one column with prose first and stickiness off, and the compile panes stack. At 560px and below, buttons stack full width, the console bar stacks its title above equal-width tabs, and the facts line stacks.
 
 ## Elevation & Depth
 
