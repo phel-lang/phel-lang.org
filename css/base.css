@@ -1,27 +1,3 @@
-@font-face {
-  font-family: 'Brygada 1918';
-  font-style: normal;
-  font-weight: 400 700;
-  font-display: swap;
-  src: url('/fonts/brygada-1918-latin.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Brygada 1918';
-  font-style: italic;
-  font-weight: 400 700;
-  font-display: swap;
-  src: url('/fonts/brygada-1918-italic-latin.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'Departure Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/departure-mono.woff2') format('woff2');
-}
-
 /* Motion is opt-in: page cross-fades and smooth scrolling only run for
    visitors who have not asked the OS to reduce motion. */
 @media (prefers-reduced-motion: no-preference) {
@@ -249,36 +225,6 @@ h6 {
   margin: 1em 0 0.5em;
 }
 
-/* Page titles and section headings share the homepage's italic serif.
-   Smaller headings and UI titles stay in the sans so docs stay scannable. */
-main h1,
-main
-  :is(.page-content, .blog-entry, .documentation-landing, .release-entry, .simple-page)
-  h2:not([class], #page-toc-title),
-main h2.practice-stage,
-:is(.post-card, .section-page-card, .practice-card) :is(h2, h3)[class$='__title'] {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 450;
-  letter-spacing: -0.01em;
-}
-
-main :is(h1, h2) code {
-  font-style: normal;
-}
-
-main h1 {
-  font-size: clamp(2.25rem, 5vw, 3rem);
-  line-height: 1.08;
-}
-
-main
-  :is(.page-content, .blog-entry, .documentation-landing, .release-entry, .simple-page)
-  h2:not([class], #page-toc-title) {
-  font-size: clamp(1.75rem, 3.6vw, 2.25rem);
-  line-height: 1.15;
-}
-
 /* Heading links */
 h1 a,
 h2 a,
@@ -302,8 +248,15 @@ h3 a:focus {
   text-decoration: none;
 }
 
+/* Modern HR with gradient */
 hr {
-  background: var(--ph-line);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-light-border) 20%,
+    var(--color-light-border) 80%,
+    transparent
+  );
   height: 1px;
   border: 0;
   margin: 2.5em 0;
@@ -417,7 +370,7 @@ pre {
   border-radius: var(--radius-lg);
   overflow-x: auto;
   max-width: 100%;
-  box-shadow: none;
+  box-shadow: var(--shadow-sm);
   line-height: 1.6;
   position: relative;
 }
@@ -459,12 +412,12 @@ li code {
 
 /* Modern Selection */
 ::selection {
-  background: rgba(81, 45, 168, 0.2);
+  background: rgba(99, 102, 241, 0.2);
   color: inherit;
 }
 
 ::-moz-selection {
-  background: rgba(81, 45, 168, 0.2);
+  background: rgba(99, 102, 241, 0.2);
   color: inherit;
 }
 
@@ -642,18 +595,37 @@ td code {
 }
 
 .error-page .error-page__tag {
-  font-family: var(--ph-serif);
+  font-family: var(--font-mono);
   font-size: clamp(5rem, 16vw, 9rem);
-  font-style: italic;
-  font-weight: 450;
+  font-weight: 800;
   line-height: 0.95;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.05em;
   margin: 0 0 0.25rem;
-  color: var(--ph-accent);
+  background: linear-gradient(
+    135deg,
+    var(--color-light-text-accent) 0%,
+    var(--color-light-link) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+}
+
+.dark .error-page .error-page__tag {
+  background: linear-gradient(
+    135deg,
+    var(--color-dark-text-accent) 0%,
+    var(--color-dark-link) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
 }
 
 .error-page .error-page__title {
   font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
   margin: 0 0 0.875rem;
   line-height: 1.2;
 }
@@ -724,11 +696,6 @@ td code {
   margin: 0 auto 2.25rem;
   padding: 0;
   text-align: left;
-}
-
-/* Grid gap spaces the columns; the global `* + *` margin would stagger them. */
-.error-page .error-page__groups > * {
-  margin-top: 0;
 }
 
 .error-page .error-page__group {
