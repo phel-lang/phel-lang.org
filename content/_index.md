@@ -68,7 +68,6 @@ php phel.phar repl
   </div>
   </div>
 
-  <p class="ph-followup">At the REPL prompt, enter <code>(map inc [1 2 3])</code> to see <code>(2 3 4)</code>.</p>
   <p class="ph-followup">Full walkthrough in the <a href="/documentation/installation/">installation guide</a>, then follow <a href="/documentation/getting-started/">Getting Started</a>.</p>
 
   <ul class="ph-facts" aria-label="Production facts">
