@@ -144,6 +144,8 @@ php phel.phar repl
 </div>
 </section>
 
+<div class="ph-optionals">
+
 <details class="ph-optional" id="threading-pipelines">
 <summary><h2>Threading pipelines</h2></summary>
 <section class="ph-beat" aria-label="Threading pipelines">
@@ -172,10 +174,10 @@ php phel.phar repl
 </section>
 </details>
 
-<section class="ph-beat" aria-labelledby="direct-php-interop">
+<details class="ph-optional" id="direct-php-interop">
+<summary><h2>Direct PHP interop</h2></summary>
+<section class="ph-beat" aria-label="Direct PHP interop">
 <div class="ph-beat-text">
-
-## Direct PHP interop { #direct-php-interop }
 
 - `php/` prefix calls any built-in function
 - `.method` calls PHP methods on objects
@@ -202,6 +204,7 @@ php phel.phar repl
 </figure>
 </div>
 </section>
+</details>
 
 <details class="ph-optional" id="code-as-data">
 <summary><h2>Code as data</h2></summary>
@@ -264,6 +267,8 @@ php phel.phar repl
 </div>
 </section>
 </details>
+
+</div>
 
 </div>
 
