@@ -2,7 +2,7 @@
 title = "REPL"
 weight = 1
 description = "Use the Phel REPL: history vars, doc/dir/apropos helpers, introspection, tap> debugging, and a REPL-driven workflow"
-aliases = ["/documentation/repl", "/documentation/tooling/phel-helpers"]
+aliases = ["/documentation/repl", "/documentation/tooling/phel-helpers", "/documentation/debug/phel-helpers"]
 +++
 
 The REPL runs Phel code as you type it and prints the result. Use it to try an idea, read the docs of a function, or check a value while you debug.

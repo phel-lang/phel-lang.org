@@ -2,7 +2,7 @@
 title = "Basic Types"
 weight = 1
 description = "Phel's primitive values: nil, booleans, numbers, strings, keywords, plus truthiness, equality, and reader literals"
-aliases = ["/documentation/basic-types", "/documentation/arithmetic", "/documentation/truth-and-boolean-operations"]
+aliases = ["/documentation/basic-types", "/documentation/arithmetic", "/documentation/truth-and-boolean-operations", "/documentation/language/arithmetic", "/documentation/language/truth-and-boolean-operations", "/documentation/numbers-and-arithmetic"]
 
 [extra]
 difficulty = "beginner"

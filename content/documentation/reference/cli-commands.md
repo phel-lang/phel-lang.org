@@ -2,7 +2,7 @@
 title = "CLI Commands"
 weight = 2
 description = "Every built-in phel command with its flags and an example: init, run, test, build, eval, format, lint, repl, nrepl, lsp and more."
-aliases = ["/documentation/cli-commands", "/documentation/tooling/cli-commands/"]
+aliases = ["/documentation/cli-commands", "/documentation/tooling/cli-commands/", "/documentation/commands"]
 +++
 
 Each command below shows its main flags and an example. `vendor/bin/phel help <command>` prints every flag of one command.

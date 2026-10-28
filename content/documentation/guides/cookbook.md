@@ -2,7 +2,7 @@
 title = "Cookbook"
 weight = 4
 description = "Runnable Phel recipes grouped by task: collections, files, JSON, HTTP, dates, and CLI tools."
-aliases = ["/documentation/cookbook", "/documentation/one-liners", "/documentation/guides/one-liners"]
+aliases = ["/documentation/cookbook", "/documentation/one-liners", "/documentation/guides/one-liners", "/documentation/reference/one-liners"]
 +++
 
 Copy a recipe, change the data, and run it. For the concepts behind the code, see the [Language](/documentation/language/) section.

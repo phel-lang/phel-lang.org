@@ -2,7 +2,7 @@
 title = "Debugging"
 weight = 11
 description = "Debug Phel code step by step: dbg, tap>, trace, stack traces, REPL breakpoints, Xdebug, PHP dump tools, compiled PHP, and profiling."
-aliases = ["/documentation/debugging/", "/documentation/tooling/php-tools/"]
+aliases = ["/documentation/debugging/", "/documentation/tooling/php-tools/", "/documentation/debug/", "/documentation/debug/php-tools/"]
 +++
 
 Start with the simplest tool that answers your question.
