@@ -179,19 +179,9 @@ html .ph :is(p, li) code {
   mask-image: radial-gradient(ellipse 60% 70% at 50% 35%, #000 20%, transparent 75%);
 }
 
-.ph-mark {
-  width: 104px;
-  height: auto;
-  fill: none;
-  stroke: var(--ph-accent);
-  stroke-width: 3;
-  stroke-linejoin: round;
-  overflow: visible;
-}
-
 .ph-title {
   max-width: 14ch;
-  margin-top: 1.75rem;
+  margin-top: 0;
   font-size: clamp(2.6rem, 6vw, 4.6rem);
   line-height: 1.02;
 }
@@ -654,37 +644,14 @@ html .ph :is(p, li) code {
   color: var(--ph-copy);
 }
 
-/* Motion: the mark draws itself, the story brings each beat into focus. */
+/* Motion: the story brings each beat into focus. */
 @media (prefers-reduced-motion: no-preference) {
-  .ph-mark path {
-    stroke-dasharray: 1;
-    animation: ph-draw 1.6s var(--ph-ease) both;
-  }
-
-  .ph-mark path:nth-child(2) {
-    animation-delay: 120ms;
-  }
-
-  .ph-mark path:nth-child(3) {
-    animation-delay: 240ms;
-  }
-
   @supports (animation-timeline: view()) {
     .ph-beat-text {
       animation: ph-focus linear both;
       animation-timeline: view();
       animation-range: cover 5% cover 95%;
     }
-  }
-}
-
-@keyframes ph-draw {
-  from {
-    stroke-dashoffset: 1;
-  }
-
-  to {
-    stroke-dashoffset: 0;
   }
 }
 

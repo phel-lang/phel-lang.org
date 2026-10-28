@@ -4,7 +4,6 @@ aliases = ["/documentation/why-phel/"]
 +++
 
 <section class="ph-hero" aria-labelledby="ph-title">
-  <svg class="ph-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200.3 167.7" width="104" height="87" role="img" aria-label="Phel language logo"><path pathLength="1" d="M6 66l95 96h36V93l-36-74H42L6 56v106h36l24-35"/><path pathLength="1" d="M137 93l58-3-12-58-32-26h-34l-16 13-23 9-12 22 46 52z"/><path pathLength="1" d="M195 90l-12 57h-13l-2-56m2 56l-13-11h12"/></svg>
   <h1 id="ph-title" class="ph-title">Functional Lisp <span class="ph-title-accent">for PHP developers</span></h1>
   <p class="ph-lede">Phel compiles a Lisp dialect to PHP. Macros, persistent data structures, and REPL-driven development on any PHP host.</p>
   <div class="ph-actions">

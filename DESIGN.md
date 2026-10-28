@@ -124,7 +124,7 @@ This system covers the whole site. Shared values live in `css/theme.css`: the la
 
 The homepage reads like a quietly typeset book about a language. An italic serif carries the headlines, a roman serif carries the prose, and a pixel mono speaks only for commands, labels and the s-expression buttons. The page has one accent, Phel purple, and otherwise stays in near-neutral violet paper and ink. Proof sits beside every claim: a real REPL transcript, real `phel compile` output, and runnable snippets. Each story beat pins its prose on the right while the taller proof scrolls past on the left.
 
-Surfaces are hairline panels with a small tick at each corner, laid on a faint 20px grid that fades out from the centre of the hero and the closing panel. Corners are square everywhere. Motion is small and purposeful: the elephant mark draws its outline on load, the last REPL form replays as typing, and parens on the buttons step outward on hover. The page refuses the SaaS stack of centered hero, card grid and repeated centered sections.
+Surfaces are hairline panels with a small tick at each corner, laid on a faint 20px grid that fades out from the centre of the hero and the closing panel. Corners are square everywhere. Motion is small and purposeful: the last REPL form replays as typing, and parens on the buttons step outward on hover. The page refuses the SaaS stack of centered hero, card grid and repeated centered sections.
 
 **Key Characteristics:**
 - Whole site: the full world on the homepage; shared palette, headings and square shapes everywhere else.
@@ -182,7 +182,7 @@ A violet-tinted paper and ink palette with a single purple voice; dark mode swap
 
 ## Layout
 
-The homepage widens the one-column layout to 76rem. The hero is centered: mark, headline, lede, buttons, a compact REPL example, the install console (max 44rem), follow-up links and a centered mono facts line. After the hero, the story is a stack of beats with `clamp(5rem, 14vh, 9rem)` between them. Each beat is a two-column grid (`1.25fr` proof on the left, `1fr` prose on the right, gap `clamp(2.5rem, 5vw, 5rem)`); the prose column is sticky below the header so it stays in view while the taller proof scrolls. Optional pipeline, macro and test examples sit in native disclosures; the compile and interop examples stay visible. The FAQ is a single centered column (max 46rem) and the close is a framed centered panel.
+The homepage widens the one-column layout to 76rem. The hero is centered: headline, lede, buttons, a compact REPL example, the install console (max 44rem), follow-up links and a centered mono facts line. After the hero, the story is a stack of beats with `clamp(5rem, 14vh, 9rem)` between them. Each beat is a two-column grid (`1.25fr` proof on the left, `1fr` prose on the right, gap `clamp(2.5rem, 5vw, 5rem)`); the prose column is sticky below the header so it stays in view while the taller proof scrolls. Optional pipeline, macro and test examples sit in native disclosures; the compile and interop examples stay visible. The FAQ is a single centered column (max 46rem) and the close is a framed centered panel.
 
 At 900px and below, beats collapse to one column with prose first and stickiness off. At 560px and below, buttons stack full width, the console bar stacks its title above equal-width tabs, and the facts line stacks.
 
@@ -225,9 +225,6 @@ Server-rendered from a real `phel repl` session; the header drops the window dot
 
 ### FAQ
 Native `details` rows separated by hairlines, question in ink at 1.2rem with the accent plus on the right; hover turns the question purple.
-
-### Signature: elephant mark
-The logo drawn as three stroked paths (104px wide, 3px purple stroke) that draw themselves over 1.6s with 120ms staggers, only when reduced motion is not requested.
 
 ## Do's and Don'ts
 
