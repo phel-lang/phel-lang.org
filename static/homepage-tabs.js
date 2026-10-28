@@ -6,11 +6,6 @@
     var panels = container.querySelectorAll('.phel-terminal-session, .homepage-tab-panel');
     if (!buttons.length || !panels.length) return;
 
-    var tablist = container.querySelector('.ph-console-tabs');
-    if (tablist) tablist.setAttribute('role', 'tablist');
-    buttons.forEach(function (button) { button.setAttribute('role', 'tab'); });
-    panels.forEach(function (panel) { panel.setAttribute('role', 'tabpanel'); });
-
     var tabIds = Array.prototype.map.call(buttons, function (b) {
       return b.getAttribute('data-tab');
     });
@@ -64,7 +59,7 @@
     });
 
     var initial = tabIdFromHash();
-    activate(initial || tabIds[0], false);
+    if (initial) activate(initial, false);
 
     window.addEventListener('hashchange', function () {
       var id = tabIdFromHash();
@@ -72,22 +67,7 @@
     });
   }
 
-  function openLinkedDisclosure() {
-    var id;
-    try {
-      id = decodeURIComponent(window.location.hash.slice(1));
-    } catch (error) {
-      return;
-    }
-    var target = document.getElementById(id);
-    if (!target) return;
-    var disclosure = target.closest('details.ph-optional');
-    if (disclosure) disclosure.open = true;
-  }
-
   function init() {
-    openLinkedDisclosure();
-    window.addEventListener('hashchange', openLinkedDisclosure);
     document.querySelectorAll('[data-homepage-tabs]').forEach(initTabs);
   }
 

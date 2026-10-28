@@ -79,6 +79,7 @@
    landing pages get four cards while the narrower content column of a
    page with a sidebar stays at two. */
 .documentation-landing,
+.homepage-section,
 .page-content {
   container-type: inline-size;
 }
@@ -124,23 +125,28 @@
   display: flex;
   flex-direction: column;
   padding: var(--space-lg);
+  background: var(--color-light-surface);
+  border: 1px solid var(--color-light-border);
+  border-radius: var(--radius-lg);
   text-decoration: none;
+  transition: all var(--duration-fast) var(--ease-out);
 }
 
 .section-page-card::after {
   display: none;
 }
 
+.section-page-card:hover,
 .two-column-layout__content a.section-page-card:hover,
 .documentation__content a.section-page-card:hover {
+  border-color: var(--color-light-link);
+  box-shadow: var(--shadow-md);
   text-decoration: none;
 }
 
 .section-page-card__title {
-  display: flex;
-  align-items: center;
-  font-size: var(--text-xl);
-  line-height: 1.25;
+  font-size: var(--text-base);
+  font-weight: 600;
   color: var(--color-light-text-primary);
   margin: 0 0 var(--space-sm) 0;
 }
@@ -157,7 +163,19 @@
 }
 
 .section-page-card__step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 1.5rem;
+  height: 1.5rem;
   margin-right: var(--space-sm);
+  border-radius: 999px;
+  background: var(--color-light-code-inline-bg);
+  color: var(--color-light-text-secondary);
+  font-size: var(--text-xs);
+  font-variant-numeric: tabular-nums;
+  vertical-align: 0.1em;
 }
 
 .section-page-card__meta {
@@ -167,17 +185,29 @@
   gap: var(--space-sm);
   margin: auto 0 0;
   padding-top: var(--space-md);
-  font-family: var(--ph-label);
   font-size: var(--text-xs);
-  letter-spacing: 0.04em;
   color: var(--color-light-text-muted);
+}
+
+.dark .section-page-card__step {
+  background: var(--color-dark-code-inline-bg);
+  color: var(--color-dark-text-secondary);
 }
 
 .dark .section-page-card__meta {
   color: var(--color-dark-text-muted);
 }
 
+/* Section Page Cards Dark Mode */
+.dark .section-page-card {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+}
+
+.dark .section-page-card:hover,
 .dark a.section-page-card:hover {
+  border-color: var(--color-dark-text-accent);
+  box-shadow: var(--shadow-dark-md, var(--shadow-md));
   text-decoration: none;
 }
 
@@ -320,16 +350,16 @@ h6:hover .zola-anchor {
   transform: rotate(90deg);
 }
 
-/* Brand hues darkened until the white 12.75px label clears 4.5:1
-   (PHP 6.4, Clojure 5.3). The label carries its own background, so the
-   same colour holds in light and dark mode. */
+/* Brand hues darkened until the white 12.75px label clears 4.5:1 at both
+   gradient stops (PHP 6.4 / 8.4, Clojure 5.3 / 7.2). The label carries its
+   own background, so the same pair holds in light and dark mode. */
 .dev-note--php .dev-note__label {
-  background: #4f5b93;
+  background: linear-gradient(135deg, #4f5b93 0%, #3f4a80 100%);
   color: white;
 }
 
 .dev-note--clojure .dev-note__label {
-  background: #3d7a1f;
+  background: linear-gradient(135deg, #3d7a1f 0%, #2f6317 100%);
   color: white;
 }
 
@@ -520,28 +550,28 @@ h6:hover .zola-anchor {
   display: inline-flex;
   align-items: center;
   padding: 0.1rem 0.55rem;
-  font-family: var(--ph-label);
-  letter-spacing: 0.02em;
+  border-radius: 999px;
+  font-weight: 600;
   line-height: 1.6;
   border: 1px solid transparent;
 }
 
 .page-meta__badge--beginner {
-  background: var(--status-ok-bg);
-  color: var(--status-ok);
-  border-color: var(--status-ok-line);
+  background: #e7f6ec;
+  color: #1a7f43;
+  border-color: #b7e4c7;
 }
 
 .page-meta__badge--intermediate {
-  background: var(--status-warn-bg);
-  color: var(--status-warn);
-  border-color: var(--status-warn-line);
+  background: #fdf3e0;
+  color: #9a6a00;
+  border-color: #f5d99a;
 }
 
 .page-meta__badge--advanced {
-  background: var(--status-bad-bg);
-  color: var(--status-bad);
-  border-color: var(--status-bad-line);
+  background: #fbe9e9;
+  color: #b23434;
+  border-color: #f2c4c4;
 }
 
 .page-meta__readtime,
@@ -552,6 +582,24 @@ h6:hover .zola-anchor {
 .page-meta__readtime + .page-meta__updated::before {
   content: '·';
   margin-right: 0.5rem;
+}
+
+.dark .page-meta__badge--beginner {
+  background: rgba(45, 168, 96, 0.16);
+  color: #6ee7a0;
+  border-color: rgba(45, 168, 96, 0.4);
+}
+
+.dark .page-meta__badge--intermediate {
+  background: rgba(214, 158, 46, 0.16);
+  color: #f2c368;
+  border-color: rgba(214, 158, 46, 0.4);
+}
+
+.dark .page-meta__badge--advanced {
+  background: rgba(214, 78, 78, 0.16);
+  color: #f19595;
+  border-color: rgba(214, 78, 78, 0.4);
 }
 
 .dark .page-meta__readtime,

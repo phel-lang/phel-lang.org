@@ -74,9 +74,8 @@
   transition: transform 0.4s ease;
 }
 
-.progress-tracker-reset:hover,
-.dark .progress-tracker-reset:hover {
-  color: var(--status-bad);
+.progress-tracker-reset:hover {
+  color: #dc2626;
 }
 
 .progress-tracker-reset:hover svg {
@@ -88,7 +87,7 @@
 }
 
 .progress-tracker-reset:focus-visible {
-  outline: 2px solid var(--status-bad-line);
+  outline: 2px solid rgb(239 68 68 / 0.5);
   outline-offset: 2px;
 }
 
@@ -98,6 +97,10 @@
 
 .dark .progress-tracker-reset {
   color: var(--color-dark-text-muted);
+}
+
+.dark .progress-tracker-reset:hover {
+  color: #f87171;
 }
 
 .dark .progress-tracker-count {
@@ -127,12 +130,12 @@
 }
 
 .progress-tracker.all-complete .progress-tracker-fill {
-  background: var(--status-ok);
+  background: #22c55e;
 }
 
 .progress-tracker.all-complete .progress-tracker-label::after {
   content: ' - All done!';
-  color: var(--status-ok);
+  color: #22c55e;
   font-weight: 400;
 }
 
@@ -168,12 +171,12 @@
 }
 
 .practice-overview.all-complete .progress-tracker-fill {
-  background: var(--status-ok);
+  background: #22c55e;
 }
 
 .practice-stage {
   margin: var(--space-2xl) 0 var(--space-md);
-  font-size: var(--text-2xl);
+  font-size: var(--text-xl);
 }
 
 .practice-card-grid {
@@ -188,8 +191,14 @@
   flex-direction: column;
   gap: 0.5rem;
   padding: 1.1rem 1.25rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-light-border);
+  background: var(--color-light-surface);
   color: inherit;
   text-decoration: none;
+  transition: transform var(--duration-fast) var(--ease-out),
+              border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
 }
 
 .practice-card,
@@ -199,16 +208,49 @@
   text-decoration: none;
 }
 
+.practice-card:hover {
+  border-color: var(--color-light-link);
+  box-shadow: 0 6px 18px -10px rgb(0 0 0 / 0.25);
+}
+
+.dark .practice-card {
+  background: var(--color-dark-surface);
+  border-color: var(--color-dark-border);
+}
+
+.dark .practice-card:hover {
+  border-color: var(--color-dark-text-accent);
+  box-shadow: 0 6px 18px -10px rgb(0 0 0 / 0.6);
+}
+
 .practice-card__head {
   display: flex;
   align-items: center;
   gap: 0.6rem;
 }
 
+.practice-card__step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: var(--radius-full);
+  background: var(--color-light-link);
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.dark .practice-card__step {
+  background: var(--color-dark-text-accent);
+  color: var(--color-dark-bg);
+}
+
 .practice-card__title {
   margin: 0;
-  font-size: var(--text-xl);
-  line-height: 1.25;
+  font-size: 1.05rem;
 }
 
 .practice-card__desc {
@@ -245,9 +287,9 @@
 }
 
 .practice-card.is-complete {
-  border-color: var(--status-ok);
+  border-color: #22c55e;
 }
 
 .practice-card.is-complete .progress-tracker-fill {
-  background: var(--status-ok);
+  background: #22c55e;
 }
