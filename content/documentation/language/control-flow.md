@@ -6,6 +6,7 @@ aliases = ["/documentation/control-flow"]
 
 [extra]
 difficulty = "beginner"
+practice = ["decisions"]
 +++
 
 Every form on this page is an expression: it returns a value. There are no statements.

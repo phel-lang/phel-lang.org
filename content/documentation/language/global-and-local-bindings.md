@@ -6,6 +6,7 @@ aliases = ["/documentation/global-and-local-bindings"]
 
 [extra]
 difficulty = "beginner"
+practice = ["names-and-functions"]
 +++
 
 A binding gives a value a name. Use `def` for a name the whole namespace sees, `let` for a name that exists only inside one expression, an atom for state that changes, and `binding` to give a dynamic var a new value for a while.

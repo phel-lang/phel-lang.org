@@ -6,6 +6,7 @@ aliases = ["/documentation/destructuring"]
 
 [extra]
 difficulty = "intermediate"
+practice = ["shaping-data"]
 +++
 
 Destructuring works everywhere Phel binds names: `let`, `defn` and `fn` parameters, `loop`, and `for`.

@@ -6,6 +6,7 @@ aliases = ["/documentation/php-interop/"]
 
 [extra]
 difficulty = "intermediate"
+practice = ["php-interop"]
 +++
 
 Phel compiles to PHP, so every PHP function, class and Composer package is available.

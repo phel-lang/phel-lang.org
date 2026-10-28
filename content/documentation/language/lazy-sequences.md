@@ -6,6 +6,7 @@ aliases = ["/documentation/lazy-sequences"]
 
 [extra]
 difficulty = "advanced"
+practice = ["sequences"]
 +++
 
 A lazy sequence computes its values only when you read them. Use one for large or infinite sources, or when you read only part of the data.

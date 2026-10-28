@@ -6,6 +6,7 @@ aliases = ["/documentation/data-structures"]
 
 [extra]
 difficulty = "beginner"
+practice = ["collections"]
 +++
 
 All Phel collections are **persistent**: they never change. An update returns a new collection that shares most of its structure with the old one, so updates stay cheap and the original stays valid.

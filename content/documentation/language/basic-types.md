@@ -6,6 +6,7 @@ aliases = ["/documentation/basic-types", "/documentation/arithmetic", "/document
 
 [extra]
 difficulty = "beginner"
+practice = ["first-steps"]
 +++
 
 Every Phel program is built from a few simple values: `nil`, booleans, numbers, strings, keywords and symbols. This page shows how to write each one, which values count as true, and how Phel compares them.
