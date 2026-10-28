@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 /**
  * Executes every ```phel snippet in content/ against the real Phel runtime,
- * so documentation cannot silently rot when the language changes.
+ * so documentation cannot silently rot when the language changes. Documented
+ * results (`; => value`) are checked too (see ExpectedValueRewriter); a
+ * mismatch fails like a broken snippet.
  *
  * Each snippet runs in an isolated `phel run` subprocess under a wall-clock cap
  * enforced here in PHP, so a hanging or memory-heavy snippet cannot take down
@@ -15,7 +17,8 @@ declare(strict_types=1);
  * templates and narrative continuations exist by design. Those are either
  * auto-skipped (see SnippetExtractor) or recorded in a checked-in baseline
  * (build/doc-snippets-baseline.json), keyed by snippet content so the entry
- * survives line moves. The suite fails on:
+ * survives line moves. A mismatch entry adds the expectation's text to that
+ * key. The suite fails on:
  *   - a NEW failure not present in the baseline (a regression), or
  *   - a baseline entry that now passes (ratchet: remove it).
  *
@@ -27,6 +30,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/../vendor/autoload.php';
 
+use PhelWeb\DocSnippet\ExpectedValueRewriter;
 use PhelWeb\DocSnippet\SnippetExtractor;
 
 $root = dirname(__DIR__);
@@ -47,11 +51,17 @@ $TIMEOUT_SECS = 15;
 $CONCURRENCY = 8;
 
 $extractor = new SnippetExtractor();
+$rewriter = new ExpectedValueRewriter();
 
 /** Stable per-snippet key, independent of its line number. */
 $keyOf = static function (string $relFile, string $code): string {
     $normalized = preg_replace('/\s+/', ' ', trim($code));
     return $relFile . '#' . substr(sha1((string) $normalized), 0, 12);
+};
+
+$expectationKeyOf = static function (string $snippetKey, string $text): string {
+    $normalized = preg_replace('/\s+/', ' ', trim($text));
+    return $snippetKey . '=>' . substr(sha1((string) $normalized), 0, 8);
 };
 
 // Collect markdown files.
@@ -77,6 +87,7 @@ $tmpDir = sys_get_temp_dir() . '/phel-doc-snippets-' . getmypid();
 
 $jobs = [];
 $skipped = 0;
+$skippedExpectations = [];
 $index = 0;
 foreach ($files as $file) {
     $rel = str_replace($root . '/', '', $file);
@@ -88,16 +99,28 @@ foreach ($files as $file) {
         $index++;
         $code = $snippet['code'];
         $hasNs = preg_match('/^\s*\(ns\s/', $code) === 1;
-        // Dot separator, not backslash: Phel deprecated `\` in namespaces, and
-        // the notice it prints carries a full PHP stack trace (~150KB of stderr
-        // per snippet), which both slows the run and floods the pipes.
-        $source = $hasNs ? $code : "(ns doctest.s{$index})\n{$code}";
+        // `user`, as in the REPL, so documented values such as `(user.point 1 2)` match.
+        $header = $hasNs ? '' : "(ns user)\n";
+        $rewrite = $rewriter->rewrite($code, $rel, $snippet['startLine']);
+        array_push($skippedExpectations, ...$rewrite['skipped']);
+        $key = $keyOf($rel, $code);
         $tmpFile = "{$tmpDir}/s{$index}.phel";
-        file_put_contents($tmpFile, $source);
+        file_put_contents($tmpFile, $header . $rewrite['code']);
+        $originalFile = null;
+        if ($rewrite['expectations'] !== []) {
+            $originalFile = "{$tmpDir}/s{$index}-original.phel";
+            file_put_contents($originalFile, $header . $code);
+        }
+        $expectations = [];
+        foreach ($rewrite['expectations'] as $expectation) {
+            $expectations[$expectation['location']] = $expectation + ['key' => $expectationKeyOf($key, $expectation['text'])];
+        }
         $jobs[] = [
-            'key' => $keyOf($rel, $code),
+            'key' => $key,
             'location' => "{$rel}:{$snippet['startLine']}",
             'file' => $tmpFile,
+            'originalFile' => $originalFile,
+            'expectations' => $expectations,
         ];
     }
 }
@@ -220,6 +243,28 @@ $passedKeys = [];
 $passed = 0;
 $queue = $jobs;
 
+// Expectations of a snippet whose instrumented run passed: a PHEL-DOC-MISMATCH
+// line in stdout fails that expectation, its absence passes it.
+$mismatches = [];   // key => ['location' => ..., 'note' => ...]
+$checked = 0;
+$unverifiable = [];
+$recordExpectations = static function (array $job, string $out) use (&$mismatches, &$checked, &$passedKeys): void {
+    $marker = preg_quote(ExpectedValueRewriter::MISMATCH_MARKER, '/');
+    preg_match_all('/^' . $marker . ' (\S+) (expected .*)$/m', $out, $found, PREG_SET_ORDER);
+    $notes = [];
+    foreach ($found as $m) {
+        $notes[$m[1]] = $m[2];
+    }
+    foreach ($job['expectations'] as $location => $expectation) {
+        ++$checked;
+        if (isset($notes[$location])) {
+            $mismatches[$expectation['key']] = ['location' => $location, 'note' => $notes[$location]];
+        } else {
+            $passedKeys[$expectation['key']] = true;
+        }
+    }
+};
+
 while ($queue !== [] || $running !== []) {
     while (count($running) < $CONCURRENCY && $queue !== []) {
         $running[] = $startProc(array_shift($queue));
@@ -247,6 +292,7 @@ while ($queue !== [] || $running !== []) {
         if ($exit === 0 && !$r['timedOut']) {
             $passed++;
             $passedKeys[$job['key']] = true;
+            $recordExpectations($job, $r['out']);
         } else {
             $failed[$job['key']] = [
                 'location' => $job['location'],
@@ -286,6 +332,23 @@ if ($failed !== []) {
             unset($failed[$key]);
             $passed++;
             $passedKeys[$key] = true;
+            $recordExpectations($job, $out);
+            continue;
+        }
+        $failed[$key]['note'] = $noteOf($exit, $out, $err, $timedOut);
+        if ($job['originalFile'] === null) {
+            continue;
+        }
+        // The checks must never break a snippet that runs on its own: if the
+        // original passes, its expectations are reported as unverifiable instead.
+        [$exit, $out, $err, $timedOut] = $reap($startProc(['file' => $job['originalFile']] + $job, 'original-'));
+        if ($exit === 0 && !$timedOut) {
+            unset($failed[$key]);
+            $passed++;
+            $passedKeys[$key] = true;
+            foreach ($job['expectations'] as $expectation) {
+                $unverifiable[] = $expectation;
+            }
         } else {
             $failed[$key]['note'] = $noteOf($exit, $out, $err, $timedOut);
         }
@@ -305,9 +368,12 @@ $rmTree = static function (string $dir) use (&$rmTree): void {
 $rmTree($tmpDir);
 
 // --- Baseline handling ---
+$failures = $failed + $mismatches;
+$expectationSummary = "Expectations: checked {$checked}, mismatched " . count($mismatches) . ', unverifiable ' . count($unverifiable);
+
 if ($updateBaseline) {
     $entries = [];
-    foreach ($failed as $key => $info) {
+    foreach ($failures as $key => $info) {
         $entries[$key] = $info['location'] . '  ::  ' . $info['note'];
     }
     ksort($entries);
@@ -315,8 +381,9 @@ if ($updateBaseline) {
         $baselinePath,
         json_encode($entries, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n",
     );
-    echo "\nWrote baseline with " . count($entries) . " known-failing snippets to build/doc-snippets-baseline.json\n";
+    echo "\nWrote baseline with " . count($entries) . " known failures to build/doc-snippets-baseline.json\n";
     echo "Snippets: {$total}   Passed: {$passed}   Failed: " . count($failed) . "   Skipped: {$skipped}\n";
+    echo "{$expectationSummary}\n";
     exit(0);
 }
 
@@ -325,12 +392,13 @@ if (is_file($baselinePath)) {
     $baseline = (array) json_decode((string) file_get_contents($baselinePath), true);
 }
 
-$regressions = array_diff_key($failed, $baseline);   // failing now, not in baseline
+$regressions = array_diff_key($failures, $baseline);   // failing now, not in baseline
 $fixed = array_intersect_key($passedKeys, $baseline); // in baseline but now passing
 
 echo "\n";
 echo "Snippets: {$total}   Passed: {$passed}   Failed: " . count($failed)
     . "   Skipped: {$skipped}   Baseline: " . count($baseline) . "\n";
+echo "{$expectationSummary}\n";
 
 $exit = 0;
 
@@ -350,15 +418,29 @@ if ($fixed !== []) {
     }
 }
 
-if ($verbose && $failed !== []) {
+if ($verbose && $failures !== []) {
     echo "\nAll current failures:\n";
-    foreach ($failed as $info) {
+    foreach ($failures as $info) {
         echo "  {$info['location']}  {$info['note']}\n";
     }
 }
 
+if ($verbose && $unverifiable !== []) {
+    echo "\nUnverifiable expectations (the instrumented snippet fails, the original passes):\n";
+    foreach ($unverifiable as $expectation) {
+        echo "  {$expectation['location']}  {$expectation['text']}\n";
+    }
+}
+
+if ($verbose && $skippedExpectations !== []) {
+    echo "\nSkipped expectations:\n";
+    foreach ($skippedExpectations as $expectation) {
+        echo "  {$expectation['location']}  [{$expectation['reason']}]  {$expectation['text']}\n";
+    }
+}
+
 if ($exit === 0) {
-    echo "\nNo regressions. " . count($baseline) . " known-unrunnable snippets tracked in baseline.\n";
+    echo "\nNo regressions. " . count($baseline) . " known failures tracked in baseline.\n";
 }
 
 exit($exit);

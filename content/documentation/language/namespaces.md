@@ -8,6 +8,8 @@ aliases = ["/documentation/namespaces"]
 difficulty = "intermediate"
 +++
 
+A namespace groups related definitions and keeps their names apart from other code. This page shows how to declare one, load other Phel modules and PHP classes, and shorten names with aliases and `:refer`.
+
 ## Declare a namespace
 
 Every Phel file starts with `ns`. The name has parts separated by `.`, and the last part matches the file name. Use one namespace per file. Each part starts with a letter or underscore, followed by letters, numbers, underscores or dashes. Use kebab-case (`my.user-service`); the compiler turns dashes into a valid PHP namespace.

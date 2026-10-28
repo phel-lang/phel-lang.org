@@ -6,6 +6,7 @@ aliases = ["/documentation/macros"]
 
 [extra]
 difficulty = "advanced"
+practice = ["macros"]
 +++
 
 A macro runs at compile time. It receives code as data, rewrites it, and returns new code for the compiler.

@@ -4,7 +4,7 @@ weight = 4
 description = "Every Phel error code (PHEL001-PHEL404), what it means, and how to fix it."
 +++
 
-> This page is the canonical index of error **codes**. To learn how to `throw`, `catch`, and attach data to errors in your own code, see [Error handling](/documentation/language/error-handling/).
+This page lists every Phel error code. To learn how to `throw`, `catch`, and attach data to errors in your own code, see [Error handling](/documentation/language/error-handling/).
 
 Phel errors are tagged with a stable code like `[PHEL001]`. The code
 survives wording changes, so it is the reliable thing to search for. An error

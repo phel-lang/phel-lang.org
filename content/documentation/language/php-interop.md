@@ -3,6 +3,10 @@ title = "PHP Interop"
 weight = 11
 description = "Call PHP functions, create objects, convert PHP arrays, use Composer packages, and call Phel back from PHP."
 aliases = ["/documentation/php-interop/"]
+
+[extra]
+difficulty = "intermediate"
+practice = ["php-interop"]
 +++
 
 Phel compiles to PHP, so every PHP function, class and Composer package is available.

@@ -2,7 +2,7 @@
 title = "Cookbook"
 weight = 4
 description = "Runnable Phel recipes grouped by task: collections, files, JSON, HTTP, dates, and CLI tools."
-aliases = ["/documentation/cookbook", "/documentation/one-liners", "/documentation/guides/one-liners"]
+aliases = ["/documentation/cookbook", "/documentation/one-liners", "/documentation/guides/one-liners", "/documentation/reference/one-liners"]
 +++
 
 Copy a recipe, change the data, and run it. For the concepts behind the code, see the [Language](/documentation/language/) section.
@@ -27,11 +27,11 @@ Copy a recipe, change the data, and run it. For the concepts behind the code, se
        (map #(update % :name str/upper-case))
        (sort-by :age)
        (group-by :role)))
-;; => {"engineer" [{:name "ALICE" ...} {:name "CHARLIE" ...}], "manager" [{:name "DIANA" ...}]}
+; => {"engineer" [{:name "ALICE" ...} {:name "CHARLIE" ...}], "manager" [{:name "DIANA" ...}]}
 
 (foreach [role members by-role]
   (println role (count members)))
-;; prints: engineer 2, manager 1
+; prints: engineer 2, manager 1
 
 (->> users (map :role) (into #{}))   ; => #{"engineer" "designer" "manager"}
 ```
@@ -101,8 +101,8 @@ A transducer is a pipeline you define once and apply to any target (`into`, `tra
     (mapv #(zipmap ks %) rows)))
 
 (read-csv path)
-;; => [{:name "Alice", :email "alice@example.com", :role "admin"}
-;;     {:name "Bob", :email "bob@example.com", :role "editor"}]
+; => [{:name "Alice", :email "alice@example.com", :role "admin"}
+;     {:name "Bob", :email "bob@example.com", :role "editor"}]
 ```
 
 `csv-seq` reads rows lazily as vectors of strings. Zipping each row with the header row gives you maps with keyword keys.
@@ -175,7 +175,7 @@ A transducer is a pipeline you define once and apply to any target (`into`, `tra
                (DateTimeImmutable. "2026-12-31")))             ; => 364
 
 (.format (DateTimeImmutable/createFromFormat "d/m/Y" "25/12/2026") "Y-m-d")
-;; => "2026-12-25"
+; => "2026-12-25"
 ```
 
 Use `DateTimeImmutable`: every change returns a new object, as Phel values do. `<` and `>` compare dates directly. The `#inst "2026-01-15T12:00:00Z"` literal also reads as a `DateTimeImmutable`.

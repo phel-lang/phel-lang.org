@@ -2,11 +2,14 @@
 title = "Basic Types"
 weight = 1
 description = "Phel's primitive values: nil, booleans, numbers, strings, keywords, plus truthiness, equality, and reader literals"
-aliases = ["/documentation/basic-types", "/documentation/arithmetic", "/documentation/truth-and-boolean-operations"]
+aliases = ["/documentation/basic-types", "/documentation/arithmetic", "/documentation/truth-and-boolean-operations", "/documentation/language/arithmetic", "/documentation/language/truth-and-boolean-operations", "/documentation/numbers-and-arithmetic"]
 
 [extra]
 difficulty = "beginner"
+practice = ["first-steps"]
 +++
+
+Every Phel program is built from a few simple values: `nil`, booleans, numbers, strings, keywords and symbols. This page shows how to write each one, which values count as true, and how Phel compares them.
 
 ## Nil, true, false
 

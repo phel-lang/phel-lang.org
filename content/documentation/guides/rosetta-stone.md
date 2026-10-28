@@ -2,7 +2,7 @@
 title = "Rosetta Stone: PHP → Phel"
 weight = 3
 description = "Side-by-side PHP and Phel for the same task: variables, functions, collections, strings, control flow, loops, and interop"
-aliases = ["/documentation/rosetta-stone"]
+aliases = ["/documentation/rosetta-stone", "/documentation/guides/phel-for-php-developers"]
 
 [extra]
 scripts = ["rosetta-stone.js"]

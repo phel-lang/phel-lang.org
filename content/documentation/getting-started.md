@@ -4,6 +4,8 @@ weight = 2
 description = "Create a Phel project, try the REPL, run your first file, and learn the project layout."
 +++
 
+This page takes you from an empty folder to a running Phel project. You create the project with Composer, try code in the REPL, run a file, and see where each part of the project lives.
+
 ## Requirements
 
 - **PHP 8.5+** (`php -v`)

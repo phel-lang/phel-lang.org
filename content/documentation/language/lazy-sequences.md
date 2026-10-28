@@ -6,6 +6,7 @@ aliases = ["/documentation/lazy-sequences"]
 
 [extra]
 difficulty = "advanced"
+practice = ["sequences"]
 +++
 
 A lazy sequence computes its values only when you read them. Use one for large or infinite sources, or when you read only part of the data.
@@ -62,7 +63,7 @@ A lazy sequence can compute more values than you read. Side effects inside `map`
 
 ```phel
 (def xs (take 5 (map (fn [x] (println x) x) (range 100))))
-;; prints 0 through 5 when defined: six side effects for five results
+; prints 0 through 5 when defined: six side effects for five results
 ```
 
 Keep side effects out of lazy pipelines. Use `foreach` or `doseq`.

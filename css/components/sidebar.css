@@ -43,7 +43,9 @@
   font-weight: 500;
   border-radius: var(--radius-md);
   text-decoration: none;
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
 }
 
 .site-navigation__entry a::after {
@@ -61,13 +63,9 @@
   font-weight: 600;
 }
 
-/* Sidebar section with toggle. Grid rows animate open/closed to the list's
-   real height, so a section with many pages is never clipped by a fixed
-   max-height cap. */
 .sidebar-section {
   display: grid;
   grid-template-rows: auto 1fr;
-  transition: grid-template-rows var(--duration-normal, 0.25s) var(--ease-out);
 }
 
 .sidebar-section.collapsed {
@@ -79,7 +77,7 @@
   align-items: center;
   gap: var(--space-xs);
   border-radius: var(--radius-md);
-  transition: all var(--duration-fast) var(--ease-out);
+  transition: background-color var(--duration-fast) var(--ease-out);
 }
 
 .sidebar-section-header:hover {
@@ -123,7 +121,9 @@
   border-radius: var(--radius-sm);
   cursor: pointer;
   color: var(--color-light-text-secondary);
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
   padding: 0.3rem;
   margin: 0;
   margin-right: var(--space-sm);
@@ -144,21 +144,12 @@
 .sidebar-subsection {
   min-height: 0;
   overflow: hidden;
-  opacity: 1;
   visibility: visible;
-  transition:
-    opacity var(--duration-fast, 0.15s) var(--ease-out),
-    visibility 0s;
 }
 
-/* visibility (not only opacity) takes the hidden links out of the tab
-   order; it flips after the collapse animation has finished. */
+/* Hidden links must also leave the tab order. */
 .sidebar-section.collapsed .sidebar-subsection {
-  opacity: 0;
   visibility: hidden;
-  transition:
-    opacity var(--duration-fast, 0.15s) var(--ease-out),
-    visibility 0s linear var(--duration-normal, 0.25s);
 }
 
 .sidebar-section:not(.collapsed) .subsection-toggle svg {
@@ -191,7 +182,9 @@
   font-weight: 500;
   border-radius: var(--radius-md);
   text-decoration: none;
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
 }
 
 .site-navigation .sidebar-subsection li a::after {
@@ -226,7 +219,9 @@
   border-radius: var(--radius-md);
   text-decoration: none;
   user-select: none;
-  transition: all var(--duration-fast) var(--ease-out);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
 }
 
 .site-navigation .sidebar-section-header a::after {

@@ -1,6 +1,6 @@
 +++
 title = "Phel: A Functional Lisp Dialect for PHP Developers"
-aliases = ["/documentation/why-phel/"]
+aliases = ["/documentation/why-phel/", "/documentation/reference/in-the-wild/"]
 +++
 
 <section class="homepage-hero">

@@ -6,6 +6,7 @@ aliases = ["/documentation/error-handling", "/documentation/exceptions"]
 
 [extra]
 difficulty = "intermediate"
+practice = ["state-and-errors"]
 +++
 
 Phel uses PHP exceptions, so any PHP `Throwable` works with `throw` and `try`.
