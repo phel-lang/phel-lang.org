@@ -287,3 +287,7 @@ jobs:
 
       - name: Check internal links
         run: zola check --skip-external-links
+
+      # zola check only follows @/ links; this site writes absolute ones.
+      - name: Check absolute links and anchors
+        run: npm run check:links
