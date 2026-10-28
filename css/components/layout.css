@@ -92,7 +92,6 @@
 /* Sidebar content - collapsed by default on mobile */
 .sidebar-content {
   display: none;
-  animation: fadeInUp var(--duration-fast) var(--ease-out);
 }
 
 .sidebar-content.active {
@@ -128,7 +127,7 @@
     background: var(--color-light-surface);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-sm);
-    transition: all var(--duration-normal) var(--ease-out);
+    transition: box-shadow var(--duration-normal) var(--ease-out);
   }
 
   /* Remove the extra bottom border on desktop */
