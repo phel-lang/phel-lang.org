@@ -516,6 +516,24 @@ html .ph :is(p, li) code {
   border-radius: 0;
 }
 
+.ph-beat--stacked {
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.ph-beat--stacked .ph-beat-text {
+  grid-column: 1;
+  grid-row: 1;
+  position: static;
+  padding-top: 0;
+  max-width: none;
+}
+
+.ph-beat--stacked .ph-beat-demo {
+  grid-column: 1;
+  grid-row: 2;
+}
+
 .ph-aside {
   font-size: 1rem;
   color: var(--ph-muted);

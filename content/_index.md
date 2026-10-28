@@ -79,7 +79,7 @@ php phel.phar repl
 
 <div class="ph-story">
 
-<section class="ph-beat" aria-labelledby="why-phel">
+<section class="ph-beat ph-beat--stacked" aria-labelledby="why-phel">
 <div class="ph-beat-text">
 
 ## Why Phel? { #why-phel }
@@ -96,7 +96,7 @@ php phel.phar repl
 </div>
 </section>
 
-<section class="ph-beat" aria-labelledby="phel-in-php-out">
+<section class="ph-beat ph-beat--stacked" aria-labelledby="phel-in-php-out">
 <div class="ph-beat-text">
 
 ## Phel in, PHP out { #phel-in-php-out }
