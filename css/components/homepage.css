@@ -91,7 +91,7 @@ html .ph :is(p, li) code {
   box-shadow: 0 24px 48px -28px rgb(0 0 0 / 0.7);
 }
 
-/* S-expression buttons: the parens are the button's edges. */
+/* Buttons */
 .ph-actions {
   display: flex;
   flex-wrap: wrap;
@@ -102,7 +102,6 @@ html .ph :is(p, li) code {
 .ph .ph-sx {
   display: inline-flex;
   align-items: center;
-  gap: 0.15em;
   min-height: 2.75rem;
   padding: 0.55rem 1.1rem;
   font-family: var(--ph-label);
@@ -120,33 +119,16 @@ html .ph :is(p, li) code {
     color 180ms var(--ph-ease);
 }
 
-.ph-paren {
-  color: var(--ph-accent);
-  transition: transform 260ms var(--ph-ease);
-}
-
 .ph .ph-sx:hover {
   color: var(--ph-text);
   border-color: var(--ph-accent);
   text-decoration: none;
 }
 
-.ph .ph-sx:hover .ph-paren:first-child {
-  transform: translateX(-3px);
-}
-
-.ph .ph-sx:hover .ph-paren:last-child {
-  transform: translateX(3px);
-}
-
 .ph .ph-sx--primary {
   color: var(--ph-on-accent);
   background: var(--ph-accent);
   border-color: var(--ph-accent);
-}
-
-.ph .ph-sx--primary .ph-paren {
-  color: color-mix(in srgb, var(--ph-on-accent) 62%, var(--ph-accent));
 }
 
 .ph .ph-sx--primary:hover {

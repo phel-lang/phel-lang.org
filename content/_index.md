@@ -7,8 +7,8 @@ aliases = ["/documentation/why-phel/"]
   <h1 id="ph-title" class="ph-title">Functional Lisp <span class="ph-title-accent">for PHP developers</span></h1>
   <p class="ph-lede">Phel compiles a Lisp dialect to PHP. Macros, persistent data structures, and REPL-driven development on any PHP host.</p>
   <div class="ph-actions">
-    <a href="#try-it-in-30-seconds" class="ph-sx ph-sx--primary"><span class="ph-paren" aria-hidden="true">(</span>Try Phel<span class="ph-paren" aria-hidden="true">)</span></a>
-    <a href="/practice/" class="ph-sx"><span class="ph-paren" aria-hidden="true">(</span>Practice exercises<span class="ph-paren" aria-hidden="true">)</span></a>
+    <a href="#try-it-in-30-seconds" class="ph-sx ph-sx--primary">Try Phel</a>
+    <a href="/practice/" class="ph-sx">Practice exercises</a>
   </div>
 
   <noscript><style>.ph-console-tabs { display: none; }</style></noscript>
@@ -322,7 +322,7 @@ php phel.phar repl
   <h2 id="final-cta-title" class="ph-close-title">Write your first Phel function today</h2>
   <p class="ph-close-lede">Install it, open a REPL, write a function. Then drill the basics in Practice.</p>
   <div class="ph-actions">
-    <a href="#try-it-in-30-seconds" class="ph-sx ph-sx--primary"><span class="ph-paren" aria-hidden="true">(</span>Try Phel<span class="ph-paren" aria-hidden="true">)</span></a>
-    <a href="/practice/" class="ph-sx"><span class="ph-paren" aria-hidden="true">(</span>Practice exercises<span class="ph-paren" aria-hidden="true">)</span></a>
+    <a href="#try-it-in-30-seconds" class="ph-sx ph-sx--primary">Try Phel</a>
+    <a href="/practice/" class="ph-sx">Practice exercises</a>
   </div>
 </section>

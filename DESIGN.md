@@ -122,9 +122,9 @@ components:
 
 This system covers the whole site. Shared values live in `css/theme.css`: the lavender `#f4f2f8` and violet ink `#14121b` grounds, Phel purple as the accent, and square radius tokens; the fonts load from `css/base.css`. The homepage (`content/_index.md`, `templates/index.html`, `templates/components/hero_repl.html`, `css/components/homepage.css`) is the full expression, scoped under `.ph` with its own `--ph-*` tokens. Other pages take a lighter form by section. Docs, practice and the API keep a sans body so they stay quick to scan, and set page titles and content section headings in Brygada italic. Blog posts set their body in the roman serif. Blog and release cards use mono labels and paren buttons. Smaller headings and interface titles stay in the sans everywhere.
 
-The homepage reads like a quietly typeset book about a language. An italic serif carries the headlines, a roman serif carries the prose, and a pixel mono speaks only for commands, labels and the s-expression buttons. The page has one accent, Phel purple, and otherwise stays in near-neutral violet paper and ink. Proof sits beside every claim: a real REPL transcript, real `phel compile` output, and runnable snippets. Each story beat pins its prose on the right while the taller proof scrolls past on the left.
+The homepage reads like a quietly typeset book about a language. An italic serif carries the headlines, a roman serif carries the prose, and a pixel mono speaks only for commands, labels and the buttons. The page has one accent, Phel purple, and otherwise stays in near-neutral violet paper and ink. Proof sits beside every claim: a real REPL transcript, real `phel compile` output, and runnable snippets. Each story beat pins its prose on the right while the taller proof scrolls past on the left.
 
-Surfaces are hairline panels with a small tick at each corner, laid on a faint 20px grid that fades out from the centre of the hero and the closing panel. Corners are square everywhere. Motion is small and purposeful: the last REPL form replays as typing, and parens on the buttons step outward on hover. The page refuses the SaaS stack of centered hero, card grid and repeated centered sections.
+Surfaces are hairline panels with a small tick at each corner, laid on a faint 20px grid that fades out from the centre of the hero and the closing panel. Corners are square everywhere. Motion is small and purposeful: the last REPL form replays as typing. The page refuses the SaaS stack of centered hero, card grid and repeated centered sections.
 
 **Key Characteristics:**
 - Whole site: the full world on the homepage; shared palette, headings and square shapes everywhere else.
@@ -140,7 +140,7 @@ A violet-tinted paper and ink palette with a single purple voice; dark mode swap
 ### Primary
 - **Phel Purple** (light `phel-purple`, dark `lilac`): the brand color from the logo. Used for the primary button fill, the headline accent tail, the logo stroke, the REPL prompt and cursor, list bullets, the FAQ plus sign, focus outlines, active tab underline and link underlines.
 - **Deep Purple / Pale Lilac** (`phel-purple-deep`, `lilac-light`): hover state of the primary button only.
-- **On Accent** (`on-accent`, `on-accent-dark`): text on the purple fill. Parens inside the primary button mix it 62% toward the accent so they read softer than the label.
+- **On Accent** (`on-accent`, `on-accent-dark`): text on the purple fill.
 
 ### Neutral
 - **Lavender Paper / Violet Ink** (`canvas`, `canvas-dark`): page background behind the homepage, also tinting the sticky header.
@@ -203,12 +203,11 @@ Square corners throughout (0 radius), including buttons, code chips, copy button
 
 ## Components
 
-### Buttons (s-expression)
-Written as a Lisp form: the parens are the button's edges.
+### Buttons
+Plain mono labels in a square box.
 - **Shape:** square (0), 1px border, min height 2.75rem, padding 0.55rem 1.1rem, Departure Mono 0.9rem.
-- **Primary:** purple fill, on-accent label, parens softened toward the fill. Hover darkens to Deep Purple.
-- **Secondary:** transparent with a strong hairline, ink label, purple parens. Hover turns the border purple.
-- **Hover (both):** parens slide 3px outward over 260ms on the house ease (`cubic-bezier(0.16, 1, 0.3, 1)`).
+- **Primary:** purple fill, on-accent label. Hover darkens to Deep Purple.
+- **Secondary:** transparent with a strong hairline, ink label. Hover turns the border purple.
 - **Focus:** 2px accent outline, 3px offset, square.
 
 ### Frame
@@ -232,7 +231,7 @@ Native `details` rows separated by hairlines, question in ink at 1.2rem with the
 - **Do** keep homepage-only styles under `.ph` with `--ph-*` tokens, and put shared values in `css/theme.css` with a `.dark` override.
 - **Do** put a real artifact beside each claim: a REPL transcript, compile output or a runnable snippet.
 - **Do** frame proof in a pane with a mono label bar and corner ticks.
-- **Do** write calls to action as s-expressions: `(Try it in your browser)`.
+- **Do** write calls to action as short verb phrases: `Try Phel`.
 - **Do** wrap motion in `prefers-reduced-motion: no-preference`.
 
 ### Don't:
