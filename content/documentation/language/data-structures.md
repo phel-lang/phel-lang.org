@@ -202,7 +202,7 @@ A struct is a map with a fixed set of keys and a name. `defstruct` defines a con
 (point? p)       ; => true
 (get p :x)       ; => 1
 (:y p)           ; => 2
-(assoc p :x 10)  ; => (point 10 2)
+(assoc p :x 10)  ; => (user.point 10 2)
 ```
 
 A struct compiles to a PHP class with one property per key, so it is faster than a map. PHP code can call `count($p)` and read `$p['x']`: every struct implements `\Countable`, `\ArrayAccess`, and `\IteratorAggregate`.
