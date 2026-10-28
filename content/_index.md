@@ -11,16 +11,6 @@ aliases = ["/documentation/why-phel/"]
     <a href="/practice/" class="ph-sx"><span class="ph-paren" aria-hidden="true">(</span>Practice exercises<span class="ph-paren" aria-hidden="true">)</span></a>
   </div>
 
-  <figure class="ph-pane ph-frame ph-first-example">
-  <figcaption class="ph-pane-bar"><span>Phel at the REPL</span></figcaption>
-
-```phel
-(map inc [1 2 3])
-; => (2 3 4)
-```
-
-  </figure>
-
   <noscript><style>.ph-console-tabs { display: none; }</style></noscript>
   <div class="ph-console ph-frame" data-homepage-tabs>
     <div class="ph-console-bar">
