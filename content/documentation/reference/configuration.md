@@ -5,6 +5,8 @@ description = "Every phel-config.php option with its default, the local override
 aliases = ["/documentation/configuration/"]
 +++
 
+Most projects run with the defaults. To change the source folders, the build output or other settings, edit `phel-config.php`. This page lists every option with its default, and the environment variables Phel reads.
+
 ## Minimal config
 
 Phel reads `phel-config.php` from the project root. It returns a `PhelConfig`. Most projects need only the factory:

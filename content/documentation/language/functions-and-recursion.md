@@ -8,6 +8,8 @@ aliases = ["/documentation/functions-and-recursion"]
 difficulty = "intermediate"
 +++
 
+Functions are the main building block of a Phel program. This page shows how to define them with `defn` and `fn`, give one function several arities, accept any number of arguments, loop with `recur`, and choose an implementation at run time with multimethods.
+
 ## Global functions
 
 <!-- phel-test: skip -->

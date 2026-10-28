@@ -74,7 +74,7 @@ phel run src/main.phel
 
 | Variable | Default | Effect |
 |---|---|---|
-| `PHEL_VERSION` | `latest` | Pin a Phel release, e.g. `0.50.0` |
+| `PHEL_VERSION` | `latest` | Pin a Phel release, e.g. `0.54.0` |
 | `PHP_VERSION` | `8.5.8` | Pin a [static PHP build](https://dl.static-php.dev/static-php-cli/common/). Only the default has a pinned checksum |
 | `PREFIX` | `${TMPDIR}/phel-quick`, or `/tmp/phel-quick-$UID` | Where everything is downloaded |
 | `PHEL_FORCE` | `0` | `1` downloads again instead of reusing |

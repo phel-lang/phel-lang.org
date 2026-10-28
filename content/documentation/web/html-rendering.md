@@ -5,6 +5,8 @@ description = "Render HTML from Phel data structures: vectors are elements, maps
 aliases = ["/documentation/html-rendering"]
 +++
 
+`phel.html` builds HTML from plain Phel data. A vector is an element, a map holds its attributes, and text is escaped for you.
+
 ## Elements and attributes
 
 `html` from `phel.html` turns a vector into an HTML string, with no template language. The first item is the tag (keyword or string), an optional map holds the attributes, and the rest is the body: strings, numbers, nested vectors, or lists of them.

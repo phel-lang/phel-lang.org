@@ -28,7 +28,7 @@ Start with the simplest tool that answers your question.
 
 (area 3 4)
 ;; stderr: [src/main.phel:2] w => 3
-;; => 12
+; => 12
 ```
 
 Because the value passes through, `dbg` works inside threading macros:

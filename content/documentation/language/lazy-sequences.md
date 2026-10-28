@@ -62,7 +62,7 @@ A lazy sequence can compute more values than you read. Side effects inside `map`
 
 ```phel
 (def xs (take 5 (map (fn [x] (println x) x) (range 100))))
-;; prints 0 through 5 when defined: six side effects for five results
+; prints 0 through 5 when defined: six side effects for five results
 ```
 
 Keep side effects out of lazy pipelines. Use `foreach` or `doseq`.

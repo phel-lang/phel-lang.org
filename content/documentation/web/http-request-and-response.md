@@ -5,6 +5,8 @@ description = "Read an HTTP request, build and emit a response, and test handler
 aliases = ["/documentation/http-request-and-response"]
 +++
 
+The `phel.http` namespace turns a PHP web request into Phel data and turns your response back into output. This page shows how to read a request, build and send a response, and test a handler without a web server.
+
 ## The request-response cycle
 
 Everything lives in `phel.http`. A web entry point reads the request from PHP's globals, turns it into a response, and sends it with `emit-response` (once, at the end of the request):

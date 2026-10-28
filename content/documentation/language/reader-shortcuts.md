@@ -1,7 +1,7 @@
 +++
 title = "Reader Shortcuts"
 weight = 8
-description = "Catalog of the Phel reader macros and special syntax: literals, quote/quasiquote, tagged literals, anonymous functions, reader conditionals for shared .cljc files, and metadata."
+description = "Every Phel reader shortcut: literals, quote and quasiquote, tagged literals, anonymous functions, reader conditionals for .cljc files, and metadata."
 aliases = ["/documentation/language/reader-conditionals/"]
 
 [extra]
