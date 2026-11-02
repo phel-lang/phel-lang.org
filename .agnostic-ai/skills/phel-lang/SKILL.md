@@ -1,17 +1,15 @@
 ---
 name: phel-lang
-description: Write or verify Phel code (Lisp on PHP). Triggers on .phel files, phel-config.php, phel CLI commands, or Phel snippets in markdown docs. Verify any non-trivial snippet against the runtime before claiming it works.
+description: Use when writing or checking Phel code, .phel files, phel-config.php, phel CLI commands, or Phel snippets in markdown docs.
 x-claude:
   model: sonnet
 ---
 
 # Phel
 
-Lisp dialect compiling to PHP. Persistent data structures. PHP interop via `php/`.
-
 ## Verify before documenting
 
-Any Phel snippet added to docs/blog/cookbook MUST be runtime-checked. Examples that "look right" silently rot. Two ways:
+Run every Phel snippet added to docs or the blog on the runtime before writing it down:
 
 ```bash
 # One expression
@@ -32,17 +30,16 @@ PHEL
 
 In docs, `php build/run-doc-snippets.php <file.md>` runs every ```phel block of a page the way CI does.
 
-Write the snippet, run it, paste real output. If output differs from what you assumed, fix the doc - not the runtime.
+Paste the real output. If it differs from what you expected, fix the doc, not the runtime.
 
 ## Gotchas (project-specific)
 
 - `defprotocol` cannot be implemented inline in `defstruct`. Use `definterface` for inline; `defprotocol` + `extend-type` per struct.
 - `extends?` works only on primitive type keywords (`:string`, `:int`). Returns `false` for struct types. Use `satisfies?` on instances instead.
-- CLI args: `*argv*` (vector of user args, excludes program name); `*program*` for the script path. Not `argv` (removed in 0.45) or `php/$argv`.
-- Side effects: `doseq` / `foreach`. Build sequences: `for`. Mixing causes wrong return shape.
+- CLI args: `*argv*` (user args, without the program name); `*program*` for the script path. Not `argv` (removed in 0.45) or `php/$argv`.
+- Side effects: `doseq`/`foreach`. Build sequences: `for`. Mixing them gives the wrong return shape.
 - Namespaces use dots: `phel.string`, `app.core`. The backslash form (`phel\string`) is deprecated and warns with `--warn-deprecations`. Give app code at least two segments (`app.core`, not `app`).
-- REPL output: vectors print as `[1 2]`, lazy seqs (`map`, `filter`) as `(1 2)`. Prompt is `user:N>`. Match the runtime output in docs.
-
+- REPL output: vectors print as `[1 2]`, lazy seqs (`map`, `filter`) as `(1 2)`. Match the runtime output in docs.
 - Map destructuring is binding-first: `{n :name}`, or `{:keys [name]}`. Key-first pairs (`{:name n}`) are deprecated since 0.51.
 - `php/new`, `php/->` and `php/::` are rejected (PHEL012). Use `(new Foo)`, `(.method obj)`, `Foo/static`.
 - `/` on two integers returns a ratio: `(/ 1 2)` is `1/2`. Use `4.0` or `(float x)` when a float is meant.
@@ -82,4 +79,4 @@ DateTimeImmutable/ATOM                      ; static constant
 - Build config for the snippet runner: `build/phel-config.php`. Compile cache: `.phel/`
 - CLI: `./vendor/bin/phel <run|eval|repl|test|build>`
 
-For full language reference: `content/documentation/language/` and `content/documentation/reference/`.
+Language reference: `content/documentation/language/` and `content/documentation/reference/`.
