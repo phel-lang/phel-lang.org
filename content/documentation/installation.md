@@ -53,6 +53,23 @@ sudo mv phel.phar /usr/local/bin/phel
 phel repl
 ```
 
+### Libraries with the PHAR
+
+The PHAR holds Phel and its standard library. Libraries still come from Composer:
+
+```bash
+composer require phel-lang/phel-pdo
+php phel.phar run src/main.phel
+```
+
+The PHAR reads each Phel library in `vendor/` and loads `vendor/autoload.php` for PHP classes. `php phel.phar init` writes no `composer.json`; the first `composer require` creates one.
+
+Phel libraries depend on `phel-lang/phel-lang`, so Composer also puts a copy of Phel in `vendor/`. The PHAR ignores that copy and keeps its own standard library. When the versions differ, it prints a warning. Run `./vendor/bin/phel` to use the vendored version instead.
+
+When the PHAR and `vendor/` hold the same PHP package, classes load from the PHAR first. `php phel.phar doctor` lists the Phel libraries it found and any package whose versions differ.
+
+To upgrade, download a newer `phel.phar` over the old one.
+
 ## Quick launch (no PHP, no Docker)
 
 One command, no PHP and no container. Linux and macOS, x86_64 and arm64.
