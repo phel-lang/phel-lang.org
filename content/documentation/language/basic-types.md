@@ -64,8 +64,8 @@ Dividing two integers gives a `Ratio` when the result is not whole. Use a float 
 
 ```phel
 (/ 10 3)          ; => 10/3
-(/ 10.0 3)        ; => 3.3333333333333
-(float (/ 10 3))  ; => 3.3333333333333
+(/ 10.0 3)        ; => 3.3333333333333335
+(float (/ 10 3))  ; => 3.3333333333333335
 ```
 
 `rem` keeps the sign of the dividend and `mod` the sign of the divisor: `(rem -7 2)` is `-1`, `(mod -7 2)` is `1`. `quot`, `**`, `inc`, `dec`, `min`, `max`, `floor`, `round`, and the bitwise functions (`bit-and`, `bit-or`, `bit-shift-left`, ...) are in the [core API](/documentation/reference/api/core/).
