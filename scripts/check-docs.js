@@ -19,10 +19,14 @@ const ROOT = path.resolve(__dirname, '..');
 const DOCS = path.join(ROOT, 'content', 'documentation');
 const GENERATED = path.join(DOCS, 'reference', 'api');
 
-function currentMinor() {
-  const match = fs.readFileSync(path.join(ROOT, 'config.toml'), 'utf8').match(/^phel_version\s*=\s*"v?0\.(\d+)\.\d+"/m);
+function currentRelease() {
+  const match = fs.readFileSync(path.join(ROOT, 'config.toml'), 'utf8').match(/^phel_version\s*=\s*"v?(\d+)\.(\d+)\.\d+[^"]*"/m);
   if (!match) throw new Error('config.toml has no phel_version');
-  return Number(match[1]);
+  return [Number(match[1]), Number(match[2])];
+}
+
+function isOlder([major, minor], [currentMajor, currentMinor]) {
+  return major < currentMajor || (major === currentMajor && minor < currentMinor);
 }
 
 function markdownFiles(dir) {
@@ -54,7 +58,7 @@ function lines(body, bodyStart) {
   });
 }
 
-function check(file, minor) {
+function check(file, current) {
   const rel = path.relative(ROOT, file);
   const { frontMatter, body, bodyStart } = split(fs.readFileSync(file, 'utf8'));
   const problems = [];
@@ -75,8 +79,10 @@ function check(file, minor) {
   for (const { text, line, inCode } of bodyLines) {
     if (/;;\s*(=>|prints)/.test(text)) report(line, 'write `; =>` and `; prints`, with one semicolon');
     if (/phel/i.test(text) && rel !== path.join('content', 'documentation', 'reference', 'upgrading.md')) {
-      for (const [version, minorText] of text.matchAll(/(?<![\d.])v?0\.(\d+)\.\d+(?![\d.])/g)) {
-        if (Number(minorText) < minor) report(line, `${version} is older than the current Phel release`);
+      for (const [version, majorText, minorText] of text.matchAll(/(?<![\d.])v?(\d+)\.(\d+)\.\d+(?![\d.])/g)) {
+        if (isOlder([Number(majorText), Number(minorText)], current)) {
+          report(line, `${version} is older than the current Phel release`);
+        }
       }
     }
     if (inCode) continue;
@@ -93,9 +99,9 @@ function check(file, minor) {
 }
 
 function main() {
-  const minor = currentMinor();
+  const current = currentRelease();
   const files = markdownFiles(DOCS).sort();
-  const problems = files.flatMap((file) => check(file, minor));
+  const problems = files.flatMap((file) => check(file, current));
 
   for (const problem of problems) console.log(problem);
   console.log(`Checked ${files.length} documentation pages, ${problems.length} problems.`);
