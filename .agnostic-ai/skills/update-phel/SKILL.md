@@ -10,11 +10,11 @@ x-claude:
 `composer.json` pins `phel-lang/phel-lang`. A `post-update-cmd` runs `build/update-phel-version.php`, which rewrites `phel_version` in `config.toml`. Never edit `config.toml` by hand.
 
 1. Find the versions: `composer show phel-lang/phel-lang | grep -E "^versions"` (installed is marked `*`) and `composer show phel-lang/phel-lang --all | grep -E "^versions" | head -1` (latest stable is the first non-`dev-*` entry).
-2. Set the `require` constraint in `composer.json` to a caret on the minor (`^0.40`). Phel is pre-1.0, so a minor can break; read the release notes at `https://github.com/phel-lang/phel-lang/releases/tag/vX.Y.Z` if anything fails.
+2. Set the `require` constraint in `composer.json` to a caret on the release: `^1.0.0-rc3` for a release candidate, `^1.0` once stable. A 0.x minor could break; read the release notes at `https://github.com/phel-lang/phel-lang/releases/tag/vX.Y.Z` if anything fails.
 3. `composer update phel-lang/phel-lang --with-dependencies`. If `config.toml` did not change, the hook failed: find out why before committing.
 4. Verify: `git diff config.toml` shows the bump; `composer test`; `composer test:snippets`; `composer build && zola build && npm run check:links`.
 5. Fix stale version strings in prose (snippet runs skip them):
-   `grep -rnE 'phel-lang/phel-lang[":]+ *\^?0\.[0-9]+|var-dumper' content/`
+   `grep -rnE 'phel-lang/phel-lang[":]+ *\^?[0-9]+\.[0-9]+|var-dumper' content/`
    - `content/documentation/installation.md`: the `## Upgrading` section and any `composer require phel-lang/phel-lang:^X.Y`.
    - `content/documentation/reference/upgrading.md`: add a section for the new minor with its breaking changes, newest first.
    - `content/documentation/guides/debugging.md` (`### PHP dump functions`): the `symfony/var-dumper` constraint matches this repo's `composer.json`.

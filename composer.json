@@ -11,7 +11,7 @@
     "require": {
         "php": ">=8.5",
         "ext-json": "*",
-        "phel-lang/phel-lang": "^0.54",
+        "phel-lang/phel-lang": "^1.0.0-rc3",
         "gacela-project/gacela": "^2.2"
     },
     "require-dev": {
