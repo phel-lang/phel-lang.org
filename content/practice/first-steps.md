@@ -90,18 +90,18 @@ PHP has rules that say `*` runs before `+`. Phel has no such rules. The parenthe
 {% <question difficulty="easy" kind="write"> %}
 Write this PHP expression as a Phel form:
 ```
-(3 + 4.0 / 5) * 6
+(3 + 4.0 / 8) * 6
 ```
-The result should be `22.8`.
+The result should be `21.0`.
 {% </question> %}
 {% <hint> %}
-Start with the innermost part, `4.0 / 5`, and wrap outwards.
+Start with the innermost part, `4.0 / 8`, and wrap outwards.
 {% </hint> %}
 {% <solution> %}
 ```phel
-(* (+ 3 (/ 4.0 5)) 6) ; => 22.8
+(* (+ 3 (/ 4.0 8)) 6) ; => 21.0
 ```
-Each pair of parentheses is one step. `(/ 4.0 5)` is `0.8`, `(+ 3 0.8)` is `3.8`, and `(* 3.8 6)` is `22.8`.
+Each pair of parentheses is one step. `(/ 4.0 8)` is `0.5`, `(+ 3 0.5)` is `3.5`, and `(* 3.5 6)` is `21.0`.
 
 Learn more: [Arithmetic operators](/documentation/language/basic-types/#arithmetic-operators)
 {% </solution> %}
